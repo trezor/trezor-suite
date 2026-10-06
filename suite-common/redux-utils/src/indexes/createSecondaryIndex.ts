@@ -2,11 +2,11 @@ import {
     type IndexId,
     type IndexKey,
     type IndexSnapshot,
-    type ResolvedIndexKey,
+    type KeyMaker,
     type SecondaryIndex,
     type SecondaryIndexDefinition,
 } from './indexTypes';
-import { EMPTY_INDEX_ENTITIES, EMPTY_INDEX_IDS, haveSameMembers, toIdSet } from './indexUtils';
+import { EMPTY_INDEX_ENTITIES, EMPTY_INDEX_IDS, haveSameMembers } from './indexUtils';
 
 const EMPTY_KEYS: readonly never[] = [];
 
@@ -31,28 +31,26 @@ export const createSecondaryIndex = <
     TState,
     TId extends IndexId,
     TEntity,
-    TName extends string,
-    TGivenKey extends IndexKey,
+    TKey extends IndexKey,
     TParts = never,
 >(
-    definition: SecondaryIndexDefinition<TState, TId, TEntity, TName, TGivenKey, TParts>,
-): SecondaryIndex<TState, ResolvedIndexKey<TName, TGivenKey>, TId, TEntity, TParts> => {
-    type TKey = ResolvedIndexKey<TName, TGivenKey>;
-
+    definition: SecondaryIndexDefinition<TState, TId, TEntity, TKey, TParts>,
+): SecondaryIndex<TState, TKey, TId, TEntity> &
+    ([TParts] extends [never] ? unknown : KeyMaker<TParts, TKey>) => {
     const { name, source } = definition;
     const createGivenKey = definition.createKey;
-    const createKey = (parts: TParts) => {
+    const createKey = (parts: TParts): TKey => {
         if (createGivenKey === undefined) {
             throw new Error(`secondary index "${name}" was given no createKey`);
         }
 
-        return createGivenKey(parts) as TKey;
+        return createGivenKey(parts);
     };
     // With `createKey`, what `getKeys` answers are parts and the entity stands in for them by
     // default; without it, `getKeys` answers keys.
     const getKeys = (entity: TEntity): TKey | readonly TKey[] | undefined => {
         if (createGivenKey === undefined) {
-            return definition.getKeys(entity) as TKey | readonly TKey[] | undefined;
+            return definition.getKeys(entity);
         }
 
         const parts = definition.getKeys?.(entity) ?? (entity as unknown as TParts);
@@ -65,7 +63,10 @@ export const createSecondaryIndex = <
         { byId: ReadonlyMap<TId, TEntity>; entities: readonly TEntity[] }
     >();
 
-    let cached: Filed<TKey, TId, TEntity> | undefined;
+    // What was filed from a primary snapshot, for as long as it lives; the last filing is the
+    // baseline a snapshot not seen before is maintained from.
+    const filings = new WeakMap<IndexSnapshot<TId, TEntity>, Filed<TKey, TId, TEntity>>();
+    let last: Filed<TKey, TId, TEntity> | undefined;
 
     const keysOf = (entity: TEntity): readonly TKey[] => {
         const keys = getKeys(entity);
@@ -195,27 +196,25 @@ export const createSecondaryIndex = <
 
     const read = (state: TState): Filed<TKey, TId, TEntity> => {
         const primary = source.read(state);
+        const known = filings.get(primary);
 
-        if (cached?.primary === primary) {
-            return cached;
+        if (known !== undefined) {
+            return known;
         }
 
-        cached = cached === undefined ? file(primary) : refile(primary, cached);
+        last = last === undefined ? file(primary) : refile(primary, last);
+        filings.set(primary, last);
 
-        return cached;
+        return last;
     };
 
     const getIds = (state: TState, key: TKey): readonly TId[] =>
         read(state).idsByKey.get(key) ?? EMPTY_INDEX_IDS;
 
-    return {
+    const index: SecondaryIndex<TState, TKey, TId, TEntity> & KeyMaker<TParts, TKey> = {
         name,
         getIds,
-        getIdSet: (state, key) => toIdSet(getIds(state, key)),
         getKeys: state => read(state).keys,
-        getKeysOf: (state, id) => read(state).keysById.get(id) ?? EMPTY_KEYS,
-        getKeysOfEntity: keysOf,
-        asKey: value => value as TKey,
         createKey,
         getEntities: (state, key) => {
             const ids = getIds(state, key);
@@ -241,4 +240,6 @@ export const createSecondaryIndex = <
             return settled;
         },
     };
+
+    return index;
 };

@@ -1,5 +1,5 @@
 import { type Index, type IndexChanges, type IndexId, type IndexSnapshot } from './indexTypes';
-import { EMPTY_INDEX_ENTITIES, EMPTY_INDEX_IDS, haveSameMembers, toIdSet } from './indexUtils';
+import { EMPTY_INDEX_ENTITIES, EMPTY_INDEX_IDS, haveSameMembers } from './indexUtils';
 
 export const NO_CHANGES: IndexChanges<never> = {
     added: EMPTY_INDEX_IDS,
@@ -61,68 +61,14 @@ export const settleSnapshot = <TId extends IndexId, TEntity>(
     };
 };
 
-/** The lookups every index answers, over its `read`. Ids and entities are remembered per array. */
+/** The lookups every index answers, over its `read`. */
 export const createIndexQueries = <TState, TId extends IndexId, TEntity>(
     name: string,
     read: (state: TState) => IndexSnapshot<TId, TEntity>,
-    idOfEntity: WeakMap<object, TId>,
-): Omit<Index<TState, TId, TEntity>, 'createId'> => {
-    const entitiesByIds = new WeakMap<
-        ReadonlyMap<TId, TEntity>,
-        WeakMap<readonly TId[], readonly TEntity[]>
-    >();
-
-    return {
-        name,
-        read,
-        getId: entity => {
-            const id =
-                typeof entity === 'object' && entity !== null ? idOfEntity.get(entity) : undefined;
-
-            if (id === undefined) {
-                throw new Error(`index "${name}" does not hold the given entity`);
-            }
-
-            return id;
-        },
-        asId: value => value as TId,
-        getIds: state => read(state).ids,
-        getIdSet: state => toIdSet(read(state).ids),
-        getEntities: state => read(state).entities,
-        getById: (state, id) => read(state).byId.get(id),
-        getByIds: (state, ids) => {
-            const { byId } = read(state);
-            const known = entitiesByIds.get(byId)?.get(ids);
-
-            if (known !== undefined) {
-                return known;
-            }
-
-            const found: TEntity[] = [];
-
-            for (const id of ids) {
-                if (byId.has(id)) {
-                    found.push(byId.get(id) as TEntity);
-                }
-            }
-
-            const entities = found.length === 0 ? EMPTY_INDEX_ENTITIES : found;
-            const forById = entitiesByIds.get(byId) ?? new WeakMap();
-            forById.set(ids, entities);
-            entitiesByIds.set(byId, forById);
-
-            return entities;
-        },
-    };
-};
-
-export const rememberIds = <TId extends IndexId, TEntity>(
-    idOfEntity: WeakMap<object, TId>,
-    byId: ReadonlyMap<TId, TEntity>,
-) => {
-    byId.forEach((entity, id) => {
-        if (typeof entity === 'object' && entity !== null) {
-            idOfEntity.set(entity, id);
-        }
-    });
-};
+): Index<TState, TId, TEntity> => ({
+    name,
+    read,
+    getIds: state => read(state).ids,
+    getEntities: state => read(state).entities,
+    getById: (state, id) => read(state).byId.get(id),
+});

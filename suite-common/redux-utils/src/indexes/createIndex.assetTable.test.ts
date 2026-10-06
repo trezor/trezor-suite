@@ -146,11 +146,11 @@ const createState = (accounts: Account[], rest: Partial<Omit<State, 'accounts'>>
     ...rest,
 });
 
-const BTC = assetsIndex.asId('wallet-a/btc/');
-const ETH = assetsIndex.asId('wallet-a/eth/');
-const USDC = assetsIndex.asId('wallet-a/eth/usdc');
-const WALLET_A = assetsByWallet.asKey('wallet-a');
-const WALLET_B = assetsByWallet.asKey('wallet-b');
+const BTC = 'wallet-a/btc/';
+const ETH = 'wallet-a/eth/';
+const USDC = 'wallet-a/eth/usdc';
+const WALLET_A = 'wallet-a';
+const WALLET_B = 'wallet-b';
 const WALLET_A_ETH = assetsByNetwork.createKey({ deviceState: 'wallet-a', symbol: 'eth' });
 const WALLET_A_BTC = assetsByNetwork.createKey({ deviceState: 'wallet-a', symbol: 'btc' });
 
@@ -182,7 +182,6 @@ describe('the home asset table as a selector, an index and two secondary indexes
 
         expect(assetsByWallet.getIds(state, WALLET_A)).toEqual([BTC, ETH]);
         expect(assetsByNetwork.getIds(state, WALLET_A_ETH)).toEqual([ETH]);
-        expect(assetsByWallet.getIdSet(state, WALLET_A).has(USDC)).toBe(false);
     });
 
     it('keeps every object the selector rebuilt unchanged', () => {

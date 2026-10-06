@@ -77,12 +77,12 @@ describe('createAggregateIndex', () => {
         const state = { accounts: [btc1, eth1, btc2] };
 
         expect(index.getIds(state)).toEqual(['btc', 'eth', 'eth/usdc']);
-        expect(index.getById(state, index.asId('btc'))).toEqual({
+        expect(index.getById(state, 'btc')).toEqual({
             asset: 'btc',
             balance: 3,
             positions: 2,
         });
-        expect(index.getById(state, index.asId('eth/usdc'))).toEqual({
+        expect(index.getById(state, 'eth/usdc')).toEqual({
             asset: 'eth/usdc',
             balance: 300,
             positions: 1,
@@ -125,19 +125,19 @@ describe('createAggregateIndex following a write', () => {
     it('folds again only the ids the changed entities contribute to', () => {
         const { index, reduce } = createAssetsIndex();
         const before = { accounts: [btc1, btc2, eth1] };
-        const ethBefore = index.getById(before, index.asId('eth'));
-        const usdcBefore = index.getById(before, index.asId('eth/usdc'));
+        const ethBefore = index.getById(before, 'eth');
+        const usdcBefore = index.getById(before, 'eth/usdc');
         reduce.mockClear();
 
         const after = { accounts: [btc1, { ...btc2, balance: 5 }, eth1] };
 
-        expect(index.getById(after, index.asId('btc'))).toEqual({
+        expect(index.getById(after, 'btc')).toEqual({
             asset: 'btc',
             balance: 6,
             positions: 2,
         });
-        expect(index.getById(after, index.asId('eth'))).toBe(ethBefore);
-        expect(index.getById(after, index.asId('eth/usdc'))).toBe(usdcBefore);
+        expect(index.getById(after, 'eth')).toBe(ethBefore);
+        expect(index.getById(after, 'eth/usdc')).toBe(usdcBefore);
         expect(reduce).toHaveBeenCalledTimes(2);
         expect(index.read(after).changes).toEqual({ added: [], removed: [], updated: ['btc'] });
     });
@@ -145,11 +145,11 @@ describe('createAggregateIndex following a write', () => {
     it('keeps the entity when the fold lands on the same values', () => {
         const { index } = createAssetsIndex();
         const before = { accounts: [btc1, btc2] };
-        const btcBefore = index.getById(before, index.asId('btc'));
+        const btcBefore = index.getById(before, 'btc');
 
         const after = { accounts: [btc1, { ...btc2 }] };
 
-        expect(index.getById(after, index.asId('btc'))).toBe(btcBefore);
+        expect(index.getById(after, 'btc')).toBe(btcBefore);
         expect(index.read(after).changes).toEqual({ added: [], removed: [], updated: [] });
     });
 

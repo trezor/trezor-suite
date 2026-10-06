@@ -1,23 +1,6 @@
-import { type Branded } from '@trezor/type-utils';
-
 export type IndexId = string;
 
 export type IndexKey = string;
-
-/** The id type an index named `TName` gives when its `getId` answers a plain string. */
-export type BrandedIndexId<TName extends string> = string & Branded<`${TName}Id`>;
-
-/** The key type a secondary index named `TName` gives when its `getKeys` answers plain strings. */
-export type BrandedIndexKey<TName extends string> = string & Branded<`${TName}Key`>;
-
-/** What `getId` gives, or the index's own brand when it gives a plain string. */
-export type ResolvedIndexId<TName extends string, TGiven extends IndexId> = string extends TGiven
-    ? BrandedIndexId<TName>
-    : TGiven;
-
-export type ResolvedIndexKey<TName extends string, TGiven extends IndexKey> = string extends TGiven
-    ? BrandedIndexKey<TName>
-    : TGiven;
 
 /** Which ids a build added, removed or gave a new entity, against the build before. */
 export type IndexChanges<TId extends IndexId> = {
@@ -34,25 +17,26 @@ export type IndexSnapshot<TId extends IndexId, TEntity> = {
     readonly changes: IndexChanges<TId>;
 };
 
-export type Index<TState, TId extends IndexId, TEntity, TParts = never> = {
+/**
+ * What every index answers. `read` hands back the whole snapshot and is what one index is built
+ * over another with; components and thunks want the three lookups.
+ */
+export type Index<TState, TId extends IndexId, TEntity> = {
     readonly name: string;
     read: (state: TState) => IndexSnapshot<TId, TEntity>;
     getIds: (state: TState) => readonly TId[];
-    getIdSet: (state: TState) => ReadonlySet<TId>;
     getEntities: (state: TState) => readonly TEntity[];
     getById: (state: TState, id: TId) => TEntity | undefined;
-    getByIds: (state: TState, ids: readonly TId[]) => readonly TEntity[];
-    /** The id an entity is filed under — for building one outside the index, from the entity. */
-    getId: (entity: TEntity) => TId;
-    /** Stamps a plain string as an id of this index. Prefer `createId` where parts are known. */
-    asId: (value: string) => TId;
-    /** Builds an id from its parts, the one way the index does — for a caller that has no entity. */
+};
+
+/** Builds an id from its parts, the one way the index does — for a caller that has no entity. */
+export type IdMaker<TParts, TId extends IndexId> = {
     createId: (parts: TParts) => TId;
 };
 
-// Each helper reads one member rather than matching the whole index, which has type parameters in
-// both parameter and return positions and so matches nothing but itself.
-export type IndexIdOf<TIndex> = TIndex extends { asId: (value: string) => infer TId } ? TId : never;
+export type IndexIdOf<TIndex> = TIndex extends { getById: (state: never, id: infer TId) => unknown }
+    ? TId
+    : never;
 
 export type IndexEntityOf<TIndex> = TIndex extends {
     getEntities: (state: never) => readonly (infer TEntity)[];
@@ -60,16 +44,12 @@ export type IndexEntityOf<TIndex> = TIndex extends {
     ? TEntity
     : never;
 
-export type SecondaryIndexKeyOf<TSecondaryIndex> = TSecondaryIndex extends {
-    asKey: (value: string) => infer TKey;
-}
-    ? TKey
-    : never;
+/** Any index read only for its snapshots. */
+export type IndexSnapshotSource<TState, TId extends IndexId, TEntity> = {
+    read: (state: TState) => IndexSnapshot<TId, TEntity>;
+};
 
-/**
- * Where an index takes its entities from: a selector of them, or another index — of any id type,
- * since only its entities are read.
- */
+/** Where an index takes its entities from: a selector of them, or another index. */
 export type IndexSource<TState, TEntity> =
     | ((state: TState) => Iterable<TEntity>)
     | { read: (state: TState) => { readonly entities: readonly TEntity[] } };
@@ -78,27 +58,22 @@ export type IndexSource<TState, TEntity> =
  * How an id is made. With `createId`, the id's shape lives in the index and `getId` may be left
  * out when the entity itself has the parts; without it, `getId` says where an entity is filed.
  */
-export type IdDefinition<TEntity, TGivenId extends IndexId, TParts> = {
-    /**
-     * The id from its parts, the one place its shape is written. Exposed as `index.createId`. A
-     * plain string is branded with the index name; an already branded id is kept.
-     */
-    createId?: (parts: TParts) => TGivenId;
+export type IdDefinition<TEntity, TId extends IndexId, TParts> = {
+    /** The id from its parts, the one place its shape is written. Exposed as `index.createId`. */
+    createId?: (parts: TParts) => TId;
 } & (TEntity extends TParts
-    ? { getId?: (entity: TEntity) => TGivenId }
+    ? { getId?: (entity: TEntity) => TId }
     : {
           /** The id an entity is filed under. Two entities of one source may not share it. */
-          getId: (entity: TEntity) => TGivenId;
+          getId: (entity: TEntity) => TId;
       });
 
-export type IndexDefinition<
-    TState,
+export type IndexDefinition<TState, TEntity, TId extends IndexId, TParts> = IdDefinition<
     TEntity,
-    TName extends string,
-    TGivenId extends IndexId,
-    TParts,
-> = IdDefinition<TEntity, TGivenId, TParts> & {
-    name: TName;
+    TId,
+    TParts
+> & {
+    name: string;
     source: IndexSource<TState, TEntity>;
     /**
      * Whether a new entity is the one already held under its id, in which case the held object
@@ -109,64 +84,49 @@ export type IndexDefinition<
 };
 
 /** Everything an index holds, looked up by a key other than the id: one key names many ids. */
-export type SecondaryIndex<
-    TState,
-    TKey extends IndexKey,
-    TId extends IndexId,
-    TEntity,
-    TParts = never,
-> = {
+export type SecondaryIndex<TState, TKey extends IndexKey, TId extends IndexId, TEntity> = {
     readonly name: string;
     getIds: (state: TState, key: TKey) => readonly TId[];
-    getIdSet: (state: TState, key: TKey) => ReadonlySet<TId>;
     getEntities: (state: TState, key: TKey) => readonly TEntity[];
     getKeys: (state: TState) => readonly TKey[];
-    getKeysOf: (state: TState, id: TId) => readonly TKey[];
-    /** The keys an entity answers to — for building one outside the index, from the entity. */
-    getKeysOfEntity: (entity: TEntity) => readonly TKey[];
-    /** Stamps a plain string as a key of this index. Prefer `createKey` where parts are known. */
-    asKey: (value: string) => TKey;
-    /** Builds a key from its parts, the one way the index does — for a caller that has no entity. */
+};
+
+export type KeyMaker<TParts, TKey extends IndexKey> = {
     createKey: (parts: TParts) => TKey;
 };
+
+export type SecondaryIndexKeyOf<TSecondaryIndex> = TSecondaryIndex extends {
+    getIds: (state: never, key: infer TKey) => unknown;
+}
+    ? TKey
+    : never;
 
 /**
  * How a key is made. With `createKey`, the key's shape lives in the index and `getKeys` answers
  * parts — or may be left out when the entity itself has them; without it, `getKeys` answers keys.
  */
-export type KeyDefinition<TEntity, TGivenKey extends IndexKey, TParts> =
+export type KeyDefinition<TEntity, TKey extends IndexKey, TParts> =
     | {
-          /**
-           * The key from its parts, the one place its shape is written. Exposed as
-           * `index.createKey`. A plain string is branded with the index name; an already branded
-           * key is kept.
-           */
-          createKey: (parts: TParts) => TGivenKey;
+          /** The key from its parts, the one place its shape is written. Exposed as `index.createKey`. */
+          createKey: (parts: TParts) => TKey;
           /** The parts of the key or keys an entity answers to; `undefined` files it under none. */
           getKeys?: (entity: TEntity) => TParts | readonly TParts[] | undefined;
       }
     | {
           createKey?: undefined;
           /** The key or keys an entity answers to; `undefined` files it under none. */
-          getKeys: (entity: TEntity) => TGivenKey | readonly TGivenKey[] | undefined;
+          getKeys: (entity: TEntity) => TKey | readonly TKey[] | undefined;
       };
 
 export type SecondaryIndexDefinition<
     TState,
     TId extends IndexId,
     TEntity,
-    TName extends string,
-    TGivenKey extends IndexKey,
+    TKey extends IndexKey,
     TParts,
-> = KeyDefinition<TEntity, TGivenKey, TParts> & {
-    name: TName;
-    /** The index to look up — of any parts type, since only its snapshots are read. */
-    source: { read: (state: TState) => IndexSnapshot<TId, TEntity> };
-};
-
-/** Any index read only for its snapshots — of whatever id, entity and parts type. */
-export type IndexSnapshotSource<TState, TId extends IndexId, TEntity> = {
-    read: (state: TState) => IndexSnapshot<TId, TEntity>;
+> = KeyDefinition<TEntity, TKey, TParts> & {
+    name: string;
+    source: IndexSnapshotSource<TState, TId, TEntity>;
 };
 
 /**
@@ -179,66 +139,65 @@ export type AggregateIndexDefinition<
     TSourceId extends IndexId,
     TSource,
     TItem,
-    TName extends string,
-    TGivenId extends IndexId,
+    TId extends IndexId,
     TEntity,
 > = {
-    name: TName;
+    name: string;
     source: IndexSnapshotSource<TState, TSourceId, TSource>;
     /** One source entity into the items to fold. Called once per source entity while it is the same object. */
     expand: (source: TSource) => Iterable<TItem>;
     /** The id an item folds into; `undefined` leaves the item out. */
-    getId: (item: TItem) => TGivenId | undefined;
+    getId: (item: TItem) => TId | undefined;
     /** Folds the items under one id, from `undefined` on every fold. */
     reduce: (accumulated: TEntity | undefined, item: TItem) => TEntity;
     /** Whether a re-folded entity is the one held. Shallow equality by default. */
     isEqual?: (previous: TEntity, next: TEntity) => boolean;
 };
 
-export type LookupIdOf<TLookup> =
-    TLookup extends IndexSnapshotSource<never, infer TId, unknown> ? TId : never;
+export type JoinedIdOf<TJoined> =
+    TJoined extends IndexSnapshotSource<never, infer TId, unknown> ? TId : never;
 
-export type LookupEntityOf<TLookup> =
-    TLookup extends IndexSnapshotSource<never, IndexId, infer TEntity> ? TEntity : never;
+export type JoinedEntityOf<TJoined> =
+    TJoined extends IndexSnapshotSource<never, IndexId, infer TEntity> ? TEntity : never;
 
-export type Lookups<TState> = Record<string, IndexSnapshotSource<TState, IndexId, unknown>>;
+export type Join<TState> = Record<string, IndexSnapshotSource<TState, IndexId, unknown>>;
 
 /**
- * The state every lookup needs, read off the lookups themselves: one `infer` across all their
- * `read` parameters gives the intersection. `unknown` without lookups, so it adds nothing.
+ * The state every joined index needs, read off the join itself: one `infer` across all their
+ * `read` parameters gives the intersection. `unknown` without a join, so it adds nothing.
  */
-export type LookupStateOf<TLookups> = [keyof TLookups] extends [never]
+export type JoinStateOf<TJoin> = [keyof TJoin] extends [never]
     ? unknown
-    : TLookups[keyof TLookups] extends { read: (state: infer TLookupState) => unknown }
-      ? TLookupState
+    : TJoin[keyof TJoin] extends { read: (state: infer TJoinState) => unknown }
+      ? TJoinState
       : unknown;
 
-export type LookupIds<TLookups> = { [TName in keyof TLookups]?: LookupIdOf<TLookups[TName]> };
+export type JoinIds<TJoin> = { [TName in keyof TJoin]?: JoinedIdOf<TJoin[TName]> };
 
-export type LookupEntities<TLookups> = {
-    [TName in keyof TLookups]: LookupEntityOf<TLookups[TName]> | undefined;
+export type JoinedEntities<TJoin> = {
+    [TName in keyof TJoin]: JoinedEntityOf<TJoin[TName]> | undefined;
 };
 
 /**
- * One entity per source entity, derived from it and from the entities it names in other indexes.
- * Re-derived only when its source entity changed or one of the lookup entities it named did.
+ * One entity per source entity, made from it and from the entities it is joined to in other
+ * indexes. Made again only when its source entity changed or one of the joined entities did.
  */
 export type DerivedIndexDefinition<
     TState,
     TId extends IndexId,
     TSource,
-    TLookups extends Lookups<never>,
+    TJoin extends Join<never>,
     TEntity,
 > = {
     name: string;
     source: IndexSnapshotSource<TState, TId, TSource>;
     /** Other indexes to join; the derived index reads the state they need as well as the source's. */
-    lookups?: TLookups;
-    /** Which entity of each lookup a source entity depends on; left out, none. */
-    getLookupIds?: (source: TSource) => LookupIds<TLookups>;
-    derive: (source: TSource, lookups: LookupEntities<TLookups>) => TEntity;
+    join?: TJoin;
+    /** Which entity of each joined index a source entity is joined to; left out, none. */
+    joinBy?: (source: TSource) => JoinIds<TJoin>;
+    toEntity: (source: TSource, joined: JoinedEntities<TJoin>) => TEntity;
     /** The order of `ids` and `entities`; without it, the order of the source. */
     sort?: (left: TEntity, right: TEntity) => number;
-    /** Whether a re-derived entity is the one held. Shallow equality by default. */
+    /** Whether a re-made entity is the one held. Shallow equality by default. */
     isEqual?: (previous: TEntity, next: TEntity) => boolean;
 };

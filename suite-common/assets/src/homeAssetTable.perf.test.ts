@@ -250,7 +250,7 @@ const assetsByNetwork = createSecondaryIndex({
 
 const selectPerfNetworkFiatValue = (state: HomeAssetTableState, symbol: NetworkSymbol) =>
     assetsByNetwork
-        .getEntities(state, assetsByNetwork.asKey(symbol))
+        .getEntities(state, symbol)
         .reduce((total, asset) => total.plus(asset.fiatValue ?? 0), new BigNumber(0))
         .toFixed();
 
@@ -339,11 +339,11 @@ const ratesIndex = createIndex({
 const chainPricedIndex = createDerivedIndex({
     name: 'chainPricedAssets',
     source: chainAssetsIndex,
-    lookups: { rate: ratesIndex },
-    getLookupIds: (asset: FoldedAsset) => ({
-        rate: ratesIndex.asId(getFiatRateKey(asset.symbol, 'usd', asset.contractAddress)),
+    join: { rate: ratesIndex },
+    joinBy: (asset: FoldedAsset) => ({
+        rate: getFiatRateKey(asset.symbol, 'usd', asset.contractAddress),
     }),
-    derive: (asset: FoldedAsset, { rate }): PerfPricedAsset => ({
+    toEntity: (asset: FoldedAsset, { rate }): PerfPricedAsset => ({
         ...asset,
         fiatValue: toFiatCurrency({ amount: asset.amount, rate: rate?.rate })?.toFixed(),
     }),
@@ -359,7 +359,7 @@ const chainByNetwork = createSecondaryIndex({
 
 const selectChainNetworkFiatValue = (state: HomeAssetTableState, symbol: NetworkSymbol) =>
     chainByNetwork
-        .getEntities(state, chainByNetwork.asKey(symbol))
+        .getEntities(state, symbol)
         .reduce((total, asset) => total.plus(asset.fiatValue ?? 0), new BigNumber(0))
         .toFixed();
 

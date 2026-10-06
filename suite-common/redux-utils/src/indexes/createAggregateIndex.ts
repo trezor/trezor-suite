@@ -1,12 +1,11 @@
 import { shallowEqual } from 'react-redux';
 
-import { createIndexQueries, rememberIds, settleSnapshot, toChanges } from './indexSnapshot';
+import { createIndexQueries, settleSnapshot, toChanges } from './indexSnapshot';
 import {
     type AggregateIndexDefinition,
     type Index,
     type IndexId,
     type IndexSnapshot,
-    type ResolvedIndexId,
 } from './indexTypes';
 
 type Filed<TSourceId extends IndexId, TId extends IndexId, TItem, TEntity> = {
@@ -29,28 +28,29 @@ export const createAggregateIndex = <
     TSourceId extends IndexId,
     TSource,
     TItem,
-    TName extends string,
-    TGivenId extends IndexId,
+    TId extends IndexId,
     TEntity,
 >({
     name,
     source,
     expand,
-    getId: getGivenId,
+    getId,
     reduce,
     isEqual = shallowEqual,
-}: AggregateIndexDefinition<TState, TSourceId, TSource, TItem, TName, TGivenId, TEntity>): Index<
+}: AggregateIndexDefinition<TState, TSourceId, TSource, TItem, TId, TEntity>): Index<
     TState,
-    ResolvedIndexId<TName, TGivenId>,
+    TId,
     TEntity
 > => {
-    type TId = ResolvedIndexId<TName, TGivenId>;
-
-    const getId = (item: TItem) => getGivenId(item) as TId | undefined;
     const expansions = new WeakMap<object, readonly TItem[]>();
-    const idOfEntity = new WeakMap<object, TId>();
-
-    let cached: Filed<TSourceId, TId, TItem, TEntity> | undefined;
+    // What was built from a source snapshot, for as long as that snapshot lives — so a store whose
+    // snapshot comes back is answered without a build. The last build is the baseline a snapshot
+    // not seen before is maintained from.
+    const builds = new WeakMap<
+        IndexSnapshot<TSourceId, TSource>,
+        Filed<TSourceId, TId, TItem, TEntity>
+    >();
+    let last: Filed<TSourceId, TId, TItem, TEntity> | undefined;
 
     const expandOnce = (entity: TSource): readonly TItem[] => {
         if (typeof entity !== 'object' || entity === null) {
@@ -126,7 +126,6 @@ export const createAggregateIndex = <
         sourceIdsById.forEach((sourceIds, id) =>
             byId.set(id, fold(id, sourceIds, itemsBySourceId)),
         );
-        rememberIds(idOfEntity, byId);
 
         return {
             sourceSnapshot,
@@ -218,7 +217,6 @@ export const createAggregateIndex = <
                 updatedIds.push(id);
             }
         });
-        rememberIds(idOfEntity, byId);
 
         return {
             sourceSnapshot,
@@ -235,22 +233,17 @@ export const createAggregateIndex = <
 
     const read = (state: TState): IndexSnapshot<TId, TEntity> => {
         const sourceSnapshot = source.read(state);
+        const known = builds.get(sourceSnapshot);
 
-        if (cached?.sourceSnapshot === sourceSnapshot) {
-            return cached.snapshot;
+        if (known !== undefined) {
+            return known.snapshot;
         }
 
-        cached = cached === undefined ? file(sourceSnapshot) : refile(sourceSnapshot, cached);
+        last = last === undefined ? file(sourceSnapshot) : refile(sourceSnapshot, last);
+        builds.set(sourceSnapshot, last);
 
-        return cached.snapshot;
+        return last.snapshot;
     };
 
-    return {
-        ...createIndexQueries<TState, TId, TEntity>(name, read, idOfEntity),
-        createId: () => {
-            throw new Error(
-                `index "${name}" folds its ids from items and has no parts to make one from`,
-            );
-        },
-    };
+    return createIndexQueries(name, read);
 };

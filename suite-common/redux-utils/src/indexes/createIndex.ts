@@ -2,12 +2,12 @@ import { shallowEqual } from 'react-redux';
 
 import { createIndexQueries, settleSnapshot, toChanges } from './indexSnapshot';
 import {
+    type IdMaker,
     type Index,
     type IndexDefinition,
     type IndexId,
     type IndexSnapshot,
     type IndexSource,
-    type ResolvedIndexId,
 } from './indexTypes';
 
 const isIndex = <TState, TEntity>(
@@ -19,32 +19,24 @@ const isIndex = <TState, TEntity>(
  * An index over the entities a selector gives: every entity filed by id, read lazily, and matched
  * against the build before so that an entity the selector rebuilt unchanged keeps the object a
  * component already holds. Each build also tells which ids were added, removed and updated —
- * what a secondary index maintains itself from.
+ * what every index built over this one maintains itself from.
  *
  * The selector owns the shape: it flattens, aggregates, orders and gives every entity its id. The
  * index owns identity: `ids` keeps its array while its members and order stand, an entity keeps
  * its object while it is equal to the one held, and a read against an unchanged source returns the
  * very same snapshot.
  */
-export const createIndex = <
-    TState,
-    TEntity,
-    TName extends string,
-    TGivenId extends IndexId,
-    TParts = never,
->(
-    definition: IndexDefinition<TState, TEntity, TName, TGivenId, TParts>,
-): Index<TState, ResolvedIndexId<TName, TGivenId>, TEntity, TParts> => {
-    type TId = ResolvedIndexId<TName, TGivenId>;
+export const createIndex = <TState, TEntity, TId extends IndexId, TParts = never>(
+    definition: IndexDefinition<TState, TEntity, TId, TParts>,
+): Index<TState, TId, TEntity> & ([TParts] extends [never] ? unknown : IdMaker<TParts, TId>) => {
     type Snapshot = IndexSnapshot<TId, TEntity>;
 
     const { name, source, isEqual = shallowEqual } = definition;
-    const createGivenId = definition.createId;
+    const { createId } = definition;
     // Without `getId` the entity itself has the parts — the types ask for that, the compiler cannot
     // see it from in here — so the maker is read as taking the entity.
-    const makeIdFromEntity = createGivenId as unknown as
-        ((entity: TEntity) => TGivenId) | undefined;
-    const getGivenId =
+    const makeIdFromEntity = createId as unknown as ((entity: TEntity) => TId) | undefined;
+    const getId =
         definition.getId ??
         ((entity: TEntity) => {
             if (makeIdFromEntity === undefined) {
@@ -54,15 +46,11 @@ export const createIndex = <
             return makeIdFromEntity(entity);
         });
 
-    const getId = (entity: TEntity) => getGivenId(entity) as TId;
-    const createId = (parts: TParts) => {
-        if (createGivenId === undefined) {
-            throw new Error(`index "${name}" was given no createId`);
-        }
-
-        return createGivenId(parts) as TId;
-    };
-    let cached: { sourceValue: unknown; snapshot: Snapshot } | undefined;
+    // What was built from a source value, for as long as that value lives — so a store whose
+    // accounts array comes back is answered without a build. The last build is the baseline a
+    // value not seen before is matched against.
+    const builds = new WeakMap<object, Snapshot>();
+    let last: Snapshot | undefined;
 
     const build = (sourceEntities: Iterable<TEntity>, previous: Snapshot | undefined): Snapshot => {
         const byId = new Map<TId, TEntity>();
@@ -102,25 +90,36 @@ export const createIndex = <
 
     const read = (state: TState): Snapshot => {
         const sourceValue = isIndex(source) ? source.read(state) : source(state);
+        const isKeyable = typeof sourceValue === 'object' && sourceValue !== null;
+        const known = isKeyable ? builds.get(sourceValue) : undefined;
 
-        if (cached?.sourceValue === sourceValue) {
-            return cached.snapshot;
+        if (known !== undefined) {
+            return known;
         }
 
         const sourceEntities = isIndex(source)
             ? (sourceValue as { entities: readonly TEntity[] }).entities
             : (sourceValue as Iterable<TEntity>);
 
-        const snapshot = build(sourceEntities, cached?.snapshot);
-        cached = { sourceValue, snapshot };
+        last = build(sourceEntities, last);
 
-        return snapshot;
+        if (isKeyable) {
+            builds.set(sourceValue, last);
+        }
+
+        return last;
     };
 
-    return {
-        ...createIndexQueries<TState, TId, TEntity>(name, read, new WeakMap()),
-        getId,
-        asId: value => value as TId,
-        createId,
+    const index: Index<TState, TId, TEntity> & IdMaker<TParts, TId> = {
+        ...createIndexQueries(name, read),
+        createId: parts => {
+            if (createId === undefined) {
+                throw new Error(`index "${name}" was given no createId`);
+            }
+
+            return createId(parts);
+        },
     };
+
+    return index;
 };

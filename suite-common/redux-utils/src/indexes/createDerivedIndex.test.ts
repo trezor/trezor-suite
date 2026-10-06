@@ -36,9 +36,9 @@ const createPricedIndex = (derive = jest.fn(price)) => ({
     index: createDerivedIndex({
         name: 'priced',
         source: assetsIndex,
-        lookups: { rate: ratesIndex },
-        getLookupIds: (asset: Asset) => ({ rate: ratesIndex.asId(asset.symbol) }),
-        derive: (asset: Asset, { rate }) => derive(asset, rate),
+        join: { rate: ratesIndex },
+        joinBy: (asset: Asset) => ({ rate: asset.symbol }),
+        toEntity: (asset: Asset, { rate }) => derive(asset, rate),
         sort: (left, right) => (right.fiatValue ?? 0) - (left.fiatValue ?? 0),
     }),
 });
@@ -50,24 +50,24 @@ describe('createDerivedIndex', () => {
         expect(derive).not.toHaveBeenCalled();
     });
 
-    it('derives one entity per source entity, from it and the lookup entities it names', () => {
+    it('makes one entity per source entity, from it and the entities it is joined to', () => {
         const { index } = createPricedIndex();
         const state = { assets: [btc, eth], rates: [btcRate, ethRate] };
 
-        expect(index.getById(state, assetsIndex.asId('btc'))).toEqual({
+        expect(index.getById(state, 'btc')).toEqual({
             key: 'btc',
             fiatValue: 200,
         });
-        expect(index.getById(state, assetsIndex.asId('eth'))).toEqual({
+        expect(index.getById(state, 'eth')).toEqual({
             key: 'eth',
             fiatValue: 50,
         });
     });
 
-    it('hands the derivation nothing for a lookup entity that is not there', () => {
+    it('hands the making nothing for a joined entity that is not there', () => {
         const { index } = createPricedIndex();
 
-        expect(index.getById({ assets: [btc], rates: [] }, assetsIndex.asId('btc'))).toEqual({
+        expect(index.getById({ assets: [btc], rates: [] }, 'btc')).toEqual({
             key: 'btc',
             fiatValue: undefined,
         });
@@ -86,13 +86,13 @@ describe('createDerivedIndex', () => {
         const index = createDerivedIndex({
             name: 'plain',
             source: assetsIndex,
-            derive: (asset: Asset) => ({ key: asset.key }),
+            toEntity: (asset: Asset) => ({ key: asset.key }),
         });
 
         expect(index.getIds({ assets: [eth, btc], rates: [] })).toEqual(['eth', 'btc']);
     });
 
-    it('hands back the same snapshot while the source and the lookups stand', () => {
+    it('hands back the same snapshot while the source and the join stand', () => {
         const { index } = createPricedIndex();
         const snapshot = index.read({ assets: [btc, eth], rates: [btcRate, ethRate] });
 
@@ -102,41 +102,75 @@ describe('createDerivedIndex', () => {
     });
 });
 
+describe('createDerivedIndex joining an index over another part of the state', () => {
+    type AssetsState = { assets: Asset[] };
+    type RatesState = { rates: Rate[] };
+
+    const assetsOnly = createIndex({
+        name: 'assetsOnly',
+        source: (state: AssetsState) => state.assets,
+        getId: (asset: Asset) => asset.key,
+    });
+    const ratesOnly = createIndex({
+        name: 'ratesOnly',
+        source: (state: RatesState) => state.rates,
+        getId: (rate: Rate) => rate.key,
+    });
+
+    it('reads the state both need', () => {
+        const priced = createDerivedIndex({
+            name: 'pricedAcross',
+            source: assetsOnly,
+            join: { rate: ratesOnly },
+            joinBy: (asset: Asset) => ({ rate: asset.symbol }),
+            toEntity: (asset: Asset, { rate }) => price(asset, rate),
+        });
+        const state: AssetsState & RatesState = { assets: [btc], rates: [btcRate] };
+
+        expect(priced.getById(state, 'btc')).toEqual({ key: 'btc', fiatValue: 200 });
+
+        // @ts-expect-error The rates are missing from this state.
+        const readWithoutRates = () => priced.getById({ assets: [btc] }, 'btc');
+
+        expect(readWithoutRates).toBeInstanceOf(Function);
+    });
+});
+
 describe('createDerivedIndex following a write', () => {
-    it('derives again only the entity whose source changed', () => {
+    it('makes again only the entity whose source changed', () => {
         const { index, derive } = createPricedIndex();
         const before = { assets: [btc, eth], rates: [btcRate, ethRate] };
-        const ethBefore = index.getById(before, assetsIndex.asId('eth'));
+        const ethBefore = index.getById(before, 'eth');
         derive.mockClear();
 
         const after = { assets: [{ ...btc, amount: 3 }, eth], rates: [btcRate, ethRate] };
 
-        expect(index.getById(after, assetsIndex.asId('btc'))).toEqual({
+        expect(index.getById(after, 'btc')).toEqual({
             key: 'btc',
             fiatValue: 300,
         });
-        expect(index.getById(after, assetsIndex.asId('eth'))).toBe(ethBefore);
+        expect(index.getById(after, 'eth')).toBe(ethBefore);
         expect(derive).toHaveBeenCalledTimes(1);
         expect(index.read(after).changes).toEqual({ added: [], removed: [], updated: ['btc'] });
     });
 
-    it('derives again only the entities that named the lookup entity that changed', () => {
+    it('makes again only the entities joined to the entity that changed', () => {
         const { index, derive } = createPricedIndex();
         const before = { assets: [btc, eth], rates: [btcRate, ethRate] };
-        const btcBefore = index.getById(before, assetsIndex.asId('btc'));
+        const btcBefore = index.getById(before, 'btc');
         derive.mockClear();
 
         const after = { assets: [btc, eth], rates: [btcRate, { ...ethRate, rate: 6 }] };
 
-        expect(index.getById(after, assetsIndex.asId('eth'))).toEqual({
+        expect(index.getById(after, 'eth')).toEqual({
             key: 'eth',
             fiatValue: 60,
         });
-        expect(index.getById(after, assetsIndex.asId('btc'))).toBe(btcBefore);
+        expect(index.getById(after, 'btc')).toBe(btcBefore);
         expect(derive).toHaveBeenCalledTimes(1);
     });
 
-    it('does nothing for lookup entities replaced with the same values', () => {
+    it('does nothing for joined entities replaced with the same values', () => {
         const { index, derive } = createPricedIndex();
         const snapshot = index.read({ assets: [btc, eth], rates: [btcRate, ethRate] });
         derive.mockClear();
@@ -147,14 +181,14 @@ describe('createDerivedIndex following a write', () => {
         expect(derive).not.toHaveBeenCalled();
     });
 
-    it('keeps the entity when the derivation lands on the same values', () => {
+    it('keeps the entity when the making lands on the same values', () => {
         const { index } = createPricedIndex();
         const before = { assets: [btc, eth], rates: [btcRate, ethRate] };
-        const btcBefore = index.getById(before, assetsIndex.asId('btc'));
+        const btcBefore = index.getById(before, 'btc');
 
         const after = { assets: [{ ...btc, symbol: 'btc' }, eth], rates: [btcRate, ethRate] };
 
-        expect(index.getById(after, assetsIndex.asId('btc'))).toBe(btcBefore);
+        expect(index.getById(after, 'btc')).toBe(btcBefore);
     });
 
     it('follows additions and removals of the source', () => {

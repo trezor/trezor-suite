@@ -21,7 +21,6 @@
         "reselect": "5.2.0"
     },
     "devDependencies": {
-        "@trezor/requirements": "workspace:*",
-        "@trezor/type-utils": "workspace:*"
+        "@trezor/requirements": "workspace:*"
     }
 }

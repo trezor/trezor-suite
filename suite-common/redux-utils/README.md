@@ -190,8 +190,13 @@ another index is driven by that change set and does work only for what moved. Fo
 | ---------------------- | ----- | --------------------------------------------------------------------------------- |
 | `createIndex`          | 1 → 1 | One shallow compare per entity; the fold of none.                                 |
 | `createAggregateIndex` | N → 1 | Expands the changed source entities, re-folds the ids they contribute to.         |
-| `createDerivedIndex`   | 1 → 1 | Re-derives the entities whose source or named lookup entity changed.              |
+| `createDerivedIndex`   | 1 → 1 | Makes again the entities whose source or joined entity changed.                   |
 | `createSecondaryIndex` | 1 → N | Asks the changed entities where they belong, relists the keys they moved between. |
+
+Every index answers `getIds(state)`, `getEntities(state)` and `getById(state, id)`; a secondary
+index answers `getIds(state, key)`, `getEntities(state, key)` and `getKeys(state)`. That is the
+whole surface a component or thunk sees. `read(state)` hands back the snapshot and is what one
+index is built over another with.
 
 The home asset table as such a chain — a write to one account re-expands one account, re-folds
 the assets it holds, re-prices those, and touches no list but the one that moved:
@@ -200,80 +205,50 @@ the assets it holds, re-prices those, and touches no list but the one that moved
 const accountsIndex = createIndex({
     name: 'accounts',
     source: selectVisibleDeviceAccounts,
-    getId: a => a.key,
+    getId: account => account.key,
 });
+
 const assetsIndex = createAggregateIndex({
     name: 'assets',
     source: accountsIndex,
-    expand: toPositions, //          one account into the positions it holds, memoised per account
+    expand: toPositions, // One account into the positions it holds, memoised per account.
     getId: position => position.assetKey,
-    reduce: sumInto, //              the positions under one asset key into the asset
+    reduce: sumInto, //    The positions under one asset key into the asset.
 });
-const ratesIndex = createIndex({ name: 'rates', source: selectRateEntries, getId: r => r.key });
+
+const ratesIndex = createIndex({
+    name: 'rates',
+    source: selectRateEntries,
+    getId: rate => rate.key,
+});
+
 const pricedAssetsIndex = createDerivedIndex({
     name: 'pricedAssets',
     source: assetsIndex,
-    lookups: { rate: ratesIndex },
-    getLookupIds: asset => ({ rate: asset.rateKey }),
-    derive: (asset, { rate }) => price(asset, rate),
+    join: { rate: ratesIndex },
+    joinBy: asset => ({ rate: asset.rateKey }),
+    toEntity: (asset, { rate }) => price(asset, rate),
     sort: byFiatValue,
 });
+
 const assetsByNetwork = createSecondaryIndex({
     name: 'assetsByNetwork',
     source: pricedAssetsIndex,
-    getKeys: a => a.symbol,
+    getKeys: asset => asset.symbol,
 });
+
+assetsByNetwork.getIds(state, symbol); //      in `useSelector`, for a section — a stable array
+pricedAssetsIndex.getById(state, assetKey); // in `useSelector`, for a row — a stable object
+pricedAssetsIndex.getById(getState(), assetKey); // in a thunk
 ```
 
-### createIndex and createSecondaryIndex
+### Ids and keys
 
-Three parts, each owning one thing:
-
-- **A selector owns the shape.** It flattens, aggregates, orders and gives every entity its id —
-  plain `createWeakMapSelector` code, free to rebuild its objects on every write.
-- **`createIndex` owns identity.** It files the entities by id and matches each against the one it
-  holds: an entity the selector rebuilt unchanged keeps the object a component already has, `ids`
-  keeps its array while its members and order stand, and each build says which ids were added,
-  removed and updated.
-- **`createSecondaryIndex` owns membership.** It files the ids under another key — one key names
-  many ids — and maintains itself from what the index said changed: only the entities that were
-  added or updated are asked where they belong, and only the keys they moved between get a new
-  list.
-
-The home asset table, as such a chain:
-
-```typescript
-const selectAssets = createWeakMapSelector([selectAccounts, selectRates], toSortedAssets);
-
-const assetsIndex = createIndex({
-    name: 'assets',
-    source: selectAssets,
-    getId: (asset: Asset) => asset.assetKey,
-});
-
-const assetsByWallet = createSecondaryIndex({
-    name: 'assetsByWallet',
-    source: assetsIndex,
-    getKeys: (asset: Asset) => asset.deviceState,
-});
-
-assetsByWallet.getIds(state, walletKey); //      in `useSelector`, for the list — a stable array
-assetsIndex.getById(state, assetKey); //         in `useSelector`, for one row — a stable object
-assetsByWallet.getEntities(state, walletKey); // the very objects `getById` hands back
-assetsIndex.getById(getState(), assetKey); //    in a thunk
-```
-
-### Ids and keys are made by the index, and branded by it
-
-An id `getId` answers as a plain string is branded with the index name — `assetsIndex` above hands
-out `string & Branded<'assetsId'>` — and a key `getKeys` answers as a plain string is branded with
-the secondary index name. An id or key that already carries a brand, such as `WalletAssetKey`, is
-kept as it is. So a lookup takes only what the index itself gave out.
-
-The shape of an id or key is written once, in the index, with `createId` / `createKey` from its
-parts. The entity stands in for the parts when it has them, so `getId` / `getKeys` can be left out;
-and a caller that has no entity — a section that knows its wallet and network — builds the key the
-same one way:
+An id is whatever `getId` answers, a key whatever `getKeys` answers — a branded type is kept as
+it is. Where the shape of an id or key is better written once, give the index `createId` /
+`createKey` from its parts: the entity stands in for the parts when it has them, so `getId` /
+`getKeys` can be left out, and a caller that has no entity — a section that knows its wallet and
+network — builds the key the same one way:
 
 ```typescript
 type NetworkKeyParts = { deviceState: string; symbol: string };
@@ -284,45 +259,29 @@ const assetsByNetwork = createSecondaryIndex({
     createKey: ({ deviceState, symbol }: NetworkKeyParts) => `${deviceState}/${symbol}`,
 });
 
-type NetworkKey = SecondaryIndexKeyOf<typeof assetsByNetwork>;
-
-assetsByNetwork.createKey({ deviceState, symbol }); // from parts — what a section holds
-assetsByNetwork.getKeysOfEntity(asset); //           from the entity
-assetsIndex.getId(asset); //                         likewise for an id
-assetsIndex.asId(raw); //                            a raw string, where that is all there is
+assetsByNetwork.createKey({ deviceState, symbol }); // typed by the parts; only there when given
 ```
 
-With `createKey`, whatever `getKeys` answers are parts — one key per parts, so an entity under
-several keys answers an array of them.
+`IndexIdOf`, `IndexEntityOf` and `SecondaryIndexKeyOf` read the types off an index.
 
-| `createIndex` option | What it does                                                                                                              |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `source`             | A selector of the entities, or another index.                                                                             |
-| `createId`           | The id from its parts, written once; exposed as `index.createId`. Lets `getId` be left out when the entity has the parts. |
-| `getId`              | Where an entity is filed. Two entities of one source may not share an id; the index throws rather than pick one.          |
-| `isEqual`            | Whether a new entity is the one held, in which case the held object stays. Shallow equality by default.                   |
+### What a read guarantees
 
-| `createSecondaryIndex` option | What it does                                                                                                                  |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `source`                      | The index to look up.                                                                                                         |
-| `createKey`                   | The key from its parts, written once; exposed as `index.createKey`. Lets `getKeys` be left out when the entity has the parts. |
-| `getKeys`                     | The key or keys — or, with `createKey`, their parts — an entity answers to; `undefined` files it under none.                  |
-
-What a read guarantees:
-
-- **Lazy.** Nothing is built until something reads it; a secondary index is not even asked where
-  the entities belong until its first read. A read against an unchanged source returns the very
-  same snapshot, and an unchanged index is an unchanged secondary index.
+- **Lazy.** Nothing is built until something reads it. A read against an unchanged source returns
+  the very same snapshot, and an unchanged index is an unchanged index over it.
 - **Stable identities, never stale.** `getById` hands back the same object while the entity is
-  equal to the one held, and the new object the moment it is not. `getIds` and `getIdSet` hand back
-  the same array and set while members and order stand — a changed entity does not touch them — and
-  new ones when an id is added, removed or moved. `getEntities` hands back the same array while the
-  ids and every entity under them stand, and a new one when any of them changed. `getByIds`
-  remembers its answer per ids array. A component watching one id or one key is not re-rendered by a
-  write under another.
-- **Maintained, not re-walked.** A write that changes one entity costs the index one shallow compare
-  per entity and the secondary index one `getKeys` call — the one entity that changed. A write that
-  adds, removes or reorders ids refiles the lists, but every list whose members stand keeps its
-  array.
-- **One generation.** Both hold the build before them and nothing older, so their memory does not
-  grow with the history of the store.
+  equal to the one held, and the new object the moment it is not. `getIds` hands back the same
+  array while members and order stand — a changed entity does not touch it — and a new one when
+  an id is added, removed or moved. `getEntities` the same array while the ids and every entity
+  under them stand. A component watching one id or one key is not re-rendered by a write under
+  another.
+- **Maintained, not re-walked.** Each link does work only for what the link before it said
+  changed. A write to one account costs one shallow compare per account, one expansion, the fold
+  of the assets that account holds, the pricing of those, and nothing in the lists.
+- **One generation.** Every index holds the build before it and nothing older, so its memory does
+  not grow with the history of the store.
+
+### One lineage per index
+
+An index keeps the build before it, which is what lets it maintain itself rather than rebuild —
+and which means an index instance follows one store. Build the indexes an application needs in its
+composition root, as its services are, one set per store; a test builds its own.

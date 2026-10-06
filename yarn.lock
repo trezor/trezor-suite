@@ -11809,7 +11809,6 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@trezor/requirements": "workspace:*"
-    "@trezor/type-utils": "workspace:*"
     lodash: "npm:^4.18.1"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"

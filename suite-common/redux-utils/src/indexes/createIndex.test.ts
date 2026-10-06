@@ -1,5 +1,3 @@
-import { type Branded } from '@trezor/type-utils';
-
 import { createIndex } from './createIndex';
 import { type IndexIdOf } from './indexTypes';
 
@@ -27,13 +25,13 @@ describe('createIndex', () => {
     it('finds an entity by its id', () => {
         const index = createTotalsIndex();
 
-        expect(index.getById({ totals: [alice, bob] }, index.asId('bob'))).toBe(bob);
+        expect(index.getById({ totals: [alice, bob] }, 'bob')).toBe(bob);
     });
 
     it('answers with nothing for an id it does not hold', () => {
         const index = createTotalsIndex();
 
-        expect(index.getById({ totals: [alice] }, index.asId('bob'))).toBeUndefined();
+        expect(index.getById({ totals: [alice] }, 'bob')).toBeUndefined();
     });
 
     it('lists ids and entities in the order the source holds them', () => {
@@ -43,42 +41,12 @@ describe('createIndex', () => {
         expect(index.getEntities({ totals: [bob, alice] })).toEqual([bob, alice]);
     });
 
-    it('maps a list of ids onto the entities it holds, leaving out the unknown', () => {
-        const index = createTotalsIndex();
-        const ids = ['bob', 'nobody', 'alice'].map(index.asId);
-
-        expect(index.getByIds({ totals: [alice, bob] }, ids)).toEqual([bob, alice]);
-    });
-
     it('refuses two entities with one id', () => {
         const index = createTotalsIndex();
 
         expect(() => index.getIds({ totals: [alice, { ...alice }] })).toThrow(
             'index "totals" was given two entities with the id alice',
         );
-    });
-});
-
-describe('createIndex naming its ids', () => {
-    it('brands a plain id with the name of the index', () => {
-        const index = createTotalsIndex();
-        const id: IndexIdOf<typeof index> = index.asId('alice');
-
-        expect(index.getId(alice)).toBe(id);
-        // @ts-expect-error A plain string is not an id of this index.
-        index.getById({ totals: [alice] }, 'alice');
-    });
-
-    it('keeps an id that already has a brand', () => {
-        type OwnerId = string & Branded<'OwnerId'>;
-        const index = createIndex({
-            name: 'owners',
-            source: selectTotals,
-            getId: (total: Total) => total.owner as OwnerId,
-        });
-        const id: OwnerId = index.asId('alice');
-
-        expect(index.getById({ totals: [alice] }, id)).toBe(alice);
     });
 });
 
@@ -99,12 +67,11 @@ describe('createIndex making its ids from parts', () => {
         expect(index.getIds({ totals: [alice, bob] })).toEqual(['owner:alice', 'owner:bob']);
     });
 
-    it('makes the id the one way, from the entity and from the parts alike', () => {
+    it('makes the id from the parts the one way the entity is filed', () => {
         const index = createOwnersIndex();
         const id: IndexIdOf<typeof index> = index.createId({ owner: 'alice' });
 
-        expect(index.getId(alice)).toBe(id);
-        expect(index.asId('owner:alice')).toBe(id);
+        expect(index.getById({ totals: [alice] }, id)).toBe(alice);
         // @ts-expect-error A part may not be left out.
         index.createId({});
     });
@@ -119,32 +86,22 @@ describe('createIndex making its ids from parts', () => {
 
         expect(index.getById({ totals: [alice] }, index.createId({ name: 'alice' }))).toBe(alice);
     });
-
-    it('has no id to make from parts when it was given none', () => {
-        const index = createTotalsIndex();
-
-        expect(() => index.createId(undefined as never)).toThrow(
-            'index "totals" was given no createId',
-        );
-    });
 });
 
 describe('createIndex matching entities against the ones it holds', () => {
     it('keeps the object it holds when the new one is shallowly the same', () => {
         const index = createTotalsIndex();
-        const held = index.getById({ totals: [alice, bob] }, index.asId('alice'));
+        const held = index.getById({ totals: [alice, bob] }, 'alice');
 
-        expect(index.getById({ totals: [{ ...alice }, { ...bob }] }, index.asId('alice'))).toBe(
-            held,
-        );
+        expect(index.getById({ totals: [{ ...alice }, { ...bob }] }, 'alice')).toBe(held);
     });
 
     it('takes the new object when a field changed', () => {
         const index = createTotalsIndex();
-        index.getById({ totals: [alice] }, index.asId('alice'));
+        index.getById({ totals: [alice] }, 'alice');
         const written = { ...alice, amount: 4 };
 
-        expect(index.getById({ totals: [written] }, index.asId('alice'))).toBe(written);
+        expect(index.getById({ totals: [written] }, 'alice')).toBe(written);
     });
 
     it('matches the way it is told to', () => {
@@ -154,7 +111,7 @@ describe('createIndex matching entities against the ones it holds', () => {
             getId: (total: Total) => total.owner,
             isEqual: (previous, next) => previous.amount === next.amount,
         });
-        const id = index.asId('alice');
+        const id = 'alice';
         const held = index.getById({ totals: [alice] }, id);
 
         expect(index.getById({ totals: [{ owner: 'alice', amount: 3 }] }, id)).toBe(held);
@@ -175,26 +132,22 @@ describe('createIndex matching entities against the ones it holds', () => {
         expect(index.read({ totals: [{ ...alice }, { ...bob }] })).toBe(snapshot);
     });
 
-    it('keeps the ids, and their set, when only an entity changed', () => {
+    it('keeps the ids when only an entity changed, and hands back new entities', () => {
         const index = createTotalsIndex();
         const ids = index.getIds({ totals: [alice, bob] });
-        const idSet = index.getIdSet({ totals: [alice, bob] });
+        const entities = index.getEntities({ totals: [alice, bob] });
 
         const written = { totals: [{ ...alice, amount: 9 }, bob] };
 
         expect(index.getIds(written)).toBe(ids);
-        expect(index.getIdSet(written)).toBe(idSet);
-        expect(index.getEntities(written)).not.toBe(index.getEntities({ totals: [alice, bob] }));
+        expect(index.getEntities(written)).not.toBe(entities);
     });
 
-    it('gives new ids, and a new set, when an entity was added or removed', () => {
+    it('gives new ids when an entity was added or removed', () => {
         const index = createTotalsIndex();
         const ids = index.getIds({ totals: [alice] });
-        const idSet = index.getIdSet({ totals: [alice] });
 
         expect(index.getIds({ totals: [alice, bob] })).toEqual(['alice', 'bob']);
-        expect(index.getIdSet({ totals: [alice, bob] })).not.toBe(idSet);
-        expect(index.getIdSet({ totals: [alice, bob] }).has(index.asId('bob'))).toBe(true);
         expect(index.getIds({ totals: [bob] })).toEqual(['bob']);
         expect(index.getIds({ totals: [bob] })).not.toBe(ids);
     });
@@ -205,18 +158,28 @@ describe('createIndex matching entities against the ones it holds', () => {
         index.getIds({ totals: [alice] });
 
         expect(index.getIds({ totals: [] })).toBe(emptyIds);
-        expect(index.getIdSet({ totals: [] })).toBe(index.getIdSet({ totals: [] }));
     });
+});
 
-    it('remembers the answer to a list of ids while nothing under them changed', () => {
-        const index = createTotalsIndex();
-        const ids = ['bob', 'alice'].map(index.asId);
-        const state = { totals: [alice, bob] };
+describe('createIndex read by two stores in turn', () => {
+    it('answers each store from what it built for it, without matching again', () => {
+        const isEqual = jest.fn((previous: Total, next: Total) => previous.amount === next.amount);
+        const index = createIndex({
+            name: 'shared',
+            source: selectTotals,
+            getId: (total: Total) => total.owner,
+            isEqual,
+        });
+        const first = { totals: [alice, bob] };
+        const second = { totals: [{ ...alice, amount: 7 }] };
+        const firstSnapshot = index.read(first);
+        const secondSnapshot = index.read(second);
+        isEqual.mockClear();
 
-        expect(index.getByIds(state, ids)).toBe(index.getByIds(state, ids));
-        expect(index.getByIds({ totals: [{ ...alice }, bob] }, ids)).toBe(
-            index.getByIds(state, ids),
-        );
+        expect(index.read(first)).toBe(firstSnapshot);
+        expect(index.read(second)).toBe(secondSnapshot);
+        expect(index.read(first)).toBe(firstSnapshot);
+        expect(isEqual).not.toHaveBeenCalled();
     });
 });
 
@@ -268,7 +231,7 @@ describe('createIndex over another index', () => {
             getId: (total: Total) => total.owner.toUpperCase(),
         });
 
-        expect(index.getById({ totals: [alice, bob] }, index.asId('BOB'))).toBe(bob);
+        expect(index.getById({ totals: [alice, bob] }, 'BOB')).toBe(bob);
     });
 
     it('does nothing while the index it is composed from stands', () => {

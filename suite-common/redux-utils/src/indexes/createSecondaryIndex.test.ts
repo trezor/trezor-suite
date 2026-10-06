@@ -1,5 +1,3 @@
-import { type Branded } from '@trezor/type-utils';
-
 import { createIndex } from './createIndex';
 import { createSecondaryIndex } from './createSecondaryIndex';
 import { type SecondaryIndexKeyOf } from './indexTypes';
@@ -32,7 +30,7 @@ const createByTag = () =>
         getKeys: (asset: Asset) => asset.tags,
     });
 
-const ETH = assetsIndex.asId('eth/');
+const ETH = 'eth/';
 
 describe('createSecondaryIndex', () => {
     it('builds nothing until it is read', () => {
@@ -47,28 +45,24 @@ describe('createSecondaryIndex', () => {
         const byNetwork = createByNetwork();
         const state = { assets: [usdc, btc, eth] };
 
-        expect(byNetwork.getIds(state, byNetwork.asKey('eth'))).toEqual(['eth/usdc', 'eth/']);
-        expect(byNetwork.getIds(state, byNetwork.asKey('btc'))).toEqual(['btc/']);
+        expect(byNetwork.getIds(state, 'eth')).toEqual(['eth/usdc', 'eth/']);
+        expect(byNetwork.getIds(state, 'btc')).toEqual(['btc/']);
     });
 
     it('hands back the very entities the primary index holds', () => {
         const byNetwork = createByNetwork();
         const state = { assets: [btc, eth, usdc] };
 
-        expect(byNetwork.getEntities(state, byNetwork.asKey('eth'))).toEqual([eth, usdc]);
-        expect(byNetwork.getEntities(state, byNetwork.asKey('eth'))[0]).toBe(
-            assetsIndex.getById(state, ETH),
-        );
+        expect(byNetwork.getEntities(state, 'eth')).toEqual([eth, usdc]);
+        expect(byNetwork.getEntities(state, 'eth')[0]).toBe(assetsIndex.getById(state, ETH));
     });
 
     it('files an entity under every key it answers to', () => {
         const byTag = createByTag();
         const state = { assets: [btc, eth, usdc] };
 
-        expect(byTag.getIds(state, byTag.asKey('evm'))).toEqual(['eth/', 'eth/usdc']);
-        expect(byTag.getIds(state, byTag.asKey('coin'))).toEqual(['btc/', 'eth/']);
-        expect(byTag.getKeysOf(state, ETH)).toEqual(['coin', 'evm']);
-        expect(byTag.getKeysOfEntity(eth)).toEqual(['coin', 'evm']);
+        expect(byTag.getIds(state, 'evm')).toEqual(['eth/', 'eth/usdc']);
+        expect(byTag.getIds(state, 'coin')).toEqual(['btc/', 'eth/']);
     });
 
     it('lists the keys in the order they first appear', () => {
@@ -81,33 +75,8 @@ describe('createSecondaryIndex', () => {
         const byNetwork = createByNetwork();
         const state = { assets: [btc] };
 
-        expect(byNetwork.getIds(state, byNetwork.asKey('eth'))).toBe(
-            byNetwork.getIds(state, byNetwork.asKey('sol')),
-        );
-        expect(byNetwork.getIds(state, byNetwork.asKey('eth'))).toEqual([]);
-    });
-});
-
-describe('createSecondaryIndex naming its keys', () => {
-    it('brands a plain key with the name of the index', () => {
-        const byNetwork = createByNetwork();
-        const key: SecondaryIndexKeyOf<typeof byNetwork> = byNetwork.asKey('eth');
-
-        expect(byNetwork.getKeysOfEntity(eth)).toEqual([key]);
-        // @ts-expect-error A plain string is not a key of this index.
-        byNetwork.getIds({ assets: [eth] }, 'eth');
-    });
-
-    it('keeps a key that already has a brand', () => {
-        type Symbol = string & Branded<'Symbol'>;
-        const bySymbol = createSecondaryIndex({
-            name: 'assetsBySymbol',
-            source: assetsIndex,
-            getKeys: (asset: Asset) => asset.symbol as Symbol,
-        });
-        const key: Symbol = bySymbol.asKey('eth');
-
-        expect(bySymbol.getIds({ assets: [btc, eth] }, key)).toEqual(['eth/']);
+        expect(byNetwork.getIds(state, 'eth')).toBe(byNetwork.getIds(state, 'sol'));
+        expect(byNetwork.getIds(state, 'eth')).toEqual([]);
     });
 });
 
@@ -137,9 +106,7 @@ describe('createSecondaryIndex making its keys from parts', () => {
     it('makes the key the one way, from the entity and from the parts alike', () => {
         const byNetwork = createByNetworkParts();
         const key: SecondaryIndexKeyOf<typeof byNetwork> = byNetwork.createKey({ symbol: 'eth' });
-
-        expect(byNetwork.getKeysOfEntity(eth)).toEqual([key]);
-        expect(byNetwork.asKey('network:eth')).toBe(key);
+        expect('network:eth').toBe(key);
         // @ts-expect-error The parts are what createKey asks for, not a string.
         byNetwork.createKey('eth');
         // @ts-expect-error A part may not be left out.
@@ -156,22 +123,14 @@ describe('createSecondaryIndex making its keys from parts', () => {
         const state = { assets: [btc, eth, usdc] };
 
         expect(byTag.getIds(state, byTag.createKey({ tag: 'evm' }))).toEqual(['eth/', 'eth/usdc']);
-        expect(byTag.getKeysOf(state, ETH)).toEqual(['tag:coin', 'tag:evm']);
-    });
-
-    it('has no key to make from parts when it was given none', () => {
-        const byNetwork = createByNetwork();
-
-        expect(() => byNetwork.createKey(undefined as never)).toThrow(
-            'secondary index "assetsByNetwork" was given no createKey',
-        );
+        expect(byTag.getIds(state, byTag.createKey({ tag: 'coin' }))).toEqual(['btc/', 'eth/']);
     });
 });
 
 describe('createSecondaryIndex following the primary index', () => {
     it('hands back the same list while the primary index stands', () => {
         const byNetwork = createByNetwork();
-        const key = byNetwork.asKey('eth');
+        const key = 'eth';
         const ids = byNetwork.getIds({ assets: [btc, eth, usdc] }, key);
 
         expect(byNetwork.getIds({ assets: [{ ...btc }, { ...eth }, { ...usdc }] }, key)).toBe(ids);
@@ -179,30 +138,27 @@ describe('createSecondaryIndex following the primary index', () => {
 
     it('keeps the list of a key none of whose members moved', () => {
         const byNetwork = createByNetwork();
-        const key = byNetwork.asKey('eth');
+        const key = 'eth';
         const ethIds = byNetwork.getIds({ assets: [btc, eth, usdc] }, key);
 
         const written = { assets: [{ ...btc, balance: 2 }, eth, usdc] };
 
         expect(byNetwork.getIds(written, key)).toBe(ethIds);
-        expect(byNetwork.getIds(written, byNetwork.asKey('btc'))).toEqual(['btc/']);
+        expect(byNetwork.getIds(written, 'btc')).toEqual(['btc/']);
     });
 
-    it('keeps the ids, and their set, of a key whose member changed but stayed under it', () => {
+    it('keeps the ids of a key whose member changed but stayed under it', () => {
         const byNetwork = createByNetwork();
-        const key = byNetwork.asKey('eth');
-        const ethIds = byNetwork.getIds({ assets: [btc, eth, usdc] }, key);
-        const ethIdSet = byNetwork.getIdSet({ assets: [btc, eth, usdc] }, key);
+        const ethIds = byNetwork.getIds({ assets: [btc, eth, usdc] }, 'eth');
 
-        const written = { assets: [btc, { ...eth, balance: 9 }, usdc] };
-
-        expect(byNetwork.getIds(written, key)).toBe(ethIds);
-        expect(byNetwork.getIdSet(written, key)).toBe(ethIdSet);
+        expect(byNetwork.getIds({ assets: [btc, { ...eth, balance: 9 }, usdc] }, 'eth')).toBe(
+            ethIds,
+        );
     });
 
     it('moves an entity whose keys changed', () => {
         const byTag = createByTag();
-        const coin = byTag.asKey('coin');
+        const coin = 'coin';
         const state = { assets: [btc, eth, usdc] };
         const coinIds = byTag.getIds(state, coin);
 
@@ -210,14 +166,13 @@ describe('createSecondaryIndex following the primary index', () => {
 
         expect(byTag.getIds(written, coin)).toEqual(['btc/']);
         expect(byTag.getIds(written, coin)).not.toBe(coinIds);
-        expect(byTag.getIds(written, byTag.asKey('evm'))).toEqual(['eth/', 'eth/usdc']);
-        expect(byTag.getKeysOf(written, ETH)).toEqual(['evm']);
+        expect(byTag.getIds(written, 'evm')).toEqual(['eth/', 'eth/usdc']);
     });
 
     it('asks only the entities that changed where they belong', () => {
         const getKeys = jest.fn((asset: Asset) => asset.symbol);
         const byNetwork = createSecondaryIndex({ name: 'byNetwork', source: assetsIndex, getKeys });
-        const key = byNetwork.asKey('eth');
+        const key = 'eth';
         byNetwork.getIds({ assets: [btc, eth, usdc] }, key);
         getKeys.mockClear();
 
@@ -226,30 +181,27 @@ describe('createSecondaryIndex following the primary index', () => {
         expect(getKeys).toHaveBeenCalledTimes(1);
     });
 
-    it('adds and removes entities from their lists, their sets and their entities', () => {
+    it('adds and removes entities from their lists and their entities', () => {
         const byNetwork = createByNetwork();
-        const key = byNetwork.asKey('eth');
+        const key = 'eth';
         const before = { assets: [btc, eth, usdc] };
         const ethIds = byNetwork.getIds(before, key);
-        const ethIdSet = byNetwork.getIdSet(before, key);
         const ethEntities = byNetwork.getEntities(before, key);
 
         const written = { assets: [eth, { key: 'sol/', symbol: 'sol', tags: [], balance: 5 }] };
 
         expect(byNetwork.getIds(written, key)).toEqual(['eth/']);
         expect(byNetwork.getIds(written, key)).not.toBe(ethIds);
-        expect(byNetwork.getIdSet(written, key)).not.toBe(ethIdSet);
-        expect(byNetwork.getIdSet(written, key).has(assetsIndex.asId('eth/usdc'))).toBe(false);
         expect(byNetwork.getEntities(written, key)).toEqual([eth]);
         expect(byNetwork.getEntities(written, key)).not.toBe(ethEntities);
-        expect(byNetwork.getIds(written, byNetwork.asKey('btc'))).toEqual([]);
-        expect(byNetwork.getIds(written, byNetwork.asKey('sol'))).toEqual(['sol/']);
+        expect(byNetwork.getIds(written, 'btc')).toEqual([]);
+        expect(byNetwork.getIds(written, 'sol')).toEqual(['sol/']);
         expect(byNetwork.getKeys(written)).toEqual(['eth', 'sol']);
     });
 
     it('follows the order of the primary index when it changes', () => {
         const byNetwork = createByNetwork();
-        const key = byNetwork.asKey('eth');
+        const key = 'eth';
         byNetwork.getIds({ assets: [btc, eth, usdc] }, key);
 
         expect(byNetwork.getIds({ assets: [usdc, eth, btc] }, key)).toEqual(['eth/usdc', 'eth/']);
@@ -257,7 +209,7 @@ describe('createSecondaryIndex following the primary index', () => {
 
     it('hands back the same entities while the ids and the entities stand, new ones otherwise', () => {
         const byNetwork = createByNetwork();
-        const key = byNetwork.asKey('eth');
+        const key = 'eth';
         const entities = byNetwork.getEntities({ assets: [btc, eth, usdc] }, key);
 
         expect(byNetwork.getEntities({ assets: [{ ...btc, balance: 2 }, eth, usdc] }, key)).toBe(
