@@ -30,11 +30,11 @@ export const Dashboard = () => {
     useNotificationForDisconnectedDevice();
 
     return (
-        <PerfProfiler id="home-asset-table">
-            <Column gap={24} data-testid="@dashboard/index">
-                <DashboardNotices />
+        <Column gap={24} data-testid="@dashboard/index">
+            <DashboardNotices />
+            <PerfProfiler id="home-asset-table">
                 <HomeAssetDashboard />
-            </Column>
-        </PerfProfiler>
+            </PerfProfiler>
+        </Column>
     );
 };
