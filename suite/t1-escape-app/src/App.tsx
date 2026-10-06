@@ -7,6 +7,7 @@ import {
     wipesAfterWrongPinAttempts,
 } from './firmware/firmwareSupport';
 import { DeviceLostBanner } from './ui/DeviceLostBanner';
+import { DiagnosticLogPanel } from './ui/DiagnosticLogPanel';
 import { PageLayout } from './ui/PageLayout';
 import { PinMatrix } from './ui/PinMatrix';
 import { DestinationStep } from './ui/steps/DestinationStep';
@@ -141,6 +142,7 @@ export const App = () => {
                     />
                 )}
                 {renderStep()}
+                <DiagnosticLogPanel />
             </Column>
         </PageLayout>
     );
