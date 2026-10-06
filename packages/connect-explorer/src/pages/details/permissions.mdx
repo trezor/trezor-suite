@@ -26,8 +26,11 @@ Read scopes are intentionally narrow: granting `read_address` does **not** grant
 xpub exposes every address and the full history of an account, so it is a separate, more sensitive
 permission than reading a single receiving address.
 
-The `management` and `internal` permissions used by device-management methods can never be granted
-to a third-party application. `push_tx` is additionally unavailable to deeplink integrations.
+The `management` and `internal` permissions can never be granted to a third-party application.
+`internal` covers device-management and blockchain methods as well as the coinjoin preauthorization
+flow — `authorizeCoinjoin`, `cancelCoinjoinAuthorization` and `signTransaction` /
+`getOwnershipProof` called with `preauthorized: true`. `push_tx` is additionally unavailable to
+deeplink integrations.
 
 ## Coin scoping
 

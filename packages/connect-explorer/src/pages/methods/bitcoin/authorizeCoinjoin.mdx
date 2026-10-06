@@ -33,6 +33,14 @@ const result = await TrezorConnect.authorizeCoinjoin(params);
 
 <Callout type="warning">**This feature is experimental! Do not use it in production!**</Callout>
 
+<Callout type="warning">
+    The whole coinjoin preauthorization flow requires the `internal` permission —
+    `authorizeCoinjoin`, `cancelCoinjoinAuthorization` and `signTransaction` / `getOwnershipProof`
+    called with `preauthorized: true`. `internal` is never granted to a third-party application, so
+    these calls are not available to applications calling Connect through Trezor Suite; they fail
+    with `Method_NotAllowed`. See [Permissions](/details/permissions).
+</Callout>
+
 <Callout type="info">**Supported only by T2T1 with Firmware 2.5.3 or higher!**</Callout>
 
 ### Params
