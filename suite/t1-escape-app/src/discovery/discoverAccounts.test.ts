@@ -54,6 +54,28 @@ describe('scanAccount', () => {
         ]);
     });
 
+    it('does not report an account with unspent outputs as empty', async () => {
+        const { wallet, chain, session } = setup();
+        const { account } = mockFundedAccount({
+            chain,
+            wallet,
+            accountType: 'p2pkh',
+            amounts: ['100000'],
+        });
+        // The outputs are read after the history, so the history can still answer that the
+        // account has never been used.
+        chain.accountInfos.delete(account.descriptor);
+
+        const scanned = await scanAccount({
+            call: session.call,
+            backend: chain.backend,
+            accountType: 'p2pkh',
+            accountIndex: 0,
+        });
+
+        expect(scanned.success && scanned.payload.isEmpty).toBe(false);
+    });
+
     it('reports an account without history as empty', async () => {
         const { chain, session } = setup();
 

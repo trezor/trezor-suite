@@ -8,6 +8,7 @@ import {
     scanAccountRange,
 } from './discoverAccounts';
 import type { WalletKind } from './scanReport';
+import { diagnosticLog } from '../app/diagnosticLog';
 import type { Backend } from '../backend/backend';
 import type { AccountType } from '../bitcoin/accountType';
 import type { DeviceCall } from '../device/deviceSession';
@@ -78,9 +79,19 @@ export const discoverWallet = async ({
 
     const { normalized, raw } = passphraseCandidates;
 
+    const describeCandidate = (passphrase: string) => {
+        if (passphrase === '') return 'empty';
+
+        return passphrase === normalized ? 'normalized' : 'raw';
+    };
+
     // Initialize makes this firmware forget the cached passphrase, so the next call asks for
     // it again and receives the candidate chosen here.
     const selectPassphrase = (passphrase: string) => {
+        // Which candidate is in use is logged, the passphrase itself never.
+        diagnosticLog.info('discovery', 'selecting wallet', {
+            passphrase: describeCandidate(passphrase),
+        });
         setActivePassphrase(passphrase);
 
         return params.call('Initialize', 'Features');

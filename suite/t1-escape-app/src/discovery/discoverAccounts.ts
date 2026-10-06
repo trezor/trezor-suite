@@ -1,5 +1,6 @@
 import { type Result, ok } from '@trezor/type-utils';
 
+import { diagnosticLog } from '../app/diagnosticLog';
 import type { Backend, BackendError } from '../backend/backend';
 import type { AccountType } from '../bitcoin/accountType';
 import {
@@ -19,7 +20,7 @@ export const SCAN_MORE_ACCOUNTS_STEP = 5;
 export type ScannedAccount = {
     account: DiscoveredAccount;
     snapshot: AccountSnapshot;
-    /** No transaction and no balance within the deep address gap. */
+    /** No transaction, no balance and no unspent output within the deep address gap. */
     isEmpty: boolean;
 };
 
@@ -42,16 +43,33 @@ export const scanAccount = async ({
     accountType,
     accountIndex,
 }: ScanAccountParams): Promise<Result<ScannedAccount, DiscoveryError>> => {
+    diagnosticLog.info('discovery', 'scanning account', { accountType, accountIndex });
     const account = await getAccountPublicKey({ call, accountType, accountIndex });
-    if (!account.success) return account;
+    if (!account.success) {
+        diagnosticLog.error('discovery', 'account key not read', account.error);
+
+        return account;
+    }
 
     const snapshot = await loadAccountSnapshot({ backend, account: account.payload });
     if (!snapshot.success) return snapshot;
 
+    const { info, utxos } = snapshot.payload;
+    // The outputs come from a second request, so a payment landing between the two makes the
+    // account hold something the `empty` flag of the first one does not know about.
+    const isEmpty = info.empty && utxos.length === 0;
+    diagnosticLog.info('discovery', 'account scanned', {
+        accountType,
+        accountIndex,
+        isEmpty,
+        transactions: info.history.total,
+        outputs: utxos.length,
+    });
+
     return ok({
         account: account.payload,
         snapshot: snapshot.payload,
-        isEmpty: snapshot.payload.info.empty,
+        isEmpty,
     });
 };
 

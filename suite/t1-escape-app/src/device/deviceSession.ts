@@ -2,6 +2,8 @@ import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { type MessageResponse, TRANSPORT_ERROR } from '@trezor/transport-common';
 import { type Result, err, ok } from '@trezor/type-utils';
 
+import { diagnosticLog } from '../app/diagnosticLog';
+
 export type DeviceLostReason = 'disconnected' | 'session-taken' | 'bridge-unreachable';
 
 export type DeviceCallError =
@@ -94,21 +96,49 @@ export const createDeviceSession = (deps: DeviceSessionDeps): DeviceSession => {
         data: Record<string, unknown>,
     ): Promise<Result<MessageResponse, DeviceCallError>> => {
         const lostBeforeCall = deps.getDeviceLostReason();
-        if (lostBeforeCall) return err({ type: 'device-lost', reason: lostBeforeCall });
+        if (lostBeforeCall) {
+            diagnosticLog.error('device', `${name} not sent, device lost`, {
+                reason: lostBeforeCall,
+            });
 
+            return err({ type: 'device-lost', reason: lostBeforeCall });
+        }
+
+        // Only the message name is logged. The payload can hold the PIN or the passphrase.
+        diagnosticLog.info('device', `-> ${name}`);
+        const startedAt = Date.now();
         const response = await deps.transportCall({ name, data });
+        const durationMs = Date.now() - startedAt;
 
         // A response that arrives after the session was taken may come from a call another
         // client interleaved, so it is never trusted.
         const lostDuringCall = deps.getDeviceLostReason();
-        if (lostDuringCall) return err({ type: 'device-lost', reason: lostDuringCall });
+        if (lostDuringCall) {
+            diagnosticLog.error('device', `${name} answered after the device was lost`, {
+                reason: lostDuringCall,
+                durationMs,
+            });
 
-        if (!response.success) return err(toCallError(response.error.code));
+            return err({ type: 'device-lost', reason: lostDuringCall });
+        }
+
+        if (!response.success) {
+            diagnosticLog.error('device', `${name} failed in transport`, {
+                code: response.error.code,
+                message: response.error.message,
+                durationMs,
+            });
+
+            return err(toCallError(response.error.code));
+        }
+
+        diagnosticLog.info('device', `<- ${response.payload.type}`, { durationMs });
 
         return ok(response.payload);
     };
 
     const cancelPrompt = async (prompt: 'pin' | 'passphrase') => {
+        diagnosticLog.warn('device', `${prompt} prompt dismissed in the app`);
         // The device keeps waiting for the acknowledgement until it is told to stop. Its
         // answer to the cancellation carries no information beyond the cancellation itself.
         await exchange('Cancel', {});
@@ -130,12 +160,20 @@ export const createDeviceSession = (deps: DeviceSessionDeps): DeviceSession => {
 
             switch (payload.type) {
                 case 'Failure':
+                    diagnosticLog.warn('device', 'Failure', {
+                        code: payload.message.code,
+                        message: payload.message.message,
+                    });
+
                     return err({
                         type: 'failure',
                         code: payload.message.code ?? 'Failure_UnknownCode',
                         message: payload.message.message ?? '',
                     });
                 case 'ButtonRequest':
+                    diagnosticLog.info('device', 'ButtonRequest, waiting for the device', {
+                        code: payload.message.code,
+                    });
                     deps.onButtonRequest();
                     [name, data] = ['ButtonAck', {}];
                     break;
@@ -143,6 +181,7 @@ export const createDeviceSession = (deps: DeviceSessionDeps): DeviceSession => {
                     // Only unlocking is expected. A request for a new PIN would mean the
                     // device is in a flow this app never starts.
                     const requestType = payload.message.type;
+                    diagnosticLog.info('device', 'PinMatrixRequest', { type: requestType });
                     if (requestType != null && requestType !== 'PinMatrixRequestType_Current') {
                         await exchange('Cancel', {});
 
@@ -159,6 +198,7 @@ export const createDeviceSession = (deps: DeviceSessionDeps): DeviceSession => {
                     break;
                 }
                 case 'PassphraseRequest': {
+                    diagnosticLog.info('device', 'PassphraseRequest');
                     const passphrase = await deps.requestPassphrase();
                     if (passphrase === undefined) return cancelPrompt('passphrase');
 
@@ -185,6 +225,11 @@ export const createDeviceSession = (deps: DeviceSessionDeps): DeviceSession => {
 
             const { payload } = response;
             if (!isResponseOfType(payload, expectedTypes)) {
+                diagnosticLog.warn('device', 'unexpected response', {
+                    expected: expectedTypes,
+                    received: payload.type,
+                });
+
                 return err({ type: 'unexpected-response', received: payload.type });
             }
 
