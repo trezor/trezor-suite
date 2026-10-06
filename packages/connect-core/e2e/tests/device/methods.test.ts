@@ -116,9 +116,9 @@ describe(`TrezorConnect methods`, () => {
                             setupConfig.wiped ||
                             JSON.stringify(setupConfig) !== JSON.stringify(lastSetupConfig)
                         ) {
+                            TrezorConnect.dispose();
                             await setup(controller, setupConfig);
                             lastSetupConfig = setupConfig;
-                            TrezorConnect.dispose();
                             await initTrezorConnect(controller);
                         }
 
