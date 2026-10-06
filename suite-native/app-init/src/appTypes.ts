@@ -7,6 +7,4 @@ export enum PostOnboardingInitializationStatus {
 }
 
 export type PostOnboardingInitializationResult =
-    | PostOnboardingInitializationStatus.Ready
-    | PostOnboardingInitializationStatus.Error
-    | PostOnboardingInitializationStatus.Disabled;
+    PostOnboardingInitializationStatus.Ready | PostOnboardingInitializationStatus.Disabled;

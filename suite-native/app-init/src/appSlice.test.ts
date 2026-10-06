@@ -32,7 +32,6 @@ describe('appSlice', () => {
 
     it.each([
         PostOnboardingInitializationStatus.Ready,
-        PostOnboardingInitializationStatus.Error,
         PostOnboardingInitializationStatus.Disabled,
     ] as const)('tracks the fulfilled post-onboarding result: %s', status => {
         const state = appReducer(

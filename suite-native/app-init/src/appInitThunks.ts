@@ -73,8 +73,12 @@ type PostOnboardingInitThunkDeps = ConnectInitThunkDeps &
 export const postOnboardingInitThunk = createThunk<
     PostOnboardingInitializationResult,
     void,
-    { state: PostOnboardingInitThunkState; extra: PostOnboardingInitThunkDeps }
->(`${ACTION_PREFIX}/postOnboardingInit`, async (_, { dispatch, getState }) => {
+    {
+        state: PostOnboardingInitThunkState;
+        extra: PostOnboardingInitThunkDeps;
+        rejectValue: PostOnboardingInitializationStatus.Error;
+    }
+>(`${ACTION_PREFIX}/postOnboardingInit`, async (_, { dispatch, getState, rejectWithValue }) => {
     // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
     const activeKillswitchMessage = selectActiveKillswitchMessage(getState());
     if (activeKillswitchMessage) {
@@ -113,9 +117,11 @@ export const postOnboardingInitThunk = createThunk<
 
     dispatch(walletConnectInitThunk());
 
-    return hasInitializationError
-        ? PostOnboardingInitializationStatus.Error
-        : PostOnboardingInitializationStatus.Ready;
+    if (hasInitializationError) {
+        return rejectWithValue(PostOnboardingInitializationStatus.Error);
+    }
+
+    return PostOnboardingInitializationStatus.Ready;
 });
 
 type ApplicationInitThunkState = SettingsSliceRootState &
