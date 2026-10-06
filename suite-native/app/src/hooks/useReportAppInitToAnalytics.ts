@@ -17,7 +17,7 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { selectIsAppReady } from '@suite-native/app-init';
+import { selectIsAppInitialized } from '@suite-native/app-init';
 import { selectIsBiometricsEnabled } from '@suite-native/biometrics';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
@@ -26,7 +26,7 @@ import { useUserColorScheme } from '@suite-native/theme';
 export const useReportAppInitToAnalytics = () => {
     const [initWasReported, setInitWasReported] = useState(false);
     const { analytics } = useServices(injectNativeAnalytics);
-    const isAppReady = useSelector(selectIsAppReady);
+    const isAppInitialized = useSelector(selectIsAppInitialized);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const { userColorScheme } = useUserColorScheme();
     const { isDiscreetMode } = useDiscreetMode();
@@ -41,7 +41,7 @@ export const useReportAppInitToAnalytics = () => {
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
 
     useEffect(() => {
-        if (isAppReady && isOnboardingFinished && !initWasReported) {
+        if (isAppInitialized && isOnboardingFinished && !initWasReported) {
             setInitWasReported(true);
             analytics.report({
                 type: events.appReadyEvent.name,
@@ -67,7 +67,7 @@ export const useReportAppInitToAnalytics = () => {
             });
         }
     }, [
-        isAppReady,
+        isAppInitialized,
         isOnboardingFinished,
         initWasReported,
         currencyCode,

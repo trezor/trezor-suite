@@ -1,11 +1,13 @@
-import { applicationInitThunk, postOnboardingInitThunk } from './appInitThunks';
 import {
     appReducer,
     appSliceInitialState,
-    selectCanUseAppServices,
-    selectIsAppReady,
+    selectCanUseBlockchain,
+    selectCanUseTrezorConnect,
+    selectIsAppInitialized,
 } from './appSlice';
-import { PostOnboardingInitializationStatus } from './appTypes';
+import { AppServicesInitializationStatus } from './appTypes';
+import { applicationInitThunk } from './applicationInitThunk';
+import { postOnboardingInitThunk } from './postOnboardingInitThunk';
 
 const requestId = 'request-id';
 
@@ -16,55 +18,84 @@ describe('appSlice', () => {
             applicationInitThunk.fulfilled(undefined, requestId, undefined),
         );
 
-        expect(selectIsAppReady({ app: state })).toBe(true);
+        expect(selectIsAppInitialized({ app: state })).toBe(true);
     });
 
-    it('tracks when post-onboarding initialization starts', () => {
+    it('tracks when services initialization starts', () => {
         const state = appReducer(
             appSliceInitialState,
             postOnboardingInitThunk.pending(requestId, undefined),
         );
 
-        expect(state.postOnboardingInitializationStatus).toBe(
-            PostOnboardingInitializationStatus.Initializing,
+        expect(state.appServicesInitializationStatus).toBe(
+            AppServicesInitializationStatus.Initializing,
         );
     });
 
     it.each([
-        PostOnboardingInitializationStatus.Ready,
-        PostOnboardingInitializationStatus.Disabled,
-    ] as const)('tracks the fulfilled post-onboarding result: %s', status => {
+        AppServicesInitializationStatus.Ready,
+        AppServicesInitializationStatus.Disabled,
+    ] as const)('tracks the fulfilled services initialization result: %s', status => {
         const state = appReducer(
             appSliceInitialState,
             postOnboardingInitThunk.fulfilled(status, requestId, undefined),
         );
 
-        expect(state.postOnboardingInitializationStatus).toBe(status);
+        expect(state.appServicesInitializationStatus).toBe(status);
     });
 
-    it('tracks unexpected post-onboarding initialization failures', () => {
+    it('tracks unexpected services initialization failures', () => {
         const state = appReducer(
             appSliceInitialState,
             postOnboardingInitThunk.rejected(new Error('Unexpected error'), requestId, undefined),
         );
 
-        expect(state.postOnboardingInitializationStatus).toBe(
-            PostOnboardingInitializationStatus.Error,
-        );
+        expect(state.appServicesInitializationStatus).toBe(AppServicesInitializationStatus.Error);
     });
 
     it.each([
-        [PostOnboardingInitializationStatus.Idle, false],
-        [PostOnboardingInitializationStatus.Initializing, false],
-        [PostOnboardingInitializationStatus.Ready, true],
-        [PostOnboardingInitializationStatus.Error, true],
-        [PostOnboardingInitializationStatus.Disabled, false],
-    ] as const)('allows wallet service calls in the %s state: %s', (status, expected) => {
+        AppServicesInitializationStatus.ConnectError,
+        AppServicesInitializationStatus.BlockchainError,
+    ] as const)('tracks the rejected services initialization result: %s', status => {
+        const state = appReducer(
+            appSliceInitialState,
+            postOnboardingInitThunk.rejected(null, requestId, undefined, status),
+        );
+
+        expect(state.appServicesInitializationStatus).toBe(status);
+    });
+
+    it.each([
+        [AppServicesInitializationStatus.Idle, false],
+        [AppServicesInitializationStatus.Initializing, false],
+        [AppServicesInitializationStatus.Ready, true],
+        [AppServicesInitializationStatus.ConnectError, false],
+        [AppServicesInitializationStatus.BlockchainError, true],
+        [AppServicesInitializationStatus.Error, false],
+        [AppServicesInitializationStatus.Disabled, false],
+    ] as const)('allows Connect calls in the %s state: %s', (status, expected) => {
         const state = {
             ...appSliceInitialState,
-            postOnboardingInitializationStatus: status,
+            appServicesInitializationStatus: status,
         };
 
-        expect(selectCanUseAppServices({ app: state })).toBe(expected);
+        expect(selectCanUseTrezorConnect({ app: state })).toBe(expected);
+    });
+
+    it.each([
+        [AppServicesInitializationStatus.Idle, false],
+        [AppServicesInitializationStatus.Initializing, false],
+        [AppServicesInitializationStatus.Ready, true],
+        [AppServicesInitializationStatus.ConnectError, false],
+        [AppServicesInitializationStatus.BlockchainError, false],
+        [AppServicesInitializationStatus.Error, false],
+        [AppServicesInitializationStatus.Disabled, false],
+    ] as const)('allows blockchain calls in the %s state: %s', (status, expected) => {
+        const state = {
+            ...appSliceInitialState,
+            appServicesInitializationStatus: status,
+        };
+
+        expect(selectCanUseBlockchain({ app: state })).toBe(expected);
     });
 });

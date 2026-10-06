@@ -11,7 +11,7 @@ import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
 import { ReactNativeQueryProvider } from '@suite-common/react-query/src/components/ReactNativeQueryProvider';
-import { selectIsAppReady } from '@suite-native/app-init';
+import { logStartupOperation, selectIsAppInitialized } from '@suite-native/app-init';
 import { selectShouldUserBeAuthenticated } from '@suite-native/biometrics';
 import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
@@ -34,19 +34,29 @@ import { RootStackNavigator } from './navigation/RootStackNavigator';
 
 const AppComponent = () => {
     const formattersConfig = useFormattersConfig();
-    const isAppReady = useSelector(selectIsAppReady);
+    const isAppInitialized = useSelector(selectIsAppInitialized);
     const shouldUserBeAuthenticated = useSelector(selectShouldUserBeAuthenticated);
 
     useReportAppInitToAnalytics();
 
     useEffect(() => {
-        if (isAppReady) {
+        if (isAppInitialized) {
             // Report the first usable frame even if the native splash API fails to resolve.
-            void SplashScreen.hideAsync().then(reportStartupAppLoaded, reportStartupAppLoaded);
+            logStartupOperation('SplashScreen.hideAsync', 'dispatched');
+            void SplashScreen.hideAsync().then(
+                () => {
+                    logStartupOperation('SplashScreen.hideAsync', 'fulfilled');
+                    reportStartupAppLoaded();
+                },
+                () => {
+                    logStartupOperation('SplashScreen.hideAsync', 'rejected');
+                    reportStartupAppLoaded();
+                },
+            );
         }
-    }, [isAppReady]);
+    }, [isAppInitialized]);
 
-    if (!isAppReady) return null;
+    if (!isAppInitialized) return null;
 
     return (
         <FormatterProvider config={formattersConfig}>

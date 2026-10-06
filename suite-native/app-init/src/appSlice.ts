@@ -1,14 +1,16 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { applicationInitThunk, postOnboardingInitThunk } from './appInitThunks';
 import {
-    type PostOnboardingInitializationResult,
-    PostOnboardingInitializationStatus,
+    type AppServicesInitializationError,
+    type AppServicesInitializationResult,
+    AppServicesInitializationStatus,
 } from './appTypes';
+import { applicationInitThunk } from './applicationInitThunk';
+import { postOnboardingInitThunk } from './postOnboardingInitThunk';
 
 type AppState = {
-    isAppReady: boolean;
-    postOnboardingInitializationStatus: PostOnboardingInitializationStatus;
+    isAppInitialized: boolean;
+    appServicesInitializationStatus: AppServicesInitializationStatus;
 };
 
 type AppRootState = {
@@ -16,8 +18,8 @@ type AppRootState = {
 };
 
 export const appSliceInitialState: AppState = {
-    isAppReady: false,
-    postOnboardingInitializationStatus: PostOnboardingInitializationStatus.Idle,
+    isAppInitialized: false,
+    appServicesInitializationStatus: AppServicesInitializationStatus.Idle,
 };
 
 const appSlice = createSlice({
@@ -27,46 +29,45 @@ const appSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(postOnboardingInitThunk.pending, (state: AppState) => {
-                state.postOnboardingInitializationStatus =
-                    PostOnboardingInitializationStatus.Initializing;
+                state.appServicesInitializationStatus =
+                    AppServicesInitializationStatus.Initializing;
             })
             .addCase(
                 postOnboardingInitThunk.fulfilled,
-                (
-                    state: AppState,
-                    { payload }: PayloadAction<PostOnboardingInitializationResult>,
-                ) => {
-                    state.postOnboardingInitializationStatus = payload;
+                (state: AppState, { payload }: PayloadAction<AppServicesInitializationResult>) => {
+                    state.appServicesInitializationStatus = payload;
                 },
             )
-            .addCase(postOnboardingInitThunk.rejected, (state: AppState) => {
-                state.postOnboardingInitializationStatus =
-                    PostOnboardingInitializationStatus.Error;
-            })
+            .addCase(
+                postOnboardingInitThunk.rejected,
+                (
+                    state: AppState,
+                    { payload }: PayloadAction<AppServicesInitializationError | undefined>,
+                ) => {
+                    state.appServicesInitializationStatus =
+                        payload ?? AppServicesInitializationStatus.Error;
+                },
+            )
             .addCase(applicationInitThunk.fulfilled, (state: AppState) => {
-                state.isAppReady = true;
+                state.isAppInitialized = true;
             });
     },
 });
 
-export const selectIsAppReady = (state: AppRootState) => state.app.isAppReady;
-export const selectPostOnboardingInitializationStatus = (state: AppRootState) =>
-    state.app.postOnboardingInitializationStatus;
+export const selectIsAppInitialized = (state: AppRootState) => state.app.isAppInitialized;
+export const selectAppServicesInitializationStatus = (state: AppRootState) =>
+    state.app.appServicesInitializationStatus;
 
-export const selectCanUseAppServices = (state: AppRootState): boolean => {
-    const status = selectPostOnboardingInitializationStatus(state);
+export const selectCanUseTrezorConnect = (state: AppRootState): boolean => {
+    const status = selectAppServicesInitializationStatus(state);
 
-    switch (status) {
-        case PostOnboardingInitializationStatus.Ready:
-        case PostOnboardingInitializationStatus.Error:
-            // Initialization errors have historically been non-fatal, so preserve the existing
-            // fallback behavior after the initialization attempt has finished.
-            return true;
-        case PostOnboardingInitializationStatus.Idle:
-        case PostOnboardingInitializationStatus.Initializing:
-        case PostOnboardingInitializationStatus.Disabled:
-            return false;
-    }
+    return (
+        status === AppServicesInitializationStatus.Ready ||
+        status === AppServicesInitializationStatus.BlockchainError
+    );
 };
+
+export const selectCanUseBlockchain = (state: AppRootState): boolean =>
+    selectAppServicesInitializationStatus(state) === AppServicesInitializationStatus.Ready;
 
 export const appReducer = appSlice.reducer;
