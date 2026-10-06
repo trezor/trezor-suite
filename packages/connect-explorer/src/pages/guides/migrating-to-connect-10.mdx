@@ -29,6 +29,20 @@ The Suite-hosted flow needs **Trezor Suite 26.3.1 or newer**, both on desktop an
 
 Found a bug, or have feedback? Open an issue at [github.com/trezor/trezor-suite](https://github.com/trezor/trezor-suite/issues/new/choose).
 
+### Suite version requirements
+
+Every call runs in the user's Trezor Suite, so their Suite version decides which methods work. Suite Web always runs the current release, so only Suite desktop and the mobile app can be too old.
+
+| Method                                                   | Suite desktop | Suite mobile      | Notes                                                                                                                                                                          |
+| -------------------------------------------------------- | ------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Any method                                               | 26.3.1        | 26.3.1            | Older desktop versions return errors that Connect 10 cannot read. Older mobile apps do not open Connect 10 deep links.                                                         |
+| [`selectAccount`](/methods/common/selectAccount)         | 26.7.1        | Not available yet | The mobile app has no account picker yet, and the call gets no error back. Do not send it from `@trezor/connect-mobile` yet.                                                   |
+| [`solanaSignMessage`](/methods/solana/solanaSignMessage) | 26.8.1        | 26.8.1            | Needs firmware 2.12.4 or newer. Not supported on T1B1.                                                                                                                         |
+| [`sendTransaction`](/methods/bitcoin/sendTransaction)    | 26.9.1        | Not available yet | The mobile app has no account or fee picker yet. It refuses `push: true` from deep links, and other calls get no error back. Do not send it from `@trezor/connect-mobile` yet. |
+| `composePsbt`                                            | 26.10.1       | 26.10.1           | Runs without the device, so the mobile app can answer it too.                                                                                                                  |
+
+If the user's Suite desktop is too old for a method, it answers `Method_Unsupported` and Connect retries the call in Suite Web.
+
 ## Update your setup
 
 - [ ] Add `manifest.appName` to your `init()` call. It is now **required**.
@@ -66,6 +80,8 @@ Both items below are **HTTP response headers your server sends with the page tha
     Symptom if you skip the header changes: a handshake timeout when the popup opens.
 </Callout>
 
+**Chrome's Local Network Access prompt.** Unless `coreMode` is `'suite-web'`, Connect first tries to reach Suite desktop at `ws://127.0.0.1:21335`, so Chrome may ask the user to let your site access devices on the local network. If local network access is blocked for your site, `init()` and method calls fail with `Browser_LocalNetworkPermissionMissing`, also when Suite desktop is not running, and Connect does not fall back to Suite Web. When you get this error code, ask the user to allow local network access for your site in the browser's site settings.
+
 ### Assumptions to drop
 
 Two things that held in v9 no longer do, and neither shows up as a type error:
@@ -84,6 +100,8 @@ Skip any item whose API you do not use.
 
 - [ ] **Check that the coins you use are still supported.** Coins whose networks are dead, abandoned or obsolete have been dropped from Connect's coin definitions, even where Trezor firmware still supports some of them. Naming one behaves exactly like naming an unknown coin. [Supported coins](/details/coins) is the current list.
 
+- [ ] **The EOS and NEM methods are removed:** `eosGetPublicKey`, `eosSignTransaction`, `nemGetAddress` and `nemSignTransaction`. EOS and NEM are also gone from the coin definitions.
+
 - [ ] **`getPublicKey` no longer falls back to Bitcoin for other networks.** In v9, `getPublicKey({ coin: 'eth', … })` silently returned a Bitcoin xpub. Now the network must resolve to a bitcoin-like coin — from `coin`, or failing that from the derivation `path` — otherwise the call throws `Method_UnknownCoin`. Use the per-coin methods (`ethereumGetPublicKey`, `cardanoGetPublicKey`, …) for non-bitcoin networks.
 
 - [ ] **`getAccountDescriptor` is removed.** Call the per-coin `*GetPublicKey` instead.
@@ -93,11 +111,11 @@ Skip any item whose API you do not use.
 
 - [ ] **`getAccountInfo` called without `path` or `descriptor` now throws** `Method_InvalidParameter`. Pass `path` (derive on device, then query backend) or `descriptor` (backend only). For the old discovery behaviour use `discoverAccounts`, or [`selectAccount`](#the-new-way-to-ask-for-an-account-selectaccount) for user-facing selection.
 
-- [ ] **The event and UI-plumbing methods are gone:** `on`, `off`, `removeAllListeners`, `uiResponse` and `updateConnectSettings`. They are absent from the object you import, so a call throws `TypeError: TrezorConnect.on is not a function`.
+- [ ] **The event and UI-plumbing methods are gone from the client packages:** `on`, `off`, `removeAllListeners`, `uiResponse` and `updateConnectSettings`. In `@trezor/connect-web`, `@trezor/connect-webextension` and `@trezor/connect-mobile` they are absent from the object you import, so a call throws `TypeError: TrezorConnect.on is not a function`. `@trezor/connect` keeps them, see [Node, Electron and React Native apps](#node-electron-and-react-native-apps).
 
     In v9 these existed because your app hosted the popup: you subscribed to `DEVICE_EVENT` and `UI_EVENT`, answered a UI request with `uiResponse`, and could change settings mid-session. In v10 the device connection and every prompt belong to Suite, so there are no events to observe and no UI request to answer. Delete the listeners and any state you derived from them — each method call resolves to its own `{ success, payload }`, which is the only result your app needs.
 
-- [ ] **Update type imports:** where you referenced the `TrezorConnect` type, use `TrezorConnectPublicAPI<ConnectDynamicSettings>` from `@trezor/connect-web`. In most code `typeof TrezorConnect` is enough and you do not need the named type at all.
+- [ ] **Update type imports:** where you referenced the `TrezorConnect` type, use `TrezorConnectPublicAPI<ConnectDynamicSettings>` from `@trezor/connect-web`. With `@trezor/connect`, the type is `TrezorConnectPrivilegedAPI`. In most code `typeof TrezorConnect` is enough and you do not need the named type at all.
 
 - [ ] **Read errors from `error`, not from `payload`.** In `@trezor/connect`, `@trezor/connect-web` and `@trezor/connect-webextension`, a failed call resolves to `{ success: false, error: { message, code } }`. Replace `payload.error` with `error.message` and `payload.code` with `error.code`.
 
@@ -108,6 +126,24 @@ Skip any item whose API you do not use.
 - [ ] `cardanoGetPublicKey`: `publicKey` is now the raw 32-byte key in hex. Read the new `xpub` field, or `displayablePublicKey`, for the extended key.
 
 - [ ] Remove the per-call `useCardanoDerivation` parameter. Declare `TrezorConnect.init({ enabledNetworks: [{ coin: 'ada' }] })` instead. Note: on thin packages, `enabledNetworks` is not honored — Cardano availability follows the host Suite wallet's enabled coins.
+
+## Node, Electron and React Native apps
+
+This section is for apps that import `@trezor/connect` and run the Connect core in their own process: a Node script or server, the main process of an Electron app, or a React Native app that talks to the device itself. Apps built on `@trezor/connect-web` or `@trezor/connect-webextension` can skip it. React Native apps built on `@trezor/connect-mobile` can skip it too. They do not run the core. They open the Trezor Suite mobile app with a deep link, and the app has to be version 26.3.1 or newer.
+
+Unlike the client packages, `@trezor/connect` keeps `on`, `off`, `removeAllListeners`, `uiResponse` and `updateConnectSettings`, so keep your listeners and your `uiResponse` handling. The 10.0.0 entry in the [changelog](/changelog) describes the other changes in its "UI events & fee selection" and "Transports" sections. The checklist below collects them and adds what the changelog leaves out: the replacement for `setTransports()` and `setProxy()`, the default Bridge port, and why a listener on `UI_EVENT` alone misses PIN and passphrase requests.
+
+- [ ] **Pass transports as instances.** Strings such as `'BridgeTransport'` and transport classes are rejected. Construct the transports yourself: `BridgeTransport` from `@trezor/transport-common`, `WebUsbTransport` from `@trezor/transport-web`, and `NodeUsbTransport` or `UdpTransport` from `@trezor/transport` (Node only).
+
+- [ ] **Check the default transports.** Without a `transports` setting, Connect uses Bridge and NodeUSB in Node (including the Electron main process), Bridge and WebUSB in a browser, and only Bridge in React Native.
+
+- [ ] **Bridge listens on port 21328.** `BridgeTransport` connects to `127.0.0.1:21328` by default, where Trezor Suite desktop runs its built-in Bridge. The old trezord-go Bridge on port 21325 is not supported, and current Suite desktop releases no longer serve anything on that port. Remove any `port: 21325` from your setup.
+
+- [ ] **Replace `setTransports()` and `setProxy()`** with `TrezorConnect.updateConnectSettings({ transports })` and `TrezorConnect.updateConnectSettings({ proxy })`. Both methods are removed, like `manifest()`. The browser build does not accept `proxy`.
+
+- [ ] **Listen on both UI channels if you render your own device prompts.** `UI_REQUEST` is no longer the map of message types but the name of a separate event channel. Requests that wait for your `uiResponse` (PIN, passphrase, account, fee and others) are listed in `UI_REQUESTS` and arrive on `UI_REQUEST`. Notifications are listed in `UI_EVENTS` and arrive on `UI_EVENT`. A listener on `UI_EVENT` alone no longer sees the PIN or passphrase request.
+
+- [ ] **Compare message types with the exported constants, not with string literals.** Many values changed. For example, `'ui-device_firmware_old'` is now `'ui-event_firmware_old'` (`UI_EVENTS.FIRMWARE_OLD`), and fee selection `'ui-select_fee'` is now `'ui-request_fee'` (`UI_REQUESTS.REQUEST_FEE`), answered with a reshaped `RECEIVE_FEE` payload.
 
 ## The new way to ask for an account: `selectAccount`
 
