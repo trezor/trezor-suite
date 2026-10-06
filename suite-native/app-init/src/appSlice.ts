@@ -1,56 +1,72 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-export enum PostOnboardingInitializationStatus {
-    Idle = 'idle',
-    Initializing = 'initializing',
-    Ready = 'ready',
-    Error = 'error',
-    Disabled = 'disabled',
-}
+import { applicationInitThunk, postOnboardingInitThunk } from './appInitThunks';
+import {
+    type PostOnboardingInitializationResult,
+    PostOnboardingInitializationStatus,
+} from './appTypes';
 
-type AppSliceState = {
+type AppState = {
     isAppReady: boolean;
     postOnboardingInitializationStatus: PostOnboardingInitializationStatus;
 };
 
-type AppSliceRootState = {
-    app: AppSliceState;
+type AppRootState = {
+    app: AppState;
 };
 
-export const appSliceInitialState: AppSliceState = {
+export const appSliceInitialState: AppState = {
     isAppReady: false,
     postOnboardingInitializationStatus: PostOnboardingInitializationStatus.Idle,
 };
 
-export const appSlice = createSlice({
+const appSlice = createSlice({
     name: 'app',
     initialState: appSliceInitialState,
-    reducers: {
-        setIsAppReady: (state, { payload }: PayloadAction<boolean>) => {
-            state.isAppReady = payload;
-        },
-        setPostOnboardingInitializationStatus: (
-            state,
-            { payload }: PayloadAction<PostOnboardingInitializationStatus>,
-        ) => {
-            state.postOnboardingInitializationStatus = payload;
-        },
+    reducers: {},
+    extraReducers: builder => {
+        builder
+            .addCase(postOnboardingInitThunk.pending, (state: AppState) => {
+                state.postOnboardingInitializationStatus =
+                    PostOnboardingInitializationStatus.Initializing;
+            })
+            .addCase(
+                postOnboardingInitThunk.fulfilled,
+                (
+                    state: AppState,
+                    { payload }: PayloadAction<PostOnboardingInitializationResult>,
+                ) => {
+                    state.postOnboardingInitializationStatus = payload;
+                },
+            )
+            .addCase(postOnboardingInitThunk.rejected, (state: AppState) => {
+                state.postOnboardingInitializationStatus =
+                    PostOnboardingInitializationStatus.Error;
+            })
+            .addCase(applicationInitThunk.fulfilled, (state: AppState) => {
+                state.isAppReady = true;
+            });
     },
 });
 
-export const selectIsAppReady = (state: AppSliceRootState) => state.app.isAppReady;
-export const selectPostOnboardingInitializationStatus = (state: AppSliceRootState) =>
+export const selectIsAppReady = (state: AppRootState) => state.app.isAppReady;
+export const selectPostOnboardingInitializationStatus = (state: AppRootState) =>
     state.app.postOnboardingInitializationStatus;
-export const selectCanUseAppServices = (state: AppSliceRootState) => {
+
+export const selectCanUseAppServices = (state: AppRootState): boolean => {
     const status = selectPostOnboardingInitializationStatus(state);
 
-    // Initialization errors have historically been non-fatal, so preserve the existing fallback
-    // behavior while preventing calls from racing an initialization attempt still in progress.
-    return (
-        status === PostOnboardingInitializationStatus.Ready ||
-        status === PostOnboardingInitializationStatus.Error
-    );
+    switch (status) {
+        case PostOnboardingInitializationStatus.Ready:
+        case PostOnboardingInitializationStatus.Error:
+            // Initialization errors have historically been non-fatal, so preserve the existing
+            // fallback behavior after the initialization attempt has finished.
+            return true;
+        case PostOnboardingInitializationStatus.Idle:
+        case PostOnboardingInitializationStatus.Initializing:
+        case PostOnboardingInitializationStatus.Disabled:
+            return false;
+    }
 };
 
-export const { setIsAppReady, setPostOnboardingInitializationStatus } = appSlice.actions;
 export const appReducer = appSlice.reducer;
