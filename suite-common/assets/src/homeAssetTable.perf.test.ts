@@ -881,3 +881,42 @@ describe(`the keys of ${NETWORKS.length * ACCOUNTS_PER_NETWORK} accounts, one ba
         expect(accountKeysIndex.getIds(after)).toEqual(selectAccountKeys(after));
     });
 });
+
+// Only the ids at the end of the chain — what the table's list subscribes to — after one balance
+// is written: five memoised selectors deep through the legacy chain, the index chain through
+// `getIds`. The write changes a balance, not the order, so both must hand back what they had.
+describe(`the shown asset keys of ${NETWORKS.length * ACCOUNTS_PER_NETWORK} accounts, one balance written`, () => {
+    it('cost, and whether the list is the same array', () => {
+        const samples = { selectors: [] as number[], indexes: [] as number[] };
+        let selectorsSame = false;
+        let indexesSame = false;
+
+        for (let repeat = 0; repeat < REPEATS; repeat++) {
+            const fixture = createFixture();
+            const before = createState(fixture);
+            const after = createState(writeOneBalance.next(fixture));
+            const legacyBefore = selectShownWalletAssetKeys(before);
+            const shippedBefore = shipped.selectShownWalletAssetKeys(before);
+
+            samples.selectors.push(
+                timed(() => {
+                    selectorsSame = selectShownWalletAssetKeys(after) === legacyBefore;
+                }),
+            );
+            samples.indexes.push(
+                timed(() => {
+                    indexesSame = shipped.selectShownWalletAssetKeys(after) === shippedBefore;
+                }),
+            );
+        }
+
+        if (process.env.PERF !== undefined) {
+            process.stdout.write(
+                `\nshown asset keys, one balance written: selectors ${median(samples.selectors).toFixed(3)} ms (${selectorsSame ? 'same' : 'new'} array), indexes ${median(samples.indexes).toFixed(3)} ms (${indexesSame ? 'same' : 'new'} array)\n\n`,
+            );
+        }
+
+        expect(selectorsSame).toBe(true);
+        expect(indexesSame).toBe(true);
+    });
+});
