@@ -4,7 +4,11 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
+import {
+    canRememberPermissions,
+    connectPopupActions,
+    selectConnectPopupCall,
+} from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -27,6 +31,7 @@ export const ConnectPermissionsModal = () => {
 
     const { method, methodInfo, source } = popupCall;
     const { confirmLabel, permissionTypes } = methodInfo;
+    const canRemember = source.type !== CALL_SOURCE_WALLETCONNECT && canRememberPermissions(source);
 
     const rememberPayload = {
         allowedPermissions: permissionTypes,
@@ -103,10 +108,14 @@ export const ConnectPermissionsModal = () => {
                             />
 
                             <Column gap={4}>
-                                <Row gap={12}>
+                                <Row columnGap={12} rowGap={2} flexWrap="wrap">
                                     {source.manifest?.appName ? (
                                         <>
-                                            <Text data-testid="@connect-permissions-modal/app-name">
+                                            <Text
+                                                data-testid="@connect-permissions-modal/app-name"
+                                                overflowWrap="anywhere"
+                                                ellipsisLineCount={2}
+                                            >
                                                 {source.manifest.appName}
                                             </Text>
                                             <Text intent="neutral" priority="secondary">
@@ -136,7 +145,7 @@ export const ConnectPermissionsModal = () => {
                     <Card>
                         <GroupedPermissionsList permissions={permissionTypes} defaultIsOpen />
                     </Card>
-                    {source.type !== CALL_SOURCE_WALLETCONNECT && (
+                    {canRemember && (
                         <>
                             <Text>
                                 <Translation id="TR_OPTIONAL" />

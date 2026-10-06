@@ -210,7 +210,14 @@ export class BridgeTransport extends AbstractTransport {
     }
 
     private getRequestBody(body: Buffer, protocol: TransportProtocol, thpState?: ThpState) {
-        return createProtocolMessage(body, protocol, thpState?.serialize());
+        if (!thpState) {
+            return createProtocolMessage(body, protocol);
+        }
+
+        // The bridge needs only the channel state to encode and decode frames.
+        const { properties, credentials, ...channelState } = thpState.serialize();
+
+        return createProtocolMessage(body, protocol, channelState);
     }
 
     // in some setups abort signal is resolved on the client-side but never resolves on the server-size (like android OkHttp request)
@@ -253,6 +260,7 @@ export class BridgeTransport extends AbstractTransport {
                 });
 
                 const prevNonce = thpState?.sendNonce;
+                const prevSendBit = thpState?.sendBit;
                 const response = await this.post(`/call`, {
                     params: session,
                     body: this.getRequestBody(bytes, protocol, thpState),
@@ -266,8 +274,9 @@ export class BridgeTransport extends AbstractTransport {
                 const respBytes = Buffer.from(response.payload.data, 'hex');
                 if (protocol.name === 'v2') {
                     // see callThpMessage in @trezor/transport-bridge
-                    // sync bit and nonce updated by Cancel
-                    if (prevNonce === thpState?.sendNonce) {
+                    // A Cancel sent during this call has already synced it. Until Cancel is encoded
+                    // only the sync bit has changed, after that the nonce has changed as well.
+                    if (prevNonce === thpState?.sendNonce && prevSendBit === thpState?.sendBit) {
                         thpState?.sync('send', name);
                     }
                     const message = parseThpMessage({

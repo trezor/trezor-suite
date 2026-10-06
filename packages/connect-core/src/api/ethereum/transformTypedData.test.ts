@@ -23,9 +23,9 @@ function messageToHex(string: string) {
     return string.startsWith('0x') ? string : `0x${string}`;
 }
 
-// Same skips as packages/connect-core/e2e/__fixtures__/ethereumSignTypedData.ts —
+// Also skipped in packages/connect-core/e2e/__fixtures__/ethereumSignTypedData.ts,
 // pending firmware support, tracked at trezor/trezor-suite#5181.
-const SKIP_FIXTURES = new Set(['array_of_structs', 'injective_testcase']);
+const SKIP_FIXTURES = new Set(['array_of_structs']);
 
 describe('transformTypedData (firmware-fixture parity)', () => {
     if (!commonFixtures) {
@@ -58,4 +58,87 @@ describe('transformTypedData (firmware-fixture parity)', () => {
                 }
             });
         });
+});
+
+describe('transformTypedData domain', () => {
+    const domainTypes = [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+    ];
+
+    it('hashes domain fields by their declared types', () => {
+        const { domain_separator_hash } = transformTypedData(
+            {
+                types: {
+                    EIP712Domain: [
+                        ...domainTypes,
+                        { name: 'verifyingContract', type: 'string' },
+                        { name: 'salt', type: 'string' },
+                    ],
+                },
+                primaryType: 'EIP712Domain',
+                domain: {
+                    name: 'Injective Web3',
+                    version: '1.0.0',
+                    chainId: 1,
+                    verifyingContract: 'cosmos',
+                    salt: '1646906878039',
+                },
+                message: {},
+            },
+            true,
+        );
+
+        // trezor-common vector `injective_testcase`
+        expect(domain_separator_hash).toBe(
+            '8e96520578ec587b6ad9d06fe5fc352b34e98090044921089e1a9cbc1290901c',
+        );
+    });
+
+    it('hashes a chainId declared as string as text', () => {
+        const { domain_separator_hash } = transformTypedData(
+            {
+                types: {
+                    EIP712Domain: [
+                        { name: 'name', type: 'string' },
+                        { name: 'chainId', type: 'string' },
+                    ],
+                },
+                primaryType: 'EIP712Domain',
+                domain: { name: 'Injective Web3', chainId: 'injective-1' },
+                message: {},
+            },
+            true,
+        );
+
+        // keccak256(typeHash ‖ keccak256('Injective Web3') ‖ keccak256('injective-1'))
+        expect(domain_separator_hash).toBe(
+            '24965cb4530f7fdfcafc05713f437dc80816c426e7bbed4ed3212b0c7a2ca569',
+        );
+    });
+
+    it('accepts an address field without the 0x prefix', () => {
+        const { domain_separator_hash } = transformTypedData(
+            {
+                types: {
+                    EIP712Domain: [...domainTypes, { name: 'verifyingContract', type: 'address' }],
+                },
+                primaryType: 'EIP712Domain',
+                domain: {
+                    name: 'Ether Mail',
+                    version: '1',
+                    chainId: 1,
+                    verifyingContract: '1e0Ae8205e9726E6F296ab8869160A6423E2337E',
+                },
+                message: {},
+            },
+            true,
+        );
+
+        // trezor-common vector `basic_data`
+        expect(domain_separator_hash).toBe(
+            '97d6f53774b810fbda27e091c03c6a6d6815dd1270c2e62e82c6917c1eff774b',
+        );
+    });
 });

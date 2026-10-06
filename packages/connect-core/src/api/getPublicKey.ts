@@ -12,7 +12,11 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getBitcoinNetwork, getBitcoinNetworkOrThrow } from '../data/coinInfo';
+import {
+    getBitcoinNetwork,
+    getBitcoinNetworkOfPath,
+    getBitcoinNetworkOrThrow,
+} from '../data/coinInfo';
 import { bundlify, validateCoinPath } from './common/paramsValidator';
 import { getPublicKeyLabel } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
@@ -83,7 +87,12 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
     hasBundle?: boolean;
 
     get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
+        return this.coinPerms(
+            'read_xpub',
+            this.params.map(({ proto, coinInfo }) =>
+                getBitcoinNetworkOfPath(proto.address_n, coinInfo),
+            ),
+        );
     }
 
     get info() {

@@ -9,6 +9,8 @@ import {
 } from '@trezor/connect';
 import { unique } from '@trezor/utils/src/unique';
 
+import { CALL_SOURCE_DEEPLINK, type ConnectCallSource, UNKNOWN_PROCESS } from './connectPopupTypes';
+
 // A `PermissionRequest.coin` is the canonical lowercase `CoinSymbol`: call-derived permissions are
 // lowercased in `coinPerm`, host-declared ones in `sanitizeRequestedPermissions`. Everything below
 // therefore compares coins with `===`.
@@ -53,6 +55,28 @@ export const permissionIcons = {
     push_tx: 'broadcast',
     internal: 'cube',
 } as const satisfies Record<PermissionRequest['permission'], string>;
+
+/**
+ * Whether permissions remembered for `app` belong to the caller `source`: the same source type,
+ * origin and process.
+ */
+export const isSameConnectApp = (app: ConnectCallSource, source: ConnectCallSource): boolean =>
+    app.type === source.type &&
+    app.origin === source.origin &&
+    app.process?.fullPath === source.process?.fullPath;
+
+/**
+ * Permissions are remembered only for a caller that can be told apart from others: not for a desktop
+ * process that could not be identified, not for the origin `null` that browsers send for every
+ * sandboxed or local page, not for an origin that only the caller itself states, and not for a
+ * deeplink whose callback is not https: an https host has an owner, while any app can register a
+ * custom URL scheme.
+ */
+export const canRememberPermissions = (source: ConnectCallSource): boolean =>
+    !source.isOriginSelfDeclared &&
+    source.origin !== 'null' &&
+    source.process?.fullPath !== UNKNOWN_PROCESS.fullPath &&
+    (source.type !== CALL_SOURCE_DEEPLINK || source.origin.startsWith('https://'));
 
 export const permissionsAreCovered = (
     requested: PermissionRequest[],

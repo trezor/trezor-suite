@@ -31,8 +31,10 @@ export const paramDescriptions = {
     data: 'type of [`EthereumSignTypedDataMessage`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/ethereum/common.ts). A JSON Schema definition can be found in the [EIP-712 spec](https://eips.ethereum.org/EIPS/eip-712).',
     metamask_v4_compat:
         "set to `true` for compatibility with [MetaMask's signTypedData_v4](https://docs.metamask.io/guide/signing-data.html#sign-typed-data-v4).",
-    domain_separator_hash: 'hex-encoded 32-byte hash of the EIP-712 domain.',
-    message_hash: 'hex-encoded 32-byte hash of the EIP-712 message.',
+    domain_separator_hash:
+        'hex-encoded 32-byte hash of the EIP-712 domain. T1B1 signs it only when it matches the hash of `data` (`metamask_v4_compat` encoding).',
+    message_hash:
+        'hex-encoded 32-byte hash of the EIP-712 message. T1B1 signs it only when it matches the hash of `data` (`metamask_v4_compat` encoding).',
     show_message_hash:
         'set to `true` to also display the message hash on the device for additional confirmation on newer Trezor models.',
 };

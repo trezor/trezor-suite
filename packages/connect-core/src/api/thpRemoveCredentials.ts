@@ -5,7 +5,7 @@ import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import * as settingsStore from '../data/settingsStore';
 
-type Params = { credentials: ThpCredentials[] };
+type Params = { credentials: Pick<ThpCredentials, 'credential'>[] };
 
 export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCredentials', Params> {
     constructor(message: MethodMessage<'thpRemoveCredentials'>) {

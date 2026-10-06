@@ -61,7 +61,8 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         // these themselves via @trezor/connect-plugin-ethereum. We now auto-compute
         // any missing hash when the caller provides `data`, so the API works
         // uniformly across device models. Caller-provided hashes still win for
-        // backwards compatibility (we only fill in what's missing).
+        // backwards compatibility (we only fill in what's missing); on T1B1, run()
+        // signs them only when they match `data`.
         // Gated on metamask_v4_compat === true: transformTypedData supports only v4,
         // and pre-existing v3-style calls (where T2T1+ doesn't need hashes anyway)
         // must keep working without an auto-compute throw.
@@ -183,6 +184,23 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
             );
 
             const { domain_separator_hash, message_hash } = this.params;
+
+            // T1B1 signs only the hashes, while core firmware hashes `data` itself.
+            // Sign them only when they match the hashes computed from `data`, so that
+            // they describe the message of the request. Requests without
+            // metamask_v4_compat are checked against the v4 hashes too: the two
+            // encodings differ only for non-empty arrays of structs, which T1B1
+            // therefore signs only in v4.
+            const dataHashes = transformTypedData(this.params.data, true);
+            if (
+                domain_separator_hash !== dataHashes.domain_separator_hash ||
+                (message_hash ?? null) !== dataHashes.message_hash
+            ) {
+                throw ERRORS.TypedError(
+                    'Method_InvalidParameter',
+                    'domain_separator_hash and message_hash do not match the v4 hashes of data',
+                );
+            }
 
             // For T1B1 we use EthereumSignTypedHash
             const response = await cmd.typedCall(

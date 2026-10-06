@@ -34,8 +34,17 @@ export type ConnectProcessInfo = {
     icon?: string;
     warning: boolean;
 };
+// Process of a desktop caller that the main process could not identify.
+export const UNKNOWN_PROCESS: ConnectProcessInfo = {
+    name: 'Unknown',
+    fullPath: 'Unknown',
+    warning: true,
+};
 export type ConnectCallSource = {
     origin: string;
+    // Set when `origin` is stated only by the caller's own messages (the Suite Web webextension link
+    // reads it from the URL hash), so it does not tell this caller apart from others.
+    isOriginSelfDeclared?: boolean;
     // Permissions the host declared up front (via ConnectSettings.requestedPermissions), carried on
     // the handshake. Sanitized in connectPopupCallInnerThunk so the first consent covers the set.
     requestedPermissions?: PermissionRequest[];
@@ -241,7 +250,15 @@ type ConnectPopupCallError = {
     state: 'error';
     error: ConnectSerializedError;
 };
-export type ConnectPopupCall = ConnectPopupCallLoaded | ConnectPopupCallError;
+
+type ConnectPopupCallMeta = {
+    callId?: string;
+    // Id of the deferred that receives the response of this call.
+    responseId?: string;
+};
+
+export type ConnectPopupCall = (ConnectPopupCallLoaded | ConnectPopupCallError) &
+    ConnectPopupCallMeta;
 
 export type ConnectPopupCallWithState<
     CallState extends ConnectPopupCall['state'],

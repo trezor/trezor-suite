@@ -19,12 +19,19 @@ import type { TypedCallProvider } from '../types/typed-call-provider';
 
 const blacklist: Record<string, string[] | true> = {
     PassphraseAck: ['passphrase'],
+    ThpCreateNewSession: ['passphrase'],
     PinMatrixAck: ['pin'],
     WordAck: ['word'],
+    CipherKeyValue: ['value'],
     CipheredKeyValue: ['value'],
     GetPublicKey: ['address_n'],
     PublicKey: ['node', 'xpub'],
     DecryptedMessage: ['message', 'address'],
+    EvoluGetNode: ['proof_of_delegated_identity'],
+    EvoluNode: true,
+    EvoluGetDelegatedIdentityKey: ['thp_credential'],
+    EvoluDelegatedIdentityKey: true,
+    LoadDevice: ['mnemonics', 'pin'],
     Features: true,
 };
 

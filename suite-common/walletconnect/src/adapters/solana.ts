@@ -19,6 +19,7 @@ import {
     type WalletConnectNamespace,
     type WalletConnectSession,
 } from '../walletConnectTypes';
+import { getSessionAccountIds } from '../walletConnectUtils';
 
 const methods = [
     'solana_getAccounts',
@@ -75,6 +76,7 @@ const solanaSignTransactionThunk = createThunk<
             throw new Error('Account not found');
         }
 
+        const deferred = trezorConnectPopupActions.createPopupCallDeferred();
         dispatch(
             trezorConnectPopupActions.connectPopupCallThunk({
                 method: 'solanaSignTransaction',
@@ -95,10 +97,12 @@ const solanaSignTransactionThunk = createThunk<
                         appIcon: session.peer.metadata.icons?.[0],
                     },
                 },
+                responseId: deferred.id,
             }),
         );
-        const response = (await trezorConnectPopupActions.getPopupCallDeferred(true)
-            .promise) as Result<CallMethodResponse<'solanaSignTransaction'>>;
+        const response = (await deferred.promise) as Result<
+            CallMethodResponse<'solanaSignTransaction'>
+        >;
         if (!response.success || !response.payload.serializedTx) {
             console.error('solana_signTransaction error', response);
             throw new Error('Solana signing error');
@@ -131,11 +135,12 @@ const solanaRequestThunk = createThunk<
     switch (event.params.request.method) {
         case 'solana_getAccounts':
         case 'solana_requestAccounts': {
-            const accounts = selectAccounts(getState());
+            // The store holds every remembered wallet; answer only for accounts of this session.
+            const chainPrefix = `${event.params.chainId}:`;
 
-            return accounts
-                .filter(a => a.networkType === 'solana' && a.visible)
-                .map(a => ({ pubkey: a.descriptor }));
+            return getSessionAccountIds(session, 'solana')
+                .filter(account => account.startsWith(chainPrefix))
+                .map(account => ({ pubkey: account.slice(chainPrefix.length) }));
         }
         case 'solana_signTransaction': {
             const { transaction, feePayer } = event.params.request.params;

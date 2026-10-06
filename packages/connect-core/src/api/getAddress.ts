@@ -17,6 +17,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import {
     fixCoinInfoNetwork,
     getBitcoinNetwork,
+    getBitcoinNetworkOfPath,
     getBitcoinNetworkOrThrow,
     getUniqueNetworks,
 } from '../data/coinInfo';
@@ -87,7 +88,12 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
     }
 
     get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_address', this.requiredFirmwareCoins);
+        return this.coinPerms(
+            'read_address',
+            this.params.map(({ proto, coinInfo }) =>
+                getBitcoinNetworkOfPath(proto.address_n, coinInfo),
+            ),
+        );
     }
 
     get info() {

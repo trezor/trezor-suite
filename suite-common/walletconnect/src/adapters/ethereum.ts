@@ -110,6 +110,7 @@ const ethereumRequestThunk = createThunk<
                 ? sanitizeHex(message)
                 : Buffer.from(message, 'utf8').toString('hex');
             const isReadable = isAscii(messageDecoded);
+            const deferred = trezorConnectPopupActions.createPopupCallDeferred();
             dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
                     ...popupCallCommonParams,
@@ -119,9 +120,10 @@ const ethereumRequestThunk = createThunk<
                         message: isReadable ? messageDecoded : messageHex,
                         hex: !isReadable,
                     },
+                    responseId: deferred.id,
                 }),
             );
-            const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+            const response = await deferred.promise;
             if (!response.success) {
                 console.error('personal_sign error', response);
                 throw new Error('personal_sign error');
@@ -143,14 +145,16 @@ const ethereumRequestThunk = createThunk<
                 metamask_v4_compat: true,
             };
 
+            const deferred = trezorConnectPopupActions.createPopupCallDeferred();
             dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
                     ...popupCallCommonParams,
                     method: 'ethereumSignTypedData',
                     payload,
+                    responseId: deferred.id,
                 }),
             );
-            const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+            const response = await deferred.promise;
             if (!response.success) {
                 console.error('eth_signTypedData_v4 error', response);
                 throw new Error('eth_signTypedData_v4 error');
@@ -230,14 +234,16 @@ const ethereumRequestThunk = createThunk<
                 },
                 device,
             };
+            const deferred = trezorConnectPopupActions.createPopupCallDeferred();
             dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
                     ...popupCallCommonParams,
                     method: 'ethereumSignTransaction',
                     payload,
+                    responseId: deferred.id,
                 }),
             );
-            const signResponse = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+            const signResponse = await deferred.promise;
             if (!signResponse.success) {
                 console.error('eth_sendTransaction error', signResponse);
                 throw new Error('eth_sendTransaction error');

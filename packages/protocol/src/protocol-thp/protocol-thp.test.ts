@@ -1,4 +1,6 @@
 import { decode as decodeV2 } from '../protocol-v2';
+import { aesgcm } from './crypto';
+import { getIvFromNonce } from './crypto/tools';
 
 import {
     ThpState,
@@ -148,6 +150,30 @@ describe('protocol-thp', () => {
             sendNonce: 7,
             recvNonce: 8,
         });
+    });
+
+    it('advances the send nonce when a message is encoded', () => {
+        const hostKey = Buffer.alloc(32, 1);
+        thpState.setChannel(Buffer.from('1234', 'hex'));
+        thpState.updateHandshakeCredentials({ hostKey });
+
+        const encodeMessage = () =>
+            encode({ messageName: 'Initialize', data: {}, protobufEncoder, thpState });
+        const encryptWithNonce = (nonce: number) => {
+            const aes = aesgcm(hostKey, getIvFromNonce(nonce));
+            aes.auth(Buffer.alloc(0));
+
+            // Session id, message type and the body returned by protobufEncoder.
+            return Buffer.concat([aes.encrypt(Buffer.from('00000100', 'hex')), aes.finish()]);
+        };
+
+        // The encrypted payload sits between the 5-byte header and the 4-byte checksum.
+        expect(encodeMessage().subarray(5, -4)).toEqual(encryptWithNonce(0));
+        expect(encodeMessage().subarray(5, -4)).toEqual(encryptWithNonce(1));
+
+        // The nonce is already advanced, so sync only updates the sync bits.
+        thpState.sync('send', 'Initialize');
+        expect(thpState.sendNonce).toBe(2);
     });
 
     it('isAckExpected', () => {

@@ -4,6 +4,7 @@ import path from 'path';
 import TrezorConnect, {
     type Device,
     ThpPairingMethod,
+    type ThpSettings,
     UI_EVENT,
     UI_EVENTS,
     UI_REQUEST,
@@ -65,7 +66,7 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
 };
 
 const cliStatePath = path.join(__dirname, 'thp-state.dat');
-const readCliState = (): { credentials: NonNullable<Device['thp']>['credentials'] } => {
+const readCliState = (): { credentials: NonNullable<ThpSettings['knownCredentials']> } => {
     try {
         return JSON.parse(fs.readFileSync(cliStatePath, 'utf8'));
     } catch {

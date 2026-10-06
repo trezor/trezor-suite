@@ -203,6 +203,9 @@ export const encodeProtobufMessage = (
         Buffer.alloc(0),
         Buffer.concat([thpState.sessionId, messageTypeBytes, data]),
     );
+    // Each nonce encrypts exactly one message, so it is advanced together with the encryption,
+    // the same way the firmware advances the nonce of its own messages.
+    thpState.updateNonce('send');
     const message = Buffer.concat([header, length, cipheredMessage]);
     const crc = crc32(message);
 

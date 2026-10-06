@@ -149,7 +149,7 @@ Nothing here breaks your integration, but each one either simplifies your code o
 
 - [ ] Review the per-coin scopes your methods request (`read_address`, `read_xpub`, `sign`, `sign_message`). Scopes are non-overlapping, so `read_address` does not grant `read_xpub`.
 
-- [ ] Ethereum: pass only `data` to [`ethereumSignTypedData`](/methods/ethereum/ethereumSignTypedData). Connect derives the EIP-712 hashes that T1B1 needs from v4 payloads (`metamask_v4_compat: true`), so there is nothing left to pre-compute — and hashes you pass yourself still take precedence.
+- [ ] Ethereum: pass only `data` to [`ethereumSignTypedData`](/methods/ethereum/ethereumSignTypedData). Connect derives the EIP-712 hashes that T1B1 needs from v4 payloads (`metamask_v4_compat: true`), so there is nothing left to pre-compute. Hashes you pass yourself are still accepted, and T1B1 signs them only when they match `data`.
 
 - [ ] Solana: pass `chunkify` to `solanaSignTransaction` to render addresses in 4-character chunks on device. Requires firmware with chunked-address support in the Solana `SignTx` flow.
 

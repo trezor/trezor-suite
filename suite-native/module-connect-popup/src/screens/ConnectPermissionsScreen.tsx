@@ -54,7 +54,7 @@ const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
                             size="medium"
                         />
                         <VStack flex={1} spacing="sp1">
-                            <Text numberOfLines={1}>{app.manifest?.appName ?? app.origin}</Text>
+                            <Text numberOfLines={1}>{app.manifest?.appName || app.origin}</Text>
                             {app.manifest?.appName && (
                                 <Text color="contentSecondary" numberOfLines={1}>
                                     {app.origin}

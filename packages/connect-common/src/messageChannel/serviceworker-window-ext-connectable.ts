@@ -239,8 +239,24 @@ export class ServiceWorkerWindowExtConnectableChannel<
                 return false;
             }
 
-            this.logger?.debug('CHANNEL: Processing message through onMessage');
-            this.onMessage(message);
+            // Only the popup tab this channel writes to may answer it, so that another tab on the
+            // same origin cannot settle its calls or close its popup.
+            const senderTabId = sender.tab.id;
+            Promise.resolve()
+                .then(() => this.currentId?.())
+                .catch(() => undefined)
+                .then(popupTabId => {
+                    if (popupTabId === undefined || senderTabId !== popupTabId) {
+                        this.logger?.warn(
+                            `CHANNEL: Sender tab ${senderTabId} is not the popup tab ${popupTabId}. Ignoring.`,
+                        );
+
+                        return;
+                    }
+
+                    this.logger?.debug('CHANNEL: Processing message through onMessage');
+                    this.onMessage(message);
+                });
         };
 
         chrome.runtime.onMessageExternal.addListener(this.messageListener);

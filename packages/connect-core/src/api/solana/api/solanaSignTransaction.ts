@@ -105,7 +105,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
 
     async payloadToPrecomposed() {
         try {
-            const { getDecompiledMessage } = await solana();
+            const { getAssociatedTokenAccountAddress, getDecompiledMessage } = await solana();
             const decompiledMessage = getDecompiledMessage(
                 this.params.proto.serialized_tx,
                 this.params.serialize,
@@ -157,17 +157,23 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                         const tokenInfoIndex = tokenAccountInfos.findIndex(
                             t =>
                                 t.token_account === destinationATA &&
-                                t.token_mint === parsed.accounts.mint.address,
+                                t.token_mint === parsed.accounts.mint.address &&
+                                t.token_program === parsed.programAddress,
                         );
                         const tokenInfo = tokenAccountInfos[tokenInfoIndex];
-                        if (!sendAmount.isZero()) {
-                            throw ERRORS.TypedError(
-                                'Runtime',
-                                'Multiple token transfers in a single transaction are not supported',
-                            );
-                        }
+                        // Same rule as the firmware: the base address stands for the destination
+                        // only when the destination is its associated token account.
+                        const recipient =
+                            tokenInfo?.base_address &&
+                            (await getAssociatedTokenAccountAddress(
+                                tokenInfo.base_address,
+                                parsed.accounts.mint.address,
+                                'spl-token',
+                            )) === destinationATA
+                                ? tokenInfo.base_address
+                                : destinationATA;
                         outputs.push({
-                            address: tokenInfo?.base_address || destinationATA,
+                            address: recipient,
                             amount: parsed.data.amount.toString(),
                             script_type: 'PAYTOADDRESS' as const,
                         });
@@ -182,11 +188,21 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                     }
                     case 'other':
                     default:
-                        break;
+                        // The review has to list everything the transaction sends, and an
+                        // instruction it does not decode may send funds as well.
+                        throw ERRORS.TypedError('Runtime', 'Unsupported instruction');
                 }
             }
             if (outputs.length === 0) {
                 throw ERRORS.TypedError('Runtime', 'No outputs decoded');
+            }
+            // The total of a token transfer is shown in units of its token, so it can stand for
+            // that transfer only.
+            if (token && outputs.length > 1) {
+                throw ERRORS.TypedError(
+                    'Runtime',
+                    'Token transfers combined with other transfers are not supported',
+                );
             }
 
             const fee = baseFee.plus(feePerUnit.multipliedBy(feeLimit).dividedBy(1e6));

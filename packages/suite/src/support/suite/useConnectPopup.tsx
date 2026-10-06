@@ -5,7 +5,6 @@ import {
     type ManifestPartial,
     connectPopupCallThunk,
     connectPopupCancelThunk,
-    getPopupCallDeferred,
     queuePopupCall,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
@@ -57,6 +56,8 @@ export interface ConnectPopupLink {
     handshakeConfirmMessage?: ConnectPopupOutgoingMessage;
     /** The origin string to use as `source.origin` for the popup call thunk. */
     origin: string;
+    /** Whether `origin` is stated only by the caller's own messages, not by the browser. */
+    isOriginSelfDeclared?: boolean;
 }
 
 /**
@@ -108,8 +109,7 @@ export const useConnectPopup = (
                 }
 
                 setResponseSent(false);
-                await queuePopupCall();
-                const deferred = getPopupCallDeferred(true);
+                const deferred = await queuePopupCall();
                 const { method, ...params } = event.payload;
                 dispatch(
                     connectPopupCallThunk({
@@ -118,9 +118,11 @@ export const useConnectPopup = (
                         source: {
                             type: CALL_SOURCE_WEB,
                             origin: popupLink.origin,
+                            isOriginSelfDeclared: popupLink.isOriginSelfDeclared,
                             manifest: manifest.current,
                             requestedPermissions: requestedPermissions.current,
                         },
+                        responseId: deferred.id,
                     }),
                 );
 

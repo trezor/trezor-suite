@@ -1,3 +1,7 @@
+import { sha512 } from '@noble/hashes/sha2.js';
+import { keccak_256 } from '@noble/hashes/sha3.js';
+import { bytesToHex, concatBytes, hexToBytes, utf8ToBytes } from '@noble/hashes/utils.js';
+
 import type {
     BlockchainLinkParams,
     ServerInfo,
@@ -7,6 +11,8 @@ import { BlockchainLink } from '@trezor/blockchain-link';
 import type { CoinInfo, CoreEventMessage, Proxy, PushTransaction } from '@trezor/connect-common';
 import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { exhaustive } from '@trezor/type-utils';
+import { Transaction as BitcoinJsTransaction } from '@trezor/utxo-lib';
 
 import {
     BlockbookWorker,
@@ -47,6 +53,38 @@ const getNormalizedTrezorShortcut = (shortcut: string) => {
     }
 
     return shortcut;
+};
+
+// The id the network records a signed transaction under, where it follows from the bytes alone.
+const getTransactionId = (coinInfo: CoinInfo, hex: string): string | undefined => {
+    const rawHex = hex.startsWith('0x') ? hex.slice(2) : hex;
+
+    try {
+        switch (coinInfo.type) {
+            case 'bitcoin':
+                // Coins on other curves hash transactions differently (single SHA-256 on Groestlcoin).
+                if (coinInfo.curveName !== 'secp256k1') return undefined;
+
+                return BitcoinJsTransaction.fromHex(rawHex, { network: coinInfo.network }).getId();
+            case 'ethereum':
+                // Blob transactions are sent together with their blobs, which the hash does not cover.
+                if (rawHex.startsWith('03')) return undefined;
+
+                return bytesToHex(keccak_256(hexToBytes(rawHex)));
+            case 'misc':
+                if (!['XRP', 'tXRP'].includes(coinInfo.shortcut)) return undefined;
+
+                // SHA-512Half of the transaction id prefix 'TXN\0' and the signed blob.
+                return bytesToHex(
+                    sha512(concatBytes(utf8ToBytes('TXN\0'), hexToBytes(rawHex))).slice(0, 32),
+                );
+            default:
+                return exhaustive(coinInfo);
+        }
+    } catch {
+        // Formats that are not parsed here, such as Zcash v5 transactions with shielded parts.
+        return undefined;
+    }
 };
 
 export type BlockchainOptions = {
@@ -311,10 +349,22 @@ export class Blockchain {
         return this.unsubscribeBlocks();
     }
 
-    pushTransaction(tx: PushTransaction['tx']) {
+    async pushTransaction(tx: PushTransaction['tx']) {
         const data = typeof tx === 'string' ? { hex: tx } : tx;
+        const expectedTxid = getTransactionId(this.coinInfo, data.hex);
+        const txid = await this.link.pushTransaction(data);
 
-        return this.link.pushTransaction(data);
+        if (
+            expectedTxid &&
+            (typeof txid !== 'string' || txid.replace(/^0x/, '').toLowerCase() !== expectedTxid)
+        ) {
+            throw ERRORS.TypedError(
+                'Backend_Error',
+                'Transaction id returned by the backend does not match the transaction',
+            );
+        }
+
+        return txid;
     }
 
     disconnect() {

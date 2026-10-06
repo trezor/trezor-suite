@@ -1055,7 +1055,11 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         return state
             ? {
                   properties: state.properties,
-                  credentials: state.credentials,
+                  // Only the handshake needs the host static key; device objects go to event
+                  // listeners and application storage.
+                  credentials: state.credentials.map(
+                      ({ host_static_key, ...credential }) => credential,
+                  ),
                   channel: state.channel,
               }
             : undefined;

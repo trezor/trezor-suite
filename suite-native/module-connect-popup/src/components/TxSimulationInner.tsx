@@ -90,7 +90,7 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                         size="medium"
                     />
                     <VStack flex={1} spacing="sp4">
-                        <Text>{source.manifest?.appName ?? source.origin}</Text>
+                        <Text>{source.manifest?.appName || source.origin}</Text>
                         {source.manifest?.appName && (
                             <Text color="contentSecondary">{source.origin}</Text>
                         )}

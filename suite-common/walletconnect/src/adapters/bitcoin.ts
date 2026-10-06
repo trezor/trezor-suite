@@ -19,6 +19,7 @@ import {
     type WalletConnectAdapter,
     type WalletConnectNamespace,
 } from '../walletConnectTypes';
+import { getSessionAccountIds } from '../walletConnectUtils';
 
 const methods = [
     'sendTransfer',
@@ -69,6 +70,9 @@ const bitcoinRequestThunk = createThunk<
     switch (event.params.request.method) {
         case 'getAccountAddresses': {
             const { account: firstAddress } = event.params.request.params;
+            // The store holds every remembered wallet; answer only for accounts of this session.
+            const sessionAccountIds = getSessionAccountIds(session, 'bip122');
+            if (!sessionAccountIds.includes(`${event.params.chainId}:${firstAddress}`)) return;
             const accounts = selectAccounts(getState());
             const account = findAccount(accounts, firstAddress);
             if (!account?.addresses) return;
@@ -94,6 +98,7 @@ const bitcoinRequestThunk = createThunk<
                 ...account.addresses.unused,
             ].find(a => a.address === address || !address);
             if (!addressInfo) throw new Error('Address not found');
+            const deferred = trezorConnectPopupActions.createPopupCallDeferred();
             dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
                     method: 'signMessage',
@@ -105,9 +110,10 @@ const bitcoinRequestThunk = createThunk<
                         device,
                     },
                     ...popupCallCommonParams,
+                    responseId: deferred.id,
                 }),
             );
-            const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+            const response = await deferred.promise;
             if (!response.success) {
                 console.error('signMessage error', response);
                 throw new Error('signMessage error');
@@ -176,6 +182,7 @@ const bitcoinRequestThunk = createThunk<
                 console.error('composeTransaction error', precomposedTransaction);
                 throw new Error('composeTransaction error');
             }
+            const deferred = trezorConnectPopupActions.createPopupCallDeferred();
             dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
                     method: 'signTransaction',
@@ -191,9 +198,10 @@ const bitcoinRequestThunk = createThunk<
                         version: 2,
                     },
                     ...popupCallCommonParams,
+                    responseId: deferred.id,
                 }),
             );
-            const signResponse = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+            const signResponse = await deferred.promise;
             if (!signResponse.success) {
                 console.error('signTransaction error', signResponse);
                 throw new Error('signTransaction error');

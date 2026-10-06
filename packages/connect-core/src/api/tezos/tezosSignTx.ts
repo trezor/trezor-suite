@@ -134,6 +134,28 @@ export const createTx = (
 
         if (transaction.parameters_manager) {
             const { parameters_manager } = transaction;
+            // The device signs a single manager operation and reads a present cancel_delegate as
+            // a cancellation whatever its value, so exactly one operation goes into the message.
+            const managerOperationCount = [
+                parameters_manager.set_delegate,
+                parameters_manager.cancel_delegate === true,
+                parameters_manager.transfer,
+            ].filter(Boolean).length;
+            if (managerOperationCount !== 1) {
+                throw ERRORS.TypedError(
+                    'Method_InvalidParameter',
+                    'Tezos parameters_manager requires exactly one of set_delegate, cancel_delegate: true or transfer',
+                );
+            }
+
+            // The manager.tz %do entrypoint accepts only a zero amount.
+            if (transaction.amount !== 0) {
+                throw ERRORS.TypedError(
+                    'Method_InvalidParameter',
+                    'Tezos parameters_manager requires amount 0',
+                );
+            }
+
             if (parameters_manager.set_delegate) {
                 message = {
                     ...message,
@@ -147,7 +169,7 @@ export const createTx = (
                 };
             }
 
-            if (Object.prototype.hasOwnProperty.call(parameters_manager, 'cancel_delegate')) {
+            if (parameters_manager.cancel_delegate === true) {
                 message = {
                     ...message,
                     transaction: {

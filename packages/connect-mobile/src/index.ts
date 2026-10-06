@@ -51,6 +51,13 @@ const buildUrl = ({ method, id, params, connectSrc, callbackUrl, manifest }: Bui
     );
 };
 
+// Responses arrive at the configured callback URL with `id` and `response` added. Scheme and host
+// are case-insensitive, and static hosts may redirect a path to itself with a trailing slash.
+const isCallbackUrl = (url: URL, callbackUrl: URL) =>
+    url.protocol.toLowerCase() === callbackUrl.protocol.toLowerCase() &&
+    url.host.toLowerCase() === callbackUrl.host.toLowerCase() &&
+    removeTrailingSlashes(url.pathname) === removeTrailingSlashes(callbackUrl.pathname);
+
 export class TrezorConnectDeeplink implements TrezorConnectCore<ConnectMobileSettings> {
     // Prefer crypto.randomUUID, but fall back to a weak id where `crypto` is absent: connect-mobile
     // is a published deeplink transport for third-party React Native apps that may lack a `crypto`
@@ -63,6 +70,8 @@ export class TrezorConnectDeeplink implements TrezorConnectCore<ConnectMobileSet
     });
 
     private manifest?: Manifest;
+
+    private callbackUrl?: URL;
 
     private openDeeplink: (method: string, id: string, params: any) => void = () => {
         throw ERRORS.TypedError('Init_NotInitialized');
@@ -86,7 +95,7 @@ export class TrezorConnectDeeplink implements TrezorConnectCore<ConnectMobileSet
             throw new Error('TrezorConnect native requires "deeplinkCallbackUrl" setting.');
         }
         try {
-            new URL(deeplinkCallbackUrl);
+            this.callbackUrl = new URL(deeplinkCallbackUrl);
         } catch {
             throw new Error('Provided "deeplinkCallbackUrl" is not valid.');
         }
@@ -149,12 +158,12 @@ export class TrezorConnectDeeplink implements TrezorConnectCore<ConnectMobileSet
         try {
             parsedUrl = new URL(url);
             id = parsedUrl.searchParams.get('id');
-            if (!id) throw new Error('Missing `id` parameter.');
-        } catch (error) {
-            this.resolveMessagePromises({ success: false, error });
-
+        } catch {
             return;
         }
+        // Apps pass every incoming deeplink here, so only a URL at the callback that names a call
+        // is a response; any other deeplink leaves pending calls untouched.
+        if (!id || !this.callbackUrl || !isCallbackUrl(parsedUrl, this.callbackUrl)) return;
 
         const responseParam = parsedUrl.searchParams.get('response');
         if (!responseParam) {
@@ -174,12 +183,14 @@ export class TrezorConnectDeeplink implements TrezorConnectCore<ConnectMobileSet
             /* empty */
         }
 
-        if (!parsedParams) {
+        if (!parsedParams || typeof parsedParams !== 'object') {
             this.messages.resolve(id, {
                 id,
                 success: false,
                 error: 'Error parsing deeplink params.',
             });
+
+            return;
         }
 
         const { success, payload } = parsedParams;

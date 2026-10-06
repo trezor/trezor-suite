@@ -17,7 +17,7 @@ import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLin
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
-import { bundlify, validateParams } from './common/paramsValidator';
+import { bundlify, validateCoinPath, validateParams } from './common/paramsValidator';
 import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
 import { buildOutputDescriptor } from '../utils/buildOutputDescriptor';
 import { getScriptType, validatePath } from '../utils/pathUtils';
@@ -71,6 +71,15 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             if (batch.path) {
                 // Length 2 to allow root paths of single-account types.
                 address_n = validatePath(batch.path, 2);
+                // The device also derives Bitcoin keys and Ethereum addresses at paths of other
+                // coins, so the path must be in the SLIP-44 coin type of `coin`; legacy accounts of
+                // EVM testnets use coin type 1. Other networks' firmware apps check their own paths.
+                if (
+                    coinInfo.type === 'bitcoin' ||
+                    (coinInfo.type === 'ethereum' && fromHardenedPathPart(address_n[1] ?? 0) !== 1)
+                ) {
+                    validateCoinPath(address_n, coinInfo);
+                }
                 // since there is no descriptor device will be used
                 willUseDevice = typeof batch.descriptor !== 'string';
             }

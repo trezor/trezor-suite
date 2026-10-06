@@ -25,3 +25,12 @@ export const getSessionNetworks = (session: WalletConnectSession) => {
 
     return networks;
 };
+
+/**
+ * CAIP-10 ids of the session's accounts in a namespace. Only Suite sets the namespaces of a session
+ * it controls; the peer controls a sign-in session and can change its namespaces.
+ */
+export const getSessionAccountIds = (session: WalletConnectSession, namespaceId: string) =>
+    session.controller !== undefined && session.controller === session.self?.publicKey
+        ? (session.namespaces[namespaceId]?.accounts ?? [])
+        : [];

@@ -3,6 +3,7 @@ import type { CallMethodKeys } from '@trezor/connect';
 import { addressConfirmationModalHooks } from './addressConfirmation';
 import { bitcoinSignTransaction } from './bitcoinSignTransaction';
 import { cardanoGetPublicKeyCompat } from './cardanoGetPublicKeyCompat';
+import { cipherKeyValueHooks } from './cipherKeyValue';
 import { composeTransaction } from './composeTransaction';
 import { ethereumSignTransaction } from './ethereumSignTransaction';
 import { getPublicKeyV9Compat } from './getPublicKeyV9Compat';
@@ -33,6 +34,7 @@ export const validateCallHooks = <M extends CallMethodKeys>(
     params: Pick<PreCallHookParams<M>, 'method' | 'payload'>,
 ) => {
     selectAccountHooks.validateHook(params);
+    cipherKeyValueHooks.validateHook(params);
 };
 
 export const preCallHooks = async <M extends CallMethodKeys>(params: PreCallHookParams<M>) => {

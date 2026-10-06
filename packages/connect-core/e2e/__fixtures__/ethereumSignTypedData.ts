@@ -52,6 +52,11 @@ const fixtures = [...ethereumDefinitionFixture, ...commonFixtures.tests]
                 },
             ];
         }
+        if (name === 'struct_list_non_v4') {
+            // T1B1 signs only hashes that match the v4 hashes of `data`, and the
+            // non-v4 encoding of arrays of structs differs from them.
+            legacyResults = [...legacyResults, { rules: ['1'], success: false }];
+        }
 
         // Upstream fixture has show_message_hash as a hash string,
         // but TrezorConnect API expects show_message_hash?: boolean.

@@ -29,6 +29,9 @@ const preCallHook = async <M extends CallMethodKeys>({
 }: PreCallHookParams<M>) => {
     try {
         if (method === 'solanaSignTransaction') {
+            // The review modal shows the transaction kept in the send form state, which may
+            // still be an earlier call's when this call gets no review of its own.
+            dispatch(sendFormActions.discardTransaction());
             const typedPayload = payload as any as SolanaSignTransaction;
             const path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
             const network = getNetwork(typedPayload.additionalInfo?.isDevnet ? 'dsol' : 'sol');
