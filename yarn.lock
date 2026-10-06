@@ -44692,10 +44692,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"seroval@npm:~1.5.4":
-  version: 1.5.6
-  resolution: "seroval@npm:1.5.6"
-  checksum: 10/4d685bfdfd69b30c432f05b05a576d44ce50bbb80979988fcd29ebd8adb49598c597835b8c348cebb3559180e1b12643e29a6ecc913903a2105c651f13813646
+"seroval@npm:^1.6.2":
+  version: 1.6.7
+  resolution: "seroval@npm:1.6.7"
+  checksum: 10/393aef5b09a0a9557268cc95552cbf4153418bcde04a5c2bfae988983e5b41f639e35a9bad04834268ac0879c18b04904374095e639ea6999e050a02b7fe4bbb
   languageName: node
   linkType: hard
 

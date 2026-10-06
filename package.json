@@ -131,6 +131,7 @@
         "test-renderer": "1.2.0",
         "### Security fixes forced outside the range requested by the dependent package (dev only), check Dependabot alerts": "1.0.0",
         "shell-quote": "^1.11.0",
+        "seroval": "^1.6.2",
         "@solana/rpc@npm:6.9.0": "patch:@solana/rpc@npm%3A6.9.0#~/.yarn/patches/@solana-rpc-npm-6.9.0-ba7976484d.patch"
     },
     "devDependencies": {
