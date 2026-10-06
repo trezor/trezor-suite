@@ -43,7 +43,6 @@ type ActiveTabProps = AccountAssetsTabListProps & {
     activeTab: AccountOverviewTab;
     flowType: AccountOverviewFlow;
     onSelect: OnSelectAsset;
-    onScroll: OnScroll;
 };
 
 const TokensTab = ({
@@ -53,7 +52,7 @@ const TokensTab = ({
     ListHeaderComponent,
     onSelect,
     onScroll,
-}: ActiveTabProps) => {
+}: ActiveTabProps & { onScroll: OnScroll }) => {
     switch (activeTab) {
         case 'tokens':
             return (
@@ -119,8 +118,6 @@ export const AccountOverviewTabContent = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const { scrollDivider, handleScroll } = useScrollDivider();
-
     const isAssetDetailFeatureEnabled = useIsExperimentVariantActive({
         experimentId: ExperimentId.assetFirstHomeTable,
         variant: 'B',
@@ -166,16 +163,13 @@ export const AccountOverviewTabContent = ({
     );
 
     return (
-        <Box flex={1}>
-            {scrollDivider}
-            <ActiveTab
-                accountKey={accountKey}
-                activeTab={activeTab}
-                flowType={flowType}
-                ListHeaderComponent={ListHeaderComponent}
-                onSelect={handleSelect}
-                onScroll={handleScroll}
-            />
-        </Box>
+        <ActiveTab
+            key={activeTab}
+            accountKey={accountKey}
+            activeTab={activeTab}
+            flowType={flowType}
+            ListHeaderComponent={ListHeaderComponent}
+            onSelect={handleSelect}
+        />
     );
 };
