@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.10.0.3
+
+- recreate the `tokenManagement` store when an earlier failed upgrade left it missing
+
 ## 26.10.0.2
 
 - add `stellarContractTokens` object store (Soroban contract ids watched per account)
