@@ -448,6 +448,31 @@ export const connectPopupDeeplinkThunk = createThunk<
     );
 });
 
+type ConnectPopupAnswerRefusedDeeplinkCallThunkState = ConnectPopupStateRootState;
+
+/**
+ * Answers a declined deeplink call from a Connect 9 app, which is held back until the user has
+ * seen the reason. Both ways out of the screen — the Close button and leaving it — go through
+ * this, and it answers at most once: after the first answer the call is no longer in `call-error`,
+ * so the other way out is a no-op.
+ */
+export const connectPopupAnswerRefusedDeeplinkCallThunk = createThunk<
+    void,
+    void,
+    { state: ConnectPopupAnswerRefusedDeeplinkCallThunkState }
+>(`${CONNECT_POPUP_MODULE}/answerRefusedDeeplinkCallThunk`, (_, { dispatch, getState }) => {
+    const activeCall = selectConnectPopupCall(getState());
+    if (
+        activeCall?.state !== 'call-error' ||
+        !activeCall.isConnectV9Refusal ||
+        !activeCall.callbackUrl
+    )
+        return;
+
+    dispatch(connectPopupActions.finishCall());
+    dispatch(connectPopupActions.deeplinkCallback({ callbackUrl: activeCall.callbackUrl }));
+});
+
 type ConnectPopupVerifyAddressThunkState = DeviceRootState & ConnectPopupStateRootState;
 
 type ConnectPopupVerifyAddressThunkDeps = {

@@ -4,6 +4,7 @@ import { connectPopupActions } from './connectPopupActions';
 import { connectPopupInitialState, prepareConnectPopupReducer } from './connectPopupReducer';
 import {
     type AppRememberedPermission,
+    CALL_SOURCE_DEEPLINK,
     CALL_SOURCE_DESKTOP_WS,
     CALL_SOURCE_MCP,
     CALL_SOURCE_WALLETCONNECT,
@@ -93,6 +94,14 @@ describe('storageLoad', () => {
 describe('refuseConnectV9Call', () => {
     const { allowedPermissions: _allowedPermissions, ...appSource } = app;
 
+    const deeplinkSource: ConnectCallSource = {
+        type: CALL_SOURCE_DEEPLINK,
+        origin: 'myapp://callback',
+        manifest: { appName: 'App' },
+        isConnectV9: true,
+        isConnectV9Certain: true,
+    };
+
     const refuseCall = (
         state: ReturnType<typeof connectPopupReducer>,
         source: ConnectCallSource,
@@ -112,6 +121,7 @@ describe('refuseConnectV9Call', () => {
         expect(refuseCall(connectPopupInitialState, appSource).activeCall).toMatchObject({
             state: 'call-error',
             method: 'getAddress',
+            isConnectV9Refusal: true,
             error: { message: 'Update to Connect 10.' },
         });
     });
@@ -134,5 +144,32 @@ describe('refuseConnectV9Call', () => {
         );
 
         expect(refuseCall(closed, appSource).activeCall).toBeUndefined();
+    });
+
+    it('shows every declined deeplink call, because each one opened Suite', () => {
+        const state = refuseCall(
+            refuseCall(connectPopupInitialState, deeplinkSource),
+            deeplinkSource,
+            'getPublicKey',
+        );
+
+        expect(state.activeCall).toMatchObject({
+            state: 'call-error',
+            method: 'getPublicKey',
+            isConnectV9Refusal: true,
+        });
+    });
+
+    it('parks the callback URL on a declined deeplink call instead of answering it right away', () => {
+        const declined = refuseCall(connectPopupInitialState, deeplinkSource);
+        const state = connectPopupReducer(
+            declined,
+            connectPopupActions.deeplinkCallback({ callbackUrl: 'myapp://callback?id=12' }),
+        );
+
+        expect(state.activeCall).toMatchObject({
+            state: 'call-error',
+            callbackUrl: 'myapp://callback?id=12',
+        });
     });
 });
