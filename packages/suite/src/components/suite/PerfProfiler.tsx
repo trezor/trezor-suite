@@ -9,11 +9,7 @@ export type PerfTotals = {
     longestMs: number;
 };
 
-const LOG_INTERVAL_MS = 1000;
-
 const totals = new Map<string, PerfTotals>();
-
-let lastLoggedAt = 0;
 
 const round = (value: number) => Math.round(value * 100) / 100;
 
@@ -31,33 +27,24 @@ const readTotals = () =>
         ]),
     );
 
-const log = () => {
-    const now = performance.now();
-
-    if (now - lastLoggedAt < LOG_INTERVAL_MS) {
-        return;
-    }
-
-    lastLoggedAt = now;
-
-    totals.forEach(({ renders, totalMs, longestMs }, id) => {
-        console.info(
-            `[perf] ${id}: ${renders} renders, ${round(totalMs)} ms total, ${round(
-                totalMs / renders,
-            )} ms average, ${round(longestMs)} ms longest`,
-        );
-    });
-};
-
 const reportRender = (id: string, _phase: unknown, actualDuration: number) => {
     const held = totals.get(id) ?? { renders: 0, totalMs: 0, lastMs: 0, longestMs: 0 };
 
-    totals.set(id, {
+    const next = {
         renders: held.renders + 1,
         totalMs: held.totalMs + actualDuration,
         lastMs: actualDuration,
         longestMs: Math.max(held.longestMs, actualDuration),
-    });
+    };
+    totals.set(id, next);
+
+    console.info(
+        `[perf] ${id}: ${round(actualDuration)} ms — ${next.renders} renders, ${round(
+            next.totalMs,
+        )} ms total, ${round(next.totalMs / next.renders)} ms average, ${round(
+            next.longestMs,
+        )} ms longest`,
+    );
 
     // The end-to-end performance instrumentation, where it is installed, reports these as metrics
     // of its own; by hand they are read off `window.perf` or from the console.
@@ -65,8 +52,6 @@ const reportRender = (id: string, _phase: unknown, actualDuration: number) => {
         id,
         actualDuration,
     );
-
-    log();
 };
 
 if (typeof window !== 'undefined') {
@@ -78,7 +63,6 @@ if (typeof window !== 'undefined') {
         },
         reset: () => {
             totals.clear();
-            lastLoggedAt = 0;
         },
     };
 }
@@ -89,8 +73,8 @@ type PerfProfilerProps = {
 };
 
 /**
- * Reports what React spends rendering its subtree: to the end-to-end performance instrumentation
- * where that is installed, to `window.perf` and the console otherwise.
+ * Reports what React spends rendering its subtree: a console line per render, a running total on
+ * `window.perf`, and the end-to-end performance instrumentation where that is installed.
  */
 export const PerfProfiler = ({ id, children }: PerfProfilerProps) => (
     <Profiler id={id} onRender={reportRender}>
