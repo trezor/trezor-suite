@@ -22,6 +22,7 @@ import {
 } from './connectPopupReducer';
 import {
     type ConnectPopupCallInnerThunkDeps,
+    type ConnectPopupCallInnerThunkState,
     type ConnectPopupLoadSelectAccountPageThunkState,
     connectPopupCallInnerThunk,
     connectPopupFinishCallThunk,
@@ -302,7 +303,11 @@ describe('connectPopupCallInnerThunk', () => {
         };
         const deferred = getPopupCallDeferred(true);
 
-        await connectPopupCallInnerThunk(params)(dispatch, jest.fn(), extra);
+        // A store without the message system: selectConnectV9RefusalMessage, the first thing the
+        // thunk reads the state for, declines nothing then.
+        const getState = jest.fn(() => ({}) as ConnectPopupCallInnerThunkState);
+
+        await connectPopupCallInnerThunk(params)(dispatch, getState, extra);
 
         return { dispatch, deferred, ...extra.services, report: extra.services.analytics.report };
     };

@@ -109,6 +109,21 @@ const setError = createAction(`${ACTION_PREFIX}/setError`, (payload: ConnectSeri
     payload,
 }));
 
+type RefuseConnectV9CallPayload = Pick<
+    ConnectPopupCallWithState<'call-error'>,
+    'method' | 'payload' | 'source' | 'error'
+>;
+
+const refuseConnectV9Call = createAction(
+    `${ACTION_PREFIX}/refuseConnectV9Call`,
+    (payload: RefuseConnectV9CallPayload) => ({
+        payload,
+    }),
+);
+
+// The user closed the error modal of a declined Connect 9 call (see refuseConnectV9Call).
+const dismissConnectV9Refusal = createAction(`${ACTION_PREFIX}/dismissConnectV9Refusal`);
+
 const rememberAppPermissions = createAction(
     `${ACTION_PREFIX}/rememberAppPermissions`,
     (payload: AppRememberedPermission) => ({
@@ -177,6 +192,8 @@ export const connectPopupActions = {
     setSelectedAccountKey,
     deeplinkCallback,
     setError,
+    refuseConnectV9Call,
+    dismissConnectV9Refusal,
     rememberAppPermissions,
     forgetAppPermissions,
     forgetAppPermission,
