@@ -40,7 +40,7 @@ export const buildMessage = ({ name, data, protocol, thpState }: BuildMessagePro
 
         // We want to know if any message exceeds the 8192 bytes limit, log it to sentry if enabled
         // https://github.com/trezor/trezor-firmware/blob/78184de0a4b840f4be1cf4c565eba4c6692af5ef/core/src/trezor/wire/__init__.py#L167
-        if (message.byteLength > 8192) {
+        if (name !== 'FirmwareUpload' && message.byteLength > 8192) {
             console.error(`Message size exceeds 8192 bytes: ${name} ${message.byteLength}`);
         }
 
