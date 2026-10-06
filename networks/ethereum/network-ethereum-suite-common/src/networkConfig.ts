@@ -433,7 +433,8 @@ export const networkConfigBySymbol = {
         // Arc's native asset is USDC, so the balance prices against the USDC market; the platform
         // id only matters for tokens, which are not verified against a definitions list here.
         coingeckoId: 'arc',
-        tradeCryptoId: 'usd-coin',
+        tradeCryptoId: 'arc--0x0000000000000000000000000000000000000000',
+        fiatRateCryptoId: 'usd-coin',
         caipId: 'eip155:5042',
         yieldXyzId: null,
     },
