@@ -10,3 +10,7 @@ export * from './storeInjectors';
 export * from './extraWithStoreThunkMiddleware';
 export { createReduxExtra, type ReduxStoreWithThunk } from './createReduxExtra';
 export * from './unwrapWithError';
+export type * from './indexes/indexTypes';
+export * from './indexes/createIndex';
+export * from './indexes/createSecondaryIndex';
+export { EMPTY_INDEX_ENTITIES, EMPTY_INDEX_IDS } from './indexes/indexUtils';
