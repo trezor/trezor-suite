@@ -5,6 +5,7 @@
         { "path": "../device" },
         { "path": "../networks" },
         { "path": "../redux-utils" },
+        { "path": "../token-definitions" },
         { "path": "../wallet-config" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },

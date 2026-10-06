@@ -35,7 +35,8 @@ import {
     selectWalletAssetAmount,
     selectWalletAssetDisplaySymbol,
     selectWalletAssetSymbol,
-} from './homeAssetTableSelectors';
+} from './__fixtures__/legacyHomeAssetTableSelectors';
+import * as shipped from './homeAssetTableSelectors';
 
 // The table read two ways over one state: through the selectors it ships with, and through a
 // selector that only shapes the assets with an index and a secondary index over it. Both are read
@@ -365,6 +366,36 @@ const selectChainNetworkFiatValue = (state: HomeAssetTableState, symbol: Network
 
 // --- Reading the table the way the components do.
 
+/** The module as shipped — the index chain behind the selector names the components call. */
+const readThroughShipped = (state: HomeAssetTableState): TableRead => {
+    const rows = shipped.selectShownWalletAssetKeys(state);
+    const sections = shipped.selectShownNetworkSymbols(state);
+
+    return {
+        rows,
+        rowValues: new Map(
+            rows.map(assetKey => [
+                assetKey,
+                [
+                    shipped.selectWalletAssetSymbol(state, assetKey),
+                    shipped.selectWalletAssetDisplaySymbol(state, assetKey),
+                    shipped.selectWalletAssetAmount(state, assetKey),
+                ],
+            ]),
+        ),
+        sections,
+        sectionValues: new Map(
+            sections.map(symbol => [
+                symbol,
+                [
+                    shipped.selectShownWalletAssetKeysOfNetwork(state, symbol),
+                    shipped.selectNetworkFiatValue(state, symbol),
+                ],
+            ]),
+        ),
+    };
+};
+
 type TableRead = {
     rows: readonly WalletAssetKey[];
     rowValues: ReadonlyMap<string, readonly unknown[]>;
@@ -537,7 +568,7 @@ const accountAdded: Scenario = {
 
 type Measurement = {
     scenario: string;
-    reader: 'selectors' | 'indexes' | 'chain';
+    reader: 'selectors' | 'indexes' | 'chain' | 'shipped';
     ms: number;
     rowsChanged: number;
     sectionsChanged: number;
@@ -700,6 +731,8 @@ describe(`the home asset table over ${NETWORKS.length * ACCOUNTS_PER_NETWORK} ac
 
         expect(readThroughIndexes(state).rows).toEqual(readThroughSelectors(state).rows);
         expect(readThroughChain(state).rows).toEqual(readThroughSelectors(state).rows);
+        expect(readThroughShipped(state).rows).toEqual(readThroughSelectors(state).rows);
+        expect(readThroughShipped(state).sections).toEqual(readThroughSelectors(state).sections);
         expect(readThroughIndexes(state).rows).toHaveLength(rowCount);
         expect(readThroughIndexes(state).sections).toEqual(readThroughSelectors(state).sections);
         expect([...readThroughChain(state).sections].sort()).toEqual(
@@ -714,6 +747,7 @@ describe(`the home asset table over ${NETWORKS.length * ACCOUNTS_PER_NETWORK} ac
             ['selectors', readThroughSelectors],
             ['indexes', readThroughIndexes],
             ['chain', readThroughChain],
+            ['shipped', readThroughShipped],
         ] as const) {
             measurements.push(measureCold(reader, read), measureCached(reader, read));
 
@@ -745,7 +779,7 @@ describe(`the home asset table over ${NETWORKS.length * ACCOUNTS_PER_NETWORK} ac
         // A write to one account's balance reaches the row of that asset and its network and
         // nothing else — through both readers: the selectors answer primitives per row and keep
         // their lists through hand-written equality checks, the indexes keep them by construction.
-        for (const reader of ['selectors', 'indexes', 'chain'] as const) {
+        for (const reader of ['selectors', 'indexes', 'chain', 'shipped'] as const) {
             expect(of(reader, writeOneBalance.name).rowsChanged).toBe(1);
             expect(of(reader, writeOneBalance.name).sectionsChanged).toBe(1);
             expect(of(reader, ratesTick.name).rowsChanged).toBe(0);
@@ -791,6 +825,59 @@ describe(`the home asset table over ${NETWORKS.length * ACCOUNTS_PER_NETWORK} ac
         expect(of('chain', writeOneBalance.name).ms).toBeLessThan(
             of('selectors', writeOneBalance.name).ms,
         );
+        expect(of('shipped', writeOneBalance.name).ms).toBeLessThan(
+            of('selectors', writeOneBalance.name).ms,
+        );
         expect(indexedDiscovery.ms).toBeLessThan(Math.max(discovery.ms * 3, 50));
+    });
+});
+
+// A primary index against the plainest selector that answers the same question: the keys of the
+// accounts. One balance written among a thousand accounts gives the selector a new array to hand
+// back — it has no way to know the keys stood — where the index hands back the one it had.
+describe(`the keys of ${NETWORKS.length * ACCOUNTS_PER_NETWORK} accounts, one balance written`, () => {
+    const selectAccountKeys = createPerfSelector([selectVisibleDeviceAccounts], accounts =>
+        accounts.map(account => account.key),
+    );
+    const accountKeysIndex = createIndex({
+        name: 'perfAccountKeys',
+        source: selectVisibleDeviceAccounts,
+        getId: (account: Account) => account.key,
+    });
+
+    it('is the same array through the index and a new one through the selector', () => {
+        const samples = { selector: [] as number[], index: [] as number[] };
+        let selectorKeysChanged = false;
+        let indexKeysChanged = false;
+        let after = createState(createFixture());
+
+        for (let repeat = 0; repeat < REPEATS; repeat++) {
+            const fixture = createFixture();
+            const before = createState(fixture);
+            after = createState(writeOneBalance.next(fixture));
+            const keysBefore = selectAccountKeys(before);
+            const idsBefore = accountKeysIndex.getIds(before);
+
+            samples.selector.push(
+                timed(() => {
+                    selectorKeysChanged = selectAccountKeys(after) !== keysBefore;
+                }),
+            );
+            samples.index.push(
+                timed(() => {
+                    indexKeysChanged = accountKeysIndex.getIds(after) !== idsBefore;
+                }),
+            );
+        }
+
+        if (process.env.PERF !== undefined) {
+            process.stdout.write(
+                `\naccount keys, one balance written: selector ${(median(samples.selector) * 1000).toFixed(1)} µs (new array), index ${(median(samples.index) * 1000).toFixed(1)} µs (same array)\n\n`,
+            );
+        }
+
+        expect(selectorKeysChanged).toBe(true);
+        expect(indexKeysChanged).toBe(false);
+        expect(accountKeysIndex.getIds(after)).toEqual(selectAccountKeys(after));
     });
 });
