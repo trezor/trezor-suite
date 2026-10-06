@@ -238,16 +238,7 @@ const actionCallback = (
         const composeTransactionsParams =
             TrezorConnect.composeTransaction.mock.calls[composeTransactionCallsLength - 1]?.[0];
 
-        if (result.composeTransactionParams.account && composeTransactionsParams) {
-            expect(composeTransactionsParams.utxo.length).toEqual(
-                result.composeTransactionParams.account.utxo.length,
-            );
-            expect(composeTransactionsParams.utxo).toMatchObject(
-                result.composeTransactionParams.account.utxo,
-            );
-        } else {
-            expect(composeTransactionsParams).toMatchObject(result.composeTransactionParams);
-        }
+        expect(composeTransactionsParams).toMatchObject(result.composeTransactionParams);
     }
     if (result.estimateFeeParams) {
         expect(TrezorConnect.blockchainEstimateFee).toHaveBeenLastCalledWith(
