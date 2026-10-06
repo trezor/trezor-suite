@@ -7,3 +7,4 @@ export * from './connectPopupTypes';
 export * from './connectPopupPromiseManager';
 export * from './permissions';
 export * from './hooks/useTxSimulationPopupCall';
+export * from './connectV9';
