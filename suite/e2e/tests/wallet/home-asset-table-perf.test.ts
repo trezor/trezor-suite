@@ -28,8 +28,25 @@ const NETWORKS = [
     asNetworkSymbol('xrp'),
 ];
 
+/**
+ * The seed and the passphrase come from the environment, so a wallet of your own can be measured
+ * without either of them being written down here. `E2E_MNEMONIC` is a seed or one of the names
+ * trezor-user-env knows; `E2E_PASSPHRASE`, when given, makes the measured wallet a passphrase one.
+ *
+ * Anything on screen is recorded: the run writes screenshots, a video and a trace under
+ * `suite/e2e/test-results`. With a seed of your own those hold its balances and addresses, so
+ * delete that directory when you are done.
+ */
+const MNEMONIC = process.env.E2E_MNEMONIC ?? 'mnemonic_all';
+const PASSPHRASE = process.env.E2E_PASSPHRASE;
+
+/** A passphrase wallet discovered over a seed funded everywhere outlasts the usual wait. */
+const DISCOVERY_TIMEOUT = 600_000;
+
 test.describe('Performance', { tag: ['@T3W1', '@T3T1', '@perf'] }, () => {
-    test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+    test.use({
+        deviceSetup: { mnemonic: MNEMONIC, passphrase_protection: PASSPHRASE !== undefined },
+    });
 
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
@@ -55,10 +72,24 @@ test.describe('Performance', { tag: ['@T3W1', '@T3T1', '@perf'] }, () => {
 
             await dashboardPage.openDeviceSwitcher();
 
-            await dashboardPage.ejectWallet();
+            const discoveryBar = page.getByTestId('@wallet/discovery-progress-bar');
+
+            if (PASSPHRASE === undefined) {
+                await dashboardPage.ejectWallet();
+            }
 
             await perf.measure('home-asset-table-discovery', async () => {
-                await dashboardPage.addStandardWallet();
+                if (PASSPHRASE === undefined) {
+                    await dashboardPage.addStandardWallet();
+
+                    return;
+                }
+
+                // The page object's own wait for discovery is shorter than a well used wallet
+                // needs, so the wait is here instead.
+                await dashboardPage.addHiddenWallet(PASSPHRASE, { skipDiscovery: true });
+                await discoveryBar.waitFor({ state: 'visible', timeout: 30_000 }).catch(() => {});
+                await expect(discoveryBar).toBeHidden({ timeout: DISCOVERY_TIMEOUT });
             });
 
             await expect(page.getByTestId('@dashboard/home-asset-table')).toBeVisible();
