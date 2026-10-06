@@ -141,6 +141,9 @@ export const Feature = {
     mevProtection: 'settings.mevProtection',
     suiteSync: 'settings.suiteSync',
     referAFriend: 'referAFriend',
+    connectV9: {
+        warning: 'connect.v9.warning',
+    },
 
     // Feature flags implemented only for mobile app
     firmwareUpdate: 'device.firmware.update',
