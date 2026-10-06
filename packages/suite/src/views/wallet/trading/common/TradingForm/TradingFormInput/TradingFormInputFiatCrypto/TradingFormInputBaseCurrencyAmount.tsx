@@ -98,7 +98,8 @@ export const TradingFormInputBaseCurrencyAmount = ({
         control: baseCurrencyForm.control,
         name: BASE_CURRENCY_AMOUNT_FIELD,
     });
-    const writtenCryptoAmountRef = useRef<string | undefined>(undefined);
+    const assetKey = `${symbol}:${tokenAddress ?? ''}`;
+    const typedRef = useRef<{ cryptoAmount: string; assetKey: string } | undefined>(undefined);
 
     const currencyLabel = useMemo(() => {
         const currencyCode = baseCurrency.toUpperCase();
@@ -129,15 +130,6 @@ export const TradingFormInputBaseCurrencyAmount = ({
 
         return formattedAmount ? new BigNumber(formattedAmount).toFixed() : '';
     }, [cryptoAmount, rate, isBaseCurrencyInSats, isInSats, symbol, baseCurrency]);
-
-    useEffect(() => {
-        if (cryptoAmount === writtenCryptoAmountRef.current) {
-            return;
-        }
-
-        writtenCryptoAmountRef.current = undefined;
-        baseCurrencyForm.setValue(BASE_CURRENCY_AMOUNT_FIELD, baseCurrencyAmountFromCrypto);
-    }, [cryptoAmount, baseCurrencyAmountFromCrypto, baseCurrencyForm]);
 
     const handleChange = useCallback(
         (baseCurrencyAmount: string) => {
@@ -172,13 +164,14 @@ export const TradingFormInputBaseCurrencyAmount = ({
             }
 
             clearErrors(fiatInputName);
-            writtenCryptoAmountRef.current = nextCryptoAmount;
+            typedRef.current = { cryptoAmount: nextCryptoAmount, assetKey };
             setValue(cryptoInputName, nextCryptoAmount, {
                 shouldValidate: true,
                 shouldDirty: true,
             });
         },
         [
+            assetKey,
             rate,
             isBaseCurrencyInSats,
             decimals,
@@ -191,6 +184,33 @@ export const TradingFormInputBaseCurrencyAmount = ({
             cryptoInputName,
         ],
     );
+
+    useEffect(() => {
+        const typed = typedRef.current;
+
+        if (typed && typed.assetKey !== assetKey) {
+            if (baseCurrencyAmount && rate) {
+                handleChange(baseCurrencyAmount);
+            }
+
+            return;
+        }
+
+        if (cryptoAmount === typed?.cryptoAmount) {
+            return;
+        }
+
+        typedRef.current = undefined;
+        baseCurrencyForm.setValue(BASE_CURRENCY_AMOUNT_FIELD, baseCurrencyAmountFromCrypto);
+    }, [
+        assetKey,
+        rate,
+        baseCurrencyAmount,
+        handleChange,
+        cryptoAmount,
+        baseCurrencyAmountFromCrypto,
+        baseCurrencyForm,
+    ]);
 
     if (!amountInCrypto && context.form.state.isFormLoading) {
         return <Skeleton animate width={TRADING_BASE_CURRENCY_SKELETON_WIDTH} />;
