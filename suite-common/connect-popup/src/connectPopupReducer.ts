@@ -6,6 +6,7 @@ import { connectPopupActions } from './connectPopupActions';
 import { getPermissionDeferred } from './connectPopupPromiseManager';
 import {
     type AppRememberedPermission,
+    CALL_SOURCE_DEEPLINK,
     CALL_SOURCE_WALLETCONNECT,
     type ConnectPopupCall,
     type ConnectPopupCallWithState,
@@ -22,7 +23,8 @@ export type ConnectPopupState = {
     permissions: AppRememberedPermission[];
     // Declined Connect 9 calls in this session (see refuseConnectV9Call), not persisted: the app
     // whose declined call was last put into the error modal, and the apps whose declined call has
-    // been closed there. Later calls of those apps are declined without the modal.
+    // been closed there. Later calls of those apps are declined without the modal. Declined deeplink
+    // calls are not tracked here, each of them is shown.
     connectV9RefusalShownApp?: ConnectV9RefusalApp;
     connectV9RefusalDismissedApps?: ConnectV9RefusalApp[];
 };
@@ -104,6 +106,24 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                 };
             })
             .addCase(connectPopupActions.refuseConnectV9Call, (state, { payload }) => {
+                const declinedCall: ConnectPopupCallWithState<'call-error'> = {
+                    ...payload,
+                    state: 'call-error',
+                    // The call is declined before Connect describes the method. The error modal
+                    // does not show any of this.
+                    methodInfo: { methodTitle: payload.method, permissionTypes: [], useUi: false },
+                    isConnectV9Refusal: true,
+                };
+
+                // Suite mobile is opened by the app for every deeplink call, and the app gets the
+                // answer when the error is closed (see deeplinkCallback), so every declined
+                // deeplink call is shown.
+                if (payload.source.type === CALL_SOURCE_DEEPLINK) {
+                    state.activeCall = declinedCall;
+
+                    return;
+                }
+
                 const app = getConnectV9RefusalApp(payload.source);
                 const shownApp = getConnectV9RefusalShownApp(state);
                 const isRefusalShown =
@@ -122,13 +142,7 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
 
                 state.connectV9RefusalShownApp = app;
                 // With the source of the declined call, so that the modal shows which app it was.
-                state.activeCall = {
-                    ...payload,
-                    state: 'call-error',
-                    // The call is declined before Connect describes the method. The error modal
-                    // does not show any of this.
-                    methodInfo: { methodTitle: payload.method, permissionTypes: [], useUi: false },
-                };
+                state.activeCall = declinedCall;
             })
             .addCase(connectPopupActions.requestPermissions, state => {
                 if (state.activeCall?.state === 'ongoing')
@@ -233,6 +247,17 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(connectPopupActions.deeplinkCallback, (state, { payload }) => {
+                // A declined call stays on the screen with its reason, Suite mobile opens the
+                // callback URL when the user closes it.
+                if (
+                    state.activeCall?.state === 'call-error' &&
+                    state.activeCall.isConnectV9Refusal
+                ) {
+                    state.activeCall.callbackUrl = payload.callbackUrl;
+
+                    return;
+                }
+
                 if (
                     state.activeCall?.state === 'finished' ||
                     state.activeCall?.state === 'address-confirmation'
@@ -249,6 +274,10 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                         ...state.activeCall,
                         state: 'call-error',
                         error: payload,
+                        // The previous call may be a declined call or a deeplink call whose app has
+                        // been answered. This error is neither, and closing it answers no app.
+                        isConnectV9Refusal: undefined,
+                        callbackUrl: undefined,
                     };
                 } else {
                     state.activeCall = {

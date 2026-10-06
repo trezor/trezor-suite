@@ -9,7 +9,9 @@ export type ConnectV9ErrorPayload = Partial<ConnectSerializedError> & {
 /**
  * Builds the `payload` of a failed Suite desktop response for Connect 9 clients. They show the
  * error text from `payload.error` and decide about a fallback by `payload.code`, so both are
- * needed. Connect 10 clients read only the `error` field of the response and ignore this payload.
+ * needed. Connect 10 clients of Suite desktop read only the `error` field of the response and
+ * ignore this payload. The answer to a deeplink call from a Connect 9 app gets the same payload,
+ * because `@trezor/connect-mobile` passes only `success` and `payload` to the app.
  *
  * How Connect 9.7.3 handles the response:
  * - The failed response type, with `payload.error` and `payload.code`:
@@ -20,6 +22,8 @@ export type ConnectV9ErrorPayload = Partial<ConnectSerializedError> & {
  *   https://github.com/trezor/trezor-suite/blob/40fe590051403f0c7c01012d652e0c30b10f645a/packages/connect/src/impl/dynamic.ts#L153-L158
  * - The codes that make connect-web leave Suite desktop:
  *   https://github.com/trezor/trezor-suite/blob/40fe590051403f0c7c01012d652e0c30b10f645a/packages/connect-web/src/index.ts#L75-L83
+ * - connect-mobile passes only `success` and `payload` of a deeplink answer to the app:
+ *   https://github.com/trezor/trezor-suite/blob/40fe590051403f0c7c01012d652e0c30b10f645a/packages/connect-mobile/src/index.ts#L156-L157
  *
  * How Connect 10 handles it, reading only `error`:
  * - https://github.com/trezor/trezor-suite/blob/8e437979f2db9e88fd5d279fae1eea7dddab5a81/packages/connect-web/src/impl/core-in-suite-desktop.ts#L156-L161

@@ -2,7 +2,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { connectPopupCallInnerThunk, selectConnectPopupCall } from '@suite-common/connect-popup';
+import {
+    connectPopupActions,
+    connectPopupCallInnerThunk,
+    selectConnectPopupCall,
+} from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Button, Card, PictogramTitleHeader, VStack } from '@suite-native/atoms';
@@ -22,6 +26,12 @@ export const ConnectErrorMessage = () => {
             case 'Deeplink_VersionMismatch':
                 return <Translation id="moduleConnectPopup.errors.versionUnsupported" />;
             case 'Method_NotAllowed':
+                // The reason for a declined call from a Connect 9 app comes from the message-system
+                // config, other calls keep the generic text.
+                if (popupCall.state === 'call-error' && popupCall.isConnectV9Refusal) {
+                    return popupCall.error.message;
+                }
+
                 return <Translation id="moduleConnectPopup.errors.methodNotAllowed" />;
             case 'Device_Disconnected':
             case 'Device_NotFound':
@@ -59,6 +69,16 @@ export const ConnectErrorMessage = () => {
             );
     };
     const onClose = () => {
+        // The app that made a declined call gets the answer once the user has seen the reason.
+        if (
+            popupCall.state === 'call-error' &&
+            popupCall.isConnectV9Refusal &&
+            popupCall.callbackUrl
+        ) {
+            dispatch(connectPopupActions.finishCall());
+            dispatch(connectPopupActions.deeplinkCallback({ callbackUrl: popupCall.callbackUrl }));
+        }
+
         if (navigation.canGoBack()) {
             navigation.goBack();
         }
