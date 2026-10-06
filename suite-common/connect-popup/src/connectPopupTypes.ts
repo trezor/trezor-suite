@@ -243,6 +243,11 @@ type ConnectPopupCallLoaded = {
           state: 'call-error';
           error: ConnectSerializedError;
           payload: any;
+          // Set for a call from a Connect 9 app that was declined (see refuseConnectV9Call).
+          isConnectV9Refusal?: boolean;
+          // For a declined deeplink call, the callback URL with the answer for the app. It is
+          // opened when the error is closed (see deeplinkCallback).
+          callbackUrl?: string;
       }
     | TxSimulationConnectPopupCallLoaded
     | {
