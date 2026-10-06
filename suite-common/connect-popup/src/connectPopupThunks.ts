@@ -34,6 +34,7 @@ import {
     isDeviceReconnectError,
     isUtxoNetwork,
 } from './connectPopupTypes';
+import { getConnectV9Deeplink } from './connectV9';
 import { type PopupFlowParams } from './popupFlows/CommonPopupFlow';
 import { createPopupFlow } from './popupFlows/createPopupFlow';
 import {
@@ -206,6 +207,7 @@ export const connectPopupDeeplinkThunk = createThunk<
                     appName: queryParams.appName ?? '',
                     appIcon: queryParams.appIcon ?? '',
                 },
+                ...getConnectV9Deeplink({ deeplinkUrl: parsedUrl, callbackUrl }),
             },
             method: method as CallMethodKeys,
             payload,

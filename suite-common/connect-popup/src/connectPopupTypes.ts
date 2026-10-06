@@ -82,6 +82,13 @@ export type ConnectCallSource = {
           type: typeof CALL_SOURCE_DEEPLINK;
           process?: undefined;
           manifest: ManifestPartial;
+          // Whether the app uses @trezor/connect-mobile 9.x (see getConnectV9Deeplink). A deeplink
+          // carries no npm version, and manifest.npmVersion stays empty so that the method hooks
+          // which check it do not apply to deeplink calls.
+          isConnectV9?: boolean;
+          // Whether the deeplink names major 9 in its path, so that this does not rest on the shape
+          // of the call id alone (see isCertainConnectV9Source). Only such a call may be declined.
+          isConnectV9Certain?: boolean;
       }
 );
 
