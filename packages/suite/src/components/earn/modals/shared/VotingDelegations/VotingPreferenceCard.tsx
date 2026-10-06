@@ -131,7 +131,12 @@ export const VotingPreferenceCard = ({
             <Column gap={16}>
                 <Column gap={4}>
                     <Row gap={8}>
-                        <Text typographyStyle="body-md-strong">{heading}</Text>
+                        <Text
+                            typographyStyle="body-md-strong"
+                            data-testid="@staking/voting-preference/heading"
+                        >
+                            {heading}
+                        </Text>
                         <Tooltip content={<Translation id="TR_STAKING_DELEGATION_INFO_TEXT" />}>
                             <Icon
                                 as={QuestionIcon}
@@ -160,7 +165,10 @@ export const VotingPreferenceCard = ({
                                 >
                                     <Column gap={2}>
                                         <Row gap={8}>
-                                            <Text typographyStyle="body-md-strong">
+                                            <Text
+                                                typographyStyle="body-md-strong"
+                                                data-testid="@staking/voting-preference/option-label"
+                                            >
                                                 <Translation id={option.label} />
                                             </Text>
                                             {option.badge && (
