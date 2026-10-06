@@ -61,6 +61,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'solana',
         tradeCryptoId: 'solana',
+        fiatRateCryptoId: 'solana',
         caipId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         nativeTokenReserve: '0.003',
         yieldXyzId: 'solana',
