@@ -69,3 +69,13 @@ export const getConnectV9Deeplink = ({
         isConnectV9Certain: hasCounterCallId && deeplinkConnectMajor === 9,
     };
 };
+
+/**
+ * The npm version that the connect-popup analytics events report for the calling app. A deeplink
+ * carries none, so a deeplink call from a Connect 9 app is reported as `9.x`.
+ */
+export const getConnectAnalyticsNpmVersion = (source: ConnectCallSource): string | undefined => {
+    if (source.type === CALL_SOURCE_DEEPLINK && source.isConnectV9 === true) return '9.x';
+
+    return source.manifest.npmVersion;
+};

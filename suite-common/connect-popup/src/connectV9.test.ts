@@ -1,6 +1,7 @@
 import { CALL_SOURCE_DEEPLINK, CALL_SOURCE_WEB, type ConnectCallSource } from './connectPopupTypes';
 import {
     type ConnectV9Deeplink,
+    getConnectAnalyticsNpmVersion,
     getConnectV9Deeplink,
     isCertainConnectV9Source,
     isConnectV9Source,
@@ -110,5 +111,19 @@ describe('isCertainConnectV9Source', () => {
         ],
     ])('reads %s', (_, source, expected) => {
         expect(isCertainConnectV9Source(source)).toBe(expected);
+    });
+});
+
+describe('getConnectAnalyticsNpmVersion', () => {
+    it('reports a deeplink call from a Connect 9 app as 9.x', () => {
+        expect(getConnectAnalyticsNpmVersion(deeplinkSource({ isConnectV9: true }))).toBe('9.x');
+    });
+
+    it('reports the npm version from the manifest as it is', () => {
+        expect(getConnectAnalyticsNpmVersion(webSource('9.7.3'))).toBe('9.7.3');
+    });
+
+    it('reports no version for a deeplink call from another app', () => {
+        expect(getConnectAnalyticsNpmVersion(deeplinkSource())).toBeUndefined();
     });
 });
