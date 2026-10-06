@@ -12,7 +12,7 @@ import {
 import { type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
@@ -74,6 +74,7 @@ import {
     selectTradingExchangeSelectedQuoteIsDex,
     selectTradingExchangeSelectedQuoteSwapSlippage,
     selectTradingExchangeSellCryptoIds,
+    selectTradingFormAccount,
     selectTradingFormCryptoId,
     selectTradingIsSlip24Allowed,
     selectTradingIsSlip24SellAllowed,
@@ -121,7 +122,10 @@ import coins from '../__fixtures__/coins.json';
 import platforms from '../__fixtures__/platforms.json';
 import { tradeApiFixtures } from '../__fixtures__/tradeApi';
 import { accountBtc, accountEth } from '../__fixtures__/utils';
-import { TRADING_SLIP24_SUPPORTED_NETWORK_TYPES } from '../constants';
+import {
+    TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID,
+    TRADING_SLIP24_SUPPORTED_NETWORK_TYPES,
+} from '../constants';
 import { getProviderMetadataFixture } from '../reducers/__fixtures__/providerMetadata';
 import { type BuyInfo, type TradingBuyState } from '../reducers/buyReducer';
 import { type ExchangeInfo, exchangeInitialState } from '../reducers/exchangeReducer';
@@ -1630,6 +1634,150 @@ describe('tradingSelectors', () => {
             formState.wallet.trading.exchange.tradingAccountKey = eligibleEth.key;
             formState.wallet.trading.prefilledFromAccount = {
                 key: eligibleEth.key,
+                cryptoId: 'ethereum' as CryptoId,
+            };
+
+            expect(selectTradingFormCryptoId(formState, 'exchange')).toBe('ethereum');
+        });
+
+        it('should use the default USDT for an exchange ETH account without prefill', () => {
+            formState.wallet.trading.exchange.tradingAccountKey = eligibleEth.key;
+            formState.wallet.trading.prefilledFromAccount = { key: undefined, cryptoId: undefined };
+
+            expect(selectTradingFormCryptoId(formState, 'exchange')).toBe(
+                TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID,
+            );
+        });
+    });
+
+    describe('default preselected assets', () => {
+        const createAccount = (symbol: string, descriptor: string, balance: string) =>
+            mockWalletAccount({
+                symbol: asNetworkSymbol(symbol),
+                descriptor,
+                deviceState: accountBtc.deviceState as StaticSessionId,
+                balance,
+                formattedBalance: balance,
+                tokens: [],
+            });
+
+        const emptyBtc = createAccount('btc', 'btcEmpty', '0');
+        const fundedBtc = createAccount('btc', 'btcFunded', '1000');
+        const emptyEth = createAccount('eth', 'ethEmpty', '0');
+        const fundedEth = createAccount('eth', 'ethFunded', '1000');
+        const fundedLtc = createAccount('ltc', 'ltcFunded', '1000');
+
+        const getFormState = (accounts: Account[]): TradingFormAccountRootState => ({
+            ...state,
+            tokenDefinitions: {},
+            wallet: {
+                ...state.wallet,
+                accounts,
+                trading: {
+                    ...state.wallet.trading,
+                    buy: { ...state.wallet.trading.buy, tradingAccountKey: undefined },
+                    sell: { ...state.wallet.trading.sell, tradingAccountKey: undefined },
+                    exchange: { ...state.wallet.trading.exchange, tradingAccountKey: undefined },
+                    prefilledFromAccount: { key: undefined, cryptoId: undefined },
+                },
+            },
+        });
+
+        it.each<[string, TradingType, Account[], Account | undefined, CryptoId | undefined]>([
+            [
+                'buy: BTC account even if not first',
+                'buy',
+                [fundedEth, emptyBtc],
+                emptyBtc,
+                'bitcoin' as CryptoId,
+            ],
+            [
+                'buy: first account without a BTC account',
+                'buy',
+                [fundedEth, fundedLtc],
+                fundedEth,
+                'ethereum' as CryptoId,
+            ],
+            [
+                'sell: BTC account with zero balance',
+                'sell',
+                [fundedLtc, emptyBtc],
+                emptyBtc,
+                'bitcoin' as CryptoId,
+            ],
+            [
+                'sell: funded BTC account first',
+                'sell',
+                [emptyBtc, fundedBtc],
+                fundedBtc,
+                'bitcoin' as CryptoId,
+            ],
+            [
+                'sell: nothing without a BTC account',
+                'sell',
+                [fundedEth, fundedLtc],
+                undefined,
+                undefined,
+            ],
+            [
+                'exchange: ETH account with zero balance',
+                'exchange',
+                [fundedBtc, emptyEth],
+                emptyEth,
+                TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID,
+            ],
+            [
+                'exchange: funded ETH account first',
+                'exchange',
+                [emptyEth, fundedEth],
+                fundedEth,
+                TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID,
+            ],
+            [
+                'exchange: nothing without an ETH account',
+                'exchange',
+                [fundedBtc, fundedLtc],
+                undefined,
+                undefined,
+            ],
+        ])(
+            'should preselect %s',
+            (_title, tradingType, accounts, expectedAccount, expectedCryptoId) => {
+                const formState = getFormState(accounts);
+
+                expect(selectTradingFormAccount(formState, tradingType)?.key).toBe(
+                    expectedAccount?.key,
+                );
+                expect(selectTradingFormCryptoId(formState, tradingType)).toBe(expectedCryptoId);
+            },
+        );
+
+        it('should keep the stored default account stable once synced', () => {
+            const formState = getFormState([fundedBtc, emptyEth]);
+            formState.wallet.trading.exchange.tradingAccountKey = emptyEth.key;
+
+            expect(selectTradingFormAccount(formState, 'exchange')?.key).toBe(emptyEth.key);
+            expect(selectTradingFormCryptoId(formState, 'exchange')).toBe(
+                TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID,
+            );
+        });
+
+        it('should prefer the prefilled account over the default', () => {
+            const formState = getFormState([fundedBtc, fundedEth, fundedLtc]);
+            formState.wallet.trading.prefilledFromAccount = {
+                key: fundedLtc.key,
+                cryptoId: 'litecoin' as CryptoId,
+            };
+
+            expect(selectTradingFormAccount(formState, 'sell')?.key).toBe(fundedLtc.key);
+            expect(selectTradingFormCryptoId(formState, 'sell')).toBe('litecoin');
+        });
+
+        it('should keep the native asset of a prefilled ETH account after the prefill key is cleared', () => {
+            const formState = getFormState([fundedBtc, fundedEth]);
+            formState.wallet.trading.exchange.tradingAccountKey = fundedEth.key;
+            formState.wallet.trading.prefilledFromAccount = {
+                key: undefined,
                 cryptoId: 'ethereum' as CryptoId,
             };
 
