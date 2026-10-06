@@ -11679,6 +11679,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.13.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
