@@ -68,6 +68,12 @@ export class WalletPage {
     readonly transactionSummaryTitle: Locator;
     readonly transactionItem: Locator;
     readonly transactionAddress: Locator;
+    readonly bumpFeeButton: Locator;
+    readonly cancelTransactionButton: Locator;
+    readonly replaceTransactionButton: Locator;
+    readonly confirmCancelTransactionButton: Locator;
+    readonly pendingTransactions: Locator;
+    readonly transactionDetailTxid: Locator;
     readonly fiatAmount: Locator;
     readonly walletFilter = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@account-menu/filter/${symbol}`);
@@ -144,6 +150,14 @@ export class WalletPage {
         );
         this.transactionItem = this.page.getByTestId('@wallet/transaction-item');
         this.transactionAddress = this.page.getByTestId('@wallet/transaction/target-address');
+        this.bumpFeeButton = this.page.getByTestId('@transaction-item/bump-fee-button');
+        this.cancelTransactionButton = this.page.getByTestId('@transaction-item/cancel-tx-button');
+        this.replaceTransactionButton = this.page.getByTestId('@send/replace-tx-button');
+        this.confirmCancelTransactionButton = this.page.getByTestId('@send/cancel-tx-button');
+        this.pendingTransactions = this.page.getByTestId(
+            '@wallet/accounts/transaction-list/pending/group/0',
+        );
+        this.transactionDetailTxid = this.page.getByTestId('@tx-detail/txid-value');
         this.fiatAmount = this.page.getByTestId('@wallet/account/fiat-amount').first();
         this.topPanelBalance = this.page.getByTestId('@wallet/account/crypto-balance');
         this.topPanelBalanceWithSymbol = this.page.getByTestId(

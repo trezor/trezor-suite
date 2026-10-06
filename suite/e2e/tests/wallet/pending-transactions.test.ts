@@ -1,10 +1,20 @@
+import type { Page } from '@playwright/test';
+
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
+import type { DevicePrompt } from '../../support/pageObjects/devicePrompt';
+import type { FeeSection } from '../../support/pageObjects/trading/feeSection';
+import type { TradingPage } from '../../support/pageObjects/trading/tradingPage';
+import type { WalletPage } from '../../support/pageObjects/walletPage';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const regtestSymbol = asNetworkSymbol('regtest');
+// Regtest still requires 1 sat/vB to relay a replacement, so the pending send starts
+// there and the speed-up pays 2.
+const minimumFeeRate = '1';
+const bumpFeeRate = '2';
 const accounts = {
     account1: {
         address: 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
@@ -19,6 +29,45 @@ const accounts = {
         address: 'bcrt1q3j2fqzfqndv4gxhf9q0nvvxgceur8mhum8xpwj',
         txid: '',
     },
+};
+
+const sendPendingPaymentToOtherAccount = async ({
+    page,
+    walletPage,
+    tradingPage,
+    devicePrompt,
+    feeSection,
+}: {
+    page: Page;
+    walletPage: WalletPage;
+    tradingPage: TradingPage;
+    devicePrompt: DevicePrompt;
+    feeSection: FeeSection;
+}) => {
+    await walletPage.accountLabel({ symbol: regtestSymbol, type: 'normal', atIndex: 0 }).click();
+    await walletPage.openSendFormButton.click();
+    await tradingPage.sendAmountInput.fill('0.3');
+    await tradingPage.sendAddressInput.fill(accounts.account2.address);
+    await feeSection.switchToCustom();
+    await feeSection.customInput.fill(minimumFeeRate);
+    await tradingPage.sendButton.click();
+    await devicePrompt.waitForPromptAndConfirm();
+    await devicePrompt.waitForPromptAndConfirm();
+    await devicePrompt.waitForPromptAndConfirm();
+    await devicePrompt.sendButton.click();
+
+    await expect(page.getByTestId('@toast/tx-sent')).toContainTranslation('TOAST_TX_SENT', {
+        values: { account: 'Bitcoin Regtest #1' },
+    });
+    await expect(
+        walletPage.pendingTransactions.getByTestId('@transaction-item/0/prepending/heading'),
+    ).toBeVisible();
+    await walletPage.pendingTransactions.getByTestId('@transaction-item/0/heading').click();
+    await expect(walletPage.transactionDetailTxid).not.toBeEmpty();
+    const txid = (await walletPage.transactionDetailTxid.innerText()).trim();
+    await devicePrompt.closeModal();
+
+    return txid;
 };
 
 test.describe(
@@ -217,6 +266,96 @@ test.describe(
                     ).toContainTranslation('TR_RECEIVED_SYMBOL', {
                         values: { multiple: 'false', symbol: 'REGTEST' },
                     });
+                });
+            },
+        );
+
+        test(
+            'User can speed up a pending transaction',
+            { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+            async ({ page, walletPage, devicePrompt, tradingPage, feeSection }) => {
+                const originalTxid = await sendPendingPaymentToOtherAccount({
+                    page,
+                    walletPage,
+                    tradingPage,
+                    devicePrompt,
+                    feeSection,
+                });
+
+                await test.step('Raise the fee and replace the transaction', async () => {
+                    await walletPage.bumpFeeButton.click();
+                    await feeSection.switchToCustom();
+                    await feeSection.customInput.fill(bumpFeeRate);
+                    await walletPage.replaceTransactionButton.click();
+
+                    await expect(devicePrompt.outputValueOf('txid')).toContainText(originalTxid);
+                    await devicePrompt.waitForPromptAndConfirm();
+                    await expect(devicePrompt.outputValueOf('increased-fee')).toBeVisible();
+                    await devicePrompt.waitForPromptAndConfirm();
+                    await devicePrompt.sendButton.click();
+                });
+
+                await test.step('Review closes and the payment stays pending', async () => {
+                    await expect(page.getByTestId('@toast/tx-sent')).toContainTranslation(
+                        'TOAST_TX_SENT',
+                        { values: { account: 'Bitcoin Regtest #1' } },
+                    );
+                    await expect(devicePrompt.modal).toBeHidden();
+                    const replacement = walletPage.pendingTransactions.getByTestId(
+                        '@transaction-item/0/heading',
+                    );
+                    await expect(replacement).toContainTranslation('TR_SENDING_SYMBOL', {
+                        values: { multiple: 'false', symbol: 'REGTEST' },
+                    });
+                    await replacement.click();
+                    await expect(walletPage.transactionDetailTxid).not.toContainText(originalTxid);
+                    await expect(walletPage.transactionDetailTxid).not.toBeEmpty();
+                });
+            },
+        );
+
+        // Blocked until trezor-user-env regtest (Bitcoin Core 25) relays a replacement
+        // that adds only 0.2 sat/vB. Cancel is composed at that floor and this node still
+        // demands 1 sat/vB extra, which the test cannot set. Remove this once the node
+        // accepts the replacement.
+        test(
+            'User can cancel a pending transaction',
+            { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+            async ({ page, walletPage, devicePrompt, tradingPage, feeSection }) => {
+                const originalTxid = await sendPendingPaymentToOtherAccount({
+                    page,
+                    walletPage,
+                    tradingPage,
+                    devicePrompt,
+                    feeSection,
+                });
+
+                await test.step('Cancel the transaction on the device', async () => {
+                    await walletPage.cancelTransactionButton.click();
+                    await walletPage.confirmCancelTransactionButton.click();
+                    await expect(devicePrompt.outputValueOf('address')).toBeVisible();
+                    await devicePrompt.waitForPromptAndConfirm();
+                    await expect(devicePrompt.outputValueOf('amount')).toBeVisible();
+                    await devicePrompt.waitForPromptAndConfirm();
+                    await devicePrompt.waitForPromptAndConfirm();
+                    await devicePrompt.sendButton.click();
+                });
+
+                await test.step('Review closes and the payment is replaced by a send to self', async () => {
+                    await expect(page.getByTestId('@toast/tx-sent')).toContainTranslation(
+                        'TOAST_TX_SENT',
+                        { values: { account: 'Bitcoin Regtest #1' } },
+                    );
+                    await expect(devicePrompt.modal).toBeHidden();
+                    const replacement = walletPage.pendingTransactions.getByTestId(
+                        '@transaction-item/0/heading',
+                    );
+                    await expect(replacement).toContainTranslation('TR_SENDING_SYMBOL_TO_SELF', {
+                        values: { multiple: 'false', symbol: 'REGTEST' },
+                    });
+                    await replacement.click();
+                    await expect(walletPage.transactionDetailTxid).not.toContainText(originalTxid);
+                    await expect(walletPage.transactionDetailTxid).not.toBeEmpty();
                 });
             },
         );

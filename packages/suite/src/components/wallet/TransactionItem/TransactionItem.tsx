@@ -237,6 +237,7 @@ export const TransactionItem = memo(
                                                 e.stopPropagation();
                                             }}
                                             isDisabled={isCancelDisabled}
+                                            data-testid="@transaction-item/cancel-tx-button"
                                             size="medium"
                                         >
                                             <Translation id="TR_CANCEL_TX" />

@@ -24,7 +24,10 @@ export class DevicePrompt {
             | 'total'
             | 'contract'
             | 'swap_intent'
-            | 'recipient_name',
+            | 'recipient_name'
+            | 'txid'
+            | 'increase-fee-by'
+            | 'increased-fee',
     ) => this.page.getByTestId(`@modal/output-${section}`).getByTestId('@modal/output-value');
     readonly cryptoAmountWithSymbolOf = (section: 'amount' | 'approve-amount' | 'fee' | 'total') =>
         this.page
