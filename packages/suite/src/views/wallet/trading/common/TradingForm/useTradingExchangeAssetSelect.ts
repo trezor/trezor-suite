@@ -5,6 +5,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
+    TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT_FIELDS,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_OUTPUT_MAX,
@@ -15,6 +16,7 @@ import {
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
     tradingActions,
+    tradingExchangeActions,
 } from '@suite-common/trading';
 import { useCurrentRef } from '@trezor/react-utils';
 
@@ -56,10 +58,13 @@ export const useTradingExchangeAssetSelect = ({
             }
 
             setValueRef.current(TRADING_FORM_PROVIDER_SELECT, undefined, { shouldDirty: true });
+            setValueRef.current('transactionData', '');
+            setValueRef.current(TRADING_FORM_OUTPUT_ADDRESS, '');
+            dispatch(tradingExchangeActions.clearQuotes());
 
             await onCryptoCurrencyChangeRef.current(asset);
         },
-        [onCryptoCurrencyChangeRef, getValuesRef, setValueRef],
+        [dispatch, onCryptoCurrencyChangeRef, getValuesRef, setValueRef],
     );
 
     const handleReceiveAssetSelect = useCallback<TradingFormInputBuyAssetProps['onAssetSelect']>(
