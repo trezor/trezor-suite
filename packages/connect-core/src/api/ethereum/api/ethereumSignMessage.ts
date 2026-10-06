@@ -57,10 +57,7 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
     }
 
     get info() {
-        return getNetworkLabel(
-            'Sign #NETWORK message',
-            getEthereumNetwork(this.params.proto.address_n),
-        );
+        return getNetworkLabel('Sign #NETWORK message', this.params.network);
     }
 
     getButtonRequestData(code: string, name?: string) {
