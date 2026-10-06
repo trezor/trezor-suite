@@ -64,6 +64,7 @@ export class CompositeApi extends AbstractApi {
     }
 
     private async activateHid() {
+        this.logger?.info('composite: enabling the hid api');
         try {
             const hidApi = this.createHidApi();
             // The node-hid library loads its native binding on first use, so only a finished
@@ -86,10 +87,15 @@ export class CompositeApi extends AbstractApi {
                 hidApi.listen();
             }
             this.emitDescriptors();
+            this.logger?.info(
+                `composite: hid api enabled, ${enumeration.payload.length} devices listed`,
+            );
 
             return true;
-        } catch {
-            this.logger?.error('composite: hid api failed to load');
+        } catch (err) {
+            this.logger?.error(
+                `composite: hid api failed to load: ${err instanceof Error ? err.message : String(err)}`,
+            );
 
             return false;
         }

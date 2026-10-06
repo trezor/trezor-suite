@@ -219,6 +219,10 @@ export const createCore = (
                 await findDescriptor(descriptor => descriptor.path === acquireInput.path),
             )
         ) {
+            logger?.info(
+                `core: acquire of hid device ${acquireInput.path} denied, caller has no hid access`,
+            );
+
             // The same answer libusb gives for a HID-only device, clients show it as unreadable.
             return error({ code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE });
         }
@@ -334,6 +338,10 @@ export const createCore = (
         const protocol = getProtocol(protocolName);
         const { path } = sessionsResult.payload;
         if (isHidPathDenied(path, isHidAllowed)) {
+            logger?.info(
+                `core: session ${session} of a hid device denied, caller has no hid access`,
+            );
+
             return error({ code: ERRORS.SESSION_NOT_FOUND });
         }
         logger?.debug(`core: call: retrieved path ${path} for session ${session}`);
@@ -417,6 +425,10 @@ export const createCore = (
         const protocol = getProtocol(protocolName);
         const { path } = sessionsResult.payload;
         if (isHidPathDenied(path, isHidAllowed)) {
+            logger?.info(
+                `core: session ${session} of a hid device denied, caller has no hid access`,
+            );
+
             return error({ code: ERRORS.SESSION_NOT_FOUND });
         }
         if (protocol.name === 'v2') {
@@ -476,6 +488,10 @@ export const createCore = (
         const protocol = getProtocol(protocolName);
         const { path } = sessionsResult.payload;
         if (isHidPathDenied(path, isHidAllowed)) {
+            logger?.info(
+                `core: session ${session} of a hid device denied, caller has no hid access`,
+            );
+
             return error({ code: ERRORS.SESSION_NOT_FOUND });
         }
 
