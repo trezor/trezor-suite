@@ -111,6 +111,18 @@ export const exposeConnectWs = ({
         const getStoreId = (id: string) => `${connectionId}:${id}`;
         // Namespaced store keys of this connection's in-flight calls.
         const connectionPendingMessages = new Set<string>();
+        // Forwarding a call to the renderer waits for the window and the process icon. A cancel is
+        // delivered after the calls received before it, so it cannot overtake the call it is meant
+        // for and reach the renderer while that call is still unknown there.
+        let lastForwarding: Promise<unknown> = Promise.resolve();
+        const sendCancel = async (cancel: { error?: string; callId?: string }) => {
+            await lastForwarding;
+            mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
+                ...cancel,
+                // the renderer acts only on this connection's own calls
+                connectionId,
+            });
+        };
         const ip = req.socket.remoteAddress;
         const port = req.socket.remotePort;
         if ((ip !== '127.0.0.1' && ip !== '::1') || !port) {
@@ -217,18 +229,14 @@ export const exposeConnectWs = ({
                 clearTimeout(handshakeTimeout);
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
             } else if (message.type === POPUP.CLOSED) {
-                mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
+                await sendCancel({
                     error: message.payload?.error,
                     callId: message.payload?.callId,
-                    // the renderer acts only on this connection's own calls
-                    connectionId,
                 });
             } else if (message.type === CORE_CALL_CANCEL) {
-                mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
+                await sendCancel({
                     error: message.payload?.reason,
                     callId: message.payload?.callId,
-                    // the renderer acts only on this connection's own calls
-                    connectionId,
                 });
             } else if (message.type === CORE_CALL) {
                 if (!processOnPort) {
@@ -278,20 +286,70 @@ export const exposeConnectWs = ({
                 connectionPendingMessages.add(storeId);
 
                 try {
-                    // check window exists, if not wait for it to be created
-                    if (!mainWindowProxy.getInstance()) {
-                        mainThreadEmitter.emit('app/show');
-                        logger.info(LOG_PREFIX, 'waiting for window to start');
-                        const appInitDeferred = createDeferred<void>();
-                        setAppInit(appInitDeferred);
-                        // todo: do we actually need to clean this timeout?
-                        const appInitTimeout = resolveAfter(10000);
-                        await Promise.race([appInitDeferred.promise, appInitTimeout]);
-                        setAppInit(undefined);
-                    }
+                    // Hands the call to the renderer once the window and the process icon are
+                    // ready. Registered in `lastForwarding` before it is awaited, so a cancel
+                    // received after this call is delivered after it (see sendCancel).
+                    const forwarding = (async () => {
+                        // check window exists, if not wait for it to be created
+                        if (!mainWindowProxy.getInstance()) {
+                            mainThreadEmitter.emit('app/show');
+                            logger.info(LOG_PREFIX, 'waiting for window to start');
+                            const appInitDeferred = createDeferred<void>();
+                            setAppInit(appInitDeferred);
+                            // todo: do we actually need to clean this timeout?
+                            const appInitTimeout = resolveAfter(10000);
+                            await Promise.race([appInitDeferred.promise, appInitTimeout]);
+                            setAppInit(undefined);
+                        }
 
-                    const mainWindow = mainWindowProxy.getInstance();
-                    if (!mainWindow) {
+                        const mainWindow = mainWindowProxy.getInstance();
+                        if (!mainWindow) return false;
+
+                        const icon = processOnPort
+                            ? await getProcessIcon({ path: processOnPort.fullPath, logger })
+                            : undefined;
+
+                        // The connection closed while this call waited for the window or the
+                        // icon. Its pending calls were rejected on close, so the renderer must
+                        // not open it.
+                        if (!connectionPendingMessages.has(storeId)) return false;
+
+                        // Send call to renderer. It echoes the namespaced `id` back on the
+                        // response, which resolves this connection's deferred; `connectionId`
+                        // marks the owner so that a cancel from another connection leaves the
+                        // call alone.
+                        mainWindow.webContents.send('connect-popup/call', {
+                            id: storeId,
+                            connectionId,
+                            method,
+                            payload: rest,
+                            origin,
+                            process: processOnPort
+                                ? {
+                                      name: processOnPort.name,
+                                      fullPath: processOnPort.fullPath,
+                                      warning: !!processOnPort.warning,
+                                      icon,
+                                  }
+                                : undefined,
+                            manifest: {
+                                appName: manifest.appName,
+                                appIcon: manifest.appIcon,
+                                appUrl: manifest.appUrl,
+                                email: manifest.email,
+                                npmVersion: version,
+                            },
+                            requestedPermissions,
+                        });
+
+                        return true;
+                    })();
+                    lastForwarding = Promise.allSettled([lastForwarding, forwarding]);
+
+                    if (!(await forwarding)) {
+                        // Closed while waiting: the call was already rejected on close.
+                        if (!connectionPendingMessages.has(storeId)) return;
+
                         logger.error(
                             LOG_PREFIX,
                             'Main window not available after initialization timeout',
@@ -310,36 +368,6 @@ export const exposeConnectWs = ({
 
                         return;
                     }
-
-                    // Send call to renderer. It echoes the namespaced `id` back on the response,
-                    // which resolves this connection's deferred; `connectionId` marks the owner so
-                    // that a cancel from another connection leaves the call alone.
-                    mainWindow.webContents.send('connect-popup/call', {
-                        id: storeId,
-                        connectionId,
-                        method,
-                        payload: rest,
-                        origin,
-                        process: processOnPort
-                            ? {
-                                  name: processOnPort.name,
-                                  fullPath: processOnPort.fullPath,
-                                  warning: !!processOnPort.warning,
-                                  icon: await getProcessIcon({
-                                      path: processOnPort.fullPath,
-                                      logger,
-                                  }),
-                              }
-                            : undefined,
-                        manifest: {
-                            appName: manifest.appName,
-                            appIcon: manifest.appIcon,
-                            appUrl: manifest.appUrl,
-                            email: manifest.email,
-                            npmVersion: version,
-                        },
-                        requestedPermissions,
-                    });
 
                     // wait for response
                     const response = await deferred.promise;
