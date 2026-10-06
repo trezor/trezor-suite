@@ -211,5 +211,20 @@ jobs:
     needs: run_ios_e2e_tests
     steps:
       - name: Notify scheduled job failure to Slack
+        env:
+          CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
+          CURRENTS_PROJECT_ID: LjEjiV
+          CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_MOBILE_E2E_WEBHOOK }}
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"Nightly iOS :ios: E2E tests failed :7952-pepeyikes: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} "}' "${{ secrets.SLACK_MOBILE_E2E_WEBHOOK }}"
+          CURRENTS_RUN_ID=$(curl -sf -H "Authorization: Bearer $CURRENTS_API_KEY" \
+            "https://api.currents.dev/v1/runs/find?projectId=$CURRENTS_PROJECT_ID&ciBuildId=$CURRENTS_CI_BUILD_ID" \
+            | jq -r '.data.runId // empty') || true
+          if [ -n "$CURRENTS_RUN_ID" ]; then
+            CURRENTS_RUN_URL="https://app.currents.dev/run/$CURRENTS_RUN_ID"
+          else
+            CURRENTS_RUN_URL="https://app.currents.dev/projects/$CURRENTS_PROJECT_ID/runs"
+          fi
+          jq -n --arg text "Nightly iOS :ios: E2E tests failed: <$GITHUB_RUN_URL|Github run> <$CURRENTS_RUN_URL|Currents run>" '{text: $text}' \
+            | curl -X POST -H 'Content-type: application/json' --data @- "$SLACK_WEBHOOK_URL"
