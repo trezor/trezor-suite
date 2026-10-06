@@ -17,6 +17,11 @@ type PerfController = {
     start: () => void;
     endInteraction: () => void;
     stop: () => PerfMetrics;
+    /**
+     * What React spent rendering a subtree, reported by a `Profiler` in the app. Counted only
+     * between `start()` and `stop()`, like every other metric here.
+     */
+    recordRender: (id: string, durationMs: number) => void;
 };
 
 /**
@@ -47,6 +52,8 @@ export function installPerfInstrumentation(): void {
         commitCount: 0,
         longTasks: [] as Array<{ start: number; duration: number }>,
         observesLongTasks: false,
+        profiledRenderMs: 0,
+        profiledRenderCount: 0,
     };
 
     const onCommit = (): void => {
@@ -121,6 +128,15 @@ export function installPerfInstrumentation(): void {
             state.endTime = 0;
             state.commitCount = 0;
             state.longTasks = [];
+            state.profiledRenderMs = 0;
+            state.profiledRenderCount = 0;
+        },
+        recordRender(_id: string, durationMs: number) {
+            if (!state.enabled) {
+                return;
+            }
+            state.profiledRenderMs += durationMs;
+            state.profiledRenderCount += 1;
         },
         endInteraction() {
             // Stamped when the interaction itself finishes, so the settle wait that follows does not
@@ -155,6 +171,8 @@ export function installPerfInstrumentation(): void {
                 longestTaskMs: state.observesLongTasks ? Math.round(longestTask) : null,
                 reactCommitCount: state.commitCount,
                 interactionDurationMs: Math.round(endTime - state.startTime),
+                profiledRenderMs: Math.round(state.profiledRenderMs),
+                profiledRenderCount: state.profiledRenderCount,
             };
         },
     };

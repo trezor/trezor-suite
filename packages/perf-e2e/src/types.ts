@@ -4,7 +4,9 @@ export type PerfMetricKey =
     | 'longTaskCount'
     | 'longestTaskMs'
     | 'reactCommitCount'
-    | 'interactionDurationMs';
+    | 'interactionDurationMs'
+    | 'profiledRenderMs'
+    | 'profiledRenderCount';
 
 // `null` means the metric could not be measured in this environment. Such a metric is reported,
 // never enforced.

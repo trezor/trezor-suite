@@ -31,6 +31,16 @@ export const METRIC_DEFINITIONS: readonly MetricDefinition[] = [
         label: 'Interaction duration',
         unit: 'ms',
     },
+    {
+        key: 'profiledRenderMs',
+        label: 'Profiled render time',
+        unit: 'ms',
+    },
+    {
+        key: 'profiledRenderCount',
+        label: 'Profiled renders',
+        unit: 'count',
+    },
 ];
 
 export const METRIC_KEYS: readonly PerfMetricKey[] = METRIC_DEFINITIONS.map(def => def.key);

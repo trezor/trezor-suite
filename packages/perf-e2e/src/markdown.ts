@@ -54,6 +54,8 @@ const COLUMN_HEADINGS: Record<PerfMetricKey, string> = {
     longestTaskMs: 'Longest task',
     reactCommitCount: 'React commits',
     interactionDurationMs: 'Interaction',
+    profiledRenderMs: 'Profiled render',
+    profiledRenderCount: 'Profiled renders',
 };
 
 const safeLabel = (label: string) => label.replace(/[^a-zA-Z0-9._/ -]/g, '').replace(/-{2,}/g, '-');
