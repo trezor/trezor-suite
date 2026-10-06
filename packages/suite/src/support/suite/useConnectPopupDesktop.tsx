@@ -14,6 +14,7 @@ import {
     queuePopupCall,
     selectConnectPopupCall,
     selectIsConnectAppSilentModeByOrigin,
+    toConnectV9ErrorPayload,
 } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, {
@@ -120,7 +121,7 @@ export const useConnectPopupDesktop = () => {
                     desktopApi.connectPopupResponse({
                         success: false,
                         error,
-                        payload: error, // for backward compatibility with v9
+                        payload: toConnectV9ErrorPayload(error),
                         id: params.id,
                     });
 
@@ -162,7 +163,7 @@ export const useConnectPopupDesktop = () => {
                     desktopApi.connectPopupResponse({
                         success: false,
                         error: response.error,
-                        payload: response.error, // for backward compatibility with v9
+                        payload: toConnectV9ErrorPayload(response.error),
                         id: params.id,
                     });
                 }
