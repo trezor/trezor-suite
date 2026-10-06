@@ -34,7 +34,7 @@ import {
     isDeviceReconnectError,
     isUtxoNetwork,
 } from './connectPopupTypes';
-import { getConnectV9Deeplink } from './connectV9';
+import { getConnectAnalyticsNpmVersion, getConnectV9Deeplink } from './connectV9';
 import { type PopupFlowParams } from './popupFlows/CommonPopupFlow';
 import { createPopupFlow } from './popupFlows/createPopupFlow';
 import {
@@ -57,7 +57,7 @@ const getCallAttributes = ({ method, payload, source }: PopupFlowParams<CallMeth
     appName: source.manifest.appName,
     appUrl: source.manifest.appUrl,
     appEmail: source.manifest.email,
-    npmVersion: source.manifest.npmVersion,
+    npmVersion: getConnectAnalyticsNpmVersion(source),
     connectionType: source.type,
     paramNames: getCallParamNames(payload),
 });
