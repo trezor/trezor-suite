@@ -26,7 +26,17 @@ export const parsePsbt = ({
     addresses,
     utxos,
 }: ParsePsbtParams): ComposePsbtResult => {
-    const psbt = Psbt.fromHex(psbtTransactionData, { network: coinInfo.network });
+    let psbt: Psbt;
+    try {
+        psbt = Psbt.fromHex(psbtTransactionData, { network: coinInfo.network });
+    } catch (error) {
+        // Psbt.fromHex throws plain Errors, which would reach the caller as Failure_UnknownCode.
+        // Malformed PSBT data is invalid input, so report it like the other checks below.
+        throw TypedError(
+            'Method_InvalidParameter',
+            `parsePsbt: Invalid PSBT data: ${error instanceof Error ? error.message : String(error)}`,
+        );
+    }
 
     const inputs: PROTO.TxInputType[] = [];
     const outputs: PROTO.TxOutputType[] = [];
