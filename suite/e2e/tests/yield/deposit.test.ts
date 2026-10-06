@@ -49,7 +49,7 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             walletPage,
             yieldSection,
             yieldFlowSection,
-            yieldNutshellModal,
+            earnNutshellModal,
             yieldConsentModal,
             txSimulationModal,
             devicePrompt,
@@ -104,18 +104,18 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             await yieldSection.clickDepositNow(usdcPrime.id);
 
             await test.step('Check earn-in-a-nutshell modal', async () => {
-                await expect(yieldNutshellModal.heading).toHaveTranslation(
+                await expect(earnNutshellModal.heading).toHaveTranslation(
                     'TR_EARN_DEFI_YIELD_IN_A_NUTSHELL',
                 );
-                await expect(yieldNutshellModal.withdrawProcess).toBeVisible();
-                await expect(yieldNutshellModal.claimProcess).toBeVisible();
+                await expect(earnNutshellModal.withdrawProcess).toBeVisible();
+                await expect(earnNutshellModal.claimProcess).toBeVisible();
 
-                await yieldNutshellModal.depositProcess.click();
-                await expect(yieldNutshellModal.depositApyValue).toHaveTranslation(
+                await earnNutshellModal.depositProcess.click();
+                await expect(earnNutshellModal.depositApyValue).toHaveTranslation(
                     'TR_EARN_APY_APPROX',
                     { values: { apyPercent: usdcPrime.apyBreakdown.apyPercent } },
                 );
-                await yieldNutshellModal.continueButton.click();
+                await earnNutshellModal.continueButton.click();
             });
 
             await test.step('Check consent modal', async () => {
