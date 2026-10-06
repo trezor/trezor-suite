@@ -50,7 +50,12 @@ import {
     type SelectAccountCandidate,
     isUtxoNetwork,
 } from './connectPopupTypes';
-import { getConnectAnalyticsNpmVersion, getConnectV9Deeplink } from './connectV9';
+import {
+    getConnectAnalyticsNpmVersion,
+    getConnectV9Deeplink,
+    isConnectV9Source,
+} from './connectV9';
+import { toConnectV9ErrorPayload } from './connectV9ErrorPayload';
 import { ConnectV9RefusalError, selectConnectV9RefusalMessage } from './connectV9Refusal';
 import {
     cleanupAllTemporaryAccounts,
@@ -328,6 +333,12 @@ export const connectPopupCallInnerThunk = createThunk<
             getPopupCallDeferred().resolve({
                 success: false,
                 error: serializeError(error),
+                // Connect 9 apps read the error of a failed call from the payload. Suite desktop
+                // builds the payload of its response itself (see useConnectPopupDesktop), so this
+                // one is what Connect 9 deeplink calls get.
+                ...(isConnectV9Source(source) && {
+                    payload: toConnectV9ErrorPayload(serializeError(error)),
+                }),
             });
         } finally {
             // Tear down any placeholder accounts created in preCallHooks even if the call threw
