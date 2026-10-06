@@ -13,6 +13,8 @@ const metrics = (overrides: Partial<PerfMetrics> = {}): PerfMetrics => ({
     longestTaskMs: 60,
     reactCommitCount: 20,
     interactionDurationMs: 500,
+    profiledRenderMs: 25,
+    profiledRenderCount: 3,
     ...overrides,
 });
 
