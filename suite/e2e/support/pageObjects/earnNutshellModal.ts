@@ -1,6 +1,6 @@
 import { type Locator, type Page } from '@playwright/test';
 
-export class YieldNutshellModal {
+export class EarnNutshellModal {
     readonly modalContainer: Locator;
     readonly heading: Locator;
     readonly depositProcess: Locator;

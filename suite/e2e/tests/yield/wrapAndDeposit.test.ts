@@ -57,7 +57,7 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
             page,
             yieldSection,
             yieldFlowSection,
-            yieldNutshellModal,
+            earnNutshellModal,
             yieldConsentModal,
             txSimulationModal,
             devicePrompt,
@@ -72,12 +72,12 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(yieldSection.apyPercentage(wethPrime.id)).toHaveText(wethPrime.apy);
                 await yieldSection.clickDepositNow(wethPrime.id);
 
-                await yieldNutshellModal.depositProcess.click();
-                await expect(yieldNutshellModal.depositApyValue).toHaveTranslation(
+                await earnNutshellModal.depositProcess.click();
+                await expect(earnNutshellModal.depositApyValue).toHaveTranslation(
                     'TR_EARN_APY_APPROX',
                     { values: { apyPercent: wethPrime.apyBreakdown.apyPercent } },
                 );
-                await yieldNutshellModal.continueButton.click();
+                await earnNutshellModal.continueButton.click();
 
                 await expect(yieldConsentModal.heading).toHaveTranslation('TR_EARN_DEPOSIT_TOKEN', {
                     values: { symbol: 'ETH' },
