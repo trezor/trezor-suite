@@ -22,7 +22,7 @@ const filteredInternalTransfers = (
 
 type CreateCombineTargetsParams = {
     transaction: Pick<Transaction, 'targets' | 'tokens' | 'internalTransfers'>;
-    account: Pick<Account, 'descriptor' | 'symbol'>;
+    account: Pick<Account, 'descriptor' | 'symbol' | 'networkType'>;
 };
 
 export const createSimpleTargetId = (t: Pick<BlockchainlinkTarget, 'n'>): TxTargetId =>
@@ -62,6 +62,9 @@ export const createTargets = ({ transaction, account }: CreateCombineTargetsPara
     return [
         ...targets.map(createSimpleTarget),
         ...filteredInternalTransfers(internalTransfers, account).map(createInternalTarget),
-        ...tokens.filter(token => token.type !== 'self').map(createTokenTarget),
+        // Cardano "self" token transfers only repeat the "sent to self" heading, elsewhere they are the actual transfer
+        ...tokens
+            .filter(token => account.networkType !== 'cardano' || token.type !== 'self')
+            .map(createTokenTarget),
     ];
 };
