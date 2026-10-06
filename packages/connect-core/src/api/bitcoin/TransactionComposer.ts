@@ -42,7 +42,7 @@ export const createComposer = ({
         .filter(u => u.required || new BigNumber(u.amount).gt(coinInfo.dustLimit))
         .map(u => ({
             ...u,
-            coinbase: u.coinbase || false, // decide it it can be spent immediately (false) or after 100 conf (true)
+            coinbase: u.coinbase || false, // decide if it can be spent immediately (false) or after 100 conf (true)
             own: u.own ?? true, // decide if it can be spent immediately (own) or after 6 conf (not own)
         }));
 
