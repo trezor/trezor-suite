@@ -43,8 +43,9 @@ import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/sui
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
 import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
-import { type CreateLoggerDep, type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
+import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
+import type { CreateLoggerDep } from '@trezor/logger';
 
 import { type SuiteReduxStore } from 'src/reducers/createReduxStore';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
@@ -52,11 +53,10 @@ import { type DbDep } from 'src/storage/createDb';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
 import { createConnectInitDeviceEventHooks } from './createConnectInitDeviceEventHooks';
-import { createConnectInitUiEventHooks } from './createConnectInitUiEventHooks';
+import { createConnectInitUIEventHooks } from './createConnectInitUIEventHooks';
 import { type AppState } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
-    transportReconnect: true,
     debug: false,
     manifest: {
         email: 'info@trezor.io',
@@ -182,7 +182,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         connectInitDeviceEventHooks: createConnectInitDeviceEventHooks({
             dispatch: deps.dispatch,
         }),
-        connectInitUiEventHooks: createConnectInitUiEventHooks({
+        connectInitUIEventHooks: createConnectInitUIEventHooks({
             dispatch: deps.dispatch,
             getState: deps.getState,
         }),

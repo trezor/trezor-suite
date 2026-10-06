@@ -11,12 +11,21 @@ export {
 export { type NetworkMetadata } from '../reduxState/NetworkMetadata';
 export {
     selectNetworkColor,
+    selectNetworkConfig,
+    selectNetworkConfigs,
     selectNetworkNamesMap,
     selectNetworkSymbolForProtocol,
     selectSupportedNetworkSymbols,
 } from '../reduxState/networksSelectors';
 export { createLoadNetworkModules, type LoadNetworkModulesDep } from './createLoadNetworkModules';
 export { createGetNetworkConfigs } from './createGetNetworkConfigs';
+export {
+    createGetAccountSyncInterval,
+    injectGetAccountSyncInterval,
+    type GetAccountSyncInterval,
+    type GetAccountSyncIntervalDep,
+    type GetAccountSyncIntervalDeps,
+} from './createGetAccountSyncInterval';
 export { getLegacyNetworkConfigs, type LegacyNetworkConfigs } from './legacyNetworkConfig';
 // Temporary compatibility exports for wallet-config; consumers have not migrated yet.
 export {

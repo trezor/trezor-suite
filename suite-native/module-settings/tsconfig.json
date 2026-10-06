@@ -34,9 +34,6 @@
         },
         { "path": "../../suite-common/support" },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -51,7 +48,6 @@
         { "path": "../banners" },
         { "path": "../biometrics" },
         { "path": "../coin-enabling" },
-        { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../experimental-features" },

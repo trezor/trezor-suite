@@ -45,9 +45,6 @@
             "path": "../../suite-common/token-definitions"
         },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -67,7 +64,6 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
-        { "path": "../config" },
         { "path": "../confirm-on-trezor" },
         { "path": "../device" },
         { "path": "../device-authorization" },
@@ -85,6 +81,7 @@
         { "path": "../navigation" },
         { "path": "../scrollview" },
         { "path": "../settings" },
+        { "path": "../storage" },
         { "path": "../test-utils" },
         { "path": "../tokens" },
         { "path": "../trading-state" },

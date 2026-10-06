@@ -11,18 +11,24 @@ const fiatAmount = '1000';
 const fiatCurrency = 'CZK';
 const formattedFiatAmount = `${fiatCurrency} ${localizeNumber(fiatAmount, 'en-US', 2)}`;
 const detailFiatAmount = localizeNumber(fiatAmount, 'en-US');
-const receiveAccountLabel = 'Bitcoin #1';
+const receiveAccountLabel = 'Bitcoin #2';
 
 test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ onboardingPage, settingsPage, walletPage, tradingMock }) => {
-        tradingMock.setTradeFlow('buy');
-        await tradingMock.rewriteProviderRedirect();
-        await tradingMock.setStatus('SUBMITTED');
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
-        await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
-        await walletPage.openTrading();
-    });
+    test.beforeEach(
+        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMock }) => {
+            tradingMock.setTradeFlow('buy');
+            await tradingMock.rewriteProviderRedirect();
+            await tradingMock.setStatus('SUBMITTED');
+
+            await onboardingPage.completeOnboarding();
+            await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
+            await dashboardPage.deviceSwitchingOpenButton.click();
+            await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
+            await walletPage.openTrading({ symbol: btcSymbol, atIndex: 1 });
+        },
+    );
 
     test(
         'Buy Bitcoin from compared offer',
@@ -32,7 +38,10 @@ test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await tradingPage.fillBuyForm({
                     amount: fiatAmount,
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, btcSymbol);
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                            symbol: btcSymbol,
+                            atIndex: 1,
+                        });
                     },
                 });
             });
@@ -62,7 +71,10 @@ test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await tradingPage.fillBuyForm({
                     amount: fiatAmount,
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, btcSymbol);
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                            symbol: btcSymbol,
+                            atIndex: 1,
+                        });
                     },
                 });
             });

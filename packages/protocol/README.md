@@ -7,8 +7,8 @@ Library for decoding and encoding messages from/to Trezor
 Message format:
 
 ```
-| 2 bytes               |                          |
-| protobuf_message_type | protobuf_message_payload |
+| 2 bytes               | 4 bytes              | `len` bytes              |
+| protobuf_message_type | protobuf_message_len | protobuf_message_payload |
 ```
 
 ## protocol-v1
@@ -16,8 +16,8 @@ Message format:
 Message format:
 
 ```
-| 3 bytes               | 2 bytes   | 2 bytes               | `len` - 2 bytes          |
-| magic | magic | magic | len | len | protobuf_message_type | protobuf_message_payload |
+| 3 bytes               | 2 bytes               | 4 bytes              | `len` bytes              |
+| magic | magic | magic | protobuf_message_type | protobuf_message_len | protobuf_message_payload |
 ```
 
 Continuation packet format (chunks):

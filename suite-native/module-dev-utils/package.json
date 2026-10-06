@@ -25,7 +25,6 @@
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/trading": "workspace:*",
-        "@suite-common/validators": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",

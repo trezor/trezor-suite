@@ -115,7 +115,11 @@ describe('tronStakeReducer', () => {
         );
         const state = tronStakeReducer(
             pending,
-            tronStakeActions.pendingTransactionConfirmed({ accountKey: KEY, flow: FLOW }),
+            tronStakeActions.pendingTransactionConfirmed({
+                accountKey: KEY,
+                flow: FLOW,
+                txid: 'abc123',
+            }),
         );
 
         expect(state.sessions[KEY]?.[FLOW]?.pendingTxid).toBeNull();
@@ -127,12 +131,57 @@ describe('tronStakeReducer', () => {
             undefined,
             tronStakeActions.goToStep({ accountKey: KEY, flow: FLOW, step: 'vote' }),
         );
-        const state = tronStakeReducer(
+        const pending = tronStakeReducer(
             atVote,
-            tronStakeActions.pendingTransactionConfirmed({ accountKey: KEY, flow: FLOW }),
+            tronStakeActions.submitFinished({ accountKey: KEY, flow: FLOW, txid: 'abc123' }),
+        );
+        const state = tronStakeReducer(
+            pending,
+            tronStakeActions.pendingTransactionConfirmed({
+                accountKey: KEY,
+                flow: FLOW,
+                txid: 'abc123',
+            }),
         );
 
         expect(state.sessions[KEY]?.[FLOW]?.step).toBe('complete');
+    });
+
+    it('pendingTransactionConfirmed ignores a txid that is not pending', () => {
+        const pending = tronStakeReducer(
+            undefined,
+            tronStakeActions.submitFinished({ accountKey: KEY, flow: FLOW, txid: 'abc123' }),
+        );
+        const confirmedOther = tronStakeReducer(
+            pending,
+            tronStakeActions.pendingTransactionConfirmed({
+                accountKey: KEY,
+                flow: FLOW,
+                txid: 'other',
+            }),
+        );
+
+        expect(confirmedOther.sessions[KEY]?.[FLOW]?.pendingTxid).toBe('abc123');
+        expect(confirmedOther.sessions[KEY]?.[FLOW]?.step).toBe('freeze');
+
+        const confirmed = tronStakeReducer(
+            confirmedOther,
+            tronStakeActions.pendingTransactionConfirmed({
+                accountKey: KEY,
+                flow: FLOW,
+                txid: 'abc123',
+            }),
+        );
+        const confirmedAgain = tronStakeReducer(
+            confirmed,
+            tronStakeActions.pendingTransactionConfirmed({
+                accountKey: KEY,
+                flow: FLOW,
+                txid: 'abc123',
+            }),
+        );
+
+        expect(confirmedAgain.sessions[KEY]?.[FLOW]?.step).toBe('vote');
     });
 
     it('pendingTransactionConfirmed on the last step keeps the step', () => {
@@ -142,7 +191,11 @@ describe('tronStakeReducer', () => {
         );
         const state = tronStakeReducer(
             atComplete,
-            tronStakeActions.pendingTransactionConfirmed({ accountKey: KEY, flow: FLOW }),
+            tronStakeActions.pendingTransactionConfirmed({
+                accountKey: KEY,
+                flow: FLOW,
+                txid: 'abc123',
+            }),
         );
 
         expect(state.sessions[KEY]?.[FLOW]?.step).toBe('complete');
@@ -186,7 +239,11 @@ describe('tronStakeReducer', () => {
         );
         const state = tronStakeReducer(
             staking,
-            tronStakeActions.pendingTransactionConfirmed({ accountKey: KEY, flow: 'stake' }),
+            tronStakeActions.pendingTransactionConfirmed({
+                accountKey: KEY,
+                flow: 'stake',
+                txid: 'freeze-tx',
+            }),
         );
 
         // confirming the stake flow's freeze advances only the stake flow…

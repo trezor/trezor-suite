@@ -1,4 +1,4 @@
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -44,8 +44,10 @@ function assertComposed(
     }
 }
 
-const dispatchCompose = (feeEstimationRecipient?: string, assumeNewAccount?: boolean) =>
-    createTestStore({ extra: undefined })
+const dispatchCompose = (feeEstimationRecipient?: string, assumeNewAccount?: boolean) => {
+    const { store } = createTestCompositionRoot<void, unknown>({}).services;
+
+    return store
         .dispatch(
             composeTronTransactionFeeLevelsThunk({
                 formState,
@@ -53,6 +55,7 @@ const dispatchCompose = (feeEstimationRecipient?: string, assumeNewAccount?: boo
             }),
         )
         .unwrap();
+};
 
 describe('composeTronTransactionFeeLevelsThunk – cold recipient activation fee', () => {
     let getAccountInfo: jest.SpyInstance;

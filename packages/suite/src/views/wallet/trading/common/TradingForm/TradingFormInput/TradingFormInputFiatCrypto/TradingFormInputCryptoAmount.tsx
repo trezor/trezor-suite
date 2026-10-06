@@ -18,8 +18,11 @@ import {
     selectTradingSendAccount,
     useTradingUtils,
 } from '@suite-common/trading';
-import { formInputsMaxLength } from '@suite-common/validators';
-import { selectAccountByKey, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
+import {
+    AMOUNT_MAX_LENGTH,
+    selectAccountByKey,
+    selectIsNetworkReserveEnabled,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { Skeleton } from '@trezor/components';
@@ -30,7 +33,6 @@ import { BigNumber } from '@trezor/utils';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {
     type TradingAllFormProps,
     type TradingFormInputFiatCryptoProps,
@@ -54,7 +56,11 @@ import {
     getTradingAmountInputStyle,
 } from '../../tradingFormInputsUtils';
 
-type TradingFormInputCryptoAmountContentProps = TradingFormInputFiatCryptoProps & {
+type TradingFormInputCryptoAmountProps = TradingFormInputFiatCryptoProps & {
+    isInSats?: boolean;
+};
+
+type TradingFormInputCryptoAmountContentProps = TradingFormInputCryptoAmountProps & {
     validationAccount: Account;
 };
 
@@ -63,6 +69,7 @@ const TradingFormInputCryptoAmountContent = ({
     cryptoInputName,
     fiatInputName,
     cryptoSelectName,
+    isInSats = false,
 }: TradingFormInputCryptoAmountContentProps) => {
     const { translationString } = useTranslation();
     const theme = useTheme();
@@ -84,9 +91,7 @@ const TradingFormInputCryptoAmountContent = ({
         clearErrors,
     } = context as UseFormReturn<TradingAllFormProps>;
 
-    const { shouldSendInSats } = useBitcoinAmountUnit(validationAccount.symbol);
     const amountInCrypto = useWatch({ control, name: TRADING_FORM_AMOUNT_IN_CRYPTO });
-    const cryptoAmount = useWatch({ control, name: cryptoInputName });
 
     const isBuyContext = isTradingBuyContext(context);
     const isExchangeOrSellContext = isTradingExchangeOrSellContext(context);
@@ -124,7 +129,7 @@ const TradingFormInputCryptoAmountContent = ({
             getCryptoInputRules({
                 isBuyContext,
                 translationString,
-                shouldSendInSats,
+                shouldSendInSats: isInSats,
                 decimals,
                 amountLimits,
                 formatter: CryptoAmountFormatter,
@@ -137,7 +142,7 @@ const TradingFormInputCryptoAmountContent = ({
         [
             isBuyContext,
             translationString,
-            shouldSendInSats,
+            isInSats,
             decimals,
             amountLimits,
             CryptoAmountFormatter,
@@ -182,7 +187,7 @@ const TradingFormInputCryptoAmountContent = ({
             return;
         }
 
-        const filledAmount = shouldSendInSats
+        const filledAmount = isInSats
             ? unitsToSubunits({
                   value: asAmountUnit(new BigNumber(quoteCryptoAmount)),
                   decimals,
@@ -198,7 +203,7 @@ const TradingFormInputCryptoAmountContent = ({
     }, [
         quoteCryptoAmount,
         amountInCrypto,
-        shouldSendInSats,
+        isInSats,
         decimals,
         cryptoInputName,
         fiatInputName,
@@ -229,11 +234,11 @@ const TradingFormInputCryptoAmountContent = ({
             flex="1"
             name={cryptoInputName}
             placeholder={TRADING_AMOUNT_PLACEHOLDER}
-            style={{
-                ...getTradingAmountInputStyle(cryptoAmount, locale),
+            style={displayValue => ({
+                ...getTradingAmountInputStyle(displayValue),
                 color: cryptoInputError ? theme.contentCritical : undefined,
                 visibility: isDerivedAmountLoading ? 'hidden' : undefined,
-            }}
+            })}
             leftContent={
                 isDerivedAmountLoading ? (
                     <Skeleton
@@ -249,13 +254,13 @@ const TradingFormInputCryptoAmountContent = ({
             isDisabled={isDerivedAmountLoading}
             control={control}
             rules={cryptoInputRules}
-            maxLength={formInputsMaxLength.amount}
+            maxLength={AMOUNT_MAX_LENGTH}
             data-testid="@trading/form/crypto-input"
         />
     );
 };
 
-export const TradingFormInputCryptoAmount = (props: TradingFormInputFiatCryptoProps) => {
+export const TradingFormInputCryptoAmount = (props: TradingFormInputCryptoAmountProps) => {
     const context = useTradingFormContext();
     const { control } = context as UseFormReturn<TradingAllFormProps>;
 

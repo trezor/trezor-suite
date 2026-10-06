@@ -9,10 +9,13 @@ import { type CryptoId } from 'invity-api';
 
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TradingAssetOption, type TradingBuyFormProps } from '@suite-common/trading';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Rate, asTimestamp } from '@suite-common/wallet-types';
+import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { intermediaryTheme } from '@trezor/components';
+import { PROTO } from '@trezor/connect';
 
+import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingFormInputBaseCurrencyAmount } from './TradingFormInputBaseCurrencyAmount';
@@ -25,6 +28,7 @@ jest.mock('src/hooks/wallet/trading/form/useTradingCommonForm', () => ({
 }));
 
 const BTC_SYMBOL = asNetworkSymbol('btc');
+const ETH_SYMBOL = asNetworkSymbol('eth');
 
 const BITCOIN_ASSET: TradingAssetOption = {
     id: 'bitcoin' as CryptoId,
@@ -45,6 +49,12 @@ const BTC_USD_RATE: Rate = {
     isLoading: false,
     error: null,
     ticker: { symbol: BTC_SYMBOL },
+};
+
+const ETH_BTC_RATE: Rate = {
+    ...BTC_USD_RATE,
+    rate: 0.05,
+    ticker: { symbol: ETH_SYMBOL },
 };
 
 const DEFAULT_VALUES: TradingBuyFormProps = {
@@ -69,10 +79,18 @@ const DEFAULT_VALUES: TradingBuyFormProps = {
 
 type TradingFormTestHarnessProps = {
     invalidField?: FieldPath<TradingBuyFormProps>;
+    symbol?: NetworkSymbol;
+    cryptoInput?: string;
 };
 
-const TradingFormTestHarness = ({ invalidField }: TradingFormTestHarnessProps) => {
-    const methods = useForm<TradingBuyFormProps>({ defaultValues: DEFAULT_VALUES });
+const TradingFormTestHarness = ({
+    invalidField,
+    symbol = BTC_SYMBOL,
+    cryptoInput: initialCryptoInput = '',
+}: TradingFormTestHarnessProps) => {
+    const methods = useForm<TradingBuyFormProps>({
+        defaultValues: { ...DEFAULT_VALUES, cryptoInput: initialCryptoInput },
+    });
     const [cryptoInput, fiatInput, amountInCrypto, amountInputSource] = useWatch({
         control: methods.control,
         name: ['cryptoInput', 'fiatInput', 'amountInCrypto', 'amountInputSource'],
@@ -100,7 +118,7 @@ const TradingFormTestHarness = ({ invalidField }: TradingFormTestHarnessProps) =
             <TradingFormInputBaseCurrencyAmount
                 cryptoInputName="cryptoInput"
                 fiatInputName="fiatInput"
-                symbol={BTC_SYMBOL}
+                symbol={symbol}
             />
             <output data-testid="@trading/form/values">
                 {JSON.stringify({ cryptoInput, fiatInput, amountInCrypto, amountInputSource })}
@@ -109,28 +127,41 @@ const TradingFormTestHarness = ({ invalidField }: TradingFormTestHarnessProps) =
     );
 };
 
-const renderBaseCurrencyAmount = (harnessProps: TradingFormTestHarnessProps = {}) => {
-    const root = createTestCompositionRoot({
+type RenderBaseCurrencyAmountParams = TradingFormTestHarnessProps & {
+    localCurrency?: BaseCurrencyCode;
+    bitcoinAmountUnit?: PROTO.AmountUnit;
+    btcUsdRate?: number;
+};
+
+const renderBaseCurrencyAmount = ({
+    localCurrency = 'usd',
+    bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN,
+    btcUsdRate = BTC_USD_RATE.rate,
+    ...harnessProps
+}: RenderBaseCurrencyAmountParams = {}) => {
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
                 ...mockInitialAppState.wallet,
                 settings: {
                     ...mockInitialAppState.wallet.settings,
-                    localCurrency: 'usd',
+                    localCurrency,
+                    bitcoinAmountUnit,
                 },
                 fiat: {
                     ...mockInitialAppState.wallet.fiat,
                     current: {
                         ...mockInitialAppState.wallet.fiat.current,
-                        'btc-usd': BTC_USD_RATE,
+                        'btc-usd': { ...BTC_USD_RATE, rate: btcUsdRate },
+                        'eth-btc': ETH_BTC_RATE,
                     },
                 },
             },
         },
     });
 
-    renderWithProviders(root, <TradingFormTestHarness {...harnessProps} />);
+    renderWithProviders(services, <TradingFormTestHarness {...harnessProps} />);
 };
 
 describe('TradingFormInputBaseCurrencyAmount', () => {
@@ -144,6 +175,47 @@ describe('TradingFormInputBaseCurrencyAmount', () => {
         expect(screen.getByTestId('@trading/form/values')).toHaveTextContent(
             JSON.stringify({
                 cryptoInput: '4',
+                fiatInput: '',
+                amountInCrypto: true,
+                amountInputSource: 'base-currency',
+            }),
+        );
+    });
+
+    it('rounds the converted crypto amount down to the asset decimals', async () => {
+        const user = userEvent.setup();
+
+        renderBaseCurrencyAmount({ btcUsdRate: 3 });
+
+        await user.type(screen.getByTestId('@trading/form/base-currency-input'), '200');
+
+        expect(screen.getByTestId('@trading/form/values')).toHaveTextContent(
+            '"cryptoInput":"66.66666666"',
+        );
+    });
+
+    it('shows the base currency amount of the crypto amount without trailing zeros', () => {
+        renderBaseCurrencyAmount({ cryptoInput: '4' });
+
+        expect(screen.getByTestId('@trading/form/base-currency-input')).toHaveValue('100');
+    });
+
+    it('converts the base currency amount from satoshis when BTC is the base currency and sats are displayed', async () => {
+        const user = userEvent.setup();
+
+        renderBaseCurrencyAmount({
+            symbol: ETH_SYMBOL,
+            localCurrency: 'btc',
+            bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
+        });
+
+        expect(screen.getByTestId('@trading/form/base-currency-label')).toHaveTextContent('sat');
+
+        await user.type(screen.getByTestId('@trading/form/base-currency-input'), '250000');
+
+        expect(screen.getByTestId('@trading/form/values')).toHaveTextContent(
+            JSON.stringify({
+                cryptoInput: '0.05',
                 fiatInput: '',
                 amountInCrypto: true,
                 amountInputSource: 'base-currency',

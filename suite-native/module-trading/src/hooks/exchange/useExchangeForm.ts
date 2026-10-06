@@ -29,6 +29,7 @@ import {
 import type { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
 
 import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
+import { type TradingFormWithMetadata } from '../general/form/tradingFormTypes';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
 import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccountChangeEffect';
@@ -218,7 +219,7 @@ const useValidations = ({
     }, [generalAlertMsg, setValue]);
 };
 
-export const useExchangeForm = () => {
+export const useExchangeForm = (): TradingFormWithMetadata<ExchangeFormType> => {
     const limits = useSelector(selectExchangeAmountLimits);
     const {
         context,
@@ -269,7 +270,7 @@ export const useExchangeForm = () => {
     });
     useProviderMetadataChangeEffect(control, 'exchange');
 
-    return form;
+    return { ...form, metadata: { maxSpendableAmount: context.maxSpendableAmount } };
 };
 
 export const clearExchangeFormQuoteData = (form: ExchangeFormType) => {

@@ -40,7 +40,7 @@ type NativeTransport = 'BridgeTransport' | 'NativeUsbTransport' | 'NativeBluetoo
 
 const transportsPerDeviceType = {
     device: Platform.select<NativeTransport[]>({
-        ios: ['BridgeTransport', 'NativeBluetoothTransport'],
+        ios: ['NativeBluetoothTransport'],
         android: ['NativeUsbTransport', 'NativeBluetoothTransport'],
         default: ['BridgeTransport'],
     }),
@@ -108,7 +108,6 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
                 `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
             ),
         connectInitSettings: {
-            transportReconnect: false,
             debug: false,
             manifest: {
                 email: 'info@trezor.io',
@@ -117,7 +116,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
             },
         },
         connectInitDeviceEventHooks: {},
-        connectInitUiEventHooks: {},
+        connectInitUIEventHooks: {},
         createLogger,
         // Native constructs its per-device-type transports directly (single platform, no
         // web/desktop split) and returns the enabled ones as ready-made instances.

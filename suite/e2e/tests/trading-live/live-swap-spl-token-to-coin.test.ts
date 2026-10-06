@@ -82,7 +82,10 @@ test.describe(
                         ),
                     },
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, solSymbol);
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                            symbol: solSymbol,
+                            atIndex: 1,
+                        });
                     },
                 });
             });
@@ -118,10 +121,10 @@ test.describe(
                             assetCryptoId: getCryptoId(solSymbol),
                         },
                         selectReceiveAddress: async () => {
-                            await tradingPage.receiveAccount.selectSuiteReceiveAccount(
-                                1,
-                                solSymbol,
-                            );
+                            await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                                symbol: solSymbol,
+                                atIndex: 1,
+                            });
                         },
                     });
                 });

@@ -17,6 +17,7 @@ import {
     findAccountsByAddress,
     findTransactionSenderAccount,
     getAccountIdentifier,
+    getAccountSpecific,
     getBip43Type,
     getNetworkAccountFeatures,
     getUtxoFromSignedTransaction,
@@ -539,6 +540,14 @@ describe(isAccountOutdated.name, () => {
     fixtures.isAccountOutdated.forEach(f => {
         it(f.description, () => {
             expect(isAccountOutdated(f.account, f.freshInfo)).toBe(f.result);
+        });
+    });
+});
+
+describe(getAccountSpecific.name, () => {
+    fixtures.getAccountSpecific.forEach(f => {
+        it(f.description, () => {
+            expect(getAccountSpecific(f.params)).toEqual(f.result);
         });
     });
 });

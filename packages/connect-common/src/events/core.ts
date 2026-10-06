@@ -7,7 +7,6 @@ import type { SetEnabledNetworksMessage } from './networks';
 import type { PopupClosedMessage, PopupEventMessage } from './popup';
 import type {
     TransportEventMessage,
-    TransportGetInfo,
     TransportRequestWebUSBDevice,
     TransportSetTransports,
 } from './transport';
@@ -23,7 +22,6 @@ export type CoreRequestMessage =
     | CoreCallCancelMessage
     | TransportSetTransports
     | TransportRequestWebUSBDevice
-    | TransportGetInfo
     | UiResponseEvent
     | CoreCallMessage
     | SetEnabledNetworksMessage;

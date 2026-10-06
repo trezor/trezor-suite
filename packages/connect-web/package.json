@@ -46,6 +46,7 @@
     },
     "dependencies": {
         "@trezor/connect-common": "workspace:*",
+        "@trezor/logger": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/websocket-client": "workspace:*"
     },

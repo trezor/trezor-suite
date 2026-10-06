@@ -4,6 +4,7 @@ import { isDevEnv } from '@suite-common/suite-utils';
 import { isWindows } from '@trezor/env-utils';
 
 import { BaseProcess, type Status } from './BaseProcess';
+import type { ILogger } from '../logger';
 import { getSwitchValue } from '../process-switches';
 
 export class BluetoothProcess extends BaseProcess {
@@ -11,17 +12,22 @@ export class BluetoothProcess extends BaseProcess {
     private readonly debug;
     private readonly token;
 
-    constructor(port = 21327) {
+    constructor({ port = 21327, logger }: { port?: number; logger: ILogger }) {
         const debug = isDevEnv || getSwitchValue('log-level') === 'debug';
         const token = randomBytes(32).toString('hex');
 
-        super('bluetooth', 'trezor-bluetooth', {
-            autoRestart: 0,
-            env: {
-                TREZOR_BLUETOOTH_PORT: port.toString(),
-                TREZOR_BLUETOOTH_AUTH_TOKEN: token,
+        super({
+            resourceName: 'bluetooth',
+            processName: 'trezor-bluetooth',
+            options: {
+                autoRestart: 0,
+                env: {
+                    TREZOR_BLUETOOTH_PORT: port.toString(),
+                    TREZOR_BLUETOOTH_AUTH_TOKEN: token,
+                },
+                stdio: debug && !isWindows() ? 'inherit' : undefined,
             },
-            stdio: debug && !isWindows() ? 'inherit' : undefined,
+            logger,
         });
 
         this.port = port;

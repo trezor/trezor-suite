@@ -6,20 +6,26 @@ import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
 import { FileFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { type Deferred } from '@trezor/utils';
 
-interface TronVoteConsentModalProps {
-    representativeName: string;
+export type TronVoteConsentRepresentative = {
+    address: string;
+    name: string;
     termsOfServiceUrl: string;
+};
+
+interface TronVoteConsentModalProps {
+    representatives: TronVoteConsentRepresentative[];
     decision: Deferred<boolean>;
     onCancel: () => void;
 }
 
 export const TronVoteConsentModal = ({
-    representativeName,
-    termsOfServiceUrl,
+    representatives,
     decision,
     onCancel,
 }: TronVoteConsentModalProps) => {
     const [isConsentGiven, setIsConsentGiven] = useState(false);
+
+    const representativeName = representatives.map(({ name }) => name).join(', ');
 
     const onSubmit = (value: boolean) => {
         decision.resolve(value);
@@ -88,18 +94,22 @@ export const TronVoteConsentModal = ({
                         onChange={onConsentToggle}
                         isChecked={isConsentGiven}
                     >
-                        <Translation
-                            id="TR_TRON_VOTE_CONSENT_MODAL_CONSENT_TEXT"
-                            values={{
-                                representativeName,
-                                a: children =>
-                                    termsOfServiceUrl ? (
-                                        <TrezorLink href={termsOfServiceUrl}>{children}</TrezorLink>
-                                    ) : (
-                                        children
-                                    ),
-                            }}
-                        />
+                        <Column gap={4}>
+                            {representatives.map(({ address, name, termsOfServiceUrl }) => (
+                                <Translation
+                                    key={address}
+                                    id="TR_TRON_VOTE_CONSENT_MODAL_CONSENT_TEXT"
+                                    values={{
+                                        representativeName: name,
+                                        a: children => (
+                                            <TrezorLink href={termsOfServiceUrl}>
+                                                {children}
+                                            </TrezorLink>
+                                        ),
+                                    }}
+                                />
+                            ))}
+                        </Column>
                     </Checkbox>
                 </Card>
             </Column>

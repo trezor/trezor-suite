@@ -1,4 +1,4 @@
-import { type Log } from '@trezor/utils';
+import type { Log } from '@trezor/logger';
 
 import { getFreePort } from './getFreePort';
 import {

@@ -1,0 +1,40 @@
+{
+    "name": "@trezor/logger",
+    "version": "10.0.1",
+    "type": "module",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "sideEffects": false,
+    "main": "src/index.ts",
+    "publishConfig": {
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            ".": {
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
+            },
+            "./lib/*": "./lib/*"
+        }
+    },
+    "files": [
+        "lib/",
+        "CHANGELOG.md"
+    ],
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
+    }
+}

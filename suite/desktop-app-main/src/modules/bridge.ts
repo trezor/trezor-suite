@@ -19,14 +19,23 @@ export const SERVICE_NAME = 'bridge';
 
 class TrezordNodeProcess {
     private readonly proxy;
+    private readonly store;
 
-    constructor() {
+    constructor(store: Dependencies['store']) {
+        this.store = store;
         this.proxy = new ThreadProxy<TrezordNode>({ name: 'bridge', keepAlive: true });
     }
 
     private async startProxy(mode: 'start' | 'startTest') {
         if (this.proxy.running) return;
-        await this.proxy.run({ api: bridgeTest ? 'udp' : 'usb' });
+        // usb implementation is read from persisted settings at cold start; a change applies on the
+        // next app launch. Only an explicit 'nusb' opts into usb 3.x; every other value (unset, or an
+        // unexpected persisted string) clamps to the known-good legacy usb 2.x baseline, so the safe
+        // default holds even if a malformed value was ever persisted.
+        const usbImplementation =
+            this.store.getBridgeSettings().usbImplementation === 'nusb' ? 'nusb' : 'legacy';
+        const api = bridgeTest ? 'udp' : usbImplementation;
+        await this.proxy.run({ api });
         // Call `start` again in case of respawning due to keepAlive
         this.proxy.watch('started', () => this.proxy.request(mode, []));
         await this.proxy.request(mode, []);
@@ -87,9 +96,8 @@ let bridge: TrezordNodeProcess;
 const handleBridgeStatus = async ({
     mainThreadEmitter,
     mainWindowProxy,
-}: Pick<Dependencies, 'mainThreadEmitter' | 'mainWindowProxy'>) => {
-    const { logger } = global;
-
+    logger,
+}: Pick<Dependencies, 'mainThreadEmitter' | 'mainWindowProxy' | 'logger'>) => {
     logger.info('bridge', `Getting status`);
     const status = await bridge.status();
     logger.info('bridge', `Toggling bridge. Status: ${JSON.stringify(status)}`);
@@ -105,9 +113,7 @@ const handleBridgeStatus = async ({
     return status;
 };
 
-const loadBridge = async ({ store }: Pick<Dependencies, 'store'>) => {
-    const { logger } = global;
-
+const loadBridge = async ({ store, logger }: Pick<Dependencies, 'store' | 'logger'>) => {
     if (store.getBridgeSettings().doNotStartOnStartup) {
         return;
     }
@@ -127,10 +133,11 @@ export const initBackground = ({
     store,
     mainThreadEmitter,
     mainWindowProxy,
-}: Pick<Dependencies, 'store' | 'mainThreadEmitter' | 'mainWindowProxy'>) => {
+    logger,
+}: Pick<Dependencies, 'store' | 'mainThreadEmitter' | 'mainWindowProxy' | 'logger'>) => {
     let loaded = false;
 
-    bridge = new TrezordNodeProcess();
+    bridge = new TrezordNodeProcess(store);
 
     const onLoad = async () => {
         if (loaded) return;
@@ -150,6 +157,7 @@ export const initBackground = ({
                 logger.info(SERVICE_NAME, 'Detected that no bridge is running, starting it');
                 await loadBridge({
                     store,
+                    logger,
                 })
                     .catch(() => {})
                     .finally(() => {
@@ -157,6 +165,7 @@ export const initBackground = ({
                         handleBridgeStatus({
                             mainThreadEmitter,
                             mainWindowProxy,
+                            logger,
                         });
                     });
             }
@@ -168,7 +177,7 @@ export const initBackground = ({
             return;
         }
 
-        return scheduleAction(() => loadBridge({ store }), {
+        return scheduleAction(() => loadBridge({ store, logger }), {
             timeout: 3000,
         }).catch(err => {
             // Error ignored, user will see transport error afterwards
@@ -184,10 +193,12 @@ export const initBackground = ({
     return { onLoad, onQuit };
 };
 
-export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies) => {
-    ipcMain.handle('bridge/change-settings', (_, payload: { doNotStartOnStartup: boolean }) => {
+export const init = ({ store, mainWindowProxy, mainThreadEmitter, logger }: Dependencies) => {
+    ipcMain.handle('bridge/change-settings', (_, payload: Partial<BridgeSettings>) => {
         try {
-            store.setBridgeSettings(payload);
+            // merge: each control (Run-on-startup, usb implementation) sends only its own field,
+            // and store.set replaces the whole object, so we must not drop the other settings.
+            store.setBridgeSettings({ ...store.getBridgeSettings(), ...payload });
 
             return { success: true };
         } catch (error) {
@@ -207,7 +218,7 @@ export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies
     });
 
     const toggleBridge = async (): Promise<InvokeResult> => {
-        const status = await handleBridgeStatus({ mainThreadEmitter, mainWindowProxy });
+        const status = await handleBridgeStatus({ mainThreadEmitter, mainWindowProxy, logger });
         try {
             if (status.service) {
                 await bridge.stop();
@@ -219,7 +230,7 @@ export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies
         } catch (error) {
             return { success: false, error };
         } finally {
-            handleBridgeStatus({ mainThreadEmitter, mainWindowProxy });
+            handleBridgeStatus({ mainThreadEmitter, mainWindowProxy, logger });
         }
     };
 

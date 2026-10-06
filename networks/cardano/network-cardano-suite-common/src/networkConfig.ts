@@ -1,10 +1,16 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { CARDANO_DECIMALS, type CardanoNetworkSymbol } from '@trezor/network-cardano/constants';
 import {
+    DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type Explorer,
     type SuiteCommonNetworkConfig,
+    asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
+
+const syncIntervalBySymbol: Readonly<Record<CardanoNetworkSymbol, number>> = {
+    ada: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+};
 
 const getExplorerUrls = (baseUrl: string): Explorer => ({
     base: baseUrl,
@@ -20,6 +26,7 @@ type NetworkConfig = SuiteCommonNetworkConfig & {
 export const networkConfigBySymbol = {
     ada: {
         color: '#3468d1',
+        displayOrder: asDisplayOrderKey('aC'),
         protocols: [asProtocol('cardano'), asProtocol('ada')],
         // icarus derivation
         displaySymbol: 'ADA',
@@ -60,3 +67,6 @@ export const networkConfigBySymbol = {
 
 export const getNetworkConfig = (symbol: CardanoNetworkSymbol): SuiteCommonNetworkConfig =>
     networkConfigBySymbol[symbol];
+
+export const getAccountSyncInterval = (symbol: CardanoNetworkSymbol): number =>
+    syncIntervalBySymbol[symbol];

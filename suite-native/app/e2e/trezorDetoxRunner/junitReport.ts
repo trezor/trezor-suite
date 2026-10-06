@@ -69,16 +69,17 @@ const setOneFailurePerAttempt = (
     });
 };
 
-/** Convert quarantined failures/errors in a suite to skipped and update suite-level counters. */
+// Keep successful tests passed; only quarantine failures and errors.
 const applySuiteQuarantine = (
-    suite: any,
+    suite: JUnitTestSuite,
     projectName: string,
     quarantinedActions: Action[],
 ): void => {
     let quarantinedFailures = 0;
     let quarantinedErrors = 0;
+    let quarantinedCount = 0;
 
-    suite.testcase.forEach((tc: any) => {
+    suite.testcase?.forEach(tc => {
         const hasFailure = tc.failure !== undefined;
         const hasError = tc.error !== undefined;
         if (!hasFailure && !hasError) return;
@@ -101,9 +102,20 @@ const applySuiteQuarantine = (
             quarantinedErrors++;
         }
         tc.skipped = [{}];
+        quarantinedCount++;
+
+        // The Currents JUnit converter keeps only attempt 0 for skipped tests. Keep all retry
+        // artifacts on that attempt; their names still identify the original invocation.
+        tc.properties?.forEach(properties => {
+            properties.property?.forEach(property => {
+                property.$.name = property.$.name.replace(
+                    /^currents\.artifact\.attempt\.\d+\./,
+                    'currents.artifact.attempt.0.',
+                );
+            });
+        });
     });
 
-    const quarantinedCount = quarantinedFailures + quarantinedErrors;
     if (quarantinedCount === 0 || !suite.$) return;
 
     if (quarantinedFailures > 0) {
@@ -161,8 +173,6 @@ const addAttemptArtifacts = ({
 }: AddAttemptArtifactsParams): void => {
     suite.testcase?.forEach(testCase => {
         const attempts = testAttempts.get(testCase.$.name);
-        // The converter attaches only the first attempt's artifacts to a skipped test, which would
-        // show a quarantined test with the video of its first failure but not of its final one.
         if (!attempts || testCase.skipped !== undefined) return;
 
         const invocations = Array.from({ length: attempts.invocations }, (_, index) => index + 1);
@@ -229,7 +239,7 @@ type ProcessJUnitReportParams = {
     testAttempts: Map<string, TestAttempts>;
     /** Detox artifacts directory of this run, relative to the working directory like the report paths. */
     artifactsRootDir?: string;
-    /** Files attached to every suite which still fails after quarantine. */
+    /** Files attached to every failing suite in the Currents report. */
     instanceAttachments: string[];
 };
 
@@ -237,10 +247,10 @@ type ProcessJUnitReportParams = {
  * Process the JUnit XML report for a project.
  * - Filters out skipped tests that don't match grep.
  * - Reshapes the failures into one <failure> per attempt so Currents shows each attempt separately.
- * - When quarantinedActions are provided, converts failing testcases that are
- *   quarantined into skipped ones and adjusts suite-level counters.
  * - Attaches the Detox artifacts of every attempt and the instance attachments as Currents
  *   artifact properties.
+ * - Marks quarantined failures/errors as skipped while keeping successful tests passed and all
+ *   their artifacts available to Currents.
  *
  * Returns true when there are still genuine (non-quarantined) failures remaining,
  * false when every failure was quarantined (or there were no failures).
@@ -293,10 +303,6 @@ export const processJUnitReport = async ({
 
             setOneFailurePerAttempt(suite, testAttempts);
 
-            if (quarantinedActions.length > 0) {
-                applySuiteQuarantine(suite, projectName, quarantinedActions);
-            }
-
             if (artifactsRootDir) {
                 addAttemptArtifacts({ suite, testAttempts, artifactsRootDir });
             }
@@ -305,6 +311,14 @@ export const processJUnitReport = async ({
                 addInstanceAttachments(suite, instanceAttachments);
             }
         });
+
+        if (quarantinedActions.length > 0) {
+            result.testsuites.testsuite.forEach((suite: any) => {
+                if (suite.testcase) {
+                    applySuiteQuarantine(suite, projectName, quarantinedActions);
+                }
+            });
+        }
 
         recomputeAggregates(result.testsuites);
 

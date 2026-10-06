@@ -15,8 +15,10 @@ import { useStandaloneWrappedNativeController } from './useStandaloneWrappedNati
 import { useStandaloneWrappedNativeFlow } from './useStandaloneWrappedNativeFlow';
 import { useWrappedNativeTokenFees } from './useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from './useWrappedNativeTokenForm';
+import { useYieldDepositGasReserve } from '../yield/useYieldDepositGasReserve';
 
-const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const GAS_RESERVE = { minimum: '0.002', recommended: '0.005' };
+const account = mockWalletAccount({ symbol: asNetworkSymbol('eth'), formattedBalance: '0.2' });
 let mockRouteParams: { accountKey: string; pendingTransaction?: { amount: string } };
 
 jest.mock('@react-navigation/native', () => ({
@@ -30,13 +32,15 @@ jest.mock('./useWrappedNativeTokenForm');
 jest.mock('./useNavigateBackAnalytics', () => ({
     useNavigateBackAnalytics: jest.fn(),
 }));
+jest.mock('../yield/useYieldDepositGasReserve');
 
 const useMessageSystemWrappedNativeMock = jest.mocked(useMessageSystemWrappedNative);
+const useYieldDepositGasReserveMock = jest.mocked(useYieldDepositGasReserve);
 const useStandaloneWrappedNativeFlowMock = jest.mocked(useStandaloneWrappedNativeFlow);
 const useWrappedNativeTokenFeesMock = jest.mocked(useWrappedNativeTokenFees);
 const useWrappedNativeTokenFormMock = jest.mocked(useWrappedNativeTokenForm);
 
-const renderStandaloneController = (flowType: 'wrap' | 'unwrap') => {
+const renderStandaloneController = (flowType: 'wrap' | 'unwrap', currentAccount = account) => {
     const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics(jest.fn()) };
     const store = createLightStore({
         reducer: {
@@ -46,7 +50,7 @@ const renderStandaloneController = (flowType: 'wrap' | 'unwrap') => {
                 isSystemLocaleUsed: true,
             }),
             wallet: combineReducers({
-                accounts: createStaticReducer([account]),
+                accounts: createStaticReducer([currentAccount]),
                 settings: createStaticReducer({ localCurrency: 'usd', bitcoinAmountUnit: 0 }),
             }),
         },
@@ -61,6 +65,7 @@ describe('useStandaloneWrappedNativeController', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockRouteParams = { accountKey: account.key };
+        useYieldDepositGasReserveMock.mockReturnValue(GAS_RESERVE);
         useMessageSystemWrappedNativeMock.mockReturnValue({
             isDisabled: false,
             content: undefined,
@@ -94,8 +99,39 @@ describe('useStandaloneWrappedNativeController', () => {
 
         if (result.current.status !== 'ready') throw new Error('not ready');
         expect(result.current.spentTokenContract).toBeUndefined();
-        expect(result.current.amountInput.maxAmount).toBeDefined();
+        expect(result.current.amountInput.balance).toBe('0.2');
+        expect(result.current.amountInput.maxAmount).toBe('0.195');
+        expect(result.current.amountInput.isDisabled).toBe(false);
+        expect(result.current.feeReserve).toEqual({
+            amount: '0.005',
+            isInsufficient: false,
+            wrapStatus: 'none',
+        });
         expect(result.current.submit.isDisabled).toBe(false);
+    });
+
+    it('does not freeze the standalone wrap reserve into a session', async () => {
+        await renderStandaloneController('wrap');
+
+        expect(useYieldDepositGasReserveMock).toHaveBeenCalledWith({
+            account,
+            isWrappedNativeVault: true,
+            tokenContractAddress: expect.any(String),
+            isDisabled: false,
+        });
+    });
+
+    it('blocks the wrap while the balance does not exceed the recommended reserve', async () => {
+        const { result } = await renderStandaloneController(
+            'wrap',
+            mockWalletAccount({ symbol: asNetworkSymbol('eth'), formattedBalance: '0.004' }),
+        );
+
+        if (result.current.status !== 'ready') throw new Error('not ready');
+        expect(result.current.amountInput.maxAmount).toBe('0');
+        expect(result.current.amountInput.isDisabled).toBe(true);
+        expect(result.current.feeReserve?.isInsufficient).toBe(true);
+        expect(result.current.submit.isDisabled).toBe(true);
     });
 
     it('spends the wrapped token with its contract on unwrap', async () => {
@@ -104,6 +140,11 @@ describe('useStandaloneWrappedNativeController', () => {
         if (result.current.status !== 'ready') throw new Error('not ready');
         expect(result.current.spentTokenContract).toBe(result.current.wrappedTokenContract);
         expect(result.current.amountInput.maxAmount).toBeUndefined();
+        expect(result.current.amountInput.isDisabled).toBe(false);
+        expect(result.current.feeReserve).toBeNull();
+        expect(useYieldDepositGasReserveMock).toHaveBeenCalledWith(
+            expect.objectContaining({ isDisabled: true }),
+        );
     });
 
     it('blocks the submit when the flow is disabled by the message system', async () => {

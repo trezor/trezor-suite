@@ -22,7 +22,9 @@ import { DiscoveryLoader } from '../../ModalSwitcher/DiscoveryLoader';
 import { PassphraseDuplicateModal } from '../UserContextModal/PassphraseDuplicateModal';
 import { PassphraseMismatchModal } from '../UserContextModal/PassphraseMismatchModal';
 
-export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
+type PassphraseModalProps = { device: TrezorDevice };
+
+export const PassphraseModal = ({ device }: PassphraseModalProps) => {
     const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device?.path));
     const requestId = useSelector(selectModalRequestId);
     const { dispatch } = useServices(injectDispatch);

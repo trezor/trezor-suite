@@ -13,19 +13,21 @@ import { suiteForgetDeviceThunk } from 'src/actions/suite/suiteForgetDeviceThunk
 export const useForgetDevice = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
+    type ForgetDeviceParams = {
+        skipToggleModalConnection?: boolean;
+        isOsUnpairingFinished?: boolean;
+        skipDisconnect?: boolean;
+        deviceId?: string;
+        toastType?: 'device-forgotten' | null;
+    };
+
     const forgetDevice = async ({
         skipToggleModalConnection,
         isOsUnpairingFinished,
         skipDisconnect,
         deviceId,
         toastType = 'device-forgotten',
-    }: {
-        skipToggleModalConnection?: boolean;
-        isOsUnpairingFinished?: boolean;
-        skipDisconnect?: boolean;
-        deviceId?: string;
-        toastType?: 'device-forgotten' | null;
-    } = {}) => {
+    }: ForgetDeviceParams = {}) => {
         await dispatch(
             suiteForgetDeviceThunk({
                 skipToggleModalConnection: Boolean(skipToggleModalConnection),

@@ -2,12 +2,14 @@ import { createMemoryHistory } from 'history';
 
 import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import * as fixtures from './__fixtures__/routerThunks';
 import { createSuiteRouterHistory } from './createSuiteRouterHistory';
 import { routerReducer } from './routerReducer';
 import {
+    type GotoThunkDeps,
+    type GotoThunkState,
     closeModalAppThunk,
     gotoThunk,
     initialRedirectionThunk,
@@ -25,7 +27,10 @@ const defaultLocation = {
     search: '',
 } as const;
 
-const getInitialState = (state?: any) => {
+const getInitialState = (state?: {
+    router?: Record<string, unknown>;
+    locks?: Partial<GotoThunkState['locks']>;
+}): GotoThunkState => {
     const router = state?.router;
     const locks = state?.locks;
 
@@ -33,11 +38,8 @@ const getInitialState = (state?: any) => {
         router: {
             ...routerReducer(undefined, EMPTY_ACTION),
             ...router,
-        },
+        } as GotoThunkState['router'],
         modal: modalReducer(undefined, EMPTY_ACTION),
-        analytics: {
-            confirmed: false,
-        },
         locks: {
             ...locksInitialState,
             ...locks,
@@ -45,20 +47,17 @@ const getInitialState = (state?: any) => {
     };
 };
 
-const initStore = (state: ReturnType<typeof getInitialState>) => {
+const initStore = (state: GotoThunkState) => {
     const suiteRouterHistory = createSuiteRouterHistory({ history: createMemoryHistory() });
-    const store = createTestStore({
+    const { store } = createTestCompositionRoot<GotoThunkDeps, GotoThunkState>({
         reducer: {
             router: routerReducer,
             modal: modalReducer,
             locks: locksReducer,
-            analytics: (s: any = { confirmed: false }) => s,
         },
         preloadedState: state,
-        extra: {
-            services: { suiteRouterHistory } as any,
-        },
-    });
+        services: () => ({ suiteRouterHistory }),
+    }).services;
 
     return { store, suiteRouterHistory };
 };

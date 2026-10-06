@@ -3,7 +3,9 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type ExchangeIssue } from '@suite-common/trading';
 
@@ -13,9 +15,11 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { TradingOfferExchangeIssueBanner } from './TradingOfferExchangeIssueBanner';
 import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
 
+type TranslationProps = { id: string; values?: { percent?: string } };
+
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),
-    Translation: ({ id, values }: { id: string; values?: { percent?: string } }) => (
+    Translation: ({ id, values }: TranslationProps) => (
         <span>{values?.percent ? `${id} ${values.percent}` : id}</span>
     ),
 }));
@@ -46,14 +50,15 @@ const slippageTooLowIssue: ExchangeIssue = {
 
 const onContinueAnywayClick = jest.fn();
 
-const renderIssueBanner = ({ issue }: { issue: ExchangeIssue }) => {
-    const services = { analytics: mockDesktopAnalytics() };
-    const root = createTestCompositionRoot({
-        extra: { services },
+type RenderIssueBannerParams = { issue: ExchangeIssue };
+
+const renderIssueBanner = ({ issue }: RenderIssueBannerParams) => {
+    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
         preloadedState: mockInitialAppState satisfies AppState,
+        services: () => ({ analytics: mockDesktopAnalytics() }),
     });
     renderWithProviders(
-        root,
+        services,
         <TradingOfferExchangeIssueBanner
             issue={issue}
             isContinueDisabled={false}

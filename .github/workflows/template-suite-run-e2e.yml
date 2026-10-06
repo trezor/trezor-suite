@@ -145,11 +145,16 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
 
       - name: Download build artifact
+        id: download-build
         if: inputs.download-artifact-name != ''
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: ${{ inputs.download-artifact-name }}
           path: ${{ github.workspace }}/artifact-download
+
+      - name: Report missing build artifact
+        if: failure() && steps.download-build.outcome == 'failure'
+        run: echo "::error title=Build artifact expired::${{ inputs.download-artifact-name }} has expired. Use 'Re-run all jobs' to rebuild it."
 
       - name: Extract build artifact (desktop)
         if: inputs.download-artifact-name != '' && !contains(inputs.download-artifact-name, 'webextension')
@@ -163,7 +168,7 @@ jobs:
           mv ${{ github.workspace }}/artifact-download ${{ github.workspace }}/packages/connect-explorer/build-webextension
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@be0a93f10fbec6a5c94dd78bc722abf1b7fbfc2d # v0.26.0
+        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
         continue-on-error: true
         with:
           version: v0.19.1
@@ -353,6 +358,7 @@ jobs:
           name: coverage-map-group-${{ inputs.test-group }}
           path: coverage-map/
           if-no-files-found: warn
+          retention-days: 1
 
       - name: Docker Compose Down
         shell: bash

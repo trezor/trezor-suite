@@ -1,3 +1,4 @@
+import { AppsEmbeddingSwitch } from '@suite/apps-embedding-demo';
 import { Translation } from '@suite/intl';
 import {
     ContextMessage,
@@ -55,13 +56,15 @@ export const SettingsDebug = () => {
     const { dispatch } = useServices(injectDispatch);
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
 
+    type HandleWipeSuiteSyncLabelsErrorParams = {
+        error: EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError;
+        deviceStaticSessionId: StaticSessionId;
+    };
+
     const handleWipeSuiteSyncLabelsError = ({
         error,
         deviceStaticSessionId,
-    }: {
-        error: EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError;
-        deviceStaticSessionId: StaticSessionId;
-    }) => {
+    }: HandleWipeSuiteSyncLabelsErrorParams) => {
         suiteSyncErrorHandler({
             error,
             dispatch,
@@ -85,6 +88,9 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Trade">
                 <TradeApi />
+            </SettingsSection>
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Apps embedding">
+                <AppsEmbeddingSwitch />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Earn">
                 <EarnApi />

@@ -22,17 +22,19 @@ import { type TradingFormInputDefaultProps } from 'src/types/trading/tradingForm
 
 import { PaymentMethodModal } from './PaymentMethodModal';
 
+type TradingFormInputPaymentMethodValueContentProps = {
+    isFormLoading: boolean;
+    hasPaymentMethods: boolean;
+    displayLabel: ReactNode;
+    paymentMethod: TradingPaymentMethodProps;
+};
+
 const TradingFormInputPaymentMethodValueContent = ({
     isFormLoading,
     hasPaymentMethods,
     displayLabel,
     paymentMethod,
-}: {
-    isFormLoading: boolean;
-    hasPaymentMethods: boolean;
-    displayLabel: ReactNode;
-    paymentMethod: TradingPaymentMethodProps;
-}) => {
+}: TradingFormInputPaymentMethodValueContentProps) => {
     if (isFormLoading) {
         return <Skeleton animate />;
     }

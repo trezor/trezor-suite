@@ -15,7 +15,7 @@ const tokenSymbol = 'USDC';
 const tokenDecimals = 6;
 const tokenId = 'eth-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ${tokenSymbol}`;
-const accountLabel = 'Ethereum #1';
+const accountLabel = 'Ethereum #3';
 
 // Live Invity never hands out a deposit address for a payment its provider page never initiated,
 // so the test supplies one. It is an address of this same wallet: the broadcast is already blocked
@@ -39,7 +39,11 @@ test.describe('Trading - Sell ETH token', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSellTradingOfToken(ethSymbol, tokenSymbol);
+            await walletPage.openSellTradingOfToken({
+                symbol: ethSymbol,
+                atIndex: 2,
+                tokenName: tokenSymbol,
+            });
         },
     );
 

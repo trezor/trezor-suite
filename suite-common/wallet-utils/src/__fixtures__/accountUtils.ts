@@ -1,6 +1,6 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
-import type { AccountWithNetworkType } from '@suite-common/wallet-types';
+import type { Account, AccountWithNetworkType } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
 import type { AccountInfo } from '@trezor/connect';
 import type { Bip43Path, Bip43PathTemplate } from '@trezor/crypto-utils';
@@ -482,12 +482,101 @@ const drepCases: {
     },
 ];
 
-export const isAccountOutdated = drepCases.map(({ description, stored, fresh, result }) => ({
-    description: `cardano: ${description}`,
-    account: {
+const cardanoAccount = (stakingOverride: CardanoStaking) =>
+    ({
         ...mockWalletAccount({ symbol: asNetworkSymbol('ada'), history }),
-        misc: { staking: staking(stored) },
-    } as AccountWithNetworkType<'cardano'>,
-    freshInfo: { history, misc: { staking: staking(fresh) } } as AccountInfo,
-    result,
-}));
+        misc: { staking: stakingOverride },
+    }) as AccountWithNetworkType<'cardano'>;
+
+const delegatedStaking: CardanoStaking = {
+    address: 'stake1uxzutrtmxwv2rf2j3hdpps66ch0jydmkr58vwgnetddcdwg32u4rc',
+    isActive: true,
+    rewards: '173289',
+    poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+    drep,
+};
+
+export const isAccountOutdated = [
+    ...drepCases.map(({ description, stored, fresh, result }) => ({
+        description: `cardano: ${description}`,
+        account: cardanoAccount(staking(stored)),
+        freshInfo: { history, misc: { staking: staking(fresh) } } as AccountInfo,
+        result,
+    })),
+    {
+        description: 'cardano: fresh info without a staking block leaves a delegated account as is',
+        account: cardanoAccount(delegatedStaking),
+        freshInfo: { history, misc: undefined } as AccountInfo,
+        result: false,
+    },
+    {
+        description: 'cardano: fresh info without a staking block still reacts to new transactions',
+        account: cardanoAccount(delegatedStaking),
+        freshInfo: { history: { ...history, total: history.total + 1 } } as AccountInfo,
+        result: true,
+    },
+];
+
+const notDelegatedStaking: CardanoStaking = {
+    address: '',
+    isActive: false,
+    rewards: '0',
+    poolId: null,
+    drep: null,
+};
+
+const cardanoPage = { index: 1, size: 25, total: 1 };
+
+const cardanoSpecific = (stakingResult: CardanoStaking, page?: AccountInfo['page']) => ({
+    networkType: 'cardano' as const,
+    misc: { staking: stakingResult },
+    marker: undefined,
+    stellarCursor: undefined,
+    page,
+});
+
+export const getAccountSpecific: {
+    description: string;
+    params: {
+        accountInfo: Partial<AccountInfo>;
+        networkType: 'cardano';
+        storedAccount?: Account;
+    };
+    result: ReturnType<typeof cardanoSpecific>;
+}[] = [
+    {
+        description: 'cardano: takes the staking block of the fresh info over the stored one',
+        params: {
+            accountInfo: { misc: { staking: staking(null) }, page: cardanoPage },
+            networkType: 'cardano',
+            storedAccount: cardanoAccount(delegatedStaking),
+        },
+        result: cardanoSpecific(staking(null), cardanoPage),
+    },
+    {
+        description: 'cardano: keeps the stored staking block when the fresh info has none',
+        params: {
+            accountInfo: { page: cardanoPage },
+            networkType: 'cardano',
+            storedAccount: cardanoAccount(delegatedStaking),
+        },
+        result: cardanoSpecific(delegatedStaking, cardanoPage),
+    },
+    {
+        description: 'cardano: defaults to not staking when nothing is known',
+        params: {
+            accountInfo: {},
+            networkType: 'cardano',
+        },
+        result: cardanoSpecific(notDelegatedStaking),
+    },
+    {
+        description: 'cardano: ignores a stored account of another network',
+        params: {
+            accountInfo: {},
+            networkType: 'cardano',
+            storedAccount: mockWalletAccount({ symbol: asNetworkSymbol('btc') }),
+        },
+        result: cardanoSpecific(notDelegatedStaking),
+    },
+];

@@ -1,15 +1,17 @@
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { type EthAccount, ethAccount, evmTx } from './__fixtures__/evmFixtures';
-import { ethereumGetCurrentNonceThunk } from './sendFormEthereumThunks';
+import {
+    type EthereumGetCurrentNonceThunkState,
+    ethereumGetCurrentNonceThunk,
+} from './sendFormEthereumThunks';
 
 const accountWithNonce = (nonce: number): EthAccount =>
     ({ ...ethAccount, misc: { nonce: nonce.toString() } }) as EthAccount;
 
 const storeWithTxs = (accountTransactions: ReturnType<typeof evmTx>[]) =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, EthereumGetCurrentNonceThunkState>({
         preloadedState: {
             wallet: {
                 transactions: {
@@ -17,7 +19,7 @@ const storeWithTxs = (accountTransactions: ReturnType<typeof evmTx>[]) =>
                 },
             },
         },
-    });
+    }).services.store;
 
 describe(ethereumGetCurrentNonceThunk.name, () => {
     beforeEach(() => {

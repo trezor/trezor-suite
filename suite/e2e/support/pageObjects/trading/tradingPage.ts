@@ -23,6 +23,37 @@ import { BuyAsset, SellAsset } from '../../types';
 
 const LIVE_TRADE_RESPONSE_TIMEOUT = 90_000;
 
+type FillBuyFormParams = {
+    amount: string;
+    wantCrypto?: boolean;
+    fiatCurrencyCode?: BaseCurrencyCode;
+    country?: TradingCountryCode;
+    countrySubdivision?: string;
+    selectReceiveAddress?: () => Promise<void>;
+};
+
+type FillSellFormParams = {
+    cryptoAmount: string;
+    networkSymbolOrTokenId?: string;
+    cryptoCurrency?: string;
+    fiatCurrencyCode?: BaseCurrencyCode;
+    country?: TradingCountryCode;
+};
+
+type FillSwapFormParams = {
+    amount: string;
+    sellAsset: SellAsset;
+    buyAsset: BuyAsset;
+    selectReceiveAddress?: () => Promise<void>;
+};
+
+type VerifySwapToastParams = {
+    sendAccount: string;
+    receiveAccount: string;
+    sendAmount: string;
+    receiveAmount: string;
+};
+
 export class TradingPage {
     readonly fees: FeeSection;
     readonly assetPicker: TradingAssetPicker;
@@ -145,7 +176,7 @@ export class TradingPage {
      * await tradingPage.fillBuyForm({
      *     amount: '1000',
      *     selectReceiveAddress: async () => {
-     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
+     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount({ symbol: 'btc', atIndex: 0 });
      *     }
      * });
      *
@@ -166,14 +197,7 @@ export class TradingPage {
         country = 'CZ',
         countrySubdivision,
         selectReceiveAddress,
-    }: {
-        amount: string;
-        wantCrypto?: boolean;
-        fiatCurrencyCode?: BaseCurrencyCode;
-        country?: TradingCountryCode;
-        countrySubdivision?: string;
-        selectReceiveAddress?: () => Promise<void>;
-    }) {
+    }: FillBuyFormParams) {
         // The form resets to its defaults once buyInfo lands, roughly 2s after it becomes interactive
         await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.buy.buyInfo', {
             timeout: 30_000,
@@ -239,13 +263,7 @@ export class TradingPage {
         networkSymbolOrTokenId = 'btc',
         fiatCurrencyCode = 'eur',
         country = 'CZ',
-    }: {
-        cryptoAmount: string;
-        networkSymbolOrTokenId?: string;
-        cryptoCurrency?: string;
-        fiatCurrencyCode?: BaseCurrencyCode;
-        country?: TradingCountryCode;
-    }) {
+    }: FillSellFormParams) {
         // The form resets to its defaults once sellInfo lands, roughly 2s after it becomes interactive
         await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.sell.sellInfo', {
             timeout: 30_000,
@@ -295,7 +313,7 @@ export class TradingPage {
      *         assetCryptoId: getCryptoId('btc')
      *     },
      *     selectReceiveAddress: async () => {
-     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
+     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount({ symbol: 'btc', atIndex: 0 });
      *     }
      * });
      *
@@ -316,23 +334,13 @@ export class TradingPage {
      *         assetCryptoId: usdcMint as CryptoId
      *     },
      *     selectReceiveAddress: async () => {
-     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount(0);
+     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount({ symbol: 'sol', atIndex: 0 });
      *     }
      * });
      *
      */
     @step()
-    async fillSwapForm({
-        sellAsset,
-        buyAsset,
-        selectReceiveAddress,
-        amount,
-    }: {
-        amount: string;
-        sellAsset: SellAsset;
-        buyAsset: BuyAsset;
-        selectReceiveAddress?: () => Promise<void>;
-    }) {
+    async fillSwapForm({ sellAsset, buyAsset, selectReceiveAddress, amount }: FillSwapFormParams) {
         await this.assetPicker.selectSellAsset(sellAsset);
         await this.assetPicker.selectBuyAsset(buyAsset);
 
@@ -349,6 +357,10 @@ export class TradingPage {
         const quotesResponsePromise = this.page.waitForResponse(tradeEndpoint.swapQuotes);
         await expect(this.inputs.receiveAmount).toHaveText('0.0');
         await this.inputs.cryptoAmount.fill(amount);
+        await expect(
+            this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
+            'Insufficient funds in the account to run swap flow test. Please contact the "tech_qa" Slack group immediately.',
+        ).toBeHidden();
         await quotesResponsePromise;
         await this.quotes.waitForSync();
     }
@@ -365,12 +377,7 @@ export class TradingPage {
         receiveAccount,
         sendAmount,
         receiveAmount,
-    }: {
-        sendAccount: string;
-        receiveAccount: string;
-        sendAmount: string;
-        receiveAmount: string;
-    }) {
+    }: VerifySwapToastParams) {
         await expect(this.swapToastMessage).toHaveTranslation('TOAST_TX_EXCHANGE_BROADCASTED', {
             values: {
                 sendAccount,

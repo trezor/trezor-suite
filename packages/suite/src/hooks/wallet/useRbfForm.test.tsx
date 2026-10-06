@@ -2,8 +2,11 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, initPreloadedState } from '@suite-common/test-utils';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { type ServerInfo } from '@trezor/blockchain-link-types';
@@ -11,6 +14,7 @@ import TrezorConnect from '@trezor/connect';
 
 import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
 import { ReplaceTxButton } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ReplaceTxButton';
+import { type AppState } from 'src/reducers/store';
 import {
     actionSequence,
     findByTestId,
@@ -107,10 +111,12 @@ interface TestCallback {
     getContextValues?: () => any;
 }
 
+type ComponentProps = { callback: TestCallback };
+
 // component rendered inside of SendIndex
 // callback prop is an object passed from single test case
 // getContextValues returns actual state of SendFormContext
-const Component = ({ callback }: { callback: TestCallback }) => {
+const Component = ({ callback }: ComponentProps) => {
     const values = useRbfContext();
     // eslint-disable-next-line react-hooks/immutability
     callback.getContextValues = () => values;
@@ -121,8 +127,6 @@ const Component = ({ callback }: { callback: TestCallback }) => {
 describe('useRbfForm hook', () => {
     beforeAll(async () => {
         await TrezorConnect.init({
-            transportReconnect: false,
-            pendingTransportEvent: false,
             manifest: {
                 email: 'info@trezor.io',
                 appName: 'Trezor Connect Tests',
@@ -141,19 +145,20 @@ describe('useRbfForm hook', () => {
     fixtures.composeAndSign.forEach(f => {
         it(`composeAndSign: ${f.description}`, async () => {
             const rootReducer = fixtures.getRootReducer(f.store.selectedAccount, f.store.fees);
-            const root = createTestCompositionRoot({
-                extra: {
-                    services: {
-                        analytics: mockDesktopAnalytics(),
-                        suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate: jest.fn() },
-                    },
-                },
+            const { services } = createTestCompositionRoot<
+                WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep>,
+                AppState
+            >({
                 reducer: rootReducer,
                 preloadedState: initPreloadedState({
                     rootReducer,
                     partialState: {
                         wallet: { coinjoin: f.store.coinjoin },
                     },
+                }),
+                services: () => ({
+                    analytics: mockDesktopAnalytics(),
+                    suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate: jest.fn() },
                 }),
             });
             const callback: TestCallback = {};
@@ -176,7 +181,7 @@ describe('useRbfForm hook', () => {
                 );
             };
 
-            const { unmount } = renderWithProviders(root, <TestComponent />);
+            const { unmount } = renderWithProviders(services, <TestComponent />);
 
             const composeTransactionSpy = jest.spyOn(TrezorConnect, 'composeTransaction');
 

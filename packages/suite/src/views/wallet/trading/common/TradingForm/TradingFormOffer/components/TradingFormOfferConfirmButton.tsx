@@ -29,7 +29,6 @@ export const TradingFormOfferConfirmButton = ({
         <Button
             onClick={onClick}
             intent="brand"
-            margin={{ top: 16 }}
             size="large"
             isDisabled={isDisabled}
             isLoading={isLoading}

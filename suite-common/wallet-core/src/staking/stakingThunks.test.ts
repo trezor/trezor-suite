@@ -3,13 +3,13 @@ import {
     type StakingBatchErrorsItem,
     getStakingBatch,
 } from '@suite-common/earn-staking-api';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { stakeDataActions, stakeDataInitialState } from './stakingDataSlice';
 import { stakeInitialState } from './stakingReducer';
 import type { StakeState } from './stakingReducerTypes';
-import { initStakeDataThunk } from './stakingThunks';
+import { type InitStakeDataThunkState, initStakeDataThunk } from './stakingThunks';
 
 jest.mock('@suite-common/earn-staking-api', () => ({
     getStakingBatch: jest.fn(),
@@ -53,22 +53,23 @@ const validationError = {
     message: 'Invalid response shape',
 } satisfies StakingBatchErrorsItem;
 
+type InitStoreParams = {
+    enabledNetworks?: NetworkSymbol[];
+    stake?: StakeState;
+};
+
 const initStore = ({
     enabledNetworks = [ethSymbol, solSymbol, adaSymbol, trxSymbol],
     stake = stakeInitialState,
-}: {
-    enabledNetworks?: NetworkSymbol[];
-    stake?: StakeState;
-} = {}) =>
-    createTestStore({
-        extra: undefined,
+}: InitStoreParams = {}) =>
+    createTestCompositionRoot<void, InitStakeDataThunkState>({
         preloadedState: {
             wallet: {
                 settings: { enabledNetworks },
                 stake,
             },
         },
-    });
+    }).services.store;
 
 // The suite-common jest environment has no console trap, so both spies are asserted
 // explicitly — console.error is captured as a Sentry event on web, desktop and mobile

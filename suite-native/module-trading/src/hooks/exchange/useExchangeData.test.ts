@@ -9,10 +9,15 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { mockGetSelectedAccount, mockGetTradingEnvironment } from '@suite-common/trading/mocks';
-import { type AccountsRootState, initialWalletSettingsState } from '@suite-common/wallet-core';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
-import { localeReducer } from '@suite-native/intl';
 import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
+    initialWalletSettingsState,
+} from '@suite-common/wallet-core';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type LocaleSliceRootState, localeReducer } from '@suite-native/intl';
+import {
+    type PreloadedStatePartial,
     act,
     createStaticReducer,
     renderHookWithStoreProvider,
@@ -22,20 +27,14 @@ import { type TradingRootState, tradingSlice } from '@suite-native/trading-state
 
 import { useExchangeData } from './useExchangeData';
 
-type State = TradingRootState & AccountsRootState;
+// The hook also selects wallet settings and locale while dispatching the trading load thunk.
+type State = TradingRootState & AccountsRootState & WalletSettingsRootState & LocaleSliceRootState;
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
 const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount2') });
 const btc3Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount3') });
 
 describe('useExchangeData', () => {
-    const extra: LoadInitialDataThunkDeps = {
-        services: {
-            getSelectedAccount: mockGetSelectedAccount(),
-            getTradingEnvironment: mockGetTradingEnvironment(),
-        },
-    };
-
     const accounts = [
         btc1Account,
         btc2Account,
@@ -53,25 +52,31 @@ describe('useExchangeData', () => {
         }),
     } as const;
 
+    const initStore = (preloadedState?: PreloadedStatePartial<State>) =>
+        createTestCompositionRoot<LoadInitialDataThunkDeps, State>({
+            reducer,
+            preloadedState,
+            services: () => ({
+                getSelectedAccount: mockGetSelectedAccount(),
+                getTradingEnvironment: mockGetTradingEnvironment(),
+            }),
+        }).services.store;
+
     const getInitializedStore = (tradingAccountKey: string | undefined) => {
         const tradingState = getInitializedTradingState('exchange');
         tradingState.exchange.tradingAccountKey = tradingAccountKey as any;
 
-        return createTestCompositionRoot({
-            extra,
-            reducer,
-            preloadedState: {
-                wallet: {
-                    trading: tradingState,
-                },
+        return initStore({
+            wallet: {
+                trading: tradingState,
             },
-        }).store;
+        });
     };
 
     const renderUseExchangeData = async (
         store?: ReduxStoreWithThunk<State, LoadInitialDataThunkDeps>,
     ) => {
-        const effectiveStore = store ?? createTestCompositionRoot({ extra, reducer }).store;
+        const effectiveStore = store ?? initStore();
 
         const ret = await renderHookWithStoreProvider(useExchangeData, {
             services: { store: effectiveStore },
@@ -134,7 +139,7 @@ describe('useExchangeData', () => {
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const { store } = createTestCompositionRoot({ extra, reducer });
+        const store = initStore();
         const { result } = await renderUseExchangeData(store);
         await act(async () => {
             await result.current.refetch();

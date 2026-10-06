@@ -1,3 +1,4 @@
+import type { CardanoStakingInfo } from './cardano';
 import type { AccountBalanceHistory } from './common';
 import type { AccountBalanceHistoryParams, AccountInfoParams, EstimateFeeParams } from './params';
 
@@ -169,21 +170,8 @@ export interface BlockfrostAccountInfo {
         total: number;
         index: number;
     };
-    misc: {
-        staking: {
-            address: string;
-            isActive: boolean;
-            rewards: string;
-            poolId: string | null;
-            drep: {
-                drep_id: string;
-                hex: string;
-                amount: string;
-                active: boolean;
-                active_epoch: number | null;
-                has_script: boolean;
-            } | null;
-        };
+    misc?: {
+        staking?: Partial<CardanoStakingInfo>;
     };
 }
 

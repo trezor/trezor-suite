@@ -5,7 +5,7 @@ import { locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { type GotoThunkDeps, routerLocationChange, routerReducer } from '@suite/router';
 import { type WithServices } from '@suite-common/redux-utils';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -13,7 +13,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { selectSellQuoteThunk } from './selectSellQuoteThunk';
+import { type SelectSellQuoteThunkState, selectSellQuoteThunk } from './selectSellQuoteThunk';
 
 const mockRequestSellTradeThunk = jest.fn((args: unknown) =>
     Object.assign(
@@ -34,17 +34,6 @@ const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 
 type SelectSellQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
 
-const createExtra = (report: jest.Mock): SelectSellQuoteThunkDeps => ({
-    services: {
-        analytics: mockAnalytics(report),
-        suiteRouterHistory: {
-            getLocation: jest.fn(),
-            navigate: jest.fn(),
-            listen: jest.fn(() => jest.fn()),
-        },
-    },
-});
-
 const ACCOUNT: Account = mockWalletAccount({
     symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor('0xAccount'),
@@ -64,14 +53,15 @@ const DEFAULT_QUOTES_REQUEST: SellFiatTradeQuoteRequest = {
     amountInCrypto: false,
 };
 
+type BuildStoreParams = { quotesRequest?: SellFiatTradeQuoteRequest };
+
 const buildStore = (
     report: jest.Mock,
-    { quotesRequest }: { quotesRequest?: SellFiatTradeQuoteRequest } = {
+    { quotesRequest }: BuildStoreParams = {
         quotesRequest: DEFAULT_QUOTES_REQUEST,
     },
 ) =>
-    createTestStore({
-        extra: createExtra(report),
+    createTestCompositionRoot<SelectSellQuoteThunkDeps, SelectSellQuoteThunkState>({
         preloadedState: {
             locks: locksReducer(undefined, { type: 'test-init' }),
             modal: modalReducer(undefined, { type: 'test-init' }),
@@ -96,7 +86,15 @@ const buildStore = (
                 },
             },
         },
-    });
+        services: () => ({
+            analytics: mockAnalytics(report),
+            suiteRouterHistory: {
+                getLocation: jest.fn(),
+                navigate: jest.fn(),
+                listen: jest.fn(() => jest.fn()),
+            },
+        }),
+    }).services.store;
 
 describe('selectSellQuoteThunk', () => {
     beforeEach(() => {

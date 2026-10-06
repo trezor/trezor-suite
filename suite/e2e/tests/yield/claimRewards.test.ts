@@ -18,7 +18,9 @@ const CLAIM_REWARD_AMOUNT = `${YIELD_MERKL_CLAIM_REWARD.claimableUnits} ${CLAIM_
 const CLAIM_REWARD_FIAT_AMOUNT = '≈ $2.50';
 const CLAIM_MAX_FEE = '0.00010840280031 ETH';
 
-const buildEthAccountTokens = ({ withClaimedMorpho }: { withClaimedMorpho: boolean }) => [
+type BuildEthAccountTokensParams = { withClaimedMorpho: boolean };
+
+const buildEthAccountTokens = ({ withClaimedMorpho }: BuildEthAccountTokensParams) => [
     ...ETH_MOCKED_ACCOUNT.tokens.map(token =>
         token.symbol === 'USDC' ? { ...token, balance: '990000000' } : token,
     ),

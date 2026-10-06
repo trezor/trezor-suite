@@ -6,13 +6,15 @@ export const experimentGroups = [
     { variant: 'B', percentage: 50 },
 ];
 
+type CreateMessageSystemStateParams = {
+    groups?: typeof experimentGroups;
+    inclusionOverride?: number;
+};
+
 export const createMessageSystemState = ({
     groups = experimentGroups,
     inclusionOverride,
-}: {
-    groups?: typeof experimentGroups;
-    inclusionOverride?: number;
-} = {}) =>
+}: CreateMessageSystemStateParams = {}) =>
     ({
         ...messageSystemInitialState,
         config: {

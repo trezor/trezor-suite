@@ -21,9 +21,9 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@T2T1', '@optional'] 
                 stream: TestStream.Growth,
             }),
         },
-        async ({ page, device, onboardingPage, analyticsSection, devicePrompt }) => {
+        async ({ page, device, onboardingPage, devicePrompt }) => {
             await test.step('Start wallet recovery process and confirm on device', async () => {
-                await analyticsSection.passThroughAnalytics();
+                await onboardingPage.passThroughAnalyticsAndDeviceCheck();
                 await onboardingPage.firmware.continueThroughFirmware();
                 await onboardingPage.recoverWalletButton.click();
                 await onboardingPage.startRecoveryButton.click();

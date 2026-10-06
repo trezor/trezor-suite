@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useMessageSystemYield as useMessageSystemYieldCore } from '@suite-common/message-system';
-import { type YieldFlowType } from '@suite-common/wallet-core';
+import { type YieldFlowType } from '@suite-common/suite-types';
 import { selectLocale } from '@suite-native/intl';
 
 type UseMessageSystemYieldOptions = {

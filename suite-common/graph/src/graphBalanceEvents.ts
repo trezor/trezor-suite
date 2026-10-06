@@ -1,7 +1,7 @@
 import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
-import { type Dispatch } from '@suite-common/redux-utils';
+import { type Dispatch, unwrapWithError } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestampThunk } from '@suite-common/wallet-core';
 import type { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
@@ -70,21 +70,17 @@ export const groupBalanceMovementEvents = (
 
     return groups;
 };
-
-/**
- * Reduces each balance movements group to a single balance movement point.
- */
-export const mergeGroups = ({
-    groups,
-    symbol,
-    tokenAddress,
-    accountKey,
-}: {
+type MergeGroupsParams = {
     groups: BalanceMovementEvent[][];
     symbol: NetworkSymbol;
     accountKey: AccountKey;
     tokenAddress?: TokenAddress;
-}) =>
+};
+
+/**
+ * Reduces each balance movements group to a single balance movement point.
+ */
+export const mergeGroups = ({ groups, symbol, tokenAddress, accountKey }: MergeGroupsParams) =>
     A.map(groups, group => {
         const averageTimestamp =
             group.reduce((sum, nextBalanceObject) => sum + nextBalanceObject.date, 0) /
@@ -122,18 +118,19 @@ export const mergeGroups = ({
 
 /**  Relative number that ensure that there is no more than 30 points in each graph.  */
 const GROUPING_DIVISOR = 30000;
+type GetAccountMovementEventsParams = {
+    account: AccountItem;
+    startOfTimeFrameDate: Date | null;
+    endOfTimeFrameDate: Date;
+    dispatch: Dispatch;
+};
 
 export const getAccountMovementEvents = async ({
     account,
     startOfTimeFrameDate,
     endOfTimeFrameDate,
     dispatch,
-}: {
-    account: AccountItem;
-    startOfTimeFrameDate: Date | null;
-    endOfTimeFrameDate: Date;
-    dispatch: Dispatch;
-}) => {
+}: GetAccountMovementEventsParams) => {
     const { symbol, identity, descriptor, tokensFilter, accountKey } = account;
     const tokenAddress = tokensFilter?.[0]; // This is only for graph on detail screen where we have always only one token
 
@@ -142,14 +139,16 @@ export const getAccountMovementEvents = async ({
             return [];
         }
         if (isLocalBalanceHistoryCoin(symbol)) {
-            const allTransactions = await dispatch(
-                fetchTransactionsFromNowUntilTimestampThunk({
-                    accountKey: account.accountKey,
-                    timestamp: startOfTimeFrameDate
-                        ? (getUnixTime(startOfTimeFrameDate) as Timestamp)
-                        : null,
-                }),
-            ).unwrap();
+            const allTransactions = await unwrapWithError(
+                dispatch(
+                    fetchTransactionsFromNowUntilTimestampThunk({
+                        accountKey: account.accountKey,
+                        timestamp: startOfTimeFrameDate
+                            ? (getUnixTime(startOfTimeFrameDate) as Timestamp)
+                            : null,
+                    }),
+                ),
+            );
 
             const movements = getAccountHistoryMovementFromTransactions({
                 transactions: allTransactions,

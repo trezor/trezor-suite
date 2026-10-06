@@ -58,6 +58,7 @@
         { "path": "../module-accounts-import" },
         { "path": "../module-activity-center" },
         { "path": "../module-add-accounts" },
+        { "path": "../module-assets" },
         {
             "path": "../module-authenticity-checks"
         },
@@ -76,6 +77,7 @@
         { "path": "../module-receive" },
         { "path": "../module-send" },
         { "path": "../module-settings" },
+        { "path": "../module-sign-verify" },
         {
             "path": "../module-stellar-token-management"
         },

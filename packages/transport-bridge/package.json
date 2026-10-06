@@ -9,8 +9,8 @@
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:node:bin": "yarn esbuild ./src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node18 --external:usb",
-        "build:node:module": "yarn esbuild ./src/index.ts --bundle --outfile=dist/index.js --platform=node --target=node18 --external:usb",
+        "build:node:bin": "yarn esbuild ./src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node18 --external:usb --external:usb-legacy",
+        "build:node:module": "yarn esbuild ./src/index.ts --bundle --outfile=dist/index.js --platform=node --target=node18 --external:usb --external:usb-legacy",
         "build:node": "yarn build:node:bin && yarn build:node:module",
         "build:ui": "webpack --config ./webpack/ui.webpack.config.js",
         "build:js": "yarn g:rimraf -rf dist && yarn build:node && yarn build:ui",
@@ -22,7 +22,7 @@
         "@babel/preset-react": "^7.29.7",
         "@babel/preset-typescript": "^7.29.7",
         "babel-loader": "^10.1.1",
-        "babel-plugin-styled-components": "^2.1.4",
+        "babel-plugin-styled-components": "^2.3.0",
         "esbuild": "^0.28.0",
         "html-inline-script-webpack-plugin": "^3.2.1",
         "html-webpack-plugin": "5.6.8",
@@ -33,6 +33,7 @@
     "dependencies": {
         "@trezor/components": "workspace:*",
         "@trezor/eslint": "workspace:*",
+        "@trezor/logger": "workspace:*",
         "@trezor/node-utils": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/theme": "workspace:*",
@@ -43,6 +44,7 @@
         "react-dom": "19.2.3",
         "react-intl": "^8.1.3",
         "styled-components": "^6.3.9",
-        "usb": "^2.17.0"
+        "usb": "^3.1.0",
+        "usb-legacy": "npm:usb@2.17.0"
     }
 }

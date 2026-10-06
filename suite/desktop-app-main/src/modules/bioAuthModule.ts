@@ -7,6 +7,7 @@ import { TypedEmitter, serializeError } from '@trezor/utils';
 import { ipcMain } from '../ipcMain';
 import { type Dependencies } from './module';
 import { isMainWindowUsable } from '../libs/isMainWindowUsable';
+import type { ILogger } from '../libs/logger';
 
 const PROMPT_REASON = 'Trezor Suite: validation BIO authentication to access the Suite UI';
 const BLUR_LOCK_TIMEOUT_MS = 5 * 60 * 1000;
@@ -150,7 +151,7 @@ class BioAuthWindows extends BioAuth {
         this.initPromise = Promise.race<Awaited<ReturnType<typeof createWinHelloManager>>>([
             createWinHelloManager({
                 resourcesPath: process.resourcesPath,
-                logger,
+                logger: this.logger,
             }),
             new Promise<never>((_, reject) =>
                 setTimeout(() => reject(new Error('WinHello initialization timeout')), 40_000),
@@ -158,13 +159,13 @@ class BioAuthWindows extends BioAuth {
         ])
             .then(winHello => {
                 this.winHello = winHello;
-                logger.info('bioAuth', 'WinHelloManager initialized successfully');
+                this.logger.info('bioAuth', 'WinHelloManager initialized successfully');
 
                 return winHello;
             })
             .catch(err => {
                 this.winHello = null;
-                logger.warn('bioAuth', `WinHelloManager initialization failed: ${err}`);
+                this.logger.warn('bioAuth', `WinHelloManager initialization failed: ${err}`);
 
                 return null;
             });
@@ -182,7 +183,7 @@ class BioAuthWindows extends BioAuth {
         try {
             return await winHello.isHelloAvailable();
         } catch (err) {
-            logger.warn('bioAuth', `Error checking Windows Hello availability: ${err}`);
+            this.logger.warn('bioAuth', `Error checking Windows Hello availability: ${err}`);
 
             return false;
         }
@@ -214,18 +215,17 @@ class BioAuthWindows extends BioAuth {
     }
 }
 
-export const initBioAuthModule = ({
-    mainWindowProxy,
-    store,
-}: {
+type InitBioAuthModuleParams = {
     mainWindowProxy: Dependencies['mainWindowProxy'];
     store: Dependencies['store'];
-}) => {
+    logger: Dependencies['logger'];
+};
+
+export const initBioAuthModule = ({ mainWindowProxy, store, logger }: InitBioAuthModuleParams) => {
     let bioAuth: BioAuth | undefined;
     let interval: NodeJS.Timeout;
     const onLoad = async () => {
         if (bioAuth) return;
-        const { logger } = global;
         logger.info('bioAuth', `Loading. Enabled in store: ${store.getBioAuthSettings().enabled}`);
 
         const constructorParams = {
@@ -332,7 +332,6 @@ export const initBioAuthModule = ({
     };
 
     const onQuit = () => {
-        const { logger } = global;
         logger.info('bioAuth', 'Stopping (app quit)');
         clearInterval(interval);
         bioAuth?.dispose();

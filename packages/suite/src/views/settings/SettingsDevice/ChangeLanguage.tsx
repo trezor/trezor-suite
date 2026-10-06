@@ -22,7 +22,9 @@ export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
 
     const supportedDeviceLanguages = useSelector(selectSupportedDeviceLanguages);
 
-    const onChange = ({ value }: { value: Locale }) => {
+    type OnChangeParams = { value: Locale };
+
+    const onChange = ({ value }: OnChangeParams) => {
         dispatch(changeLanguageThunk({ device, language: value }));
     };
 

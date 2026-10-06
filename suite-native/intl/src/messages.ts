@@ -210,6 +210,7 @@ export const messages = {
         rewardsReduced: 'No rewards',
     },
     assets: {
+        priceChangePeriod: '7d',
         dashboard: {
             discoveryProgress: {
                 loading: 'Loading...',
@@ -2014,7 +2015,7 @@ export const messages = {
             },
             title: 'My assets',
         },
-        accountAssetsScreen: {
+        accountOverviewScreen: {
             tab: {
                 tokens: 'Tokens {count, plural, =0 {} other { #}}',
                 defi: 'DeFi {count, plural, =0 {} other { #}}',
@@ -2044,6 +2045,7 @@ export const messages = {
             coin: 'Network',
             accountType: 'Account type',
             derivationPath: 'Derivation path',
+            signAndVerifyButton: 'Sign & verify',
             xpubBottomSheet: {
                 xpub: {
                     title: 'Public key (XPUB)',
@@ -2082,12 +2084,33 @@ export const messages = {
                 changeIn7d: '7D change',
                 coinPrice: '{coinName} price',
             },
-            assetPriceCard: {
-                changeIn7d: '7d',
-            },
             yieldBadge: {
                 upToRate: 'Up to {apy}% APY',
                 yieldRate: '{apy}% APY',
+                promoRate: 'Up to {apy}% Rate',
+            },
+            assetPriceCard: {
+                changeIn7d: '7d',
+            },
+        },
+        accountAssetsScreen: {
+            tab: {
+                tokens: 'Tokens {count, plural, =0 {} other { #}}',
+                defi: 'DeFi {count, plural, =0 {} other { #}}',
+                hidden: 'Hidden',
+                inactive: 'Inactive',
+            },
+            zeroBalanceSection: {
+                title: 'Zero-balance tokens',
+            },
+            hiddenTokensSection: {
+                title: 'Unrecognized tokens',
+                warning:
+                    'Proceed with caution. This transaction may include hidden or unrecognized tokens.',
+                emptyTitle: 'No hidden tokens',
+            },
+            defiTokensSection: {
+                emptyTitle: 'No DeFi tokens',
             },
         },
     },
@@ -2201,6 +2224,8 @@ export const messages = {
             markedAsRecognized: 'You’ve confirmed this transaction is safe.',
             hideTransaction: 'Mark as suspicious',
             unhideTransaction: 'Mark as safe',
+            warningUnsolicitedAssetOffer:
+                "Someone offered you this balance, but you haven't received it yet. Claiming it requires a reserve.",
         },
         emptyState: {
             title: 'No transactions',
@@ -2277,6 +2302,19 @@ export const messages = {
                 delegateResource: 'Delegate Resource',
                 undelegateResource: 'Undelegate Resource',
             },
+            stellarAccountMerge: 'Merged account',
+            stellarClaimableBalanceClaimed: 'Claimed balance',
+            stellarClaimableBalanceCreated: 'Offered balance to claim',
+            stellarClaimableBalanceOffered: 'Balance offered to claim',
+            stellarDataEntry: 'Updated account data',
+            stellarFootprint: 'Extended contract data rent',
+            stellarLiquidityPool: 'Liquidity pool operation',
+            stellarOffer: 'Managed an offer',
+            stellarSequenceBumped: 'Bumped account sequence',
+            stellarTrustlineUpdated: 'Updated trustline',
+            stellarSetOptions: 'Changed account settings',
+            stellarSponsorship: 'Changed reserve sponsorship',
+            stellarTrustlineFlags: 'Changed trustline authorization',
         },
         TransactionDetailScreen: {
             sheetSubtitle: 'Transaction #{transactionId}',
@@ -2319,6 +2357,14 @@ export const messages = {
                 from: 'From {count}',
                 to: 'To {count}',
                 changeAddresses: 'Change {count,plural, one {address} other {addresses}}',
+            },
+        },
+    },
+    moduleAssets: {
+        assetDetailScreen: {
+            headerTitle: 'Asset details',
+            balanceSection: {
+                title: 'Your balance',
             },
         },
     },
@@ -2553,6 +2599,10 @@ export const messages = {
                         saveButton: 'Save',
                         removeButton: 'Remove',
                     },
+                },
+                stellar: {
+                    missingTrustline:
+                        'The recipient has not added {symbol}. The receiving account must add this asset before it can receive it.',
                 },
             },
         },
@@ -2835,6 +2885,9 @@ export const messages = {
             amountToWrap: 'Amount to wrap',
             reserveRecommendation:
                 'We recommend leaving {amount} {nativeSymbol} so you can pay future network fees.',
+            reserveKept: 'We left {amount} {nativeSymbol} so you can pay future network fees.',
+            insufficientFeeReserve:
+                'You need at least {amount} {nativeSymbol} to cover the network fees.',
             submitButton: 'Wrap',
             closeButton: 'Close',
             pendingTransactionTitle: 'Wrapping in progress',
@@ -3001,6 +3054,9 @@ export const messages = {
             estimatedRewardsPlaceholder: 'Enter amount to see rewards',
             withdrawalFeesBanner:
                 "We've left {amount} {displaySymbol} in your account so you can pay future network fees.",
+            insufficientBalanceBanner:
+                'Not enough {displaySymbol}. Staking requires at least {minAmount} {displaySymbol} plus network fees.',
+            insufficientBalanceBannerButton: 'Buy {displaySymbol}',
         },
         unstakeFormScreen: {
             validation: {
@@ -3055,6 +3111,10 @@ export const messages = {
                 stakingTitle: 'Choose account to stake',
                 yieldTitle: 'Choose account to deposit',
                 title: 'Choose account',
+            },
+            viewOnlyStakingAlert: {
+                title: 'Connect & unlock your Trezor to start staking',
+                description: "You can't stake {networkName} while your Trezor is disconnected.",
             },
             earnItem: {
                 rewards: 'Rewards',
@@ -3225,7 +3285,7 @@ export const messages = {
                 },
                 third: {
                     title: 'Your {vaultTokenSymbol} amount stays the same, but its value grows with every block',
-                    description: '~{apy}% APY',
+                    description: '~{apy}% Rate',
                 },
             },
             withdrawTimelineTitle: 'Withdraw',
@@ -3338,6 +3398,12 @@ export const messages = {
                 },
                 approvalIncreaseRequiresRevoke: {
                     title: 'To increase your approval, you must first revoke the current allowance.',
+                },
+                insufficientFeeReserve: {
+                    title: 'You need at least {amount} {nativeSymbol} to cover the network fees.',
+                },
+                feeReserveTopUp: {
+                    title: 'We recommend holding at least {amount} {nativeSymbol} to cover future network fees, including withdrawal.',
                 },
                 transactionFailed: {
                     title: 'Transaction failed',
@@ -3641,12 +3707,10 @@ export const messages = {
         },
         staked: 'Stake',
         rewards: 'Rewards',
-        rewardsPerEpoch: 'Next estimated reward',
         rate: 'Rate',
-        apy: 'Annual Percentage Yield',
-        apr: 'Annual Percentage Rate',
         apyAbbr: 'APY',
         apyValueWithLabel: '{value} APY',
+        aprValueWithLabel: '{value} APR',
         aprAbbr: 'APR',
         tron: {
             votes: 'Votes',
@@ -3660,10 +3724,14 @@ export const messages = {
             votesAlertText:
                 '{count, plural, one {You have 1 unassigned vote. Assign it to earn more rewards.} other {You have {count} unassigned votes. Assign them to earn more rewards.}}',
             readyToWithdrawAlert: '{amount} {displaySymbol} unstaked and ready to withdraw.',
-            unstakingCardTitle: 'Unstaking (~{days} days)',
+            resources: {
+                title: 'Resources',
+                bandwidth: 'Bandwidth',
+                energy: 'Energy',
+                availableOfTotal: '{available} / {total}',
+            },
+            allVotesUsed: 'All {count} {count, plural, one {vote} other {votes}} used',
         },
-        stakingCanBeManaged: 'Manage your staking accounts in the',
-        trezorDesktop: 'Trezor Suite desktop app.',
         notAvailable: 'Not available',
         apyNotAvailable: 'APY not available',
         apyPercentage: '~{apy}% APY',
@@ -3691,13 +3759,6 @@ export const messages = {
             claimDisabled: 'Claim is currently disabled.',
             wrapDisabled: 'Wrapping is currently disabled.',
             unwrapDisabled: 'Unwrapping is currently disabled.',
-        },
-        stakePendingCard: {
-            totalStakePending: 'Pending stake',
-            addingToStakingPool: 'Staking activation',
-            activatingStake: 'Staking activation',
-            totalStakeActivating: 'Pending stake',
-            transactionPending: 'Transaction pending',
         },
         claimReviewScreen: {
             title: 'Claim {displaySymbol}',
@@ -3736,13 +3797,7 @@ export const messages = {
             },
             successMessage: "You're all set",
         },
-        claimableCard: {
-            claimable: 'Claimable',
-            claimButton: 'Claim',
-            readyToClaim: '{amount} ready to be claimed',
-        },
         stakingBottomSheet: {
-            title: 'Manage staking in the Trezor Suite desktop app',
             description:
                 'Staking accounts can be viewed but not managed in the Trezor Suite mobile app.',
         },
@@ -3764,8 +3819,22 @@ export const messages = {
             rewardsReduced: 'Cardano staking rewards reduced',
         },
         goToVault: 'Go to vault',
+        yieldInsufficientBalance: {
+            title: "You don't have enough {tokenSymbol}",
+            subtitle: 'Get more {tokenSymbol} in this account to start earning yield.',
+            getButton: 'Get more {tokenSymbol}',
+        },
+        ratePercentage: '~{apy}% Rate',
+        stakingInsufficientBalance: {
+            title: "You don't have enough {displaySymbol}",
+            subtitle: 'Minimum amount to stake is {minAmount} {displaySymbol}.',
+            getButton: 'Get more {displaySymbol}',
+        },
     },
     moduleTrading: {
+        keyboardToolbar: {
+            max: 'Max',
+        },
         paymentMethods: {
             bankTransfer: 'Bank Transfer',
             creditCard: 'Credit/Debit Card',
@@ -3828,9 +3897,9 @@ export const messages = {
                 howTradingWorksSheet: {
                     title: 'How trading works',
                     sheetTitle: 'How trading with Trezor works',
-                    item1: 'Trezor compares trusted exchange providers to find the best offer',
-                    item2: 'Providers use your location to show relevant offers',
-                    item3: 'Trezor never sees your payment or KYC data\n<text>It’s shared only with the provider if you complete your trade.</text>',
+                    item1: 'Trezor compares trusted exchange providers to find the best offer.',
+                    item2: 'Providers use your location to show relevant offers.',
+                    item3: 'Trezor never sees your payment or KYC data.\n<text>It’s shared only with the provider if you complete your trade.</text>',
                     item4: 'How fees are calculated',
                     item5: "Trezor's Terms of Use",
                 },
@@ -4082,6 +4151,12 @@ export const messages = {
         tradingReviewOutputs: {
             title: 'Confirm on Trezor',
             submitButton: 'Send transaction',
+            expiredAlert: {
+                title: 'Transaction confirmation expired',
+                description:
+                    'Not confirmed on your Trezor in time. Go back to the summary to try again.',
+                button: 'Back to summary',
+            },
             signData: {
                 heading: 'Sign EIP-712 typed data',
                 address: 'Address',
@@ -4488,7 +4563,7 @@ export const messages = {
             title: 'We recommend checking your backup before updating device firmware.',
             description:
                 'In the unlikely event of a firmware update issue, you may need your wallet backup to restore access. Check your wallet backup before you continue.',
-            continueButton: 'Yes, I do',
+            continueButton: 'Install firmware',
             checkBackupButton: 'Check wallet backup',
         },
         versionCard: {
@@ -4678,7 +4753,7 @@ export const messages = {
                     'Transaction fees are burned (permanently destroyed), not paid to validators.',
                 bodyTron: 'The fee charged by the Tron network to process your transaction.',
                 bodyTronAccountActivation:
-                    'The fee charged by the Tron network to process your transaction. This also covers a 1\u00a0{networkDisplaySymbol} charge to activate an unused receiving address.',
+                    'The fee charged by the Tron network to process your transaction. This also covers a 1 {networkDisplaySymbol} charge to activate an unused receiving address.',
                 infoAccessibilityLabel: 'Network fee information',
             },
             custom: {
@@ -4780,6 +4855,7 @@ export const messages = {
                 approveMaxAmount: 'Unlimited',
                 noAccount: 'Account not found.',
                 signSuccessMessage: "You're all set",
+                recipientNameOutputLabel: 'Trading partner',
             },
             cancelAlert: {
                 title: 'Cancel transaction?',
@@ -4942,6 +5018,8 @@ export const messages = {
             assetCodeError: 'Invalid asset code. Enter 1-12 alphanumeric characters.',
             issuerAddressPlaceholder: 'e.g. GARDNV3Q...',
             issuerAddressError: 'Invalid issuer address. Enter a valid Stellar address.',
+            contractIdUnknown:
+                'Unrecognized contract ID. Enter the asset code and issuer address instead.',
         },
         deactivationFee: {
             warningText:
@@ -4999,5 +5077,49 @@ export const messages = {
     biometricsButton: 'Unlock with biometrics',
     search: {
         noResults: 'No results',
+    },
+    signAndVerify: {
+        tabs: {
+            sign: 'Sign',
+            verify: 'Verify',
+        },
+        format: {
+            label: 'Format',
+            values: {
+                trezor: 'Trezor (BIP-137)',
+                electrum: 'Electrum',
+                rawKey: 'Raw key',
+                cose: 'COSE (CIP-30)',
+            },
+        },
+        address: {
+            label: 'Address',
+            badges: {
+                stake: 'Stake',
+                fresh: 'Fresh',
+                change: 'Change',
+            },
+        },
+        message: {
+            label: 'Message',
+        },
+        hex: {
+            label: 'Hex',
+            invalid: 'Not a valid hex',
+        },
+        signature: {
+            label: 'Signature',
+            placeholder: 'Generated after signing',
+        },
+        buttons: {
+            sign: 'Sign',
+            verify: 'Verify',
+            clear: 'Clear',
+        },
+        results: {
+            signed: 'Message signed',
+            verified: 'Message verified',
+            failed: 'Verification failed',
+        },
     },
 };

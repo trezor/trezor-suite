@@ -1,10 +1,10 @@
-import { yup } from '@suite-common/validators';
 import {
     type NetworkSymbol,
     getNetworkDisplaySymbol,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { type TokenSymbol, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { yup } from '@suite-native/forms';
 import { type TradingFormContext } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 

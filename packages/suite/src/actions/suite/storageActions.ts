@@ -104,16 +104,12 @@ import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 
 import { STORAGE } from './constants';
 
-export const saveExplorer = (
-    deps: DbDep,
-    {
-        symbol,
-        explorer,
-    }: {
-        symbol: NetworkSymbol;
-        explorer?: Explorer;
-    },
-) => {
+type SaveExplorerParams = {
+    symbol: NetworkSymbol;
+    explorer?: Explorer;
+};
+
+export const saveExplorer = (deps: DbDep, { symbol, explorer }: SaveExplorerParams) => {
     if (!deps.db.isAccessible()) return;
 
     deps.db.removeItemByPK('explorer', symbol);
@@ -433,7 +429,7 @@ export const removeAccountWithDependencies =
             removeEarnOnboarding(deps, account.key),
         ]);
 
-type ForgetDeviceThunkState = AccountsRootState &
+export type ForgetDeviceThunkState = AccountsRootState &
     RemoveAccountWithDependenciesState & { metadata: MetadataState };
 
 type ForgetDeviceThunkDeps = WithServices<DbDep>;
@@ -583,7 +579,7 @@ export const savePhishingMetadataThunk =
         return extra.services.db.addItem('phishingMetadata', newState, 'phishingMetadata', true);
     };
 
-type RememberDeviceThunkState = AccountsRootState &
+export type RememberDeviceThunkState = AccountsRootState &
     CoinjoinRootState &
     EarnOnboardingRootState &
     FiatRatesRootState &
@@ -648,7 +644,7 @@ export const rememberDeviceThunk =
         }
     };
 
-type SaveWalletSettingsThunkState = WalletSettingsRootState;
+export type SaveWalletSettingsThunkState = WalletSettingsRootState;
 
 type SaveWalletSettingsThunkDeps = WithServices<DbDep>;
 
@@ -710,7 +706,7 @@ export const saveBackendThunk =
         );
     };
 
-type SaveSuiteSettingsThunkState = FlagsRootState &
+export type SaveSuiteSettingsThunkState = FlagsRootState &
     SuiteSettingsRootState & {
         suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
     };
@@ -844,7 +840,7 @@ const saveMetadata = async (
  * save general metadata settings
  * obsolete - will be replaced with labeling settings
  */
-type SaveMetadataSettingsThunkState = { metadata: MetadataState };
+export type SaveMetadataSettingsThunkState = { metadata: MetadataState };
 
 type SaveMetadataSettingsThunkDeps = WithServices<DbDep>;
 

@@ -44,7 +44,7 @@
         "scroll-into-view-if-needed": "^3.1.0",
         "styled-components": "^6.3.9",
         "tailwindcss": "^3.4.10",
-        "zod": "4.3.6"
+        "zod": "4.6.5"
     },
     "devDependencies": {
         "@trezor/requirements": "workspace:*",

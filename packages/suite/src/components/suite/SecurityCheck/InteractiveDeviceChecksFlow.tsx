@@ -74,21 +74,24 @@ export const InteractiveDeviceChecksFlow = () => {
         return (
             <Box padding={{ top: 40 }} width="100%">
                 <DeviceAuthenticityCheck
-                    goToNext={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
+                    onSuccess={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
                 />
             </Box>
         );
     }
 
     const goToDeviceAuthentication = () => setIsAuthenticityCheckStep(true);
+    const handleFinishManualDeviceCheck = () => {
+        if (shouldAuthenticateSelectedDevice) {
+            goToDeviceAuthentication();
+        } else {
+            goToSuiteOrNextDevice();
+        }
+    };
 
     return (
         <Card paddingType="large">
-            <ManualDeviceCheck
-                goToDeviceAuthentication={goToDeviceAuthentication}
-                goToSuiteOrNextDevice={goToSuiteOrNextDevice}
-                shouldAuthenticateSelectedDevice={shouldAuthenticateSelectedDevice}
-            />
+            <ManualDeviceCheck onSuccess={handleFinishManualDeviceCheck} />
         </Card>
     );
 };

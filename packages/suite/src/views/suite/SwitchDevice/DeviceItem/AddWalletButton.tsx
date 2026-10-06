@@ -61,13 +61,12 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
         return null;
     }
 
-    const onAddWallet = ({
-        walletType,
-        isExisting,
-    }: {
+    type OnAddWalletParams = {
         walletType: WalletType;
         isExisting?: boolean;
-    }) => {
+    };
+
+    const onAddWallet = ({ walletType, isExisting }: OnAddWalletParams) => {
         onCancel?.(false);
         dispatch(selectDeviceThunk({ device }));
         dispatch(closeModalAppThunk());

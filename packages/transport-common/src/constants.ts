@@ -39,7 +39,6 @@ export const TRANSPORT = {
     BATTERY_LEVEL: 'battery-level',
     /* messages */
     REQUEST_DEVICE: 'transport-request_device',
-    GET_INFO: 'transport-get_info',
     SET_TRANSPORTS: 'transport-set_transports',
 } as const;
 

@@ -40,13 +40,13 @@ const renderClearStaleQuotes = (
     state: TradingRootState,
     props: { type: TradingType; isAmountEmpty: boolean },
 ) => {
-    const root = createTestCompositionRoot({
+    const { services } = createTestCompositionRoot<void, TradingRootState>({
         preloadedState: state,
     });
 
-    renderHookWithStoreProvider(() => useTradingClearStaleQuotes(props), { root });
+    renderHookWithStoreProvider(() => useTradingClearStaleQuotes(props), { services });
 
-    const { getActions } = root.services;
+    const { getActions } = services.store;
 
     return { getActions };
 };

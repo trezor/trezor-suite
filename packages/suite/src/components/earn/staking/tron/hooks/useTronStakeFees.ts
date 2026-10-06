@@ -17,8 +17,8 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
-import { resolveVotedRepresentativeAddress } from '../voteUtils';
 import { type useTronStakeForm } from './useTronStakeForm';
+import { parseVoteAllocations } from '../utils/voteUtils';
 
 interface TronStakeFees {
     feeInfo: FeeInfo;
@@ -36,8 +36,7 @@ export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps)
 
     const amount = form.methods.watch('amount');
     const resourceType = form.methods.watch('resourceType');
-    const representative = form.methods.watch('representative');
-    const customRepresentativeAddress = form.methods.watch('customRepresentativeAddress');
+    const voteAllocations = form.methods.watch('voteAllocations');
 
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const feeInfo = useMemo(
@@ -54,13 +53,14 @@ export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps)
                         .unwrap()
                         .catch(() => undefined);
             case 'vote': {
-                const representativeAddress = resolveVotedRepresentativeAddress({
-                    representative,
-                    customRepresentativeAddress,
-                });
+                const allocations = parseVoteAllocations(voteAllocations);
+
+                if (allocations.length === 0) {
+                    return undefined;
+                }
 
                 return () =>
-                    dispatch(composeTronVoteFeeLevelsThunk({ account, representativeAddress }))
+                    dispatch(composeTronVoteFeeLevelsThunk({ account, allocations }))
                         .unwrap()
                         .catch(() => undefined);
             }
@@ -84,15 +84,7 @@ export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps)
             default:
                 return exhaustive(step);
         }
-    }, [
-        step,
-        account,
-        amount,
-        resourceType,
-        representative,
-        customRepresentativeAddress,
-        dispatch,
-    ]);
+    }, [step, account, amount, resourceType, voteAllocations, dispatch]);
 
     const [composedLevels, setComposedLevels] = useState<PrecomposedLevels | undefined>(undefined);
 

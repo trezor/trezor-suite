@@ -1,6 +1,4 @@
-import { createSelector } from '@reduxjs/toolkit';
-
-import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
+import { type AnalyticsRootState, selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type Category, type Message } from '@suite-common/suite-types';
 
@@ -17,7 +15,10 @@ import {
 import { resolveMessageContent } from './messageSystemUtils';
 
 // Create app-specific selectors with correct types
-export const createMemoizedSelector = createWeakMapSelector.withTypes<MessageSystemRootState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<MessageSystemRootState>();
+const createAnalyticsMemoizedSelector = createWeakMapSelector.withTypes<
+    MessageSystemRootState & AnalyticsRootState
+>();
 
 // Basic selectors don't need memoization
 export const selectMessageSystem = (state: MessageSystemRootState) => state.messageSystem;
@@ -281,7 +282,7 @@ export const selectExperimentById = (id: ExperimentId) =>
         ),
     );
 
-export const selectActiveExperimentsWithVariants = createSelector(
+export const selectActiveExperimentsWithVariants = createAnalyticsMemoizedSelector(
     [selectAnalyticsInstanceId, selectAllValidExperiments],
     (instanceId, experiments) =>
         returnStableArrayIfEmpty(

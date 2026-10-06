@@ -37,15 +37,13 @@ const DATA_POINT: AggregatedAccountHistory = {
     balanceFiat: {},
 };
 
-const renderTransactionsGraph = ({
-    data,
-    isLoading,
-}: {
+type RenderTransactionsGraphParams = {
     data: AggregatedAccountHistory[];
     isLoading: boolean;
-}) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+};
+
+const renderTransactionsGraph = ({ data, isLoading }: RenderTransactionsGraphParams) => {
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -55,7 +53,7 @@ const renderTransactionsGraph = ({
         } as AppState,
     });
     const { container } = renderWithProviders(
-        root,
+        services,
         <TransactionsGraph
             variant="one-asset"
             account={ACCOUNT}

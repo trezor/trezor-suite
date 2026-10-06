@@ -70,7 +70,9 @@ const solAccountWithStaking = {
     },
 } as unknown as Account;
 
-const createAdaAccount = ({ isActive, rewards }: { isActive: boolean; rewards: string }) =>
+type CreateAdaAccountParams = { isActive: boolean; rewards: string };
+
+const createAdaAccount = ({ isActive, rewards }: CreateAdaAccountParams) =>
     ({
         symbol: 'ada',
         accountLabel: 'ADA Account #1',

@@ -7,3 +7,4 @@ export * from './hooks/useForm';
 export * from './hooks/useFormContext';
 export * from './hooks/useField';
 export * from './components/FormSubmitButton';
+export { yup } from './yup';

@@ -16,9 +16,14 @@ export type FormOptions =
 
 export type UtxoSorting = 'newestFirst' | 'oldestFirst' | 'smallestFirst' | 'largestFirst';
 
+export type TronStakingVoteAllocation = {
+    address: string;
+    votes: string;
+};
+
 export type TronStakingFormState =
     | { kind: 'freeze' | 'unstake'; resource: 'bandwidth' | 'energy' }
-    | { kind: 'vote'; votes: string }
+    | { kind: 'vote'; votes: string; allocations: TronStakingVoteAllocation[] }
     | { kind: 'withdraw' }
     | { kind: 'claim' };
 

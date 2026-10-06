@@ -4,6 +4,14 @@ import { step } from '../../common';
 import { DeviceFixture } from '../../device';
 import { DevicePrompt } from '../devicePrompt';
 
+type PassThroughShamirBackupParams = {
+    shares?: number;
+    threshold?: number;
+    deviceConfirmations: number;
+};
+
+type PassThroughBip39BackupParams = { deviceConfirmations: number };
+
 export class BackupSection {
     readonly startButton: Locator;
     readonly understandWhatSeedIsCheckbox: Locator;
@@ -20,6 +28,7 @@ export class BackupSection {
     readonly backupFailedSettingLink: Locator;
     readonly backupFailedSettingButton: Locator;
     readonly skipBackupButton: Locator;
+    readonly skipBackupConfirmButton: Locator;
     readonly createBackupButton: Locator;
     readonly continueButton: Locator;
 
@@ -53,8 +62,20 @@ export class BackupSection {
             '@device-settings/backup-failed/disabled-button',
         );
         this.skipBackupButton = this.page.getByTestId('@onboarding/skip-backup');
+        this.skipBackupConfirmButton = this.page.getByTestId('@onboarding/skip-button-confirm');
         this.createBackupButton = this.page.getByTestId('@onboarding/create-backup-button');
         this.continueButton = this.page.getByTestId('@onboarding/continue-button');
+    }
+
+    @step()
+    async skipBackup() {
+        await this.skipBackupButton.click();
+        await this.skipBackupConfirmButton.click();
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await expect(async () => {
+            await this.device.pressYes();
+            await expect(this.devicePrompt.confirmOnDevicePrompt).toBeHidden({ timeout: 1_000 });
+        }).toPass({ timeout: 15_000 });
     }
 
     @step()
@@ -62,11 +83,7 @@ export class BackupSection {
         shares = 1,
         threshold = 1,
         deviceConfirmations,
-    }: {
-        shares?: number;
-        threshold?: number;
-        deviceConfirmations: number;
-    }) {
+    }: PassThroughShamirBackupParams) {
         await expect(this.createBackupButton).toBeDisabled();
 
         await this.wroteSeedProperlyCheckbox.click();
@@ -93,7 +110,7 @@ export class BackupSection {
     }
 
     @step()
-    async passThroughBip39Backup({ deviceConfirmations }: { deviceConfirmations: number }) {
+    async passThroughBip39Backup({ deviceConfirmations }: PassThroughBip39BackupParams) {
         await expect(this.createBackupButton).toBeDisabled();
 
         await this.wroteSeedProperlyCheckbox.click();

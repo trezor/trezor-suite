@@ -8,6 +8,7 @@
         "types": ["node"]
     },
     "references": [
+        { "path": "../logger" },
         { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../type-utils" },

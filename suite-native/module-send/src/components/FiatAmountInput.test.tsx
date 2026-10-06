@@ -1,9 +1,8 @@
-import { yup } from '@suite-common/validators';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Text } from '@suite-native/atoms';
-import { Form, useField, useForm } from '@suite-native/forms';
+import { Form, useField, useForm, yup } from '@suite-native/forms';
 import {
     fireEvent,
     renderWithStoreProvider,

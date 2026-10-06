@@ -1,7 +1,12 @@
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
-import { type FlagsState, flagsInitialState, prepareFlagsReducer } from './flagsSlice';
+import {
+    type FlagsRootState,
+    type FlagsState,
+    flagsInitialState,
+    prepareFlagsReducer,
+} from './flagsSlice';
 import { initialRunCompletedThunk } from './flagsThunks';
 
 const flagsReducer = prepareFlagsReducer({
@@ -9,12 +14,12 @@ const flagsReducer = prepareFlagsReducer({
     reducers: { storageLoadFlags: mockReducer() },
 });
 
+// The thunk has no state dependency; the reducer slice lets the test assert its effect.
 const initStore = (flags?: Partial<FlagsState>) =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, FlagsRootState>({
         reducer: { flags: flagsReducer },
         preloadedState: { flags: { ...flagsInitialState, ...flags } },
-    });
+    }).services.store;
 
 describe('initialRunCompleted', () => {
     it('should set initialRun to false when initialRun is true', async () => {

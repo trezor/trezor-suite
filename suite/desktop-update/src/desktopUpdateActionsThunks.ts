@@ -96,8 +96,10 @@ type InstallUpdateThunkDeps = WithServices<
     DesktopAnalyticsDep & DesktopApiDep<'installUpdate' | 'setAutoInstallOnAppQuit'>
 >;
 
+type InstallUpdateThunkParams = { installNow: boolean };
+
 export const installUpdateThunk =
-    ({ installNow }: { installNow: boolean }) =>
+    ({ installNow }: InstallUpdateThunkParams) =>
     (_: Dispatch, getState: () => InstallUpdateThunkState, extra: InstallUpdateThunkDeps) => {
         // eslint-disable-next-line no-restricted-syntax
         const { desktopUpdate } = getState();

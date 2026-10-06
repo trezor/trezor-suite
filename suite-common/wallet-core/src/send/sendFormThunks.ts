@@ -1,15 +1,10 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { type AnalyticsDep } from '@suite-common/analytics';
 import { Calldata } from '@suite-common/calldata';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import {
-    type ActionsFromAsyncThunk,
-    type WithServices,
-    createThunk,
-} from '@suite-common/redux-utils';
-import { type GetIsWindowVisibleDep, type OnModalCancelDep } from '@suite-common/suite-types';
+import { type ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
+import { type OnModalCancelDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -18,7 +13,6 @@ import {
     type ComposeActionContext,
     type FormState,
     type GeneralPrecomposedTransactionFinal,
-    type GetTradedAccountKeysDep,
     type PrecomposedLevels,
     type PrecomposedLevelsCardano,
     type PrecomposedTransactionFinal,
@@ -93,6 +87,7 @@ import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { type BlockchainRootState } from '../blockchain/blockchainReducer';
 import {
+    type SyncAccountsWithBlockchainThunkDeps,
     type SyncAccountsWithBlockchainThunkState,
     syncAccountsWithBlockchainThunk,
 } from '../blockchain/blockchainThunks';
@@ -310,9 +305,7 @@ export type SynchronizeSentTransactionThunkState = FeesRootState &
     SendRootState &
     SyncAccountsWithBlockchainThunkState;
 
-export type SynchronizeSentTransactionThunkDeps = WithServices<
-    AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
->;
+export type SynchronizeSentTransactionThunkDeps = SyncAccountsWithBlockchainThunkDeps;
 
 export const synchronizeSentTransactionThunk = createThunk<
     void,
@@ -431,8 +424,7 @@ export type PushSendFormTransactionThunkState = SynchronizeSentTransactionThunkS
 
 export type PushSendFormTransactionThunkDeps = {
     actions: OnModalCancelDep;
-    services: AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep;
-};
+} & SyncAccountsWithBlockchainThunkDeps;
 
 export const pushSendFormTransactionThunk = createThunk<
     Ok<{ txid: string }>,
@@ -602,9 +594,7 @@ type PushSendFormRawTransactionThunkParams = {
 
 type PushSendFormRawTransactionThunkState = DeviceRootState & SyncAccountsWithBlockchainThunkState;
 
-type PushSendFormRawTransactionThunkDeps = WithServices<
-    AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
->;
+type PushSendFormRawTransactionThunkDeps = SyncAccountsWithBlockchainThunkDeps;
 
 export const pushSendFormRawTransactionThunk = createThunk<
     boolean,

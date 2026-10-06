@@ -4,5 +4,5 @@ import { useOnboarding } from 'src/hooks/suite';
 export const DeviceAuthenticityStep = () => {
     const { goToNextStep } = useOnboarding();
 
-    return <DeviceAuthenticityCheck goToNext={() => goToNextStep()} />;
+    return <DeviceAuthenticityCheck onSuccess={() => goToNextStep()} />;
 };

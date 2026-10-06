@@ -13,4 +13,6 @@ export type SuiteCommonNetworkModule = {
     getSupportedNetworks: () => readonly NetworkSymbol[];
 
     getNetworkConfig(symbol: NetworkSymbol): SuiteCommonNetworkConfig;
+
+    getAccountSyncInterval(symbol: NetworkSymbol): number;
 };

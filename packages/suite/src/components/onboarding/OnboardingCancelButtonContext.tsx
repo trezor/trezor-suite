@@ -12,7 +12,9 @@ const CancelButtonContext = createContext<CancelButtonContextData>({
     setOnCancelHandler: null,
 });
 
-export function OnboardingCancelButtonContext({ children }: { children: ReactNode }) {
+type OnboardingCancelButtonContextProps = { children: ReactNode };
+
+export function OnboardingCancelButtonContext({ children }: OnboardingCancelButtonContextProps) {
     const [onCancelHandler, setOnCancelHandler] = useState<OnCancelHandler | null>(null);
 
     return (

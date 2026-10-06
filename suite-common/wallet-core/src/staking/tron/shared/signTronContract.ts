@@ -20,16 +20,17 @@ type TronStakeContract =
     | TronClaimContract;
 
 type SignTronContractResult = { serializedTx: string; txid: string } | { error: TronStakeError };
+type SignTronContractParams = {
+    account: Account;
+    device: TrezorDevice;
+    contract: TronStakeContract;
+};
 
 export const signTronContract = async ({
     account,
     device,
     contract,
-}: {
-    account: Account;
-    device: TrezorDevice;
-    contract: TronStakeContract;
-}): Promise<SignTronContractResult> => {
+}: SignTronContractParams): Promise<SignTronContractResult> => {
     const blockchainInfo = await TrezorConnect.blockchainGetInfo({
         coin: asCoinSymbol(account.symbol),
         identity: getAccountIdentity(account),

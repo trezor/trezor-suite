@@ -5,7 +5,6 @@ import {
     type DeviceRootState,
     deviceActions,
     selectDevices,
-    selectIsPendingTransportEvent,
     selectSelectedDevice,
 } from '@suite-common/device';
 import { type FirmwareRootState, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
@@ -34,7 +33,6 @@ import {
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     type CallMethodPayload,
-    type CreateLoggerDep,
     DEVICE,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
@@ -42,6 +40,7 @@ import TrezorConnect, {
     UI_REQUEST,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import type { CreateLoggerDep } from '@trezor/logger';
 import { getSynchronize, isArrayMember } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
@@ -202,7 +201,6 @@ export const connectInitThunk = createThunk<
         await TrezorConnect.init({
             ...connectInitSettings,
             binFilesBaseUrl,
-            pendingTransportEvent: selectIsPendingTransportEvent(getState()),
             transports: createTransports(debugTransports),
             thp,
             debug: showConnectLogs,

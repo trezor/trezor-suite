@@ -9,7 +9,7 @@ import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
     type ConnectInitDeviceEventHooksDep,
     type ConnectInitSettingsDep,
-    type ConnectInitUiEventHooksDep,
+    type ConnectInitUIEventHooksDep,
     type GetAllowPrereleaseDep,
     type GetBinFilesBaseUrlDep,
     type GetIsWindowVisibleDep,
@@ -27,7 +27,8 @@ import {
     type GetTradedAccountKeysDep,
     type SelectedAccountStatus,
 } from '@suite-common/wallet-types';
-import { type CreateLoggerDep, type ThpSettings } from '@trezor/connect';
+import type { ThpSettings } from '@trezor/connect';
+import type { CreateLoggerDep } from '@trezor/logger';
 
 export type CommonServices = SuiteSyncDep &
     NetworksDep &
@@ -37,7 +38,7 @@ export type CommonServices = SuiteSyncDep &
     AnalyticsDep &
     ConnectInitSettingsDep &
     ConnectInitDeviceEventHooksDep &
-    ConnectInitUiEventHooksDep &
+    ConnectInitUIEventHooksDep &
     GetAllowPrereleaseDep &
     GetBinFilesBaseUrlDep &
     ShouldRetryFirmwareRevisionCheckErrorDep &

@@ -32,6 +32,7 @@ export interface DebugModeOptions {
     definitionsChannel?: DefinitionsChannel;
     isN4w1BackupEnabled: boolean;
     showTranslationKeys: boolean;
+    isAppsEmbeddingEnabled: boolean;
 }
 
 export interface AutodetectSettings {
@@ -95,6 +96,7 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
         showConnectLogs: false,
         isN4w1BackupEnabled: false,
         showTranslationKeys: false,
+        isAppsEmbeddingEnabled: false,
     },
     autodetect: {
         language: true,

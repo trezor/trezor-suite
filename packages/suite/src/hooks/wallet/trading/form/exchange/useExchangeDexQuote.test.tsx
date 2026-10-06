@@ -95,18 +95,20 @@ const buildDefaults = (
 
 const mockComposeRequest = jest.fn();
 
+type RenderExchangeDexQuoteParams = {
+    defaultValues: TradingExchangeFormProps;
+    dexQuotes?: ExchangeTrade[];
+    isFormLoading?: boolean;
+    isLoadingQuote?: boolean;
+};
+
 const renderExchangeDexQuote = ({
     defaultValues,
     dexQuotes = [],
     isFormLoading = false,
     isLoadingQuote = false,
-}: {
-    defaultValues: TradingExchangeFormProps;
-    dexQuotes?: ExchangeTrade[];
-    isFormLoading?: boolean;
-    isLoadingQuote?: boolean;
-}) => {
-    const root = createTestCompositionRoot({});
+}: RenderExchangeDexQuoteParams) => {
+    const { services } = createTestCompositionRoot<void, unknown>({});
 
     return renderHookWithStoreProvider(
         () => {
@@ -128,7 +130,7 @@ const renderExchangeDexQuote = ({
 
             return { dex, methods };
         },
-        { root },
+        { services },
     );
 };
 

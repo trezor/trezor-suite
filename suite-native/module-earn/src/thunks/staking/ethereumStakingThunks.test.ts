@@ -1,10 +1,11 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { messageSystemInitialState } from '@suite-common/message-system';
+import { type MessageSystemState, messageSystemInitialState } from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { createTestStore } from '@suite-common/test-utils';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import {
+    type SendState,
     UNSTAKE_INTERCHANGES,
     WALLET_SDK_SOURCE_MOBILE,
     buildClaimWithdrawRequestData,
@@ -137,6 +138,23 @@ const buildComposeFormDraft = (kind: BaseStakeType, amount: string): FormState =
         feeLimit: '',
     }) as FormState;
 
+// This integration fixture uses deliberately sparse device and wallet slices across signing paths.
+type State = {
+    device: { selectedDevice: TrezorDevice };
+    messageSystem: MessageSystemState;
+    wallet: {
+        accounts: Account[];
+        transactions: {
+            transactions: Record<never, never>;
+            phishing: Record<never, never>;
+            fetchStatusDetail: Record<never, never>;
+        };
+        formDrafts: Record<string, FormState>;
+        send: SendState;
+        settings: { mevProtection: boolean };
+    };
+};
+
 const buildStore = ({
     accounts = [ethAccount],
     formDrafts = {},
@@ -144,8 +162,7 @@ const buildStore = ({
     accounts?: Account[];
     formDrafts?: Record<string, FormState>;
 } = {}) =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, State>({
         reducer: combineReducers({
             device: (): { selectedDevice: TrezorDevice } => ({
                 selectedDevice: {
@@ -171,14 +188,14 @@ const buildStore = ({
                 settings: () => ({ mevProtection: false }),
             }),
         }),
-    });
+    }).services.store;
 
 const ethereumSignTransactionMock = TrezorConnect.ethereumSignTransaction as jest.Mock;
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
 const getAccountInfoMock = TrezorConnect.getAccountInfo as jest.Mock;
 
 const dispatchFlow = async (
-    store: ReturnType<typeof buildStore>,
+    store: TestCompositionStore<State, void>,
     args: Parameters<typeof signEthereumStakingTransactionThunk>[0],
 ) => {
     const action = await store.dispatch(signEthereumStakingTransactionThunk(args) as any);

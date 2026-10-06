@@ -1,4 +1,4 @@
-import { TRANSPORT, type Transport } from '@trezor/transport-common';
+import { type Descriptor, TRANSPORT, type Transport } from '@trezor/transport-common';
 import { TypedEmitter, resolveAfter } from '@trezor/utils';
 
 const createOverrideLock = () => {
@@ -30,57 +30,32 @@ const createOverrideLock = () => {
         return promise as Promise<T>;
     };
 
-    const getPending = () => promise;
-
-    return { override, getPending };
+    return { override };
 };
 
 type TransportManagerEvents = {
-    [TRANSPORT.START]: Transport;
+    [TRANSPORT.START]: (transport: Transport, descriptors: Descriptor[]) => void;
     [TRANSPORT.ERROR]: string;
 };
 
-type StartTransport = (
-    transport: Transport,
-    pendingTransportEvent: boolean,
-    signal: AbortSignal,
-) => Promise<void>;
-
 type InitParams = {
     transports: Transport[];
-    transportReconnect?: boolean;
-    pendingTransportEvent?: boolean;
 };
 
 export class TransportManager extends TypedEmitter<TransportManagerEvents> {
     private lock = createOverrideLock();
     private transports: Transport[] = [];
     private activeTransport?: Transport;
-    private transportReconnect = false;
     private upgradeTimeout?: ReturnType<typeof setTimeout>;
-
-    private readonly startTransport;
-
-    constructor(startTransport: StartTransport) {
-        super();
-        this.startTransport = startTransport;
-    }
-
-    pending() {
-        return this.lock.getPending();
-    }
 
     get() {
         return this.activeTransport;
     }
 
-    init({ transports, transportReconnect = false, pendingTransportEvent = false }: InitParams) {
+    init({ transports }: InitParams) {
         this.transports = transports;
-        this.transportReconnect = transportReconnect;
 
-        return this.lock.override('New init', signal =>
-            this.createInitPromise(pendingTransportEvent, signal),
-        );
+        return this.lock.override('New init', signal => this.createInitPromise(signal));
     }
 
     dispose() {
@@ -113,7 +88,7 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
         else throw new Error(result.error.code);
     }
 
-    private scheduleUpgradeCheck(pendingTransportEvent: boolean) {
+    private scheduleUpgradeCheck() {
         clearTimeout(this.upgradeTimeout);
         this.upgradeTimeout = setTimeout(async () => {
             if (!this.activeTransport || this.activeTransport === this.transports[0]) return;
@@ -121,19 +96,17 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
                 if (t === this.activeTransport) break;
                 if (await t.ping()) {
                     this.lock
-                        .override('Upgrading', signal =>
-                            this.createInitPromise(pendingTransportEvent, signal),
-                        )
+                        .override('Upgrading', signal => this.createInitPromise(signal))
                         .catch(() => {});
 
                     return;
                 }
             }
-            this.scheduleUpgradeCheck(pendingTransportEvent);
+            this.scheduleUpgradeCheck();
         }, 1000);
     }
 
-    private async createInitPromise(pendingTransportEvent: boolean, abortSignal: AbortSignal) {
+    private async createInitPromise(abortSignal: AbortSignal) {
         try {
             const { transports, activeTransport } = this;
             const transport = transports.length
@@ -148,8 +121,18 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
                 }
 
                 if (transport) {
+                    let descriptors;
+
                     try {
-                        await this.startTransport(transport, pendingTransportEvent, abortSignal);
+                        // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
+                        // event until we read descriptors for the first time
+                        const result = await transport.enumerate({ signal: abortSignal });
+
+                        if (!result.success) {
+                            throw new Error(result.error.message || result.error.code);
+                        }
+
+                        descriptors = result.payload;
                     } catch (err) {
                         transport.stop();
                         throw err;
@@ -162,16 +145,14 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
                             .override('Transport error', async signal => {
                                 delete this.activeTransport;
                                 transport.stop();
-                                if (this.transportReconnect) {
-                                    await resolveAfter(1000, signal);
-                                    await this.createInitPromise(pendingTransportEvent, signal);
-                                }
+                                await resolveAfter(1000, signal);
+                                await this.createInitPromise(signal);
                             })
                             .catch(() => {});
                     });
 
                     this.activeTransport = transport;
-                    this.emit(TRANSPORT.START, transport);
+                    this.emit(TRANSPORT.START, transport, descriptors);
                 } else {
                     this.emit(TRANSPORT.ERROR, 'Transport disabled');
                 }
@@ -179,15 +160,15 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
 
             if (transport && transport !== transports[0]) {
                 // new transport started successfully or present transport kept, and it's not the most preferred one, (re)plan check
-                this.scheduleUpgradeCheck(pendingTransportEvent);
+                this.scheduleUpgradeCheck();
             }
         } catch (error) {
             this.emit(TRANSPORT.ERROR, error?.message);
-            if (this.transportReconnect && !abortSignal.aborted) {
+            if (!abortSignal.aborted) {
                 this.lock
                     .override('Reconnecting', async signal => {
                         await resolveAfter(1000, signal);
-                        await this.createInitPromise(pendingTransportEvent, signal);
+                        await this.createInitPromise(signal);
                     })
                     .catch(() => {});
             }

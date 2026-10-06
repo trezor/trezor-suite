@@ -1,7 +1,6 @@
 import { Calldata, type EvmAddress } from '@suite-common/calldata';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol, getNetworkByYieldXyzId } from '@suite-common/wallet-config';
-import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import { type AccountKey, type EvmSelectedFee } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
@@ -16,6 +15,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { YIELD_FLOW_AVAILABLE_STEPS } from '../yieldConstants';
 import type {
+    WrapReserveStatus,
     YieldFlowDisplayToken,
     YieldFlowResolvedData,
     YieldFlowStepId,
@@ -156,14 +156,16 @@ export const getNextYieldFlowStep = (
 
     return sequence[stepIndex + 1] ?? step;
 };
+type GetYieldWithdrawInputTokenParams = {
+    flowData: YieldFlowResolvedData;
+    flowType: YieldWithdrawFlowType;
+};
 
 export const getYieldWithdrawInputToken = ({
     flowData,
     flowType,
-}: {
-    flowData: YieldFlowResolvedData;
-    flowType: YieldWithdrawFlowType;
-}): YieldFlowDisplayToken => (flowType === 'redeem' ? flowData.receiptToken : flowData.token);
+}: GetYieldWithdrawInputTokenParams): YieldFlowDisplayToken =>
+    flowType === 'redeem' ? flowData.receiptToken : flowData.token;
 
 export const buildYieldWithdrawCalldata = ({
     amount,
@@ -370,63 +372,56 @@ type GetYieldDepositableBalanceParams = {
 };
 
 /**
- * Native balance that can be wrapped, after keeping `WETH_WRAP_GAS_RESERVE` aside to cover the
- * follow-up wrap + approve + deposit (+ exit) fees.
+ * Native balance that can be wrapped, after keeping `reserve` (the recommended fee reserve, in
+ * display units) aside to cover the follow-up wrap + approve + deposit (+ exit) fees.
  */
-export const getWrappableNativeBalance = (nativeFormattedBalance: string): string =>
-    BigNumber.max(
-        0,
-        new BigNumber(nativeFormattedBalance || '0').minus(WETH_WRAP_GAS_RESERVE),
-    ).toString();
+export const getWrappableNativeBalance = (
+    nativeFormattedBalance: string,
+    reserve: string,
+): string =>
+    BigNumber.max(0, new BigNumber(nativeFormattedBalance || '0').minus(reserve)).toString();
 
-/**
- * Amount the wrap step's "Max" button fills in: the balance minus `WETH_WRAP_GAS_RESERVE` while
- * that leaves something to wrap, otherwise the whole balance. A balance at or below the reserve
- * has nothing to keep aside, and offering `0` reads as a dead button
- * (trezor/trezor-suite#30842). Wrapping it all is allowed, and `shouldRecommendWrapReserve` then
- * surfaces the non-blocking recommendation to keep some native coin for the follow-up fees.
- */
-export const getMaxWrapAmount = (nativeFormattedBalance: string): string => {
-    const balance = new BigNumber(nativeFormattedBalance || '0');
-
-    if (!balance.isFinite() || balance.lte(0)) {
-        return '0';
-    }
-
-    const wrappableBalance = new BigNumber(getWrappableNativeBalance(nativeFormattedBalance));
-
-    return wrappableBalance.gt(0) ? wrappableBalance.toString() : balance.toString();
+type GetWrapReserveStatusParams = {
+    amountInput: string;
+    /** Native coin balance in display units, NOT subunits. */
+    nativeFormattedBalance: string;
+    /** Recommended fee reserve in display units. */
+    reserve: string;
 };
 
 /**
- * Whether wrapping `amountInput` out of `nativeFormattedBalance` would leave at most
- * `WETH_WRAP_GAS_RESERVE` behind — i.e. no safety margin above the reserve needed for the
- * follow-up approve + deposit fees. Used to surface a non-blocking recommendation to keep a
- * reserve; this also covers the "Max" amount, which leaves exactly the reserve.
- *
- * The amount is assumed to be within the balance; wrapping more than the whole balance is a
- * hard "insufficient funds" error handled separately, so it does not count as a recommendation.
+ * How wrapping `amountInput` out of `nativeFormattedBalance` relates to `reserve`: `'kept'` when
+ * exactly the reserve is left behind (the "Max" amount), `'below'` when the amount eats into it,
+ * `'none'` when more than the reserve is left. The amount is assumed to be within the balance;
+ * wrapping more than the whole balance is a hard "insufficient funds" error handled separately.
  */
-export const shouldRecommendWrapReserve = (
-    amountInput: string,
-    nativeFormattedBalance: string,
-): boolean => {
+export const getWrapReserveStatus = ({
+    amountInput,
+    nativeFormattedBalance,
+    reserve,
+}: GetWrapReserveStatusParams): WrapReserveStatus => {
     const amount = new BigNumber(amountInput || '0');
     const balance = new BigNumber(nativeFormattedBalance || '0');
 
-    if (!amount.isFinite() || !balance.isFinite()) {
-        return false;
+    if (!amount.isFinite() || !balance.isFinite() || amount.lte(0) || amount.gt(balance)) {
+        return 'none';
     }
 
-    return amount.gt(0) && amount.lte(balance) && balance.minus(amount).lte(WETH_WRAP_GAS_RESERVE);
+    const remaining = balance.minus(amount);
+
+    if (remaining.eq(reserve)) {
+        return 'kept';
+    }
+
+    return remaining.lt(reserve) ? 'below' : 'none';
 };
 
 /**
  * Balance available for a yield deposit. For a wrapped-native (WETH) vault the native balance can
  * be wrapped, so the full native balance counts in on top of the already-held wrapped token. The
- * `WETH_WRAP_GAS_RESERVE` is intentionally NOT deducted here — the summary shows the user's full
- * depositable amount (native + wrapped); the fee reserve is a concern of the deposit flow, not the
- * headline figure.
+ * fee reserve is intentionally NOT deducted here — the summary shows the user's full depositable
+ * amount (native + wrapped); the fee reserve is a concern of the deposit flow, not the headline
+ * figure.
  */
 export const getYieldDepositableBalance = ({
     networkSymbol,

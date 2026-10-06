@@ -1,3 +1,5 @@
+import * as yup from 'yup';
+
 import type {
     CTAAction,
     Category,
@@ -8,7 +10,6 @@ import type {
     Variant,
     Vendor,
 } from '@suite-common/suite-types';
-import { yup } from '@suite-common/validators';
 
 import {
     CATEGORY_ENUM,
@@ -332,6 +333,7 @@ const experimentGroupSchema = yup.object({
 const experimentItemSchema = yup
     .object({
         id: yup.string().required(),
+        name: yup.string(),
         groups: yup
             .array()
             .of(experimentGroupSchema)

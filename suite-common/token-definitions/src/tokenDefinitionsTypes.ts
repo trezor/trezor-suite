@@ -5,6 +5,19 @@ import type { PartialRecord } from '@trezor/type-utils';
 
 export type SimpleTokenStructure = string[];
 
+/**
+ * Every token CoinGecko lists on a supported platform, ranked by market cap in USD. A token
+ * without a market cap is kept with a market cap of 0 and sorts last. Published as one file next
+ * to the per-platform definitions.
+ */
+export type RankedTokenStructure = {
+    assetPlatformId: string;
+    address: string;
+    symbol: string;
+    name: string;
+    marketCap: number;
+}[];
+
 export interface AdvancedTokenStructure {
     [contractAddress: string]: {
         symbol: string;
@@ -14,7 +27,7 @@ export interface AdvancedTokenStructure {
     };
 }
 
-export type TokenStructure = SimpleTokenStructure | AdvancedTokenStructure;
+export type TokenStructure = SimpleTokenStructure | RankedTokenStructure | AdvancedTokenStructure;
 
 export enum TokenStructureType {
     SIMPLE = 'simple',

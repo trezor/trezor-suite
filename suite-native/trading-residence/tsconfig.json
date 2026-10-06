@@ -10,9 +10,6 @@
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite-common/trading" },
-        {
-            "path": "../../suite-common/validators"
-        },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../forms" },

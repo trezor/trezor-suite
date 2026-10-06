@@ -6,7 +6,7 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { yieldActions } from '@suite-common/wallet-core';
+import { getYieldNativeFeeStatus, yieldActions } from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import {
     type StackNavigationProps,
@@ -16,19 +16,21 @@ import {
 } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
-import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
-import { useYieldTxSimulationSheet } from './useYieldTxSimulationSheet';
 import { isYieldApprovalAllowanceUnlimited } from '../../../utils/yield/yieldApprovalUtils';
+import { getYieldFeeReserveAlert } from '../../../utils/yield/yieldFeeReserveUtils';
 import { useNavigateBackAnalytics } from '../../earn/useNavigateBackAnalytics';
 import { useRefreshYieldDepositAllowanceOnIdle } from '../useRefreshYieldDepositAllowanceOnIdle';
 import { useReturnToYieldDepositWrapStep } from '../useReturnToYieldDepositWrapStep';
 import { useYieldCurrencyToggleAnalytics } from '../useYieldCurrencyToggleAnalytics';
 import { useYieldDepositFees } from '../useYieldDepositFees';
 import { useYieldDepositForm } from '../useYieldDepositForm';
+import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
 import { useYieldDepositSubmit } from '../useYieldDepositSubmit';
 import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
 import { useYieldPendingTransaction } from '../useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../useYieldPendingTransactionTracking';
+import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
+import { useYieldTxSimulationSheet } from './useYieldTxSimulationSheet';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDeposit>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldDeposit>;
@@ -96,12 +98,29 @@ export const useYieldDepositController = () => {
         new BigNumber(amountValue).gt(allowanceAmount ?? '0');
     const isDepositAmountReady = isValid && !!amountValue;
 
+    const gasReserve = useYieldDepositGasReserve({
+        account,
+        isWrappedNativeVault: yieldFlowData.isWrappedNativeVault,
+        tokenContractAddress: token?.contractAddress,
+        flowKey,
+    });
+
+    const nativeFeeStatus = getYieldNativeFeeStatus({
+        nativeBalance: account?.formattedBalance ?? '0',
+        reserve: gasReserve,
+        isWrapStep: false,
+        isWrappedNativeVault: yieldFlowData.isWrappedNativeVault,
+    });
+
+    const isNativeFeeInsufficient = nativeFeeStatus === 'insufficient';
+
     const canContinueDepositFlow =
         isDepositSessionReady &&
         isAllowanceLoaded &&
         isDepositAmountReady &&
         !isDepositPending &&
-        !isActionSubmitting;
+        !isActionSubmitting &&
+        !isNativeFeeInsufficient;
     const canPrepareDepositFee = canContinueDepositFlow && !isApprovalInsufficient;
 
     const depositFee = useYieldDepositFees({
@@ -258,6 +277,7 @@ export const useYieldDepositController = () => {
             onCurrencyChange: reportCurrencyToggle,
         },
         isApprovalInsufficient,
+        feeReserveAlert: getYieldFeeReserveAlert({ nativeFeeStatus, gasReserve }),
         feeSection: {
             isVisible: isValid && !!amountValue && !isApprovalInsufficient,
             fees: depositFee,

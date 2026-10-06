@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { formInputsMaxLength } from '@suite-common/validators';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     BottomSheetModal,
@@ -17,6 +16,7 @@ import {
 import { useFormContext } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { TRON_NOTE_MAX_BYTES } from '@trezor/network-tron/constants';
 
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 
@@ -34,7 +34,7 @@ export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
 
     const value = useWatch({ control, name: 'destinationTag' }) ?? '';
     const hexByteSize = Buffer.from(localNote || '', 'utf8').length;
-    const isHexTooLong = hexByteSize > formInputsMaxLength.tronNote;
+    const isHexTooLong = hexByteSize > TRON_NOTE_MAX_BYTES;
 
     useEffect(() => {
         setLocalNote(value);
@@ -125,7 +125,7 @@ export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
                             value={localNote}
                             onChangeText={setLocalNote}
                             placeholder={translate('moduleSend.tron.note.inputPlaceholder')}
-                            maxLength={formInputsMaxLength.tronNote}
+                            maxLength={TRON_NOTE_MAX_BYTES}
                             asBottomSheetInput
                         />
 
@@ -134,7 +134,7 @@ export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
                             color={isHexTooLong ? 'contentCritical' : 'contentSecondary'}
                             textAlign="left"
                         >
-                            {hexByteSize}/{formInputsMaxLength.tronNote} bytes
+                            {hexByteSize}/{TRON_NOTE_MAX_BYTES} bytes
                         </Text>
                     </VStack>
 

@@ -6,9 +6,8 @@ import {
     type TradingCountryOption,
     type TradingCountrySubdivisionOption,
 } from '@suite-common/trading';
-import { yup } from '@suite-common/validators';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { useForm } from '@suite-native/forms';
+import { useForm, yup } from '@suite-native/forms';
 import { localeReducer } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils';
 import {

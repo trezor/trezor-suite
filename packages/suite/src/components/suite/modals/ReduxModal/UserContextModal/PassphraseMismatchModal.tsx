@@ -10,13 +10,12 @@ import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
-export const PassphraseMismatchModal = ({
-    device,
-    discovery,
-}: {
+type PassphraseMismatchModalProps = {
     device: TrezorDevice;
     discovery: DiscoveryStatus;
-}) => {
+};
+
+export const PassphraseMismatchModal = ({ device, discovery }: PassphraseMismatchModalProps) => {
     const { isLocked } = useDevice();
 
     const isDeviceLocked = isLocked();

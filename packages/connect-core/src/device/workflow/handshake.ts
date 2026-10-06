@@ -1,7 +1,8 @@
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import type { Logger } from '@trezor/logger';
 import { PROTOCOL_MALFORMED } from '@trezor/protocol/src/errors';
 import { TRANSPORT_ERROR } from '@trezor/transport-common';
-import { type Logger, resolveAfter, versionUtils } from '@trezor/utils';
+import { resolveAfter, versionUtils } from '@trezor/utils';
 
 import type { WorkflowContext } from '../../types/workflow';
 

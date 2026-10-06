@@ -4,14 +4,13 @@ import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { yup } from '@suite-common/validators';
 import { type Explorer, type Network } from '@suite-common/wallet-config';
 import {
     type ExplorerState,
     selectNetworkExplorers,
     setNetworkExplorerThunk,
 } from '@suite-common/wallet-core';
-import { useForm } from '@suite-native/forms';
+import { useForm, yup } from '@suite-native/forms';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { isUrl } from '@trezor/utils';
 

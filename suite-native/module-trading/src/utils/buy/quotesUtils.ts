@@ -1,5 +1,6 @@
 import type { BuyTrade, CoinInfo, PlatformsInfo } from 'invity-api';
 
+import { type NetworkMetadata } from '@suite-common/networks';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type TradingBuyFormProps,
@@ -37,6 +38,7 @@ export const tradingBuyFormToTradingBuyFormProps = (
     form: BuyFormType,
     coinInfo: CoinInfo | undefined,
     platformInfo: PlatformsInfo | undefined,
+    networkConfigs: readonly NetworkMetadata[],
 ): TradingBuyFormProps => {
     const [
         asset,
@@ -72,7 +74,12 @@ export const tradingBuyFormToTradingBuyFormProps = (
             value: fiatCurrency,
             label: currencyName,
         },
-        cryptoSelect: createAssetOption({ cryptoId: asset.cryptoId, coinInfo, platformInfo })!,
+        cryptoSelect: createAssetOption({
+            cryptoId: asset.cryptoId,
+            coinInfo,
+            platformInfo,
+            networkConfigs,
+        })!,
         countrySelect: country,
         countrySubdivisionSelect: countrySubdivision,
         paymentMethod: getPaymentMethodFromBuyForm(form),

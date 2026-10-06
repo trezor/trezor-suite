@@ -2,16 +2,18 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import type { StoredAuthenticateDeviceResult, TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { createTestStore, testMocks } from '@suite-common/test-utils';
+import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import type { AuthenticateDeviceResult, Response } from '@trezor/connect';
 import type { Err, Ok } from '@trezor/type-utils';
 
-import { checkDeviceAuthenticityThunk } from './checkDeviceAuthenticityThunk';
+import {
+    type CheckDeviceAuthenticityThunkState,
+    checkDeviceAuthenticityThunk,
+} from './checkDeviceAuthenticityThunk';
 
 const initStore = (device?: TrezorDevice) =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, CheckDeviceAuthenticityThunkState>({
         preloadedState: {
             device: {
                 selectedDevice: device,
@@ -19,7 +21,7 @@ const initStore = (device?: TrezorDevice) =>
             },
             messageSystem: messageSystemInitialState,
         },
-    });
+    }).services.store;
 
 const getDevice = (isLocked: boolean) => ({
     ...mockSuiteDevice(undefined, { bootloader_locked: isLocked }),

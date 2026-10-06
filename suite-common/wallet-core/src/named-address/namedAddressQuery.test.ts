@@ -6,7 +6,10 @@ import {
 import { QueryClient } from '@suite-common/react-query';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
-import { getResolveNamedAddressQueryOptions } from './namedAddressQuery';
+import {
+    getResolveNamedAddressQueryOptions,
+    getSettledResolveDirection,
+} from './namedAddressQuery';
 
 const mockResolveNamedAddress = jest.fn();
 const mockReverseResolveAddress = jest.fn();
@@ -160,5 +163,42 @@ describe('getResolveNamedAddressQueryOptions', () => {
             ).rejects.toThrow('Unsupported resolve mode: idle');
             expect(mockResolveNamedAddress).not.toHaveBeenCalled();
         });
+    });
+});
+
+describe(getSettledResolveDirection.name, () => {
+    const settled = { isFetching: false, isSuccess: true, isError: false };
+
+    it.each([
+        ['forward', 'direct'],
+        ['reverse', 'reverse'],
+        ['idle', null],
+    ] as const)('maps a settled %s lookup to %s', (mode, expected) => {
+        expect(getSettledResolveDirection({ mode, ...settled })).toBe(expected);
+    });
+
+    it('counts a failed lookup as settled', () => {
+        expect(
+            getSettledResolveDirection({
+                mode: 'forward',
+                isFetching: false,
+                isSuccess: false,
+                isError: true,
+            }),
+        ).toBe('direct');
+    });
+
+    it('returns null while a lookup is fetching or has not run', () => {
+        expect(getSettledResolveDirection({ mode: 'forward', ...settled, isFetching: true })).toBe(
+            null,
+        );
+        expect(
+            getSettledResolveDirection({
+                mode: 'forward',
+                isFetching: false,
+                isSuccess: false,
+                isError: false,
+            }),
+        ).toBe(null);
     });
 });

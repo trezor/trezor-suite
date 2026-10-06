@@ -21,6 +21,12 @@ import { step } from '../common';
 type TableName = keyof typeof Schema;
 const allTables = typedObjectKeys(Schema);
 
+type SeedQuotaManagerDataParams = { ownerId: string };
+
+type SetDeviceUnspentStorageSizeParams = { unspentStorageSize: number };
+
+type SetOwnerStorageLimitParams = { ownerId: string; storageLimit: number };
+
 export class EvoluClient extends BaseEvoluClient {
     @step()
     override async init(params: EvoluClientInitParams) {
@@ -36,17 +42,17 @@ export class EvoluClient extends BaseEvoluClient {
     }
 
     @step()
-    seedQuotaManagerData({ ownerId }: { ownerId: string }) {
+    seedQuotaManagerData({ ownerId }: SeedQuotaManagerDataParams) {
         seedQuotaManagerData({ ownerId });
     }
 
     @step()
-    setDeviceUnspentStorageSize({ unspentStorageSize }: { unspentStorageSize: number }) {
+    setDeviceUnspentStorageSize({ unspentStorageSize }: SetDeviceUnspentStorageSizeParams) {
         setDeviceUnspentStorageSize({ unspentStorageSize });
     }
 
     @step()
-    setOwnerStorageLimit({ ownerId, storageLimit }: { ownerId: string; storageLimit: number }) {
+    setOwnerStorageLimit({ ownerId, storageLimit }: SetOwnerStorageLimitParams) {
         setOwnerStorageLimit({ ownerId, storageLimit });
     }
 

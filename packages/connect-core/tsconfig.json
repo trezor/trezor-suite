@@ -17,6 +17,7 @@
         { "path": "../crypto-utils" },
         { "path": "../device-authenticity" },
         { "path": "../device-utils" },
+        { "path": "../logger" },
         {
             "path": "../../networks/cardano/network-cardano"
         },

@@ -44,8 +44,6 @@ export * from './isNotUndefined';
 export * from './isUrl';
 export * from './isUUID';
 export * from './isWhitelistedHost';
-export * from './logs';
-export * from './logsManager';
 export * from './mergeDeepObject';
 export * from './noop';
 export * from './objectPartition';

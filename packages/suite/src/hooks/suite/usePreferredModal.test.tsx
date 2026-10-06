@@ -2,9 +2,14 @@ import { Provider } from 'react-redux';
 
 import { render } from '@testing-library/react';
 
-import { MODAL_CONTEXT_NONE, MODAL_CONTEXT_USER, type State as ModalState } from '@suite/modal';
-import { type PathString, getAppWithParams } from '@suite/router';
-import { createTestStore } from '@suite-common/test-utils';
+import {
+    MODAL_CONTEXT_NONE,
+    MODAL_CONTEXT_USER,
+    type ModalRootState,
+    type State as ModalState,
+} from '@suite/modal';
+import { type PathString, type RouterRootState, getAppWithParams } from '@suite/router';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import { usePreferredModal } from './usePreferredModal';
 
@@ -18,22 +23,23 @@ const USER_MODAL = {
 
 const DEFAULT_MODAL_APP_PARAMS = { cancelable: true, variant: undefined };
 
+type RenderPreferredModalParams = {
+    pathname: PathString;
+    hash?: '' | `#${string}`;
+    modal?: ModalState;
+};
+
 const renderPreferredModal = ({
     pathname,
     hash = '',
     modal = NO_MODAL,
-}: {
-    pathname: PathString;
-    hash?: '' | `#${string}`;
-    modal?: ModalState;
-}) => {
-    const store = createTestStore({
-        extra: undefined,
+}: RenderPreferredModalParams) => {
+    const { store } = createTestCompositionRoot<void, ModalRootState & RouterRootState>({
         preloadedState: {
             router: { loaded: true, ...getAppWithParams({ pathname, hash }) },
             modal,
         },
-    });
+    }).services;
 
     let result: Result | undefined;
 

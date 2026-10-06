@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { type SetRequired } from 'type-fest';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -10,13 +8,13 @@ import { Divider } from '../Divider';
 
 type CardDividerProps = {
     color?: Color;
-    horizontalPadding?: NativeSpacing;
+    horizontalPadding?: NativeSpacing | 0;
 };
 
 const dividerStyle = prepareNativeStyle<SetRequired<CardDividerProps, 'horizontalPadding'>>(
     (utils, { color, horizontalPadding }) => ({
         //  fill the whole width of the parent card
-        marginHorizontal: -utils.spacings[horizontalPadding],
+        marginHorizontal: horizontalPadding === 0 ? 0 : -utils.spacings[horizontalPadding],
 
         extend: {
             condition: isNotNullOrUndefined(color),

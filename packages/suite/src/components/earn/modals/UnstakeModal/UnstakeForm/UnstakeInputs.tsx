@@ -1,9 +1,8 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { getStakingDataForNetwork } from '@suite-common/wallet-core';
+import { AMOUNT_MAX_LENGTH, getStakingDataForNetwork } from '@suite-common/wallet-core';
 import { Column, type FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 
@@ -107,7 +106,7 @@ export const UnstakeInputs = () => {
                     labelLeft,
                     control,
                     rules: cryptoInputRules,
-                    maxLength: formInputsMaxLength.amount,
+                    maxLength: AMOUNT_MAX_LENGTH,
                     rightContent: (
                         <Text intent="neutral" priority="secondary">
                             {networkDisplaySymbol}
@@ -124,7 +123,7 @@ export const UnstakeInputs = () => {
                               labelLeft,
                               control,
                               rules: fiatInputRules,
-                              maxLength: formInputsMaxLength.fiat,
+                              maxLength: AMOUNT_MAX_LENGTH,
                               rightContent: (
                                   <Text intent="neutral" priority="secondary">
                                       {baseCurrencyCode.toUpperCase()}

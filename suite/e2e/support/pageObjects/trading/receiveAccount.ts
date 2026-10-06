@@ -4,12 +4,27 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../../common';
 
+type ReceiveAccountParams = {
+    symbol: NetworkSymbol;
+    type?: 'normal' | 'legacy' | 'segwit' | 'ledger';
+    atIndex?: number;
+};
+
+type SelectReceiveAccountParams = ReceiveAccountParams & { atIndex: number };
+
 export class TradingReceiveAccount {
     readonly receiveAddressPicker: Locator;
     readonly selectedReceiveAccount: Locator;
 
     readonly receiveAccountModal: Locator;
-    readonly receiveAccountModalSuiteOption: Locator;
+    readonly receiveAccountModalSuiteOption = ({
+        symbol,
+        type = 'normal',
+        atIndex = 0,
+    }: ReceiveAccountParams): Locator =>
+        this.page.getByTestId(
+            `@trading/receive-account-modal/option/suite/${type}/${symbol}/${atIndex}`,
+        );
     readonly receiveAccountModalAddAccountButton: Locator;
     readonly receiveAccountModalActivateNetworkButton: Locator;
     readonly receiveAccountModalUseExternalAccountButton: Locator;
@@ -30,9 +45,6 @@ export class TradingReceiveAccount {
         this.selectedReceiveAccount = this.page.getByTestId('@trading/selected-receive-account');
 
         this.receiveAccountModal = this.page.getByTestId('@trading/receive-account-modal');
-        this.receiveAccountModalSuiteOption = this.page.getByTestId(
-            '@trading/receive-account-modal/option/suite',
-        );
         this.receiveAccountModalAddAccountButton = this.page.getByTestId(
             '@trading/receive-account-modal/add-account',
         );
@@ -61,11 +73,11 @@ export class TradingReceiveAccount {
     }
 
     @step()
-    async selectSuiteReceiveAccount(index: number, symbol?: NetworkSymbol) {
+    async selectSuiteReceiveAccount(params: SelectReceiveAccountParams) {
         await this.receiveAddressPicker.click();
         await expect(this.receiveAccountModal).toBeVisible();
 
-        const selectedOption = this.receiveAccountModalSuiteOption.nth(index);
+        const selectedOption = this.receiveAccountModalSuiteOption(params);
         // Capture the option's account name (not the balance/address)
         const selectedOptionName = selectedOption.getByTestId(
             '@trading/receive-account-modal/option/suite/name',
@@ -74,7 +86,7 @@ export class TradingReceiveAccount {
         const selectedAccountName = await selectedOptionName.innerText();
         await selectedOption.click();
 
-        if (symbol === 'btc') {
+        if (params.symbol === 'btc') {
             await expect(this.bitcoinReceiveAddressModal).toBeVisible();
             await this.bitcoinReceiveAddressModalOption.nth(0).click();
             await expect(this.bitcoinReceiveAddressModal).toBeHidden();
@@ -105,7 +117,7 @@ export class TradingReceiveAccount {
     }
 
     @step()
-    async activateNetworkForReceiveAccount(index: number) {
+    async activateNetworkForReceiveAccount(params: ReceiveAccountParams) {
         await this.receiveAddressPicker.click();
         await expect(this.receiveAccountModal).toBeVisible();
 
@@ -114,6 +126,6 @@ export class TradingReceiveAccount {
         await this.page.discoveryShouldFinish();
 
         await expect(this.receiveAccountModal).toBeVisible();
-        await this.receiveAccountModalSuiteOption.nth(index).click();
+        await this.receiveAccountModalSuiteOption(params).click();
     }
 }

@@ -25,7 +25,10 @@ import {
     asBaseCurrencyAmount,
     createAccountKey,
 } from '@suite-common/wallet-types';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import {
+    type BaseCurrencyCode,
+    NON_DELEGATED_CARDANO_STAKING_INFO,
+} from '@trezor/blockchain-link-types';
 import TrezorConnect, {
     type AccountAddress,
     type AccountAddresses,
@@ -697,16 +700,22 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                     JSON.stringify(account?.misc?.stakingPools)
             );
         case 'cardano': {
-            const freshDrep = freshInfo.misc!.staking?.drep ?? null;
+            const freshStaking = freshInfo.misc?.staking;
+
+            if (!freshStaking) {
+                return false;
+            }
+
+            const freshDrep = freshStaking.drep ?? null;
             const storedDrep = account.misc.staking.drep ?? null;
 
             return (
                 // stake address (de)registration
-                freshInfo.misc!.staking?.isActive !== account.misc.staking.isActive ||
+                freshStaking.isActive !== account.misc.staking.isActive ||
                 // changed rewards amount (rewards are distributed every epoch (5 days))
-                freshInfo.misc!.staking?.rewards !== account.misc.staking.rewards ||
+                freshStaking.rewards !== account.misc.staking.rewards ||
                 // changed stake pool
-                freshInfo.misc!.staking?.poolId !== account.misc.staking.poolId ||
+                freshStaking.poolId !== account.misc.staking.poolId ||
                 // changed DRep vote or its (de)registration; `amount` drifts with other delegators
                 freshDrep?.drep_id !== storedDrep?.drep_id ||
                 freshDrep?.active !== storedDrep?.active ||
@@ -733,8 +742,18 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     }
 };
 
+type GetAccountSpecificParams = {
+    accountInfo: Partial<AccountInfo>;
+    networkType: NetworkType;
+    storedAccount?: Account;
+};
+
 // Used in accountActions and failed accounts
-export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkType: NetworkType) => {
+export const getAccountSpecific = ({
+    accountInfo,
+    networkType,
+    storedAccount,
+}: GetAccountSpecificParams) => {
     const { misc } = accountInfo;
     if (networkType === 'ripple') {
         return {
@@ -763,16 +782,13 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
     }
 
     if (networkType === 'cardano') {
+        const storedStaking =
+            storedAccount?.networkType === 'cardano' ? storedAccount.misc.staking : undefined;
+
         return {
             networkType,
             misc: {
-                staking: {
-                    rewards: misc?.staking?.rewards ?? '0',
-                    isActive: misc?.staking?.isActive ?? false,
-                    address: misc?.staking?.address ?? '',
-                    poolId: misc?.staking?.poolId ?? null,
-                    drep: misc?.staking?.drep ?? null,
-                },
+                staking: misc?.staking ?? storedStaking ?? NON_DELEGATED_CARDANO_STAKING_INFO,
             },
             marker: undefined,
             stellarCursor: undefined,
@@ -931,6 +947,13 @@ export const accountSearchFn = (
         tokenMatch
     );
 };
+type GetUtxoFromSignedTransactionParams = {
+    account: Account;
+    receivingAccount?: boolean;
+    tx: GeneralPrecomposedTransactionFinal;
+    txid: string;
+    prevTxid?: string;
+};
 
 export const getUtxoFromSignedTransaction = ({
     account,
@@ -938,13 +961,7 @@ export const getUtxoFromSignedTransaction = ({
     tx,
     txid,
     prevTxid,
-}: {
-    account: Account;
-    receivingAccount?: boolean;
-    tx: GeneralPrecomposedTransactionFinal;
-    txid: string;
-    prevTxid?: string;
-}) => {
+}: GetUtxoFromSignedTransactionParams) => {
     if (tx.type !== 'final') return [];
 
     // find utxo to replace
@@ -1018,6 +1035,12 @@ export const getAccountAddresses = (account: Account) =>
     account.addresses
         ? account.addresses.unused.concat(account.addresses.used).concat(account.addresses.change)
         : [];
+type GetPendingAccountParams = {
+    account: Account;
+    receivingAccount?: boolean;
+    tx: GeneralPrecomposedTransactionFinal;
+    txid: string;
+};
 
 // update account before BLOCKCHAIN.NOTIFICATION or BLOCKCHAIN.BLOCK events
 // solves race condition between pushing transaction and received notification
@@ -1026,12 +1049,7 @@ export const getPendingAccount = ({
     receivingAccount,
     tx,
     txid,
-}: {
-    account: Account;
-    receivingAccount?: boolean;
-    tx: GeneralPrecomposedTransactionFinal;
-    txid: string;
-}): Account => {
+}: GetPendingAccountParams): Account => {
     // calculate availableBalance
     let availableBalanceBig = new BigNumber(account.availableBalance);
 
@@ -1175,6 +1193,15 @@ export const parseAccountKey = (accountKey: AccountKey) => {
  * @deprecated use createAccountKey directly
  */
 export const getAccountKey = createAccountKey;
+type PrepareNewAccountPayloadParams = {
+    accountType: AccountType;
+    networkSymbol: NetworkSymbol;
+    index: number;
+    backendType?: TrezorConnectBackendType;
+    selectedAccount?: NetworkAccount;
+    accountTypes?: NetworkAccount[];
+    device: TrezorDevice;
+};
 
 export const prepareNewAccountPayload = async ({
     accountType,
@@ -1184,15 +1211,7 @@ export const prepareNewAccountPayload = async ({
     selectedAccount,
     accountTypes,
     device,
-}: {
-    accountType: AccountType;
-    networkSymbol: NetworkSymbol;
-    index: number;
-    backendType?: TrezorConnectBackendType;
-    selectedAccount?: NetworkAccount;
-    accountTypes?: NetworkAccount[];
-    device: TrezorDevice;
-}) => {
+}: PrepareNewAccountPayloadParams) => {
     const network = getNetwork(networkSymbol);
     const networkAccount =
         selectedAccount ?? accountTypes?.find(v => v.accountType === accountType);

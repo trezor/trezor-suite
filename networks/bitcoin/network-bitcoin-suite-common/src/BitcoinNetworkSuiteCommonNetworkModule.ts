@@ -5,10 +5,11 @@ import {
 } from '@trezor/network-module-suite-common-types';
 
 import { bitcoinValidator } from './addressValidator/bitcoinAddressValidator';
-import { getNetworkConfig } from './networkConfig';
+import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
 export const createBitcoinSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
     createNetworkModule(supportedBitcoinNetworks, {
         addressValidator: bitcoinValidator,
         getNetworkConfig,
+        getAccountSyncInterval,
     });

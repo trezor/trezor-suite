@@ -33,9 +33,32 @@ const fixtures: { description: string; event: AppsEmbeddingEvent; expected: stri
         expected: 'message {"foo":"bar"}',
     },
     {
-        description: 'window-open-attempt',
-        event: { type: 'window-open-attempt', url: 'https://example.com/popup' },
+        description: 'denied window-open-attempt',
+        event: { type: 'window-open-attempt', url: 'https://example.com/popup', outcome: 'denied' },
         expected: 'window.open denied — https://example.com/popup',
+    },
+    {
+        description: 'window-open-attempt opened in an app window',
+        event: {
+            type: 'window-open-attempt',
+            url: 'https://example.com/popup',
+            outcome: 'opened-in-app',
+        },
+        expected: 'window.open opened in an app window — https://example.com/popup',
+    },
+    {
+        description: 'window-open-attempt opened in the system browser',
+        event: {
+            type: 'window-open-attempt',
+            url: 'https://example.com/popup',
+            outcome: 'opened-in-system-browser',
+        },
+        expected: 'window.open opened in the system browser — https://example.com/popup',
+    },
+    {
+        description: 'navigation-blocked',
+        event: { type: 'navigation-blocked', url: 'https://elsewhere.example/' },
+        expected: 'navigation blocked — https://elsewhere.example/',
     },
     {
         description: 'closed',

@@ -1,13 +1,20 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type SellListResponse, type SellProviderInfo } from 'invity-api';
 
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
-import { sellInitialState, tradingSellReducer } from '../../reducers/sellReducer';
+import {
+    type TradingSellState,
+    sellInitialState,
+    tradingSellReducer,
+} from '../../reducers/sellReducer';
 import { regional } from '../../regional';
 import { tradeApi } from '../../tradeApi';
 
 import { sellThunks } from './index';
+
+// The thunk has no state dependency; this slice is needed to assert its reducer updates.
+type State = { wallet: { trading: { sell: TradingSellState } } };
 
 describe('loadSellInfoThunk', () => {
     jest.mock('../../tradeApi');
@@ -29,8 +36,7 @@ describe('loadSellInfoThunk', () => {
         supportedSubdivisions: {},
     };
 
-    const store = createTestStore({
-        extra: undefined,
+    const { store } = createTestCompositionRoot<void, State>({
         reducer: combineReducers({
             wallet: combineReducers({
                 trading: combineReducers({
@@ -45,7 +51,7 @@ describe('loadSellInfoThunk', () => {
                 },
             },
         },
-    });
+    }).services;
 
     it('should load data when response is successful', async () => {
         const sellInfoApi: SellListResponse = {

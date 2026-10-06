@@ -2,6 +2,7 @@ import { type ComponentType } from 'react';
 
 import { type PageName } from '@suite/router';
 
+import { AppsEmbedding } from 'src/views/apps-embedding/AppsEmbedding';
 import { ConnectPopup } from 'src/views/connect-popup';
 import { Dashboard } from 'src/views/dashboard';
 import { Earn } from 'src/views/earn';
@@ -70,6 +71,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'earn-tron-unstake': EarnTronUnstake,
     'earn-tron-withdraw': EarnTronWithdraw,
     'earn-tron-claim': EarnTronClaim,
+    'apps-embedding-index': AppsEmbedding,
     'suite-connect-popup': ConnectPopup,
     'notifications-index': Notification,
 

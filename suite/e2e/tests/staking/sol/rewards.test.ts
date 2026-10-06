@@ -30,6 +30,14 @@ const stakingAccountTotalFormatted = `${localizeNumber(
     2,
 )} SOL`;
 const totalRewardsInSol = (Number(totalReward.response.total) / 1_000_000_000).toFixed(9);
+const activeEpoch = solStakingAccountDeactivating.deactivationEpoch;
+// Rewards history before and after the reward for the previous epoch is published
+const rewardsUntilTwoEpochsAgo = rewards.response.rewards.filter(
+    reward => reward.epoch <= activeEpoch - 2,
+);
+const rewardsUntilPreviousEpoch = rewards.response.rewards.filter(
+    reward => reward.epoch <= activeEpoch - 1,
+);
 
 test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -38,13 +46,13 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     });
 
-    test.beforeEach(async ({ page, onboardingPage, settingsPage, solanaStakingMock }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage, solanaStakingMock }) => {
         solanaStakingMock.setStakeAccounts([
             solStakingAccountFirst.payload,
             solStakingAccountSecond.payload,
             solStakingAccountDeactivating.payload,
         ]);
-        await solanaStakingMock.setEpoch(solStakingAccountDeactivating.deactivationEpoch);
+        await solanaStakingMock.setEpoch(activeEpoch);
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
             enableNetworks: [
@@ -52,34 +60,23 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             ],
         });
 
-        await test.step('Mock rewards list request before the account opens', async () => {
-            await page.route(rewards.url, async route => {
-                const url = new URL(route.request().url());
-                const limit = Number(url.searchParams.get('limit') ?? 10);
-                const offset = Number(url.searchParams.get('offset') ?? 0);
-                const allRewards = rewards.response.rewards;
-
-                await route.fulfill({
-                    json: {
-                        rewards: allRewards.slice(offset, offset + limit),
-                        totalCount: allRewards.length,
-                    },
-                });
-            });
-        });
+        // Rewards history has to be mocked before the account opens
+        solanaStakingMock.setRewardsHistory(rewardsUntilTwoEpochsAgo);
+        await solanaStakingMock.mockRewardsHistory();
     });
 
     test(
         'display stake rewards on SOL staking account',
         {
             annotation: createTestAnnotation({
-                testCase: 'Verifies that a user see rewards on his Solana staking account.',
+                testCase:
+                    'Verifies that a user see rewards on his Solana staking account and is warned only while the latest reward may be missing in rewards history.',
                 category: TestCategory.Solana,
                 priority: TestPriority.Critical,
                 stream: TestStream.Earn,
             }),
         },
-        async ({ page, walletPage, tradingPage, stakingSection }) => {
+        async ({ page, walletPage, tradingPage, stakingSection, solanaStakingMock }) => {
             await test.step('Check staking dashboard', async () => {
                 await page.clock.install();
                 await walletPage.openAccount({ symbol: solSymbol, type: 'normal', atIndex: 0 });
@@ -104,9 +101,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Mock total rewards and expire the rewards query cache', async () => {
-                await page.route(totalReward.url, async route => {
-                    await route.fulfill({ json: totalReward.response });
-                });
+                await solanaStakingMock.mockTotalRewards();
                 await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
             });
 
@@ -133,7 +128,31 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     }),
                 ).toHaveText(stakingAccountTotalFormatted);
 
-                await stakingSection.rewardList.checkRewards(rewards.response.rewards);
+                // The reward for the previous epoch is not in rewards history yet
+                await expect(stakingSection.rewardsWarningBanner).toHaveTranslation(
+                    'TR_SOL_STAKING_REWARD_WARNING',
+                );
+                await stakingSection.rewardList.checkRewards(rewardsUntilTwoEpochsAgo);
+            });
+
+            await test.step('Publish the reward for the previous epoch in rewards history', async () => {
+                solanaStakingMock.setRewardsHistory(rewardsUntilPreviousEpoch);
+                await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
+                // Rewards history is refetched only when the Staking tab opens again, so we leave it.
+                // The Buy button shows the Overview tab loaded, otherwise the switch back may not reopen it.
+                await walletPage.overviewTabButton.click();
+                await expect(tradingPage.buyButton).toBeVisible();
+            });
+
+            await test.step('Verify rewards warning is hidden', async () => {
+                const rewardsRefetched = page.waitForResponse(rewards.url);
+                await stakingSection.stakingTabButton.click();
+                await rewardsRefetched;
+                await expect(stakingSection.rewardList.latestRewardEpoch).toHaveTranslation(
+                    'TR_STAKE_REWARDS_BADGE',
+                    { values: { count: activeEpoch - 1 } },
+                );
+                await expect(stakingSection.rewardsWarningBanner).toBeHidden();
             });
         },
     );

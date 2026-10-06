@@ -14,7 +14,6 @@
         "@storybook/react-native": "^10.2.1",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
-        "@trezor/env-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "jotai": "2.17.1",

@@ -2,7 +2,9 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -27,16 +29,20 @@ jest.mock(
     () => ({ useTradingFormOfferCommon: () => mockUseTradingFormOfferCommon() }),
 );
 
+type TradingFormOfferConfirmButtonProps = {
+    isDisabled: boolean;
+    testId: string;
+};
+
 jest.mock(
     'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton',
     () => ({
         TradingFormOfferConfirmButton: ({
             isDisabled,
             testId,
-        }: {
-            isDisabled: boolean;
-            testId: string;
-        }) => <button data-testid={testId} disabled={isDisabled} />,
+        }: TradingFormOfferConfirmButtonProps) => (
+            <button data-testid={testId} disabled={isDisabled} />
+        ),
     }),
 );
 
@@ -57,9 +63,7 @@ const account = mockWalletAccount({
 });
 
 const renderWithNetworkFee = (composed: { fee: string } | undefined) => {
-    const services = { analytics: mockDesktopAnalytics() };
-    const root = createTestCompositionRoot({
-        extra: { services },
+    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
         preloadedState: {
             ...mockInitialAppState,
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
@@ -72,8 +76,9 @@ const renderWithNetworkFee = (composed: { fee: string } | undefined) => {
                 },
             },
         } as unknown as AppState,
+        services: () => ({ analytics: mockDesktopAnalytics() }),
     });
-    renderWithProviders(root, <TradingFormOfferSellActions />);
+    renderWithProviders(services, <TradingFormOfferSellActions />);
 };
 
 describe('TradingFormOfferSellActions', () => {

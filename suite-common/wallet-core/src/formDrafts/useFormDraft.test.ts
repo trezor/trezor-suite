@@ -18,19 +18,18 @@ const state: FormDraftRootState = {
     },
 };
 
-const createRoot = () => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+const createTestServices = () => {
+    const { services } = createTestCompositionRoot<void, FormDraftRootState>({
         preloadedState: state,
     });
-    root.store.dispatch = mockDispatch;
+    services.store.dispatch = mockDispatch;
 
-    return root;
+    return services;
 };
 
 const renderUseFormDraft = (key = 'eth') =>
     renderHookWithStoreProvider(() => useFormDraft('stake', key), {
-        root: createRoot(),
+        services: createTestServices(),
     });
 
 describe('useFormDraft', () => {

@@ -96,9 +96,11 @@ export const electronTeardown = async (
     await closePromise;
 };
 
+type WebSetupParams = { webClipboardRead: boolean };
+
 export const webSetup = async (
     browserContext: BrowserContext,
-    { webClipboardRead }: { webClipboardRead: boolean },
+    { webClipboardRead }: WebSetupParams,
 ) => {
     await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
 

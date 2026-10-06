@@ -4,19 +4,17 @@ import { conditionalTest, getController, initTrezorConnect, setup } from '../../
 const controller = getController();
 
 describe('TrezorConnect.resetDevice', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
+        await setup(controller, { wiped: true });
         await initTrezorConnect(controller);
     });
 
-    beforeEach(async () => {
-        await setup(controller, {
-            wiped: true,
-        });
+    afterEach(() => {
+        TrezorConnect.dispose();
     });
 
     afterAll(() => {
         controller.dispose();
-        TrezorConnect.dispose();
     });
 
     it('resetDevice Bip39', async () => {

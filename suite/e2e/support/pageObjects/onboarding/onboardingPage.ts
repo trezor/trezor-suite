@@ -26,6 +26,7 @@ export class OnboardingPage {
     readonly welcomeBody: Locator;
     readonly databaseUpgradeModalHeading: Locator;
     readonly completeOnboardingButton: Locator;
+    readonly setupDeviceButton: Locator;
     readonly authenticityStartButton: Locator;
     readonly authenticityContinueButton: Locator;
     readonly createBackupButton: Locator;
@@ -46,8 +47,6 @@ export class OnboardingPage {
     readonly pairingInputAtIndex = (index: number) =>
         this.thpPairingModal.locator('input').nth(index);
     readonly walletBackupTypeCard: Locator;
-    readonly onboardingFeedbackBanner: Locator;
-    readonly onboardingFeedbackBannerCTAButton: Locator;
 
     constructor(
         public page: Page,
@@ -64,6 +63,7 @@ export class OnboardingPage {
         this.welcomeBody = this.page.getByTestId('@welcome-layout/body');
         this.databaseUpgradeModalHeading = this.page.getByTestId('@modal/database-upgrade/heading');
         this.completeOnboardingButton = this.page.getByTestId('@onboarding/complete-onboarding');
+        this.setupDeviceButton = this.page.getByTestId('@onboarding/device-check/setup-button');
         this.authenticityStartButton = this.page.getByTestId('@authenticity-check/start-button');
         this.authenticityContinueButton = this.page.getByTestId(
             '@authenticity-check/continue-button',
@@ -86,12 +86,6 @@ export class OnboardingPage {
         this.finalButton = this.page.getByTestId('@onboarding/final-button');
         this.continueAtYourOwnRiskButton = this.page.getByTestId('@continue-to-suite');
         this.deviceCompromisedModal = this.page.getByTestId('@device-compromised');
-        this.onboardingFeedbackBanner = this.page.getByTestId(
-            '@dashboard/onboarding-feedback-banner',
-        );
-        this.onboardingFeedbackBannerCTAButton = this.page.getByTestId(
-            '@dashboard/onboarding-feedback-banner/button',
-        );
         this.walletBackupTypeCard = this.page.getByTestId('@onboarding/wallet-backup-type');
         this.thpPairingModal = this.page.getByTestId('@modal/thp-paring');
     }
@@ -157,6 +151,12 @@ export class OnboardingPage {
 
         await this.completeOnboardingButton.click();
         await this.page.discoveryShouldFinish();
+    }
+
+    @step()
+    async passThroughAnalyticsAndDeviceCheck() {
+        await this.analyticsSection.continueButton.click();
+        await this.setupDeviceButton.click();
     }
 
     @step()
@@ -272,6 +272,17 @@ export class OnboardingPage {
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await this.device.pressYes();
         await this.authenticityContinueButton.click();
+    }
+
+    @step()
+    async createWalletWithoutBackupAndPin() {
+        await this.createWalletButton.click();
+        await expect(this.walletBackupTypeCard).toBeVisible();
+        await this.selectSeedConfirmButton.click();
+
+        await this.backup.skipBackup();
+        await this.pin.skip();
+        await this.finalButton.click();
     }
 
     @step()

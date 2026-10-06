@@ -3,15 +3,25 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
+import {
+    formatTronApr,
+    getTronVotedApr,
+    useTronStakingStats,
+} from '@suite-common/earn-staking-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
+    type AccountsRootState,
     type StakeRootState,
+    isSupportedAdaStakingNetworkSymbol,
+    isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
+    isSupportedTronStakingNetworkSymbol,
     selectApy,
     selectEthereumNextRewardPayout,
     selectIsCardanoStakedWithFiveBinaries,
     selectStakedBalanceByAccountKey,
+    selectTronVotesByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
@@ -43,6 +53,7 @@ import { BigNumber } from '@trezor/utils';
 import { CardanoAutoStakedModal } from './CardanoAutoStakedModal';
 import { useMessageSystemStaking } from '../../hooks/staking/useMessageSystemStaking';
 import { useStakingTotalRewards } from '../../hooks/staking/useStakingTotalRewards';
+import { getMobileStakingSupport } from '../../utils/staking/mobileStakingSupport';
 import { ApyValue } from '../earn/ApyValue';
 import { useEarnPortfolioTrackerGuard } from '../earn/EarnPortfolioTrackerGuard';
 
@@ -86,9 +97,12 @@ export const StakingManagementStakedCard = ({
     const { bottomSheetRef: autoStakedModalRef, openModal: openAutoStakedModal } =
         useBottomSheetModal();
 
+    const isEthereumStaking = isSupportedEthStakingNetworkSymbol(networkSymbol);
     const isSolanaStaking = isSupportedSolStakingNetworkSymbol(networkSymbol);
-    const isCardanoStaking = networkSymbol === 'ada';
-    const areStakeActionsShown = !isCardanoStaking;
+    const isCardanoStaking = isSupportedAdaStakingNetworkSymbol(networkSymbol);
+    const isTronStaking = isSupportedTronStakingNetworkSymbol(networkSymbol);
+    const areStakeActionsShown = getMobileStakingSupport(networkSymbol) === 'manage';
+    const areRewardsAutoRestaked = isEthereumStaking || isSolanaStaking;
 
     const handleStake = () => {
         if (isPortfolioTrackerDevice) {
@@ -137,6 +151,18 @@ export const StakingManagementStakedCard = ({
 
     const apy = useSelector((state: StakeRootState) =>
         selectApy(state, { accountKey, networkSymbol }),
+    );
+    const { stats: tronStats, formattedMaxApr: tronMaxApr } = useTronStakingStats({
+        enabled: isTronStaking,
+    });
+    const tronVotes = useSelector((state: AccountsRootState) =>
+        selectTronVotesByAccountKey(state, accountKey),
+    );
+    const tronApr = formatTronApr(
+        getTronVotedApr(
+            tronStats.data,
+            tronVotes.map(({ address }) => address),
+        ) ?? tronMaxApr,
     );
     const isAdaStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
         selectIsCardanoStakedWithFiveBinaries(state, accountKey),
@@ -215,7 +241,7 @@ export const StakingManagementStakedCard = ({
                                 }
                             />
                         </Text>
-                        {!isCardanoStaking && (
+                        {areRewardsAutoRestaked && (
                             <Badge
                                 label={
                                     <Translation id="earn.stakingManagementScreen.autoRestakedBadge" />
@@ -247,11 +273,15 @@ export const StakingManagementStakedCard = ({
                     })}
                 >
                     <Text variant="body-sm">
-                        <ApyValue
-                            apy={apy}
-                            isNotEarning={isNotEarning}
-                            withLabel={isCardanoStaking || apy != null}
-                        />
+                        {isTronStaking ? (
+                            <ApyValue apy={tronApr} withLabel={tronApr != null} rateType="apr" />
+                        ) : (
+                            <ApyValue
+                                apy={apy}
+                                isNotEarning={isNotEarning}
+                                withLabel={isCardanoStaking || apy != null}
+                            />
+                        )}
                     </Text>
                     {rewardsFrequencyInDays !== null ? (
                         <Text variant="body-sm">
@@ -261,6 +291,7 @@ export const StakingManagementStakedCard = ({
                             />
                         </Text>
                     ) : (
+                        isEthereumStaking &&
                         nextRewardPayout != null && (
                             <Text variant="body-sm">
                                 <Translation

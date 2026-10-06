@@ -26,7 +26,7 @@ export type ConfirmApprovalThunkProps = {
     processResponseData: (response: ExchangeTrade) => void;
 };
 
-type ConfirmApprovalThunkState = TradingRootState;
+export type ConfirmApprovalThunkState = TradingRootState;
 
 export const confirmApprovalThunk = createThunk<
     ExchangeTrade | undefined,

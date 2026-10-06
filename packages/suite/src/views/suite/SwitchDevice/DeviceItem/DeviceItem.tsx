@@ -39,7 +39,9 @@ type DeviceItemProps = {
     onCancel?: ForegroundAppProps['onCancel'];
 };
 
-const ListItem = ({ children, icon }: { children: ReactNode; icon: IconComponent }) => (
+type ListItemProps = { children: ReactNode; icon: IconComponent };
+
+const ListItem = ({ children, icon }: ListItemProps) => (
     <List.Item bulletComponent={<Icon as={icon} intent="neutral" priority="secondary" size={20} />}>
         <Paragraph
             typographyStyle="body-md"

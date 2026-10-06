@@ -1,6 +1,7 @@
 import { createMiddleware } from '@suite-common/redux-utils';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
+    accountsActions,
     blockchainActions,
     onBlockchainDisconnectThunk,
     selectNetworksWithPendingTxs,
@@ -16,6 +17,7 @@ import {
     onBlockchainNotificationThunk,
     syncAccountsWithBlockchainThunk,
 } from './blockchainThunks';
+import { schedulePolledNetworkSync } from './polledNetworkSync';
 
 // Be very careful when adding new stuff here, it could affect performance a lot on mobile
 export const blockchainMiddleware = createMiddleware((action, { dispatch, next, getState }) => {
@@ -35,6 +37,19 @@ export const blockchainMiddleware = createMiddleware((action, { dispatch, next, 
     }
 
     next(action);
+
+    // Each finished sync schedules the next one. The backend usually connects before discovery
+    // creates the accounts, so the first account also starts the polling.
+    if (syncAccountsWithBlockchainThunk.fulfilled.match(action)) {
+        const { symbol } = action.meta.arg;
+        schedulePolledNetworkSync({ symbol, dispatch, getState, shouldReplaceScheduled: true });
+    } else if (
+        accountsActions.createAccount.match(action) ||
+        accountsActions.updateAccount.match(action)
+    ) {
+        const { symbol } = action.payload.account;
+        schedulePolledNetworkSync({ symbol, dispatch, getState, shouldReplaceScheduled: false });
+    }
 
     if (blockchainActions.setBackend.match(action)) {
         dispatch(setCustomBackendThunk(action.payload.symbol));

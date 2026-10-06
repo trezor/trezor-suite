@@ -28,7 +28,9 @@ import {
 import { SupportConsentPopover } from 'src/components/guide/SupportConsentPopover';
 import { useSelector } from 'src/hooks/suite';
 
-const StatusText = ({ id }: { id: TranslationKey }) => (
+type StatusTextProps = { id: TranslationKey };
+
+const StatusText = ({ id }: StatusTextProps) => (
     <Text typographyStyle="body-sm" intent="neutral" priority="secondary" as="div">
         <Translation id={id} />
     </Text>

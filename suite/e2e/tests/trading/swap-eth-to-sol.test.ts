@@ -14,8 +14,8 @@ const solSymbol = asNetworkSymbol('sol');
 
 const sendAmount = '0.01';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
-const sendAccountLabel = 'Ethereum #1';
-const receiveAccountLabel = 'Solana #1';
+const sendAccountLabel = 'Ethereum #3';
+const receiveAccountLabel = 'Solana #4';
 
 test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -31,7 +31,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: ethSymbol });
+            await walletPage.openSwapTrading({ symbol: ethSymbol, atIndex: 2 });
         },
     );
 
@@ -44,13 +44,17 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                     amount: sendAmount,
                     sellAsset: {
                         networkSymbol: ethSymbol,
+                        accountIndex: 2,
                     },
                     buyAsset: {
                         searchFilter: 'Solana',
                         assetCryptoId: getCryptoId(solSymbol),
                     },
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, solSymbol);
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                            symbol: solSymbol,
+                            atIndex: 3,
+                        });
                     },
                 });
             });

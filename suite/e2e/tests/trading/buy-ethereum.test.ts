@@ -10,9 +10,11 @@ const fiatAmount = '1000';
 const fiatCurrency = 'CZK';
 const formattedFiatAmount = `${fiatCurrency} ${localizeNumber(fiatAmount, 'en-US', 2)}`;
 const detailFiatAmount = localizeNumber(fiatAmount, 'en-US');
-const receiveAccountLabel = 'Ethereum #1';
+const receiveAccountLabel = 'Ethereum #3';
 
 test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
+
     test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage, tradingMock }) => {
         tradingMock.setTradeFlow('buy');
         await tradingMock.rewriteProviderRedirect();
@@ -20,6 +22,8 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
+        await dashboardPage.deviceSwitchingOpenButton.click();
+        await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
         await dashboardPage.navigateTo();
     });
 
@@ -41,7 +45,10 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await tradingPage.fillBuyForm({
                     amount: fiatAmount,
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.activateNetworkForReceiveAccount(0);
+                        await tradingPage.receiveAccount.activateNetworkForReceiveAccount({
+                            symbol: asNetworkSymbol('eth'),
+                            atIndex: 2,
+                        });
                     },
                 });
             });

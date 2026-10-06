@@ -1,5 +1,6 @@
 import { asGetter } from '@suite-common/dependency-injection';
-import { createTestStore } from '@suite-common/test-utils';
+import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import {
@@ -14,6 +15,7 @@ import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import {
     type PushWrappedNativeTokenThunkDeps,
+    type PushWrappedNativeTokenThunkState,
     type SignedWrappedNativeTokenTransaction,
     pushWrappedNativeTokenThunk,
 } from './wrappedNativeTokenThunks';
@@ -36,7 +38,7 @@ jest.mock('@suite-common/wallet-core', () => ({
 }));
 
 const ethSymbol = asNetworkSymbol('eth');
-const WETH = getWrappedNativeToken('eth')!;
+const WETH = getWrappedNativeToken(ethSymbol)!;
 
 const account = mockWalletAccount({ symbol: ethSymbol }) as Account;
 
@@ -47,23 +49,22 @@ const signedTransaction: SignedWrappedNativeTokenTransaction = {
 };
 
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
-const extra: PushWrappedNativeTokenThunkDeps = {
-    services: {
-        analytics: mockNativeAnalytics(),
-        getIsWindowVisible: asGetter(() => true),
-        getTradedAccountKeys: asGetter(() => []),
-    },
-};
-
 const buildStore = (storeAccount: Account) =>
-    createTestStore({
-        extra,
+    createTestCompositionRoot<PushWrappedNativeTokenThunkDeps, PushWrappedNativeTokenThunkState>({
         preloadedState: {
             wallet: { accounts: [storeAccount], settings: { mevProtection: false } },
         },
-    });
+        services: () => ({
+            analytics: mockNativeAnalytics(),
+            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
+            getIsWindowVisible: asGetter(() => true),
+            getTradedAccountKeys: asGetter(() => []),
+        }),
+    }).services.store;
 
-const getTrackedTokenUpdates = (store: ReturnType<typeof buildStore>) =>
+const getTrackedTokenUpdates = (
+    store: TestCompositionStore<PushWrappedNativeTokenThunkState, PushWrappedNativeTokenThunkDeps>,
+) =>
     store
         .getActions()
         .filter(accountsActions.addAccountTokens.match)

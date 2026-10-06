@@ -2,7 +2,9 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import { type AppState } from 'src/reducers/store';
@@ -13,13 +15,22 @@ import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 
-jest.mock('@suite/intl', () => ({
-    ...jest.requireActual('@suite/intl'),
-    Translation: ({ id }: { id: string }) => <span data-testid={id}>{id}</span>,
+jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
+    selectHasRunningDiscovery: () => true,
 }));
 
+type TranslationProps = { id: string };
+
+jest.mock('@suite/intl', () => ({
+    ...jest.requireActual('@suite/intl'),
+    Translation: ({ id }: TranslationProps) => <span data-testid={id}>{id}</span>,
+}));
+
+type TradingLayoutNavigationProps = { route?: string };
+
 jest.mock('./TradingLayoutNavigation', () => ({
-    TradingLayoutNavigation: ({ route }: { route?: string }) => (
+    TradingLayoutNavigation: ({ route }: TradingLayoutNavigationProps) => (
         <div data-testid="trading-layout-navigation">{route}</div>
     ),
 }));
@@ -38,22 +49,29 @@ const buildState = (): AppState => ({
 });
 
 describe('TradingLayout', () => {
-    it('always renders children regardless of visible accounts or device state', () => {
-        const root = createTestCompositionRoot({
-            extra: { services: { analytics: mockDesktopAnalytics() } },
-            preloadedState: buildState(),
-        });
+    it('renders the discovery warning above navigation and children', () => {
+        const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>(
+            {
+                preloadedState: buildState(),
+                services: () => ({ analytics: mockDesktopAnalytics() }),
+            },
+        );
 
         renderWithProviders(
-            root,
+            services,
             <TradingLayout>
                 <div data-testid="trading-content" />
             </TradingLayout>,
         );
 
-        expect(screen.getByTestId('trading-layout-navigation')).toHaveTextContent(
-            'wallet-trading-buy',
+        const discoveryWarning = screen.getByTestId('@warning/trezorDiscovery');
+        const navigation = screen.getByTestId('trading-layout-navigation');
+        const content = screen.getByTestId('trading-content');
+
+        expect(discoveryWarning.compareDocumentPosition(navigation)).toBe(
+            Node.DOCUMENT_POSITION_FOLLOWING,
         );
-        expect(screen.getByTestId('trading-content')).toBeInTheDocument();
+        expect(navigation).toHaveTextContent('wallet-trading-buy');
+        expect(navigation.compareDocumentPosition(content)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     });
 });

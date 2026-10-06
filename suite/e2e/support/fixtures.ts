@@ -14,6 +14,7 @@ import { measurePerformance } from '../performance/perfMeasure';
 import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
 import { BlockbookMock } from './mocks/blockBookMock';
+import { FirmwareReleaseConfigMock } from './mocks/firmwareReleaseConfigMock';
 import { MetadataMock } from './mocks/metadataMock';
 import { SolanaStakingMock } from './mocks/solanaStakingMock';
 import { TradingMock } from './mocks/trading/tradingMock';
@@ -30,6 +31,7 @@ import { GuidePanel } from './pageObjects/guidePanel';
 import { MetadataPage } from './pageObjects/metadata/metadataPage';
 import { OnboardingPage } from './pageObjects/onboarding/onboardingPage';
 import { PaginationControl } from './pageObjects/pagination';
+import { PromoBanner } from './pageObjects/promoBanner';
 import { RecoveryModal } from './pageObjects/recoveryModal';
 import { SettingsPage } from './pageObjects/settings/settingsPage';
 import { StakingSection } from './pageObjects/staking/stakingSection';
@@ -68,6 +70,7 @@ type Fixtures = {
     tradingStore: TradingStoreFixture;
     metadataMock: MetadataMock;
     blockbookMock: BlockbookMock;
+    firmwareReleaseConfigMock: FirmwareReleaseConfigMock;
     solanaStakingMock: SolanaStakingMock;
     tradingMock: TradingMock;
     tradingResponses: TradingResponses;
@@ -94,6 +97,7 @@ type Fixtures = {
             interaction: () => Promise<void>,
         ) => Promise<PerfMetrics | null>;
     };
+    promoBanner: PromoBanner;
     lighthouseTestProfiler: void;
 };
 
@@ -162,6 +166,11 @@ const test = suiteBaseTest.extend<Fixtures>({
         const blockbookMock = new BlockbookMock();
         await use(blockbookMock);
         blockbookMock.stop();
+    },
+    firmwareReleaseConfigMock: async ({ page, device }, use) => {
+        const firmwareReleaseConfigMock = new FirmwareReleaseConfigMock(page, device);
+        await use(firmwareReleaseConfigMock);
+        await firmwareReleaseConfigMock.stop();
     },
     solanaStakingMock: async ({ page }, use) => {
         const solanaStakingMock = new SolanaStakingMock(page);
@@ -253,6 +262,9 @@ const test = suiteBaseTest.extend<Fixtures>({
         } finally {
             await lighthouseFlow.finish();
         }
+    },
+    promoBanner: async ({ page }, use) => {
+        await use(new PromoBanner(page));
     },
     lighthouseTestProfiler: [
         async ({ page, electronApp }, use, testInfo) => {

@@ -119,6 +119,11 @@ export const routes = [
         params: earnParams,
     },
     {
+        name: 'apps-embedding-index',
+        pattern: '/apps-embedding',
+        app: 'apps-embedding',
+    },
+    {
         name: 'suite-version',
         pattern: '/version',
         app: 'version',

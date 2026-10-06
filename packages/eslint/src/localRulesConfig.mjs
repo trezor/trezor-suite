@@ -1,6 +1,7 @@
 import pluginLocalRules from 'eslint-plugin-local-rules';
 
 import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
+import { allRoots } from './workspaceRoots.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
  */
@@ -61,11 +62,9 @@ export const localRulesConfig = [
         },
     },
     {
-        files: [
-            'suite/**/*.{js,mjs,cjs,ts,jsx,tsx}',
-            'suite-native/**/*.{js,mjs,cjs,ts,jsx,tsx}',
-            'suite-common/**/*.{js,mjs,cjs,ts,jsx,tsx}',
-        ],
+        files: [allRoots.suite, allRoots.suiteNative, allRoots.suiteCommon].map(
+            root => `${root}/**/*.{js,mjs,cjs,ts,jsx,tsx}`,
+        ),
         rules: {
             'local-rules/no-package-deep-imports': [
                 'error',
@@ -90,9 +89,20 @@ export const localRulesConfig = [
         },
     },
     {
-        files: ['suite-common/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        files: [`${allRoots.suiteCommon}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
         rules: {
             'local-rules/no-suite-imports-in-suite-common': 'error',
+        },
+    },
+    {
+        files: [
+            allRoots.networks,
+            `${allRoots.packages}/suite`,
+            allRoots.suite,
+            allRoots.suiteCommon,
+        ].map(root => `${root}/**/*.{ts,tsx}`),
+        rules: {
+            'local-rules/enforce-named-parameter-types': 'error',
         },
     },
     {
@@ -107,13 +117,7 @@ export const localRulesConfig = [
     ...(areExpensiveChecksEnabled
         ? [
               {
-                  files: [
-                      'networks/**/src/**/*.{ts,tsx}',
-                      'packages/**/src/**/*.{ts,tsx}',
-                      'suite/**/src/**/*.{ts,tsx}',
-                      'suite-common/**/src/**/*.{ts,tsx}',
-                      'suite-native/**/src/**/*.{ts,tsx}',
-                  ],
+                  files: Object.values(allRoots).map(root => `${root}/**/src/**/*.{ts,tsx}`),
                   rules: {
                       'local-rules/no-unused-intersection-members': 'error',
                   },

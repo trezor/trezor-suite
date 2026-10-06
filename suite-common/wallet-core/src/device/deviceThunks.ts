@@ -74,7 +74,7 @@ import {
     selectIsDeviceAutoEjectEnabled,
 } from '../settings/walletSettingsReducer';
 
-type HandleDeviceDisconnectThunkState = DeviceRootState;
+export type HandleDeviceDisconnectThunkState = DeviceRootState;
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT`

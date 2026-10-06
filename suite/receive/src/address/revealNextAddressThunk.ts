@@ -29,8 +29,10 @@ type RevealNextAddressThunkState = AccountsRootState &
 
 type RevealNextAddressThunkDeps = WithServices<DesktopAnalyticsDep>;
 
+type RevealNextAddressThunkParams = { accountKey: AccountKey };
+
 export const revealNextAddressThunk =
-    ({ accountKey }: { accountKey: AccountKey }) =>
+    ({ accountKey }: RevealNextAddressThunkParams) =>
     (
         dispatch: Dispatch,
         getState: () => RevealNextAddressThunkState,

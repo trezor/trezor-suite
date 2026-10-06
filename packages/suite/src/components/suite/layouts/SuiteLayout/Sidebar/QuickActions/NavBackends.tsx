@@ -9,13 +9,12 @@ import { TokenIcon } from '@trezor/product-components';
 import { useSelector } from 'src/hooks/suite';
 import type { CustomBackend } from 'src/types/wallet';
 
-const BackendRow = ({
-    backend: { symbol, type },
-    blockchain,
-}: {
+type BackendRowProps = {
     backend: CustomBackend;
     blockchain: BlockchainState;
-}) => {
+};
+
+const BackendRow = ({ backend: { symbol, type }, blockchain }: BackendRowProps) => {
     const { dispatch } = useServices(injectDispatch);
     const chain = blockchain[symbol as keyof typeof blockchain];
 

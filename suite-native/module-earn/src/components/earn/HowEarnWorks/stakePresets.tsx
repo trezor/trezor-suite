@@ -1,4 +1,5 @@
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
@@ -21,7 +22,7 @@ export const useHowStakeWorksPreset = ({
     const apyFormatted = useFormattedEarnRate(apy);
 
     const displaySymbol = getNetworkDisplaySymbol(symbol);
-    const isSolana = symbol === 'sol';
+    const isSolana = isSupportedSolStakingNetworkSymbol(symbol);
 
     const entryPeriodDescriptionId =
         entryPeriodInDays !== undefined
@@ -85,9 +86,9 @@ export const useHowStakeWorksPreset = ({
                 description: (
                     <Translation
                         id={
-                            symbol === 'eth'
-                                ? 'earn.howStakeWorksScreen.benefits.third.description.ethereum'
-                                : 'earn.howStakeWorksScreen.benefits.third.description.solana'
+                            isSolana
+                                ? 'earn.howStakeWorksScreen.benefits.third.description.solana'
+                                : 'earn.howStakeWorksScreen.benefits.third.description.ethereum'
                         }
                         values={{ days: unstakingPeriodInDays }}
                     />

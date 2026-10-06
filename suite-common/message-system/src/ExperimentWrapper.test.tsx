@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore, render, screen } from '@suite-common/test-utils';
+import { createTestCompositionRoot, render, screen } from '@suite-common/test-utils';
 
 import { ExperimentWrapper } from './ExperimentWrapper';
 import { createMessageSystemState } from './__fixtures__/createMessageSystemState';
@@ -14,28 +14,34 @@ const messageSystemReducer = prepareMessageSystemReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
 
+type State = {
+    messageSystem: MessageSystemState;
+    analytics: { instanceId: string };
+};
+
 const createStore = (messageSystem: MessageSystemState) =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, State>({
         reducer: combineReducers({
             messageSystem: messageSystemReducer,
             analytics: (state = { instanceId: 'test-instance-id' }) => state,
         }),
         preloadedState: { messageSystem } as { messageSystem: MessageSystemState },
-    });
+    }).services.store;
 
 const defaultComponents = [
     { variant: 'A', element: <div>variant A</div> },
     { variant: 'B', element: <div>variant B</div> },
 ];
 
+type RenderWrapperParams = {
+    messageSystem?: MessageSystemState;
+    components?: typeof defaultComponents;
+};
+
 const renderWrapper = ({
     messageSystem = createMessageSystemState(),
     components = defaultComponents,
-}: {
-    messageSystem?: MessageSystemState;
-    components?: typeof defaultComponents;
-} = {}) =>
+}: RenderWrapperParams = {}) =>
     render(
         <Provider store={createStore(messageSystem)}>
             <ExperimentWrapper id={ExperimentId.tradingFeedbackForm} components={components} />

@@ -1,4 +1,4 @@
-import { yup } from '@suite-common/validators';
+import { yup } from '@suite/forms';
 import {
     type AccountType,
     type NetworkSymbol,
@@ -64,16 +64,17 @@ export const decodeEarnVaultAddress = (rawVaultAddress?: string): string | undef
         return undefined;
     }
 };
+type ValidateAccountRouteParamsParams = {
+    symbol?: string;
+    index?: string;
+    rawAccountType?: string;
+};
 
 export const validateAccountRouteParams = ({
     symbol,
     index,
     rawAccountType,
-}: {
-    symbol?: string;
-    index?: string;
-    rawAccountType?: string;
-}): CommonWalletParams => {
+}: ValidateAccountRouteParamsParams): CommonWalletParams => {
     if (!index) return;
 
     const network = getNetworkOptional(symbol);

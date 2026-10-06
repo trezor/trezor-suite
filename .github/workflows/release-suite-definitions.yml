@@ -27,18 +27,20 @@ jobs:
       AWS_REGION: "eu-central-1"
       AWS_CLOUDFRONT_ID: E1ERY5K2OTKKI1
       COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
+      COIN_PLATFORMS: "ethereum ethereum-classic polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche robinhood hyperevm cardano solana stellar tron"
+      NFT_PLATFORMS: "ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche hyperevm"
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:
           role-to-assume: ${{ github.event.inputs.environment == 'develop-definitions' && 'arn:aws:iam::538326561891:role/gh_actions_suite_develop_definitions' || 'arn:aws:iam::538326561891:role/gh_actions_suite_production_definitions' }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@be0a93f10fbec6a5c94dd78bc722abf1b7fbfc2d # v0.26.0
+        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
         continue-on-error: true
         with:
           version: v0.19.1
@@ -48,9 +50,10 @@ jobs:
           yarn install
           cd suite-common/token-definitions
 
-          yarn nfts simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche hyperevm
-          yarn coins simple ethereum ethereum-classic polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche robinhood hyperevm cardano solana stellar tron
+          yarn nfts simple $NFT_PLATFORMS
+          yarn coins simple $COIN_PLATFORMS
           yarn coins advanced solana stellar
+          yarn ranked $COIN_PLATFORMS
 
       - name: Build and sign ${{ github.event.inputs.environment }} token-definitions files
         if: ${{ github.event.inputs.environment == 'production-definitions' && github.ref == 'refs/heads/develop' }}
@@ -61,9 +64,10 @@ jobs:
           yarn install
           cd suite-common/token-definitions
 
-          yarn nfts simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche hyperevm
-          yarn coins simple ethereum ethereum-classic polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche robinhood hyperevm cardano solana stellar tron
+          yarn nfts simple $NFT_PLATFORMS
+          yarn coins simple $COIN_PLATFORMS
           yarn coins advanced solana stellar
+          yarn ranked $COIN_PLATFORMS
 
       - name: Upload ${{ github.event.inputs.environment }} token-definitions files
         if: ${{ github.ref == 'refs/heads/develop' }}

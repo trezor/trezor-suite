@@ -33,8 +33,7 @@ const buyQuote = {
 } satisfies BuyTrade;
 
 const renderShortfallNote = (quote: BuyTrade, buyQuotesRequest: BuyTradeQuoteRequest) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -48,7 +47,7 @@ const renderShortfallNote = (quote: BuyTrade, buyQuotesRequest: BuyTradeQuoteReq
         } satisfies AppState,
     });
 
-    renderWithProviders(root, <TradingRequestedAmountShortfallNote quote={quote} />);
+    renderWithProviders(services, <TradingRequestedAmountShortfallNote quote={quote} />);
 };
 
 describe('TradingRequestedAmountShortfallNote', () => {

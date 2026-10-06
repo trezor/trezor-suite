@@ -61,7 +61,7 @@ import { selectSuiteLifecycleStatus } from 'src/selectors/suite/suiteSelectors';
 
 import { setSuiteError } from './suiteActions';
 
-type InitThunkState = ConnectInitThunkState &
+export type InitThunkState = ConnectInitThunkState &
     DeviceRootState &
     FlagsRootState &
     GotoThunkState &

@@ -160,8 +160,7 @@ export type UserContextPayload =
       }
     | {
           type: 'tron-vote-consent';
-          representativeName: string;
-          termsOfServiceUrl: string;
+          representatives: { address: string; name: string; termsOfServiceUrl: string }[];
           decision: Deferred<boolean>;
       }
     | {

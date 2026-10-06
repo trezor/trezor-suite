@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { formInputsMaxLength } from '@suite-common/validators';
+import { PIN_MAX_LENGTH } from '@suite-common/device';
 import {
     Banner,
     Button,
@@ -44,7 +44,7 @@ export const PinMatrix = ({
 
     const onPinAdd = useCallback(
         (input: string) => {
-            if (pin.length < formInputsMaxLength.pin) {
+            if (pin.length < PIN_MAX_LENGTH) {
                 setPin(pin + input);
             }
         },

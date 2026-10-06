@@ -61,6 +61,11 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      - name: Install native binaries for every target architecture
+        uses: ./.github/actions/yarn-target-architectures
+        with:
+          platform: ${{ matrix.platform }}
+
       # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
       - name: Install deps and build libs
         run: |
@@ -130,7 +135,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
           aws-region: eu-central-1
@@ -176,7 +181,7 @@ jobs:
         with:
           lfs: true
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
           aws-region: eu-central-1
@@ -238,6 +243,11 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
+
+      - name: Install native binaries for every target architecture
+        uses: ./.github/actions/yarn-target-architectures
+        with:
+          platform: ${{ matrix.platform }}
 
       # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
       - name: Install deps and build libs

@@ -151,13 +151,15 @@ const solStakeData: StakeState['data'] = {
     },
 };
 
+type GetTestStateParams = {
+    accounts: Account[];
+    withSolStakeData?: boolean;
+};
+
 const getTestState = ({
     accounts,
     withSolStakeData = false,
-}: {
-    accounts: Account[];
-    withSolStakeData?: boolean;
-}): StakeRootState => ({
+}: GetTestStateParams): StakeRootState => ({
     wallet: {
         accounts,
         stake: {

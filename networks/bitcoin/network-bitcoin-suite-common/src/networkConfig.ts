@@ -1,9 +1,21 @@
 import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin/constants';
 import {
+    DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type Explorer,
     type SuiteCommonNetworkConfig,
+    asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
+
+const syncIntervalBySymbol: Readonly<Record<BitcoinNetworkSymbol, number>> = {
+    btc: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    test: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    regtest: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    ltc: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    doge: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    zec: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    bch: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+};
 
 const getExplorerUrls = (baseUrl: string): Explorer => ({
     base: baseUrl,
@@ -18,6 +30,7 @@ type NetworkConfig = SuiteCommonNetworkConfig & {
 export const networkConfigBySymbol = {
     btc: {
         color: '#f29937',
+        displayOrder: asDisplayOrderKey('a0'),
         protocols: [asProtocol('bitcoin'), asProtocol('btc')],
         displaySymbol: 'BTC',
         name: 'Bitcoin',
@@ -56,6 +69,7 @@ export const networkConfigBySymbol = {
     },
     test: {
         color: '#e75f5f',
+        displayOrder: asDisplayOrderKey('aK'),
         protocols: [asProtocol('test')],
         displaySymbol: 'TEST',
         name: 'Bitcoin Testnet',
@@ -94,6 +108,7 @@ export const networkConfigBySymbol = {
     },
     regtest: {
         color: '#e75f5f',
+        displayOrder: asDisplayOrderKey('aL'),
         protocols: [asProtocol('regtest')],
         displaySymbol: 'REGTEST',
         name: 'Bitcoin Regtest',
@@ -132,6 +147,7 @@ export const networkConfigBySymbol = {
     },
     ltc: {
         color: '#a6a8a9',
+        displayOrder: asDisplayOrderKey('aG'),
         protocols: [asProtocol('litecoin'), asProtocol('ltc')],
         displaySymbol: 'LTC',
         name: 'Litecoin',
@@ -159,6 +175,7 @@ export const networkConfigBySymbol = {
     },
     doge: {
         color: '#c8af47',
+        displayOrder: asDisplayOrderKey('aI'),
         protocols: [asProtocol('dogecoin'), asProtocol('doge')],
         displaySymbol: 'DOGE',
         name: 'Dogecoin',
@@ -177,6 +194,7 @@ export const networkConfigBySymbol = {
     },
     zec: {
         color: '#f5b300',
+        displayOrder: asDisplayOrderKey('aJ'),
         protocols: [asProtocol('zcash'), asProtocol('zec')],
         displaySymbol: 'ZEC',
         name: 'Zcash',
@@ -195,6 +213,7 @@ export const networkConfigBySymbol = {
     // testnets
     bch: {
         color: '#0ac18e',
+        displayOrder: asDisplayOrderKey('aH'),
         protocols: [asProtocol('bitcoincash'), asProtocol('bch')],
         displaySymbol: 'BCH',
         name: 'Bitcoin Cash',
@@ -214,3 +233,6 @@ export const networkConfigBySymbol = {
 
 export const getNetworkConfig = (symbol: BitcoinNetworkSymbol): SuiteCommonNetworkConfig =>
     networkConfigBySymbol[symbol];
+
+export const getAccountSyncInterval = (symbol: BitcoinNetworkSymbol): number =>
+    syncIntervalBySymbol[symbol];

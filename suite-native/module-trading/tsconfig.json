@@ -32,9 +32,6 @@
         },
         { "path": "../../suite-common/trading" },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -64,6 +61,7 @@
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../keyboard" },
         { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../message-system" },

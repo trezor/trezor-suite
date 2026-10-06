@@ -8,26 +8,30 @@ import {
     selectSendPrecomposedTx,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { type ExchangeFlowType } from '@suite-native/navigation';
-import { useTxValidityTimer } from '@suite-native/transaction-management';
+import { useTranslate } from '@suite-native/intl';
+import {
+    type TxValidityTimerExpiredAlertOptions,
+    useTxValidityTimer,
+} from '@suite-native/transaction-management';
 
 type UseTradingTxValidityTimerProps = {
     accountKey: AccountKey;
-    exchangeFlowType?: ExchangeFlowType;
     isBroadcasting: boolean;
     isTransactionAlreadySigned: boolean;
+    isDexExchange?: boolean;
     onRetry: () => void | Promise<void>;
     onCancel: () => void;
 };
 
 export const useTradingTxValidityTimer = ({
     accountKey,
-    exchangeFlowType,
     isBroadcasting,
     isTransactionAlreadySigned,
+    isDexExchange,
     onRetry,
     onCancel,
 }: UseTradingTxValidityTimerProps) => {
+    const { translate } = useTranslate();
     const [reviewOpenedAt] = useState(() => Date.now());
 
     const account = useSelector((state: AccountsRootState) =>
@@ -37,9 +41,18 @@ export const useTradingTxValidityTimer = ({
 
     const precomposedTxTimestamp = precomposedTx?.createdTimestamp ?? 0;
     const isPrecomposedTxFromCurrentReview = precomposedTxTimestamp >= reviewOpenedAt;
-    const isTxValidityTimerEnabled = exchangeFlowType !== 'sign-data';
-    const createdTimestamp =
-        isTxValidityTimerEnabled && isPrecomposedTxFromCurrentReview ? precomposedTxTimestamp : 0;
+    const createdTimestamp = isPrecomposedTxFromCurrentReview ? precomposedTxTimestamp : 0;
+
+    const expiredAlertOptions: TxValidityTimerExpiredAlertOptions | undefined = isDexExchange
+        ? {
+              title: translate('moduleTrading.tradingReviewOutputs.expiredAlert.title'),
+              description: translate('moduleTrading.tradingReviewOutputs.expiredAlert.description'),
+              primaryButtonTitle: translate(
+                  'moduleTrading.tradingReviewOutputs.expiredAlert.button',
+              ),
+              secondaryButtonTitle: null,
+          }
+        : undefined;
 
     return useTxValidityTimer({
         networkType: account?.networkType,
@@ -48,5 +61,6 @@ export const useTradingTxValidityTimer = ({
         isTransactionAlreadySigned,
         onRetry,
         onCancel,
+        expiredAlertOptions,
     });
 };

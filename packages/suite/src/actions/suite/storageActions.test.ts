@@ -1,26 +1,39 @@
 import { coinjoinReducer } from '@suite/coinjoin';
-import { prepareDesktopDeviceReducer } from '@suite/device';
+import { type DesktopDeviceRootState, prepareDesktopDeviceReducer } from '@suite/device';
 import {
     NewContentIndicatorId,
     initialRunCompletedThunk,
     markNewContentIndicatorAsSeen,
     prepareFlagsReducer,
+    selectIsNewContentIndicatorVisible,
     setNewContentIndicatorSeen,
 } from '@suite/flags';
 import { initialMetadataState, metadataReducer } from '@suite/metadata';
 import { suiteSettingsInitialState } from '@suite/settings';
-import { prepareSuiteSyncReducer } from '@suite/suite-sync';
+import { type DesktopSuiteSyncRootState, prepareSuiteSyncReducer } from '@suite/suite-sync';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { mockNetworksState } from '@suite-common/networks/mocks';
+import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { prepareReceiveReducer } from '@suite-common/receive';
+import { type WithServices } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
+import { type WithSuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { createTestStore, testMocks, wireEnabledNetworksMock } from '@suite-common/test-utils';
+import {
+    createTestCompositionRoot,
+    testMocks,
+    wireEnabledNetworksMock,
+} from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { changeCoinVisibilityThunk, transactionsActions } from '@suite-common/wallet-core';
+import {
+    type ChangeCoinVisibilityThunkState,
+    blockchainInitialState,
+    changeCoinVisibilityThunk,
+    transactionsActions,
+} from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -30,8 +43,11 @@ import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 import { storageLoad } from 'src/actions/suite/storageLifecycleActions';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
-import { prepareStorageMiddleware } from 'src/middlewares/wallet/storageMiddleware';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
+import {
+    type StorageMiddlewareState,
+    prepareStorageMiddleware,
+} from 'src/middlewares/wallet/storageMiddleware';
+import suiteReducer, { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import {
     accountsReducer,
     discoveryReducer,
@@ -42,11 +58,19 @@ import {
     walletSettingsReducer,
 } from 'src/reducers/wallet';
 import graphReducer from 'src/reducers/wallet/graphReducer';
-import { type Db } from 'src/storage/createDb';
+import { type Db, type DbDep } from 'src/storage/createDb';
+import { extraDependencies } from 'src/support/extraDependencies';
 import { type PreloadStore, createPreloadStore } from 'src/support/suite/createPreloadStore';
-import { type AcquiredDevice, type AppState } from 'src/types/suite';
+import { type AcquiredDevice } from 'src/types/suite';
 
 import * as storageActions from './storageActions';
+import {
+    type ForgetDeviceThunkState,
+    type RememberDeviceThunkState,
+    type SaveMetadataSettingsThunkState,
+    type SaveSuiteSettingsThunkState,
+    type SaveWalletSettingsThunkState,
+} from './storageActions';
 import { createInMemoryDbMock } from '../../../mocks/createInMemoryDbMock';
 
 const btcSymbol = asNetworkSymbol('btc');
@@ -69,8 +93,8 @@ const deviceReducer = prepareDesktopDeviceReducer({
     },
 });
 const flagsReducer = prepareFlagsReducer({
-    actionTypes: { storageLoad: mockActionType('storageLoad') },
-    reducers: { storageLoadFlags: mockReducer() },
+    actionTypes: { storageLoad: storageLoad.type },
+    reducers: { storageLoadFlags: extraDependencies.reducers.storageLoadFlags },
 });
 const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(undefined);
 const suiteSyncReducer = prepareSuiteSyncReducer(undefined);
@@ -125,37 +149,26 @@ const tx2 = getWalletTransaction({
     symbol: btcSymbol,
 });
 
-type PartialState = Pick<
-    AppState,
-    | 'suite'
-    | 'suiteSettings'
-    | 'device'
-    | 'suiteSync'
-    | 'suiteSyncQuotaManager'
-    | 'flags'
-    | 'metadata'
-    | 'networks'
-    | 'receive'
-> & {
-    wallet: Partial<
-        Pick<
-            AppState['wallet'],
-            | 'accounts'
-            | 'coinjoin'
-            | 'settings'
-            | 'discovery'
-            | 'send'
-            | 'transactions'
-            | 'graph'
-            | 'fiat'
-            | 'earnOnboarding'
-        >
-    >;
-};
+// The tested thunks and the storage middleware declare the persisted slices; the sync slices are
+// kept so that their reducers can apply the loaded storage.
+type State = ChangeCoinVisibilityThunkState &
+    DesktopDeviceRootState &
+    DesktopSuiteSyncRootState &
+    ForgetDeviceThunkState &
+    RememberDeviceThunkState &
+    SaveMetadataSettingsThunkState &
+    SaveSuiteSettingsThunkState &
+    SaveWalletSettingsThunkState &
+    StorageMiddlewareState &
+    SuiteRootState &
+    WithSuiteSyncQuotaManagerState;
 
-const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
+type PartialState = Omit<State, 'wallet'> & { wallet: Partial<State['wallet']> };
+
+const getInitialState = (prevState?: Partial<PartialState>, action?: any): State => ({
     networks:
         prevState?.networks ?? mockNetworksState([asNetworkSymbol('btc'), asNetworkSymbol('ltc')]),
+    persistentDeviceData: prevState?.persistentDeviceData ?? persistentDeviceDataInitialState,
     suite: suiteReducer(
         prevState ? prevState.suite : undefined,
         action || ({ type: 'foo' } as any),
@@ -184,6 +197,7 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
     receive: receiveReducer(prevState?.receive, action || ({ type: 'foo' } as any)),
     wallet: {
         accounts: accountsReducer(prevState?.wallet?.accounts, action || ({ type: 'foo' } as any)),
+        blockchain: prevState?.wallet?.blockchain ?? blockchainInitialState,
         coinjoin: coinjoinReducer(prevState?.wallet?.coinjoin, action || ({ type: 'foo' } as any)),
         settings: walletSettingsReducer(
             prevState?.wallet?.settings,
@@ -208,13 +222,9 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
     },
 });
 
-type State = ReturnType<typeof getInitialState>;
-const mockStore = (db: Db, preloadedState: State) => {
-    const extra = { services: { db } };
-
-    return createTestStore({
-        extra,
-        middleware: [prepareStorageMiddleware(() => extra)],
+const mockStore = (db: Db, preloadedState: State) =>
+    createTestCompositionRoot<WithServices<DbDep>, State>({
+        middleware: [prepareStorageMiddleware(() => ({ services: { db } }))],
         reducer: (state = preloadedState, action) => {
             const nextState = getInitialState(state, action);
 
@@ -230,8 +240,8 @@ const mockStore = (db: Db, preloadedState: State) => {
             };
         },
         preloadedState,
-    });
-};
+        services: () => ({ db }),
+    }).services.store;
 
 const mockFetch = (data: any) =>
     jest.fn().mockImplementation(() =>
@@ -271,28 +281,120 @@ describe('Storage actions', () => {
         expect(store.getState().wallet.settings).toEqual(settings);
     });
 
-    it('should store suite settings in the db and update them automatically', async () => {
+    it('should ignore stored enabled networks unknown to this build', async () => {
         const store = mockStore(db, getInitialState());
+        await db.addItem(
+            'walletSettings',
+            {
+                ...store.getState().wallet.settings,
+                enabledNetworks: [btcSymbol, asNetworkSymbol('arc'), asNetworkSymbol('tarc')],
+            },
+            'wallet',
+            true,
+        );
+
+        store.dispatch((await preloadStore())!);
+
+        expect(store.getState().wallet.settings.enabledNetworks).toEqual([btcSymbol]);
+    });
+
+    it('should store suite settings in the db and update them automatically', async () => {
+        const previousState = getInitialState();
+        previousState.flags = { ...previousState.flags, seenNewContentIndicators: {} };
+        const store = mockStore(db, previousState);
         const f = global.fetch;
         global.fetch = mockFetch({ TR_ID: 'Message' });
         await store.dispatch(storageActions.saveSuiteSettingsThunk());
         await store.dispatch(initialRunCompletedThunk({ isFreshDeviceSetup: true }));
         await store.dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Activity26_8));
+        await store.dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Swap26_10));
         await store.dispatch(
             setNewContentIndicatorSeen({
                 indicatorId: NewContentIndicatorId.Earn26_8,
                 isSeen: true,
             }),
         );
-        store.dispatch((await preloadStore())!);
+        const reloadedStore = mockStore(db, getInitialState());
+        reloadedStore.dispatch((await preloadStore())!);
 
-        expect(store.getState().flags.initialRun).toEqual(false);
-        expect(store.getState().flags.seenNewContentIndicators).toEqual({
+        expect(reloadedStore.getState().flags.initialRun).toEqual(false);
+        expect(reloadedStore.getState().flags.seenNewContentIndicators).toEqual({
             [NewContentIndicatorId.Activity26_8]: true,
             [NewContentIndicatorId.Earn26_8]: true,
+            [NewContentIndicatorId.Swap26_10]: true,
         });
         global.fetch = f;
     });
+
+    it('keeps historical indicators hidden on a fresh start and after a reload', async () => {
+        const store = mockStore(db, getInitialState());
+        store.dispatch((await preloadStore())!);
+        await store.dispatch(storageActions.saveSuiteSettingsThunk());
+
+        const reloadedStore = mockStore(db, getInitialState());
+        reloadedStore.dispatch((await preloadStore())!);
+
+        Object.values(NewContentIndicatorId).forEach(indicatorId => {
+            expect(selectIsNewContentIndicatorVisible(indicatorId)(store.getState())).toBe(false);
+            expect(selectIsNewContentIndicatorVisible(indicatorId)(reloadedStore.getState())).toBe(
+                false,
+            );
+        });
+    });
+
+    it('preserves pending IDs missing from saved state through later reloads', async () => {
+        const previousState = getInitialState();
+        previousState.flags = {
+            ...previousState.flags,
+            seenNewContentIndicators: { [NewContentIndicatorId.Activity26_8]: true },
+        };
+        const store = mockStore(db, previousState);
+        await store.dispatch(storageActions.saveSuiteSettingsThunk());
+
+        const reloadedStore = mockStore(db, getInitialState());
+        reloadedStore.dispatch((await preloadStore())!);
+
+        expect(
+            selectIsNewContentIndicatorVisible(NewContentIndicatorId.Activity26_8)(
+                reloadedStore.getState(),
+            ),
+        ).toBe(false);
+        expect(
+            selectIsNewContentIndicatorVisible(NewContentIndicatorId.Earn26_8)(
+                reloadedStore.getState(),
+            ),
+        ).toBe(true);
+
+        await reloadedStore.dispatch(storageActions.saveSuiteSettingsThunk());
+        const nextStore = mockStore(db, getInitialState());
+        nextStore.dispatch((await preloadStore())!);
+        expect(nextStore.getState().flags.seenNewContentIndicators).toEqual(
+            previousState.flags.seenNewContentIndicators,
+        );
+    });
+
+    it.each(['seenNewContentIndicators', 'flags'] as const)(
+        'loads legacy settings without %s as an existing installation',
+        async missingProperty => {
+            const store = mockStore(db, getInitialState());
+            await store.dispatch(storageActions.saveSuiteSettingsThunk());
+            const savedSettings = (await db.getItemByPK('suiteSettings', 'suite'))!;
+
+            // Model records written before these fields existed in the persisted schema.
+            if (missingProperty === 'flags') {
+                // @ts-expect-error: deleting a required property
+                delete savedSettings.flags;
+            } else {
+                // @ts-expect-error: deleting a required property
+                delete savedSettings.flags[missingProperty];
+            }
+            await db.addItem('suiteSettings', savedSettings, 'suite', true);
+
+            const reloadedStore = mockStore(db, getInitialState());
+            reloadedStore.dispatch((await preloadStore())!);
+            expect(reloadedStore.getState().flags.seenNewContentIndicators).toEqual({});
+        },
+    );
 
     it('should store, override and remove send form', async () => {
         let store = mockStore(db, getInitialState());
@@ -445,6 +547,19 @@ describe('Storage actions', () => {
         expect(acc2Txs.length).toEqual(1);
         await store.dispatch(storageActions.forgetDeviceThunk(dev1));
         await store.dispatch(storageActions.forgetDeviceThunk(dev2));
+    });
+
+    it('should ignore stored accounts of networks unknown to this build', async () => {
+        const unknownNetworkAccounts = ['arc', 'tarc'].map(symbol => ({
+            ...acc1,
+            symbol: asNetworkSymbol(symbol),
+        }));
+        await db.addItems('accounts', [acc1, ...unknownNetworkAccounts], true);
+
+        const store = mockStore(db, getInitialState());
+        store.dispatch((await preloadStore())!);
+
+        expect(store.getState().wallet.accounts).toEqual([acc1]);
     });
 
     it('should update device settings in the db', async () => {

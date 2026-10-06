@@ -16,6 +16,7 @@
         {
             "path": "../../packages/connect-common"
         },
+        { "path": "../../packages/logger" },
         {
             "path": "../../packages/transport-common"
         },

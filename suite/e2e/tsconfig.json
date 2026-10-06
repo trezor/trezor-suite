@@ -25,6 +25,7 @@
             "path": "../../suite-common/earn-staking-api"
         },
         { "path": "../../suite-common/feedback" },
+        { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/formatters"
         },
@@ -82,6 +83,7 @@
         },
         { "path": "../../packages/perf-e2e" },
         { "path": "../../packages/protobuf" },
+        { "path": "../../packages/suite" },
         { "path": "../../packages/theme" },
         {
             "path": "../../packages/transport-common"

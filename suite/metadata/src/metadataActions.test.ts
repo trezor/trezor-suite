@@ -2,9 +2,12 @@ import fs from 'fs';
 import path from 'path';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type SuiteSettingsState, suiteSettingsInitialState } from '@suite/settings';
+import { createMockDeps } from '@suite-common/dependency-injection';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
+import { type MetadataState } from '@suite-common/metadata-types';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialWalletSettingsState, prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import TrezorConnect from '@trezor/connect';
@@ -14,7 +17,11 @@ import * as fixtures from './__fixtures__/metadataActions';
 import * as metadataActions from './metadataActions';
 import * as metadataLabelingActions from './metadataLabelingActions';
 import * as metadataProviderActions from './metadataProviderThunks';
-import { type SuiteRootStateSliceForMetadata, metadataReducer } from './metadataReducer';
+import {
+    type MetadataRootState,
+    type SuiteRootStateSliceForMetadata,
+    metadataReducer,
+} from './metadataReducer';
 import * as metadataThunks from './metadataThunks';
 import { DropboxProvider } from './providers/DropboxProvider';
 
@@ -35,10 +42,6 @@ const accountsReducer = prepareAccountsReducer({
     actions: { setAccountAddMetadata: mockSetAccountAddMetadata() },
     reducers: { storageLoadAccounts: mockReducer() },
 });
-const extra: metadataLabelingActions.InitMetadataDeps = {
-    services: { analytics: mockDesktopAnalytics() },
-};
-
 jest.spyOn(TrezorConnect, 'cipherKeyValue').mockImplementation(() =>
     Promise.resolve({
         success: true,
@@ -61,20 +64,17 @@ if (!globalContext.window) {
     globalContext.window = globalThis as any;
 }
 
-type MetadataState = ReturnType<typeof metadataReducer>;
 interface InitialState {
     metadata?: MetadataState;
     device: any;
     accounts: any[];
     suite: Partial<SuiteRootStateSliceForMetadata>;
     suiteSettings?: {
-        debug?: {
-            oauthServerEnvironment?: string;
-        };
+        debug?: Partial<SuiteSettingsState['debug']>;
     };
 }
 
-const getInitialState = (state?: InitialState) => {
+const getInitialState = (state?: InitialState): MetadataRootState => {
     const metadata = state ? state.metadata : undefined;
     const suite = state ? state.suite : {};
     const suiteSettings = state?.suiteSettings ?? {};
@@ -87,7 +87,7 @@ const getInitialState = (state?: InitialState) => {
               metadata: { status: 'disabled' },
           };
     const accounts = state ? state.accounts || [] : [];
-    const debug = suiteSettings.debug ?? {};
+    const debug = { ...suiteSettingsInitialState.debug, ...suiteSettings.debug };
     const initAction: any = { type: '@storage/load', payload: { metadata } };
 
     return {
@@ -99,9 +99,11 @@ const getInitialState = (state?: InitialState) => {
             isConnectionModalOpen: false,
         },
         suite: {
+            online: true,
             ...suite,
         },
         suiteSettings: {
+            ...suiteSettingsInitialState,
             ...suiteSettings,
             debug, // debug settings are needed for OAuth API
         },
@@ -115,14 +117,24 @@ const getInitialState = (state?: InitialState) => {
         router: {
             app: 'fo',
         },
-    };
+    } as MetadataRootState;
 };
 
-type State = ReturnType<typeof getInitialState>;
-const initStore = (state: State) => {
-    const store = createTestStore<typeof extra, State, any>({
-        extra,
-        reducer: (s = state, action: any): State => {
+// hack: to prevent dependency on @suite/modal
+type OpenUserContextAction = {
+    type: '@modal/open-user-context';
+    payload: { type: string; decision: { resolve: (value: boolean) => void } };
+};
+
+const isOpenUserContextAction = (action: { type: string }): action is OpenUserContextAction =>
+    action.type === '@modal/open-user-context';
+
+type TestDeps = metadataLabelingActions.InitMetadataDeps &
+    metadataProviderActions.ConnectProviderDeps;
+
+const initStore = (state: MetadataRootState) => {
+    const { store } = createTestCompositionRoot<TestDeps, MetadataRootState>({
+        reducer: (s = state, action: any): MetadataRootState => {
             // the reducer may also receive the empty PreloadedState ({}), fall back to the initial state
             const current = { ...state, ...s };
 
@@ -132,14 +144,26 @@ const initStore = (state: State) => {
         serializableCheck: {
             ignoredActions: ['@modal/open-user-context'],
         },
-    });
+        services: () => ({
+            analytics: mockDesktopAnalytics(),
+            desktopApi: createMockDeps<TestDeps['services']['desktopApi']>({
+                available: false,
+                getHttpReceiverAddress: null,
+                once: null,
+                removeAllListeners: null,
+                metadataGetFiles: null,
+                metadataRead: null,
+                metadataRenameFile: null,
+                metadataWrite: null,
+            }),
+        }),
+    }).services;
     store.subscribe(async () => {
         const actions = store.getActions();
         const action = actions[actions.length - 1];
         if (!action) return;
 
-        // hack: to prevent dependency
-        if (action.type === '@modal/open-user-context') {
+        if (isOpenUserContextAction(action)) {
             // automatically resolve modal decision
             switch (action.payload.type) {
                 case 'metadata-provider':
@@ -354,9 +378,10 @@ describe('Metadata Actions', () => {
             metadataActions.setLegacyLabelsMigrationForWallet(forgottenWalletDescriptor),
         );
         store.dispatch(metadataActions.setLegacyLabelsMigrationForWallet(otherWalletDescriptor));
-        store.dispatch(
-            deviceActions.forgetDevice({ device: store.getState().device.selectedDevice }),
-        );
+        const { selectedDevice } = store.getState().device;
+        if (!selectedDevice) throw new Error('Expected a selected device in the fixture.');
+
+        store.dispatch(deviceActions.forgetDevice({ device: selectedDevice }));
 
         expect(store.getState().metadata.hasLegacyLabelsMigrated).toEqual({
             [otherWalletDescriptor]: true,

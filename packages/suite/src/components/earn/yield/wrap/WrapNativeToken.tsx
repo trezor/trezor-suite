@@ -10,19 +10,22 @@ import { useFormatters } from '@suite-common/formatters';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import {
     type YieldFlowDisplayToken,
     type YieldFlowFormValues,
-    getMaxWrapAmount,
-    shouldRecommendWrapReserve,
+    getWrapReserveStatus,
+    getWrappableNativeBalance,
+    getYieldNativeFeeStatus,
     useEvmPendingTxStatus,
+    useFetchFees,
+    useYieldGasReserve,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { submitWrapNativeTokenThunk } from 'src/actions/wallet/wrapNativeTokenThunks';
+import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';
@@ -89,10 +92,38 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
         decimals: token.decimals,
     };
 
-    // Max leaves the gas reserve aside while the balance covers it, otherwise it fills the whole
-    // balance. The field shows the full balance and the user may wrap up to it; eating into the
-    // reserve only triggers a non-blocking recommendation.
-    const maxWrapAmount = getMaxWrapAmount(account.formattedBalance);
+    const isRefetchDisabled = useIsFeeRefetchDisabled();
+    useFetchFees({ networkSymbol: account.symbol, isRefetchDisabled });
+
+    // The same reserve a wrapped-native vault deposit keeps aside: a wrap is the first step of
+    // that deposit, so the native coin left behind has to cover the same follow-up fees.
+    const gasReserve = useYieldGasReserve({
+        networkSymbol: account.symbol,
+        isWrappedNativeVault: true,
+        tokenContractAddress: token.contractAddress,
+    });
+
+    const formattedReserve = CryptoAmountFormatter.format(gasReserve.recommended, {
+        symbol: account.symbol,
+        isBalance: true,
+        withSymbol: false,
+    });
+
+    // The summary shows the full balance; Max keeps the recommended reserve aside. The user may
+    // still wrap up to the full balance, which only triggers a non-blocking recommendation; a
+    // balance that does not exceed the reserve blocks the wrap outright.
+    const maxWrapAmount = getWrappableNativeBalance(
+        account.formattedBalance,
+        gasReserve.recommended,
+    );
+
+    const isNativeFeeInsufficient =
+        getYieldNativeFeeStatus({
+            nativeBalance: account.formattedBalance,
+            reserve: gasReserve,
+            isWrapStep: true,
+            isWrappedNativeVault: true,
+        }) === 'insufficient';
 
     const { fiatToggle, setMaxAmount } = useYieldFiatInput({
         methods,
@@ -103,7 +134,12 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
     const amountInput = useWatch({ control: methods.control, name: 'amountInput' });
     const amount = new BigNumber(amountInput || '');
     const isAmountTooHigh = amount.gt(account.formattedBalance);
-    const isReserveRecommended = shouldRecommendWrapReserve(amountInput, account.formattedBalance);
+
+    const wrapReserveStatus = getWrapReserveStatus({
+        amountInput,
+        nativeFormattedBalance: account.formattedBalance,
+        reserve: gasReserve.recommended,
+    });
     const isAmountValid = amount.gt(0) && !isAmountTooHigh && methods.formState.isValid;
 
     const shouldCheckWrapAmount = !broadcast;
@@ -175,21 +211,28 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
             return null;
         }
 
+        if (isNativeFeeInsufficient) {
+            return (
+                <YieldActionStepWarning
+                    insufficientFeeReserve={{ amount: formattedReserve, nativeSymbol }}
+                />
+            );
+        }
+
         if (isAmountTooHigh) {
             return <YieldActionStepWarning isInsufficientFunds />;
         }
 
-        if (isReserveRecommended) {
+        if (wrapReserveStatus === 'kept') {
+            return (
+                <YieldActionStepWarning reserveKept={{ amount: formattedReserve, nativeSymbol }} />
+            );
+        }
+
+        if (wrapReserveStatus === 'below') {
             return (
                 <YieldActionStepWarning
-                    reserveRecommendation={{
-                        amount: CryptoAmountFormatter.format(WETH_WRAP_GAS_RESERVE.toString(), {
-                            symbol: account.symbol,
-                            isBalance: true,
-                            withSymbol: false,
-                        }),
-                        nativeSymbol,
-                    }}
+                    reserveRecommendation={{ amount: formattedReserve, nativeSymbol }}
                 />
             );
         }
@@ -245,10 +288,10 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
                     <YieldWrapStep
                         token={token}
                         nativeSymbol={nativeSymbol}
-                        availableAmount={maxWrapAmount}
+                        availableAmount={account.formattedBalance}
                         shouldShowReceivingRow={false}
                         isSubmitting={wrapMutation.isPending}
-                        isSubmitDisabled={!isAmountValid || isDisabled}
+                        isSubmitDisabled={!isAmountValid || isDisabled || isNativeFeeInsufficient}
                         warning={renderWrapWarning()}
                         pendingTransaction={
                             broadcast

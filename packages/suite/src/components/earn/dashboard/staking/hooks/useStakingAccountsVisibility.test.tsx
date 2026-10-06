@@ -5,10 +5,12 @@ import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-c
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
+import { type AppState } from 'src/reducers/store';
+
 import { useStakingAccountsVisibility } from './useStakingAccountsVisibility';
 
-const createRoot = () =>
-    createTestCompositionRoot({
+const createTestServices = () =>
+    createTestCompositionRoot<void, AppState>({
         preloadedState: {
             networks: mockNetworksState([
                 asNetworkSymbol('eth'),
@@ -16,7 +18,7 @@ const createRoot = () =>
                 asNetworkSymbol('ada'),
             ]),
         },
-    });
+    }).services;
 
 const mockGetAccountTotalStakingBalance = jest.fn<string | null, [Account]>();
 const ethSymbol = asNetworkSymbol('eth');
@@ -63,7 +65,7 @@ describe('useStakingAccountsVisibility', () => {
                         ...defaultProps,
                         stakingAccounts: [],
                     }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             expect(result.current.hasAnyRewardsData).toBe(false);
@@ -90,7 +92,7 @@ describe('useStakingAccountsVisibility', () => {
                             }),
                         ],
                     }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             expect(result.current.hasAnyRewardsData).toBe(false);
@@ -116,7 +118,7 @@ describe('useStakingAccountsVisibility', () => {
                             }),
                         ],
                     }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             expect(result.current.hasAnyRewardsData).toBe(true);
@@ -137,7 +139,7 @@ describe('useStakingAccountsVisibility', () => {
                             }),
                         ],
                     }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             expect(result.current.hasAnyRewardsData).toBe(true);
@@ -187,7 +189,7 @@ describe('useStakingAccountsVisibility', () => {
                             }),
                         ],
                     }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             const ethFallback = result.current.displayedAccounts.find(
@@ -225,7 +227,7 @@ describe('useStakingAccountsVisibility', () => {
                             }),
                         ],
                     }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             const adaFallback = result.current.displayedAccounts.find(
@@ -263,7 +265,7 @@ describe('useStakingAccountsVisibility', () => {
                             }),
                         ],
                     }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             const ethFallback = result.current.displayedAccounts.find(
@@ -308,7 +310,7 @@ describe('useStakingAccountsVisibility', () => {
                             }),
                         ],
                     }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             const adaFallback = result.current.displayedAccounts.find(
@@ -360,7 +362,7 @@ describe('useStakingAccountsVisibility', () => {
                             }),
                         ],
                     }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             act(() => {
@@ -406,7 +408,7 @@ describe('useStakingAccountsVisibility', () => {
                             }),
                         ],
                     }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             const adaFallback = result.current.displayedAccounts.find(

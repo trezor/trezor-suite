@@ -1,5 +1,5 @@
 import { useCallback, useImperativeHandle, useMemo, useState } from 'react';
-import { type LayoutChangeEvent } from 'react-native';
+import { type LayoutChangeEvent, useWindowDimensions } from 'react-native';
 import { Gesture } from 'react-native-gesture-handler';
 import { clamp, useSharedValue, withSpring } from 'react-native-reanimated';
 
@@ -8,9 +8,6 @@ import * as Haptics from 'expo-haptics';
 
 import { useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { type SendStackParamList, type SendStackRoutes } from '@suite-native/navigation';
-import { getScreenHeight } from '@trezor/env-utils';
-
-const SCREEN_HEIGHT = getScreenHeight();
 
 export type BottomSheetControlProps = {
     revealConfirmOnTrezorSheet: (onAnimationStart?: () => void) => void;
@@ -32,7 +29,8 @@ export const useConfirmOnTrezorSheet = ({ controlRef }: Props) => {
     const currentIndex = useSharedValue(defaultIndex);
 
     const inset = useBannerAwareSafeAreaInsets();
-    const [containerHeight, setContainerHeight] = useState(SCREEN_HEIGHT);
+    const { height: windowHeight } = useWindowDimensions();
+    const [containerHeight, setContainerHeight] = useState(windowHeight);
     const [headerHeight, setHeaderHeight] = useState(params?.prevHeaderHeight ?? 0);
 
     const snapPoints: [number, number, number] = useMemo(() => {

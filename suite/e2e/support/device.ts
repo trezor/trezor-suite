@@ -26,6 +26,11 @@ const EMULATOR_CENTER_COORDINATES: Record<Model, { x: number; y: number }> = {
     [Model.T3B1]: { x: 0, y: 0 },
 };
 
+type OpenFeeInfoParams = {
+    buttonIndexT3W1?: number;
+    buttonIndexT3T1?: number;
+};
+
 export class DeviceFixture {
     public readonly hasTHP: boolean;
     public readonly hasSecureElement: boolean;
@@ -142,6 +147,15 @@ export class DeviceFixture {
     @step()
     async getDebugState() {
         return await TrezorUserEnvLink.getDebugState();
+    }
+
+    // Call with the bridge stopped: both use the emulator UDP port and a collision hangs tenv.
+    @step()
+    async getFirmwareVersion() {
+        const { major_version, minor_version, patch_version } =
+            await TrezorUserEnvLink.getFeatures();
+
+        return `${major_version}.${minor_version}.${patch_version}`;
     }
 
     @step()
@@ -261,13 +275,7 @@ export class DeviceFixture {
     };
 
     @step()
-    async openFeeInfo({
-        buttonIndexT3W1 = 1,
-        buttonIndexT3T1 = 1,
-    }: {
-        buttonIndexT3W1?: number;
-        buttonIndexT3T1?: number;
-    } = {}) {
+    async openFeeInfo({ buttonIndexT3W1 = 1, buttonIndexT3T1 = 1 }: OpenFeeInfoParams = {}) {
         const EMULATOR_BURGER_MENU_COORDINATES: Record<Model, { x: number; y: number }> = {
             [Model.T3T1]: { x: 200, y: 20 },
             [Model.T3W1]: { x: 300, y: 20 },
@@ -288,16 +296,10 @@ export class DeviceFixture {
 
     @step()
     async expectToContainOnDisplay(expectedText: string) {
-        await expect(async () => {
-            const displayBodyContent = (await this.getDisplayContent()).body;
-            const flattenedLines = displayBodyContent.map(line => line.join(' '));
-            const found = flattenedLines.some(line => line.includes(expectedText));
-
-            if (!found) {
-                throw new Error(
-                    `Expected text "${expectedText}" not found on the device display. Actual display text:\n"${JSON.stringify(flattenedLines, null, 2)}"`,
-                );
-            }
-        }).toPass({ timeout: 5_000 });
+        await expect
+            .poll(async () => (await TrezorUserEnvLink.getScreenContent()).body as string, {
+                message: `Expected text "${expectedText}" on the device display`,
+            })
+            .toContain(expectedText);
     }
 }

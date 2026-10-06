@@ -56,17 +56,19 @@ const confirmedTransaction = (txid: string) =>
 const pendingTransaction = (txid: string) =>
     testMocks.getWalletTransaction({ txid, blockHeight: undefined });
 
+type RenderTransactionGraphUpdaterParams = {
+    transactions?: WalletAccountTransaction[];
+    hasAccount?: boolean;
+};
+
 const renderTransactionGraphUpdater = ({
     transactions = [],
     hasAccount = true,
-}: {
-    transactions?: WalletAccountTransaction[];
-    hasAccount?: boolean;
-} = {}) => {
-    const root = createTestCompositionRoot({
+}: RenderTransactionGraphUpdaterParams = {}) => {
+    const { services } = createTestCompositionRoot<void, { wallet: WalletState }>({
         reducer: { wallet: walletReducer },
     });
-    root.store.dispatch(setTransactions(transactions));
+    services.store.dispatch(setTransactions(transactions));
 
     const abortSignals: AbortSignal[] = [];
     const onRequestGraphUpdate = jest.fn((abortSignal: AbortSignal) => {
@@ -86,14 +88,14 @@ const renderTransactionGraphUpdater = ({
                 onRequestGraphUpdate,
             }),
         {
-            root,
+            services,
             wrapper: ({ children }: PropsWithChildren) => (
                 <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
             ),
         },
     );
 
-    return { root, onRequestGraphUpdate, abortSignals, unmount };
+    return { services, onRequestGraphUpdate, abortSignals, unmount };
 };
 
 describe('useTransactionGraphUpdater', () => {
@@ -118,14 +120,14 @@ describe('useTransactionGraphUpdater', () => {
     });
 
     it('requests another update once a transaction is confirmed and aborts the outdated one', async () => {
-        const { root, onRequestGraphUpdate, abortSignals } = renderTransactionGraphUpdater({
+        const { services, onRequestGraphUpdate, abortSignals } = renderTransactionGraphUpdater({
             transactions: [pendingTransaction('txid2'), confirmedTransaction('txid1')],
         });
 
         await waitFor(() => expect(onRequestGraphUpdate).toHaveBeenCalledTimes(1));
 
         act(() => {
-            root.store.dispatch(
+            services.store.dispatch(
                 setTransactions([confirmedTransaction('txid2'), confirmedTransaction('txid1')]),
             );
         });
@@ -136,14 +138,14 @@ describe('useTransactionGraphUpdater', () => {
     });
 
     it('requests no update for an incoming pending transaction', async () => {
-        const { root, onRequestGraphUpdate, abortSignals } = renderTransactionGraphUpdater({
+        const { services, onRequestGraphUpdate, abortSignals } = renderTransactionGraphUpdater({
             transactions: [confirmedTransaction('txid1')],
         });
 
         await waitFor(() => expect(onRequestGraphUpdate).toHaveBeenCalledTimes(1));
 
         act(() => {
-            root.store.dispatch(
+            services.store.dispatch(
                 setTransactions([pendingTransaction('txid2'), confirmedTransaction('txid1')]),
             );
         });

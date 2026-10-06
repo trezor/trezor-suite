@@ -1,6 +1,7 @@
 import tseslint from 'typescript-eslint';
 
 import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
+import { allRoots } from './workspaceRoots.mjs';
 
 // Deny importing from build artifact directories — consumers should resolve
 // through the package root, not from `lib/` or `libDev/`.
@@ -138,7 +139,7 @@ export const typescriptConfig = [
         },
     },
     {
-        files: ['networks/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        files: [`${allRoots.networks}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
         rules: {
             '@typescript-eslint/no-restricted-imports': [
                 'error',
@@ -166,8 +167,8 @@ export const typescriptConfig = [
     },
     {
         // restrict import of suite-common and suite-native packages outside of suite
-        files: ['packages/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
-        ignores: ['packages/suite*/**/*'],
+        files: [`${allRoots.packages}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
+        ignores: [`${allRoots.packages}/suite*/**/*`],
         rules: {
             '@typescript-eslint/no-restricted-imports': [
                 'error',

@@ -6,7 +6,8 @@ import { getTranslation } from '@suite-native/intl';
 import {
     type AccountDetailStackParamList,
     AccountDetailStackRoutes,
-    type StackProps,
+    type RootStackParamList,
+    type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
@@ -18,10 +19,13 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () => ({ name: 'AccountSettings', key: 'AccountSettings', params: {} }),
 }));
 
-const navigationMock = {} as StackProps<
+type NavigationProps = StackToStackCompositeScreenProps<
     AccountDetailStackParamList,
-    AccountDetailStackRoutes.AccountSettings
->['navigation'];
+    AccountDetailStackRoutes.AccountSettings,
+    RootStackParamList
+>;
+
+const navigationMock = {} as NavigationProps['navigation'];
 
 const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
@@ -32,10 +36,7 @@ const buildRoute = (accountKey: string) =>
         key: 'AccountSettings',
         name: AccountDetailStackRoutes.AccountSettings,
         params: { accountKey },
-    }) as StackProps<
-        AccountDetailStackParamList,
-        AccountDetailStackRoutes.AccountSettings
-    >['route'];
+    }) as NavigationProps['route'];
 
 const buildPreloadedState = (account: ReturnType<typeof mockWalletAccount>) => ({
     device: { devices: [], selectedDevice: undefined },

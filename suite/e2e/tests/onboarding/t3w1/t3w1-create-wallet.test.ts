@@ -53,12 +53,13 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
                 analyticsSection,
                 dashboardPage,
                 assetsSection,
+                promoBanner,
             }) => {
                 await test.step('Complete device onboarding', async () => {
                     await onboardingPage.optionallyDismissFwHashCheckError();
                     await analyticsSection.continueButton.click();
                     await onboardingPage.pairTHP();
-                    await analyticsSection.continueButton.click();
+                    await onboardingPage.setupDeviceButton.click();
                     await onboardingPage.firmware.continueThroughFirmware();
                     await page.waitForTimeout(500);
                     await onboardingPage.tutorial.skip();
@@ -90,8 +91,8 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
                 await test.step('Finish wallet creation', async () => {
                     await onboardingPage.finalButton.click();
 
-                    await expect(onboardingPage.onboardingFeedbackBanner).toBeVisible();
-                    await onboardingPage.onboardingFeedbackBannerCTAButton.click();
+                    await expect(promoBanner.onboardingFeedbackBanner).toBeVisible();
+                    await promoBanner.onboardingFeedbackBannerCTAButton.click();
 
                     await dashboardPage.discoveryEmptyPrimaryButton.click();
                     await assetsSection.enableNetworkViaActivateAssetsModal([
@@ -103,7 +104,7 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
                         timeout: 30_000,
                     });
                     await expect(dashboardPage.walletReady).toBeVisible({ timeout: 30_000 });
-                    await expect(onboardingPage.onboardingFeedbackBanner).toBeHidden();
+                    await expect(promoBanner.onboardingFeedbackBanner).toBeHidden();
                 });
             },
         );

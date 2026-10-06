@@ -1,8 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
+import { type AddressValidatorDep } from '@suite-common/networks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
@@ -10,6 +12,7 @@ import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { cloneObject, mergeDeepObject } from '@trezor/utils';
 
+import { type HandleExchangeRequestThunkState } from './handleExchangeRequestThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { accountEth } from '../../__fixtures__/utils';
 import { initialState } from '../../reducers/tradingCommonReducer';
@@ -32,6 +35,7 @@ const accountsReducer = prepareAccountsReducer({
     actions: { setAccountAddMetadata: mockSetAccountAddMetadata() },
     reducers: { storageLoadAccounts: mockReducer() },
 });
+type HandleExchangeRequestThunkTestDeps = WithServices<{ networks: AddressValidatorDep }>;
 const cloneExchangeQuotes = () => cloneObject(MIN_MAX_QUOTES_OK) as ExchangeTrade[];
 const btcSymbol = toNetworkSymbolNonTestnet('btc');
 const ethSymbol = toNetworkSymbolNonTestnet('eth');
@@ -50,20 +54,10 @@ describe('handleExchangeRequestThunk', () => {
 
     const getMocks = () => {
         const validEthAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
-        const store = createTestStore({
-            extra: {
-                services: {
-                    networks: {
-                        addressValidator: {
-                            getAddressType: jest.fn(),
-                            isAddressValid: jest.fn(
-                                (address, symbol) =>
-                                    address === validEthAddress && symbol === 'eth',
-                            ),
-                        },
-                    },
-                },
-            },
+        const { store } = createTestCompositionRoot<
+            HandleExchangeRequestThunkTestDeps,
+            HandleExchangeRequestThunkState
+        >({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -93,7 +87,17 @@ describe('handleExchangeRequestThunk', () => {
                     accounts: [accountEth as unknown as Account],
                 },
             },
-        });
+            services: () => ({
+                networks: {
+                    addressValidator: {
+                        getAddressType: jest.fn(),
+                        isAddressValid: jest.fn(
+                            (address, symbol) => address === validEthAddress && symbol === 'eth',
+                        ),
+                    },
+                },
+            }),
+        }).services;
 
         const mockComposeRequestCallback = jest.fn();
 

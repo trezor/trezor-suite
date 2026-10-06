@@ -9,3 +9,4 @@ export * from './selectorsUtils';
 export * from './storeInjectors';
 export * from './extraWithStoreThunkMiddleware';
 export { createReduxExtra, type ReduxStoreWithThunk } from './createReduxExtra';
+export * from './unwrapWithError';

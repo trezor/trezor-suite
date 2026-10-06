@@ -9,12 +9,13 @@ import {
     getYieldFlowStepSequence,
     getYieldWithdrawInputToken,
     splitYieldPendingTransaction,
+    useFetchFees,
 } from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useFetchFees } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useFetchFees';
+import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
 import { useYieldWithdrawContext } from './useYieldWithdrawContext';
@@ -53,7 +54,8 @@ export const YieldWithdrawForm = () => {
         flow,
     } = useYieldWithdrawContext();
 
-    useFetchFees({ networkSymbol: account.symbol });
+    const isRefetchDisabled = useIsFeeRefetchDisabled();
+    useFetchFees({ networkSymbol: account.symbol, isRefetchDisabled });
 
     const {
         isDisabled: isUnwrapDisabled,

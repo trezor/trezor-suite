@@ -15,7 +15,6 @@
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
-        "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/forms": "workspace:*",

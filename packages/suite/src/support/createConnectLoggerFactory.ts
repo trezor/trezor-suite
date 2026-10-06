@@ -1,5 +1,6 @@
 import { selectShowConnectLogs } from '@suite/settings';
-import { type CreateLogger, initLog } from '@trezor/connect';
+import { initLog } from '@trezor/connect';
+import type { CreateLogger } from '@trezor/logger';
 
 type CreateConnectLoggerFactoryDeps = {
     getState: () => any;

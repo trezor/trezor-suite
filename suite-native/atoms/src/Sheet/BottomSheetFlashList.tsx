@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -31,6 +31,9 @@ export type BottomSheetFlashListHandleProps = BottomSheetHandleProps & {
 
 const EDGE_FADE_START_SIZE = 20;
 const EDGE_FADE_END_SIZE = 220;
+
+const MAX_HEIGHT_RATIO = 0.9;
+const MIN_HEIGHT_RATIO = 0.4;
 
 export type BottomSheetFlashListProps<TItem> = {
     showEdgeFades?: boolean;
@@ -92,6 +95,7 @@ export const BottomSheetFlashList = <TItem,>({
 }: BottomSheetFlashListProps<TItem>) => {
     const { applyStyle } = useNativeStyles();
     const { bottom: insetBottom } = useSafeAreaInsets();
+    const { height: windowHeight } = useWindowDimensions();
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
     const flashListRef = useRef<FlashListRef<TItem>>(null);
@@ -152,8 +156,8 @@ export const BottomSheetFlashList = <TItem,>({
         [applyStyle, footer, insetBottom, isSheetSettled],
     );
 
-    const maxHeight = Dimensions.get('window').height * 0.9;
-    const minHeight = Math.max(Dimensions.get('window').height * 0.4, estimatedListHeight);
+    const maxHeight = windowHeight * MAX_HEIGHT_RATIO;
+    const minHeight = Math.max(windowHeight * MIN_HEIGHT_RATIO, estimatedListHeight);
     // minHeight can be higher than maxHeight because of estimatedListHeight, but it must be capped by maxHeight
     const snapPoints = useMemo(() => [Math.min(minHeight, maxHeight)], [minHeight, maxHeight]);
 

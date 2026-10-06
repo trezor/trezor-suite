@@ -18,8 +18,6 @@ const sellPreSendStatuses: SellTradeStatus[] = [
 
 export type SellDetailStatusStep = 'pending' | 'success' | 'error';
 
-export type SellDetailTerminalStep = Exclude<SellDetailStatusStep, 'pending'>;
-
 export const getSellDetailHeaderMessages = (tradeStatus: SellTradeStatus): DetailHeaderMessages =>
     sellPreSendStatuses.includes(tradeStatus)
         ? { title: 'TR_SELL_HEADER_TITLE', description: 'TR_TRADING_HEADER_DESCRIPTION' }

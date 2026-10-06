@@ -151,9 +151,6 @@
             "path": "../../suite-common/tx-simulation"
         },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -176,6 +173,9 @@
         { "path": "../../suite/analytics" },
         { "path": "../../suite/app-assets" },
         {
+            "path": "../../suite/apps-embedding-demo"
+        },
+        {
             "path": "../../suite/authenticity-checks"
         },
         { "path": "../../suite/backup" },
@@ -196,6 +196,7 @@
             "path": "../../suite/firmware-upgrade"
         },
         { "path": "../../suite/flags" },
+        { "path": "../../suite/forms" },
         { "path": "../../suite/github" },
         {
             "path": "../../suite/idb-migration-utils"
@@ -244,6 +245,10 @@
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
         { "path": "../icons" },
+        { "path": "../logger" },
+        {
+            "path": "../../networks/ethereum/network-ethereum"
+        },
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
@@ -251,10 +256,16 @@
             "path": "../../networks/network-module/network-module-suite-common-types"
         },
         {
+            "path": "../../networks/ripple/network-ripple"
+        },
+        {
             "path": "../../networks/solana/network-solana"
         },
         {
             "path": "../../networks/stellar/network-stellar"
+        },
+        {
+            "path": "../../networks/tron/network-tron"
         },
         { "path": "../product-components" },
         { "path": "../react-utils" },

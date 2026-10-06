@@ -13,6 +13,8 @@ import { fixtures as ltcFixtures } from './ltc-mw-endpoints';
 
 type SupportedSymbols = 'ltc' | 'doge' | 'eth' | 'ada';
 
+type SendNewBlockNotificationParams = { height: number; hash: string };
+
 export class BlockbookMock {
     private _mockServer: BackendWebsocketServerMock | undefined;
     private accountState: any = null;
@@ -146,7 +148,7 @@ export class BlockbookMock {
     // all visible accounts on the network, so a preceding `updateAccountState` reaches Redux
     // without waiting for the periodic account sync (whose timer is not controlled by page.clock).
     @step()
-    async sendNewBlockNotification({ height, hash }: { height: number; hash: string }) {
+    async sendNewBlockNotification({ height, hash }: SendNewBlockNotificationParams) {
         if (this.newBlockSubscriptionIds.size === 0) {
             throw new Error('No subscribeNewBlock subscription has been captured yet');
         }
@@ -175,6 +177,23 @@ export class BlockbookMock {
                 method: 'rpcCall',
                 default: true,
                 response: { data: { data: `0x${hexValue}` } },
+            };
+        });
+
+        this.mockServer.setFixtures(updatedFixtures);
+    }
+
+    @step()
+    setBroadcastTxid(txid: string) {
+        const updatedFixtures = this.mockServer.getFixtures().map(fixture => {
+            if (fixture.method !== 'sendTransaction') {
+                return fixture;
+            }
+
+            return {
+                method: 'sendTransaction',
+                default: true,
+                response: { data: { result: txid } },
             };
         });
 

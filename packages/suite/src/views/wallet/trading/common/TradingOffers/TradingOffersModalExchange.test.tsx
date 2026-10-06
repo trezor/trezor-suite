@@ -18,8 +18,10 @@ jest.mock('react-hook-form', () => ({
     useFormContext: () => ({ getValues: () => undefined, setValue: () => undefined }),
 }));
 
+type TradingOffersModalItemProps = { quote: ExchangeTrade };
+
 jest.mock('./TradingOffersModalItem', () => ({
-    TradingOffersModalItem: ({ quote }: { quote: ExchangeTrade }) => (
+    TradingOffersModalItem: ({ quote }: TradingOffersModalItemProps) => (
         <div data-testid="@trading/offers/quote">{quote.exchange}</div>
     ),
 }));
@@ -67,8 +69,7 @@ const quotes: ExchangeTrade[] = [
 ];
 
 const renderOffersModal = (exchangeQuotes: ExchangeTrade[]) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -89,7 +90,7 @@ const renderOffersModal = (exchangeQuotes: ExchangeTrade[]) => {
         } satisfies AppState,
     });
 
-    renderWithProviders(root, <TradingOffersModalExchange onClose={() => undefined} />);
+    renderWithProviders(services, <TradingOffersModalExchange onClose={() => undefined} />);
 };
 
 const getRenderedProviders = () =>

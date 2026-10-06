@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { URL } from 'url';
 
+import type { Log } from '@trezor/logger';
 import {
     HttpServer,
     type ParamsValidatorHandler,
@@ -20,7 +21,7 @@ import {
     type Session,
     validateProtocolMessage,
 } from '@trezor/transport-common';
-import { type Log, Throttler, arrayPartition } from '@trezor/utils';
+import { Throttler, arrayPartition } from '@trezor/utils';
 
 import { createCore } from './core';
 
@@ -108,7 +109,7 @@ export class TrezordNode {
         bundledVersion,
         port = 21328,
     }: {
-        api: 'usb' | 'udp' | AbstractApi;
+        api: 'legacy' | 'nusb' | 'udp' | AbstractApi;
         assetPrefix?: string;
         logger: Log;
         bundledVersion?: string;

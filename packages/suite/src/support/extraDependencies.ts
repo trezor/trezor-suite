@@ -127,9 +127,11 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
         storageLoadAccounts: (_, { payload }: StorageLoadAction) =>
             // Storage returns accounts in IndexedDB key order, sort them like the reducer does.
             sortByCoin(
-                payload.accounts.map(acc =>
-                    acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
-                ),
+                payload.accounts
+                    .filter(acc => payload.supportedNetworks.includes(acc.symbol))
+                    .map(acc =>
+                        acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
+                    ),
                 payload.supportedNetworks,
             ),
         setDeviceMetadataReducer: (
@@ -191,7 +193,15 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
             });
         },
         storageLoadWalletSettings: (state: WalletSettingsState, { payload }: StorageLoadAction) =>
-            payload.walletSettings ? { ...state, ...payload.walletSettings } : state,
+            payload.walletSettings
+                ? {
+                      ...state,
+                      ...payload.walletSettings,
+                      enabledNetworks: payload.walletSettings.enabledNetworks.filter(symbol =>
+                          payload.supportedNetworks.includes(symbol),
+                      ),
+                  }
+                : state,
         // this is deprecated, bioAuth settings is now stored in electron store
         storageLoadBioAuth: (state: BioAuthState, { payload }: StorageLoadAction) => {
             if (!payload?.bioAuth) return state;
@@ -207,10 +217,13 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
             return state;
         },
         storageLoadFlags: (state: FlagsState, { payload }: StorageLoadAction) =>
-            payload.suiteSettings?.flags
+            payload.suiteSettings
                 ? {
                       ...state,
                       ...payload.suiteSettings.flags,
+                      // Missing IDs in saved state represent changes introduced since that run.
+                      seenNewContentIndicators:
+                          payload.suiteSettings.flags?.seenNewContentIndicators ?? {},
                       // The onboarding feedback banner is session-only: it is enabled when onboarding
                       // is completed and must not survive an app restart. Reset it on every load so a
                       // returning user only sees it again after completing onboarding once more.

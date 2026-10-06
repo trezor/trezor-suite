@@ -6,8 +6,9 @@ import {
     createSliceWithExtraDeps,
 } from '@suite-common/redux-utils';
 import { DEVICE } from '@trezor/connect';
+import { typedObjectFromEntries } from '@trezor/utils';
 
-import { type NewContentIndicatorId } from './flagsConstants';
+import { NewContentIndicatorId } from './flagsConstants';
 
 export type FlagsState = {
     initialRun: boolean;
@@ -21,6 +22,7 @@ export type FlagsState = {
     showTS7DashboardPromoBanner: boolean;
     showDefiYieldDashboardPromoBanner: boolean;
     showETHVaultDashboardPromoBanner: boolean;
+    showTradingExperienceDashboardPromoBanner: boolean;
     showOnboardingFeedbackBanner: boolean;
     showSettingsDesktopAppPromoBanner: boolean;
     activateAssetsBannerClosed: boolean;
@@ -64,6 +66,7 @@ export const flagsInitialState: FlagsState = {
     showTS7DashboardPromoBanner: true,
     showDefiYieldDashboardPromoBanner: true,
     showETHVaultDashboardPromoBanner: true,
+    showTradingExperienceDashboardPromoBanner: true,
     showOnboardingFeedbackBanner: false,
     showSettingsDesktopAppPromoBanner: true,
     activateAssetsBannerClosed: false,
@@ -84,7 +87,11 @@ export const flagsInitialState: FlagsState = {
     hasSeenDisconnectTooltip: false,
     showNoDeviceEshopSidebarBanner: true,
     areNoDeviceEshopBannersDisabled: false,
-    seenNewContentIndicators: {},
+    // In a fresh Suite, all content is new, so we don't need to distinguish individual features as "new" → mark all as seen.
+    // See the unit test, which specifies this behavior.
+    seenNewContentIndicators: typedObjectFromEntries(
+        Object.values(NewContentIndicatorId).map(indicatorId => [indicatorId, true] as const),
+    ),
 };
 
 const flagsSlice = createSliceWithExtraDeps({
@@ -141,6 +148,8 @@ export const selectIsDefiYieldDashboardPromoBannerShown = (state: FlagsRootState
     state.flags.showDefiYieldDashboardPromoBanner;
 export const selectIsETHVaultDashboardPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showETHVaultDashboardPromoBanner;
+export const selectIsTradingExperienceDashboardPromoBannerShown = (state: FlagsRootState) =>
+    state.flags.showTradingExperienceDashboardPromoBanner;
 export const selectIsOnboardingFeedbackBannerShown = (state: FlagsRootState) =>
     state.flags.showOnboardingFeedbackBanner;
 export const selectIsSettingsDesktopAppPromoBannerShown = (state: FlagsRootState) =>

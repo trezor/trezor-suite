@@ -352,15 +352,13 @@ const TokenRowBasicActions = ({
         setShowDeactivateModal(true);
     };
 
-    const TokenAddressItem = ({
-        label,
-        address,
-        type,
-    }: {
+    type TokenAddressItemProps = {
         label: ReactNode;
         address: string;
         type: 'contract' | 'fingerprint' | 'policyId';
-    }) => (
+    };
+
+    const TokenAddressItem = ({ label, address, type }: TokenAddressItemProps) => (
         <InfoItem typographyStyle="body-xs" label={label} gap={0}>
             <Link href={explorerUrl}>
                 <Address

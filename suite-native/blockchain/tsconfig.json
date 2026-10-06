@@ -20,6 +20,13 @@
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
-        }
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        { "path": "../analytics" }
     ]
 }

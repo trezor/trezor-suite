@@ -4,7 +4,7 @@
     "compilerOptions": {
         "outDir": "./lib",
         "rootDir": "./src",
-        "types": ["node"]
+        "types": ["node", "w3c-web-usb"]
     },
     "references": [
         { "path": "../transport-common" },

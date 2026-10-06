@@ -5,8 +5,7 @@ import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { formInputsMaxLength } from '@suite-common/validators';
-import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { AMOUNT_MAX_LENGTH, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
     type BaseCurrencyOption,
     type FiatRatesResult,
@@ -241,7 +240,7 @@ export const BaseCurrencyInput = ({
             name={baseCurrencyInputName}
             data-testid={baseCurrencyInputName}
             defaultValue={baseCurrencyValue}
-            maxLength={formInputsMaxLength.fiat}
+            maxLength={AMOUNT_MAX_LENGTH}
             rules={rules}
             bottomText={bottomText || null}
             rightContent={

@@ -17,6 +17,7 @@ export const SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS: Record<RouterApp, boole
     earn: false,
     'earn-yield': false,
     'earn-staking': false,
+    'apps-embedding': false,
     version: false,
     'bridge-requested': false,
     bridge: false,

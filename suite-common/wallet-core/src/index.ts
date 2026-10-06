@@ -1,13 +1,14 @@
 // TODO: remove this file and prefer scoped imports or divide to smaller packages. Creating these huge export index files leads to circular ESM.
 export * from './accounts/accountsActions';
 export * from './accounts/accountsConstants';
+export * from './accounts/assetAccountsSelectors';
 export * from './accounts/accountsMiddleware';
 export * from './accounts/accountsReducer';
 export * from './accounts/accountsRefreshTimeReducer';
 export * from './accounts/accountsSelectors';
 export * from './accounts/accountsThunks';
-export { useSelector as useAccountsSelector } from './accounts/hooks/useSelector';
 export * from './accounts/earnOnboarding';
+export { useSelector as useAccountsSelector } from './accounts/hooks/useSelector';
 export * from './allowance/allowanceConstants';
 export * from './allowance/composeAllowanceTransactionThunk';
 export * from './allowance/fetchAllowance';
@@ -15,6 +16,7 @@ export * from './blockchain/blockchainActions';
 export * from './blockchain/blockchainMiddleware';
 export * from './blockchain/blockchainReducer';
 export * from './blockchain/blockchainSelectors';
+export * from './blockchain/blockchainSubscriptionMiddleware';
 export * from './blockchain/blockchainThunks';
 export * from './device/deviceAddressUtils';
 export * from './device/deviceSelectors';
@@ -38,6 +40,7 @@ export * from './fees/feesConstants';
 export * from './fees/feesReducer';
 export * from './fees/feesThunks';
 export * from './fees/feesUtils';
+export * from './fees/hooks/useFetchFees';
 export * from './fees/hooks/useRefetchFees';
 export * from './fiat-rates/fiatRatesMiddleware';
 export * from './fiat-rates/fiatRatesReducer';
@@ -82,6 +85,7 @@ export type * from './staking/ethereum/types';
 export * from './staking/hooks/useStakingEntryPeriodEstimateInDays';
 export * from './staking/shared/stakingConstants';
 export * from './staking/shared/stakingFormUtils';
+export * from './staking/shared/stakingSelectors';
 export * from './staking/shared/stakingUtils';
 export * from './staking/solana/solanaStakingFormUtils';
 export * from './staking/solana/solanaStakingLimitUtils';
@@ -94,7 +98,6 @@ export * from './staking/stakingMiddleware';
 export * from './staking/stakingReducer';
 export type * from './staking/stakingReducerTypes';
 export * from './staking/stakingSelectors';
-export * from './staking/shared/stakingSelectors';
 export * from './staking/stakingThunks';
 export * from './staking/stakingTransactionThunks';
 export { composeTronClaimFeeLevelsThunk } from './staking/tron/actions/claim/composeClaim';
@@ -105,7 +108,15 @@ export { composeTronUnstakeFeeLevelsThunk } from './staking/tron/actions/unstake
 export { submitTronUnstakeThunk } from './staking/tron/actions/unstake/submitUnstake';
 export { composeTronVoteFeeLevelsThunk } from './staking/tron/actions/vote/composeVote';
 export { submitTronVoteThunk } from './staking/tron/actions/vote/submitVote';
+export {
+    type TronVoteAllocation,
+    getAllocatedVotesTotal,
+    getCurrentVoteAllocations,
+    getTotalVotes,
+    splitVotesEvenly,
+} from './staking/tron/actions/vote/voteContract';
 export { composeTronWithdrawFeeLevelsThunk } from './staking/tron/actions/withdraw/composeWithdraw';
+export { confirmTronPendingTransactionThunk } from './staking/tron/shared/confirmPendingTransactionThunk';
 export { submitTronWithdrawThunk } from './staking/tron/actions/withdraw/submitWithdraw';
 export * from './staking/tron/tronStakingConstants';
 export * from './staking/tron/tronStakingReducer';
@@ -125,6 +136,7 @@ export * from './transactions/transactionsSelectors';
 export * from './transactions/transactionsThunks';
 export * from './uiEvent/defaultTrezorUIEventHandlerThunk';
 export * from './uiEvent/scopedCallIdRegistry';
+export * from './yield/hooks/useYieldGasReserve';
 export * from './yield/hooks/useYieldPendingTxStatus';
 export * from './yield/thunks/composeYieldEvmTransactionThunk';
 export * from './yield/thunks/yieldApprovalThunks';
@@ -137,6 +149,7 @@ export * from './yield/utils/yieldApprovalActionUtils';
 export * from './yield/utils/yieldClaimRewards';
 export * from './yield/utils/yieldDeviceUtils';
 export * from './yield/utils/yieldFeeEstimation';
+export * from './yield/utils/yieldGasReserve';
 export * from './yield/utils/yieldUtils';
 export * from './yield/utils/yieldWithdrawCompletedValues';
 export * from './yield/yieldConstants';

@@ -54,8 +54,7 @@ const renderUseTradingRequestedSide = (
     quote: BuyTrade | SellFiatTrade | ExchangeTrade | undefined,
     { buyQuotesRequest, sellQuotesRequest }: QuotesRequests = {},
 ) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, TradingRootState>({
         preloadedState: {
             wallet: {
                 trading: {
@@ -67,7 +66,7 @@ const renderUseTradingRequestedSide = (
         } satisfies TradingRootState,
     });
 
-    return renderHookWithStoreProvider(() => useTradingRequestedSide(quote), { root });
+    return renderHookWithStoreProvider(() => useTradingRequestedSide(quote), { services });
 };
 
 describe('useTradingRequestedSide', () => {

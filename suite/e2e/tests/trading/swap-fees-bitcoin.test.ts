@@ -7,6 +7,7 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 const sendAmount = '0.0015';
 const customFee = '10';
@@ -22,14 +23,11 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@T3T1', '@T3W1'] }, () => 
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: [
-                    { symbol: btcSymbol, backend: btcBackend },
-                    asNetworkSymbol('eth'),
-                ],
+                enableNetworks: [{ symbol: btcSymbol, backend: btcBackend }, ethSymbol],
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: btcSymbol });
+            await walletPage.openSwapTrading({ symbol: btcSymbol, atIndex: 1 });
         },
     );
 
@@ -45,11 +43,18 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@T3T1', '@T3W1'] }, () => 
                     sellAsset: {
                         networkFilter: 'btc',
                         networkSymbol: btcSymbol,
+                        accountIndex: 1,
                     },
                     buyAsset: {
                         searchFilter: 'Ethereum',
                         networkFilter: 'eth',
-                        assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
+                        assetCryptoId: getCryptoId(ethSymbol),
+                    },
+                    selectReceiveAddress: async () => {
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                            symbol: ethSymbol,
+                            atIndex: 2,
+                        });
                     },
                 });
             });
@@ -66,7 +71,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@T3T1', '@T3W1'] }, () => 
 
             await test.step('Continue Swap flow towards Send section', async () => {
                 await tradingPage.confirmation.openConfirmAndSendModal();
-                await expect(devicePrompt.header.accountLabel).toHaveText('Bitcoin #1');
+                await expect(devicePrompt.header.accountLabel).toHaveText('Bitcoin #2');
                 await devicePrompt.waitForPromptAndClick();
                 await devicePrompt.waitForPromptAndClick();
             });

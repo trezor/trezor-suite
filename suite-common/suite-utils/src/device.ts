@@ -521,22 +521,25 @@ export const getDeviceModelWithFlagshipFallback = (
 export const getIsThpDevice = <T extends Device | TrezorDevice>(
     device: T,
 ): device is T & { thp: NonNullable<Device['thp']> } => device.thp !== undefined;
+type GetIsDeviceInitializedParams = {
+    deviceMode?: DeviceMode | null;
+    deviceFeatures?: PROTO.Features;
+};
 
 export const getIsDeviceInitialized = ({
     deviceMode,
     deviceFeatures,
-}: {
-    deviceMode?: DeviceMode | null;
+}: GetIsDeviceInitializedParams) =>
+    deviceMode !== 'initialize' && deviceMode !== 'seedless' && !!deviceFeatures?.initialized;
+type GetIsDeviceConnectedAndAuthorizedParams = {
+    deviceState: TrezorDevice['state'];
     deviceFeatures?: PROTO.Features;
-}) => deviceMode !== 'initialize' && deviceMode !== 'seedless' && !!deviceFeatures?.initialized;
+};
 
 export const getIsDeviceConnectedAndAuthorized = ({
     deviceState,
     deviceFeatures,
-}: {
-    deviceState: TrezorDevice['state'];
-    deviceFeatures?: PROTO.Features;
-}) => !!deviceState && !!deviceFeatures;
+}: GetIsDeviceConnectedAndAuthorizedParams) => !!deviceState && !!deviceFeatures;
 
 export const getIsDeviceDescriptorApiTypeBluetooth = (device: Device | TrezorDevice) =>
     device.descriptor?.apiType === 'bluetooth';

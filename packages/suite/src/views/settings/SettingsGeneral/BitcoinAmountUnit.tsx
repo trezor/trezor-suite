@@ -9,8 +9,9 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 export const BitcoinAmountUnit = () => {
     const { bitcoinAmountUnit, setBitcoinAmountUnits } = useBitcoinAmountUnit();
 
-    const handleUnitsChange = ({ value }: { value: PROTO.AmountUnit }) =>
-        setBitcoinAmountUnits(value);
+    type HandleUnitsChangeParams = { value: PROTO.AmountUnit };
+
+    const handleUnitsChange = ({ value }: HandleUnitsChangeParams) => setBitcoinAmountUnits(value);
 
     return (
         <Anchor anchorId={SettingsAnchor.BitcoinAmountUnit}>

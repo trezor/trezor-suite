@@ -15,10 +15,11 @@ import {
     selectTradingLoadingAndTimestamp,
     selectTradingSendAccount,
 } from '@suite-common/trading';
+import { useFetchFees } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Column, Row, Skeleton, Text, Tooltip } from '@trezor/components';
 
-import { useFetchFees } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useFetchFees';
+import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
 import { useSelector } from 'src/hooks/suite';
 import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
@@ -31,7 +32,6 @@ import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/us
 import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 import { TradingFormCard } from './TradingFormCard';
-import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
 import { TradingFormInputBuyAsset } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
@@ -44,8 +44,10 @@ import {
     TRADING_AMOUNT_PLACEHOLDER,
     TRADING_AMOUNT_SKELETON_WIDTH,
     TRADING_BASE_CURRENCY_SKELETON_WIDTH,
+    getTradingAmountInputStyle,
 } from './tradingFormInputsUtils';
 import { useTradingExchangeAssetSelect } from './useTradingExchangeAssetSelect';
+import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 
 export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
@@ -64,7 +66,8 @@ export const TradingExchangeFormInputs = () => {
     const { CryptoAmountFormatter } = useFormatters();
     const account = useSelector(state => selectTradingSendAccount(state, type));
 
-    useFetchFees({ networkSymbol: account?.symbol });
+    const isRefetchDisabled = useIsFeeRefetchDisabled();
+    useFetchFees({ networkSymbol: account?.symbol, isRefetchDisabled });
 
     const methods = useFormContext<TradingExchangeFormProps>();
     const {
@@ -100,6 +103,15 @@ export const TradingExchangeFormInputs = () => {
     const { isBtcSatsAmountUnit: shouldReceiveInSats } = useBitcoinAmountUnit(
         receiveCryptoSelect?.networkSymbol,
     );
+    const receiveAmountStyle = getTradingAmountInputStyle(
+        receiveAmount && receiveCryptoSelect
+            ? CryptoAmountFormatter.format(receiveAmount, {
+                  symbol: receiveCryptoSelect.networkSymbol,
+                  withSymbol: false,
+                  smallestUnitsOverride: shouldReceiveInSats,
+              })
+            : TRADING_AMOUNT_PLACEHOLDER,
+    );
 
     const { handleSellAssetSelect, handleReceiveAssetSelect } = useTradingExchangeAssetSelect({
         methods,
@@ -123,6 +135,7 @@ export const TradingExchangeFormInputs = () => {
                             cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
                             fiatInputName={TRADING_FORM_OUTPUT_FIAT}
                             cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                            isInSats={shouldSendInSats}
                         />
                         <TradingFormInputSellAsset
                             inputName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
@@ -174,6 +187,7 @@ export const TradingExchangeFormInputs = () => {
                             <Column
                                 gap={8}
                                 flex="1"
+                                minWidth={0}
                                 alignItems="flex-start"
                                 data-testid="@trading/form/receive-amount-zone"
                             >
@@ -185,20 +199,21 @@ export const TradingExchangeFormInputs = () => {
                                     />
                                 ) : (
                                     <Text
-                                        typographyStyle="headline-md"
                                         isDisabled={!receiveAmount}
                                         data-testid="@trading/form/receive-amount"
                                     >
-                                        {receiveAmount && receiveCryptoSelect ? (
-                                            <CryptoAmountFormatter
-                                                value={receiveAmount}
-                                                symbol={receiveCryptoSelect.networkSymbol}
-                                                withSymbol={false}
-                                                smallestUnitsOverride={shouldReceiveInSats}
-                                            />
-                                        ) : (
-                                            TRADING_AMOUNT_PLACEHOLDER
-                                        )}
+                                        <span style={receiveAmountStyle}>
+                                            {receiveAmount && receiveCryptoSelect ? (
+                                                <CryptoAmountFormatter
+                                                    value={receiveAmount}
+                                                    symbol={receiveCryptoSelect.networkSymbol}
+                                                    withSymbol={false}
+                                                    smallestUnitsOverride={shouldReceiveInSats}
+                                                />
+                                            ) : (
+                                                TRADING_AMOUNT_PLACEHOLDER
+                                            )}
+                                        </span>
                                     </Text>
                                 )}
                                 <Box minHeight={20}>

@@ -5,6 +5,7 @@ import type { NetworkSuiteCommonModuleApi } from '@trezor/network-module-suite-c
 import { createNetworkModuleRepository } from './NetworkModuleRepository';
 import type { NetworksServices } from './NetworksServices';
 import { createAddressValidator } from './createAddressValidator';
+import { createGetAccountSyncInterval } from './createGetAccountSyncInterval';
 import { createGetNamedAddressSupport } from './createGetNamedAddressSupport';
 import { createGetNetworkConfig } from './createGetNetworkConfig';
 import { createGetNetworkConfigs } from './createGetNetworkConfigs';
@@ -27,6 +28,7 @@ export const createNetworksCompositionRoot = (
     return {
         networkModuleRepository,
         getNetworkConfig,
+        getAccountSyncInterval: createGetAccountSyncInterval({ networkModuleRepository }),
         addressValidator: createAddressValidator({ networkModuleRepository }),
         getNamedAddressSupport: createGetNamedAddressSupport({ networkModuleRepository }),
         loadNetworkModules: createLoadNetworkModules({

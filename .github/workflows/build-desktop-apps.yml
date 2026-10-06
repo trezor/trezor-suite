@@ -40,7 +40,7 @@ jobs:
         with:
           node-version-file: ".nvmrc"
       - name: Install SafeDep PMG
-        uses: safedep/pmg@be0a93f10fbec6a5c94dd78bc722abf1b7fbfc2d # v0.26.0
+        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
         continue-on-error: true
         with:
           version: v0.19.1
@@ -90,6 +90,11 @@ jobs:
           path: suite/desktop-app/build
           key: renderer-bundle-${{ github.sha }}
           fail-on-cache-miss: true
+
+      - name: Install native binaries for every target architecture
+        uses: ./.github/actions/yarn-target-architectures
+        with:
+          platform: ${{ matrix.platform }}
 
       # safedep/pmg not available on macOS (that's ok, it already guards the `build-and-cache-renderer` job)
       - name: Install deps and build libs
@@ -148,10 +153,16 @@ jobs:
           node-version-file: ".nvmrc"
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@be0a93f10fbec6a5c94dd78bc722abf1b7fbfc2d # v0.26.0
+        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
         continue-on-error: true
         with:
           version: v0.19.1
+
+      - name: Install native binaries for every target architecture
+        uses: ./.github/actions/yarn-target-architectures
+        with:
+          platform: ${{ env.platform }}
+
       - name: Install deps and build libs
         run: |
           yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system

@@ -4,9 +4,10 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    getMaxWrapAmount,
+    getWrapReserveStatus,
+    getWrappableNativeBalance,
+    getYieldNativeFeeStatus,
     getYieldVaultContractAddress,
-    shouldRecommendWrapReserve,
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
@@ -19,6 +20,7 @@ import {
 import { useMessageSystemWrappedNative } from '../../earn/useMessageSystemWrappedNative';
 import { useMessageSystemYield } from '../useMessageSystemYield';
 import { useYieldCurrencyToggleAnalytics } from '../useYieldCurrencyToggleAnalytics';
+import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
 import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
 import { useYieldFlowData } from '../useYieldFlowData';
 import { useYieldWrappedNativeStep } from '../useYieldWrappedNativeStep';
@@ -56,6 +58,21 @@ export const useYieldDepositWrapController = () => {
 
     const nativeSymbol = toTokenSymbol(account ? getNetworkDisplaySymbol(account.symbol) : '');
     const nativeBalance = account?.formattedBalance ?? '0';
+
+    const gasReserve = useYieldDepositGasReserve({
+        account,
+        isWrappedNativeVault: true,
+        tokenContractAddress: yieldFlowData.token?.contractAddress,
+        flowKey,
+    });
+
+    const isNativeFeeInsufficient =
+        getYieldNativeFeeStatus({
+            nativeBalance,
+            reserve: gasReserve,
+            isWrapStep: true,
+            isWrappedNativeVault: true,
+        }) === 'insufficient';
 
     const handleSkipAnalytics = useCallback(
         () => reportDeposit({ action: 'cancel', type: 'wrap' }),
@@ -122,6 +139,7 @@ export const useYieldDepositWrapController = () => {
         !fees.isFeeReady ||
         !step.isStepSessionReady ||
         step.isStepPending ||
+        isNativeFeeInsufficient ||
         depositMessageSystem.isDisabled ||
         wrapMessageSystem.isDisabled;
 
@@ -143,7 +161,8 @@ export const useYieldDepositWrapController = () => {
         form: step.form,
         amountInput: {
             balance: nativeBalance,
-            maxAmount: getMaxWrapAmount(nativeBalance),
+            isDisabled: isNativeFeeInsufficient,
+            maxAmount: getWrappableNativeBalance(nativeBalance, gasReserve.recommended),
             onCurrencyChange: reportCurrencyToggle,
             onMaxPress: reportMaxSelected,
         },
@@ -153,7 +172,15 @@ export const useYieldDepositWrapController = () => {
             tokenContract: toTokenAddress(resolvedToken.contractAddress ?? ''),
             tokenDecimals: resolvedToken.decimals,
         },
-        isReserveRecommended: shouldRecommendWrapReserve(amountValue ?? '', nativeBalance),
+        feeReserve: {
+            amount: gasReserve.recommended,
+            isInsufficient: isNativeFeeInsufficient,
+            wrapStatus: getWrapReserveStatus({
+                amountInput: amountValue ?? '',
+                nativeFormattedBalance: nativeBalance,
+                reserve: gasReserve.recommended,
+            }),
+        },
         isDeviceNotConnectedVisible: simulation.isDeviceNotConnectedVisible,
         isFirmwareOutdatedVisible: simulation.isFirmwareOutdatedVisible,
         feeSection: {

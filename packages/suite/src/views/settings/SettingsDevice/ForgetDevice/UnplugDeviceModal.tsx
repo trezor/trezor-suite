@@ -4,17 +4,16 @@ import { Translation } from '@suite/intl';
 import { Column, Illustration, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { DEVICE, DEVICE_EVENT, type DeviceEventMessage } from '@trezor/connect';
 
+type UnplugDeviceModalProps = {
+    onCancel: () => void;
+    onDisconnect: (deviceId: string) => void;
+};
+
 /**
  * Prompts the user to unplug the device. Calls `onDisconnect` with the
  * device ID when the device is physically disconnected.
  */
-export const UnplugDeviceModal = ({
-    onCancel,
-    onDisconnect,
-}: {
-    onCancel: () => void;
-    onDisconnect: (deviceId: string) => void;
-}) => {
+export const UnplugDeviceModal = ({ onCancel, onDisconnect }: UnplugDeviceModalProps) => {
     useEffect(() => {
         const handleDeviceEvent = (event: DeviceEventMessage) => {
             if (event.type === DEVICE.DISCONNECT) {

@@ -1,17 +1,19 @@
-import type {
-    AccountAddresses,
-    AccountInfo,
-    AssetBalance,
-    BlockfrostAccountInfo,
-    BlockfrostTransaction,
-    BlockfrostUtxos,
-    ParseAssetResult,
-    TokenInfo,
-    TokenTransfer,
-    Transaction,
-    TransferType,
-    Utxo,
-    VinVout,
+import {
+    type AccountAddresses,
+    type AccountInfo,
+    type AssetBalance,
+    type BlockfrostAccountInfo,
+    type BlockfrostTransaction,
+    type BlockfrostUtxos,
+    type CardanoStakingInfo,
+    type ParseAssetResult,
+    type TokenInfo,
+    type TokenTransfer,
+    type Transaction,
+    type TransferType,
+    type Utxo,
+    type VinVout,
+    cardanoStakingInfoSchema,
 } from '@trezor/blockchain-link-types';
 import { isNotNullOrUndefined } from '@trezor/utils';
 import { BigNumber, type BigNumberValue } from '@trezor/utils/src/bigNumber';
@@ -342,11 +344,19 @@ export const transformTransaction = (
     };
 };
 
+const parseCardanoStakingInfo = (staking: unknown): CardanoStakingInfo | undefined => {
+    const result = cardanoStakingInfoSchema.safeParse(staking);
+
+    return result.success ? result.data : undefined;
+};
+
 export const transformAccountInfo = (info: BlockfrostAccountInfo): AccountInfo => {
     const blockfrostTxs = info.history.transactions;
+    const staking = parseCardanoStakingInfo(info.misc?.staking);
 
     const result = {
         ...info,
+        misc: staking ? { staking } : undefined,
         tokens: transformTokenInfo(info.tokens),
         history: {
             ...info.history,

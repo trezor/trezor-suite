@@ -1,7 +1,8 @@
 import { randomBytes } from '@noble/hashes/utils.js';
 
 import type { FirmwareHashCheckError, FirmwareHashCheckResult } from '@trezor/connect-common';
-import { type Logger, serializeError } from '@trezor/utils';
+import type { Logger } from '@trezor/logger';
+import { serializeError } from '@trezor/utils';
 
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../../api/firmware';
 import { getFirmwareLocation, getReleaseByVersion } from '../../data/firmwareInfo';

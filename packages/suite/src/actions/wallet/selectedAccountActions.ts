@@ -40,7 +40,7 @@ type SelectedAccountState = DeviceRootState &
     };
 
 // move to selector!!!!
-export const getAccountState = (state: SelectedAccountState): SelectedAccountStatus => {
+const getAccountState = (state: SelectedAccountState): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
 
     // waiting for device
@@ -198,7 +198,7 @@ const actions = new Set<UnknownAction['type']>([
 /*
  * Called from WalletMiddleware
  */
-type SyncSelectedAccountThunkState = SelectedAccountState;
+export type SyncSelectedAccountThunkState = SelectedAccountState;
 
 export const syncSelectedAccountThunk =
     (action: UnknownAction) =>

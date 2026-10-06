@@ -7,9 +7,10 @@ import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config
 import {
     type AccountsRootState,
     type WrappedNativeFlowType,
-    getMaxWrapAmount,
+    getWrapReserveStatus,
+    getWrappableNativeBalance,
+    getYieldNativeFeeStatus,
     selectAccountByKey,
-    shouldRecommendWrapReserve,
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import {
@@ -25,6 +26,7 @@ import { useWrappedNativeTokenFees } from './useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from './useWrappedNativeTokenForm';
 import { getAccountTokenByContract } from '../../utils/earn/contractTokenBalanceUtils';
 import { useYieldCurrencyToggleAnalytics } from '../yield/useYieldCurrencyToggleAnalytics';
+import { useYieldDepositGasReserve } from '../yield/useYieldDepositGasReserve';
 
 type RouteProps = RouteProp<
     WrappedNativeTokenStackParamList,
@@ -53,6 +55,24 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
     const spentSymbol = isWrap ? nativeSymbol : toTokenSymbol(wrappedNative?.symbol ?? '');
 
     const messageSystem = useMessageSystemWrappedNative(flowType);
+
+    // A wrap is the first step of a wrapped-native deposit, so the native coin left behind has
+    // to cover the same follow-up fees; unwrapping keeps no reserve.
+    const gasReserve = useYieldDepositGasReserve({
+        account: account ?? null,
+        isWrappedNativeVault: true,
+        tokenContractAddress: wrappedNative?.address,
+        isDisabled: !isWrap,
+    });
+
+    const isNativeFeeInsufficient =
+        isWrap &&
+        getYieldNativeFeeStatus({
+            nativeBalance: spentBalance,
+            reserve: gasReserve,
+            isWrapStep: true,
+            isWrappedNativeVault: true,
+        }) === 'insufficient';
 
     const form = useWrappedNativeTokenForm({
         availableBalance: spentBalance,
@@ -121,13 +141,25 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
         form,
         amountInput: {
             balance: spentBalance,
-            maxAmount: isWrap ? getMaxWrapAmount(account.formattedBalance) : undefined,
+            isDisabled: isNativeFeeInsufficient,
+            maxAmount: isWrap
+                ? getWrappableNativeBalance(account.formattedBalance, gasReserve.recommended)
+                : undefined,
             tokenDecimals: isWrap ? undefined : wrappedNative.decimals,
             onCurrencyChange: reportCurrencyToggle,
             onMaxPress: flow.reportMaxSelected,
         },
-        isReserveRecommended:
-            isWrap && shouldRecommendWrapReserve(amountValue ?? '', account.formattedBalance),
+        feeReserve: isWrap
+            ? {
+                  amount: gasReserve.recommended,
+                  isInsufficient: isNativeFeeInsufficient,
+                  wrapStatus: getWrapReserveStatus({
+                      amountInput: amountValue ?? '',
+                      nativeFormattedBalance: account.formattedBalance,
+                      reserve: gasReserve.recommended,
+                  }),
+              }
+            : null,
         isDeviceNotConnectedVisible: flow.isDeviceNotConnectedVisible,
         isFirmwareOutdatedVisible: flow.isFirmwareOutdatedVisible,
         hasFlowFailed: flow.hasFlowFailed,
@@ -137,7 +169,11 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
         },
         submit: {
             isDisabled:
-                !isAmountReady || !fees.isFeeReady || isFlowPending || messageSystem.isDisabled,
+                !isAmountReady ||
+                !fees.isFeeReady ||
+                isFlowPending ||
+                isNativeFeeInsufficient ||
+                messageSystem.isDisabled,
             onPress: flow.handleSubmit,
         },
         pendingModal:

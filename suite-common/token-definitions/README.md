@@ -56,6 +56,40 @@ Scripts:
 ]
 ```
 
+## Ranked definitions
+
+`yarn ranked <chains...>` writes one `ranked.coin.definitions.v1.json` (and its `.jws`) covering
+every chain of that run, ordered by market cap, highest first. It writes no per-chain files, and
+leaves those to `yarn coins`:
+
+```
+[
+  {
+    "assetPlatformId": "ethereum",
+    "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+    "symbol": "usdt",
+    "name": "Tether",
+    "marketCap": 139000000000
+  },
+  ...
+]
+```
+
+Market caps come from the CoinGecko `coins/markets` endpoint, which the coin list itself carries no
+market data for. The coins are asked for by id, in batches of 250, rather than by paging the whole
+market list: a request that names what it wants cannot lose a coin that moves between pages while
+the run is in progress. A request that fails is retried and then throws, so a missing market cap is
+never the silent result of a failed fetch.
+
+Every known token is listed. One CoinGecko reports no market cap for is kept with a market cap of
+`0` and sorts last, rather than being dropped. Tokens sharing a market cap are ordered by platform
+and address, and where several coins share one contract address — as Cardano assets minted under a
+single policy id do — the address keeps the record of the largest of them, so the symbol and name
+belong to the market cap they sit next to.
+
+The file covers exactly the chains of the run that produced it, so it is only complete when the
+whole platform list is passed to one `yarn ranked` invocation, as the release workflow does.
+
 ## Naming
 
 - Token definitions: include both coin and nft definitions

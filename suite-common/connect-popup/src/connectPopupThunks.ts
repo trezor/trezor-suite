@@ -490,7 +490,7 @@ const resolveCandidateValue = (
     return { path: account.path, address: account.descriptor };
 };
 
-type ConnectPopupLoadSelectAccountPageThunkState = DeviceRootState &
+export type ConnectPopupLoadSelectAccountPageThunkState = DeviceRootState &
     ConnectPopupStateRootState &
     AccountsRootState;
 

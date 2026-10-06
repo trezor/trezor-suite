@@ -27,9 +27,6 @@
             "path": "../../suite-common/transfer-uri"
         },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -72,6 +69,15 @@
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
+        {
+            "path": "../../networks/tron/network-tron"
         },
         { "path": "../../packages/react-utils" },
         {

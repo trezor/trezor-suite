@@ -12,7 +12,7 @@ const ethSymbol = asNetworkSymbol('eth');
 
 const sendAmount = '0.02';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
-const accountLabel = 'Ethereum #1';
+const accountLabel = 'Ethereum #3';
 
 // Typed rather than left to the live fee estimate, so every fee assertion stays exact.
 const gasLimit = '26000';
@@ -53,7 +53,7 @@ test.describe('Trading - Sell ETH', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openTrading({ symbol: ethSymbol });
+            await walletPage.openTrading({ symbol: ethSymbol, atIndex: 2 });
             await tradingPage.sellTabButton.click();
         },
     );

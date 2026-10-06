@@ -559,7 +559,7 @@ export const messages = defineMessages({
         id: 'TR_TRADING_DISABLE_TOR',
     },
     TR_NO_OFFERS_AVAILABLE: {
-        defaultMessage: 'No offers available.',
+        defaultMessage: 'No offers available',
         id: 'TR_NO_OFFERS_AVAILABLE',
     },
     TR_READY_ON: {
@@ -827,12 +827,12 @@ export const messages = defineMessages({
         id: 'TR_EXCHANGE_CENTRALIZED_EXCHANGE',
     },
     TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING: {
-        defaultMessage: 'Fixed-rate offers',
+        defaultMessage: 'Fixed-rate CEX',
         id: 'TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING',
         dynamic: true,
     },
     TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING: {
-        defaultMessage: 'Floating-rate offers',
+        defaultMessage: 'Floating-rate CEX',
         id: 'TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING',
         dynamic: true,
     },
@@ -1481,11 +1481,11 @@ export const messages = defineMessages({
     },
     TR_TRADING_FIX_RATE_DESCRIPTION: {
         id: 'TR_TRADING_FIX_RATE_DESCRIPTION',
-        defaultMessage: 'Your rate is locked for 15 minutes. Costs slightly more.',
+        defaultMessage: 'Lock in your rate for 15 minutes by paying a higher fee.',
     },
     TR_TRADING_FLOATING_RATE_DESCRIPTION: {
         id: 'TR_TRADING_FLOATING_RATE_DESCRIPTION',
-        defaultMessage: 'The final amount can change as the market moves.',
+        defaultMessage: 'Get an estimated rate that may adjust with real-time market changes.',
     },
     TR_TRADING_CEX_TOOLTIP: {
         id: 'TR_TRADING_CEX_TOOLTIP',
@@ -1512,11 +1512,11 @@ export const messages = defineMessages({
         id: 'TR_TRADING_KYC_REQUIRED',
     },
     TR_TRADING_KYC_NO_REFUND: {
-        defaultMessage: 'KYC is only required in exceptional cases.',
+        defaultMessage: 'KYC may be required in exceptional cases.',
         id: 'TR_TRADING_KYC_NO_REFUND',
     },
     TR_TRADING_KYC_YES_REFUND: {
-        defaultMessage: 'KYC is only required in exceptional cases.',
+        defaultMessage: 'KYC may be required in exceptional cases.',
         id: 'TR_TRADING_KYC_YES_REFUND',
     },
     TR_TRADING_KYC_NO_KYC: {
@@ -1776,6 +1776,18 @@ export const messages = defineMessages({
         defaultMessage:
             'Add spaces to addresses for easier reading. When off, addresses are shown as a continuous string.',
         id: 'TR_ADDRESS_DISPLAY_DESCRIPTION',
+    },
+    TR_HOME_ASSET_TOTAL_BALANCE: {
+        defaultMessage: 'Total balance',
+        id: 'TR_HOME_ASSET_TOTAL_BALANCE',
+    },
+    TR_HOME_ASSET_WEEK_PERIOD: {
+        defaultMessage: '7d',
+        id: 'TR_HOME_ASSET_WEEK_PERIOD',
+    },
+    TR_ASSET: {
+        defaultMessage: 'Asset',
+        id: 'TR_ASSET',
     },
     TR_ASSETS: {
         defaultMessage: 'Network',
@@ -2246,10 +2258,6 @@ export const messages = defineMessages({
         defaultMessage: 'Set up my Trezor',
         id: 'TR_SETUP_MY_TREZOR',
     },
-    TR_YES_SETUP_MY_TREZOR: {
-        defaultMessage: 'Yes, I have',
-        id: 'TR_YES_SETUP_MY_TREZOR',
-    },
     TR_UNHIDE_TOKEN_TITLE: {
         defaultMessage: 'Show this token?',
         id: 'TR_UNHIDE_TOKEN_TITLE',
@@ -2385,7 +2393,7 @@ export const messages = defineMessages({
         id: 'TR_ENS_PRIMARY_NAME',
     },
     TR_ENS_RESOLVE_FAILED: {
-        defaultMessage: 'Could not resolve name. Check that the name is correct.',
+        defaultMessage: 'Could not resolve name. Check it is correct.',
         id: 'TR_ENS_RESOLVE_FAILED',
     },
     TR_SEND_ADDRESS_CONFIRMATION_ENS_NOTE: {
@@ -4076,19 +4084,19 @@ export const messages = defineMessages({
         id: 'TR_YOUR_CURRENT_FIRMWARE_UNKNOWN',
     },
     TR_YOUR_CURRENT_VERSION: {
-        defaultMessage: 'Current version {version}',
+        defaultMessage: 'Current version: {version}',
         id: 'TR_YOUR_CURRENT_VERSION',
     },
     TR_YOUR_NEW_VERSION: {
-        defaultMessage: 'Version {version} is available.',
+        defaultMessage: 'New version: {version}',
         id: 'TR_YOUR_NEW_VERSION',
     },
     TR_YOUR_NEW_VERSION_IS_DOWNLOADING: {
-        defaultMessage: 'Version {version} is downloading...',
+        defaultMessage: 'Downloading: {version}',
         id: 'TR_YOUR_NEW_VERSION_IS_DOWNLOADING',
     },
     TR_YOUR_NEW_VERSION_IS_READY: {
-        defaultMessage: 'Version {version} has been downloaded and is ready to be installed.',
+        defaultMessage: 'Ready to install: {version}',
         id: 'TR_YOUR_NEW_VERSION_IS_READY',
     },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
@@ -4223,7 +4231,7 @@ export const messages = defineMessages({
     TR_ACCOUNT_TYPE_ROOT_DESC: {
         id: 'TR_ACCOUNT_TYPE_ROOT_DESC',
         defaultMessage:
-            'Root accounts hold funds directly on the coin-level derivation path used by some wallets, enabling smooth migration to Trezor.',
+            'Root accounts hold funds directly at the coin level of the derivation path, allowing accounts from compatible wallets to migrate smoothly to Trezor.',
     },
     TR_ACCOUNT_TYPE_LEGACY_DESC: {
         id: 'TR_ACCOUNT_TYPE_LEGACY_DESC',
@@ -5057,7 +5065,7 @@ export const messages = defineMessages({
     },
     MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT: {
         id: 'MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT',
-        defaultMessage: "There isn't an empty account available.",
+        defaultMessage: 'An empty account already exists. Use it before adding a new one.',
     },
     MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY: {
         id: 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY',
@@ -5382,6 +5390,10 @@ export const messages = defineMessages({
     TR_EARN: {
         id: 'TR_EARN',
         defaultMessage: 'Earn',
+    },
+    TR_APPS_EMBEDDING: {
+        id: 'TR_APPS_EMBEDDING',
+        defaultMessage: 'Apps embedding',
     },
     TR_WALLET: {
         id: 'TR_WALLET',
@@ -7676,7 +7688,7 @@ export const messages = defineMessages({
     },
     SETTINGS_UPDATE_AVAILABLE: {
         id: 'SETTINGS_UPDATE_AVAILABLE',
-        defaultMessage: 'Get the latest version',
+        defaultMessage: 'Download update',
     },
     SETTINGS_UPDATE_DOWNLOADING: {
         id: 'SETTINGS_UPDATE_DOWNLOADING',
@@ -10216,6 +10228,18 @@ export const messages = defineMessages({
         id: 'TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_BUTTON',
         defaultMessage: 'Get started',
     },
+    TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_TITLE',
+        defaultMessage: 'Trading in Suite just got an upgrade',
+    },
+    TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_DESCRIPTION',
+        defaultMessage: 'Discover new DEX swaps, better rates, and a fresh design.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_BUTTON: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_BUTTON',
+        defaultMessage: "See what's new",
+    },
     TR_ONBOARDING_FEEDBACK_BANNER_TITLE: {
         id: 'TR_ONBOARDING_FEEDBACK_BANNER_TITLE',
         defaultMessage: 'Help us improve',
@@ -10475,6 +10499,19 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_WRAP_RESERVE_RECOMMENDED',
         defaultMessage:
             'We recommend leaving {amount} {nativeSymbol} so you can pay future network fees.',
+    },
+    TR_EARN_YIELD_WRAP_RESERVE_KEPT: {
+        id: 'TR_EARN_YIELD_WRAP_RESERVE_KEPT',
+        defaultMessage: 'We left {amount} {nativeSymbol} so you can pay future network fees.',
+    },
+    TR_EARN_YIELD_INSUFFICIENT_FEE_RESERVE: {
+        id: 'TR_EARN_YIELD_INSUFFICIENT_FEE_RESERVE',
+        defaultMessage: 'You need at least {amount} {nativeSymbol} to cover the network fees.',
+    },
+    TR_EARN_YIELD_FEE_RESERVE_TOP_UP_RECOMMENDED: {
+        id: 'TR_EARN_YIELD_FEE_RESERVE_TOP_UP_RECOMMENDED',
+        defaultMessage:
+            'We recommend holding at least {amount} {nativeSymbol} to cover future network fees, including withdrawal.',
     },
     TR_EARN_YIELD_WRAP_RECEIVING: {
         id: 'TR_EARN_YIELD_WRAP_RECEIVING',
@@ -11364,10 +11401,6 @@ export const messages = defineMessages({
         defaultMessage:
             'We recommend leaving {amount} {networkDisplaySymbol} so you can pay voting fees.',
     },
-    TR_EARN_TRON_CLAIM_ADDRESS: {
-        id: 'TR_EARN_TRON_CLAIM_ADDRESS',
-        defaultMessage: 'Claim address',
-    },
     TR_EARN_TRON_WITHDRAW_COMPLETE: {
         id: 'TR_EARN_TRON_WITHDRAW_COMPLETE',
         defaultMessage: 'Withdrawal complete',
@@ -11391,6 +11424,10 @@ export const messages = defineMessages({
     TR_EARN_TRON_CLAIM_CONFIRM: {
         id: 'TR_EARN_TRON_CLAIM_CONFIRM',
         defaultMessage: 'Claim voting rewards?',
+    },
+    TR_EARN_TRON_CLAIM_WITHDRAW: {
+        id: 'TR_EARN_TRON_CLAIM_WITHDRAW',
+        defaultMessage: 'Claim unfrozen balance?',
     },
     TR_EARN_TRON_CLAIM_COMPLETE: {
         id: 'TR_EARN_TRON_CLAIM_COMPLETE',
@@ -11463,6 +11500,54 @@ export const messages = defineMessages({
     TR_EARN_TRON_NO_VOTES: {
         id: 'TR_EARN_TRON_NO_VOTES',
         defaultMessage: 'You haven’t voted for any representatives yet.',
+    },
+    TR_EARN_TRON_SELECT_REPRESENTATIVES: {
+        id: 'TR_EARN_TRON_SELECT_REPRESENTATIVES',
+        defaultMessage: 'Select representatives',
+    },
+    TR_EARN_TRON_SELECT_REPRESENTATIVES_DESCRIPTION: {
+        id: 'TR_EARN_TRON_SELECT_REPRESENTATIVES_DESCRIPTION',
+        defaultMessage: 'You can vote for one or multiple representatives.',
+    },
+    TR_EARN_TRON_CHANGE_REPRESENTATIVES: {
+        id: 'TR_EARN_TRON_CHANGE_REPRESENTATIVES',
+        defaultMessage: 'Change representatives',
+    },
+    TR_EARN_TRON_ADD_REPRESENTATIVE: {
+        id: 'TR_EARN_TRON_ADD_REPRESENTATIVE',
+        defaultMessage: 'Add representative',
+    },
+    TR_EARN_TRON_REMAINING_VOTES_OF_TOTAL: {
+        id: 'TR_EARN_TRON_REMAINING_VOTES_OF_TOTAL',
+        defaultMessage: '{remaining} / {total} remaining votes',
+    },
+    TR_EARN_TRON_REMAINING_VOTES_LABEL: {
+        id: 'TR_EARN_TRON_REMAINING_VOTES_LABEL',
+        defaultMessage: 'Remaining votes',
+    },
+    TR_EARN_TRON_REASSIGN_VOTES: {
+        id: 'TR_EARN_TRON_REASSIGN_VOTES',
+        defaultMessage: 'Reassign your votes',
+    },
+    TR_EARN_TRON_REASSIGN_VOTES_DESCRIPTION: {
+        id: 'TR_EARN_TRON_REASSIGN_VOTES_DESCRIPTION',
+        defaultMessage: 'Remove votes from one representative to assign them to another.',
+    },
+    TR_EARN_TRON_APR_TOOLTIP: {
+        id: 'TR_EARN_TRON_APR_TOOLTIP',
+        defaultMessage: 'Estimated annual return from rewards.',
+    },
+    TR_EARN_TRON_REPRESENTATIVE_ALREADY_SELECTED: {
+        id: 'TR_EARN_TRON_REPRESENTATIVE_ALREADY_SELECTED',
+        defaultMessage: 'This representative is already selected.',
+    },
+    TR_EARN_TRON_VOTES_EXCEED_TOTAL: {
+        id: 'TR_EARN_TRON_VOTES_EXCEED_TOTAL',
+        defaultMessage: 'You can assign at most {total} votes.',
+    },
+    TR_EARN_TRON_INVALID_VOTE_COUNT: {
+        id: 'TR_EARN_TRON_INVALID_VOTE_COUNT',
+        defaultMessage: 'Enter a whole number of votes.',
     },
     TR_EARN_TRON_UNSTAKING: {
         id: 'TR_EARN_TRON_UNSTAKING',
@@ -11553,21 +11638,9 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_ENERGY_REDUCTION',
         defaultMessage: '{count, plural, =0 {} one {-# energy} other {-# energy}}',
     },
-    TR_EARN_TRON_SELECT_REPRESENTATIVE: {
-        id: 'TR_EARN_TRON_SELECT_REPRESENTATIVE',
-        defaultMessage: 'Select representative',
-    },
-    TR_EARN_TRON_ENTER_DIFFERENT_REPRESENTATIVE: {
-        id: 'TR_EARN_TRON_ENTER_DIFFERENT_REPRESENTATIVE',
-        defaultMessage: 'Enter different representative',
-    },
     TR_EARN_TRON_ENTER_REPRESENTATIVE_ADDRESS: {
         id: 'TR_EARN_TRON_ENTER_REPRESENTATIVE_ADDRESS',
         defaultMessage: 'Enter representative address',
-    },
-    TR_EARN_TRON_APR: {
-        id: 'TR_EARN_TRON_APR',
-        defaultMessage: 'APR {apr}%',
     },
     TR_EARN_DEFI_YIELD_IN_A_NUTSHELL: {
         id: 'TR_EARN_DEFI_YIELD_IN_A_NUTSHELL',

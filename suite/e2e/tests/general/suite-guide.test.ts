@@ -5,8 +5,8 @@ import { TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-const APP_VERSION_REGEX = /^Current version \d+\.\d+\.\d+(-dev)?$/;
-const FIRMWARE_VERSION_REGEX = /^Current version \d+\.\d+\.\d+$/;
+const APP_VERSION_REGEX = /^Current version: \d+\.\d+\.\d+(-dev)?$/;
+const FIRMWARE_VERSION_REGEX = /^Current version: \d+\.\d+\.\d+$/;
 const FIRMWARE_VERSION_NO_DEVICE = '-/-';
 
 // This can possibly break by a change of GITBOOK_REVISION in docs/features/guide.md

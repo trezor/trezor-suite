@@ -5,15 +5,11 @@ import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import {
+    PASSPHRASE_MAX_LENGTH,
     selectHasDevicePassphraseEntryCapability,
     selectSelectedDevice,
 } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
-import {
-    type PassphraseFormValues,
-    formInputsMaxLength,
-    passphraseFormSchema,
-} from '@suite-common/validators';
 import { submitPassphraseThunk } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
@@ -22,6 +18,7 @@ import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { type PassphraseFormValues, passphraseFormSchema } from '../passphraseSchema';
 import { EnterPassphraseOnTrezorButton } from './EnterPassphraseOnTrezorButton';
 import { NoPassphraseButton } from './NoPassphraseButton';
 
@@ -96,7 +93,7 @@ export const PassphraseForm = ({
                         <SecureTextInputField
                             label={inputLabel}
                             name="passphrase"
-                            maxLength={formInputsMaxLength.passphrase}
+                            maxLength={PASSPHRASE_MAX_LENGTH}
                             accessibilityLabel="passphrase input"
                             autoCapitalize="none"
                             onFocus={handleFocusInput}

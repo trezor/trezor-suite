@@ -1,7 +1,10 @@
 use btleplug::api::{CharPropFlags, Peripheral as _};
 use futures::StreamExt;
 use log::info;
-use tokio::time::{sleep, Duration};
+use tokio::{
+    sync::broadcast::error::RecvError,
+    time::{sleep, Duration},
+};
 
 use crate::server::{
     adapter_manager::{AdapterError, AdapterManager},
@@ -87,7 +90,16 @@ pub async fn open_device(
     let current_ch = characteristic.clone();
     let mut receiver = broadcast.subscribe();
     tokio::spawn(async move {
-        while let Ok(event) = receiver.recv().await {
+        loop {
+            let event = match receiver.recv().await {
+                Ok(event) => event,
+                Err(RecvError::Lagged(skipped)) => {
+                    info!("open_device loop lagged, {skipped} events skipped");
+                    continue;
+                }
+                Err(RecvError::Closed) => break,
+            };
+
             // TODO: if websocket client connection is related to this device
             // AbortProcess::ClientDisconnected
             if let ChannelMessage::Abort(AbortProcess::ClientDisconnected(_client)) = event {

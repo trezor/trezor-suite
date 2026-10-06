@@ -26,6 +26,7 @@ type WrappedNativeTokenAmountInputCardProps = {
     amountLabel: ReactNode;
     balance: string;
     defaultAmount?: string;
+    isDisabled?: boolean;
     maxAmount?: string;
     onCurrencyChange?: (activeView: ActiveView) => void;
     onMaxPress?: () => void;
@@ -39,6 +40,7 @@ export const WrappedNativeTokenAmountInputCard = ({
     amountLabel,
     balance,
     defaultAmount,
+    isDisabled = false,
     maxAmount,
     onCurrencyChange,
     onMaxPress,
@@ -114,12 +116,13 @@ export const WrappedNativeTokenAmountInputCard = ({
                             <Text variant="body-sm">{amountLabel}</Text>
                             <EarnMaxSwitch
                                 isChecked={isMaxSelected}
+                                isDisabled={isDisabled}
                                 onChange={handleMaxChange}
                                 testID="@wrapped-native-token/max-switch"
                             />
                         </>
                     )}
-                    renderCryptoInput={({ onPress, isDisabled, inputRef }) => (
+                    renderCryptoInput={({ onPress, isDisabled: isInputInactive, inputRef }) => (
                         <EarnCryptoAmountInput
                             symbol={symbol}
                             tokenContract={tokenContract}
@@ -127,18 +130,18 @@ export const WrappedNativeTokenAmountInputCard = ({
                             displaySymbol={tokenSymbol}
                             accessibilityLabel="amount input"
                             inputRef={inputRef}
-                            isDisabled={isMaxSelected || isDisabled}
+                            isDisabled={isDisabled || isMaxSelected || isInputInactive}
                             onPress={onPress}
                         />
                     )}
-                    renderFiatInput={({ onPress, isDisabled, inputRef }) => (
+                    renderFiatInput={({ onPress, isDisabled: isInputInactive, inputRef }) => (
                         <EarnFiatAmountInput
                             symbol={symbol}
                             tokenContract={tokenContract}
                             tokenDecimals={tokenDecimals}
                             accessibilityLabel="fiat amount input"
                             inputRef={inputRef}
-                            isDisabled={isMaxSelected || isDisabled}
+                            isDisabled={isDisabled || isMaxSelected || isInputInactive}
                             onPress={onPress}
                         />
                     )}

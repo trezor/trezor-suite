@@ -29,6 +29,7 @@
         "@trezor/device-authenticity",
         "@trezor/device-utils",
         "@trezor/env-utils",
+        "@trezor/logger",
         "@trezor/network-cardano",
         "@trezor/network-ripple",
         "@trezor/network-solana",
@@ -54,10 +55,12 @@
         "ts-mixer",
         "tslib",
         "usb",
+        "usb-legacy",
         "varuint-bitcoin",
         "viem",
         "wif",
         "ws",
-        "xrpl"
+        "xrpl",
+        "zod"
     ]
 }
