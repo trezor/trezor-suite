@@ -23,14 +23,17 @@ The flow is:
 
 ### 1) manifest.json
 
-Allow Suite Web origins to message your extension using `externally_connectable`. Without this, the Suite Web flow would not be available.
+Allow Suite Web origins to message your extension using `externally_connectable`, and declare `host_permissions` for the same origin so the service worker can read the URL of the Suite Web tab it sends messages to. Without both, the Suite Web flow would not be available.
 
 ```json
 "externally_connectable": {
   "matches": [
     "https://suite.trezor.io/*"
   ]
-}
+},
+"host_permissions": [
+  "https://suite.trezor.io/*"
+]
 ```
 
 ### 2) Service worker
