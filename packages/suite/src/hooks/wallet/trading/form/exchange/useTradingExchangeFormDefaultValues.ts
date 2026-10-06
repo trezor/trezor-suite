@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { type CryptoId } from 'invity-api';
 
 import {
+    TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_EXCHANGE_COMPARATOR_KYC_FILTER,
     TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_ALL,
     TRADING_EXCHANGE_COMPARATOR_RATE_FILTER,
@@ -17,13 +19,15 @@ import {
     type TradingExchangeRateType,
     buildTradingBaseCurrencyOptionFromFiat,
     buildTradingFiatOption,
+    getCryptoId,
     getSupportedFiatCurrencyWithFallback,
+    selectTradingInfo,
+    useTradingAssets,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState, type Output } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
 import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingDefaultSellAsset } from '../common/useTradingDefaultSellAsset';
@@ -43,6 +47,26 @@ export const useTradingExchangeFormDefaultValues = (
     );
     const { account, defaultAsset } = useTradingDefaultSellAsset({ accountKey, cryptoId });
     const { address, token } = resolveAddressAndToken(account, defaultAsset?.contractAddress);
+
+    const { createAssetOptionFromCryptoId } = useTradingAssets();
+    const { coins } = useSelector(selectTradingInfo);
+    const hasDefaultReceiveAccount = useSelector(
+        (state: Parameters<typeof selectVisibleDeviceAccounts>[0]) =>
+            selectVisibleDeviceAccounts(state).some(
+                visibleAccount => visibleAccount.symbol === TRADING_DEFAULT_CRYPTO_CURRENCY,
+            ),
+    );
+    const defaultReceiveAsset = useMemo(() => {
+        void coins;
+
+        const defaultReceiveCryptoId = getCryptoId(TRADING_DEFAULT_CRYPTO_CURRENCY);
+
+        if (!hasDefaultReceiveAccount || defaultAsset?.id === defaultReceiveCryptoId) {
+            return null;
+        }
+
+        return createAssetOptionFromCryptoId(defaultReceiveCryptoId);
+    }, [coins, createAssetOptionFromCryptoId, defaultAsset?.id, hasDefaultReceiveAccount]);
 
     const defaultPayment: Output = useMemo(
         () => ({
@@ -67,7 +91,7 @@ export const useTradingExchangeFormDefaultValues = (
             ...defaultFormState,
             amountInCrypto: true,
             sendCryptoSelect: defaultAsset,
-            receiveCryptoSelect: null,
+            receiveCryptoSelect: defaultReceiveAsset,
             receiveAddress: undefined,
             // Load-bearing widening: without the assertions these literal constants widen to
             // `string` in the object literal and defaultValues no longer satisfies the form's
@@ -81,7 +105,7 @@ export const useTradingExchangeFormDefaultValues = (
                 TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_ALL as TradingExchangeRateFilter,
             /* eslint-enable @typescript-eslint/no-unnecessary-type-assertion */
         }),
-        [defaultAsset, defaultFormState],
+        [defaultAsset, defaultFormState, defaultReceiveAsset],
     );
 
     return { defaultValues };
