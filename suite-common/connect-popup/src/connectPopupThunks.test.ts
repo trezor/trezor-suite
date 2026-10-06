@@ -27,6 +27,7 @@ import {
     connectPopupFinishCallThunk,
     connectPopupLoadSelectAccountPageThunk,
 } from './connectPopupThunks';
+import { CALL_SOURCE_WEB } from './connectPopupTypes';
 import {
     CommonPopupFlow,
     type PopupFlowParams,
@@ -68,6 +69,7 @@ const selectAccountState = {
     method: 'selectAccount',
     state: 'select-account',
     payload: {},
+    source: { type: CALL_SOURCE_WEB, origin: 'https://example.com', manifest: { appName: 'App' } },
     options: {
         symbol: 'btc',
         mode: 'address',
