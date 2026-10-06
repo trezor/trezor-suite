@@ -106,6 +106,17 @@ describe(stringifyLogArgs.name, () => {
         expect(stringifyLogArgs([{ bytes: new Uint8Array([1, 255]) }])).toBe('{"bytes":"01ff"}');
     });
 
+    it('stringifies nested Buffer as hex', () => {
+        expect(stringifyLogArgs([{ tx: Buffer.from([0x01, 0xff]) }])).toBe('{"tx":"01ff"}');
+        expect(stringifyLogArgs([[Buffer.from([0xab])]])).toBe('["ab"]');
+    });
+
+    it('stringifies nested empty binary data as empty string', () => {
+        expect(stringifyLogArgs([{ bytes: new Uint8Array(0), tx: Buffer.alloc(0) }])).toBe(
+            '{"bytes":"","tx":""}',
+        );
+    });
+
     it('converts nested bigint and number values to strings', () => {
         expect(stringifyLogArgs([{ big: BigInt(10), n: 5, list: [BigInt(1), 2] }])).toBe(
             '{"big":"10","n":"5","list":["1","2"]}',

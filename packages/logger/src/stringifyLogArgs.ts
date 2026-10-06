@@ -19,7 +19,14 @@ export const stringifyLogArgs = (args: unknown[]): string =>
             if (str !== undefined) return str;
 
             try {
-                return JSON.stringify(arg, (_k, v) => stringify(v) || v) ?? String(arg);
+                return (
+                    JSON.stringify(arg, function (key, value) {
+                        // `JSON.stringify` applies `toJSON` before the replacer, so `value` is
+                        // already a plain object for types implementing it, such as `Buffer`.
+                        // Reading the untouched value from the holder keeps binary data hex.
+                        return stringify(this[key]) ?? value;
+                    }) ?? String(arg)
+                );
             } catch {
                 // circular references
                 return String(arg);
