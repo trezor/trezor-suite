@@ -1,3 +1,4 @@
+import { describeError, diagnosticLog } from './diagnosticLog';
 import {
     INITIAL_MIGRATION_STATE,
     type MigrationState,
@@ -93,9 +94,33 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
     let isRefreshingTransfers = false;
 
     const setState = (patch: Partial<MigrationState>) => {
+        if (patch.step !== undefined && patch.step !== state.step) {
+            diagnosticLog.info('flow', `step ${state.step} -> ${patch.step}`);
+        }
         state = { ...state, ...patch };
         listeners.forEach(listener => listener());
     };
+
+    // Transfers are logged by their position, never by address or amount.
+    const describeTransfer = ({
+        key,
+        account,
+        plan,
+        stage,
+        status,
+        error,
+        leftovers,
+    }: Transfer) => ({
+        key,
+        account: `${account.accountType} #${account.accountIndex}`,
+        stage,
+        ...(status ? { status } : {}),
+        ...(plan
+            ? { inputs: plan.inputs.length, virtualSize: plan.virtualSize, fee: plan.fee }
+            : { plan: 'none' }),
+        leftovers: leftovers.length,
+        ...(error ? { error } : {}),
+    });
 
     const updateTransfer = (key: string, patch: Partial<Transfer>) =>
         setState({
@@ -108,12 +133,14 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
     const runExclusive = async (activity: string, action: () => Promise<void>) => {
         if (state.activity !== undefined) return;
 
+        diagnosticLog.info('flow', activity);
         setState({ activity, unexpectedError: undefined });
         try {
             await action();
         } catch (error) {
             // Anticipated failures are returned as values. Whatever lands here is a defect,
             // and the safe reaction is to show it and do nothing further on our own.
+            diagnosticLog.error('flow', `${activity}: unexpected error`, describeError(error));
             setState({
                 unexpectedError: error instanceof Error ? error.message : 'Unknown error',
             });
@@ -123,6 +150,7 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
     };
 
     const handleDeviceLost = (reason: DeviceLostReason) => {
+        diagnosticLog.error('flow', 'device lost, the migration stops', { reason });
         // A pending PIN prompt must not survive: nothing may be sent to the device any more.
         resolvePin?.(undefined);
         resolvePin = undefined;
@@ -140,14 +168,20 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         runExclusive('Checking your computer', async () => {
             setState({ step: 'preflight', preflightIssue: undefined });
 
-            const environmentIssue = getEnvironmentIssue(deps.getEnvironmentInfo());
+            const environment = deps.getEnvironmentInfo();
+            diagnosticLog.info('preflight', 'environment', environment);
+            const environmentIssue = getEnvironmentIssue(environment);
             if (environmentIssue) {
+                diagnosticLog.error('preflight', 'unsupported environment', {
+                    issue: environmentIssue,
+                });
                 setState({ preflightIssue: { type: environmentIssue } });
 
                 return;
             }
 
             const permission = await deps.queryLocalNetworkAccess();
+            diagnosticLog.info('preflight', 'local network access permission', { permission });
             if (permission === 'denied') {
                 setState({ preflightIssue: { type: 'permission-denied' } });
 
@@ -156,6 +190,7 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
 
             const connected = await deps.bridge.connect();
             if (!connected.success) {
+                diagnosticLog.error('preflight', 'bridge not usable', connected.error);
                 setState({ preflightIssue: { ...connected.error, permission } });
 
                 return;
@@ -184,6 +219,7 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
 
             const selection = found.payload;
             if (selection.type !== 'legacy-trezor-one') {
+                diagnosticLog.warn('flow', 'no usable device', { selection: selection.type });
                 setState({
                     deviceIssue: selection.type === 'none' ? { type: 'no-device' } : selection,
                 });
@@ -196,6 +232,7 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
                 onLost: handleDeviceLost,
             });
             if (!acquired.success) {
+                diagnosticLog.error('flow', 'device not acquired', acquired.error);
                 setState({ deviceIssue: acquired.error });
 
                 return;
@@ -217,16 +254,33 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             // Always Initialize, never GetFeatures: old bootloaders do not know the latter,
             // and Initialize also aborts whatever an earlier host left unfinished.
             const features = await newSession.call('Initialize', 'Features');
+            if (features.success) {
+                // Label and device id are left out, they identify the device.
+                const { message } = features.payload;
+                diagnosticLog.info('device', 'Features', {
+                    vendor: message.vendor,
+                    firmware: `${message.major_version}.${message.minor_version}.${message.patch_version}`,
+                    model: message.model,
+                    bootloaderMode: message.bootloader_mode,
+                    initialized: message.initialized,
+                    pinProtection: message.pin_protection,
+                    passphraseProtection: message.passphrase_protection,
+                    capabilities: message.capabilities?.length,
+                });
+            }
             const evaluated = features.success
                 ? evaluateDeviceFeatures(features.payload.message)
                 : features;
             if (!evaluated.success) {
+                diagnosticLog.error('flow', 'device refused', evaluated.error);
                 reportIfDeviceLost(evaluated.error);
                 await device.release();
                 setState({ deviceIssue: evaluated.error });
 
                 return;
             }
+
+            diagnosticLog.info('flow', 'device accepted', evaluated.payload);
 
             acquiredDevice = device;
             session = newSession;
@@ -254,12 +308,18 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         });
 
         if (!discovered.success) {
+            diagnosticLog.error('discovery', 'failed', discovered.error);
             reportIfDeviceLost(discovered.error);
             setState({ discoveryError: discovered.error });
 
             return;
         }
 
+        diagnosticLog.info('discovery', 'done', {
+            walletKind: discovered.payload.walletKind,
+            accounts: discovered.payload.accounts.length,
+            usedAccounts: discovered.payload.accounts.filter(({ isEmpty }) => !isEmpty).length,
+        });
         setState({
             accounts: discovered.payload.accounts,
             walletKind: discovered.payload.walletKind,
@@ -351,17 +411,33 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             firmwareVersion: device.firmwareVersion,
             getRandomInt: deps.getRandomInt,
         });
-        if (!prepared.success) return { ...base, error: prepared.error };
+        if (!prepared.success) {
+            diagnosticLog.error('transfer', 'not prepared', {
+                account: `${account.accountType} #${account.accountIndex}`,
+                error: prepared.error,
+            });
+
+            return { ...base, error: prepared.error };
+        }
 
         const { plan, leftovers, followingTransactions, state: accountState } = prepared.payload;
-
-        return {
+        const transfer: Transfer = {
             ...base,
             plan,
             leftovers,
             followingTransactions,
             inFlightTransactions: countInFlightFromElsewhere(accountState.inFlight),
         };
+        diagnosticLog.info('transfer', 'prepared', {
+            ...describeTransfer(transfer),
+            followingTransactions,
+            inFlightTransactions: transfer.inFlightTransactions,
+            spendable: accountState.spendable.length,
+            unconfirmed: accountState.unconfirmed.length,
+            leftoverReasons: leftovers.map(({ reason }) => reason),
+        });
+
+        return transfer;
     };
 
     const getOwnScripts = (accounts: readonly ScannedAccount[]) =>
@@ -383,11 +459,16 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
                 ownScripts: getOwnScripts(accounts),
             });
             if (!destination.success) {
+                diagnosticLog.warn('flow', 'destination refused', destination.error);
                 setState({ destinationError: destination.error });
 
                 return;
             }
 
+            // The address itself stays out of the log.
+            diagnosticLog.info('flow', 'destination accepted', {
+                format: destination.payload.format,
+            });
             setState({ destination: destination.payload, destinationError: undefined });
 
             const transfers: Transfer[] = [];
@@ -433,11 +514,16 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             });
 
             if (signed.success) {
+                diagnosticLog.info('transfer', 'signed', {
+                    key,
+                    bytes: signed.payload.hex.length / 2,
+                });
                 updateTransfer(key, { stage: 'signed', record: signed.payload });
 
                 return;
             }
 
+            diagnosticLog.error('transfer', 'signing failed', { key, error: signed.error });
             reportIfDeviceLost(signed.error);
             if (state.deviceLostReason) {
                 updateTransfer(key, { stage: 'ready', error: signed.error });
@@ -455,6 +541,7 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             if (!transfer || !record) return;
 
             const isFirstBroadcast = transfer.stage === 'signed';
+            diagnosticLog.info('transfer', 'broadcast', { key, isFirstBroadcast });
             updateTransfer(key, { stage: 'broadcasting', error: undefined });
 
             // The stored bytes are sent, on the first attempt and on every later one.
@@ -473,6 +560,11 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
                     ? evaluateSweepStatus({ snapshot: snapshot.payload, record })
                     : undefined;
 
+                diagnosticLog.warn('transfer', 'broadcast failed', {
+                    key,
+                    message: pushed.error.message,
+                    networkStatus,
+                });
                 if (networkStatus !== 'pending' && networkStatus !== 'confirmed') {
                     updateTransfer(key, {
                         stage: isFirstBroadcast ? 'signed' : 'broadcast',
@@ -485,6 +577,7 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
                 status = networkStatus;
             }
 
+            diagnosticLog.info('transfer', 'on the network', { key, status });
             updateTransfer(key, { stage: 'broadcast', status });
 
             if (isFirstBroadcast && transfer.followingTransactions > 0) {
@@ -513,6 +606,19 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
                 const inFlightTransactions = countInFlightFromElsewhere(
                     evaluateAccountState(snapshot.payload).inFlight,
                 );
+                diagnosticLog.info('transfer', 'refreshed', {
+                    account: accountKey,
+                    inFlightTransactions,
+                    statuses: state.transfers
+                        .filter(transfer => getAccountKey(transfer.account) === accountKey)
+                        .map(({ key, record, stage }) => ({
+                            key,
+                            status:
+                                record && stage === 'broadcast'
+                                    ? evaluateSweepStatus({ snapshot: snapshot.payload, record })
+                                    : stage,
+                        })),
+                });
 
                 state.transfers
                     .filter(transfer => getAccountKey(transfer.account) === accountKey)
@@ -562,7 +668,12 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             let isDeviceLocked = false;
             if (session && acquiredDevice && !state.deviceLostReason && !state.isDeviceReleased) {
                 const locked = await lockDevice(session.call);
-                if (!locked.success) reportIfDeviceLost(locked.error);
+                if (locked.success) {
+                    diagnosticLog.info('flow', 'device locked');
+                } else {
+                    diagnosticLog.error('flow', 'device not locked', locked.error);
+                    reportIfDeviceLost(locked.error);
+                }
                 isDeviceLocked = locked.success;
 
                 await acquiredDevice.release();
