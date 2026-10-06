@@ -12,7 +12,6 @@ export const PrecomposeSchema = Type.Object({
         Type.Object({
             address: Type.String(),
             path: Type.String(),
-            transfers: Type.Number(),
         }),
     ),
     feeLevels: Type.Array(Type.Object({ feePerUnit: Type.String() })),
@@ -98,7 +97,6 @@ TrezorConnect.composeTransaction({
     changeAddress: {
         address: 'bc1qktmhrsmsenepnnfst8x6j27l0uqv7ggrg8x38q',
         path: "m/84'/0'/0'/1/0",
-        transfers: 0,
     },
     feeLevels: [{ feePerUnit: '1' }, { feePerUnit: '5' }, { feePerUnit: '30' }],
 });

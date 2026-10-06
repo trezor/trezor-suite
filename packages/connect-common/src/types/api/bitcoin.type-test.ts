@@ -550,10 +550,6 @@ export const composeTransaction = async (api: TrezorConnect) => {
         changeAddress: {
             path: 'm/49',
             address: 'a',
-            transfers: 0,
-            sent: '0',
-            balance: '0',
-            received: '0',
         },
         utxo: [],
         feeLevels: [{ feePerUnit: '1' }],

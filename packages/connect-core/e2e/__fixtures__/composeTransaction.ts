@@ -2,7 +2,6 @@ const BECH32_PATH = "m/84'/0'/0'";
 const BECH32_CHANGE = {
     address: 'bc1qktmhrsmsenepnnfst8x6j27l0uqv7ggrg8x38q',
     path: "m/84'/0'/0'/1/0",
-    transfers: 0,
 };
 const BECH32_UTXO = [
     {
@@ -20,7 +19,6 @@ const DOGE_PATH = "m/44'/3'/0'";
 const DOGE_CHANGE = {
     address: 'DKu2a8Wo6zC2dmBBYXwUG3fxWDHbKnNiPj',
     path: "m/44'/3'/0'/1/0",
-    transfers: 0,
 };
 const DOGE_UTXO = [
     {

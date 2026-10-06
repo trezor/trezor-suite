@@ -14,10 +14,13 @@ import type { Params, Response } from '../../params';
 // @trezor/utxo-lib `composeTx` ComposeInput required fields intersects AccountUtxo
 export type ComposeUtxo = AccountUtxo & Partial<ComposeInputBase>;
 
+// Composing reads only these fields, so a full AccountAddress from getAccountInfo fits as well.
+export type ComposeChangeAddress = Pick<AccountAddress, 'address' | 'path'>;
+
 export type PrecomposeParams = ComposeParams & {
     path: string;
     utxo: ComposeUtxo[];
-    changeAddress?: AccountAddress;
+    changeAddress?: ComposeChangeAddress;
     feeLevels: { feePerUnit: string }[];
 };
 
@@ -35,7 +38,7 @@ export type ComposeResultError =
 export type ComposeResultFinal = ComposeResultFinalBase<
     ComposedInputs,
     ComposeOutputBase,
-    AccountAddress
+    ComposeChangeAddress
 >;
 
 export type ComposeResultNonFinal = ComposeResultNonFinalBase<ComposedInputs>;
