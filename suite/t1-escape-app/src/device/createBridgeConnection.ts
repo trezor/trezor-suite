@@ -15,6 +15,7 @@ import {
 } from './bridgeDevice';
 import type { DeviceLostReason, TransportCall } from './deviceSession';
 import { loadProtobufDefinitions } from './protobufDefinitions';
+import { diagnosticLog } from '../app/diagnosticLog';
 
 export type BridgeConnectError =
     /** Trezor Suite is not running, or the browser blocks access to the local network. */
@@ -61,13 +62,26 @@ export const createBridgeConnection = (): BridgeConnection => {
         transport.stop();
 
         const initialized = await transport.init();
-        if (!initialized.success) return err({ type: 'bridge-unreachable' });
+        if (!initialized.success) {
+            diagnosticLog.error('bridge', 'init failed', {
+                code: initialized.error.code,
+                message: initialized.error.message,
+            });
 
+            return err({ type: 'bridge-unreachable' });
+        }
+
+        diagnosticLog.info('bridge', 'connected', { version: transport.version });
         if (!isBridgeVersionSupported(transport.version)) {
+            diagnosticLog.error('bridge', 'version too old for HID devices', {
+                version: transport.version,
+            });
+
             return err({ type: 'bridge-outdated', version: transport.version });
         }
 
         transport.on(TRANSPORT.ERROR, () => {
+            diagnosticLog.error('bridge', 'transport error, bridge gone');
             // The listen loop would otherwise keep hammering a bridge that is gone.
             transport.stop();
             reportBridgeLost?.();
@@ -79,33 +93,65 @@ export const createBridgeConnection = (): BridgeConnection => {
 
     const findDevice: BridgeConnection['findDevice'] = async () => {
         const enumerated = await transport.enumerate();
-        if (!enumerated.success) return err({ type: 'bridge-unreachable' });
+        if (!enumerated.success) {
+            diagnosticLog.error('bridge', 'enumerate failed', { code: enumerated.error.code });
 
-        return ok(selectDevice(enumerated.payload));
+            return err({ type: 'bridge-unreachable' });
+        }
+
+        const selection = selectDevice(enumerated.payload);
+        // Public paths and session numbers are counters of the bridge, nothing identifying.
+        diagnosticLog.info('bridge', 'enumerated', {
+            devices: enumerated.payload.map(({ path, type, session, vendor, product }) => ({
+                path,
+                type,
+                session,
+                vendor,
+                product,
+            })),
+            selection: selection.type,
+        });
+
+        return ok(selection);
     };
 
     const acquire: BridgeConnection['acquire'] = async ({ descriptor, onLost }) => {
+        diagnosticLog.info('bridge', 'acquire', {
+            path: descriptor.path,
+            previous: descriptor.session,
+        });
         const acquired = await transport.acquire({
             input: { path: descriptor.path, previous: descriptor.session },
         });
         if (!acquired.success) {
+            diagnosticLog.error('bridge', 'acquire failed', {
+                code: acquired.error.code,
+                message: acquired.error.message,
+            });
+
             return acquired.error.code === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE
                 ? err({ type: 'unable-to-open' })
                 : err({ type: 'acquire-failed', code: acquired.error.code });
         }
 
         const session = acquired.payload;
+        diagnosticLog.info('bridge', 'acquired', { session });
         let lostReason: DeviceLostReason | undefined;
 
         const markLost = (reason: DeviceLostReason) => {
             if (lostReason) return;
 
             lostReason = reason;
+            diagnosticLog.error('bridge', 'device lost', { reason });
             onLost(reason);
         };
 
         reportBridgeLost = () => markLost('bridge-unreachable');
         transport.deviceEvents.on(descriptor.path, event => {
+            diagnosticLog.info('bridge', 'device event', {
+                type: event.type,
+                ...('descriptor' in event ? { session: event.descriptor.session } : {}),
+            });
             const reason = getDeviceLostReason(event, session);
             if (reason) markLost(reason);
         });
@@ -130,9 +176,16 @@ export const createBridgeConnection = (): BridgeConnection => {
             release: async () => {
                 transport.deviceEvents.removeAllListeners(descriptor.path);
                 reportBridgeLost = undefined;
-                await transport.release({ path: descriptor.path, session });
+                const released = await transport.release({ path: descriptor.path, session });
+                diagnosticLog.info('bridge', 'released', {
+                    session,
+                    ...(released.success ? {} : { error: released.error.code }),
+                });
             },
-            releaseOnUnload: () => transport.releaseSync(session),
+            releaseOnUnload: () => {
+                diagnosticLog.info('bridge', 'release on page unload', { session });
+                transport.releaseSync(session);
+            },
         });
     };
 
