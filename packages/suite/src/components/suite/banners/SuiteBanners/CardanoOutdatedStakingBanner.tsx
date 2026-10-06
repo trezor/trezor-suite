@@ -29,13 +29,17 @@ export const CardanoOutdatedStakingBanner = () => {
             icon
             intent="warning"
             rightContent={
-                <Banner.Button onClick={() => dispatch(gotoThunk({ routeName: 'suite-earn' }))}>
+                <Banner.Button
+                    onClick={() => dispatch(gotoThunk({ routeName: 'suite-earn' }))}
+                    data-testid="@staking/cardano-outdated-banner/update-provider-button"
+                >
                     <Translation id="TR_STAKING_MODAL_OUTDATED_BUTTON" />
                 </Banner.Button>
             }
             description={
                 <Translation id="TR_STAKING_MODAL_OUTDATED" values={{ apy: formatApyValue(apy) }} />
             }
+            data-testid="@staking/cardano-outdated-banner/container"
         />
     );
 };

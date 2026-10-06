@@ -6,6 +6,7 @@ export class EarnNutshellModal {
     readonly depositProcess: Locator;
     readonly withdrawProcess: Locator;
     readonly claimProcess: Locator;
+    readonly updateProviderProcess: Locator;
     readonly continueButton: Locator;
     readonly depositApyValue: Locator;
 
@@ -20,6 +21,9 @@ export class EarnNutshellModal {
         );
         this.claimProcess = this.modalContainer.getByTestId(
             '@modal/earn-in-a-nutshell/claim-process',
+        );
+        this.updateProviderProcess = this.modalContainer.getByTestId(
+            '@modal/earn-in-a-nutshell/update-provider-process',
         );
         this.continueButton = this.modalContainer.getByTestId('@modal/staking/continue-button');
         this.depositApyValue = this.depositProcess.getByTestId('@earn/dashboard/apy-percentage');

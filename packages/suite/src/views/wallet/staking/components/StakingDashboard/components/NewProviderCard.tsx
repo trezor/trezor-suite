@@ -72,12 +72,13 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
                         onClick={openStakeInANutshellModal}
                         isDisabled={isStakingDisabled}
                         iconLeft={isStakingDisabled ? InfoIcon : undefined}
-                        data-testid="@wallet/staking/empty-card/start-staking-button"
+                        data-testid="@staking/new-provider-card/update-provider-button"
                     >
                         <Translation id="TR_EARN_UPDATE_PROVIDER" />
                     </Banner.Button>
                 </Tooltip>
             }
+            data-testid="@staking/new-provider-card/container"
         />
     );
 };

@@ -38,7 +38,14 @@ export const StakeInfoCards = ({ account, flow }: StakeInfoCardsProps) => {
                 .filter(card => card.isVisible)
                 .map((card, index) => (
                     <CollapsibleBox
-                        heading={<H3 typographyStyle="body-md-strong">{card.heading}</H3>}
+                        heading={
+                            <H3
+                                typographyStyle="body-md-strong"
+                                data-testid="@modal/staking/info-card-heading"
+                            >
+                                {card.heading}
+                            </H3>
+                        }
                         key={index}
                         hasDivider={false}
                         defaultIsOpen={card.defaultIsOpen}

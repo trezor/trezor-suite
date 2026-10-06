@@ -108,6 +108,7 @@ export const EarnStakingActionButtons = ({
                     isDisabled={isStakingDisabled}
                     iconLeft={isStakingDisabled ? InfoIcon : undefined}
                     onClick={onUpdateProvider}
+                    data-testid="@earn/dashboard/update-provider-button"
                 >
                     <Translation id="TR_EARN_UPDATE_PROVIDER" />
                 </Button>

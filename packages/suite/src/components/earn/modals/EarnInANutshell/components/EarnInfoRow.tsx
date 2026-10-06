@@ -16,13 +16,16 @@ export const EarnInfoRow = ({ heading, subheading, content }: EarnInfoRowProps) 
                 {heading}
                 {content &&
                     (content.isBadge ? (
-                        <Badge size="small">{content.text}</Badge>
+                        <Badge size="small" data-testid="@earn/info-row/content">
+                            {content.text}
+                        </Badge>
                     ) : (
                         <Paragraph
                             intent="neutral"
                             priority="secondary"
                             typographyStyle="body-sm"
                             textWrap="nowrap"
+                            data-testid="@earn/info-row/content"
                         >
                             {content.text}
                         </Paragraph>
@@ -31,7 +34,12 @@ export const EarnInfoRow = ({ heading, subheading, content }: EarnInfoRowProps) 
         }
     >
         {subheading && (
-            <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
+            <Paragraph
+                intent="neutral"
+                priority="secondary"
+                typographyStyle="body-sm"
+                data-testid="@earn/info-row/subheading"
+            >
                 {subheading}
             </Paragraph>
         )}

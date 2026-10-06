@@ -45,6 +45,8 @@ export class WalletPage {
         this.accountButton(params).getByTestId(
             `@wallet/coin-balance/value-${params.symbol}-with-symbol`,
         );
+    readonly stakingRewardsReducedLabel = (params: WalletParams) =>
+        this.accountButton(params).getByTestId('@account-menu/staking/rewards-reduced');
     readonly accountDetailsTabButton: Locator;
     readonly accountDetails: Locator;
     readonly showPublicKeyButton: Locator;

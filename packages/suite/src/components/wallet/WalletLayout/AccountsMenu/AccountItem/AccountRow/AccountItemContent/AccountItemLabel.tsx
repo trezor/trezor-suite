@@ -32,7 +32,11 @@ export const AccountItemLabel = ({
                 <Column alignItems="flex-start">
                     <Translation id="TR_NAV_STAKING" />
                     {isCardanoStakedWithFiveBinaries(account) && (
-                        <Text typographyStyle="body-sm" intent="warning">
+                        <Text
+                            typographyStyle="body-sm"
+                            intent="warning"
+                            data-testid="@account-menu/staking/rewards-reduced"
+                        >
                             <Translation id="TR_STAKING_REWARDS_REDUCED" />
                         </Text>
                     )}
