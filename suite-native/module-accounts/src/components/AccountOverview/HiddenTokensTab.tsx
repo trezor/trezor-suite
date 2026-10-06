@@ -184,22 +184,6 @@ export const HiddenTokensTab = ({
         [account, applyStyle, onSelect],
     );
 
-    if (listItems.length === 0) {
-        return (
-            <Card>
-                <PictogramTitleHeader
-                    variant="info"
-                    icon="coins"
-                    title={
-                        <Translation id="moduleAccountManagement.accountOverviewScreen.hiddenTokensSection.emptyTitle" />
-                    }
-                />
-            </Card>
-        );
-    }
-
-    if (!account) return null;
-
     return (
         <FlashList
             style={applyStyle(listStyle)}
