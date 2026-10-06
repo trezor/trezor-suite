@@ -62,7 +62,8 @@ const EMPTY_PART = concatBytes(Uint8Array.of(1, 0, 0), u32(0));
 export const partBytes = (part: WardPart | null | undefined): Uint8Array => {
     if (!part) return EMPTY_PART;
     const encoding = part.encoding ?? 0;
-    if (encoding !== 0 && encoding !== 1) {
+    // 0 = AEAD (12-byte nonce), 1 = plaintext, 2 = SIV (no nonce): 0 and 2 share the sealed framing
+    if (encoding !== 0 && encoding !== 1 && encoding !== 2) {
         throw new Error(`unknown leaf part encoding: ${encoding}`);
     }
     const clear = part.plaintext ?? part.plain ?? null;
@@ -83,7 +84,7 @@ export const partBytes = (part: WardPart | null | undefined): Uint8Array => {
     const ct = toBytes(sealed.ct);
 
     return concatBytes(
-        Uint8Array.of(0, nonce.length),
+        Uint8Array.of(encoding, nonce.length),
         nonce,
         Uint8Array.of(tag.length),
         tag,

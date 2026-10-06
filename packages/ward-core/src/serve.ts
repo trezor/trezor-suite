@@ -79,7 +79,7 @@ export const leafIsDelete = (leaf: WardLeaf | null | undefined): boolean => {
     const content = leaf?.content;
     if (!content) return true;
     const encoding = content.encoding ?? 0;
-    if (encoding !== 0 && encoding !== 1) {
+    if (encoding !== 0 && encoding !== 1 && encoding !== 2) {
         throw new Error(`unknown leaf content encoding: ${encoding}`);
     }
     if (content.encrypted && content.plaintext) {

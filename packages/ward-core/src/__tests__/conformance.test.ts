@@ -4,6 +4,7 @@
  * computes the same roots, proofs and commits byte for byte.
  */
 import { toBytes, toHex } from '../bytes';
+import { leafIsDelete } from '../serve';
 import { OP_COMMIT, OP_REVERT, WardTrie } from '../store';
 import {
     EMPTY_ROOT,
@@ -12,6 +13,7 @@ import {
     commitOf,
     deleteRoot,
     insertRoot,
+    partBytes,
     proofElem,
     updateRoot,
     verifyMembership,
@@ -194,5 +196,29 @@ describe('ward-core refuses what the device refuses', () => {
         expect(() => insertRoot(hex(f.absent), hex(f.witness_commit), [], hex(f.root))).toThrow(
             'witness',
         );
+    });
+});
+
+describe('ward-core frames an SIV part (encoding 2) as the device does', () => {
+    const siv = {
+        encoding: 2,
+        encrypted: {
+            nonce: new Uint8Array(0),
+            tag: new Uint8Array(16).fill(0x74),
+            ct: new Uint8Array(64).fill(0x63),
+        },
+    };
+
+    it('keeps its own encoding byte in the framing and the commit', () => {
+        expect(toHex(partBytes(siv as any)).slice(0, 6)).toBe('020010');
+        // commit_of("address", None, <the same part>) in trezorlib.ward_trie
+        expect(toHex(commitOf('address', null, siv as any))).toBe(
+            '4c488f1a19849c699f56e2c053d3925cb3eb72ea595a1af104ff227df3b5cd51',
+        );
+        expect(leafIsDelete({ identity: null, content: siv } as any)).toBe(false);
+    });
+
+    it('still refuses an unknown encoding', () => {
+        expect(() => partBytes({ encoding: 3 } as any)).toThrow('unknown leaf part encoding');
     });
 });
