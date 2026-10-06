@@ -263,7 +263,7 @@ test.describe(
         );
 
         test(
-            'User can perform token send sending on base network',
+            'User can perform token sending on base network',
             { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
             async ({ device, devicePrompt, walletPage, tradingPage, page, toastSection }) => {
                 await test.step('Fill in a Send form', async () => {
