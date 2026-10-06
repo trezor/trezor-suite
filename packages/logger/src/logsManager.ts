@@ -20,14 +20,11 @@ export class LogsManager {
     }
 
     setLogWriter(logWriterFactory: () => LogWriter | undefined) {
-        const { logs } = this;
-        Object.keys(logs).forEach(key => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const log: Log = logs[key];
+        Object.values(this.logs).forEach(log => {
             this.writer = logWriterFactory();
             if (this.writer) {
                 log.setWriter(this.writer);
-                const { messages } = log;
+                const messages = log.getLog();
                 // If there are any messages in the log when init, add them to the writer.
                 messages.forEach(message => {
                     this.writer?.add(message);
@@ -37,30 +34,22 @@ export class LogsManager {
     }
 
     enableLog(enabled?: boolean) {
-        const { logs } = this;
-        Object.keys(logs).forEach(key => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const log: Log = logs[key];
-            log.enabled = !!enabled;
+        Object.values(this.logs).forEach(log => {
+            log.enable(!!enabled);
         });
     }
 
     enableLogByPrefix(prefix: string, enabled: boolean) {
         if (this.logs[prefix]) {
-            const { logs } = this;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const log: Log = logs[prefix];
-            log.enabled = enabled;
+            const log = this.logs[prefix];
+            log.enable(enabled);
         }
     }
 
     getLog() {
         let logs: LogMessage[] = [];
-        const ownLogs = this.logs;
-        Object.keys(ownLogs).forEach(key => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const log: Log = ownLogs[key];
-            logs = logs.concat(log.messages);
+        Object.values(this.logs).forEach(log => {
+            logs = logs.concat(log.getLog());
         });
         logs.sort((a, b) => a.timestamp - b.timestamp);
 

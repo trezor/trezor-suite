@@ -1,7 +1,7 @@
 export type LogMessage = {
     level: string;
     prefix: string;
-    message: any[];
+    message: unknown[];
     timestamp: number;
 };
 
@@ -26,12 +26,12 @@ export type CreateLoggerDep = { createLogger?: CreateLogger };
 export type LogLevel = keyof Logger;
 
 export class Log implements Logger {
-    prefix: string;
-    enabled: boolean;
-    css: string = '';
-    messages: LogMessage[];
-    logWriter: LogWriter | undefined;
-    MAX_ENTRIES = 100;
+    private prefix: string;
+    enabled: boolean; // TODO: make private once changes are propagated to the new node-bridge build in user-env
+    private css: string = '';
+    private messages: LogMessage[];
+    private logWriter: LogWriter | undefined;
+    private MAX_ENTRIES = 100;
 
     constructor(prefix: string, enabled: boolean, logWriter?: LogWriter) {
         this.prefix = prefix;
@@ -42,16 +42,22 @@ export class Log implements Logger {
         }
     }
 
+    enable(enabled: boolean) {
+        this.enabled = enabled;
+    }
+
+    isEnabled() {
+        return this.enabled;
+    }
+
     setColors(colors: Record<string, string>) {
-        const { prefix } = this;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const prefixColor: string = colors[prefix];
+        const prefixColor = colors[this.prefix];
         this.css = typeof window !== 'undefined' && prefixColor ? prefixColor : '';
     }
 
     addMessage(
         { level, prefix, timestamp }: { level: string; prefix: string; timestamp?: number },
-        ...args: any[]
+        ...args: unknown[]
     ) {
         const message = {
             level,
@@ -77,11 +83,11 @@ export class Log implements Logger {
         }
     }
 
-    setWriter(logWriter: any) {
+    setWriter(logWriter: LogWriter | undefined) {
         this.logWriter = logWriter;
     }
 
-    log(...args: any[]) {
+    log(...args: unknown[]) {
         this.addMessage({ level: 'log', prefix: this.prefix }, ...args);
         if (this.enabled) {
             // eslint-disable-next-line no-console
@@ -89,14 +95,14 @@ export class Log implements Logger {
         }
     }
 
-    error(...args: any[]) {
+    error(...args: unknown[]) {
         this.addMessage({ level: 'error', prefix: this.prefix }, ...args);
         if (this.enabled) {
             console.error(`%c${this.prefix}`, this.css, ...args);
         }
     }
 
-    info(...args: any[]) {
+    info(...args: unknown[]) {
         this.addMessage({ level: 'info', prefix: this.prefix }, ...args);
         if (this.enabled) {
             // eslint-disable-next-line no-console
@@ -104,14 +110,14 @@ export class Log implements Logger {
         }
     }
 
-    warn(...args: any[]) {
+    warn(...args: unknown[]) {
         this.addMessage({ level: 'warn', prefix: this.prefix }, ...args);
         if (this.enabled) {
             console.warn(`%c${this.prefix}`, this.css, ...args);
         }
     }
 
-    debug(...args: any[]) {
+    debug(...args: unknown[]) {
         this.addMessage({ level: 'debug', prefix: this.prefix }, ...args);
         if (this.enabled) {
             if (this.css) {
