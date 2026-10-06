@@ -4,6 +4,7 @@
     "references": [
         { "path": "../analytics" },
         { "path": "../device" },
+        { "path": "../message-system" },
         { "path": "../networks" },
         { "path": "../redux-utils" },
         { "path": "../suite-types" },
