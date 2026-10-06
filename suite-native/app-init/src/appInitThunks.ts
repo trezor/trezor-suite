@@ -50,10 +50,9 @@ import {
 } from '@suite-native/settings';
 
 import {
+    type PostOnboardingInitializationResult,
     PostOnboardingInitializationStatus,
-    setIsAppReady,
-    setPostOnboardingInitializationStatus,
-} from './appSlice';
+} from './appTypes';
 
 const ACTION_PREFIX = '@suite-native/app';
 
@@ -72,23 +71,15 @@ type PostOnboardingInitThunkDeps = ConnectInitThunkDeps &
     WalletConnectInitThunkDeps;
 
 export const postOnboardingInitThunk = createThunk<
-    void,
+    PostOnboardingInitializationResult,
     void,
     { state: PostOnboardingInitThunkState; extra: PostOnboardingInitThunkDeps }
 >(`${ACTION_PREFIX}/postOnboardingInit`, async (_, { dispatch, getState }) => {
     // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
     const activeKillswitchMessage = selectActiveKillswitchMessage(getState());
     if (activeKillswitchMessage) {
-        dispatch(
-            setPostOnboardingInitializationStatus(PostOnboardingInitializationStatus.Disabled),
-        );
-
-        return;
+        return PostOnboardingInitializationStatus.Disabled;
     }
-
-    dispatch(
-        setPostOnboardingInitializationStatus(PostOnboardingInitializationStatus.Initializing),
-    );
 
     // Create Portfolio Tracker device before rendering the application shell.
     dispatch(createImportedDeviceThunk());
@@ -110,14 +101,6 @@ export const postOnboardingInitThunk = createThunk<
         console.error(`Blockchain init error: ${JSON.stringify(error)}`);
     }
 
-    dispatch(
-        setPostOnboardingInitializationStatus(
-            hasInitializationError
-                ? PostOnboardingInitializationStatus.Error
-                : PostOnboardingInitializationStatus.Ready,
-        ),
-    );
-
     dispatch(periodicCheckTokenDefinitionsThunk());
     dispatch(initStakeDataThunk());
 
@@ -129,6 +112,10 @@ export const postOnboardingInitThunk = createThunk<
     );
 
     dispatch(walletConnectInitThunk());
+
+    return hasInitializationError
+        ? PostOnboardingInitializationStatus.Error
+        : PostOnboardingInitializationStatus.Ready;
 });
 
 type ApplicationInitThunkState = SettingsSliceRootState &
@@ -159,7 +146,4 @@ export const applicationInitThunk = createThunk<
     if (selectIsOnboardingFinished(getState())) {
         dispatch(postOnboardingInitThunk());
     }
-
-    // Tell the application to render
-    dispatch(setIsAppReady(true));
 });
