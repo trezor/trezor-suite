@@ -1,4 +1,4 @@
-import { Profiler, type ReactNode } from 'react';
+import { Profiler, type ReactNode, useEffect } from 'react';
 
 type PerfController = { recordRender?: (id: string, durationMs: number) => void };
 
@@ -38,7 +38,7 @@ const reportRender = (id: string, _phase: unknown, actualDuration: number) => {
     };
     totals.set(id, next);
 
-    console.info(
+    console.warn(
         `[perf] ${id}: ${round(actualDuration)} ms — ${next.renders} renders, ${round(
             next.totalMs,
         )} ms total, ${round(next.totalMs / next.renders)} ms average, ${round(
@@ -76,8 +76,18 @@ type PerfProfilerProps = {
  * Reports what React spends rendering its subtree: a console line per render, a running total on
  * `window.perf`, and the end-to-end performance instrumentation where that is installed.
  */
-export const PerfProfiler = ({ id, children }: PerfProfilerProps) => (
-    <Profiler id={id} onRender={reportRender}>
-        {children}
-    </Profiler>
-);
+export const PerfProfiler = ({ id, children }: PerfProfilerProps) => {
+    useEffect(() => {
+        console.warn(`[perf] profiling "${id}" — every render of it is logged below`);
+
+        return () => {
+            console.warn(`[perf] stopped profiling "${id}"`);
+        };
+    }, [id]);
+
+    return (
+        <Profiler id={id} onRender={reportRender}>
+            {children}
+        </Profiler>
+    );
+};
