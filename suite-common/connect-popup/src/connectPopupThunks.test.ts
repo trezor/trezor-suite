@@ -23,6 +23,7 @@ import {
     connectPopupFinishCallThunk,
     connectPopupLoadSelectAccountPageThunk,
 } from './connectPopupThunks';
+import { CALL_SOURCE_WEB } from './connectPopupTypes';
 
 // prepareNewAccountPayload is the device round-trip the load thunk awaits — exactly once on the
 // manual address-phase path these tests exercise (the account-index path loops it per row). Mocking
@@ -59,6 +60,7 @@ const selectAccountState = {
     method: 'selectAccount',
     state: 'select-account',
     payload: {},
+    source: { type: CALL_SOURCE_WEB, origin: 'https://example.com', manifest: { appName: 'App' } },
     options: {
         symbol: 'btc',
         mode: 'address',

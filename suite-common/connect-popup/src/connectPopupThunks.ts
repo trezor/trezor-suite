@@ -45,11 +45,17 @@ import {
     CALL_SOURCE_DEEPLINK,
     CALL_SOURCE_WALLETCONNECT,
     type ConnectCallSource,
+    type ConnectSerializedError,
     SELECT_ACCOUNT_PAGE_SIZE,
     type SelectAccountCandidate,
     isUtxoNetwork,
 } from './connectPopupTypes';
-import { getConnectAnalyticsNpmVersion, getConnectV9Deeplink } from './connectV9';
+import {
+    getConnectAnalyticsNpmVersion,
+    getConnectV9Deeplink,
+    isConnectV9Source,
+} from './connectV9';
+import { toConnectV9ErrorPayload } from './connectV9ErrorPayload';
 import {
     cleanupAllTemporaryAccounts,
     compatibilityHooks,
@@ -82,6 +88,15 @@ const getCallParamNames = (payload: unknown): string[] =>
     payload && typeof payload === 'object' && !Array.isArray(payload)
         ? Object.keys(payload).sort()
         : [];
+
+// Connect 9 apps read the error of a failed call from the payload. Suite desktop builds the payload
+// of its response itself (see useConnectPopupDesktop), so this one is what Connect 9 deeplink calls
+// get.
+const getFailedCallResponse = (source: ConnectCallSource, error: ConnectSerializedError) => ({
+    success: false as const,
+    error,
+    ...(isConnectV9Source(source) && { payload: toConnectV9ErrorPayload(error) }),
+});
 
 type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     method: M;
@@ -305,10 +320,7 @@ export const connectPopupCallInnerThunk = createThunk<
                 },
             });
 
-            getPopupCallDeferred().resolve({
-                success: false,
-                error: serializeError(error),
-            });
+            getPopupCallDeferred().resolve(getFailedCallResponse(source, serializeError(error)));
         } finally {
             // Tear down any placeholder accounts created in preCallHooks even if the call threw
             // before postCallHooks ran, so they cannot leak into a later removeAccount payload.
@@ -1160,7 +1172,7 @@ export const connectPopupFinishCallThunk = createThunk<
     const activeCall = selectConnectPopupCall(getState());
 
     if (activeCall?.state === 'call-error' && isDeviceReconnectError(activeCall.error.code)) {
-        getPopupCallDeferred().resolve({ success: false, error: activeCall.error });
+        getPopupCallDeferred().resolve(getFailedCallResponse(activeCall.source, activeCall.error));
     }
 
     dispatch(connectPopupActions.finishCall());
