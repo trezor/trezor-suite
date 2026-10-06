@@ -47,7 +47,8 @@ const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
  * Build coinUrl using defined coin ids
  */
 const buildCoinUrls = async (ticker: TickerId) => {
-    const { coingeckoId, tradeCryptoId, settlementLayer, networkType } = getNetwork(ticker.symbol);
+    const { coingeckoId, tradeCryptoId, fiatRateCryptoId, settlementLayer, networkType } =
+        getNetwork(ticker.symbol);
     if (!coingeckoId) {
         console.error('buildCoinUrls: cannot find coingeckoId for ', ticker);
 
@@ -59,6 +60,8 @@ const buildCoinUrls = async (ticker: TickerId) => {
         if (ticker.tokenAddress) {
             // token on network -> network coingecko id
             baseId = coingeckoId;
+        } else if (fiatRateCryptoId) {
+            baseId = fiatRateCryptoId;
         } else if (settlementLayer) {
             baseId = getNetwork(settlementLayer)?.coingeckoId ?? coingeckoId;
         } else {
