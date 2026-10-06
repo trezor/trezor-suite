@@ -26,7 +26,18 @@ export const parsePsbt = ({
     addresses,
     utxos,
 }: ParsePsbtParams): ComposePsbtResult => {
-    const psbt = Psbt.fromHex(psbtTransactionData, { network: coinInfo.network });
+    let psbt: Psbt;
+    try {
+        psbt = Psbt.fromHex(psbtTransactionData, { network: coinInfo.network });
+    } catch (e) {
+        // Psbt.fromHex throws plain Errors (invalid magic bytes, truncated or
+        // trailing data, ...). Surface them like every other validation failure
+        // in this function instead of leaking them as Failure_UnknownCode.
+        throw TypedError(
+            'Method_InvalidParameter',
+            `parsePsbt: Invalid PSBT data: ${e instanceof Error ? e.message : String(e)}`,
+        );
+    }
 
     const inputs: PROTO.TxInputType[] = [];
     const outputs: PROTO.TxOutputType[] = [];
