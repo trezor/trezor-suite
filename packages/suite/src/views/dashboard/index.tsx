@@ -46,10 +46,12 @@ export const Dashboard = () => {
     useNotificationForDisconnectedDevice();
 
     return (
+        // DRAFT ONLY — NOT FOR MERGE. The B variant is first, which makes it the one shown when
+        // the experiment is not in the message system config, so that the end-to-end performance
+        // scenarios exercise the home asset table at all. Revert before this branch is reviewed.
         <ExperimentWrapper
             id={ExperimentId.assetFirstHomeTable}
             components={[
-                { variant: 'A', element: <DashboardAsItWas /> },
                 {
                     variant: 'B',
                     element: (
@@ -59,6 +61,7 @@ export const Dashboard = () => {
                         </Column>
                     ),
                 },
+                { variant: 'A', element: <DashboardAsItWas /> },
             ]}
         />
     );
