@@ -12,7 +12,7 @@ import {
 import { type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
@@ -1654,7 +1654,7 @@ describe('tradingSelectors', () => {
         const createAccount = (symbol: string, descriptor: string, balance: string) =>
             mockWalletAccount({
                 symbol: asNetworkSymbol(symbol),
-                descriptor,
+                descriptor: asAccountDescriptor(descriptor),
                 deviceState: accountBtc.deviceState as StaticSessionId,
                 balance,
                 formattedBalance: balance,
