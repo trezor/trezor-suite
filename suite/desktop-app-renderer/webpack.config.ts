@@ -57,10 +57,6 @@ const rendererConfig: webpack.Configuration = {
     resolve: {
         alias: {
             '@trezor/connect$': '@trezor/connect-electron',
-            // DRAFT, NOT FOR MERGE. React's `Profiler` does nothing in a production build; its
-            // profiling build is the same code with the timing kept, so that what the home asset
-            // table costs can be read from a build that is otherwise the one we ship.
-            'react-dom$': 'react-dom/profiling',
             // conditionally mocks message-system config that is being used during build
             ...(isTestBuild ? { [messageSystemFile]: messageSystemMockFile } : {}),
         },
