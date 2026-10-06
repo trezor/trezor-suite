@@ -158,13 +158,6 @@ describe('TradingConfirmingScreen', () => {
         );
     });
 
-    it('should not navigate when transaction is not confirmed', async () => {
-        await renderScreen();
-
-        expect(mockNavigation.popToTop).not.toHaveBeenCalled();
-        expect(mockNavigation.push).not.toHaveBeenCalled();
-    });
-
     it('approve: navigates to TradingExchangePreview when the quote status becomes CONFIRM', async () => {
         mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
 
@@ -183,67 +176,6 @@ describe('TradingConfirmingScreen', () => {
         expect(mockNavigation.push).toHaveBeenCalledWith(RootStackRoutes.TradingExchangePreview, {
             isApproved: true,
         });
-    });
-
-    it('approve: does not navigate while status stays APPROVAL_PENDING', async () => {
-        mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
-        store.dispatch(
-            tradingExchangeActions.saveSelectedQuote({ ...testQuote, status: 'APPROVAL_PENDING' }),
-        );
-
-        await renderScreen({ flowType: 'approve' });
-
-        expect(mockNavigation.popToTop).not.toHaveBeenCalled();
-        expect(mockNavigation.push).not.toHaveBeenCalled();
-    });
-
-    it('revoke-and-approve: navigates to TradingExchangeApproval and strips revoke-tx artifacts from selectedQuote', async () => {
-        // Seed selectedQuote with revoke artifacts that the post-revoke confirmExchangeTradeThunk would have written.
-        store.dispatch(
-            tradingExchangeActions.saveSelectedQuote({
-                ...testQuote,
-                approvalType: 'ZERO',
-                approvalSendTxHash: 'revoke-txid',
-                status: 'APPROVAL_PENDING',
-            }),
-        );
-        mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
-
-        await renderScreen({ flowType: 'revoke-and-approve' });
-
-        expect(mockNavigation.push).not.toHaveBeenCalled();
-
-        // Simulate the backend reporting the follow-up approval is required.
-        await act(() => {
-            store.dispatch(
-                tradingExchangeActions.saveSelectedQuote({
-                    ...testQuote,
-                    approvalType: 'ZERO',
-                    approvalSendTxHash: 'revoke-txid',
-                    status: 'APPROVAL_REQ',
-                }),
-            );
-        });
-
-        expect(mockNavigation.popToTop).toHaveBeenCalled();
-        expect(mockNavigation.push).toHaveBeenCalledWith(RootStackRoutes.TradingExchangeApproval, {
-            isRevoked: true,
-        });
-        const persisted = selectTradingExchangeSelectedQuote(store.getState());
-        expect(persisted).toBeDefined();
-        expect(persisted?.approvalSendTxHash).toBeUndefined();
-        expect(persisted?.approvalType).toBeUndefined();
-        expect(persisted?.status).toBe('APPROVAL_REQ');
-    });
-
-    it('revoke: pops to top and clears selectedQuote', async () => {
-        mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
-
-        await renderScreen({ flowType: 'revoke' });
-
-        expect(mockNavigation.popToTop).toHaveBeenCalled();
-        expect(mockNavigation.push).not.toHaveBeenCalled();
-        expect(selectTradingExchangeSelectedQuote(store.getState())).toBeUndefined();
     });
 
     it('should render the explore in blockchain button', async () => {

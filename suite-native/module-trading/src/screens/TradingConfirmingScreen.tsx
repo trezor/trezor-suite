@@ -28,10 +28,10 @@ import {
 import { ConfirmationQuoteDebugView } from '../components/exchange/Confirmation/ConfirmationQuoteDebugView';
 import { ExchangeConfirmationHeader } from '../components/exchange/Confirmation/ExchangeConfirmationHeader';
 import { ExchangeConfirmationInfo } from '../components/exchange/Confirmation/ExchangeConfirmationInfo';
-import { ExchangeConfirmationNavigator } from '../components/exchange/Confirmation/ExchangeConfirmationNavigator';
 import { ExchangeConfirmationTitle } from '../components/exchange/Confirmation/ExchangeConfirmationTitle';
 import { ExploreInBlockchainButton } from '../components/exchange/Confirmation/ExploreInBlockchainButton';
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
+import { useExchangeConfirmationNavigation } from '../hooks/exchange/useExchangeConfirmationNavigation';
 
 export type TradingConfirmingScreenProps = StackProps<
     RootStackParamList,
@@ -107,10 +107,11 @@ export const TradingConfirmingScreen = ({ route: { params } }: TradingConfirming
         isEnabled: isConfirmed && flowType !== 'revoke',
     });
 
+    useExchangeConfirmationNavigation({ flowType, isConfirmed });
+
     return (
         <TradingDeviceConnectionGuard>
             <Screen header={<ExchangeConfirmationHeader flowType={flowType} />}>
-                <ExchangeConfirmationNavigator flowType={flowType} isConfirmed={isConfirmed} />
                 <ConfirmationQuoteDebugView
                     forceStatus={forceStatus}
                     approvalTxid={approvalTxid}
