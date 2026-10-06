@@ -15,7 +15,18 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
  * Run it on the branch that reads the table through selectors and on the one that reads it
  * through indexes, and compare the two reports to each other.
  */
-const NETWORKS = [asNetworkSymbol('btc'), asNetworkSymbol('eth')];
+const NETWORKS = [
+    asNetworkSymbol('btc'),
+    asNetworkSymbol('eth'),
+    asNetworkSymbol('ltc'),
+    asNetworkSymbol('bch'),
+    asNetworkSymbol('doge'),
+    asNetworkSymbol('etc'),
+    asNetworkSymbol('zec'),
+    asNetworkSymbol('ada'),
+    asNetworkSymbol('sol'),
+    asNetworkSymbol('xrp'),
+];
 
 test.describe('Performance', { tag: ['@T3W1', '@T3T1', '@perf'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
@@ -39,7 +50,7 @@ test.describe('Performance', { tag: ['@T3W1', '@T3T1', '@perf'] }, () => {
             });
 
             // Home, where the table is, for the whole discovery.
-            await page.goto('/');
+            await dashboardPage.dashboardMenuButton.click();
             await expect(page.getByTestId('@dashboard/index')).toBeVisible();
 
             await dashboardPage.openDeviceSwitcher();
