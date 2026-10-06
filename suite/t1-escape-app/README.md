@@ -40,6 +40,15 @@ yarn workspace @suite/t1-escape-app preview
 
 The `[Build] t1-escape-app` workflow builds every pull request that touches this package and uploads it to `https://dev.suite.sldev.cz/t1-escape-app/<branch>/`, the same way Suite Web is deployed. That copy is good for looking at the screens only: the bridge refuses to open a HID device for its origin.
 
+## Collecting logs from a test run
+
+Nobody on the team has a device this old, so testing is done by people who have one. Two logs tell how far a run got:
+
+- **The page's diagnostic log.** The last card on the page shows it and has "Copy log" and "Download log" buttons. It records every step, every message exchanged with the device (names only), every backend request and every error, with timings. It contains no PIN, passphrase, address, public key, transaction id or amount, and the page never sends it anywhere. The same lines go to the browser console.
+- **The bridge log inside Trezor Suite.** Open `http://127.0.0.1:21328/status` in a browser and download the log from there. It shows what the HID backend did: whether it loaded, which interfaces it saw, whether the device could be opened, the report id probe on Windows, and every read and write. System paths and serial numbers are blanked out.
+
+Ask testers for both, plus their operating system and the firmware version shown by the page.
+
 ## Production response headers
 
 The hosting must send these headers. They are defined in `securityHeaders.ts`, and `vite preview` sends them as well.

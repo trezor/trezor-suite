@@ -1,5 +1,6 @@
 import { type Result, ok } from '@trezor/type-utils';
 
+import { diagnosticLog } from '../app/diagnosticLog';
 import type { Backend, BackendError } from '../backend/backend';
 import type { AccountType } from '../bitcoin/accountType';
 import {
@@ -42,16 +43,30 @@ export const scanAccount = async ({
     accountType,
     accountIndex,
 }: ScanAccountParams): Promise<Result<ScannedAccount, DiscoveryError>> => {
+    diagnosticLog.info('discovery', 'scanning account', { accountType, accountIndex });
     const account = await getAccountPublicKey({ call, accountType, accountIndex });
-    if (!account.success) return account;
+    if (!account.success) {
+        diagnosticLog.error('discovery', 'account key not read', account.error);
+
+        return account;
+    }
 
     const snapshot = await loadAccountSnapshot({ backend, account: account.payload });
     if (!snapshot.success) return snapshot;
 
+    const { info, utxos } = snapshot.payload;
+    diagnosticLog.info('discovery', 'account scanned', {
+        accountType,
+        accountIndex,
+        isEmpty: info.empty,
+        transactions: info.history.total,
+        outputs: utxos.length,
+    });
+
     return ok({
         account: account.payload,
         snapshot: snapshot.payload,
-        isEmpty: snapshot.payload.info.empty,
+        isEmpty: info.empty,
     });
 };
 

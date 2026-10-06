@@ -37,6 +37,10 @@ const resolveFromHere = (relativePath: string) =>
 /* eslint-disable-next-line import/no-default-export */
 export default defineConfig({
     base: process.env.BASE_PATH ?? '/',
+    define: {
+        // Shown in the diagnostic log, so that a reported log can be matched with the build.
+        __APP_COMMIT__: JSON.stringify(process.env.GITHUB_SHA ?? 'local'),
+    },
     plugins: [
         svgRequirePlugin(),
         react(),
