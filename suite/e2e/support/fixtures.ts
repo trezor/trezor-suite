@@ -240,13 +240,19 @@ const test = suiteBaseTest.extend<Fixtures>({
             testInfo,
             mode: LighthouseMode.Steps,
         });
-        await use({
-            measure: (scenario, interaction) =>
-                lighthouseFlow.timespan(scenario, () =>
-                    measurePerformance(page, testInfo, scenario, interaction),
-                ),
-        });
-        await lighthouseFlow.finish();
+        // `finish` is what closes the CDP connection the flow opened, so a failing test has to
+        // reach it too — the worker runs every test in the shard, and a connection left behind
+        // outlives the test that opened it.
+        try {
+            await use({
+                measure: (scenario, interaction) =>
+                    lighthouseFlow.timespan(scenario, () =>
+                        measurePerformance(page, testInfo, scenario, interaction),
+                    ),
+            });
+        } finally {
+            await lighthouseFlow.finish();
+        }
     },
     lighthouseTestProfiler: [
         async ({ page, electronApp }, use, testInfo) => {
@@ -256,8 +262,12 @@ const test = suiteBaseTest.extend<Fixtures>({
                 testInfo,
                 mode: LighthouseMode.Test,
             });
-            await lighthouseFlow.timespan(testInfo.title, () => use());
-            await lighthouseFlow.finish();
+
+            try {
+                await lighthouseFlow.timespan(testInfo.title, () => use());
+            } finally {
+                await lighthouseFlow.finish();
+            }
         },
         { auto: true },
     ],

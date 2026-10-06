@@ -67,21 +67,67 @@ const passthroughFlow: LighthouseFlow = {
     finish: async () => {},
 };
 
-// Electron writes the CDP port Playwright had it open to DevToolsActivePort; desktop needs no fixed port.
+const DEVTOOLS_PORT_FILE = 'DevToolsActivePort';
+const DEVTOOLS_PORT_TIMEOUT = 10_000;
+const DEVTOOLS_PORT_POLL_INTERVAL = 100;
+
+/**
+ * The endpoint Chromium is listening on, or `null` while it is not yet readable.
+ *
+ * Two lines are required rather than one: the file is written port-first, so a read that lands
+ * mid-write yields a port with no browser path and builds a URL that connects to nothing.
+ */
+const readDevToolsEndpoint = (userDataDir: string): string | null => {
+    let contents;
+    try {
+        contents = readFileSync(path.join(userDataDir, DEVTOOLS_PORT_FILE), 'utf8');
+    } catch {
+        return null;
+    }
+
+    const [port, browserPath] = contents.split('\n');
+
+    return /^\d+$/.test(port ?? '') && browserPath?.startsWith('/devtools/')
+        ? `ws://127.0.0.1:${port}${browserPath}`
+        : null;
+};
+
+/**
+ * Desktop needs no port of its own: Playwright already launches Electron with
+ * `--remote-debugging-port=0`, and Chromium writes the port it settled on to DevToolsActivePort in
+ * the app's user data directory.
+ *
+ * It is waited for rather than read once, because nothing orders that write against the app's own
+ * startup — which, for every test that does not keep its user data, begins by emptying the very
+ * directory the file lands in.
+ */
 const resolveEndpoint = async (
     electronApp: ElectronApplication | undefined,
 ): Promise<ConnectOptions> => {
+    // Web has no such file: Playwright drives Chromium over a pipe, so the browser is launched with
+    // a port we chose ourselves.
     if (!electronApp) {
         return { browserURL: `http://127.0.0.1:${getLighthouseDebugPort()}` };
     }
 
     const userDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'));
-    const [port, browserPath] = readFileSync(
-        path.join(userDataDir, 'DevToolsActivePort'),
-        'utf8',
-    ).split('\n');
+    const deadline = Date.now() + DEVTOOLS_PORT_TIMEOUT;
 
-    return { browserWSEndpoint: `ws://127.0.0.1:${port}${browserPath}` };
+    while (true) {
+        const endpoint = readDevToolsEndpoint(userDataDir);
+
+        if (endpoint) {
+            return { browserWSEndpoint: endpoint };
+        }
+
+        if (Date.now() >= deadline) {
+            throw new Error(
+                `no readable ${DEVTOOLS_PORT_FILE} under ${userDataDir} after ${DEVTOOLS_PORT_TIMEOUT}ms`,
+            );
+        }
+
+        await new Promise(resolve => setTimeout(resolve, DEVTOOLS_PORT_POLL_INTERVAL));
+    }
 };
 
 /**
