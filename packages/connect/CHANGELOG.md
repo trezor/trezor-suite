@@ -22,7 +22,7 @@ Fixes communication between `@trezor/connect-webextension` and Suite Web due to 
 
 # 10.0.0
 
-This core ships in `@trezor/connect` 10.0.0 for Node, in Trezor Suite 26.9.2 for web and desktop, and in Trezor Suite Lite 26.8.1 for mobile.
+This core ships in `@trezor/connect` 10.0.0 for Node. `@trezor/connect-web`, `@trezor/connect-webextension` and `@trezor/connect-mobile` run each call in Trezor Suite, which has to be 26.3.1 or newer on desktop and in the mobile app. Some methods need a newer Suite, see [Suite version requirements](https://connect.trezor.io/10/guides/migrating-to-connect-10#suite-version-requirements).
 
 Connect 10 moves the Connect core out of the self-hosted iframe + popup and into **Trezor Suite**, which now hosts the core and renders every approval, PIN, passphrase and confirmation screen. Your app stays a thin client calling the same `TrezorConnect` methods — nothing to install, and it works whether or not Suite desktop is running. Alongside the move, the SDK gains a privacy-friendly account picker (`selectAccount`), granular per-coin permissions, and much smaller ESM-only client packages.
 
