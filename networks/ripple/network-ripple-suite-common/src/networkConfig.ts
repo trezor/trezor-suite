@@ -40,6 +40,7 @@ export const networkConfigBySymbol = {
         accountTypes: {},
         coingeckoId: 'ripple',
         tradeCryptoId: 'ripple',
+        fiatRateCryptoId: 'ripple',
         yieldXyzId: null,
     },
     txrp: {

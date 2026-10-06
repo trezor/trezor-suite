@@ -62,6 +62,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'cardano',
         tradeCryptoId: 'cardano',
+        fiatRateCryptoId: 'cardano',
         yieldXyzId: 'cardano',
     },
 } satisfies Readonly<Record<CardanoNetworkSymbol, NetworkConfig>>;

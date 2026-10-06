@@ -82,6 +82,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'ethereum',
         tradeCryptoId: 'ethereum',
+        fiatRateCryptoId: 'ethereum',
         caipId: 'eip155:1',
         yieldXyzId: 'ethereum',
     },
@@ -119,6 +120,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'polygon-pos',
         tradeCryptoId: 'polygon-ecosystem-token',
+        fiatRateCryptoId: 'polygon-ecosystem-token',
         caipId: 'eip155:137',
         yieldXyzId: 'polygon',
     },
@@ -156,6 +158,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'binance-smart-chain',
         tradeCryptoId: 'binancecoin',
+        fiatRateCryptoId: 'binancecoin',
         caipId: 'eip155:56',
         yieldXyzId: 'binance',
     },
@@ -200,6 +203,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'arbitrum-one',
         tradeCryptoId: 'arbitrum-one--0x0000000000000000000000000000000000000000',
+        fiatRateCryptoId: 'ethereum',
         caipId: 'eip155:42161',
         yieldXyzId: 'arbitrum',
     },
@@ -239,6 +243,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'base',
         tradeCryptoId: 'base--0x0000000000000000000000000000000000000000',
+        fiatRateCryptoId: 'ethereum',
         caipId: 'eip155:8453',
         nativeTokenReserve: '0.0002',
         yieldXyzId: 'base',
@@ -278,6 +283,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'optimistic-ethereum',
         tradeCryptoId: 'optimistic-ethereum--0x0000000000000000000000000000000000000000',
+        fiatRateCryptoId: 'ethereum',
         caipId: 'eip155:10',
         nativeTokenReserve: '0.0002',
         yieldXyzId: 'optimism',
@@ -317,6 +323,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'robinhood',
         tradeCryptoId: 'robinhood--0x0000000000000000000000000000000000000000',
+        fiatRateCryptoId: 'ethereum',
         caipId: 'eip155:4663',
         nativeTokenReserve: '0.0002',
         yieldXyzId: null,
@@ -355,6 +362,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'hyperevm',
         tradeCryptoId: 'hyperliquid',
+        fiatRateCryptoId: 'hyperliquid',
         caipId: 'eip155:999',
         yieldXyzId: null,
     },
@@ -392,6 +400,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'avalanche',
         tradeCryptoId: 'avalanche-2',
+        fiatRateCryptoId: 'avalanche-2',
         caipId: 'eip155:43114',
         yieldXyzId: 'avalanche-c',
     },
@@ -412,6 +421,7 @@ export const networkConfigBySymbol = {
         accountTypes: {},
         coingeckoId: 'ethereum-classic',
         tradeCryptoId: 'ethereum-classic',
+        fiatRateCryptoId: 'ethereum-classic',
         yieldXyzId: null,
     },
     arc: {
@@ -461,6 +471,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
         tradeCryptoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
+        fiatRateCryptoId: 'sepolia-test-ethereum',
         yieldXyzId: 'ethereum-sepolia',
     },
     thod: {
@@ -486,6 +497,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
         tradeCryptoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
+        fiatRateCryptoId: 'hoodi-test-ethereum',
         yieldXyzId: 'ethereum-hoodi',
     },
     tarc: {

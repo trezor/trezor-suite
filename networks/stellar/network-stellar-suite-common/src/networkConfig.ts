@@ -42,6 +42,7 @@ export const networkConfigBySymbol = {
         accountTypes: {},
         coingeckoId: 'stellar',
         tradeCryptoId: 'stellar',
+        fiatRateCryptoId: 'stellar',
         yieldXyzId: 'stellar',
         caipId: 'stellar:pubnet',
     },
