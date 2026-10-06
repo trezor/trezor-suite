@@ -1,9 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId } from 'invity-api';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { getNetwork } from '@suite-common/wallet-config';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 
+import { type HandleBuyRequestThunkState } from './handleBuyRequestThunk';
 import { ALTERNATIVE_QUOTES } from '../../__fixtures__/buyUtils';
 import {
     type QuoteRefetchingState,
@@ -21,7 +23,11 @@ import {
 import { MIN_MAX_QUOTES_OK } from '../../utils/buy/__fixtures__/buyUtils';
 
 import { buyThunks } from './index';
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const btcSymbol = toNetworkSymbolNonTestnet('btc');
 const createMockQuotes = () =>
     [...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES].map(quote => ({ ...quote }));
 
@@ -39,8 +45,7 @@ describe('handleBuyRequestThunk', () => {
         refetchQuotesOverride?: Partial<QuoteRefetchingState>,
         coinsOverride?: NonNullable<typeof initialState.info.coins>,
     ) => {
-        const store = configureMockStore({
-            extra: {},
+        const { store } = createTestCompositionRoot<void, HandleBuyRequestThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -73,7 +78,7 @@ describe('handleBuyRequestThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         const formValues: TradingBuyFormProps = {
             fiatInput: '1000',
@@ -86,13 +91,13 @@ describe('handleBuyRequestThunk', () => {
                 id: 'bitcoin' as CryptoId,
                 isNativeToken: true,
                 name: 'Bitcoin',
-                symbol: 'btc',
+                symbol: btcSymbol,
                 coingeckoId: 'bitcoin',
                 displaySymbol: 'BTC',
                 displaySymbolName: 'Bitcoin',
                 contractAddress: null,
                 networkName: 'Bitcoin',
-                networkSymbol: 'btc',
+                networkSymbol: btcSymbol,
             } satisfies TradingAssetOption,
             countrySelect: {
                 value: 'CZ',
@@ -111,7 +116,7 @@ describe('handleBuyRequestThunk', () => {
         };
         const input: HandleBuyRequestThunkProps = {
             formValues,
-            network: getNetwork('btc'),
+            network: getNetwork(btcSymbol),
             shouldSendInSats: false,
         };
 

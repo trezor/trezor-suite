@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     BottomSheetModal,
     Box,
@@ -71,7 +71,7 @@ export const TransactionDetailSheet = ({
     sheetName,
     sheetControls,
 }: TransactionDetailSheetProps) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const internal = useBottomSheetModal();
     const { bottomSheetRef, openModal, closeModal } = sheetControls ?? internal;
 

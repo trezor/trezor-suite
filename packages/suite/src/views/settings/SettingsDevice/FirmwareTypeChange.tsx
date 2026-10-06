@@ -1,8 +1,10 @@
 import { useDevice } from '@suite/device';
 import { getSuiteFirmwareTypeString } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
-import { Anchor, SettingsAnchor, goto } from '@suite/router';
+import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { firmwareActions } from '@suite-common/firmware';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
 import {
     getFirmwareVersion,
@@ -12,14 +14,12 @@ import {
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 
-import { useDispatch } from 'src/hooks/suite';
-
 interface FirmwareTypeProps {
     isDeviceLocked: boolean;
 }
 
 export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
 
     if (!device?.features) {
@@ -34,7 +34,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
         : 'TR_SWITCH_TO_BITCOIN_ONLY';
 
     const handleAction = () => {
-        dispatch(goto({ routeName: 'firmware-type', params: { cancelable: true } }));
+        dispatch(gotoThunk({ routeName: 'firmware-type', params: { cancelable: true } }));
         dispatch(firmwareActions.setSwitchFirmwareType(true));
     };
 

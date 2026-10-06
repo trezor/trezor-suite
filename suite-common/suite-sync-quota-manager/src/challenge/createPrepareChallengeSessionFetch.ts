@@ -16,16 +16,16 @@ export type PrepareChallengeSessionResult = Result<
     QuotaManagerFetchCommunicationError
 >;
 
+export type PrepareChallengeSessionFetchDeps = QuotaManagerFetchDep & GenerateSessionIdDep;
+
 export type PrepareChallengeSessionFetch = () => Promise<PrepareChallengeSessionResult>;
 
 export type PrepareChallengeSessionFetchDep = {
     prepareChallengeSessionFetch: PrepareChallengeSessionFetch;
 };
 
-export type PrepareChallengeSessionDeps = QuotaManagerFetchDep & GenerateSessionIdDep;
-
 export const createPrepareChallengeSessionFetch =
-    (deps: PrepareChallengeSessionDeps): PrepareChallengeSessionFetch =>
+    (deps: PrepareChallengeSessionFetchDeps): PrepareChallengeSessionFetch =>
     async () => {
         const sessionId = deps.generateSessionId();
 

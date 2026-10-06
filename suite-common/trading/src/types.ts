@@ -1,3 +1,4 @@
+import { type SerializedError } from '@reduxjs/toolkit';
 import type {
     BuyCryptoPaymentMethod,
     BuyProviderInfo,
@@ -18,12 +19,7 @@ import type {
 } from 'invity-api';
 
 import { type CountryCode } from '@suite-common/geolocation';
-import {
-    type Network,
-    type NetworkConfig,
-    type NetworkDisplaySymbol,
-    type NetworkSymbol,
-} from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/networks';
 import {
     type Account,
     type AccountKey,
@@ -33,7 +29,8 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import { type PROTO, type TokenInfo } from '@trezor/connect';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type SuiteCommonNetworkConfig } from '@trezor/network-module-suite-common-types';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 import { type Err, type Ok, type PrimitiveType } from '@trezor/type-utils';
 
 import type * as constants from './constants';
@@ -46,6 +43,7 @@ export type TradingSellType = 'sell';
 export type TradingExchangeType = 'exchange';
 export type TradingType = TradingBuyType | TradingSellType | TradingExchangeType;
 export type TradingTypeWithConcierge = TradingType | 'concierge';
+export type TradingAmountInputSource = 'crypto' | 'fiat' | 'base-currency' | 'fraction';
 
 export type SelectedTradingAsset = {
     symbol: NetworkSymbol;
@@ -63,17 +61,17 @@ export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
 
 type TradingAssetOptionBase = {
     id: CryptoId;
-    coingeckoId: NonNullable<NetworkConfig['coingeckoId']>;
-    networkName: NetworkConfig['name'];
+    coingeckoId: NonNullable<SuiteCommonNetworkConfig['coingeckoId']>;
+    networkName: SuiteCommonNetworkConfig['name'];
     networkSymbol: NetworkSymbol;
     displaySymbolName?: string;
 };
 
 export type TradingAssetOptionNativeToken = TradingAssetOptionBase & {
     isNativeToken: true;
-    name: NetworkConfig['name'];
+    name: SuiteCommonNetworkConfig['name'];
     symbol: NetworkSymbol;
-    displaySymbol: NetworkDisplaySymbol;
+    displaySymbol: SuiteCommonNetworkConfig['displaySymbol'];
     contractAddress: null | typeof constants.CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
 };
 
@@ -86,8 +84,7 @@ export type TradingAssetOptionWithContractAddress = TradingAssetOptionBase & {
 };
 
 export type TradingAssetOption =
-    | TradingAssetOptionNativeToken
-    | TradingAssetOptionWithContractAddress;
+    TradingAssetOptionNativeToken | TradingAssetOptionWithContractAddress;
 
 // information about created trade
 export type TradingTradeType = BuyTrade | SellFiatTrade | ExchangeTrade;
@@ -148,11 +145,10 @@ export type TradingTransactionExchange = TradingCommonTransaction & {
     data: ExchangeTrade;
     receiveAccountKey?: Account['key'];
     sendAccountKey: Account['key'] | undefined;
+    sendTxid?: string;
 };
 export type TradingTransaction =
-    | TradingTransactionBuy
-    | TradingTransactionSell
-    | TradingTransactionExchange;
+    TradingTransactionBuy | TradingTransactionSell | TradingTransactionExchange;
 
 export type TradingTransactionStatus = TradingTransaction['data']['status'];
 
@@ -195,6 +191,7 @@ export type TradingBuyFormProps = {
     [constants.TRADING_FORM_PAYMENT_METHOD_SELECT]?: TradingPaymentMethodListProps;
     [constants.TRADING_FORM_PROVIDER_SELECT]?: string;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
+    [constants.TRADING_FORM_AMOUNT_INPUT_SOURCE]?: TradingAmountInputSource;
     [constants.TRADING_BUY_RECEIVE_ADDRESS]?: string;
 };
 
@@ -230,12 +227,10 @@ export type TradingExchangeAmountLimitProps = Pick<
 >;
 
 export type TradingExchangeRateType =
-    | typeof constants.TRADING_EXCHANGE_RATE_FIXED
-    | typeof constants.TRADING_EXCHANGE_RATE_FLOATING;
+    typeof constants.TRADING_EXCHANGE_RATE_FIXED | typeof constants.TRADING_EXCHANGE_RATE_FLOATING;
 
 export type TradingExchangeFormType =
-    | typeof constants.TRADING_EXCHANGE_FORM_CEX
-    | typeof constants.TRADING_EXCHANGE_FORM_DEX;
+    typeof constants.TRADING_EXCHANGE_FORM_CEX | typeof constants.TRADING_EXCHANGE_FORM_DEX;
 
 export type TradingExchangeKycFilter =
     | typeof constants.TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_ALL
@@ -255,6 +250,7 @@ export interface TradingExchangeFormProps extends FormState {
     [constants.TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT]: TradingAssetOption | null;
     [constants.TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]: TradingAssetSellOption | undefined;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
+    [constants.TRADING_FORM_AMOUNT_INPUT_SOURCE]?: TradingAmountInputSource;
     [constants.TRADING_EXCHANGE_RATE]: TradingExchangeRateType;
     [constants.TRADING_EXCHANGE_FORM]: TradingExchangeFormType;
     [constants.TRADING_EXCHANGE_COMPARATOR_KYC_FILTER]: TradingExchangeKycFilter;
@@ -276,7 +272,7 @@ export type MinimalExchangeFormProps = {
 export type TradingExchangeStepType = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SIGN_DATA';
 
 export type TradingSendRejectedProps<TranslationKey extends string = string> = {
-    type: 'error' | 'sign-tx-error' | 'sign-transaction-timeout';
+    type: 'error' | 'sign-tx-error' | 'sign-transaction-timeout' | 'sign-cancelled';
     error: {
         id: TranslationKey;
         values?: Record<string, PrimitiveType>;
@@ -305,6 +301,7 @@ export interface TradingSellFormProps extends FormState {
     [constants.TRADING_FORM_COUNTRY_SELECT]: TradingCountryOption;
     [constants.TRADING_FORM_COUNTRY_SUBDIVISION_SELECT]?: TradingCountrySubdivisionOption;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
+    [constants.TRADING_FORM_AMOUNT_INPUT_SOURCE]?: TradingAmountInputSource;
     [constants.TRADING_FORM_PROVIDER_SELECT]?: string;
 }
 

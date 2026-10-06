@@ -10,11 +10,17 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { type RadioCardProps } from '@trezor/components';
 import { type FeeLevel } from '@trezor/connect';
 
-export const FEE_CARD_MIN_WIDTH = 170;
+export const FEE_CARD_MIN_WIDTH = '170px';
 
-type FeeCardProps = {
+export type FeeCardAppearance = {
+    minWidth?: string;
+    cardType?: RadioCardProps['type'];
+};
+
+export type FeeCardProps = FeeCardAppearance & {
     value: FeeLevel['label'];
     isSelected: boolean;
     changeFeeLevel: (level: FeeLevel['label']) => void;
@@ -28,6 +34,8 @@ type FeeCardProps = {
 };
 
 export const FeeCard = ({
+    minWidth = FEE_CARD_MIN_WIDTH,
+    cardType,
     value,
     isSelected,
     changeFeeLevel,
@@ -39,13 +47,13 @@ export const FeeCard = ({
     isLoading,
     'data-testid': dataTestId,
 }: FeeCardProps) => (
-    <Box
-        data-testid={dataTestId}
-        minWidth={FEE_CARD_MIN_WIDTH}
-        flex={`1 1 ${FEE_CARD_MIN_WIDTH}px`}
-    >
+    <Box data-testid={dataTestId} minWidth={minWidth} flex={`1 1 ${minWidth}`}>
         <Tooltip content={tooltipContent} delayShow={TOOLTIP_DELAY_NORMAL} display="block">
-            <RadioCard onClick={() => changeFeeLevel(value)} isSelected={isSelected}>
+            <RadioCard
+                type={cardType}
+                onClick={() => changeFeeLevel(value)}
+                isSelected={isSelected}
+            >
                 <Column>
                     <Row justifyContent="space-between">
                         <Text typographyStyle="body-md-strong">{topLeftChild}</Text>

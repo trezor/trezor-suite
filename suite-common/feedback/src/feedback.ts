@@ -12,6 +12,8 @@ export type FeedbackCategory =
     | 'trade'
     | 'experimental'
     | 'feature'
+    | 'yield'
+    | 'staking'
     | 'other';
 
 type FeedbackExtras = Record<string, any>;
@@ -30,5 +32,4 @@ interface SuggestionPayload extends BasePayload {
 }
 
 export type Feedback =
-    | { type: 'BUG'; payload: BugPayload }
-    | { type: 'SUGGESTION'; payload: SuggestionPayload };
+    { type: 'BUG'; payload: BugPayload } | { type: 'SUGGESTION'; payload: SuggestionPayload };

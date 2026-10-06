@@ -1,54 +1,51 @@
 import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
-import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
-import { CheckIcon } from '@trezor/icons';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { Button, Illustration } from '@trezor/components';
 
-import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
-import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderInfo';
+import { TradingDetailTerminalDetails } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalDetails';
+import { TradingDetailTerminalState } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalState';
 
 type TradingExchangeDetailPaymentSuccessfulProps = {
     trade: ExchangeTrade;
     account?: Account;
+    receiveAccountKey?: AccountKey;
     provider?: ExchangeProviderInfo;
 };
 
 export const TradingExchangeDetailPaymentSuccessful = ({
     trade,
     account,
+    receiveAccountKey,
     provider,
 }: TradingExchangeDetailPaymentSuccessfulProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
-    const handleClick = () => dispatch(goto({ routeName: 'wallet-trading-exchange' }));
+    const handleClick = () => dispatch(gotoThunk({ routeName: 'wallet-trading-exchange' }));
 
     return (
-        <Column gap={24} padding={{ top: 12, bottom: 4 }}>
-            <IconCircle icon={CheckIcon} size={96} />
-            <Column>
-                <H3 data-testid="@trading/transaction/detail/status">
-                    <Translation id="TR_EXCHANGE_DETAIL_SUCCESS_TITLE" />
-                </H3>
-                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                    <Translation id="TR_EXCHANGE_DETAIL_SUCCESS_TEXT" />
-                </Paragraph>
-            </Column>
-            <Button onClick={handleClick}>
-                <Translation id="TR_EXCHANGE_DETAIL_SUCCESS_BUTTON" />
-            </Button>
-            {provider && (
-                <Card>
-                    <TradingDetailProviderInfo
-                        account={account}
-                        orderId={trade.orderId}
-                        provider={provider}
-                        trade={trade}
-                        txId={trade.receiveTxHash}
-                    />
-                </Card>
-            )}
-        </Column>
+        <TradingDetailTerminalState
+            artwork={<Illustration name="tradeSuccess" width={120} />}
+            title={<Translation id="TR_EXCHANGE_DETAIL_COMPLETE_TITLE" />}
+            description={<Translation id="TR_EXCHANGE_DETAIL_COMPLETE_TEXT" />}
+            action={
+                <Button onClick={handleClick} size="large">
+                    <Translation id="TR_EXCHANGE_DETAIL_COMPLETE_BUTTON" />
+                </Button>
+            }
+        >
+            <TradingDetailTerminalDetails
+                provider={provider}
+                trade={trade}
+                account={account}
+                receiveAccountKey={receiveAccountKey}
+                txId={trade.receiveTxHash}
+            />
+        </TradingDetailTerminalState>
     );
 };

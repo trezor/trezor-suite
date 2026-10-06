@@ -15,18 +15,20 @@ const HeaderContext = createContext<HeaderContextType | undefined>(undefined);
 
 type HeaderProviderProps = {
     children: ReactNode;
+    scrollThreshold?: number;
 };
 
-export const DynamicHeaderProvider = ({ children }: HeaderProviderProps) => {
+export const DynamicHeaderProvider = ({ children, scrollThreshold }: HeaderProviderProps) => {
     const [isScrollableHeaderScrolled, setIsScrollableHeaderScrolled] = useState(false);
     const [scrollableHeaderHeight, setScrollableHeaderHeight] = useState(0);
 
     const handleDynamicHeaderScroll = useCallback(
         ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
-            const isOffsetBigger = nativeEvent.contentOffset.y > scrollableHeaderHeight;
+            const isOffsetBigger =
+                nativeEvent.contentOffset.y > scrollableHeaderHeight * (scrollThreshold ?? 1);
             setIsScrollableHeaderScrolled(isOffsetBigger);
         },
-        [scrollableHeaderHeight],
+        [scrollThreshold, scrollableHeaderHeight],
     );
 
     return (

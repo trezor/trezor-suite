@@ -26,17 +26,17 @@ describe('ConciergeConfirmation', () => {
         mockUseOpenLink.mockReturnValue(mockOpenLink);
     });
 
-    it('should not render when no provider is selected', () => {
+    it('should not render when no provider is selected', async () => {
         mockUseConciergeProviders.mockReturnValue({
             selectedProvider: undefined,
         } as unknown as ReturnType<typeof useConciergeProviders>);
 
-        const { queryByText } = renderWithBasicProvider(<ConciergeConfirmation />);
+        const { queryByText } = await renderWithBasicProvider(<ConciergeConfirmation />);
 
         expect(queryByText(getTranslation('generic.buttons.continue'))).toBeNull();
     });
 
-    it('should render and open provider link on press when provider is selected', () => {
+    it('should render and open provider link on press when provider is selected', async () => {
         mockUseConciergeProviders.mockReturnValue({
             selectedProvider: {
                 name: 'Trezor OTC',
@@ -45,13 +45,13 @@ describe('ConciergeConfirmation', () => {
             },
         } as unknown as ReturnType<typeof useConciergeProviders>);
 
-        const { getByText } = renderWithBasicProvider(<ConciergeConfirmation />);
+        const { getByText } = await renderWithBasicProvider(<ConciergeConfirmation />);
 
         const continueButton = getByText(getTranslation('generic.buttons.continue'));
 
         expect(continueButton).toBeOnTheScreen();
 
-        fireEvent.press(continueButton);
+        await fireEvent.press(continueButton);
 
         expect(mockOpenLink).toHaveBeenCalledWith(TREZOR_URL);
     });

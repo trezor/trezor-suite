@@ -1,3 +1,4 @@
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     convertAmountSubunitsToUnits,
     getTxOperation,
@@ -11,6 +12,7 @@ import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 
 type AmountComponentProps = {
     transfer: TokenTransfer;
+    networkSymbol: NetworkSymbol;
     withLink?: boolean;
     withSign?: boolean;
     signGrayscale?: boolean;
@@ -20,6 +22,7 @@ type AmountComponentProps = {
 
 export const AmountComponent = ({
     transfer,
+    networkSymbol,
     withLink = false,
     withSign = false,
     signGrayscale,
@@ -32,6 +35,7 @@ export const AmountComponent = ({
         return (
             <FormattedNftAmount
                 transfer={transfer}
+                networkSymbol={networkSymbol}
                 isWithLink={withLink}
                 signValue={withSign ? operation : null}
                 signGrayscale={signGrayscale}

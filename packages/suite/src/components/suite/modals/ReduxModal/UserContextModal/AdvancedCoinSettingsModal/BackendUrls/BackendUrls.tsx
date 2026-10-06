@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectBlockchainUrlBySymbol } from '@suite-common/wallet-core';
 import { Button, Column, DotIndicator, Input, List, Row, Text } from '@trezor/components';
 import { PlusIcon, TrashIcon } from '@trezor/icons';
 
@@ -20,7 +21,7 @@ export function BackendUrls({
     addUrl,
     removeUrl,
 }: BackendUrlsProps) {
-    const blockchain = useSelector(state => state.wallet.blockchain);
+    const blockchainUrl = useSelector(state => selectBlockchainUrlBySymbol(state, symbol));
     const { data: defaultUrls } = useDefaultUrls(symbol);
 
     const { ref: inputRef, ...inputField } = input.register(input.name, {
@@ -36,18 +37,14 @@ export function BackendUrls({
                             data-testid="@settings/advance/url"
                             key={url}
                             bulletComponent={
-                                url === blockchain[symbol]?.url ? (
-                                    <DotIndicator isActive />
-                                ) : undefined
+                                url === blockchainUrl ? <DotIndicator isActive /> : undefined
                             }
                         >
                             <Row gap={12}>
                                 <Text
                                     overflowWrap="anywhere"
                                     intent="neutral"
-                                    priority={
-                                        url === blockchain[symbol]?.url ? 'primary' : 'secondary'
-                                    }
+                                    priority={url === blockchainUrl ? 'primary' : 'secondary'}
                                 >
                                     {url}
                                 </Text>

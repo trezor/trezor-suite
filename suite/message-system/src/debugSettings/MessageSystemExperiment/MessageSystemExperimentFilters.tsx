@@ -1,4 +1,5 @@
 import { Checkbox, Row } from '@trezor/components';
+
 type MessageSystemExperimentFiltersProps = {
     showActive: boolean;
     onToggleActive: () => void;

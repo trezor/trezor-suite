@@ -1,12 +1,23 @@
-import { type Dispatch } from '@reduxjs/toolkit';
+import { createAction } from '@reduxjs/toolkit';
 
-import { selectIsDeviceLocked } from '@suite/locks';
-import { closeModal, openModal } from '@suite/modal';
-import { selectDevices } from '@suite-common/device';
-import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
+import { type LocksRootState, selectIsDeviceLocked } from '@suite/locks';
+import { type ModalRootState, closeModal, openModal, selectModal } from '@suite/modal';
+import { type DeviceRootState, selectDevices } from '@suite-common/device';
+import {
+    Feature,
+    type MessageSystemRootState,
+    selectIsFeatureDisabled,
+} from '@suite-common/message-system';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { getDeviceInstances } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectAccountByKey, selectAddressDisplayType } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
+    selectAccountByKey,
+    selectAccounts,
+    selectAddressDisplayType,
+} from '@suite-common/wallet-core';
 import { type Account, type AccountKey, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import {
@@ -20,13 +31,16 @@ import {
     type SerializedCoinjoinRound,
 } from '@trezor/coinjoin';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { getOsName } from '@trezor/env-utils';
 import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
 
 import * as COINJOIN from './coinjoinConstants';
 import {
-    type GetState,
+    type CoinjoinRootState,
     selectCoinjoinAccounts,
+    selectCoinjoinClients,
+    selectCoinjoinDebug,
     selectRoundsDurationInHours,
     selectRoundsLeftByAccountKey,
     selectRoundsNeededByAccountKey,
@@ -41,162 +55,127 @@ import {
 } from './coinjoinUtils';
 import { type CoinjoinSymbol, getCoinjoinConfig } from './config';
 
-const clientEnable = (symbol: Account['symbol']) =>
-    ({
-        type: COINJOIN.CLIENT_ENABLE,
-        payload: {
-            symbol,
-        },
-    }) as const;
+const clientEnable = createAction(COINJOIN.CLIENT_ENABLE, (symbol: Account['symbol']) => ({
+    payload: { symbol },
+}));
 
-export const clientDisable = (symbol: Account['symbol']) =>
-    ({
-        type: COINJOIN.CLIENT_DISABLE,
-        payload: {
-            symbol,
-        },
-    }) as const;
+export const clientDisable = createAction(COINJOIN.CLIENT_DISABLE, (symbol: Account['symbol']) => ({
+    payload: { symbol },
+}));
 
-const clientEnableSuccess = (
-    symbol: Account['symbol'],
-    { version, ...status }: CoinjoinStatusEvent & { version: CoinjoinClientVersion },
-) =>
-    ({
-        type: COINJOIN.CLIENT_ENABLE_SUCCESS,
-        payload: {
-            symbol,
-            status,
-            version,
-        },
-    }) as const;
+const clientEnableSuccess = createAction(
+    COINJOIN.CLIENT_ENABLE_SUCCESS,
+    (
+        symbol: Account['symbol'],
+        { version, ...status }: CoinjoinStatusEvent & { version: CoinjoinClientVersion },
+    ) => ({ payload: { symbol, status, version } }),
+);
 
-const clientEnableFailed = (symbol: Account['symbol']) =>
-    ({
-        type: COINJOIN.CLIENT_ENABLE_FAILED,
-        payload: {
-            symbol,
-        },
-    }) as const;
+const clientEnableFailed = createAction(
+    COINJOIN.CLIENT_ENABLE_FAILED,
+    (symbol: Account['symbol']) => ({ payload: { symbol } }),
+);
 
-const clientOnStatusEvent = (symbol: Account['symbol'], status: CoinjoinStatusEvent) =>
-    ({
-        type: COINJOIN.CLIENT_STATUS,
-        payload: {
-            symbol,
-            status,
-        },
-    }) as const;
+const clientOnStatusEvent = createAction(
+    COINJOIN.CLIENT_STATUS,
+    (symbol: Account['symbol'], status: CoinjoinStatusEvent) => ({
+        payload: { symbol, status },
+    }),
+);
 
-const clientOnPrisonEvent = (event: CoinjoinClientEvents['prison']) =>
-    ({
-        type: COINJOIN.CLIENT_PRISON_EVENT,
-        payload: event.prison,
-    }) as const;
+export const clientOnPrisonEvent = createAction(
+    COINJOIN.CLIENT_PRISON_EVENT,
+    (event: CoinjoinClientEvents['prison']) => ({ payload: event.prison }),
+);
 
-const clientSessionRoundChanged = (
-    accountKey: string,
-    round: SerializedCoinjoinRound,
-    sessionDeadline: number,
-) =>
-    ({
-        type: COINJOIN.SESSION_ROUND_CHANGED,
-        payload: {
-            accountKey,
-            round,
-            sessionDeadline,
-        },
-    }) as const;
+export const clientSessionRoundChanged = createAction(
+    COINJOIN.SESSION_ROUND_CHANGED,
+    (accountKey: string, round: SerializedCoinjoinRound, sessionDeadline: number) => ({
+        payload: { accountKey, round, sessionDeadline },
+    }),
+);
 
-const clientSessionCompleted = (accountKey: string) =>
-    ({
-        type: COINJOIN.SESSION_COMPLETED,
-        payload: {
-            accountKey,
-        },
-    }) as const;
+export const coinjoinSessionCompleted = createAction(
+    COINJOIN.SESSION_COMPLETED,
+    (accountKey: string) => ({ payload: { accountKey } }),
+);
 
-const clientSessionTxSigned = (payload: {
-    accountKey: string;
-    roundId: string;
-    rawLiquidityClue: CoinjoinAccount['rawLiquidityClue'];
-}) =>
-    ({
-        type: COINJOIN.SESSION_TX_SIGNED,
-        payload,
-    }) as const;
+const clientSessionTxSigned = createAction(
+    COINJOIN.SESSION_TX_SIGNED,
+    (payload: {
+        accountKey: string;
+        roundId: string;
+        rawLiquidityClue: CoinjoinAccount['rawLiquidityClue'];
+    }) => ({ payload }),
+);
 
-const clientSessionTxCandidate = (accountKey: string, roundId: string) =>
-    ({
-        type: COINJOIN.SESSION_TX_CANDIDATE,
-        payload: {
-            accountKey,
-            roundId,
-        },
-    }) as const;
+const clientSessionTxCandidate = createAction(
+    COINJOIN.SESSION_TX_CANDIDATE,
+    (accountKey: string, roundId: string) => ({ payload: { accountKey, roundId } }),
+);
 
-const clientSessionTxBroadcasted = (accountKeys: string[], round: SerializedCoinjoinRound) =>
-    ({
-        type: COINJOIN.SESSION_TX_BROADCASTED,
-        payload: {
-            accountKeys,
-            round,
-        },
-    }) as const;
+export const clientSessionTxBroadcasted = createAction(
+    COINJOIN.SESSION_TX_BROADCASTED,
+    (accountKeys: string[], round: SerializedCoinjoinRound) => ({
+        payload: { accountKeys, round },
+    }),
+);
 
-const clientSessionTxFailed = (accountKeys: string[], round: SerializedCoinjoinRound) =>
-    ({
-        type: COINJOIN.SESSION_TX_FAILED,
-        payload: {
-            accountKeys,
-            round,
-        },
-    }) as const;
+const clientSessionTxFailed = createAction(
+    COINJOIN.SESSION_TX_FAILED,
+    (accountKeys: string[], round: SerializedCoinjoinRound) => ({
+        payload: { accountKeys, round },
+    }),
+);
 
-const clientSessionPhase = (payload: CoinjoinClientEvents['session-phase']) =>
-    ({
-        type: COINJOIN.CLIENT_SESSION_PHASE,
-        payload,
-    }) as const;
+export const clientSessionPhase = createAction(
+    COINJOIN.CLIENT_SESSION_PHASE,
+    (payload: CoinjoinClientEvents['session-phase']) => ({ payload }),
+);
 
-export const setDebugSettings = (payload: CoinjoinDebugSettings) =>
-    ({
-        type: COINJOIN.SET_DEBUG_SETTINGS,
-        payload,
-    }) as const;
+export const setDebugSettings = createAction(
+    COINJOIN.SET_DEBUG_SETTINGS,
+    (payload: CoinjoinDebugSettings) => ({ payload }),
+);
 
-export const coinjoinSessionPause = (accountKey: string) =>
-    ({
-        type: COINJOIN.SESSION_PAUSE,
-        payload: {
-            accountKey,
-        },
-    }) as const;
+export const coinjoinSessionPause = createAction(COINJOIN.SESSION_PAUSE, (accountKey: string) => ({
+    payload: { accountKey },
+}));
 
-export type CoinjoinClientAction =
-    | ReturnType<typeof setDebugSettings>
-    | ReturnType<typeof clientEnable>
-    | ReturnType<typeof clientDisable>
-    | ReturnType<typeof clientEnableSuccess>
-    | ReturnType<typeof clientEnableFailed>
-    | ReturnType<typeof clientOnStatusEvent>
-    | ReturnType<typeof clientOnPrisonEvent>
-    | ReturnType<typeof clientSessionRoundChanged>
-    | ReturnType<typeof clientSessionCompleted>
-    | ReturnType<typeof clientSessionPhase>
-    | ReturnType<typeof clientSessionTxSigned>
-    | ReturnType<typeof clientSessionTxCandidate>
-    | ReturnType<typeof clientSessionTxBroadcasted>
-    | ReturnType<typeof clientSessionTxFailed>
-    | ReturnType<typeof clientSessionPhase>
-    | ReturnType<typeof coinjoinSessionPause>;
+export const coinjoinAccountUnregister = createAction(
+    COINJOIN.ACCOUNT_UNREGISTER,
+    (accountKey: string) => ({ payload: { accountKey } }),
+);
+
+export type CoinjoinClientAction = ReturnType<
+    | typeof setDebugSettings
+    | typeof clientEnable
+    | typeof clientDisable
+    | typeof clientEnableSuccess
+    | typeof clientEnableFailed
+    | typeof clientOnStatusEvent
+    | typeof clientOnPrisonEvent
+    | typeof clientSessionRoundChanged
+    | typeof coinjoinSessionCompleted
+    | typeof clientSessionPhase
+    | typeof clientSessionTxSigned
+    | typeof clientSessionTxCandidate
+    | typeof clientSessionTxBroadcasted
+    | typeof clientSessionTxFailed
+    | typeof coinjoinSessionPause
+    | typeof coinjoinAccountUnregister
+>;
 
 // return only active instances
 export const getCoinjoinClient = (symbol: CoinjoinSymbol) =>
     CoinjoinService.getInstance(symbol)?.client;
 
-export const unregisterByAccountKey =
-    (accountKey: string) => (_dispatch: Dispatch, getState: GetState) => {
-        const { accounts } = getState().wallet;
+type UnregisterByAccountKeyThunkState = AccountsRootState;
+
+export const unregisterByAccountKeyThunk =
+    (accountKey: string) =>
+    (_dispatch: Dispatch, getState: () => UnregisterByAccountKeyThunkState) => {
+        const accounts = selectAccounts(getState());
         const realAccount = accounts.find(a => a.key === accountKey);
 
         const client =
@@ -210,9 +189,11 @@ export const unregisterByAccountKey =
     };
 
 export const endCoinjoinSession = (accountKey: string) => (dispatch: Dispatch) => {
-    dispatch(clientSessionCompleted(accountKey));
-    dispatch(unregisterByAccountKey(accountKey));
+    dispatch(coinjoinSessionCompleted(accountKey));
+    dispatch(unregisterByAccountKeyThunk(accountKey));
 };
+
+type SetBusyScreenThunkState = AccountsRootState & DeviceRootState;
 
 /**
  * Show "do not disconnect" screen on Trezor.
@@ -221,11 +202,10 @@ export const endCoinjoinSession = (accountKey: string) => (dispatch: Dispatch) =
  * - N accounts on 1 devices (like two passphrases)
  * - N accounts on X devices (like two physical device)
  */
-export const setBusyScreen =
-    (accountKeys: string[], expiry?: number) => (_dispatch: Dispatch, getState: GetState) => {
-        const {
-            wallet: { accounts },
-        } = getState();
+export const setBusyScreenThunk =
+    (accountKeys: string[], expiry?: number) =>
+    (_dispatch: Dispatch, getState: () => SetBusyScreenThunkState) => {
+        const accounts = selectAccounts(getState());
         const devices = selectDevices(getState());
 
         // collect unique deviceStates from accounts (passphrase)
@@ -265,21 +245,27 @@ export const setBusyScreen =
         );
     };
 
-export const hasCriticalPhaseModal = () => (_: Dispatch, getState: GetState) => {
-    const { modal } = getState();
+type HasCriticalPhaseModalThunkState = ModalRootState;
 
-    return 'payload' in modal && modal.payload.type === 'critical-coinjoin-phase';
-};
+export const hasCriticalPhaseModalThunk =
+    () => (_: Dispatch, getState: () => HasCriticalPhaseModalThunkState) => {
+        const modal = selectModal(getState());
+
+        return 'payload' in modal && modal.payload.type === 'critical-coinjoin-phase';
+    };
 
 export const closeCriticalPhaseModal = () => (dispatch: Dispatch) => {
-    if (dispatch(hasCriticalPhaseModal())) {
+    if (dispatch(hasCriticalPhaseModalThunk())) {
         dispatch(closeModal());
     }
 };
 
+type PauseCoinjoinSessionThunkState = AccountsRootState;
+
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
-export const pauseCoinjoinSession =
-    (accountKey: AccountKey) => (dispatch: Dispatch, getState: GetState) => {
+export const pauseCoinjoinSessionThunk =
+    (accountKey: AccountKey) =>
+    (dispatch: Dispatch, getState: () => PauseCoinjoinSessionThunkState) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || !isCoinjoinSupportedSymbol(account.symbol)) {
@@ -295,11 +281,13 @@ export const pauseCoinjoinSession =
         dispatch(coinjoinSessionPause(accountKey));
     };
 
+type StopCoinjoinSessionThunkState = AccountsRootState & CoinjoinRootState & DeviceRootState;
+
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
-export const stopCoinjoinSession =
-    (accountKey: AccountKey) => async (dispatch: Dispatch, getState: GetState) => {
-        const state = getState();
-        const account = selectAccountByKey(state, accountKey);
+export const stopCoinjoinSessionThunk =
+    (accountKey: AccountKey) =>
+    async (dispatch: Dispatch, getState: () => StopCoinjoinSessionThunkState) => {
+        const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || !isCoinjoinSupportedSymbol(account.symbol)) {
             return;
@@ -311,17 +299,17 @@ export const stopCoinjoinSession =
         client?.unregisterAccount(account.key);
 
         // cancelCoinjoinAuthorization should be called only if there is no other registered coinjoin account
-        const device = selectDevices(state).find(
-            d => d.state?.staticSessionId === account.deviceState,
-        );
+        const devices = selectDevices(getState());
+        const accounts = selectAccounts(getState());
+        const coinjoinAccounts = selectCoinjoinAccounts(getState());
+        const device = devices.find(d => d.state?.staticSessionId === account.deviceState);
         let shouldCancelAuthorization = device?.connected;
         if (device) {
             // find all instances of this physical device
-            const devices = selectDevices(state);
             const deviceInstances = getDeviceInstances(device, devices);
             // find other coinjoin accounts related to this physical device
             const otherAccounts = deviceInstances.flatMap(d =>
-                state.wallet.accounts.filter(
+                accounts.filter(
                     a =>
                         a.accountType === 'coinjoin' &&
                         a.key !== accountKey &&
@@ -330,7 +318,7 @@ export const stopCoinjoinSession =
             );
             // find coinjoin account with session
             const otherRegisteredAccounts = otherAccounts.flatMap(a =>
-                state.wallet.coinjoin.accounts.filter(cja => cja.key === a.key && cja.session),
+                coinjoinAccounts.filter(cja => cja.key === a.key && cja.session),
             );
             if (otherRegisteredAccounts.length > 0) {
                 shouldCancelAuthorization = false;
@@ -351,20 +339,16 @@ export const stopCoinjoinSession =
         }
 
         // dispatch data to reducer
-        dispatch({
-            type: COINJOIN.ACCOUNT_UNREGISTER,
-            payload: {
-                accountKey,
-            },
-        });
+        dispatch(coinjoinAccountUnregister(accountKey));
     };
 
-export const onCoinjoinRoundChanged =
+type OnCoinjoinRoundChangedThunkState = AccountsRootState & CoinjoinRootState;
+
+export const onCoinjoinRoundChangedThunk =
     ({ round }: CoinjoinRoundEvent) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const state = getState();
-        const coinjoinAccounts = selectCoinjoinAccounts(state);
-        const roundsDurationInHours = selectRoundsDurationInHours(state);
+    async (dispatch: Dispatch, getState: () => OnCoinjoinRoundChangedThunkState) => {
+        const coinjoinAccounts = selectCoinjoinAccounts(getState());
+        const roundsDurationInHours = selectRoundsDurationInHours(getState());
         // collect all account.keys from the round including failed one
         const accountKeys = round.inputs
             .concat(round.failed)
@@ -373,12 +357,18 @@ export const onCoinjoinRoundChanged =
 
         const currentTimestamp = Date.now();
 
-        const coinjoinAccountsWithSession = accountKeys.flatMap(
-            accountKey => coinjoinAccounts.find(r => r.key === accountKey && r.session) || [],
-        );
+        const coinjoinAccountsWithSession = accountKeys
+            .flatMap(
+                accountKey => coinjoinAccounts.find(r => r.key === accountKey && r.session) || [],
+            )
+            .map(account => ({
+                account,
+                roundsLeft: selectRoundsLeftByAccountKey(getState(), account.key),
+                roundsNeeded: selectRoundsNeededByAccountKey(getState(), account.key),
+            }));
 
         let phaseChanged = false;
-        coinjoinAccountsWithSession.forEach(account => {
+        coinjoinAccountsWithSession.forEach(({ account, roundsLeft, roundsNeeded }) => {
             if (account.session?.roundPhase !== round.phase) {
                 phaseChanged = true;
             }
@@ -390,8 +380,8 @@ export const onCoinjoinRoundChanged =
                     roundsDurationInHours,
                     account.session?.skipRounds,
                 ),
-                roundsLeft: selectRoundsLeftByAccountKey(state, account.key),
-                roundsNeeded: selectRoundsNeededByAccountKey(state, account.key),
+                roundsLeft,
+                roundsNeeded,
             });
 
             // notify reducers
@@ -402,7 +392,7 @@ export const onCoinjoinRoundChanged =
         // critical actions should be triggered only once
         if (phaseChanged) {
             if (round.phase === RoundPhase.Ended) {
-                await dispatch(setBusyScreen(accountKeys));
+                await dispatch(setBusyScreenThunk(accountKeys));
                 dispatch(closeCriticalPhaseModal());
 
                 if (round.endRoundState === EndRoundState.TransactionBroadcasted) {
@@ -412,34 +402,35 @@ export const onCoinjoinRoundChanged =
                 }
 
                 const accountsReachingMaxRounds = coinjoinAccountsWithSession.filter(
-                    ({ session }) => session?.signedRounds?.length === session?.maxRounds,
+                    ({ account: { session } }) =>
+                        session?.signedRounds?.length === session?.maxRounds,
                 );
                 if (accountsReachingMaxRounds.length) {
                     dispatch(openModal({ type: 'more-rounds-needed' }));
-                    accountsReachingMaxRounds.forEach(({ key }) => {
+                    accountsReachingMaxRounds.forEach(({ account: { key } }) => {
                         dispatch(endCoinjoinSession(key));
                     });
                 }
 
                 const accountsWithAutostop = coinjoinAccountsWithSession.filter(
-                    ({ key, session }) =>
-                        !accountsReachingMaxRounds.some(accout => accout.key === key) &&
+                    ({ account: { key, session } }) =>
+                        !accountsReachingMaxRounds.some(({ account }) => account.key === key) &&
                         session?.isAutoStopEnabled,
                 );
 
-                accountsWithAutostop.forEach(({ key }) => {
-                    dispatch(stopCoinjoinSession(key));
+                accountsWithAutostop.forEach(({ account: { key } }) => {
+                    dispatch(stopCoinjoinSessionThunk(key));
                 });
             } else if (
                 round.phase > RoundPhase.InputRegistration &&
-                !dispatch(hasCriticalPhaseModal())
+                !dispatch(hasCriticalPhaseModalThunk())
             ) {
-                await dispatch(setBusyScreen(accountKeys, round.roundDeadline - Date.now()));
+                await dispatch(setBusyScreenThunk(accountKeys, round.roundDeadline - Date.now()));
 
                 dispatch(
                     openModal({
                         type: 'critical-coinjoin-phase',
-                        relatedAccountKey: coinjoinAccountsWithSession[0]?.key ?? '', // since all accounts share the round, any key can be used,
+                        relatedAccountKey: coinjoinAccountsWithSession[0]?.account.key ?? '', // since all accounts share the round, any key can be used,
                     }),
                 );
             }
@@ -450,15 +441,18 @@ export const onCoinjoinRoundChanged =
 const coinjoinResponseError = (utxos: CoinjoinRequestEvent['inputs'], error: string) =>
     utxos.map(u => ({ outpoint: u.outpoint, error }));
 
-const getOwnershipProof =
+type GetOwnershipProofThunkState = AccountsRootState &
+    CoinjoinRootState &
+    DeviceRootState &
+    LocksRootState;
+
+const getOwnershipProofThunk =
     (request: Extract<CoinjoinRequestEvent, { type: 'ownership' }>) =>
-    async (_dispatch: Dispatch, getState: GetState) => {
-        const state = getState();
-        const {
-            wallet: { coinjoin, accounts },
-        } = state;
-        const devices = selectDevices(state);
-        const isDeviceLocked = selectIsDeviceLocked(state);
+    async (_dispatch: Dispatch, getState: () => GetOwnershipProofThunkState) => {
+        const coinjoinAccounts = selectCoinjoinAccounts(getState());
+        const accounts = selectAccounts(getState());
+        const devices = selectDevices(getState());
+        const isDeviceLocked = selectIsDeviceLocked(getState());
 
         // prepare empty response object
         const response: CoinjoinResponseEvent = {
@@ -476,7 +470,7 @@ const getOwnershipProof =
 
         // prepare array of parameters for TrezorConnect, grouped by TrezorDevice
         const groupParamsByDevice = Object.keys(groupUtxosByAccount).flatMap(key => {
-            const coinjoinAccount = coinjoin.accounts.find(r => r.key === key);
+            const coinjoinAccount = coinjoinAccounts.find(r => r.key === key);
             const realAccount = accounts.find(a => a.key === key);
             const utxos = groupUtxosByAccount[key] ?? [];
             if (!coinjoinAccount || !realAccount) {
@@ -509,7 +503,7 @@ const getOwnershipProof =
 
             const bundle = (groupUtxosByAccount[key] ?? []).map(utxo => ({
                 path: utxo.path,
-                coin: realAccount.symbol,
+                coin: asCoinSymbol(realAccount.symbol),
                 commitmentData: request.commitmentData,
                 userConfirmation: true,
                 preauthorized: true,
@@ -570,12 +564,16 @@ export const clientEmitException =
         });
     };
 
-const signCoinjoinTx =
+type SignCoinjoinTxThunkState = AccountsRootState &
+    CoinjoinRootState &
+    DeviceRootState &
+    WalletSettingsRootState;
+
+const signCoinjoinTxThunk =
     (request: Extract<CoinjoinRequestEvent, { type: 'signature' }>) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const {
-            wallet: { coinjoin, accounts },
-        } = getState();
+    async (dispatch: Dispatch, getState: () => SignCoinjoinTxThunkState) => {
+        const coinjoinAccounts = selectCoinjoinAccounts(getState());
+        const accounts = selectAccounts(getState());
         const devices = selectDevices(getState());
         const addressDisplayType = selectAddressDisplayType(getState());
 
@@ -594,7 +592,7 @@ const signCoinjoinTx =
         );
 
         const groupParamsByDevice = Object.keys(groupUtxosByAccount).flatMap(key => {
-            const coinjoinAccount = coinjoin.accounts.find(r => r.key === key);
+            const coinjoinAccount = coinjoinAccounts.find(r => r.key === key);
             const realAccount = accounts.find(a => a.key === key);
             const utxos = groupUtxosByAccount[key] ?? [];
             if (!coinjoinAccount || !realAccount) {
@@ -653,7 +651,7 @@ const signCoinjoinTx =
                             inputs: tx.inputs,
                             outputs: tx.outputs,
                             coinjoinRequest: tx.coinjoinRequest,
-                            coin: network,
+                            coin: asCoinSymbol(network),
                             preauthorized: true,
                             serialize: false,
                             unlockPath,
@@ -700,7 +698,7 @@ const signCoinjoinTx =
         );
 
         // disable busy screen
-        await dispatch(setBusyScreen(Object.keys(groupUtxosByAccount)));
+        await dispatch(setBusyScreenThunk(Object.keys(groupUtxosByAccount)));
         // and close 'critical-coinjoin-phase' modal
         dispatch(closeCriticalPhaseModal());
 
@@ -718,20 +716,24 @@ export const onCoinjoinClientRequest = (data: CoinjoinRequestEvent[]) => (dispat
     Promise.all(
         data.map(request => {
             if (request.type === 'ownership') {
-                return dispatch(getOwnershipProof(request));
+                return dispatch(getOwnershipProofThunk(request));
             }
             if (request.type === 'signature') {
-                return dispatch(signCoinjoinTx(request));
+                return dispatch(signCoinjoinTxThunk(request));
             }
 
             return request;
         }),
     );
 
-export const initCoinjoinService =
-    (symbol: Account['symbol']) => async (dispatch: Dispatch, getState: GetState) => {
-        const state = getState();
-        const { clients, debug, accounts } = state.wallet.coinjoin;
+type InitCoinjoinServiceThunkState = AccountsRootState & CoinjoinRootState & MessageSystemRootState;
+
+export const initCoinjoinServiceThunk =
+    (symbol: Account['symbol']) =>
+    async (dispatch: Dispatch, getState: () => InitCoinjoinServiceThunkState) => {
+        const clients = selectCoinjoinClients(getState());
+        const debug = selectCoinjoinDebug(getState());
+        const accounts = selectCoinjoinAccounts(getState());
 
         if (!isCoinjoinSupportedSymbol(symbol)) return;
 
@@ -744,7 +746,10 @@ export const initCoinjoinService =
             return knownService;
         }
 
-        const isCoinjoinDisabledByFeatureFlag = selectIsFeatureDisabled(state, Feature.coinjoin);
+        const isCoinjoinDisabledByFeatureFlag = selectIsFeatureDisabled(
+            getState(),
+            Feature.coinjoin,
+        );
         // retry if client was not enabled properly until now
         if (knownService && knownClient?.status === 'unavailable') {
             if (!isCoinjoinDisabledByFeatureFlag) {
@@ -766,7 +771,7 @@ export const initCoinjoinService =
         const prison = accounts
             .filter(account => account.symbol === symbol && account.prison)
             .flatMap(account => {
-                const realAccount = selectAccountByKey(state, account.key);
+                const realAccount = selectAccountByKey(getState(), account.key);
                 if (!realAccount) return [];
 
                 const utxos = realAccount.utxo!.map(getUtxoOutpoint);
@@ -814,7 +819,7 @@ export const initCoinjoinService =
             // handle prison event
             client.on('prison', event => dispatch(clientOnPrisonEvent(event)));
             // handle active round change
-            client.on('round', event => dispatch(onCoinjoinRoundChanged(event)));
+            client.on('round', event => dispatch(onCoinjoinRoundChangedThunk(event)));
             // handle requests (ownership proof, sign transaction)
             client.on('request', async data => {
                 const response = await dispatch(onCoinjoinClientRequest(data));

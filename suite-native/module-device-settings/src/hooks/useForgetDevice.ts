@@ -1,8 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceConnected, selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { forgetDeviceThunk } from '@suite-common/wallet-core';
 import { selectIsKnownBluetoothDevice, useBluetoothDevice } from '@suite-native/bluetooth';
 import { useTranslate } from '@suite-native/intl';
@@ -26,7 +28,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const useForgetDevice = () => {
     const navigation = useNavigation<NavigationProps>();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const { showToast } = useToast();
     const { translate } = useTranslate();

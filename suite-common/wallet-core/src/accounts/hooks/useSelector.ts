@@ -1,18 +1,11 @@
-import {
-    type TypedUseSelectorHook,
-    shallowEqual,
-    useSelector as useReduxSelector,
-} from 'react-redux';
-
-import { type AccountsRootState } from '../accountsReducer';
+import { shallowEqual, useSelector as useReduxSelector } from 'react-redux';
 
 /**
- * Properly typed useSelector hook, use this one instead of directly importing it from react-redux.
- * https://react-redux.js.org/using-react-redux/static-typing#typing-the-useselector-hook
- * Memoized using shallowEqual equality comparison
- * https://react-redux.js.org/api/hooks#equality-comparisons-and-updates
+ * @deprecated Selectors should return stable references so React Redux's default equality is
+ * sufficient. Import `useSelector` from `react-redux` instead of relying on the `shallowEqual`
+ * default provided here.
  */
-export const useSelector: TypedUseSelectorHook<AccountsRootState> = (
-    selector,
-    equalityFn = shallowEqual,
-) => useReduxSelector(selector, equalityFn);
+export const useSelector = <Selected>(
+    selector: (state: any) => Selected,
+    equalityFn: any = shallowEqual,
+): Selected => useReduxSelector(selector, equalityFn);

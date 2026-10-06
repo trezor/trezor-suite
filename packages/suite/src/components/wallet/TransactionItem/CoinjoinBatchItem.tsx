@@ -1,5 +1,7 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { IconCircle, Link } from '@trezor/components';
 import { ShuffleIcon } from '@trezor/icons';
@@ -7,7 +9,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
-import { useDispatch } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet/index';
 
 import { TransactionLayout } from './TransactionLayout';
@@ -19,7 +20,7 @@ type CoinjoinBatchItemProps = {
 };
 
 export const CoinjoinBatchItem = ({ transactions, isPending }: CoinjoinBatchItemProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     return (
         <TransactionLayout

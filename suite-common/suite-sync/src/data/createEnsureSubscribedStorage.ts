@@ -11,7 +11,7 @@ import { typedObjectValues } from '@trezor/utils';
 import { type EnsureStorageDep } from '../storage/createEnsureStorage';
 import { createStorageIdFromDeviceStaticSessionId } from '../storage/createStorageIdFromDeviceStaticSessionId';
 
-export type CreateEnsureSubscribedStorageDeps = EnsureStorageDep &
+export type EnsureSubscribedStorageDeps = EnsureStorageDep &
     SubscriptionStorageDep &
     SuiteSyncListenerDep;
 
@@ -20,7 +20,7 @@ export type CreateEnsureSubscribedStorageDeps = EnsureStorageDep &
  * - Ensure storage changes are subscribed to Redux-facing listeners exactly once.
  */
 export const createEnsureSubscribedStorage =
-    (deps: CreateEnsureSubscribedStorageDeps): EnsureSubscribedStorage =>
+    (deps: EnsureSubscribedStorageDeps): EnsureSubscribedStorage =>
     async ({ deviceStaticSessionId, isWriteMode }): ReturnType<EnsureSubscribedStorage> => {
         const storageResult = await deps.ensureStorage({
             deviceStaticSessionId,

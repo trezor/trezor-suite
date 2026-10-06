@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import Animated, { FadeInDown, FadeOutDown, LinearTransition } from 'react-native-reanimated';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { firmwareActions } from '@suite-common/firmware';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -13,7 +14,11 @@ import {
 } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
-import { DynamicScreenHeader } from '@suite-native/navigation';
+import {
+    DynamicScreenHeader,
+    useDisableIOSGesture,
+    useNavigationRemoveActionInterceptor,
+} from '@suite-native/navigation';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -21,7 +26,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { setTemporaryRememberedDeviceThunk } from '../firmwareThunks';
 import { DoNotCloseAppBottomSheetTrigger } from './DoNotCloseAppBottomSheetTrigger';
 import { FirmwareInstallationProgressTitles } from './FirmwareInstallationProgressTitles';
-import { MayBeStuckedBottomSheet } from './MayBeStuckedBottomSheet';
+import { MayBeStuckBottomSheet } from './MayBeStuckBottomSheet';
 import { TrezorFacts } from './TrezorFacts';
 import {
     UpdateProgressIndicator,
@@ -42,7 +47,6 @@ type FirmwareInstallationScreenContentProps = {
     isRetryAllowed?: boolean;
     isTemporaryRememeberAllowed?: boolean;
     navigationLocation: 'settings' | 'onboarding';
-    customHeader?: React.ReactNode;
     onCancelAction?: () => void;
 };
 
@@ -52,14 +56,13 @@ export const FirmwareInstallationScreenContent = ({
     onFirmwareInstallationSuccess,
     onFirmwareInstallationFailure,
     onCancelAction,
-    customHeader,
     isRetryAllowed = true,
     isTemporaryRememeberAllowed = true,
     navigationLocation,
 }: FirmwareInstallationScreenContentProps) => {
     useKeepAwake(); // Prevents screen from sleeping while installing firmware (might take few minutes).
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation();
 
@@ -78,13 +81,13 @@ export const FirmwareInstallationScreenContent = ({
         status,
         resetReducer,
         translatedText,
-        mayBeStucked,
+        mayBeStuck,
         originalDevice,
         targetFirmwareType,
     } = useFirmware({ navigationLocation });
     const {
         handleAnalyticsReportFinished,
-        handleAnalyticsReportStucked,
+        handleAnalyticsReportStuck,
         handleAnalyticsReportCancelled,
         handleAnalyticsReportStarted,
     } = useFirmwareAnalytics({
@@ -101,7 +104,7 @@ export const FirmwareInstallationScreenContent = ({
     const deviceFirmwareVendor = originalDevice?.features?.fw_vendor;
 
     const openMayBeStuckBottomSheet = () => {
-        handleAnalyticsReportStucked('modalPart1');
+        handleAnalyticsReportStuck('modalPart1');
         openModal();
     };
 
@@ -249,6 +252,9 @@ export const FirmwareInstallationScreenContent = ({
 
     const buttonStyle = applyStyle(bottomButtonsContainerStyle);
 
+    useDisableIOSGesture();
+    useNavigationRemoveActionInterceptor({ isEnabled: !isError });
+
     useEffect(() => {
         if (isSheetOpen && !showConfirmOnDevice) {
             closeSheet();
@@ -259,12 +265,8 @@ export const FirmwareInstallationScreenContent = ({
         if (showConfirmOnDevice) revealConfirmOnTrezorSheet();
     }, [closeSheet, isSheetOpen, showConfirmOnDevice, revealConfirmOnTrezorSheet]);
 
-    const CancelButton = customHeader ?? (
-        <DynamicScreenHeader closeActionType="close" closeAction={handleCancel} />
-    );
-
     const isDontCloseAppAlertDisplayed =
-        indicatorStatus === 'inProgress' && !isSheetOpen && !mayBeStucked && !isDone;
+        indicatorStatus === 'inProgress' && !isSheetOpen && !mayBeStuck && !isDone;
 
     return (
         <ConfirmOnTrezorWrapper
@@ -272,7 +274,11 @@ export const FirmwareInstallationScreenContent = ({
             controlRef={confirmOnTrezorRef}
             closeAction={onCancelAction ?? handleCancel}
             closeActionType="close"
-            defaultHeader={isError && CancelButton}
+            defaultHeader={
+                isError && (
+                    <DynamicScreenHeader closeActionType="close" closeAction={handleCancel} />
+                )
+            }
             isCloseButtonDisabled
         >
             <Box flex={1}>
@@ -306,7 +312,7 @@ export const FirmwareInstallationScreenContent = ({
                         </Button>
                     </VStack>
                 )}
-                {mayBeStucked && (
+                {mayBeStuck && (
                     <Animated.View
                         entering={FadeInDown}
                         exiting={FadeOutDown}
@@ -338,11 +344,10 @@ export const FirmwareInstallationScreenContent = ({
                     isTriggerDisplayed={isDontCloseAppAlertDisplayed}
                 />
             </Box>
-
-            <MayBeStuckedBottomSheet
+            <MayBeStuckBottomSheet
                 ref={bottomSheetRef}
                 onClose={closeMayBeStuckBottomSheet}
-                onAnalyticsReportStucked={handleAnalyticsReportStucked}
+                onAnalyticsReportStuck={handleAnalyticsReportStuck}
             />
         </ConfirmOnTrezorWrapper>
     );

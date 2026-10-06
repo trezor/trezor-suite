@@ -16,8 +16,7 @@ type AppParamsTypes = {
     accountIndex: number;
     accountType: NonNullable<AccountType>;
     cancelable: boolean;
-    yieldId: string;
-    contractAddress?: string;
+    vaultAddress?: string;
 };
 
 type ExtractType<T extends keyof AppParamsTypes> = {
@@ -29,10 +28,9 @@ export type ModalAppParams = {
 };
 
 export type RouteParams = {
-    [K in keyof (CommonWalletParams &
-        EarnParams &
-        ModalAppParams &
-        DashboardParams)]?: (CommonWalletParams & EarnParams & ModalAppParams & DashboardParams)[K];
+    [
+        K in keyof (CommonWalletParams & EarnParams & ModalAppParams & DashboardParams)
+    ]?: (CommonWalletParams & EarnParams & ModalAppParams & DashboardParams)[K];
 };
 
 type AppWithParams<T extends { [key: string]: any }> = {

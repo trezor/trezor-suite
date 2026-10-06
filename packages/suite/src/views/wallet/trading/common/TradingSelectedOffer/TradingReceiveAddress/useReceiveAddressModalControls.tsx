@@ -2,16 +2,11 @@ import { type ReactNode, createContext, useContext, useState } from 'react';
 
 import { throwError } from '@trezor/utils';
 
-import { TradingExtraFieldModal } from './TradingExtraFieldModal';
 import { TradingReceiveAccountModal } from './TradingReceiveAccountModal/TradingReceiveAccountModal';
 import { TradingReceiveAddressModal } from './TradingReceiveAddressModal';
 import { TradingUtxoReceiveAddressModal } from './TradingUtxoReceiveAddressModal/TradingUtxoReceiveAddressModal';
 
-type ReceiveAddressModal =
-    | 'accountModal'
-    | 'customAddressModal'
-    | 'utxoAddressModal'
-    | 'extraFieldModal';
+type ReceiveAddressModal = 'accountModal' | 'customAddressModal' | 'utxoAddressModal';
 
 const useReceiveAddressModal = () => {
     const [activeModal, setActiveModal] = useState<ReceiveAddressModal>();
@@ -33,7 +28,11 @@ const ReceiveAddressModalControlsContext = createContext<
     ReceiveAddressModalControlsContextType | undefined
 >(undefined);
 
-export const ReceiveAddressModalControlsProvider = ({ children }: { children: ReactNode }) => {
+type ReceiveAddressModalControlsProviderProps = { children: ReactNode };
+
+export const ReceiveAddressModalControlsProvider = ({
+    children,
+}: ReceiveAddressModalControlsProviderProps) => {
     const modal = useReceiveAddressModal();
 
     return (
@@ -45,8 +44,6 @@ export const ReceiveAddressModalControlsProvider = ({ children }: { children: Re
             {modal.activeModal === 'customAddressModal' && <TradingReceiveAddressModal />}
 
             {modal.activeModal === 'utxoAddressModal' && <TradingUtxoReceiveAddressModal />}
-
-            {modal.activeModal === 'extraFieldModal' && <TradingExtraFieldModal />}
         </ReceiveAddressModalControlsContext.Provider>
     );
 };

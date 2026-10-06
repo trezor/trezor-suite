@@ -2,20 +2,21 @@ import { useEffect, useRef } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { useToggleDebugMode } from '@suite/debug';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { openModal } from '@suite/modal';
-import { SettingsAnchor, closeModalApp, goto } from '@suite/router';
+import { SettingsAnchor, closeModalAppThunk, gotoThunk } from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
-import { toggleView as toggleGuideView } from 'src/actions/suite/guideActions';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { toggleViewThunk as toggleGuideView } from 'src/actions/suite/guideActions';
+import { useSelector } from 'src/hooks/suite';
 import { selectIsBioAuthEnabled } from 'src/reducers/bioAuth';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
@@ -32,7 +33,7 @@ const isTypingTarget = (target: EventTarget | null): boolean => {
 
 export const useAppShortcuts = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
-    const dispatch = useDispatch();
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
 
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress = discoveryStatus?.status === 'loading';
@@ -56,7 +57,7 @@ export const useAppShortcuts = () => {
 
         const gotoAccount = (account: ListedAccount | undefined) =>
             dispatch(
-                goto({
+                gotoThunk({
                     routeName: 'wallet-index',
                     params: {
                         symbol: account?.symbol,
@@ -75,13 +76,13 @@ export const useAppShortcuts = () => {
             isDeviceSelected
         ) {
             e.preventDefault();
-            dispatch(goto({ routeName: 'settings-index' }));
+            dispatch(gotoThunk({ routeName: 'settings-index' }));
         }
 
         // press ALT + P to open a passphrase (hidden) wallet
         if (altOnly && e.code === KEYBOARD_CODE.KEY_P && selectedDevice?.connected) {
             e.preventDefault();
-            dispatch(closeModalApp());
+            dispatch(closeModalAppThunk());
             dispatch(
                 startDiscoveryThunk({
                     device: selectedDevice,
@@ -95,7 +96,9 @@ export const useAppShortcuts = () => {
         if (altOnly && e.code === KEYBOARD_CODE.KEY_W && isDeviceSelected) {
             e.preventDefault();
             if (!discoveryInProgress) {
-                dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
+                dispatch(
+                    gotoThunk({ routeName: 'suite-switch-device', params: { cancelable: true } }),
+                );
             }
         }
 
@@ -142,7 +145,9 @@ export const useAppShortcuts = () => {
             if (!isBioAuthEnabled) {
                 // Biometric lock isn't set up yet, so there's nothing to lock with.
                 // Take the user to the setting and highlight it instead.
-                dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.BioAuth }));
+                dispatch(
+                    gotoThunk({ routeName: 'settings-index', anchor: SettingsAnchor.BioAuth }),
+                );
             } else {
                 dispatch(bioAuthActions.setCancelled(false));
                 dispatch(bioAuthActions.setIsBioAuthValidationRequired(true));
@@ -152,43 +157,43 @@ export const useAppShortcuts = () => {
         // press ALT + S to open the send flow
         if (altOnly && e.code === KEYBOARD_CODE.KEY_S && isDeviceSelected) {
             e.preventDefault();
-            dispatch(goto({ routeName: 'suite-index', params: { modal: 'send' } }));
+            dispatch(gotoThunk({ routeName: 'suite-index', params: { modal: 'send' } }));
         }
 
         // press ALT + R to open the receive flow
         if (altOnly && e.code === KEYBOARD_CODE.KEY_R && isDeviceSelected) {
             e.preventDefault();
-            dispatch(goto({ routeName: 'suite-index', params: { modal: 'receive' } }));
+            dispatch(gotoThunk({ routeName: 'suite-index', params: { modal: 'receive' } }));
         }
 
         // press ALT + X to open Swap (exchange)
         if (altOnly && e.code === KEYBOARD_CODE.KEY_X && isDeviceSelected) {
             e.preventDefault();
-            dispatch(goto({ routeName: 'wallet-trading-exchange', preserveParams: false }));
+            dispatch(gotoThunk({ routeName: 'wallet-trading-exchange', preserveParams: false }));
         }
 
         // press ALT + B to open Buy
         if (altOnly && e.code === KEYBOARD_CODE.KEY_B && isDeviceSelected) {
             e.preventDefault();
-            dispatch(goto({ routeName: 'wallet-trading-buy', preserveParams: false }));
+            dispatch(gotoThunk({ routeName: 'wallet-trading-buy', preserveParams: false }));
         }
 
         // press ALT + C to open Sell
         if (altOnly && e.code === KEYBOARD_CODE.KEY_C && isDeviceSelected) {
             e.preventDefault();
-            dispatch(goto({ routeName: 'wallet-trading-sell', preserveParams: false }));
+            dispatch(gotoThunk({ routeName: 'wallet-trading-sell', preserveParams: false }));
         }
 
         // press ALT + E to open Earn
         if (altOnly && e.code === KEYBOARD_CODE.KEY_E && isDeviceSelected) {
             e.preventDefault();
-            dispatch(goto({ routeName: 'suite-earn' }));
+            dispatch(gotoThunk({ routeName: 'suite-earn' }));
         }
 
         // press ALT + N to open Networks (coin settings)
         if (altOnly && e.code === KEYBOARD_CODE.KEY_N && isDeviceSelected) {
             e.preventDefault();
-            dispatch(goto({ routeName: 'settings-coins' }));
+            dispatch(gotoThunk({ routeName: 'settings-coins' }));
         }
 
         // press ALT + I to toggle the notifications (activity) dropdown in the sidebar
@@ -203,7 +208,7 @@ export const useAppShortcuts = () => {
         if (cmdOrCtrlAndAlt && isDeviceSelected) {
             if (e.code === KEYBOARD_CODE.DIGIT_ZERO) {
                 e.preventDefault();
-                dispatch(goto({ routeName: 'suite-index' }));
+                dispatch(gotoThunk({ routeName: 'suite-index' }));
             }
 
             const digitCodes: string[] = [

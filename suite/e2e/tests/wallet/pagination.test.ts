@@ -1,9 +1,10 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Pagination', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Pagination', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
 
     test(
@@ -24,15 +25,19 @@ test.describe('Pagination', { tag: ['@T3W1', '@T3T1'] }, () => {
                 ],
                 category: TestCategory.Accounts,
                 priority: TestPriority.Medium,
-                stream: TestStream.Engagement,
+                stream: TestStream.Wallet,
             }),
         },
 
         async ({ onboardingPage, walletPage, paginationControl, settingsPage }) => {
             await test.step('Complete onboarding', async () => {
                 await onboardingPage.completeOnboarding();
-                await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
-                await walletPage.openAccount({ symbol: 'btc', type: 'legacy', atIndex: 0 });
+                await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
+                await walletPage.openAccount({
+                    symbol: asNetworkSymbol('btc'),
+                    type: 'legacy',
+                    atIndex: 0,
+                });
             });
 
             await test.step('Go to page with pagination button', async () => {

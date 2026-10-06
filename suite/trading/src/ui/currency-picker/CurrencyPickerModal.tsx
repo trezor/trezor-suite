@@ -4,6 +4,7 @@ import {
     CardList,
     Column,
     Flag,
+    Icon,
     IconCircle,
     Input,
     Modal,
@@ -12,7 +13,7 @@ import {
     Row,
     Text,
 } from '@trezor/components';
-import { CoinIcon } from '@trezor/icons';
+import { CoinIcon, MagnifyingGlassIcon } from '@trezor/icons';
 
 import { useFiatCurrencyFilteredData } from './hooks/useFiatCurrencyFilteredData';
 import { type CurrencyPickerOption } from './types/currencyPickerTypes';
@@ -21,8 +22,6 @@ type CurrencyPickerModalProps = ModalProps & {
     onCurrencySelect: (currency: CurrencyPickerOption) => void;
     options: CurrencyPickerOption[];
 };
-
-type FiatCurrencyFlagInput = Parameters<typeof getFiatCurrencyFlag>[0];
 
 export const CurrencyPickerModal = ({
     onCurrencySelect,
@@ -42,6 +41,14 @@ export const CurrencyPickerModal = ({
                 <Input
                     onChange={ev => setFilterValue(ev.target.value)}
                     placeholder={translationString('TR_SEARCH_CURRENCY_PLACEHOLDER')}
+                    leftContent={
+                        <Icon
+                            as={MagnifyingGlassIcon}
+                            intent="neutral"
+                            priority="secondary"
+                            size={16}
+                        />
+                    }
                     onClear={() => setFilterValue('')}
                     showClearButton
                     value={filterValue}
@@ -50,7 +57,7 @@ export const CurrencyPickerModal = ({
                 {filteredData.length > 0 && (
                     <CardList>
                         {filteredData.map(option => {
-                            const flag = getFiatCurrencyFlag(option.value as FiatCurrencyFlagInput);
+                            const flag = getFiatCurrencyFlag(option.value);
 
                             return (
                                 <CardList.Item

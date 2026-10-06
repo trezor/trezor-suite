@@ -57,14 +57,14 @@ export const ReceiveFreshAddressHeader = ({
                         )}
                     </Text>
                     <HStack spacing="sp8" alignItems="center">
-                        <Text variant="body-md-strong">
-                            <AccountLabel
-                                accountDescriptor={accountDescriptor}
-                                networkSymbol={networkSymbol}
-                                deviceStaticSessionId={deviceStaticSessionId}
-                            />
-                            {tokenSymbol && ` - ${tokenSymbol}`}
-                        </Text>
+                        <AccountLabel
+                            variant="body-md-strong"
+                            accountDescriptor={accountDescriptor}
+                            networkSymbol={networkSymbol}
+                            deviceStaticSessionId={deviceStaticSessionId}
+                            showAccountTypeBadge
+                        />
+                        {tokenSymbol && <Text variant="body-md-strong">{` - ${tokenSymbol}`}</Text>}
                     </HStack>
                 </>
             }

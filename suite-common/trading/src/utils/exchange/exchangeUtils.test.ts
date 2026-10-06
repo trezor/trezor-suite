@@ -1,20 +1,59 @@
-import { type CryptoId } from 'invity-api';
+import { type BtcSwapComposeTemplate, type CryptoId } from 'invity-api';
 
-import { type PrecomposedLevels } from '@suite-common/wallet-types';
+import { type Network } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
+import TrezorConnect from '@trezor/connect';
 
 import {
+    deriveBitcoinSwapFromAddresses,
     getApprovalStatus,
     getDexEstimationData,
-    getDisplayComposedLevels,
     getDisplayNetworkFee,
     hasEip712SignDataType,
+    hasFixedPsbtFee,
+    requiresErc20Approval,
     requiresTokenApproval,
     tokenSupportsIncreasingAllowance,
 } from './exchangeUtils';
 
+jest.mock('@trezor/connect', () => ({
+    composeTransaction: jest.fn(),
+}));
+
 const USDT_CRYPTO_ID = 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId;
 const DAI_CRYPTO_ID = 'ethereum--0x6b175474e89094c44da98b954eedeac495271d0f' as CryptoId;
+const USDT_SOLANA_CRYPTO_ID = 'solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB' as CryptoId;
+const USDC_BASE_CRYPTO_ID = 'base--0x833589fcd6edb6e08f4c7c32d4f71b54bda02913' as CryptoId;
+
+describe('requiresErc20Approval', () => {
+    it('should return false when no crypto id is provided', () => {
+        expect(requiresErc20Approval(undefined)).toBe(false);
+    });
+
+    it('should return true for an ERC-20 token', () => {
+        expect(requiresErc20Approval(USDT_CRYPTO_ID)).toBe(true);
+    });
+
+    it('should return true for a token on another EVM network', () => {
+        expect(requiresErc20Approval(USDC_BASE_CRYPTO_ID)).toBe(true);
+    });
+
+    it('should return false for a native EVM coin', () => {
+        expect(requiresErc20Approval('ethereum' as CryptoId)).toBe(false);
+    });
+
+    it('should return false for a native EVM coin addressed by the zero contract', () => {
+        expect(
+            requiresErc20Approval('base--0x0000000000000000000000000000000000000000' as CryptoId),
+        ).toBe(false);
+    });
+
+    it('should return false for a non-EVM network, both native and token', () => {
+        expect(requiresErc20Approval('solana' as CryptoId)).toBe(false);
+        expect(requiresErc20Approval(USDT_SOLANA_CRYPTO_ID)).toBe(false);
+    });
+});
 
 describe('requiresTokenApproval', () => {
     it('should return false when no quote is provided', () => {
@@ -46,6 +85,26 @@ describe('requiresTokenApproval', () => {
         const quote = {
             orderId: 'test-order',
             isDex: true,
+        };
+        const result = requiresTokenApproval(quote);
+        expect(result).toBe(false);
+    });
+
+    it('should return false when sending native SOL', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: 'solana' as CryptoId,
+        };
+        const result = requiresTokenApproval(quote);
+        expect(result).toBe(false);
+    });
+
+    it('should return false when sending an SPL token', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: USDT_SOLANA_CRYPTO_ID,
         };
         const result = requiresTokenApproval(quote);
         expect(result).toBe(false);
@@ -349,6 +408,32 @@ describe('hasEip712SignDataType', () => {
     });
 });
 
+describe('hasFixedPsbtFee', () => {
+    const dexTx = { from: 'from', to: 'to', data: 'cHNidP8B', value: '0' };
+
+    it('should return true for a bitcoin DEX quote with a PSBT', () => {
+        expect(hasFixedPsbtFee({ isDex: true, dexTx }, 'bitcoin')).toBe(true);
+    });
+
+    it('should return false for a bitcoin CEX quote', () => {
+        expect(hasFixedPsbtFee({ isDex: false }, 'bitcoin')).toBe(false);
+    });
+
+    it('should return false for a bitcoin DEX quote without transaction data', () => {
+        expect(hasFixedPsbtFee({ isDex: true, dexTx: { ...dexTx, data: '' } }, 'bitcoin')).toBe(
+            false,
+        );
+    });
+
+    it('should return false for an EVM DEX quote', () => {
+        expect(hasFixedPsbtFee({ isDex: true, dexTx }, 'ethereum')).toBe(false);
+    });
+
+    it('should return false when no quote is provided', () => {
+        expect(hasFixedPsbtFee(undefined, 'bitcoin')).toBe(false);
+    });
+});
+
 describe('getDisplayNetworkFee', () => {
     it('should return the original fee for a non-gasless quote', () => {
         const quote = { orderId: 'test-order', isDex: false };
@@ -369,54 +454,177 @@ describe('getDisplayNetworkFee', () => {
     });
 });
 
-describe('getDisplayComposedLevels', () => {
-    const gaslessQuote = {
-        orderId: 'test-order',
-        exchange: '1inchfusion',
-        isDex: true,
-        signData: {
-            type: 'eip712-typed-data' as const,
-            data: { primaryType: 'Order' },
+describe('deriveBitcoinSwapFromAddresses', () => {
+    const account = {
+        networkType: 'bitcoin',
+        addresses: {
+            unused: [{ address: 'unused-address', path: "m/44'/0'/0'/0/0" }],
+            used: [{ address: 'used-address', path: "m/44'/0'/0'/0/1" }],
+            change: [{ address: 'change-address', path: "m/44'/0'/0'/1/0" }],
         },
-    };
+        utxo: [{ address: 'used-address', path: "m/44'/0'/0'/0/1", txid: 'abc', vout: 0 }],
+        availableBalance: '10000',
+        path: "m/44'/0'/0'",
+    } as unknown as Account;
 
-    const composedLevels = {
-        normal: { type: 'final', fee: '12345' },
-        high: { type: 'nonfinal', fee: '67890' },
-        custom: { type: 'error', error: 'NOT_ENOUGH_FUNDS' },
-    } as unknown as PrecomposedLevels;
+    const network = {
+        symbol: 'btc',
+        decimals: 8,
+    } as unknown as Network;
 
-    it('should return undefined when composedLevels is undefined', () => {
-        expect(getDisplayComposedLevels(gaslessQuote, undefined)).toBe(undefined);
+    const defaultOpreturnHex =
+        '3078306632656166663639313734646264333963366533346661366465653966326266626566663363313139366462303666636238356339313364376531663466643d7c6c6966696351';
+
+    const btcSwapComposeTemplateWithPercent = (
+        percent: number,
+        dataHex = defaultOpreturnHex,
+    ): BtcSwapComposeTemplate => ({
+        extraOutputs: [
+            { type: 'opreturn', dataHex },
+            { type: 'payment', amount: { kind: 'percent', value: percent } },
+            { type: 'payment', amount: { kind: 'percent', value: percent } },
+        ],
     });
 
-    it('should return undefined when both quote and composedLevels are undefined', () => {
-        expect(getDisplayComposedLevels(undefined, undefined)).toBe(undefined);
-    });
-
-    it('should return the original levels when quote is undefined', () => {
-        expect(getDisplayComposedLevels(undefined, composedLevels)).toBe(composedLevels);
-    });
-
-    it('should return the original levels for a non-gasless quote', () => {
-        const quote = { orderId: 'test-order', isDex: false };
-        expect(getDisplayComposedLevels(quote, composedLevels)).toBe(composedLevels);
-    });
-
-    it('should return the original levels for a non-gasless DEX quote', () => {
-        const quote = {
-            orderId: 'test-order',
-            isDex: true,
-            send: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
-        };
-        expect(getDisplayComposedLevels(quote, composedLevels)).toBe(composedLevels);
-    });
-
-    it('should zero the fee on all levels, replacing error levels with a zero-fee nonfinal level', () => {
-        expect(getDisplayComposedLevels(gaslessQuote, composedLevels)).toEqual({
-            normal: { type: 'final', fee: '0' },
-            high: { type: 'nonfinal', fee: '0' },
-            custom: { type: 'nonfinal', fee: '0' },
+    beforeEach(() => {
+        jest.clearAllMocks();
+        (TrezorConnect.composeTransaction as jest.Mock).mockResolvedValue({
+            success: true,
+            payload: [
+                {
+                    type: 'final',
+                    inputs: [{ prev_hash: 'abc', prev_index: 0 }],
+                    outputs: [{ amount: '5000' }],
+                },
+            ],
         });
+    });
+
+    it('should return undefined if btcSwapComposeTemplate is not provided', async () => {
+        const result = await deriveBitcoinSwapFromAddresses({
+            account,
+            network,
+            sendStringAmount: '0.0001',
+            decimals: 8,
+        });
+
+        expect(result).toBeUndefined();
+        expect(TrezorConnect.composeTransaction).not.toHaveBeenCalled();
+    });
+
+    it('should compose extraOutputs with percent amounts relative to send amount', async () => {
+        const result = await deriveBitcoinSwapFromAddresses({
+            account,
+            network,
+            sendStringAmount: '0.0001',
+            decimals: 8,
+            btcSwapComposeTemplate: btcSwapComposeTemplateWithPercent(2),
+        });
+
+        expect(result).toEqual({
+            addresses: ['used-address'],
+            amount: '5000',
+        });
+        expect(TrezorConnect.composeTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({
+                outputs: [
+                    { type: 'payment', amount: '10000', address: 'unused-address' },
+                    { type: 'opreturn', dataHex: defaultOpreturnHex },
+                    { type: 'payment', amount: '200', address: 'unused-address' },
+                    { type: 'payment', amount: '200', address: 'unused-address' },
+                ],
+            }),
+        );
+    });
+
+    it('should compose extraOutputs with a custom percent', async () => {
+        await deriveBitcoinSwapFromAddresses({
+            account,
+            network,
+            sendStringAmount: '0.0001',
+            decimals: 8,
+            btcSwapComposeTemplate: btcSwapComposeTemplateWithPercent(5, 'custom_opreturn'),
+        });
+
+        expect(TrezorConnect.composeTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({
+                outputs: [
+                    { type: 'payment', amount: '10000', address: 'unused-address' },
+                    { type: 'opreturn', dataHex: 'custom_opreturn' },
+                    { type: 'payment', amount: '500', address: 'unused-address' },
+                    { type: 'payment', amount: '500', address: 'unused-address' },
+                ],
+            }),
+        );
+    });
+
+    it('should compose extraOutputs with sats amounts and preserve output order', async () => {
+        await deriveBitcoinSwapFromAddresses({
+            account,
+            network,
+            sendStringAmount: '0.0001',
+            decimals: 8,
+            btcSwapComposeTemplate: {
+                extraOutputs: [
+                    { type: 'payment', amount: { kind: 'sats', value: '123' } },
+                    { type: 'opreturn', dataHex: 'custom_opreturn' },
+                ],
+            },
+        });
+
+        expect(TrezorConnect.composeTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({
+                outputs: [
+                    { type: 'payment', amount: '10000', address: 'unused-address' },
+                    { type: 'payment', amount: '123', address: 'unused-address' },
+                    { type: 'opreturn', dataHex: 'custom_opreturn' },
+                ],
+            }),
+        );
+    });
+
+    it('should treat sendStringAmount as satoshis when shouldSendInSats is true', async () => {
+        await deriveBitcoinSwapFromAddresses({
+            account,
+            network,
+            sendStringAmount: '10000',
+            decimals: 8,
+            shouldSendInSats: true,
+            btcSwapComposeTemplate: btcSwapComposeTemplateWithPercent(2),
+        });
+
+        expect(TrezorConnect.composeTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({
+                outputs: [
+                    { type: 'payment', amount: '10000', address: 'unused-address' },
+                    { type: 'opreturn', dataHex: defaultOpreturnHex },
+                    { type: 'payment', amount: '200', address: 'unused-address' },
+                    { type: 'payment', amount: '200', address: 'unused-address' },
+                ],
+            }),
+        );
+    });
+
+    it('should return undefined when no input address can be derived', async () => {
+        (TrezorConnect.composeTransaction as jest.Mock).mockResolvedValue({
+            success: true,
+            payload: [
+                {
+                    type: 'final',
+                    inputs: [{ prev_hash: 'unknown', prev_index: 99 }],
+                    outputs: [{ amount: '5000' }],
+                },
+            ],
+        });
+
+        const result = await deriveBitcoinSwapFromAddresses({
+            account,
+            network,
+            sendStringAmount: '0.0001',
+            decimals: 8,
+            btcSwapComposeTemplate: btcSwapComposeTemplateWithPercent(2),
+        });
+
+        expect(result).toBeUndefined();
     });
 });

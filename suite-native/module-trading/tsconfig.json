@@ -32,9 +32,6 @@
         },
         { "path": "../../suite-common/trading" },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -64,6 +61,7 @@
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../keyboard" },
         { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../message-system" },
@@ -71,7 +69,7 @@
             "path": "../module-stellar-token-management"
         },
         { "path": "../navigation" },
-        { "path": "../toasts" },
+        { "path": "../settings" },
         { "path": "../tokens" },
         { "path": "../trading-analytics" },
         { "path": "../trading-atoms" },
@@ -84,7 +82,9 @@
         { "path": "../trading-residence" },
         { "path": "../trading-slippage" },
         { "path": "../trading-state" },
+        { "path": "../trading-types" },
         { "path": "../transaction-management" },
+        { "path": "../transaction-review" },
         {
             "path": "../../packages/analytics-uploader"
         },
@@ -92,6 +92,9 @@
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/react-utils" },
         {
             "path": "../../packages/styles-native"
@@ -101,17 +104,24 @@
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         {
+            "path": "../../suite-common/discreet-mode"
+        },
+        {
             "path": "../../suite-common/suite-constants"
         },
         {
             "path": "../../suite-common/test-utils"
         },
+        {
+            "path": "../../suite-common/toast-notifications"
+        },
+        {
+            "path": "../../suite-common/tx-simulation"
+        },
         { "path": "../bluetooth" },
-        { "path": "../settings" },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },
-        { "path": "../trading-types" },
         { "path": "../../packages/requirements" }
     ]
 }

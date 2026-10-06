@@ -12,6 +12,8 @@ import {
     permissionIcons,
     selectConnectAppPermissions,
 } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     Card,
@@ -50,8 +52,7 @@ import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-
+import { useSelector } from 'src/hooks/suite';
 // The remove button sits next to the permission text and is only revealed when
 // the row is hovered or a child receives keyboard focus, to reduce clutter.
 // Mirrors the reveal styling of EditableText's ActionsContainer.
@@ -117,10 +118,12 @@ export const getPermissionText = (permissionType: MethodPermission | string) => 
     }
 };
 
+type GroupBadgeProps = { coin?: string };
+
 // Network icon for a coin group; falls back to a rounded-square badge that
 // mirrors NetworkIcon for the device group (no coin) or altcoins that suite has
 // no network icon for.
-const GroupBadge = ({ coin }: { coin?: string }) => {
+const GroupBadge = ({ coin }: GroupBadgeProps) => {
     const symbol = coin?.toLowerCase();
 
     if (symbol && isNetworkSymbolWithIcon(symbol)) {
@@ -140,12 +143,16 @@ const GroupBadge = ({ coin }: { coin?: string }) => {
     );
 };
 
+type PermissionIconProps = { permission: MethodPermission };
+
 // Shared so the collapsed preview and the expanded rows render identical icons.
-const PermissionIcon = ({ permission }: { permission: MethodPermission }) => (
+const PermissionIcon = ({ permission }: PermissionIconProps) => (
     <Icon as={getPermissionIcon(permission)} size={20} intent="neutral" priority="secondary" />
 );
 
-const PermissionPreview = ({ permissions }: { permissions: MethodPermission[] }) => {
+type PermissionPreviewProps = { permissions: MethodPermission[] };
+
+const PermissionPreview = ({ permissions }: PermissionPreviewProps) => {
     const shown = permissions.slice(0, PERMISSION_PREVIEW_LIMIT);
     const remaining = permissions.length - shown.length;
 
@@ -162,6 +169,9 @@ const PermissionPreview = ({ permissions }: { permissions: MethodPermission[] })
         </Row>
     );
 };
+
+// The e2e testID convention allows no underscores; connectPermissionsModal.ts mirrors this.
+const permissionTestId = (permission: MethodPermission) => permission.replace(/_/g, '-');
 
 type PermissionGroupProps = {
     coin?: CoinSymbol;
@@ -180,7 +190,7 @@ const PermissionGroup = ({
     const [isOpen, setIsOpen] = useState(defaultIsOpen);
 
     return (
-        <Collapsible isOpen={isOpen}>
+        <Collapsible isOpen={isOpen} data-testid={`@connect-permissions/group/${coin ?? 'device'}`}>
             <Collapsible.Toggle onClick={() => setIsOpen(!isOpen)}>
                 <Row justifyContent="space-between" gap={12} padding={{ vertical: 8 }}>
                     <Row gap={16}>
@@ -198,7 +208,10 @@ const PermissionGroup = ({
             <Collapsible.Content>
                 <Column gap={8} margin={{ top: 4, bottom: 8 }}>
                     {permissions.map(permission => (
-                        <PermissionRow key={permission}>
+                        <PermissionRow
+                            key={permission}
+                            data-testid={`@connect-permissions/permission/${permissionTestId(permission)}`}
+                        >
                             <Row gap={12}>
                                 <PermissionIcon permission={permission} />
                                 <Text typographyStyle="body-sm">
@@ -254,7 +267,7 @@ export const GroupedPermissionsList = ({
 );
 
 export const ConnectPermissions = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const apps = useSelector(selectConnectAppPermissions);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
 

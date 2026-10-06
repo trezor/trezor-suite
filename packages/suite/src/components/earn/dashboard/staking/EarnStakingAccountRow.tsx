@@ -1,32 +1,31 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    calculateRewards,
+    getNetworkAdjustedStakingBalance,
+    getStakingDataForNetwork,
+    getStakingLimitsByNetworkSymbol,
+    isCardanoWithdrawalBlockedByMissingDrep,
     selectAccountClaimTransactions,
     selectAccountIsStakingActive,
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    calculateRewards,
-    getAccountTotalStakingBalance,
-    getStakingDataForNetwork,
-    getStakingLimitsByNetworkSymbol,
-    isPending,
-} from '@suite-common/wallet-utils';
+import { getAccountTotalStakingBalance, isPending } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Paragraph, Row, Table, Text } from '@trezor/components';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
@@ -45,9 +44,8 @@ interface EarnStakingAccountRowProps {
 }
 
 export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAccountRowProps) => {
-    const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isBelowMobile } = useLayoutSize();
 
     const { rate } = useStakingRate({ symbol: account.symbol, accountKey: account.key });
@@ -73,7 +71,13 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     } = useMessageSystemStaking(account.symbol);
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
-    const isClaimButtonDisabled = isClaimingDisabled || isClaimPending;
+    const isDrepDelegationRequired = isCardanoWithdrawalBlockedByMissingDrep(account);
+    const isClaimButtonDisabled = isClaimingDisabled || isClaimPending || isDrepDelegationRequired;
+    const claimTooltipContent =
+        claimingMessageContent ??
+        (isDrepDelegationRequired ? (
+            <Translation id="TR_STAKE_DREP_DELEGATION_REQUIRED" />
+        ) : undefined);
 
     const minStakingAmount = getStakingLimitsByNetworkSymbol(
         account.symbol,
@@ -92,7 +96,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                 getTradingPrefilledFromAccountData(account),
             ),
         );
-        dispatch(goto({ routeName: 'wallet-trading-buy' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));
 
         analytics.report({
             type: events.tradeNavigateEvent.name,
@@ -109,7 +113,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         event?.stopPropagation();
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'wallet-staking',
                 params: {
                     symbol: account.symbol,
@@ -137,7 +141,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'wallet-staking',
                 params: {
                     symbol: account.symbol,
@@ -146,16 +150,15 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                 },
             }),
         );
-        dispatch(openModal({ type: 'stake', flow: EarnFlow.Stake, account }));
-
-        analytics.report({
-            type: events.stakingStakeEvent.name,
-            payload: {
-                action: 'continue',
-                step: 'staking-dashboard',
-                networkSymbol: account.symbol,
-            },
-        });
+        dispatch(
+            openModal({
+                type: 'earn-in-a-nutshell',
+                flow: EarnFlow.Stake,
+                provider: EarnProvider.Everstake,
+                account,
+                analyticsStep: 'staking-dashboard',
+            }),
+        );
     };
 
     const openClaimModal = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -166,7 +169,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'wallet-staking',
                 params: {
                     symbol: account.symbol,
@@ -192,8 +195,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             symbol: account.symbol,
             isBalance: true,
             withSymbol,
-            isEllipsisAppended: false,
-            maxDisplayedDecimals: 8,
+            formatStyle: 'compact-balance',
         });
 
     const currentRewards = calculateRewards(stakingBalance, rate);
@@ -227,7 +229,12 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
             <Translation
                 id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
-                values={{ amount: minStakingAmount?.toString(), displaySymbol }}
+                values={{
+                    amount: minStakingAmount
+                        ? formatCryptoAmount(minStakingAmount.toString())
+                        : undefined,
+                    displaySymbol,
+                }}
             />
         </Paragraph>
     );
@@ -246,7 +253,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         event.stopPropagation();
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-tron-stake',
                 params: {
                     symbol: account.symbol,
@@ -274,7 +281,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         event.stopPropagation();
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-tron-vote',
                 params: {
                     symbol: account.symbol,
@@ -305,8 +312,9 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         isVotingDisabled,
         votingMessageContent,
         canClaim,
+        networkType: account.networkType,
         isClaimButtonDisabled,
-        claimingMessageContent,
+        claimingMessageContent: claimTooltipContent,
         onBuy: navigateToTradingBuy,
         onStake: account.symbol === 'trx' ? onTronStake : openStakeModal,
         onStakeNow: account.symbol === 'trx' ? onTronStake : navigateToStaking,

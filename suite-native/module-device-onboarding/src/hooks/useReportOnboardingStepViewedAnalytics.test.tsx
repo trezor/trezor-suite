@@ -6,12 +6,12 @@ import { act, renderHook } from '@suite-native/test-utils-store';
 
 import { useReportOnboardingStepViewedAnalytics } from './useReportOnboardingStepViewedAnalytics';
 
-const renderUseReportStepViewed = () => {
+const renderUseReportStepViewed = async () => {
     const services: NativeAnalyticsDep = {
         analytics: mockNativeAnalytics(jest.fn()),
     };
 
-    const view = renderHook(() => useReportOnboardingStepViewedAnalytics(), {
+    const view = await renderHook(() => useReportOnboardingStepViewedAnalytics(), {
         wrapper: ({ children }) => (
             <ServicesProvider services={services}>{children}</ServicesProvider>
         ),
@@ -21,10 +21,10 @@ const renderUseReportStepViewed = () => {
 };
 
 describe('useReportOnboardingStepViewedAnalytics', () => {
-    it('reports a step once on entry with mobile platform and per-platform index', () => {
-        const { result, analytics } = renderUseReportStepViewed();
+    it('reports a step once on entry with mobile platform and per-platform index', async () => {
+        const { result, analytics } = await renderUseReportStepViewed();
 
-        act(() => {
+        await act(() => {
             result.current(DeviceOnboardingStackRoutes.FirmwareInfo);
         });
 
@@ -35,10 +35,10 @@ describe('useReportOnboardingStepViewedAnalytics', () => {
         });
     });
 
-    it('does not re-report while moving across screens of the same canonical step', () => {
-        const { result, analytics } = renderUseReportStepViewed();
+    it('does not re-report while moving across screens of the same canonical step', async () => {
+        const { result, analytics } = await renderUseReportStepViewed();
 
-        act(() => {
+        await act(() => {
             result.current(DeviceOnboardingStackRoutes.FirmwareInfo);
             result.current(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);
             result.current(DeviceOnboardingStackRoutes.FirmwareInstallation);
@@ -47,10 +47,10 @@ describe('useReportOnboardingStepViewedAnalytics', () => {
         expect(analytics.report).toHaveBeenCalledTimes(1);
     });
 
-    it('reports again when the canonical step changes', () => {
-        const { result, analytics } = renderUseReportStepViewed();
+    it('reports again when the canonical step changes', async () => {
+        const { result, analytics } = await renderUseReportStepViewed();
 
-        act(() => {
+        await act(() => {
             result.current(DeviceOnboardingStackRoutes.FirmwareInfo);
             result.current(DeviceOnboardingStackRoutes.DeviceTutorial);
         });
@@ -63,10 +63,10 @@ describe('useReportOnboardingStepViewedAnalytics', () => {
         );
     });
 
-    it('does not report for non-step (skipped) screens', () => {
-        const { result, analytics } = renderUseReportStepViewed();
+    it('does not report for non-step (skipped) screens', async () => {
+        const { result, analytics } = await renderUseReportStepViewed();
 
-        act(() => {
+        await act(() => {
             result.current(DeviceOnboardingStackRoutes.CreateWalletLoading);
             result.current(DeviceOnboardingStackRoutes.WalletCreatedSuccess);
         });

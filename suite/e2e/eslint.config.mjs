@@ -1,4 +1,9 @@
-import { eslint, playwrightEslintFlat } from '@trezor/eslint';
+import {
+    allowDevDependenciesIn,
+    eslint,
+    noRestrictedSyntax,
+    playwrightEslintFlat,
+} from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -14,9 +19,31 @@ export default [
     },
     playwrightEslintFlat,
     {
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                ...noRestrictedSyntax,
+                {
+                    selector:
+                        "CallExpression[callee.type='MemberExpression'][callee.property.name=/^(textContent|allTextContents)$/]",
+                    message:
+                        'To assert text prefer the auto-retrying expect(locator).toHaveText(), otherwise use innerText()/allInnerTexts().',
+                },
+            ],
+        },
+    },
+    {
+        files: ['**/tests/**/*.test.ts'],
+        rules: {
+            'local-rules/enforce-e2e-test-stream': 'error',
+        },
+    },
+    {
         files: ['**/tests/manual/**'],
         rules: {
             'playwright/no-skipped-test': 'off',
         },
     },
+    // The whole package is a private test suite, so every file may use devDependencies.
+    allowDevDependenciesIn(['**']),
 ];

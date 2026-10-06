@@ -5,7 +5,9 @@ import TrezorConnectMobile from '@trezor/connect-mobile';
 import TrezorConnect from '@trezor/connect-web';
 import { getDeepValue } from '@trezor/schema-utils/src/utils';
 
-import type { Dispatch, Field, GetState } from '../types';
+import { type MethodRootState, selectMethod } from '../reducers/methodReducer';
+import { type ConnectRootState, selectConnect } from '../reducers/trezorConnectReducer';
+import type { Dispatch, Field } from '../types';
 import {
     ADD_BATCH,
     FIELD_CHANGE,
@@ -63,69 +65,78 @@ export const onSetManualMode = (manualMode: boolean) => ({
     manualMode,
 });
 
-export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { method, connect } = getState();
-    if (!method?.name) throw new Error('method name not specified');
-    dispatch({ type: SET_METHOD_PROCESSING, payload: true });
-    const trezorConnectImpl =
-        connect.options?.coreMode === 'deeplink' ? TrezorConnectMobile : TrezorConnect;
-    const connectMethod = trezorConnectImpl[method.name];
-    if (typeof connectMethod !== 'function') {
-        dispatch(
-            onResponse({
-                error: `Method "${method.name}" not found in TrezorConnect`,
-            }),
-        );
+type OnSubmitThunkState = ConnectRootState & MethodRootState;
 
-        return;
-    }
+export const onSubmitThunk =
+    () => async (dispatch: Dispatch, getState: () => OnSubmitThunkState) => {
+        const method = selectMethod(getState());
+        const connect = selectConnect(getState());
+        if (!method?.name) throw new Error('method name not specified');
+        dispatch({ type: SET_METHOD_PROCESSING, payload: true });
+        const trezorConnectImpl =
+            connect.options?.coreMode === 'deeplink' ? TrezorConnectMobile : TrezorConnect;
+        const connectMethod = trezorConnectImpl[method.name];
+        if (typeof connectMethod !== 'function') {
+            dispatch(
+                onResponse({
+                    error: `Method "${method.name}" not found in TrezorConnect`,
+                }),
+            );
 
-    // @ts-expect-error params type is unknown
-    const response = await connectMethod({
-        ...method.params,
-    });
-    dispatch({ type: SET_METHOD_PROCESSING, payload: false });
-    dispatch(onResponse(response));
-};
+            return;
+        }
 
-export const onCodeChange = (value: string) => (dispatch: Dispatch, getState: GetState) => {
-    try {
-        const { fields } = getState().method;
-        const parsed = JSON5.parse(value);
-        const processField = (field: Field<unknown>) => {
-            const valuePath = [...(field.path || []), ...field.name.split('.')].filter(f => !!f);
-            const value = getDeepValue(parsed, valuePath);
+        // @ts-expect-error params type is unknown
+        const response = await connectMethod({
+            ...method.params,
+        });
+        dispatch({ type: SET_METHOD_PROCESSING, payload: false });
+        dispatch(onResponse(response));
+    };
 
-            if (field.type === 'array') {
-                // ensure the array has the correct number of items
-                if (value) {
-                    for (let i = field.items.length; i < value.length; i++) {
-                        const { batch } = field;
-                        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                        const firstBatch: (typeof batch)[number] = batch[0];
-                        dispatch(onBatchAdd(field, firstBatch.fields));
+type OnCodeChangeThunkState = MethodRootState;
+
+export const onCodeChangeThunk =
+    (value: string) => (dispatch: Dispatch, getState: () => OnCodeChangeThunkState) => {
+        try {
+            const { fields } = selectMethod(getState());
+            const parsed = JSON5.parse(value);
+            const processField = (field: Field<unknown>) => {
+                const valuePath = [...(field.path || []), ...field.name.split('.')].filter(
+                    f => !!f,
+                );
+                const value = getDeepValue(parsed, valuePath);
+
+                if (field.type === 'array') {
+                    // ensure the array has the correct number of items
+                    if (value) {
+                        for (let i = field.items.length; i < value.length; i++) {
+                            const { batch } = field;
+                            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                            const firstBatch: (typeof batch)[number] = batch[0];
+                            dispatch(onBatchAdd(field, firstBatch.fields));
+                        }
+                        for (let i = field.items.length; i > value.length; i--) {
+                            dispatch(onBatchRemove(field, field.items[i - 1]));
+                        }
                     }
-                    for (let i = field.items.length; i > value.length; i--) {
-                        dispatch(onBatchRemove(field, field.items[i - 1]));
-                    }
+
+                    field.items.forEach(batch => {
+                        batch.forEach(processField);
+                    });
+                } else if (field.type === 'union') {
+                    field.options.forEach(batch => {
+                        batch.forEach(processField);
+                    });
+                } else {
+                    dispatch(onFieldChange(field, value));
                 }
-
-                field.items.forEach(batch => {
-                    batch.forEach(processField);
-                });
-            } else if (field.type === 'union') {
-                field.options.forEach(batch => {
-                    batch.forEach(processField);
-                });
-            } else {
-                dispatch(onFieldChange(field, value));
-            }
-        };
-        fields.forEach(processField);
-    } catch (error) {
-        console.error('Invalid JSON', error);
-    }
-};
+            };
+            fields.forEach(processField);
+        } catch (error) {
+            console.error('Invalid JSON', error);
+        }
+    };
 
 export const onCancelCall = () => () => {
     TrezorConnect.cancel();

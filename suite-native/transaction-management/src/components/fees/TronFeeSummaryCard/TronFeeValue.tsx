@@ -1,6 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { HStack, Text } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 
 type TronFeeValueProps = {
     trxBurned: string | null;
@@ -19,7 +19,7 @@ export const TronFeeValue = ({
     if (trxBurned !== null) {
         return (
             <HStack alignItems="center" spacing="sp4">
-                <CryptoAmountFormatter
+                <ExactCryptoAmountFormatter
                     variant="body-sm"
                     color="contentPrimary"
                     value={trxBurned}
@@ -56,7 +56,7 @@ export const TronFeeValue = ({
     }
 
     return (
-        <CryptoAmountFormatter
+        <ExactCryptoAmountFormatter
             variant="body-sm"
             color="contentPrimary"
             value={null}

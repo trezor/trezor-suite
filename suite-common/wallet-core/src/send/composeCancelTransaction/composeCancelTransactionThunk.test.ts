@@ -1,4 +1,5 @@
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, { type PrecomposeResultFinal } from '@trezor/connect';
 
@@ -8,39 +9,30 @@ import {
     composeCancelTransactionThunk,
 } from './composeCancelTransactionThunk';
 
-const initStore = () => configureMockStore({});
+const initStore = () => createTestCompositionRoot<void, unknown>({}).services.store;
 
-const FIRST_ACCOUNT_CHANGE_ADDRESS = 'bcrt1qte33uyyfzrdrm9nqk0uwlq9dqr6ezu2gurhree';
+const UNUSED_CHANGE_ADDRESS = 'bcrt1qte33uyyfzrdrm9nqk0uwlq9dqr6ezu2gurhree';
 
 const account: ComposeCancelTransactionThunkParams['account'] = {
     path: "m/84'/1'/0'",
-    symbol: 'regtest',
-    utxo: [],
+    symbol: asNetworkSymbol('regtest'),
     addresses: {
         change: [
             {
-                address: FIRST_ACCOUNT_CHANGE_ADDRESS,
+                address: UNUSED_CHANGE_ADDRESS,
                 path: "m/84'/1'/0'/1/0",
-                transfers: 2,
-                balance: '',
-                sent: '',
-                received: '',
-            },
-        ],
-        used: [],
-        unused: [
-            {
-                address: 'bcrt1qaqma3u205mykw7uhrav5tugn8ylu9f55uk8leg',
-                path: "m/84'/1'/0'/0/1",
                 transfers: 0,
                 balance: '',
                 sent: '',
                 received: '',
             },
         ],
+        used: [],
+        unused: [],
     },
 };
-const ORIGINAL_CHANGE_ADDRESS = 'bcrt1qte33uyyfzrdrm9nqk0uwlq9dqr6ezu2gurhree';
+
+const ORIGINAL_CHANGE_ADDRESS = 'bcrt1qejqxwzfld7zr6mf7ygqy5s5se5xq7vmt8ntmj0';
 
 const transactionWithChange: Pick<WalletAccountTransaction, 'details' | 'vsize' | 'fee'> = {
     fee: '1410',
@@ -84,7 +76,7 @@ const transactionWithNoChange: Pick<WalletAccountTransaction, 'details' | 'vsize
             {
                 value: '8999998590',
                 n: 0,
-                addresses: ['bcrt1qte33uyyfzrdrm9nqk0uwlq9dqr6ezu2gurhree'],
+                addresses: ['bcrt1qreeergcmsw604zgd7hsreq6872swxnh3485fs5'],
                 isAddress: true,
             },
         ],
@@ -117,13 +109,7 @@ const createComposeTsResult = (extra?: Partial<PrecomposeResultFinal>): Precompo
 const createComposeTransactionMock = () =>
     jest
         .spyOn(TrezorConnect, 'composeTransaction')
-
-        // First `composeTransaction` call is just to get size of the transaction
-        .mockImplementation(() =>
-            Promise.resolve({ success: true, payload: [createComposeTsResult()] }),
-        )
-
-        // Second `composeTransaction` call calculates the fee
+        .mockClear()
         .mockImplementation(() =>
             Promise.resolve({
                 success: true,
@@ -147,38 +133,15 @@ describe(composeCancelTransactionThunk.name, () => {
             )
             .unwrap();
 
-        const { calls } = composeTransactionMock.mock;
-        // First call
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstCall: (typeof calls)[number] = calls[0];
-        const [first] = firstCall;
-        const { feeLevels: firstFeeLevels } = first;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstFeeLevel: (typeof firstFeeLevels)[number] = firstFeeLevels[0];
-        expect(firstFeeLevel.feePerUnit).toBe('1');
-        expect(first.baseFee).toBe(undefined);
-
-        // Second call
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const secondCall: (typeof calls)[number] = calls[1];
-        const [second] = secondCall;
-
-        // This is the most important assertion. This is the fee, that satisfies the condition set by BIP-125
-        // with the new size of the transaction of 110 bytes.
-        const { feeLevels: secondFeeLevels } = second;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const secondFeeLevel: (typeof secondFeeLevels)[number] = secondFeeLevels[0];
-        expect(secondFeeLevel.feePerUnit).toBe('13.01818181818181818182'); // = (1410 + 110 * 0.2) / 110
-        expect(second.baseFee).toBe(1410); // This is the sum of fees for chained transactions
-        expect(second.outputs).toStrictEqual([
-            {
-                address: ORIGINAL_CHANGE_ADDRESS,
-                type: 'send-max',
-            },
+        const [call] = composeTransactionMock.mock.calls[0] ?? [];
+        expect(call?.feeLevels).toStrictEqual([{ feePerUnit: '0.2' }]); // new relay fee
+        expect(call?.baseFee).toBe(1410 + 1410); // sum of fees for original tx and chained txs
+        expect(call?.outputs).toStrictEqual([
+            { address: ORIGINAL_CHANGE_ADDRESS, type: 'send-max' },
         ]);
     });
 
-    it('uses first change address if tx has no change output (no chained transactions)', async () => {
+    it('uses first unused change address if tx has no change output (no chained transactions)', async () => {
         const store = initStore();
 
         const composeTransactionMock = createComposeTransactionMock();
@@ -187,17 +150,8 @@ describe(composeCancelTransactionThunk.name, () => {
             .dispatch(composeCancelTransactionThunk({ tx: transactionWithNoChange, account }))
             .unwrap();
 
-        const { calls } = composeTransactionMock.mock;
-        // Second call
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const secondCall: (typeof calls)[number] = calls[1];
-        const [second] = secondCall;
+        const [call] = composeTransactionMock.mock.calls[0] ?? [];
 
-        expect(second.outputs).toStrictEqual([
-            {
-                address: FIRST_ACCOUNT_CHANGE_ADDRESS,
-                type: 'send-max',
-            },
-        ]);
+        expect(call?.outputs).toStrictEqual([{ address: UNUSED_CHANGE_ADDRESS, type: 'send-max' }]);
     });
 });

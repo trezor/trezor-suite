@@ -1,4 +1,4 @@
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 
 import { messageSystemActions } from '../messageSystemActions';
 
@@ -103,7 +103,7 @@ export const fixtures = [
         initialState,
         actions: [
             {
-                type: extraDependenciesCommonMock.actionTypes.storageLoad,
+                type: mockActionType('storageLoad'),
                 payload: {
                     messageSystem: {
                         ...initialState,

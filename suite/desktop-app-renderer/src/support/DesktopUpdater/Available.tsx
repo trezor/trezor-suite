@@ -1,0 +1,88 @@
+import { useSelector } from 'react-redux';
+
+import { type UpdateInfo, injectDesktopApi } from '@suite/desktop-app-api';
+import { downloadThunk } from '@suite/desktop-update';
+import { selectFlags, setFlag } from '@suite/flags';
+import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
+
+import { MarkdownWithComponents } from 'src/components/suite';
+
+import { getVersionName } from './getVersionName';
+
+interface AvailableProps {
+    onCancel: () => void;
+    latest: UpdateInfo | undefined;
+}
+
+export const Available = ({ onCancel, latest }: AvailableProps) => {
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
+    const { enableAutoupdateOnNextRun } = useSelector(selectFlags);
+
+    const downloadUpdate = () => {
+        dispatch(downloadThunk());
+        desktopApi.downloadUpdate();
+    };
+
+    const suiteCurrentVersion = process.env.VERSION || '';
+    const suiteNewVersion = getVersionName({
+        latestVersion: latest?.version,
+        prerelease: !!latest?.prerelease,
+    });
+
+    const handleToggleAutoUpdateClick = () =>
+        dispatch(setFlag({ key: 'enableAutoupdateOnNextRun', value: !enableAutoupdateOnNextRun }));
+
+    return (
+        <Modal
+            heading={<Translation id="TR_UPDATE_MODAL_AVAILABLE_HEADING" />}
+            description={
+                <Translation
+                    id="TR_UPDATE_MODAL_YOUR_VERSION"
+                    values={{ version: suiteCurrentVersion }}
+                />
+            }
+            onCancel={onCancel}
+            bottomContent={
+                <>
+                    <Modal.Button onClick={downloadUpdate}>
+                        <Translation id="TR_UPDATE_MODAL_START_DOWNLOAD" />
+                    </Modal.Button>
+                    <Modal.Button onClick={onCancel} intent="neutral" priority="secondary">
+                        <Translation id="TR_UPDATE_MODAL_NOT_NOW" />
+                    </Modal.Button>
+                </>
+            }
+        >
+            <Column>
+                <H4>
+                    <Translation
+                        id="TR_VERSION_HAS_BEEN_RELEASED"
+                        values={{ version: suiteNewVersion }}
+                    />
+                </H4>
+                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
+                    <Translation id="TR_WERE_CONSTANTLY_WORKING_TO_IMPROVE" />
+                </Paragraph>
+                <Card maxHeight={400} overflow="auto" margin={{ top: 12 }}>
+                    {latest?.changelog ? (
+                        <MarkdownWithComponents>{latest?.changelog}</MarkdownWithComponents>
+                    ) : (
+                        <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
+                    )}
+                </Card>
+            </Column>
+
+            <Card margin={{ top: 32 }}>
+                <Checkbox
+                    isChecked={enableAutoupdateOnNextRun}
+                    onChange={handleToggleAutoUpdateClick}
+                >
+                    <Translation id="TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES" />
+                </Checkbox>
+            </Card>
+        </Modal>
+    );
+};

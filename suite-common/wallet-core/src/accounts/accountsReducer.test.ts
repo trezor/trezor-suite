@@ -1,32 +1,42 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { type ExtraDependenciesPartial } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import {
+    mockAccountToken,
+    mockWalletAccount,
+    networkSpecificDefaultStellar,
+} from '@suite-common/wallet-types/mocks';
+import { type AccountInfo } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { accountsActions } from './accountsActions';
 import { type AccountsRootState, prepareAccountsReducer } from './accountsReducer';
+import { mockSetAccountAddMetadata } from '../../mocks';
 
-const accountsReducer = prepareAccountsReducer(extraDependenciesCommonMock);
+const accountsReducer = prepareAccountsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    actions: { setAccountAddMetadata: mockSetAccountAddMetadata() },
+    reducers: { storageLoadAccounts: mockReducer() },
+});
+const btcSymbol = asNetworkSymbol('btc');
+const ltcSymbol = asNetworkSymbol('ltc');
+const supportedNetworks = [btcSymbol, ltcSymbol];
 
 interface InitStoreArgs {
-    extra?: ExtraDependenciesPartial;
     preloadedState?: AccountsRootState;
 }
 
-const initStore = ({ extra = {}, preloadedState }: InitStoreArgs = {}) => {
-    const store = configureMockStore({
-        extra,
+const initStore = ({ preloadedState }: InitStoreArgs = {}) =>
+    createTestCompositionRoot<void, AccountsRootState>({
         reducer: { wallet: combineReducers({ accounts: accountsReducer }) },
         preloadedState,
-    });
-
-    return store;
-};
+    }).services.store;
 const getAccount = (a?: Partial<Account>) => ({
     descriptor: 'xpubDeFauLT1',
-    symbol: 'btc',
+    symbol: btcSymbol,
     history: {},
     ...a,
 });
@@ -39,27 +49,30 @@ describe('Account Reducer', () => {
     it('Create account', () => {
         const store = initStore();
         store.dispatch(
-            accountsActions.createAccount({
-                deviceState: '1stTestnetAddress@device_id:0',
-                index: 0,
-                path: testBip43Path,
-                accountType: 'normal',
-                symbol: 'btc',
-                accountInfo: {
-                    descriptor: 'XPUB',
+            accountsActions.createAccount(
+                {
+                    deviceState: '1stTestnetAddress@device_id:0',
+                    index: 0,
                     path: testBip43Path,
-                    empty: false,
-                    balance: '0',
-                    availableBalance: '0',
-                    tokens: [],
-                    history: {
-                        total: 0,
-                        transactions: [],
-                        unconfirmed: 0,
+                    accountType: 'normal',
+                    symbol: btcSymbol,
+                    accountInfo: {
+                        descriptor: 'XPUB',
+                        path: testBip43Path,
+                        empty: false,
+                        balance: '0',
+                        availableBalance: '0',
+                        tokens: [],
+                        history: {
+                            total: 0,
+                            transactions: [],
+                            unconfirmed: 0,
+                        },
                     },
+                    visible: true,
                 },
-                visible: true,
-            }),
+                supportedNetworks,
+            ),
         );
         expect(store.getState().wallet.accounts.length).toEqual(1);
     });
@@ -92,10 +105,30 @@ describe('Account Reducer', () => {
             visible: true,
         });
 
-        store.dispatch(accountsActions.createAccount(createAccountPayload('ltc', 'normal', 0)));
-        store.dispatch(accountsActions.createAccount(createAccountPayload('btc', 'legacy', 0)));
-        store.dispatch(accountsActions.createAccount(createAccountPayload('btc', 'normal', 1)));
-        store.dispatch(accountsActions.createAccount(createAccountPayload('btc', 'normal', 0)));
+        store.dispatch(
+            accountsActions.createAccount(
+                createAccountPayload(ltcSymbol, 'normal', 0),
+                supportedNetworks,
+            ),
+        );
+        store.dispatch(
+            accountsActions.createAccount(
+                createAccountPayload(btcSymbol, 'legacy', 0),
+                supportedNetworks,
+            ),
+        );
+        store.dispatch(
+            accountsActions.createAccount(
+                createAccountPayload(btcSymbol, 'normal', 1),
+                supportedNetworks,
+            ),
+        );
+        store.dispatch(
+            accountsActions.createAccount(
+                createAccountPayload(btcSymbol, 'normal', 0),
+                supportedNetworks,
+            ),
+        );
 
         expect(
             store.getState().wallet.accounts.map(a => `${a.symbol}/${a.accountType}/${a.index}`),
@@ -108,7 +141,7 @@ describe('Account Reducer', () => {
                 wallet: {
                     accounts: [
                         getAccount({
-                            symbol: 'ltc',
+                            symbol: ltcSymbol,
                             path: testBip43Path,
                             visible: false,
                         }) as Account,
@@ -120,14 +153,14 @@ describe('Account Reducer', () => {
         store.dispatch(
             accountsActions.changeAccountVisibility(
                 getAccount({
-                    symbol: 'ltc',
+                    symbol: ltcSymbol,
                     path: testBip43Path,
                     visible: false,
                 }) as Account,
             ),
         );
         expect(store.getState().wallet.accounts[0]).toEqual(
-            getAccount({ symbol: 'ltc', path: testBip43Path, visible: true }),
+            getAccount({ symbol: ltcSymbol, path: testBip43Path, visible: true }),
         );
     });
 
@@ -137,7 +170,7 @@ describe('Account Reducer', () => {
         store.dispatch(
             accountsActions.changeAccountVisibility(
                 getAccount({
-                    symbol: 'ltc',
+                    symbol: ltcSymbol,
                     path: testBip43Path,
                     visible: false,
                 }) as Account,
@@ -147,5 +180,245 @@ describe('Account Reducer', () => {
         spyWarn.mockRestore();
 
         expect(store.getState().wallet.accounts.length).toEqual(0);
+    });
+
+    describe('locally tracked tokens', () => {
+        const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+
+        const ethereumAccount = mockWalletAccount({
+            symbol: asNetworkSymbol('eth'),
+            deviceState: '1stTestnetAddress@device_id:0',
+        });
+
+        const wethAccountToken = mockAccountToken({
+            contract: WETH_ADDRESS,
+            symbol: 'WETH',
+            balance: '1.5',
+        });
+
+        const accountInfo: AccountInfo = {
+            descriptor: ethereumAccount.descriptor,
+            balance: '1000',
+            availableBalance: '1000',
+            empty: false,
+            history: { total: 1, unconfirmed: 0, transactions: [] },
+            tokens: [],
+            misc: { nonce: '2' },
+        };
+
+        const initStoreWithTrackedToken = () =>
+            initStore({
+                preloadedState: {
+                    wallet: {
+                        accounts: [{ ...ethereumAccount, tokens: [wethAccountToken] }],
+                    },
+                },
+            });
+
+        it('keeps a locally tracked token when an update from an older snapshot omits it', () => {
+            const store = initStoreWithTrackedToken();
+
+            // The stale snapshot and the account info payload know nothing about the token.
+            store.dispatch(accountsActions.updateAccount(ethereumAccount, accountInfo));
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([
+                expect.objectContaining({ contract: WETH_ADDRESS, balance: '1.5' }),
+            ]);
+        });
+
+        it('does not duplicate a tracked token once the update reports it itself', () => {
+            const store = initStoreWithTrackedToken();
+
+            store.dispatch(
+                accountsActions.updateAccount(ethereumAccount, {
+                    ...accountInfo,
+                    tokens: [
+                        {
+                            standard: 'ERC20',
+                            contract: WETH_ADDRESS,
+                            symbol: 'WETH',
+                            name: 'Wrapped Ether',
+                            decimals: 18,
+                            balance: '2500000000000000000',
+                        },
+                    ],
+                }),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([
+                expect.objectContaining({ contract: WETH_ADDRESS, balance: '2.5' }),
+            ]);
+        });
+
+        const CONTRACT_ID = 'CBI7UCH5KGSVQRO5H4SUCZUTZABCITZLRHQQZTWL2TK4RZ72TAR6IHRV';
+
+        const stellarAccount = mockWalletAccount(
+            {
+                symbol: asNetworkSymbol('xlm'),
+                deviceState: '1stTestnetAddress@device_id:0',
+            },
+            networkSpecificDefaultStellar,
+        );
+
+        const contractToken = mockAccountToken({
+            standard: 'STELLAR-CONTRACT',
+            contract: CONTRACT_ID,
+            symbol: 'DEJTRSY',
+            balance: '42',
+        });
+
+        const stellarAccountInfo: AccountInfo = {
+            descriptor: stellarAccount.descriptor,
+            balance: '1000',
+            availableBalance: '1000',
+            empty: false,
+            history: { total: 1, unconfirmed: 0, transactions: [] },
+            tokens: [],
+        };
+
+        const initStoreWithContractToken = () =>
+            initStore({
+                preloadedState: {
+                    wallet: { accounts: [{ ...stellarAccount, tokens: [contractToken] }] },
+                },
+            });
+
+        it('keeps a watched contract token when discovery reports the account without it', () => {
+            const store = initStoreWithContractToken();
+
+            store.dispatch(
+                accountsActions.createAccount(
+                    {
+                        deviceState: stellarAccount.deviceState,
+                        index: stellarAccount.index,
+                        path: stellarAccount.path as Bip43Path,
+                        accountType: stellarAccount.accountType,
+                        symbol: stellarAccount.symbol,
+                        accountInfo: { ...stellarAccountInfo, path: stellarAccount.path },
+                        visible: true,
+                    },
+                    [stellarAccount.symbol],
+                ),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([
+                expect.objectContaining({ contract: CONTRACT_ID }),
+            ]);
+        });
+
+        it('drops a contract token a targeted account fetch no longer reports', () => {
+            const store = initStoreWithContractToken();
+
+            store.dispatch(accountsActions.updateAccount(stellarAccount, stellarAccountInfo));
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([]);
+        });
+
+        it('keeps a contract token the node would not answer for on a targeted fetch', () => {
+            const store = initStoreWithContractToken();
+
+            store.dispatch(
+                accountsActions.updateAccount(stellarAccount, {
+                    ...stellarAccountInfo,
+                    misc: {
+                        ...networkSpecificDefaultStellar.misc,
+                        stellarUnreadableContracts: [CONTRACT_ID],
+                    },
+                }),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([
+                expect.objectContaining({ contract: CONTRACT_ID, balance: '42' }),
+            ]);
+        });
+
+        it('still drops a contract token the node did answer for', () => {
+            const store = initStoreWithContractToken();
+
+            store.dispatch(
+                accountsActions.updateAccount(stellarAccount, {
+                    ...stellarAccountInfo,
+                    misc: {
+                        ...networkSpecificDefaultStellar.misc,
+                        stellarUnreadableContracts: [
+                            'CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75',
+                        ],
+                    },
+                }),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([]);
+        });
+
+        it('adds tokens to the account via addAccountTokens', () => {
+            const store = initStore({
+                preloadedState: { wallet: { accounts: [ethereumAccount] } },
+            });
+
+            store.dispatch(
+                accountsActions.addAccountTokens(ethereumAccount.key, [wethAccountToken]),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([
+                expect.objectContaining({ contract: WETH_ADDRESS, balance: '1.5' }),
+            ]);
+        });
+    });
+
+    describe('cardano staking on update', () => {
+        const delegatedStaking = {
+            address: 'stake1uxzutrtmxwv2rf2j3hdpps66ch0jydmkr58vwgnetddcdwg32u4rc',
+            isActive: true,
+            rewards: '173289',
+            poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+            drep: null,
+        };
+
+        const cardanoAccount = mockWalletAccount(
+            { symbol: asNetworkSymbol('ada') },
+            { misc: { staking: delegatedStaking } },
+        );
+
+        const accountInfo: AccountInfo = {
+            descriptor: cardanoAccount.descriptor,
+            balance: '27429803',
+            availableBalance: '27256514',
+            empty: false,
+            history: { total: 14, unconfirmed: 0, transactions: [] },
+        };
+
+        const initStoreWithCardanoAccount = () =>
+            initStore({ preloadedState: { wallet: { accounts: [cardanoAccount] } } });
+
+        it('keeps the stored staking block when the update carries none', () => {
+            const store = initStoreWithCardanoAccount();
+
+            store.dispatch(accountsActions.updateAccount(cardanoAccount, accountInfo));
+
+            expect(store.getState().wallet.accounts[0]?.misc).toEqual({
+                staking: delegatedStaking,
+            });
+        });
+
+        it('replaces the stored staking block when the update carries one', () => {
+            const store = initStoreWithCardanoAccount();
+            const deregisteredStaking = {
+                ...delegatedStaking,
+                isActive: false,
+                rewards: '0',
+                poolId: null,
+            };
+
+            store.dispatch(
+                accountsActions.updateAccount(cardanoAccount, {
+                    ...accountInfo,
+                    misc: { staking: deregisteredStaking },
+                }),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.misc).toEqual({
+                staking: deregisteredStaking,
+            });
+        });
     });
 });

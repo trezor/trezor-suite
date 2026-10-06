@@ -1,10 +1,12 @@
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
 
 import { Metadata } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 import {
     selectHasActiveTransport,
@@ -17,11 +19,11 @@ export const BridgeUnavailable = () => {
     const hasTransport = useSelector(selectHasActiveTransport);
     const isWebUsb = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const bridge = useSelector(selectTransportOfType('BridgeTransport'));
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const handleOpenSuite = useOpenSuiteDesktop();
 
-    const goToWallet = () => dispatch(goto({ routeName: 'wallet-index' }));
+    const goToWallet = () => dispatch(gotoThunk({ routeName: 'wallet-index' }));
 
     // if bridge is running, user will never be directed to this page, but since this page is accessible directly over /bridge url
     // it makes sense to show some meaningful information here

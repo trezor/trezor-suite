@@ -1,21 +1,22 @@
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
-import { selectModalType } from '@suite/modal';
-import { selectTorState } from '@suite/tor';
+import { selectIsTorEnabled, selectIsTorLoading } from '@suite/tor';
+import { toggleTorThunk } from '@suite/tor-desktop';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 
-import { toggleTor } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const TorDisconnected = () => {
     const account = useSelector(selectSelectedAccount);
-    const { isTorEnabled, isTorLoading } = useSelector(selectTorState);
-    const modalType = useSelector(selectModalType);
-    const dispatch = useDispatch();
+    const isTorEnabled = useSelector(selectIsTorEnabled);
+    const isTorLoading = useSelector(selectIsTorLoading);
+    const { dispatch } = useServices(injectDispatch);
 
     if (account?.accountType !== 'coinjoin' || isTorEnabled) return null;
 
-    const handleButtonClick = () => dispatch(toggleTor(true, modalType));
+    const handleButtonClick = () => dispatch(toggleTorThunk(true));
 
     return (
         <Banner

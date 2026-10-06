@@ -1,17 +1,22 @@
-import { configureMockStore } from '@suite-common/test-utils';
-import { getNetwork } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    type Account,
+    type PrecomposedTransaction,
+    type PrecomposedTransactionError,
+} from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
 import { composeTronTransactionFeeLevelsThunk } from './sendFormTronThunks';
 
 const OWNER = 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9';
 const COLD_RECIPIENT = 'TVDGpn4hCSzJ5nkHPLetk8KQBtwaTppnkr';
+const trxSymbol = asNetworkSymbol('trx');
 
-const network = getNetwork('trx');
+const network = getNetwork(trxSymbol);
 
 const account = {
-    symbol: 'trx',
+    symbol: trxSymbol,
     networkType: 'tron',
     accountType: 'normal',
     index: 0,
@@ -28,18 +33,29 @@ const account = {
 
 const formState = { outputs: [{ address: '', amount: '1' }] } as any;
 
-const composeContext = (feeEstimationRecipient?: string) =>
-    ({ account, network, feeEstimationRecipient }) as any;
+const composeContext = (feeEstimationRecipient?: string, assumeNewAccount?: boolean) =>
+    ({ account, network, feeEstimationRecipient, assumeNewAccount }) as any;
 
-const dispatchCompose = (feeEstimationRecipient?: string) =>
-    configureMockStore({})
+function assertComposed(
+    tx: PrecomposedTransaction | undefined,
+): asserts tx is Exclude<PrecomposedTransaction, PrecomposedTransactionError> {
+    if (!tx || tx.type === 'error') {
+        throw new Error(`Expected a composed transaction, got ${tx?.error ?? 'undefined'}`);
+    }
+}
+
+const dispatchCompose = (feeEstimationRecipient?: string, assumeNewAccount?: boolean) => {
+    const { store } = createTestCompositionRoot<void, unknown>({}).services;
+
+    return store
         .dispatch(
             composeTronTransactionFeeLevelsThunk({
                 formState,
-                composeContext: composeContext(feeEstimationRecipient),
+                composeContext: composeContext(feeEstimationRecipient, assumeNewAccount),
             }),
         )
         .unwrap();
+};
 
 describe('composeTronTransactionFeeLevelsThunk – cold recipient activation fee', () => {
     let getAccountInfo: jest.SpyInstance;
@@ -63,17 +79,27 @@ describe('composeTronTransactionFeeLevelsThunk – cold recipient activation fee
         expect(getAccountInfo).toHaveBeenCalledWith(
             expect.objectContaining({ descriptor: COLD_RECIPIENT }),
         );
-        expect(normal).toBeDefined();
-        expect(normal?.type).not.toBe('error');
-        expect((normal as any)?.accountActivationFee).toBeDefined();
+        assertComposed(normal);
+        expect(normal.accountActivationFee).toBe('1000000');
+        // 0.1 TRX create-account fee + 1 TRX activation fee
+        expect(normal.fee).toBe('1100000');
     });
 
     it('does not add an activation fee when no recipient is available (falls back to own account)', async () => {
         const { normal } = await dispatchCompose(undefined);
 
         expect(getAccountInfo).not.toHaveBeenCalled();
-        expect(normal).toBeDefined();
-        expect(normal?.type).not.toBe('error');
-        expect((normal as any)?.accountActivationFee).toBeUndefined();
+        assertComposed(normal);
+        expect(normal.accountActivationFee).toBeUndefined();
+        expect(normal.fee).toBe('0');
+    });
+
+    it('assumeNewAccount charges the activation fee without asking the backend', async () => {
+        const { normal } = await dispatchCompose(undefined, true);
+
+        expect(getAccountInfo).not.toHaveBeenCalled();
+        assertComposed(normal);
+        expect(normal.accountActivationFee).toBe('1000000');
+        expect(normal.fee).toBe('1100000');
     });
 });

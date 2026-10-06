@@ -1,6 +1,7 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
+import { type NetworksRootState } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -36,7 +37,8 @@ export type DiscoveryRootState = DeviceRootState &
     SettingsSliceRootState &
     AccountsRootState &
     WalletSettingsRootState &
-    FeatureFlagsRootState;
+    FeatureFlagsRootState &
+    NetworksRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DiscoveryRootState>();
 
@@ -96,7 +98,7 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
                     return true;
                 }),
             filterUnavailableNetworks,
-            sortNetworks,
+            networks => sortNetworks(networks, deviceNetworks),
             returnStableArrayIfEmpty,
         ),
 );

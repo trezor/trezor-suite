@@ -87,6 +87,9 @@ const tradingSellSlice = createSlice({
             state: TradingSellState,
             action: PayloadAction<AccountKey | undefined>,
         ) {
+            if (action.payload !== state.tradingAccountKey) {
+                state.amountLimits = undefined;
+            }
             state.tradingAccountKey = action.payload;
         },
         setIsLoading(state: TradingSellState, action: PayloadAction<boolean>) {

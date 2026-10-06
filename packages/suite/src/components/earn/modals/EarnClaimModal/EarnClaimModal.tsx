@@ -1,14 +1,18 @@
 import { useEffect } from 'react';
 import { FormProvider } from 'react-hook-form';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import {
+    getStakingDataForNetwork,
+    selectAreFeesLoading,
+    selectHasRunningDiscovery,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, InfoItem, Modal, Paragraph, Row, Tooltip } from '@trezor/components';
 import { InfoIcon, WarningIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
@@ -19,7 +23,7 @@ import { SolanaStakingLimitBanner } from 'src/components/suite/modals/ReduxModal
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useCardanoStaking } from 'src/hooks/earn/useCardanoStaking';
 import { useClaimForm } from 'src/hooks/earn/useClaimForm';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
 
@@ -29,9 +33,8 @@ type EarnClaimModalProps = {
 };
 
 export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
-    const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);
 
     const {
@@ -68,6 +71,10 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
 
     // cardano specific logic
     const { calculateFeeAndDeposit, withdrawingAvailable, fee, rewards } = useCardanoStaking();
+    const isCardanoDrepDelegationRequired =
+        isCardanoNetworkType &&
+        !withdrawingAvailable.status &&
+        withdrawingAvailable.reason === 'DREP_DELEGATION_REQUIRED';
     const isCardanoWithdrawalBalanceInsufficient =
         isCardanoNetworkType &&
         !withdrawingAvailable.status &&
@@ -137,12 +144,14 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                 />
             }
             description={
-                !isCardanoNetworkType ? (
-                    <Translation
-                        id="TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED"
-                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
-                    />
-                ) : undefined
+                <Translation
+                    id={
+                        isCardanoNetworkType
+                            ? 'TR_STAKE_CLAIM_REWARDS_DESCRIPTION'
+                            : 'TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED'
+                    }
+                    values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
+                />
             }
             width={600}
             onCancel={onCancelClick}
@@ -177,6 +186,16 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                     <Column gap={16}>
                         {isCardanoNetworkType ? (
                             <>
+                                {isCardanoDrepDelegationRequired && (
+                                    <Banner
+                                        data-testid="@modal/claim/drep-delegation-banner"
+                                        intent="warning"
+                                        icon={WarningIcon}
+                                        description={
+                                            <Translation id="TR_STAKE_DREP_DELEGATION_REQUIRED" />
+                                        }
+                                    />
+                                )}
                                 {shouldShowCardanoWarning && shouldShowCardanoClaimRewardsCard && (
                                     <Banner
                                         data-testid="@modal/claim/fee-warning-banner"
@@ -229,7 +248,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                                             account={account}
                                             composedLevels={composedLevels}
                                             changeFeeLevel={changeFeeLevel}
-                                            label="TR_TRADING_NETWORK_FEE"
+                                            label="TR_NETWORK_FEE"
                                         />
                                     </Column>
                                 </Card>
@@ -261,13 +280,6 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                                             symbol={account.symbol}
                                         />
                                     </Paragraph>
-                                </InfoItem>
-
-                                <InfoItem
-                                    direction="column"
-                                    label={<Translation id="TR_STAKE_CLAIMING_PERIOD" />}
-                                >
-                                    <Translation id="TR_STAKE_CLAIM_IN_NEXT_BLOCK" />
                                 </InfoItem>
 
                                 <Fees

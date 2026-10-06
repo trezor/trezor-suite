@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
@@ -8,9 +8,11 @@ import {
     AdditionalBackupSteps,
     AdditionalBackupSuccess,
 } from '@suite/nfc';
-import { isAdditionalShamirBackupInProgress } from '@suite/recovery';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
+import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Modal } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
@@ -26,10 +28,10 @@ type Step = 'disclaimer' | 'how-it-works' | 'verify-ownership' | 'backup' | 'don
 
 export const CreateWalletBackupModal = ({ onCancel }: CreateWalletBackupModalProps) => {
     const device = useSelector(selectSelectedDevice);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
 
-    const backupMethod = isN4w1BackupEnabled ? PROTO.BackupMethod.N4W1 : PROTO.BackupMethod.Display;
+    const backupMethod = isN4w1BackupEnabled ? PROTO.BackupMethod.N1W1 : PROTO.BackupMethod.Display;
 
     const isInBackupMode =
         device?.features !== undefined && isAdditionalShamirBackupInProgress(device.features);

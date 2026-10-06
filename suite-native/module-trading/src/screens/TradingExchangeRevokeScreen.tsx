@@ -1,15 +1,17 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
     selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeSelectedQuote,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { InlineAlertBox, VStack } from '@suite-native/atoms';
+import { BannerInline, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
@@ -38,7 +40,7 @@ const TradingExchangeRevokeScreenContent = ({
     navigation,
 }: TradingExchangeRevokeScreenProps) => {
     const { shouldIncreaseLimit } = params;
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const reportToAnalytics = useExchangeAnalyticsStepReport('revoke-preview');
 
     const quote = useSelector(selectTradingExchangeSelectedQuote);
@@ -119,7 +121,7 @@ const TradingExchangeRevokeScreenContent = ({
     if (!quote) {
         return (
             <Screen header={<ScreenHeader closeActionType="back" />}>
-                <InlineAlertBox
+                <BannerInline
                     title={
                         <Translation id="moduleTrading.tradingExchangeRevokeScreen.revokeErrorAlert" />
                     }
@@ -160,7 +162,7 @@ const TradingExchangeRevokeScreenContent = ({
         >
             <VStack spacing="sp12">
                 {!!shouldIncreaseLimit && (
-                    <InlineAlertBox
+                    <BannerInline
                         intent="info"
                         title={
                             <Translation id="moduleTrading.tradingExchangeRevokeScreen.lowLimitInfoAlert" />

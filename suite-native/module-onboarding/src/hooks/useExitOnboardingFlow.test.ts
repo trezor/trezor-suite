@@ -1,7 +1,12 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
-import { appSettingsReducer, setIsOnboardingFinished } from '@suite-native/settings';
 import {
-    type TestStore,
+    type SettingsSliceRootState,
+    appSettingsReducer,
+    setIsOnboardingFinished,
+} from '@suite-native/settings';
+import {
     act,
     createLightStore,
     createStaticReducer,
@@ -21,16 +26,16 @@ jest.mock('@react-navigation/native', () => ({
 
 jest.mock('@suite-native/app-init', () => ({
     ...jest.requireActual('@suite-native/app-init'),
-    postOnboardingInit: () => ({
+    postOnboardingInitThunk: () => ({
         type: 'postOnboardingInitMock',
     }),
 }));
 
 describe('useExitOnboardingFlow', () => {
-    let store: TestStore;
+    let store: Store<SettingsSliceRootState>;
 
-    const renderUseExitOnboardingFlow = () =>
-        renderHookWithStoreProvider(() => useExitOnboardingFlow(), { store });
+    const renderUseExitOnboardingFlow = async () =>
+        await renderHookWithStoreProvider(() => useExitOnboardingFlow(), { services: { store } });
 
     beforeEach(() => {
         store = createLightStore({
@@ -52,12 +57,12 @@ describe('useExitOnboardingFlow', () => {
         jest.clearAllMocks();
     });
 
-    it('should set onboarding flag and navigate', () => {
+    it('should set onboarding flag and navigate', async () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseExitOnboardingFlow();
+        const { result } = await renderUseExitOnboardingFlow();
 
         // call the returned callback
-        act(() => {
+        await act(() => {
             result.current();
         });
 

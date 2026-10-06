@@ -8,15 +8,15 @@ import {
 } from './PaymentMethodTranslation';
 
 describe('PaymentMethodTranslation', () => {
-    const renderPaymentMethodTranslation = (props: PaymentMethodTranslationProps) =>
-        renderWithBasicProvider(
+    const renderPaymentMethodTranslation = async (props: PaymentMethodTranslationProps) =>
+        await renderWithBasicProvider(
             <Text>
                 <PaymentMethodTranslation {...props} />
             </Text>,
         );
 
-    it('should render known payment method translation', () => {
-        const { getByText } = renderPaymentMethodTranslation({
+    it('should render known payment method translation', async () => {
+        const { getByText } = await renderPaymentMethodTranslation({
             paymentMethod: 'creditCard',
         });
 
@@ -25,8 +25,8 @@ describe('PaymentMethodTranslation', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render payment method name when payment method is unknown', () => {
-        const { getByText } = renderPaymentMethodTranslation({
+    it('should render payment method name when payment method is unknown', async () => {
+        const { getByText } = await renderPaymentMethodTranslation({
             paymentMethod: 'customMethod',
             paymentMethodName: 'Custom Method',
         });
@@ -34,8 +34,8 @@ describe('PaymentMethodTranslation', () => {
         expect(getByText('Custom Method')).toBeOnTheScreen();
     });
 
-    it('should render payment method when payment method name is missing', () => {
-        const { getByText } = renderPaymentMethodTranslation({
+    it('should render payment method when payment method name is missing', async () => {
+        const { getByText } = await renderPaymentMethodTranslation({
             paymentMethod: 'customMethod',
             paymentMethodName: '',
         });
@@ -43,8 +43,8 @@ describe('PaymentMethodTranslation', () => {
         expect(getByText('customMethod')).toBeOnTheScreen();
     });
 
-    it('should render empty string when no payment method or name is provided', () => {
-        const { getByText } = renderPaymentMethodTranslation({});
+    it('should render empty string when no payment method or name is provided', async () => {
+        const { getByText } = await renderPaymentMethodTranslation({});
 
         expect(getByText('')).toBeOnTheScreen();
     });

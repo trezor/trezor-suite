@@ -4,11 +4,8 @@ type AB = { a: 'A'; b: 'B' } | { b: 'BB' };
 
 type ExpectedType = 'a' | 'b';
 
-let _assertExpectedType: ExpectedType[];
+const assertExpectedType1: ExpectedType[] = typedObjectKeys({ b: 'BB' } satisfies AB);
+const assertExpectedType2: ExpectedType[] = typedObjectKeys({ a: 'A', b: 'B' } satisfies AB);
 
-const test1 = typedObjectKeys({ b: 'BB' } satisfies AB);
-_assertExpectedType = test1;
-const test2 = typedObjectKeys({ a: 'A', b: 'B' } satisfies AB);
-_assertExpectedType = test2;
-
-void _assertExpectedType;
+void assertExpectedType1;
+void assertExpectedType2;

@@ -4,7 +4,7 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { convertTaprootXpub } from '@trezor/utils';
 
-import { showXpub } from 'src/actions/wallet/publicKeyActions';
+import { showXpubThunk } from 'src/actions/wallet/publicKeyActions';
 import { useSelector } from 'src/hooks/suite';
 
 import {
@@ -15,10 +15,7 @@ import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
 import { ConnectAddressConfirmation } from './UserContextModal/ConnectAddressConfirmation';
 
 export const ConfirmXpubModal = (
-    props: Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel'> & {
-        descriptor?: string;
-        descriptorChecksum?: string;
-    },
+    props: Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel'>,
 ) => {
     const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectSelectedAccount);
@@ -47,7 +44,7 @@ export const ConfirmXpubModal = (
         <ConfirmValueModal
             account={account}
             heading={<Translation id="TR_XPUB" />}
-            validateOnDevice={showXpub}
+            validateOnDevice={showXpubThunk}
             value={xpubWithReplacedApostropheWithH ?? xpub}
             isValueChunked={false}
             data-testid="@metadata/copy-xpub-button"

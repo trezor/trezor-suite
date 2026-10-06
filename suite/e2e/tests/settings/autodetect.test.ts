@@ -1,5 +1,6 @@
+import { TR_ONBOARDING_DATA_COLLECTION_HEADING as SPANISH_TR_ONBOARDING_DATA_COLLECTION_HEADING } from '@suite/app-assets/files/translations/es-ES.json';
 import { messages } from '@suite/intl';
-import { TR_ONBOARDING_DATA_COLLECTION_HEADING as SPANISH_TR_ONBOARDING_DATA_COLLECTION_HEADING } from '@trezor/suite-data/files/translations/es-ES.json';
+import { TestStream } from '@trezor/e2e-utils';
 import { colorVariants } from '@trezor/theme';
 
 import { expect, test } from '../../support/fixtures';
@@ -52,7 +53,7 @@ const testCases = [
 
 test.use({ startEmulator: false });
 testCases.forEach(({ testName, userPreferences, text, textColor, bodyBackgroundColor }) => {
-    test.describe('Language and theme detection', { tag: ['@noDevice'] }, () => {
+    test.describe('Language and theme detection', { tag: ['@noDevice', '@optional'] }, () => {
         test.use(userPreferences);
 
         test(
@@ -60,6 +61,7 @@ testCases.forEach(({ testName, userPreferences, text, textColor, bodyBackgroundC
             {
                 annotation: createTestAnnotation({
                     testCase: `Suite adopts preferences of the browser: ${testName}`,
+                    stream: TestStream.Growth,
                 }),
             },
             async ({ onboardingPage, analyticsSection }) => {

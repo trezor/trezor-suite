@@ -1,21 +1,23 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceAuthenticityValid } from '@suite-common/device-authenticity';
 import {
     Feature,
     type MessageSystemRootState,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import {
     type DeviceAuthenticityCheckResult,
     events,
-    selectNativeAnalyticsDep,
+    injectNativeAnalytics,
 } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
@@ -34,7 +36,6 @@ type CheckDeviceAuthenticityParams = {
 
 export const useDeviceAuthenticityCheck = () => {
     const navigation = useNavigation();
-    const dispatch = useDispatch();
     const { translate } = useTranslate();
     const { showToast } = useToast();
     const allowDebugKeys = useFeatureFlag(FeatureFlag.IsDebugKeysAllowed);
@@ -47,7 +48,7 @@ export const useDeviceAuthenticityCheck = () => {
     const isMCURemotelyDisabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureDisabled(state, Feature.deviceAuthenticityCheckMCU),
     );
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const device = useSelector(selectSelectedDevice);
     const isDeviceBootloaderUnlocked = !!device && !device?.features?.bootloader_locked;
     const reportCheckResult = useCallback(
@@ -168,7 +169,7 @@ export const useDeviceAuthenticityCheck = () => {
 
             // Clear previous result
             dispatch(
-                deviceActions.setDeviceAuthenticityResult({
+                persistentDeviceDataActions.setDeviceAuthenticityResult({
                     deviceId: device.id,
                     result: undefined,
                 }),
@@ -199,7 +200,7 @@ export const useDeviceAuthenticityCheck = () => {
             const storedResult: StoredAuthenticateDeviceResult = createStoredResult(result);
 
             dispatch(
-                deviceActions.setDeviceAuthenticityResult({
+                persistentDeviceDataActions.setDeviceAuthenticityResult({
                     deviceId: device.id,
                     result: storedResult,
                 }),

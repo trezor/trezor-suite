@@ -1,16 +1,20 @@
 import { useEffect } from 'react';
 
 import { preserveModal, removePreserveModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { prettifyLog, useCommonApplicationLogs } from '@suite-common/logger';
+import { injectDispatch } from '@suite-common/redux-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import {
     type SuiteLogsApplicationInfoRootState,
     selectRedactedDesktopApplicationInfo,
 } from 'src/selectors/suite/logsSelectors';
 
-export const useApplicationLogs = ({ hideSensitiveInfo }: { hideSensitiveInfo: boolean }) => {
-    const dispatch = useDispatch();
+type UseApplicationLogsParams = { hideSensitiveInfo: boolean };
+
+export const useApplicationLogs = ({ hideSensitiveInfo }: UseApplicationLogsParams) => {
+    const { dispatch } = useServices(injectDispatch);
     const commonAppLogs = useCommonApplicationLogs(hideSensitiveInfo);
     const desktopApplicationInfo = useSelector((state: SuiteLogsApplicationInfoRootState) =>
         selectRedactedDesktopApplicationInfo(state, hideSensitiveInfo),

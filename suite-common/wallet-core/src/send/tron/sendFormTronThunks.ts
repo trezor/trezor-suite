@@ -12,6 +12,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import * as tronUtils from '@trezor/network-tron/utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -28,10 +29,12 @@ import { estimateContractCallFeeLevel } from './feeLevel';
 import { isNewTronAccount } from './isNewTronAccount';
 import { resolveCalldata } from './resolveCalldata';
 
+type ComposeTronTransactionFeeLevelsThunkState = void;
+
 export const composeTronTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
+    { rejectValue: ComposeFeeLevelsError; state: ComposeTronTransactionFeeLevelsThunkState }
 >(
     `${SEND_MODULE_PREFIX}/composeTronTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
@@ -140,8 +143,8 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
 
         const isNewAccount =
             calldata.data === null &&
-            to !== account.descriptor &&
-            (await isNewTronAccount(to, account));
+            (composeContext.assumeNewAccount ||
+                (to !== account.descriptor && (await isNewTronAccount(to, account))));
 
         const feeLevel =
             calldata.data !== null
@@ -197,10 +200,12 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
     },
 );
 
+type SignTronSendFormTransactionThunkState = void;
+
 export const signTronSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
-    { rejectValue: SignTransactionError }
+    { rejectValue: SignTransactionError; state: SignTronSendFormTransactionThunkState }
 >(
     `${SEND_MODULE_PREFIX}/signTronSendFormTransactionThunk`,
     async ({ formState, precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {
@@ -212,7 +217,7 @@ export const signTronSendFormTransactionThunk = createThunk<
         }
 
         const blockchainInfo = await TrezorConnect.blockchainGetInfo({
-            coin: selectedAccount.symbol,
+            coin: asCoinSymbol(selectedAccount.symbol),
             identity: getAccountIdentity(selectedAccount),
         });
         if (!blockchainInfo.success) {

@@ -1,0 +1,194 @@
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
+
+import { useServices } from '@suite-common/dependency-injection';
+import type { DeviceRootState } from '@suite-common/device';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    type AccountsRootState,
+    type EarnOnboardingRootState,
+    type StakeRootState,
+    getEarnOpportunityKey,
+    selectApy,
+    selectDeviceAccountsByNetworkSymbol,
+    selectEntryPeriodInDaysBySymbol,
+    selectIsEarnOnboardingConfirmed,
+    selectUnstakingPeriodInDaysBySymbol,
+} from '@suite-common/wallet-core';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { BannerInline, Button, TimelineDetailsCard, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import {
+    type RootStackParamList,
+    RootStackRoutes,
+    Screen,
+    ScreenHeader,
+    type StackNavigationProps,
+} from '@suite-native/navigation';
+
+import { EarnLoadingScreen } from '../../components/earn/EarnLoadingScreen';
+import { HowEarnWorksBenefitsSection } from '../../components/earn/HowEarnWorks/HowEarnWorksBenefitsSection';
+import { HowEarnWorksHeaderSection } from '../../components/earn/HowEarnWorks/HowEarnWorksHeaderSection';
+import { HowEarnWorksTimelineCard } from '../../components/earn/HowEarnWorks/HowEarnWorksTimelineCard';
+import { useHowStakeWorksPreset } from '../../components/earn/HowEarnWorks/stakePresets';
+import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
+import { useMessageSystemStaking } from '../../hooks/staking/useMessageSystemStaking';
+
+export const HowStakeWorksScreen = () => {
+    const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.HowStakeWorksScreen>>();
+    const { symbol, accountKey } = route.params;
+    const navigation =
+        useNavigation<
+            StackNavigationProps<RootStackParamList, RootStackRoutes.HowStakeWorksScreen>
+        >();
+
+    const accounts = useSelector((state: AccountsRootState & DeviceRootState) =>
+        selectDeviceAccountsByNetworkSymbol(state, symbol),
+    );
+
+    const resolvedAccountKey = accountKey || accounts[0]?.key;
+    const isFocused = useIsFocused();
+    const isOnboardingConfirmed = useSelector((state: EarnOnboardingRootState) =>
+        selectIsEarnOnboardingConfirmed(
+            state,
+            resolvedAccountKey,
+            getEarnOpportunityKey({ type: 'staking', provider: 'everstake' }),
+        ),
+    );
+    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(symbol);
+
+    const [hasShownOnboarding, setHasShownOnboarding] = useState(false);
+    const shouldSkipToEarnForm =
+        isOnboardingConfirmed &&
+        !route.params.isInfoOnly &&
+        !isStakingDisabled &&
+        !hasShownOnboarding &&
+        !!resolvedAccountKey;
+
+    useEffect(() => {
+        if (!shouldSkipToEarnForm && !hasShownOnboarding) {
+            setHasShownOnboarding(true);
+        }
+    }, [shouldSkipToEarnForm, hasShownOnboarding]);
+
+    useEffect(() => {
+        if (isFocused && shouldSkipToEarnForm && resolvedAccountKey) {
+            navigation.replace(RootStackRoutes.StakingForm, { accountKey: resolvedAccountKey });
+        }
+    }, [isFocused, shouldSkipToEarnForm, resolvedAccountKey, navigation]);
+
+    const { analytics } = useServices(injectNativeAnalytics);
+    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
+        type: events.stakingStakeEvent.name,
+        payload: {
+            action: 'cancel',
+            step: 'stake-in-a-nutshell-modal',
+            networkSymbol: symbol,
+        },
+    });
+
+    const handleContinue = () => {
+        if (route.params.isInfoOnly) {
+            registerNavigateBackAnalytics();
+            navigation.goBack();
+
+            return;
+        }
+        if (!resolvedAccountKey) {
+            return;
+        }
+
+        registerNavigateBackAnalytics();
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'stake-in-a-nutshell-modal',
+                networkSymbol: symbol,
+            },
+        });
+        navigation.navigate(RootStackRoutes.StakingForm, { accountKey: resolvedAccountKey });
+    };
+
+    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
+        selectUnstakingPeriodInDaysBySymbol(state, symbol),
+    );
+
+    const entryPeriodInDays = useSelector((state: StakeRootState) =>
+        selectEntryPeriodInDaysBySymbol(state, symbol),
+    );
+
+    const apy = useSelector((state: StakeRootState) => selectApy(state, { networkSymbol: symbol }));
+
+    const displaySymbol = getNetworkDisplaySymbol(symbol);
+
+    const { benefitItems, timelineSections } = useHowStakeWorksPreset({
+        symbol,
+        entryPeriodInDays,
+        unstakingPeriodInDays,
+        apy,
+    });
+
+    if (shouldSkipToEarnForm) {
+        return <EarnLoadingScreen />;
+    }
+
+    return (
+        <Screen header={<ScreenHeader closeActionType="back" />}>
+            <VStack flex={1} justifyContent="space-between">
+                <VStack alignItems="flex-start" spacing="sp32">
+                    {/* TODO: replace with actual data */}
+                    <HowEarnWorksHeaderSection
+                        title={
+                            <Translation
+                                id="earn.howStakeWorksScreen.title"
+                                values={{ displaySymbol }}
+                            />
+                        }
+                        subtitle={
+                            <Translation
+                                id="earn.howStakeWorksScreen.subtitle"
+                                values={{ displaySymbol }}
+                            />
+                        }
+                    />
+                    <HowEarnWorksBenefitsSection items={benefitItems} />
+                    <HowEarnWorksTimelineCard
+                        cardTitle={<Translation id="earn.howStakeWorksScreen.timelineCardTitle" />}
+                        bottomSheetTitle={
+                            <Translation id="earn.howStakeWorksScreen.timelineBottomSheetTitle" />
+                        }
+                    >
+                        {timelineSections.map(section => (
+                            <TimelineDetailsCard
+                                key={section.id}
+                                headerTitle={section.title}
+                                headerIconName={section.iconName}
+                                items={section.items}
+                            />
+                        ))}
+                    </HowEarnWorksTimelineCard>
+                </VStack>
+                {isStakingDisabled && stakingMessageContent && (
+                    <BannerInline intent="warning" title={stakingMessageContent} />
+                )}
+                <Button
+                    onPress={handleContinue}
+                    isDisabled={
+                        !route.params.isInfoOnly && (!resolvedAccountKey || isStakingDisabled)
+                    }
+                >
+                    <Translation
+                        id={
+                            route.params.isInfoOnly
+                                ? 'generic.buttons.close'
+                                : 'generic.buttons.continue'
+                        }
+                    />
+                </Button>
+            </VStack>
+        </Screen>
+    );
+};

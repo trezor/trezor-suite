@@ -11,7 +11,7 @@ describe.skip('Manual', () => {
             steps: ['Automatic device authenticity check (no manual steps defined)'],
             category: TestCategory.Settings,
             priority: TestPriority.Critical,
-            stream: TestStream.Foundation,
+            stream: TestStream.Growth,
         },
         async () => {},
     );

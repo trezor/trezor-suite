@@ -11,6 +11,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@storybook/react-native": "^10.2.1",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-native/analytics": "workspace:*",

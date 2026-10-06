@@ -1,11 +1,11 @@
 import { ImageBackground, StyleSheet } from 'react-native';
-import { useDispatch } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
-import { setIsOnboardingFeedbackBannerEnabled } from '@suite-native/banner-flags';
+import { setIsOnboardingFeedbackBannerEnabled } from '@suite-native/banners';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -29,9 +29,8 @@ const overlayStyle = prepareNativeStyle(() => ({
 
 export const OnboardingFeedbackBanner = () => {
     const { applyStyle } = useNativeStyles();
-    const dispatch = useDispatch();
     const openLink = useOpenLink();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
     const reportAnalyticsBannerAction = (action: 'cta' | 'close') => {
         analytics.report({

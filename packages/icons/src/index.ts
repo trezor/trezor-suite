@@ -925,6 +925,8 @@ export declare const DropHalfBottomFilledIcon: IconComponent;
 export declare const DropHalfFilledIcon: IconComponent;
 export declare const DropboxLogoIcon: IconComponent;
 export declare const DropboxLogoFilledIcon: IconComponent;
+export declare const DualCpuIcon: IconComponent;
+export declare const DualCpuFilledIcon: IconComponent;
 export declare const EarIcon: IconComponent;
 export declare const EarFilledIcon: IconComponent;
 export declare const EarSlashIcon: IconComponent;

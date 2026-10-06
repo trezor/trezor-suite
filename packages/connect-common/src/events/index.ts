@@ -6,5 +6,6 @@ export * from './core-call';
 export * from './networks';
 export * from './popup';
 export * from './transport';
+export * from './ui-event';
 export * from './ui-request';
 export * from './ui-response';

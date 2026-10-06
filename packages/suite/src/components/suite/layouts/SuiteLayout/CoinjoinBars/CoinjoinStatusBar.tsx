@@ -3,9 +3,11 @@ import styled, { css } from 'styled-components';
 import { selectRoundsDurationInHours, selectSessionProgressByAccountKey } from '@suite/coinjoin';
 import { type CoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { goto, selectRouterParams } from '@suite/router';
-import { selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { selectAccountByKey, selectDeviceThunk } from '@suite-common/wallet-core';
+import { gotoThunk, selectRouterParams } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
 import { ProgressPie } from '@trezor/components';
 import { typography } from '@trezor/theme';
@@ -13,8 +15,7 @@ import { typography } from '@trezor/theme';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
-import { useDispatch } from 'src/hooks/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 const SPACING = 6;
 
@@ -77,7 +78,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
     );
     const roundsDurationInHours = useSelector(selectRoundsDurationInHours);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     if (!relatedAccount) {
         return null;
@@ -100,7 +101,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'wallet-index',
                 params: {
                     symbol,

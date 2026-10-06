@@ -14,11 +14,16 @@
         "Trezor",
         "transport"
     ],
+    "sideEffects": [
+        "./src/browser.ts",
+        "./src/ui/**"
+    ],
     "main": "./src/index.ts",
     "browser": "./src/browser.ts",
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build",
         "lint:rs": "cargo fmt --all -- --check",
         "lint:rs:fix": "cargo fmt --all",
@@ -28,6 +33,7 @@
     },
     "dependencies": {
         "@trezor/ipc-proxy": "workspace:*",
+        "@trezor/logger": "workspace:*",
         "@trezor/transport-common": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/websocket-client": "workspace:*"
@@ -35,9 +41,9 @@
     "devDependencies": {
         "@types/jest": "30.0.0",
         "@types/node": "22.13.10",
-        "html-webpack-plugin": "5.6.7",
+        "html-webpack-plugin": "5.6.8",
         "react": "19.2.3",
         "react-dom": "19.2.3",
-        "webpack": "5.108.1"
+        "webpack": "5.110.1"
     }
 }

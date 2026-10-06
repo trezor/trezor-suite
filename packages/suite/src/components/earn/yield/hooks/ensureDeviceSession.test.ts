@@ -37,6 +37,18 @@ describe('ensureDeviceSession', () => {
         });
     });
 
+    it('treats a cancelled PIN entry as a silent cancel, not an error', async () => {
+        jest.spyOn(TrezorConnect, 'getDeviceState').mockResolvedValue({
+            success: false,
+            error: {
+                code: 'Failure_PinCancelled',
+                message: 'PIN entry cancelled',
+            },
+        });
+
+        await expect(ensureDeviceSession(device)).resolves.toEqual({ success: false });
+    });
+
     it('maps a device-state failure to a yield error', async () => {
         jest.spyOn(TrezorConnect, 'getDeviceState').mockResolvedValue({
             success: false,

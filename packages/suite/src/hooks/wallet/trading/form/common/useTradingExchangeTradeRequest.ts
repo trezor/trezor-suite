@@ -1,8 +1,10 @@
 import type { ExchangeTrade } from 'invity-api';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { goto } from '@suite/router';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { injectDesktopApi } from '@suite/desktop-app-api';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingComposedTransactionInfo,
     selectTradingExchangeQuotesRequest,
@@ -10,13 +12,16 @@ import {
 } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 
-import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { submitRequestFormThunk } from 'src/actions/wallet/trading/tradingCommonActions';
+import { useSelector } from 'src/hooks/suite';
 import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 
 export const useTradingExchangeTradeRequest = (account: Account | undefined) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { desktopApi, analytics, dispatch } = useServices(
+        injectDesktopApi,
+        injectDesktopAnalytics,
+        injectDispatch,
+    );
     const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const { selectedFee, composed } = useSelector(selectTradingComposedTransactionInfo);
@@ -29,6 +34,7 @@ export const useTradingExchangeTradeRequest = (account: Account | undefined) => 
         }
 
         const returnUrl = await createQuoteLink(
+            { desktopApi },
             quotesRequest,
             account,
             { selectedFee, composed },
@@ -43,11 +49,11 @@ export const useTradingExchangeTradeRequest = (account: Account | undefined) => 
         };
 
         const processResponseData = (response: ExchangeTrade) => {
-            dispatch(submitRequestForm(response.tradeForm?.form));
+            dispatch(submitRequestFormThunk(response.tradeForm?.form));
         };
 
         const nextStep = () => {
-            dispatch(goto({ routeName: 'wallet-trading-exchange-detail' }));
+            dispatch(gotoThunk({ routeName: 'wallet-trading-exchange-detail' }));
         };
 
         return {

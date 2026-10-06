@@ -11,7 +11,7 @@ jest.mock('../../hooks/useUtxoSelection', () => ({
 }));
 
 describe('SendUtxosScreenHeader', () => {
-    it('should render delete button when there are selected utxos', () => {
+    it('should render delete button when there are selected utxos', async () => {
         (useUtxoSelection as jest.Mock).mockReturnValue({
             selectedUtxos: [
                 {
@@ -27,20 +27,20 @@ describe('SendUtxosScreenHeader', () => {
             setSelectedUtxos: jest.fn(),
         });
 
-        const { getByTestId } = renderWithBasicProvider(
+        const { getByTestId } = await renderWithBasicProvider(
             <SendUtxoScreenHeader accountKey={accountKey} />,
         );
 
         expect(getByTestId('coin-control-delete-button')).toBeTruthy();
     });
 
-    it('should not render delete button when there are no selected utxos', () => {
+    it('should not render delete button when there are no selected utxos', async () => {
         (useUtxoSelection as jest.Mock).mockReturnValue({
             selectedUtxos: [],
             setSelectedUtxos: jest.fn(),
         });
 
-        const { queryByTestId } = renderWithBasicProvider(
+        const { queryByTestId } = await renderWithBasicProvider(
             <SendUtxoScreenHeader accountKey={accountKey} />,
         );
 

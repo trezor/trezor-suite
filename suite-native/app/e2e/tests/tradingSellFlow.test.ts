@@ -8,6 +8,7 @@ import { onHome } from '../pageObjects/homeActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { exchangeOutputsReviewActions } from '../pageObjects/trading/outputsReviewActions';
+import { sellCompletionActions } from '../pageObjects/trading/sellCompletionActions';
 import { sellPreviewActions } from '../pageObjects/trading/sellPreviewActions';
 import { tradingSellActions } from '../pageObjects/trading/tradingSellActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
@@ -39,15 +40,12 @@ describe('Trade Sell [@androidOnly]', () => {
     });
 
     describe('with device disconnected [@T3T1]', () => {
-        beforeAll(() => {
+        beforeEach(async () => {
             if (!passphrase) {
                 throw new Error(
                     'TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE environment variable is required',
                 );
             }
-        });
-
-        beforeEach(async () => {
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
@@ -63,12 +61,13 @@ describe('Trade Sell [@androidOnly]', () => {
         it('should request trezor connect before preview', async () => {
             await tradingSellActions.selectCountry('Czechi', 'Czechia', 'CZE');
             await tradingSellActions.selectFiatCurrency('EUR');
-            await tradingSellActions.selectSendAsset('USDC');
+            await tradingSellActions.selectSendAsset('USDC', undefined, 'USD Coin');
             await tradingSellActions.setSendCryptoAmount('55');
 
             await tradingSellActions.expectValidSellForm();
 
             await tradingSellActions.confirmTradingForm();
+            await sellPreviewActions.continueToProvider();
 
             await exchangeOutputsReviewActions.expectConnectTrezorInfo();
             await exchangeOutputsReviewActions.cancelConnectTrezorInfo();
@@ -78,15 +77,12 @@ describe('Trade Sell [@androidOnly]', () => {
     });
 
     describe('with device connected [@T3T1]', () => {
-        beforeAll(() => {
+        beforeEach(async () => {
             if (!passphrase) {
                 throw new Error(
                     'TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE environment variable is required',
                 );
             }
-        });
-
-        beforeEach(async () => {
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
@@ -100,7 +96,7 @@ describe('Trade Sell [@androidOnly]', () => {
         it('Basic sell USDC for EUR', async () => {
             await tradingSellActions.selectCountry('Czechi', 'Czechia', 'CZE');
             await tradingSellActions.selectFiatCurrency('EUR');
-            await tradingSellActions.selectSendAsset('USDC');
+            await tradingSellActions.selectSendAsset('USDC', undefined, 'USD Coin');
             await tradingSellActions.setSendCryptoAmount('55');
 
             await tradingSellActions.expectValidSellForm();
@@ -110,10 +106,11 @@ describe('Trade Sell [@androidOnly]', () => {
 
             await tradingSellActions.confirmTradingForm();
 
-            await sellPreviewActions.expectBrowserAuthTriggered();
+            await sellPreviewActions.continueToProvider();
+            await sellCompletionActions.expectBrowserAuthTriggered();
 
-            await sellPreviewActions.expectConfirmationInProgress();
-            await sellPreviewActions.expectConfirmationToFail();
+            await sellCompletionActions.expectConfirmationInProgress();
+            await sellCompletionActions.expectConfirmationToFail();
         });
     });
 });

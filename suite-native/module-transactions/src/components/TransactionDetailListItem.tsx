@@ -1,14 +1,7 @@
-import { useNavigation } from '@react-navigation/native';
-
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Box, PressableOpacity, RoundedIcon, Text } from '@suite-native/atoms';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
-    type TransactionDetailStackParamList,
-    TransactionDetailStackRoutes,
-} from '@suite-native/navigation';
+import { Box, PressableOpacity, Text } from '@suite-native/atoms';
+import { TokenIcon } from '@suite-native/icons';
+import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import {
     TokenTransferListItemValues,
@@ -28,12 +21,6 @@ type TransactionDetailListItemProps = {
     isPhishingTransaction: boolean;
 };
 
-type TransactionDetailNavigation = StackToStackCompositeNavigationProps<
-    RootStackParamList,
-    TransactionDetailStackRoutes.TransactionDetail,
-    TransactionDetailStackParamList
->;
-
 const CoinNameContainerStyle = prepareNativeStyle(_ => ({
     flexShrink: 1,
 }));
@@ -48,17 +35,14 @@ export const TransactionDetailListItem = ({
     isLast = false,
 }: TransactionDetailListItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const navigation = useNavigation<TransactionDetailNavigation>();
+    const navigateToTransactionDetail = useNavigateToTransactionDetail();
 
     const handleNavigation = () => {
         onPress?.();
-        navigation.navigate(RootStackRoutes.TransactionDetailStack, {
-            screen: TransactionDetailStackRoutes.TransactionDetail,
-            params: {
-                txid: transaction.txid,
-                accountKey,
-                tokenContract: tokenTransfer?.contract,
-            },
+        navigateToTransactionDetail({
+            txid: transaction.txid,
+            accountKey,
+            tokenContract: tokenTransfer?.contract,
         });
     };
 
@@ -69,9 +53,10 @@ export const TransactionDetailListItem = ({
         >
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="sp16">
-                    <RoundedIcon
-                        symbol={transaction.symbol}
+                    <TokenIcon
+                        networkSymbol={transaction.symbol}
                         contractAddress={tokenTransfer?.contract}
+                        tokenSymbol={tokenTransfer?.symbol || tokenTransfer?.name}
                     />
                 </Box>
                 <Box style={applyStyle(CoinNameContainerStyle)}>

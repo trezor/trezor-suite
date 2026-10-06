@@ -4,18 +4,10 @@ import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixt
 
 import { SellConfirmation } from './SellConfirmation';
 
-const EXCHANGE_NAME = 'test-provider';
-const CTA_TEXT = getTranslation('moduleTrading.tradingScreen.buttons.sellVia', {
-    providerName: EXCHANGE_NAME,
-});
+const CTA_TEXT = getTranslation('moduleTrading.tradingScreen.buttons.continue');
 
 jest.mock('../../hooks/sell/useSellSelectQuote', () => ({
     useSellSelectQuote: jest.fn(),
-}));
-
-jest.mock('@suite-native/forms', () => ({
-    ...jest.requireActual('@suite-native/forms'),
-    useWatch: () => ({ exchange: 'test-provider' }),
 }));
 
 jest.mock('../../hooks/sell/useSellFormContext', () => ({
@@ -28,12 +20,12 @@ describe('SellConfirmation', () => {
     const mockUseSellSelectQuote =
         require('../../hooks/sell/useSellSelectQuote').useSellSelectQuote;
 
-    const renderConfirmation = () =>
-        renderWithStoreProvider(<SellConfirmation />, {
+    const renderConfirmation = async () =>
+        await renderWithStoreProvider(<SellConfirmation />, {
             preloadedState: { wallet: { trading: getInitializedTradingStateWithQuotes() } },
         });
 
-    it('should render sell button with provider name when canProceed is true', () => {
+    it('should render continue button when canProceed is true', async () => {
         mockUseSellSelectQuote.mockReturnValue({
             canProceed: true,
             selectQuote: jest.fn(),
@@ -42,12 +34,12 @@ describe('SellConfirmation', () => {
             cancelLegalTermsConsent: jest.fn(),
         });
 
-        const { getByText } = renderConfirmation();
+        const { getByText } = await renderConfirmation();
 
         expect(getByText(CTA_TEXT)).toBeTruthy();
     });
 
-    it('should not render sell button when canProceed is false', () => {
+    it('should not render sell button when canProceed is false', async () => {
         mockUseSellSelectQuote.mockReturnValue({
             canProceed: false,
             selectQuote: jest.fn(),
@@ -56,7 +48,7 @@ describe('SellConfirmation', () => {
             cancelLegalTermsConsent: jest.fn(),
         });
 
-        const { queryByText } = renderConfirmation();
+        const { queryByText } = await renderConfirmation();
 
         expect(queryByText(CTA_TEXT)).toBeNull();
     });

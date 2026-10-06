@@ -149,27 +149,6 @@ export default {
             script: 'OP_DUP OP_HASH160 751e76e8199196d454941c45d1b3a323f1433bd6 OP_EQUALVERIFY OP_CHECKSIG',
         },
         {
-            network: 'decred',
-            version: 1855,
-            hash: '751e76e8199196d454941c45d1b3a323f1433bd6',
-            base58check: 'DsbeB3ap3RiS4CLpgd1yXMSKLdrNMppeBE9',
-            script: 'OP_DUP OP_HASH160 751e76e8199196d454941c45d1b3a323f1433bd6 OP_EQUALVERIFY OP_CHECKSIG',
-        },
-        {
-            network: 'decredTest',
-            version: 3873,
-            hash: '751e76e8199196d454941c45d1b3a323f1433bd6',
-            base58check: 'TsbhQ2iKSDmYAZ2BW1e8fvTavjpHvXD2HKq',
-            script: 'OP_DUP OP_HASH160 751e76e8199196d454941c45d1b3a323f1433bd6 OP_EQUALVERIFY OP_CHECKSIG',
-        },
-        {
-            network: 'decredSim',
-            version: 3729,
-            hash: '751e76e8199196d454941c45d1b3a323f1433bd6',
-            base58check: 'Ssf2YF5Pwynoznc72VEAn6QPe7BC6655TjT',
-            script: 'OP_DUP OP_HASH160 751e76e8199196d454941c45d1b3a323f1433bd6 OP_EQUALVERIFY OP_CHECKSIG',
-        },
-        {
             network: 'bitcoincash',
             version: 0,
             hash: '2ac8ab6bea0ddc28bb2690e9692daaf6041c6487',
@@ -249,16 +228,6 @@ export default {
             {
                 address: 'j9ywUkWg2fTQrouxxh5rSZhRvrjMkEUfuiKe',
                 exception: 'is too long',
-            },
-            {
-                address: 'DsmcYVbP1Nmag2H4AS17UTvmWXmGeA7nLD',
-                exception: 'invalid address length',
-                network: 'decred',
-            },
-            {
-                address: 'DsmcYVbP1Nmag2H4AS17UTvmWXmGeA7nLDy',
-                exception: 'invalid checksum',
-                network: 'decred',
             },
         ],
         fromOutputScript: [

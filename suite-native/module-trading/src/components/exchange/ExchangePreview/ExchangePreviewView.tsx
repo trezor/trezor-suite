@@ -9,15 +9,15 @@ import {
     hasEip712SignData,
     selectTradingProviderKycPolicy,
 } from '@suite-common/trading';
-import { AnimatedVStack, InlineAlertBox, VStack } from '@suite-native/atoms';
+import { AnimatedVStack, BannerInline, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { KycPolicyWarning, hasKycPolicyWarning } from '@suite-native/trading-provider-utils';
-import { SlippagePicker } from '@suite-native/trading-slippage';
 
 import { ExchangeEIP712Info } from './ExchangeEIP712Info';
 import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradePreviewCard';
 import { ExchangeInfo } from './ExchangeInfo';
 import { ExchangePreviewIssueBanner } from './ExchangePreviewIssueBanner';
+import { ExchangeSlippagePicker } from './ExchangeSlippagePicker';
 import { ExchangeToAccountTradePreviewCard } from './ExchangeToAccountTradePreviewCard';
 import { LastErrorMessage } from '../../general/Error/LastErrorMessage';
 
@@ -25,6 +25,7 @@ export type ExchangePreviewViewProps = {
     quote: ExchangeTrade | undefined;
     txnErrorString: ReactNode | null;
     onSignTransactionNavigation: () => void;
+    onSlippageConfirmed: () => Promise<void>;
     isApproved?: boolean;
 };
 
@@ -33,6 +34,7 @@ export const ExchangePreviewView = memo(
         quote,
         txnErrorString,
         onSignTransactionNavigation,
+        onSlippageConfirmed,
         isApproved,
     }: ExchangePreviewViewProps) => {
         const { translate } = useTranslate();
@@ -48,7 +50,7 @@ export const ExchangePreviewView = memo(
             <VStack spacing="sp16">
                 <LastErrorMessage tradingType="exchange" />
                 {!!isApproved && (
-                    <InlineAlertBox
+                    <BannerInline
                         intent="brand"
                         title={
                             <Translation id="moduleTrading.tradingExchangePreviewScreen.approvalSuccessAlert" />
@@ -57,7 +59,7 @@ export const ExchangePreviewView = memo(
                 )}
                 {isTxnError && (
                     <Animated.View layout={LinearTransition} entering={FadeIn} exiting={FadeOut}>
-                        <InlineAlertBox intent="critical" title={txnErrorString} />
+                        <BannerInline intent="critical" title={txnErrorString} />
                     </Animated.View>
                 )}
                 <AnimatedVStack layout={LinearTransition} spacing="sp16">
@@ -65,11 +67,17 @@ export const ExchangePreviewView = memo(
                     <ExchangeToAccountTradePreviewCard quote={quote} />
                     {hasEIP712SignData ? (
                         <ExchangeEIP712Info exchange={quote?.exchange}>
-                            <SlippagePicker />
+                            <ExchangeSlippagePicker
+                                quote={quote}
+                                onSlippageConfirmed={onSlippageConfirmed}
+                            />
                         </ExchangeEIP712Info>
                     ) : (
                         <ExchangeInfo quote={quote} isTxnError={isTxnError}>
-                            <SlippagePicker />
+                            <ExchangeSlippagePicker
+                                quote={quote}
+                                onSlippageConfirmed={onSlippageConfirmed}
+                            />
                         </ExchangeInfo>
                     )}
 
@@ -80,7 +88,7 @@ export const ExchangePreviewView = memo(
                     )}
 
                     {hasKycPolicyWarning(kycPolicy) && (
-                        <InlineAlertBox
+                        <BannerInline
                             iconName="identificationCard"
                             title={<KycPolicyWarning kycPolicyType={kycPolicy} />}
                             accessibilityHint={translate('generic.warning')}

@@ -27,7 +27,7 @@ export class CustomError extends Error {
         this.message = message;
 
         if (typeof codeOrMessage === 'string') {
-            const isPrefixed = codeOrMessage.indexOf(PREFIX) === 0;
+            const isPrefixed = codeOrMessage.startsWith(PREFIX);
             const code = isPrefixed ? codeOrMessage.substring(PREFIX.length) : codeOrMessage;
             const knownCode = Object.keys(ERROR).includes(code);
             if (isPrefixed || knownCode) {
@@ -36,7 +36,7 @@ export class CustomError extends Error {
                 if (codeMessage) {
                     if (this.message === '') {
                         this.message = codeMessage;
-                    } else if (message.indexOf('+') === 0) {
+                    } else if (message.startsWith('+')) {
                         this.message = `${codeMessage} ${message.substring(1)}`;
                     }
                 }

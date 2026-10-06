@@ -1,7 +1,8 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type Action, type GuideNode, type MessageSystem } from '@suite-common/suite-types';
-import { networksCollection } from '@suite-common/wallet-config';
+import { asNetworkSymbol, networksCollection } from '@suite-common/wallet-config';
 import {
     type BlockchainNetworks,
     type FeeInfo,
@@ -108,7 +109,7 @@ const getWalletTransaction = (t?: Partial<WalletAccountTransaction>): WalletAcco
         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
     ),
     deviceState: '1stTestnetAddress@device_id:0',
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     type: 'sent',
     txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
     blockTime: 1565797979,
@@ -463,7 +464,7 @@ const intlMock = {
 };
 
 const mockedBlockchainNetworks = networksCollection.reduce((result, network) => {
-    result[network.symbol] = {
+    result[network.symbol as LegacyNetworkSymbol] = {
         connected: false,
         blockHash: '0',
         blockHeight: 0,

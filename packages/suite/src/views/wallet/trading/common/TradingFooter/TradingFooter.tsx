@@ -1,8 +1,8 @@
-import { useSelector } from 'react-redux';
-
 import { Translation } from '@suite/intl';
 import { type TradingProviderInfo, selectTradingProviderMetadata } from '@suite-common/trading';
 import { Column, Link, Text } from '@trezor/components';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { TradingFormFeesDisclaimer } from '../TradingFormFeesDisclaimer/TradingFormFeesDisclaimer';
 

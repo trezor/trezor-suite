@@ -11,7 +11,7 @@ import {
     setBaseCurrency,
 } from '@suite-common/wallet-core';
 import { getAccountIdentifier } from '@suite-common/wallet-utils';
-import { DEVICE, TRANSPORT } from '@trezor/connect';
+import { TRANSPORT, isTransportEventOfType } from '@trezor/connect';
 
 import { addLog } from './logsSlice';
 
@@ -50,9 +50,12 @@ export const logsMiddleware = createMiddleware((action, { next, dispatch }) => {
     }
 
     if (
-        isAnyOf(deviceActions.updateSelectedDevice, deviceActions.setRememberDevice)(action) ||
-        action.type === DEVICE.CONNECT ||
-        action.type === DEVICE.DISCONNECT
+        isAnyOf(
+            deviceActions.updateSelectedDevice,
+            deviceActions.setRememberDevice,
+            deviceActions.connectDevice,
+            deviceActions.deviceDisconnect,
+        )(action)
     ) {
         dispatch(
             addLog({
@@ -70,7 +73,7 @@ export const logsMiddleware = createMiddleware((action, { next, dispatch }) => {
         dispatch(addLog({ type: action.type, payload: { ...action.payload } }));
     }
 
-    if (action.type === TRANSPORT.START) {
+    if (isTransportEventOfType(action, TRANSPORT.START)) {
         dispatch(
             addLog({
                 type: action.type,
@@ -81,7 +84,7 @@ export const logsMiddleware = createMiddleware((action, { next, dispatch }) => {
             }),
         );
     }
-    if (action.type === TRANSPORT.ERROR) {
+    if (isTransportEventOfType(action, TRANSPORT.ERROR)) {
         dispatch(addLog({ type: action.type, payload: { error: action.payload.error } }));
     }
 

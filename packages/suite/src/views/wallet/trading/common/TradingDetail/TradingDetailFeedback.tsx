@@ -5,28 +5,31 @@ import {
     type SellTradeStatus,
 } from 'invity-api';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import { useServices } from '@suite-common/dependency-injection';
+import { type Rating, buildUserFeedbackData, sendFeedbackThunk } from '@suite-common/feedback';
 import { selectCountryCode } from '@suite-common/geolocation';
 import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
 import { FeedbackCard } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 
-interface TradingDetailFeedbackProps {
+type TradingDetailFeedbackProps = {
     status: ExchangeTradeStatus | SellTradeStatus | BuyTradeStatus | undefined;
     type: TradingType;
     provider?: ExchangeProviderInfo['name'];
     id?: string;
     quoteAmounts: TradingGetCryptoQuoteAmountProps;
     country?: string;
-}
+};
 
 export const TradingDetailFeedback = ({
     status,
@@ -37,15 +40,22 @@ export const TradingDetailFeedback = ({
     country,
 }: TradingDetailFeedbackProps) => {
     const { device } = useDevice();
-    const dispatch = useDispatch();
     const geolocation = useSelector(selectCountryCode);
     const activeExperimentsWithVariants = useSelector(selectActiveExperimentsWithVariants);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+
+    const handleRatingSelect = (rating: Rating) => {
+        analytics.report({
+            type: events.feedbackRatingSelectedEvent.name,
+            payload: { rating, category: 'trade', context: type, provider },
+        });
+    };
 
     const handleSubmit = (rating: Rating, description: string) => {
         const userData = buildUserFeedbackData(device);
 
         dispatch(
-            sendFeedbackAction({
+            sendFeedbackThunk({
                 type: 'SUGGESTION',
                 payload: {
                     category: 'trade',
@@ -66,16 +76,23 @@ export const TradingDetailFeedback = ({
                 },
             }),
         );
+
+        analytics.report({
+            type: events.feedbackSentEvent.name,
+            payload: { category: 'trade', context: type, provider },
+        });
     };
 
     return (
         <FeedbackCard
             heading={<Translation id="TR_EXCHANGE_DETAIL_FEEDBACK_TITLE" />}
             description={<Translation id="TR_FEEDBACK_CARD_DESCRIPTION" />}
-            submitLabel={<Translation id="TR_FEEDBACK_CARD_SEND" />}
+            submitLabel={<Translation id="TR_FEEDBACK_CARD_SEND_FEEDBACK" />}
+            cancelLabel={<Translation id="TR_CANCEL" />}
             successHeading={<Translation id="TR_FEEDBACK_CARD_SUCCESS_TITLE" />}
             successDescription={<Translation id="TR_FEEDBACK_CARD_SUCCESS_DESCRIPTION" />}
             onSubmit={handleSubmit}
+            onRatingSelect={handleRatingSelect}
         />
     );
 };

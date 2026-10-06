@@ -1,7 +1,6 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { isTrezorDeviceWithState } from '@suite-common/device';
+import { type Dispatch } from '@suite-common/redux-utils';
 import {
     type EnsureSuiteSyncKeys,
     type EnsureSuiteSyncOwnerDep,

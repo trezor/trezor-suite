@@ -12,6 +12,7 @@ import {
     gettingNpmDistributionTags,
 } from './helpers';
 import { isPackageOnNpmRegistry } from './npm-registry.js';
+import { updateConnectChangelog } from './update-connect-changelog';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -79,47 +80,45 @@ const tableToMarkdown = (table: ConnectVersionMatrix[], type: 'Package' | 'Deplo
     return markdown;
 };
 
-const updateConnectChangelog = async (
+const updateConnectChangelogFile = async (
     connectChangelogPath: string,
     stableVersion: string,
     canaryVersion: string,
 ) => {
-    try {
-        const stable = stableVersion;
-        const canary = canaryVersion;
+    const stable = stableVersion;
+    const canary = canaryVersion;
 
-        const changelogContent = await readFile(connectChangelogPath, 'utf-8');
-        const lines = changelogContent.split('\n');
+    const changelogContent = await readFile(connectChangelogPath, 'utf-8');
 
-        const oldContent = lines.slice(10).join('\n');
+    const npmTable = [
+        { package: 'npm @trezor/connect', stable, canary },
+        { package: 'npm @trezor/connect-web', stable, canary },
+        {
+            package: 'npm @trezor/connect-webextension',
+            stable,
+            canary,
+        },
+        {
+            package: 'npm @trezor/connect-mobile',
+            stable,
+            canary,
+        },
+    ];
 
-        const npmTable = [
-            { package: 'npm @trezor/connect', stable, canary },
-            { package: 'npm @trezor/connect-web', stable, canary },
-            {
-                package: 'npm @trezor/connect-webextension',
-                stable,
-                canary,
-            },
-            {
-                package: 'npm @trezor/connect-mobile',
-                stable,
-                canary,
-            },
-        ];
+    const connectExplorerTable = [{ package: 'connect.trezor.io/', stable, canary }];
 
-        const connectExplorerTable = [{ package: 'connect.trezor.io/', stable, canary }];
+    const markdownNpmTable = tableToMarkdown(npmTable, 'Package');
+    const markdownConnectExplorerTable = tableToMarkdown(connectExplorerTable, 'Deployment');
 
-        const markdownNpmTable = tableToMarkdown(npmTable, 'Package');
-        const markdownConnectExplorerTable = tableToMarkdown(connectExplorerTable, 'Deployment');
+    const updatedContent = updateConnectChangelog({
+        changelog: changelogContent,
+        versionTable: markdownNpmTable,
+        deploymentTable: markdownConnectExplorerTable,
+        stableVersion,
+        canaryVersion,
+    });
 
-        const updatedContent =
-            markdownNpmTable + '\n' + markdownConnectExplorerTable + '\n' + oldContent;
-
-        await writeFile(connectChangelogPath, updatedContent, 'utf-8');
-    } catch (error) {
-        console.error('Error updating CHANGELOG.md:', error);
-    }
+    await writeFile(connectChangelogPath, updatedContent, 'utf-8');
 };
 
 const getUnreservedNpmPackages = async (packageNames: string[]) => {
@@ -238,13 +237,17 @@ const bumpConnect = async () => {
         const { version } = packageJSON;
 
         if (deploymentType === 'stable') {
-            await updateConnectChangelog(CONNECT_CHANGELOG_PATH, version, '-');
+            await updateConnectChangelogFile(CONNECT_CHANGELOG_PATH, version, '-');
         } else {
             const distributionTags = await gettingNpmDistributionTags('@trezor/connect');
             if (!distributionTags?.latest) {
                 throw new Error('Could not resolve the latest @trezor/connect version from NPM');
             }
-            await updateConnectChangelog(CONNECT_CHANGELOG_PATH, distributionTags.latest, version);
+            await updateConnectChangelogFile(
+                CONNECT_CHANGELOG_PATH,
+                distributionTags.latest,
+                version,
+            );
         }
 
         await exec('yarn', ['prettier', '--write', CONNECT_CHANGELOG_PATH]);
@@ -278,6 +281,8 @@ const bumpConnect = async () => {
             `${commitMessage}`,
             '--body-file',
             'scripts/templates/connect-bump-version.md',
+            '--label',
+            'no-project',
             '--base',
             'develop',
             '--head',

@@ -8,7 +8,7 @@ import {
     type FirmwareUpdatePayload,
     type FirmwareUpdateStartType,
     events,
-    selectNativeAnalyticsDep,
+    injectNativeAnalytics,
 } from '@suite-native/analytics';
 import { type FirmwareType } from '@trezor/connect';
 import {
@@ -27,7 +27,7 @@ export const useFirmwareAnalytics = ({
     navigationLocation?: 'settings' | 'onboarding';
 }) => {
     const toFwVersion = useSelector(selectDeviceUpdateFirmwareVersion);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const prepareAnalyticsPayload = useCallback(
         (): FirmwareUpdatePayload => ({
             model: device?.features?.internal_model ?? DeviceModelInternal.UNKNOWN,
@@ -77,7 +77,7 @@ export const useFirmwareAnalytics = ({
         [getAnalyticsPayload, analytics, resetTimeStarted],
     );
 
-    const handleAnalyticsReportStucked = useCallback(
+    const handleAnalyticsReportStuck = useCallback(
         (state: 'modalPart1' | 'modalPart2' | 'buttonVisible') => {
             analytics.report({
                 type: events.firmwareFirmwareUpdateStuckedEvent.name,
@@ -116,9 +116,9 @@ export const useFirmwareAnalytics = ({
         getElapsedTimeInSeconds,
         getAnalyticsPayload,
         resetTimeStarted,
-        handleAnalyticsReportStucked,
+        handleAnalyticsReportStarted,
+        handleAnalyticsReportStuck,
         handleAnalyticsReportFinished,
         handleAnalyticsReportCancelled,
-        handleAnalyticsReportStarted,
     };
 };

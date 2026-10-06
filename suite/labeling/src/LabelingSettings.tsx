@@ -1,8 +1,8 @@
 import { type ReactNode, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { type OptionProps } from 'react-select';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
@@ -17,16 +17,14 @@ import { SuiteSyncServers, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     selectIsSuiteSyncEnabled,
     selectIsSuiteSyncFeatureAvailable,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import {
-    selectTurnOffSuiteSyncDep,
-    selectTurnOnSuiteSyncDep,
-} from '@suite-common/suite-sync-types';
+import { injectTurnOffSuiteSync, injectTurnOnSuiteSync } from '@suite-common/suite-sync-types';
 import { Box, Column, LoadingContent, SelectOption, Tooltip } from '@trezor/components';
 import {
     ActionColumn,
@@ -89,13 +87,13 @@ const LabelingOption = ({
 export const LabelingSettings = () => {
     const { translationString } = useTranslation();
 
-    const { analytics, turnOffSuiteSync, turnOnSuiteSync } = useServices(
-        selectDesktopAnalyticsDep,
-        selectTurnOffSuiteSyncDep,
-        selectTurnOnSuiteSyncDep,
+    const { analytics, turnOffSuiteSync, turnOnSuiteSync, dispatch } = useServices(
+        injectDesktopAnalytics,
+        injectTurnOffSuiteSync,
+        injectTurnOnSuiteSync,
+        injectDispatch,
     );
 
-    const dispatch = useDispatch();
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
     const { device } = useDevice();
     const deviceStaticSessionId = device?.state?.staticSessionId;
@@ -129,7 +127,7 @@ export const LabelingSettings = () => {
     const handleLegacyOptionSelect = async () => {
         await turnOffSuiteSync();
         if (legacyMetadataState.enabled === false) {
-            dispatch(metadataLabelingActions.init(true));
+            dispatch(metadataLabelingActions.initThunk(true));
         }
     };
 

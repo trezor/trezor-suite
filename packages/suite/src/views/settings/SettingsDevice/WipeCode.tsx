@@ -1,28 +1,26 @@
-import { useSelector } from 'react-redux';
-
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceProtectedByWipeCode } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 
-import { changeWipeCode } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
+import { changeWipeCodeThunk } from 'src/actions/settings/deviceSettingsActions';
+import { useSelector } from 'src/hooks/suite';
 
 interface Props {
     isDeviceLocked: boolean;
 }
 
 export const WipeCode = ({ isDeviceLocked }: Props) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const isDeviceProtectedByWipeCode = useSelector(selectIsDeviceProtectedByWipeCode);
 
     const enableWipeCode = () => {
-        dispatch(changeWipeCode({ remove: false }));
+        dispatch(changeWipeCodeThunk({ remove: false }));
         analytics.report({
             type: isDeviceProtectedByWipeCode
                 ? events.settingsDeviceChangeWipeCodeEvent.name
@@ -31,7 +29,7 @@ export const WipeCode = ({ isDeviceLocked }: Props) => {
     };
 
     const disableWipeCode = () => {
-        dispatch(changeWipeCode({ remove: true }));
+        dispatch(changeWipeCodeThunk({ remove: true }));
         analytics.report({
             type: events.settingsDeviceDisableWipeCodeEvent.name,
         });

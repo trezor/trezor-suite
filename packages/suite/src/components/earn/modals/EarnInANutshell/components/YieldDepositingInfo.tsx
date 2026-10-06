@@ -63,7 +63,12 @@ export const YieldDepositingInfo = ({
                 heading={
                     <Translation id="TR_EARN_YIELD_RECEIVE_VAULT_TOKENS" values={{ vaultSymbol }} />
                 }
-                subheading={<Translation id="TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK" />}
+                subheading={
+                    <Translation
+                        id="TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK"
+                        values={{ vaultSymbol }}
+                    />
+                }
                 content={{
                     text:
                         apy !== null && apy > 0 ? (

@@ -1,5 +1,6 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { spacingValues } from '@trezor/theme';
 
 import { TokenIconSet as TokenIconSetComponent, type TokenIconSetProps } from './TokenIconSet';
@@ -24,7 +25,7 @@ const meta: Meta<typeof TokenIconSetComponent> = {
 export default meta;
 export const TokenIconSet: StoryObj<TokenIconSetProps> = {
     args: {
-        symbol: 'eth',
+        symbol: asNetworkSymbol('eth'),
         tokens: [TOKEN_1, TOKEN_2, TOKEN_3, TOKEN_4],
         size: 24,
         gap: 16,

@@ -1,46 +1,65 @@
-import { type Evolu, createOwnerWebSocketTransport } from '@evolu/common';
+import { type Evolu, type createOwnerWebSocketTransport } from '@evolu/common';
 
 import { type CreateSuiteStorage, type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 
-import { type CreateEvoluInstanceDep } from './createEvoluInstance';
+import { type EvoluInstanceFactoryDep } from './createEvoluInstance';
 import { type AccountTableSchema, EvoluAccountTable } from './data/accountTable';
 import { AddressEvoluTable, type AddressTableSchema } from './data/addressTable';
 import { OutputEvoluTable, type OutputTableSchema } from './data/outputTable';
 import { EvoluWalletTable, type WalletTableSchema } from './data/walletTable';
 
-export type CreateEvoluStorageFactoryDeps = CreateEvoluInstanceDep;
+export type CreateOwnerWebSocketTransport = typeof createOwnerWebSocketTransport;
+
+export type CreateOwnerWebSocketTransportDep = {
+    createOwnerWebSocketTransport: CreateOwnerWebSocketTransport;
+};
+
+export type CreateEvoluStorageFactoryDeps = EvoluInstanceFactoryDep &
+    CreateOwnerWebSocketTransportDep;
+
+export type EvoluStorageFactory = CreateSuiteStorage;
 
 /**
  * This is intended as Wrapper around Evolu. In case we need to change Evolu for
  * something else, this is the Public API for the rest of the Suite ecosystem.
  */
 export const createEvoluStorageFactory =
-    (deps: CreateEvoluStorageFactoryDeps): CreateSuiteStorage =>
+    (deps: CreateEvoluStorageFactoryDeps): EvoluStorageFactory =>
     async ({ suiteSyncOwner }): Promise<SuiteSyncStorage> => {
+        const evolu = await deps.evoluInstanceFactory({ suiteSyncOwner });
+        const owner = await evolu.appOwner;
+        let relayUrl: string | null = null;
         /**
          * Dispose function of the connected owner. When owner is changed
          * (for example for RelayUrl change, this needs to be called).
          * @private
          */
-
         let unuseOwner = () => {};
-
-        const evolu = await deps.createEvoluInstance({ suiteSyncOwner });
 
         const disconnectRelay = () => {
             unuseOwner();
             unuseOwner = () => {};
+            relayUrl = null;
 
             return Promise.resolve();
         };
 
-        const updateRelayUrl = async (url: string) => {
-            const owner = await evolu.appOwner;
+        const forceResync = () => {
+            if (relayUrl !== null) {
+                // Resubscribing starts full reconciliation, including previously rejected writes.
+                unuseOwner();
+                unuseOwner = evolu.useOwner(owner, [
+                    deps.createOwnerWebSocketTransport({ url: relayUrl, ownerId: owner.id }),
+                ]);
+            }
 
-            await disconnectRelay();
-            unuseOwner = evolu.useOwner(owner, [
-                createOwnerWebSocketTransport({ url, ownerId: owner.id }),
-            ]);
+            return Promise.resolve();
+        };
+
+        const updateRelayUrl = (url: string) => {
+            relayUrl = url;
+
+            return forceResync();
         };
 
         return {
@@ -56,8 +75,10 @@ export const createEvoluStorageFactory =
             },
 
             updateRelayUrl,
+            forceResync,
             disconnectRelay,
             dispose: async () => {
+                await disconnectRelay();
                 await evolu[Symbol.asyncDispose]();
             },
         };

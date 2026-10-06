@@ -307,7 +307,12 @@ export type TradingType = 'buy' | 'sell' | 'exchange' | 'concierge';
  * This interface was referenced by `MessageSystem`'s JSON-Schema
  * via the `definition` "yieldFlowType".
  */
-export type YieldFlowType = 'deposit' | 'withdraw' | 'redeem' | 'claim';
+export type YieldFlowType = 'deposit' | 'withdraw' | 'claim';
+/**
+ * This interface was referenced by `MessageSystem`'s JSON-Schema
+ * via the `definition` "wrappedNativeFlowType".
+ */
+export type WrappedNativeFlowType = 'wrap' | 'unwrap';
 
 /**
  * JSON schema of the Trezor Suite messaging system.
@@ -512,6 +517,10 @@ export interface Experiments {
  */
 export interface ExperimentsItem {
     id: string;
+    /**
+     * Human readable name of the experiment, shown in the debug settings
+     */
+    name?: string;
     groups: {
         /**
          * The name of the variant, e.g., 'A' or 'B'

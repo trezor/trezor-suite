@@ -1,4 +1,6 @@
 import { type TradingAmountLimitProps } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { act } from '@suite-native/test-utils-store';
 
 import { useContextForTradingForm } from './useContextForTradingForm';
@@ -9,16 +11,16 @@ import {
 } from '../../../test-utils/tradingTestUtils';
 
 describe('useContextForTradingForm', () => {
-    const renderUseContextForTradingForm = (
+    const renderUseContextForTradingForm = async (
         limits: TradingAmountLimitProps | undefined,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderHookWithTradingProvider(() => useContextForTradingForm(limits), {
+        await renderHookWithTradingProvider(() => useContextForTradingForm(limits), {
             overrides,
         });
 
-    it('should return base context without limits and balance on initial render', () => {
-        const { result } = renderUseContextForTradingForm(undefined);
+    it('should return base context without limits and balance on initial render', async () => {
+        const { result } = await renderUseContextForTradingForm(undefined);
 
         expect(result.current.context).toEqual({
             translate: expect.any(Function),
@@ -28,7 +30,7 @@ describe('useContextForTradingForm', () => {
         });
     });
 
-    it('should append limits to context when specified', () => {
+    it('should append limits to context when specified', async () => {
         const limits: TradingAmountLimitProps = {
             minCrypto: '0.0001',
             maxCrypto: '1',
@@ -37,23 +39,27 @@ describe('useContextForTradingForm', () => {
             currency: 'BTC',
         };
 
-        const { result } = renderUseContextForTradingForm(limits);
+        const { result } = await renderUseContextForTradingForm(limits);
 
         expect(result.current.context).toEqual(expect.objectContaining(limits));
     });
 
-    it('should append balance and sendSymbol when specified', () => {
-        const { result } = renderUseContextForTradingForm(undefined);
+    it('should append send asset data and balance when specified', async () => {
+        const { result } = await renderUseContextForTradingForm(undefined);
 
-        act(() => {
+        await act(() => {
             result.current.setBalance('0.5');
-            result.current.setSendSymbol('ETH');
+            result.current.setSendNetworkSymbol(asNetworkSymbol('eth'));
+            result.current.setSendAssetSymbol('USDT');
+            result.current.setContractAddress('0x123' as TokenAddress);
         });
 
         expect(result.current.context).toEqual(
             expect.objectContaining({
                 balance: '0.5',
-                sendSymbol: 'ETH',
+                sendNetworkSymbol: 'eth',
+                sendAssetSymbol: 'USDT',
+                contractAddress: '0x123',
             }),
         );
     });

@@ -232,7 +232,7 @@ export const PinInput = ({
     };
 
     return (
-        <Row gap={8}>
+        <Row gap={8} data-component="PinInput">
             {symbols.map((symbol, index) => (
                 <SymbolInput
                     // eslint-disable-next-line jsx-a11y/no-autofocus

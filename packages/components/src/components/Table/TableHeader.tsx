@@ -8,7 +8,7 @@ export interface TableHeaderProps {
 
 export const TableHeader = ({ children }: TableHeaderProps) => (
     <HeaderContext.Provider value={true}>
-        <thead>{children}</thead>
+        <thead data-component="TableHeader">{children}</thead>
     </HeaderContext.Provider>
 );
 

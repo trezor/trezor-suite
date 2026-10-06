@@ -7,6 +7,7 @@ import {
     type Account,
     type AccountKey,
     type ChainedTransactions,
+    type FormState,
     type GeneralPrecomposedTransactionFinal,
     type PrecomposedTransactionFinal,
     type PrecomposedTransactionFinalBumpFeeRbf,
@@ -31,14 +32,11 @@ import { type Branded } from '@trezor/type-utils';
 import { BigNumber, arrayPartition, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
-import { isCardanoStakingTx } from './cardanoStakingUtils';
 import { fromGwei, fromWei } from './ethConverter';
 import { getEvmTransactionTextSignature } from './ethUtils';
-import { isStakeTypeTx } from './ethereumStakingUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
 import { getMyInputsFromTransaction } from './getMyInputsFromTransaction';
-import { isTronStakingTx } from './tronStakingUtils';
 
 export const sortByBlockHeight = (a: { blockHeight?: number }, b: { blockHeight?: number }) => {
     // if both are missing the blockHeight don't change their order
@@ -70,11 +68,28 @@ export const isPending = (tx: WalletAccountTransaction | AccountTransaction) => 
     return !!tx && (!tx.blockHeight || tx.blockHeight < 0);
 };
 
-// Also matches 'contract': a contract-deployment tx is signed and broadcast from the account's own
-// address and consumes an EVM nonce exactly like a plain send, so it must count toward the same
-// nonce pool (see getEvmNonceInfo) even though blockbook classifies it under a distinct type.
-export const isSentTransaction = (tx: WalletAccountTransaction | AccountTransaction) =>
-    ['sent', 'self', 'contract'].includes(tx.type);
+// isAccountOwned is set by enhanceVinVout at transform time; the descriptor comparison is the
+// fallback for records where it is absent, and is case-insensitive because EVM addresses reach us in
+// mixed EIP-55 casing (cf. isOutgoing in blockchain-link-utils).
+const isSignedByDescriptor = (details: AccountTransaction['details'], descriptor: string) =>
+    !!details?.vin?.some(
+        vin =>
+            vin.isAccountOwned ||
+            vin.addresses?.some(address => address.toLowerCase() === descriptor.toLowerCase()),
+    );
+
+/**
+ * Whether the account itself signed (and paid for) the transaction.
+ *
+ * Deliberately not `tx.type`, which is a display label: it reads 'sent' for any transaction moving
+ * value out of the account — including one signed by a stranger, since an ERC-20 Transfer log or a
+ * transferFrom(account, …) call may name any `from` — and 'failed' for the account's own reverted
+ * sends. EVM nonce arithmetic needs authorship instead: a foreign transaction carries the *signer's*
+ * nonce, which says nothing about this account, while an own failed or contract-deployment
+ * transaction consumes a nonce exactly like a plain send.
+ */
+export const isSignedByAccount = (tx: Pick<WalletAccountTransaction, 'details' | 'descriptor'>) =>
+    isSignedByDescriptor(tx.details, tx.descriptor);
 
 // Shared by the transaction list and its detail modal so both agree on which pending transactions
 // offer a cancel action. Cancelling replaces the tx with a 0-value self-send at the same
@@ -110,8 +125,8 @@ export type EvmNonceInfo = {
     confirmedNonces: number[];
 };
 
-const getOwnEvmNonceSets = (transactions: WalletAccountTransaction[]) => {
-    const ownNonceTxs = transactions.filter(isSentTransaction);
+export const getOwnEvmNonceSets = (transactions: WalletAccountTransaction[]) => {
+    const ownNonceTxs = transactions.filter(isSignedByAccount);
 
     // A nonce that's confirmed locally is ground truth. If a stale "pending" record for the same
     // nonce also lingers (e.g. a speed-up/cancel replacement got confirmed but the original's
@@ -157,10 +172,12 @@ export const getEvmNonceInfo = (
 
     // accountNonce (e.g. account.misc.nonce) can lag behind the local tx list if it hasn't been
     // refreshed since a confirmed tx was locally picked up. A locally confirmed nonce proves a
-    // higher true nonce exists, so it's a floor accountNonce can't be below. When no confirmed
-    // nonce is locally known this is 0, so it never lowers accountNonce.
-    const maxLocalConfirmedNonce = confirmedNonces.size > 0 ? Math.max(...confirmedNonces) + 1 : 0;
-    const effectiveAccountNonce = Math.max(accountNonce, maxLocalConfirmedNonce);
+    // higher true nonce exists, so it's a floor accountNonce can't be below. The floor walks up
+    // contiguously rather than jumping to max(confirmedNonces): an isolated outlier (a corrupted
+    // record, or a nonce that never belonged to this account) is then never reached — see
+    // getEvmNonceInfoFromConfirmedNonce for the same reasoning.
+    let effectiveAccountNonce = accountNonce;
+    while (confirmedNonces.has(effectiveAccountNonce)) effectiveAccountNonce += 1;
 
     // effectiveAccountNonce may still overstate reality via blockbook's pending nonce
     // (eth_getTransactionCount("pending")), which already advances past consecutive mempool txs —
@@ -214,6 +231,45 @@ export const getEvmNonceInfoFromConfirmedNonce = (
         nextNonce,
         pendingNonces: [...pendingNonceSet],
         confirmedNonces: [...confirmedNonces],
+    };
+};
+
+/**
+ * Builds the blockbook `privatePending` hint (trezor/blockbook#1639) for an EVM account from the
+ * wallet's own pending sends, which blockbook's public provider may not see (private-relay
+ * broadcast, or lag — trezor/blockbook#1562). The nonces raise its reported pending nonce to max+1;
+ * the txids let it fetch-back each body (eth_getTransactionByHash) so the tx shows up in history.
+ *
+ * Nonces come from `getOwnEvmNonceSets`' `pendingNonceSet` — Suite's own local pending-nonce view,
+ * already excluding locally-confirmed nonces. Returns `undefined` when nothing is pending, so
+ * callers omit the field (blockbook must not receive an empty array).
+ */
+export const getEvmPrivatePendingHint = (
+    transactions: WalletAccountTransaction[],
+): { nonces: number[]; txids?: string[] } | undefined => {
+    const { pendingNonceSet } = getOwnEvmNonceSets(transactions);
+
+    if (pendingNonceSet.size === 0) return undefined;
+
+    // hashes of those same pending sends (confirmed nonces are already out of pendingNonceSet)
+    const txids = [
+        ...new Set(
+            transactions
+                .filter(isPending)
+                .filter(isSignedByAccount)
+                .filter(tx => {
+                    const nonce = tx.ethereumSpecific?.nonce;
+
+                    return typeof nonce === 'number' && pendingNonceSet.has(nonce);
+                })
+                .map(tx => tx.txid)
+                .filter(Boolean),
+        ),
+    ].sort();
+
+    return {
+        nonces: [...pendingNonceSet].sort((a, b) => a - b),
+        ...(txids.length > 0 ? { txids } : {}),
     };
 };
 
@@ -285,6 +341,14 @@ export const isRbfBumpFeeTransaction = (
 export const isRbfCancelTransaction = (
     tx: GeneralPrecomposedTransactionFinal,
 ): tx is PrecomposedTransactionFinalCancelRbf => isRbfTransaction(tx) && tx.rbfType === 'cancel';
+
+export const getDecreaseOutputId = (
+    precomposedTx: GeneralPrecomposedTransactionFinal | undefined,
+    precomposedForm: FormState | null | undefined,
+) =>
+    precomposedTx && isRbfBumpFeeTransaction(precomposedTx) && precomposedTx.useNativeRbf
+        ? precomposedForm?.setMaxOutputId
+        : undefined;
 
 /* Convert date to string in YYYY-MM-DD format */
 const generateTransactionDateKey = (d: Date) =>
@@ -373,6 +437,11 @@ export const formatCardanoDeposit = (tx: WalletAccountTransaction) =>
         ? formatNetworkAmount(tx.cardanoSpecific.deposit, tx.symbol)
         : undefined;
 
+// A deregistration refunds the deposit a registration paid, and `deposit` holds the absolute
+// amount for both, so the subtype decides the direction.
+const isCardanoDepositRefunded = (tx: WalletAccountTransaction) =>
+    tx.cardanoSpecific?.subtype === 'stake_deregistration';
+
 export const getCardanoStakingSignValue = (transaction: WalletAccountTransaction) => {
     if (!transaction?.cardanoSpecific) return 'negative';
     const subtype = transaction.cardanoSpecific?.subtype;
@@ -388,15 +457,36 @@ export const getCardanoStakingSignValue = (transaction: WalletAccountTransaction
     return 'positive';
 };
 
+type CardanoSpecific = NonNullable<WalletAccountTransaction['cardanoSpecific']>;
+
+export const getCardanoStakingAmount = ({
+    subtype,
+    deposit = '0',
+    withdrawal = '0',
+}: CardanoSpecific) => {
+    switch (subtype) {
+        case 'withdrawal':
+            return withdrawal;
+        case 'stake_deregistration':
+            // Unstaking with rewards refunds the deposit and withdraws in one transaction.
+            return new BigNumber(deposit).plus(withdrawal).toString();
+        case 'stake_registration':
+        case 'stake_delegation':
+            return deposit;
+        default:
+            return '0';
+    }
+};
+
 export const isTxFeePaid = (tx: WalletAccountTransaction) => {
-    const showFeeRowForSolClaim = tx?.solanaSpecific?.stakeOperation?.type === 'claim';
+    const showFeeRowForSolSent = !!tx?.solanaSpecific && tx.type === 'sent';
     const showFeeRowForStellar = tx?.stellarSpecific?.feeSource === tx.descriptor;
     const isCardano = !!tx?.cardanoSpecific;
     const showFeeRowForCardano = isCardano && tx.type !== 'recv';
 
     return (
         (!!tx.details.vin.find(vin => vin.isOwn || vin.isAccountOwned) && tx.type !== 'joint') ||
-        showFeeRowForSolClaim ||
+        showFeeRowForSolSent ||
         showFeeRowForStellar ||
         showFeeRowForCardano
     );
@@ -422,7 +512,9 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
 
             const cardanoDeposit = formatCardanoDeposit(tx);
             if (cardanoDeposit) {
-                totalAmount = totalAmount.minus(cardanoDeposit);
+                totalAmount = isCardanoDepositRefunded(tx)
+                    ? totalAmount.plus(cardanoDeposit)
+                    : totalAmount.minus(cardanoDeposit);
             }
         }
 
@@ -478,9 +570,12 @@ export const sumTransactionsFiat = (
 
             const cardanoDeposit = formatCardanoDeposit(tx);
             if (cardanoDeposit) {
-                totalAmount = totalAmount.minus(
-                    toFiatCurrency({ amount: cardanoDeposit, rate: historicRate }) ?? 0,
-                );
+                const depositFiat =
+                    toFiatCurrency({ amount: cardanoDeposit, rate: historicRate }) ?? 0;
+
+                totalAmount = isCardanoDepositRefunded(tx)
+                    ? totalAmount.plus(depositFiat)
+                    : totalAmount.minus(depositFiat);
             }
         }
 
@@ -660,11 +755,18 @@ export const analyzeTransactions = (
         };
     }
 
-    const [knownPrepending, knownRest] = arrayPartition(known, tx => 'deadline' in tx);
-
-    const removePrepending = knownPrepending.filter(
-        tx => (tx.deadline && tx.deadline < blockHeight) || fresh.find(fTx => fTx.txid === tx.txid),
+    // The stored list is written by index (transactionsReducer `addTransaction`), so a partially
+    // paginated account has empty slots and reaches here unfiltered via `getAccountTransactions`.
+    const [knownPrepending, knownRest] = arrayPartition(
+        known.filter(isNotNullOrUndefined),
+        tx => 'deadline' in tx,
     );
+
+    // A fake pending record whose txid shows up in `fresh` is deliberately left out of `remove`:
+    // the `addTransaction` reducer upgrades it in place once the real record arrives, so the txid
+    // never leaves the store. Removing it here first would evict the tx for a render, which the
+    // detail modal and every other consumer of the list would see as a missing transaction.
+    const removePrepending = knownPrepending.filter(tx => tx.deadline && tx.deadline < blockHeight);
     // If there are no known confirmed txs
     // remove all known and add all fresh
     const gotConfirmedTxs = knownRest.some(tx => !isPending(tx));
@@ -677,7 +779,8 @@ export const analyzeTransactions = (
     }
 
     // make sure the known transactions are sorted properly
-    const knownSorted = knownRest.filter(isNotNullOrUndefined).sort(sortByBlockHeight);
+    const knownSorted = [...knownRest].sort(sortByBlockHeight);
+    const knownTxids = new Set(knownSorted.map(({ txid }) => txid));
     // run thru all fresh txs
     fresh.forEach((tx, i) => {
         const height = tx.blockHeight;
@@ -710,6 +813,18 @@ export const analyzeTransactions = (
                 }
                 // known tx is on the same height
                 if (kTx.blockHeight === height) {
+                    // No block hash on either side: a new txid at this height is an
+                    // addition, not a rollback.
+                    if (
+                        kTx.blockHash === undefined &&
+                        tx.blockHash === undefined &&
+                        !knownTxids.has(tx.txid)
+                    ) {
+                        addTxs.push(tx);
+                        newTxs.push(tx);
+                        break;
+                    }
+
                     firstKnownIndex = index + 1;
                     // known tx changed (rollback)
                     if (kTx.blockHash !== tx.blockHash) {
@@ -762,8 +877,22 @@ const NFT_TOKEN_STANDARDS: ReadonlySet<TokenStandard> = new Set([
     ...NFT_MULTITOKEN_STANDARDS,
 ]);
 
+/** Whether the account's own balance moved at all, in the native asset or any token. */
+export const hasValueMovement = ({
+    amount,
+    tokens,
+    internalTransfers,
+}: Pick<WalletAccountTransaction, 'amount' | 'tokens' | 'internalTransfers'>) =>
+    !new BigNumber(amount).isZero() ||
+    tokens.some(token => !new BigNumber(token.amount ?? '0').isZero()) ||
+    internalTransfers.some(transfer => !new BigNumber(transfer.amount).isZero());
+
 export const isNftToken = <T extends Pick<TokenInfo, 'standard'>>(token: T) =>
     NFT_TOKEN_STANDARDS.has(token.standard);
+
+/** A Soroban (SEP-41) contract token, as against a classic Stellar asset. */
+export const isStellarContractToken = <T extends Pick<TokenInfo, 'standard'>>(token: T) =>
+    token.standard === 'STELLAR-CONTRACT';
 
 export const isNftTokenTransfer = <T extends Pick<TokenTransfer, 'standard'>>(transfer: T) =>
     transfer.standard && NFT_TOKEN_STANDARDS.has(transfer.standard);
@@ -805,29 +934,6 @@ export const isSwapTransaction = (transaction: WalletAccountTransaction) => {
             tokens.some(t => t.type === 'recv') || internalTransfers.some(t => t.type === 'recv');
 
         return hasSent && hasRecv && !cardanoSpecific;
-    }
-
-    return false;
-};
-
-export const isStakingTransaction = (transaction: WalletAccountTransaction) => {
-    // Cardano staking transactions
-    if (isCardanoStakingTx(transaction)) {
-        return true;
-    }
-
-    // Solana staking transactions
-    if (transaction.solanaSpecific?.stakeOperation?.type) {
-        return true;
-    }
-
-    // Ethereum staking transactions
-    if (isStakeTypeTx(transaction.ethereumSpecific?.parsedData?.methodId)) {
-        return true;
-    }
-
-    if (isTronStakingTx(transaction)) {
-        return true;
     }
 
     return false;
@@ -900,6 +1006,10 @@ const getEthereumRbfParams = (
     if (
         account.networkType !== 'ethereum' ||
         tx.type === 'recv' ||
+        // Replacing a transaction means re-signing at its nonce, which only makes sense for a
+        // transaction the account signed itself. A third-party transfer out of the account is
+        // labelled 'sent' too (see isSignedByAccount) and carries the other signer's nonce.
+        !isSignedByDescriptor(tx.details, account.descriptor) ||
         !tx.ethereumSpecific ||
         !isPending(tx) ||
         !tx.rbf
@@ -921,6 +1031,11 @@ const getEthereumRbfParams = (
     const firstVoutAddresses = firstVout.addresses!;
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const toAddress: string = firstVoutAddresses[0];
+    const nativeOutput = {
+        address: toAddress,
+        amount: firstVout.value!,
+        formattedAmount: formatNetworkAmount(firstVout.value!, account.symbol),
+    };
 
     let output;
     switch (txSignature) {
@@ -952,8 +1067,9 @@ const getEthereumRbfParams = (
             };
             break;
         }
-        default: {
-            // Token-moving contract calls report value=0 in vout; pull the amount from tokens[0].
+        case 'deposit':
+        case 'withdraw':
+        case 'redeem': {
             const tokenTransfer = tx.tokens?.[0];
             if (tokenTransfer) {
                 output = {
@@ -966,12 +1082,12 @@ const getEthereumRbfParams = (
                     ),
                 };
             } else {
-                output = {
-                    address: toAddress,
-                    amount: vout[0]!.value!,
-                    formattedAmount: formatNetworkAmount(vout[0]!.value!, account.symbol),
-                };
+                output = nativeOutput;
             }
+            break;
+        }
+        default: {
+            output = nativeOutput;
         }
     }
 
@@ -1147,7 +1263,7 @@ export const getTransactionWithLowestNonce = (
 ): WalletAccountTransaction | null => {
     const txs = Object.values(transactionGroups)
         .flat()
-        .filter(tx => tx.ethereumSpecific && isSentTransaction(tx));
+        .filter(tx => tx.ethereumSpecific && isSignedByAccount(tx));
 
     if (txs.length === 0) return null;
 

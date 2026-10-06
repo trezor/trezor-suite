@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 
+import { type DesktopBluetoothDevice } from '@suite/bluetooth';
 import { selectKnownDevices, selectNearbyDevices } from '@suite-common/bluetooth';
 import { Code, Icon, InfoSegments, Text } from '@trezor/components';
 import { CellSignalFullIcon, FloppyDiskBackFilledIcon } from '@trezor/icons';
 
-import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { useSelector } from 'src/hooks/suite';
 
-const TimeAgo = ({ timestamp }: { timestamp: number }) => {
+type TimeAgoProps = { timestamp: number };
+
+const TimeAgo = ({ timestamp }: TimeAgoProps) => {
     const [secAgo, setSecAgo] = useState(0);
 
     useEffect(() => {
@@ -29,12 +31,12 @@ type BluetoothDeviceProps = {
 };
 
 export const BluetoothDebugInfo = ({ device }: BluetoothDeviceProps) => {
-    const nearbyDevices = useSelector(selectNearbyDevices);
+    const nearbyDevices = useSelector(selectNearbyDevices<DesktopBluetoothDevice>);
     const isNearbyDevice = (nearbyDevices ?? []).find(
         nearbyDevice => nearbyDevice.id === device.id,
     );
 
-    const knownDevices = useSelector(selectKnownDevices);
+    const knownDevices = useSelector(selectKnownDevices<DesktopBluetoothDevice>);
     const isKnownDevice = knownDevices.find(knownDevice => knownDevice.id === device.id);
 
     return (
@@ -51,7 +53,7 @@ export const BluetoothDebugInfo = ({ device }: BluetoothDeviceProps) => {
                 )}
                 <TimeAgo timestamp={device.lastUpdatedTimestamp} />
             </InfoSegments>
-            <Text typographyStyle="body-sm" intent="accentViolet">
+            <Text typographyStyle="body-sm" intent="explore">
                 <Code>{device.macAddress}</Code>
             </Text>
         </>

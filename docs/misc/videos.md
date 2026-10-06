@@ -28,7 +28,7 @@ ffmpeg -i source.mov -pix_fmt yuva420p -an encoded_file.webm
 
 ## Example usage
 
-Encoded video files can be then saved to `suite-data` and linked using `resolveStaticPath()` function.
+Encoded video files can be then saved to `app-assets` and linked using `resolveStaticPath()` function.
 
 ```js
 <video loop autoPlay muted>

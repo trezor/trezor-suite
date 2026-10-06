@@ -11,16 +11,16 @@ import {
 } from '../../../test-utils/tradingTestUtils';
 
 describe('SellFiatAmountInput', () => {
-    const renderFiatAmountInput = (form: SellFormType) =>
-        renderWithTradingProvider(
+    const renderFiatAmountInput = async (form: SellFormType) =>
+        await renderWithTradingProvider(
             <Form form={form}>
                 <SellFiatAmountInput />
             </Form>,
             { tradeType: 'sell' },
         );
 
-    const renderUseTradingSellForm = () => {
-        const { result } = renderHookWithTradingProvider(() => useSellForm(), {
+    const renderUseTradingSellForm = async () => {
+        const { result } = await renderHookWithTradingProvider(() => useSellForm(), {
             tradeType: 'sell',
         });
 
@@ -28,8 +28,8 @@ describe('SellFiatAmountInput', () => {
     };
 
     it('should set fiat value in form', async () => {
-        const form = renderUseTradingSellForm();
-        const { getByLabelText } = renderFiatAmountInput(form);
+        const form = await renderUseTradingSellForm();
+        const { getByLabelText } = await renderFiatAmountInput(form);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
@@ -40,8 +40,8 @@ describe('SellFiatAmountInput', () => {
     });
 
     it('should format input value to be decimal', async () => {
-        const form = renderUseTradingSellForm();
-        const { getByLabelText } = renderFiatAmountInput(form);
+        const form = await renderUseTradingSellForm();
+        const { getByLabelText } = await renderFiatAmountInput(form);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
@@ -55,8 +55,8 @@ describe('SellFiatAmountInput', () => {
     });
 
     it('should always escape non-numeric characters', async () => {
-        const form = renderUseTradingSellForm();
-        const { getByLabelText } = renderFiatAmountInput(form);
+        const form = await renderUseTradingSellForm();
+        const { getByLabelText } = await renderFiatAmountInput(form);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
@@ -70,8 +70,8 @@ describe('SellFiatAmountInput', () => {
     });
 
     it('should limit value to 3 decimals', async () => {
-        const form = renderUseTradingSellForm();
-        const { getByLabelText } = renderFiatAmountInput(form);
+        const form = await renderUseTradingSellForm();
+        const { getByLabelText } = await renderFiatAmountInput(form);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),

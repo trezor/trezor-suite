@@ -2,31 +2,38 @@ import React, { type PropsWithChildren } from 'react';
 
 import { renderHook } from '@testing-library/react';
 
-import { ServicesProvider, useServices } from './useServices';
+import { type Getter, asGetter } from './toGetter';
+import { ServicesProvider, useImperativeServices, useServices } from './useServices';
 
 type ADep = { a: () => void };
 type BDep = { b: () => void };
+type GetterDep = { getSomething: Getter<[], boolean> };
 
-const appServices: ADep & BDep = {
+const appServices: ADep & BDep & GetterDep = {
     a: jest.fn(),
     b: jest.fn(),
+    getSomething: asGetter(() => true),
 };
 
-const selectADep = (services: any): ADep => ({
+const injectA = (services: any): ADep => ({
     a: services.a,
 });
 
-const selectBDep = (services: any): BDep => ({
+const injectB = (services: any): BDep => ({
     b: services.b,
 });
 
+const injectGetter = (services: any): GetterDep => ({
+    getSomething: services.getSomething,
+});
+
+const wrapper = ({ children }: PropsWithChildren) => (
+    <ServicesProvider services={appServices}>{children}</ServicesProvider>
+);
+
 describe(useServices.name, () => {
     it('returns the same selected services reference across rerenders', () => {
-        const wrapper = ({ children }: PropsWithChildren) => (
-            <ServicesProvider services={appServices}>{children}</ServicesProvider>
-        );
-
-        const { result, rerender } = renderHook(() => useServices(selectADep, selectBDep), {
+        const { result, rerender } = renderHook(() => useServices(injectA, injectB), {
             wrapper,
         });
 
@@ -35,5 +42,13 @@ describe(useServices.name, () => {
         rerender();
 
         expect(result.current).toBe(firstSelectedServices);
+    });
+});
+
+describe(useImperativeServices.name, () => {
+    it('hands out a dependency containing a getter', () => {
+        const { result } = renderHook(() => useImperativeServices(injectGetter), { wrapper });
+
+        expect(result.current.getSomething).toBe(appServices.getSomething);
     });
 });

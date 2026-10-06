@@ -1,9 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 
+import { type ConfirmApprovalThunkState } from './confirmApprovalThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingExchangeState } from '../../reducers/exchangeReducer';
@@ -15,7 +17,9 @@ import type { LogErrorThunkProps } from '../common/logErrorThunk';
 
 import { exchangeThunks } from './index';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 jest.mock('../common/logErrorThunk', () => ({
     logErrorThunk: (props: LogErrorThunkProps) => ({
@@ -42,8 +46,7 @@ describe('confirmApprovalThunk', () => {
             send: quoteNotTyped.send as CryptoId,
             receive: quoteNotTyped.receive as CryptoId,
         };
-        const store = configureMockStore({
-            extra: {},
+        const { store } = createTestCompositionRoot<void, ConfirmApprovalThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -67,7 +70,7 @@ describe('confirmApprovalThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         const mockProcessResponseData = jest.fn();
 
@@ -89,17 +92,17 @@ describe('confirmApprovalThunk', () => {
     };
 
     const dispatchThunk = (
-        store: ReturnType<typeof getMocks>['store'],
+        store: TestCompositionStore<ConfirmApprovalThunkState, void>,
         props: Parameters<typeof exchangeThunks.confirmApprovalThunk>[0],
     ) => store.dispatch(exchangeThunks.confirmApprovalThunk(props)).unwrap();
 
-    const getExchangeState = (store: ReturnType<typeof getMocks>['store']) =>
+    const getExchangeState = (store: TestCompositionStore<ConfirmApprovalThunkState, void>) =>
         store.getState().wallet.trading.exchange;
 
-    const getTradingState = (store: ReturnType<typeof getMocks>['store']) =>
+    const getTradingState = (store: TestCompositionStore<ConfirmApprovalThunkState, void>) =>
         store.getState().wallet.trading;
 
-    const findLogErrorAction = (store: ReturnType<typeof getMocks>['store']) =>
+    const findLogErrorAction = (store: TestCompositionStore<ConfirmApprovalThunkState, void>) =>
         store.getActions().find(action => action.type === 'mockedLogErrorThunk');
 
     describe('guard clauses', () => {

@@ -1,5 +1,7 @@
 import type { BuyTrade, ProviderMetadata } from 'invity-api';
 
+import { events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import {
     buyMercuryo,
@@ -17,20 +19,12 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 const mockAnalyticsReport = jest.fn();
-jest.mock('@suite-native/trading-analytics', () => ({
-    ...jest.requireActual('@suite-native/trading-analytics'),
-    useBuyAnalyticsStepReport:
-        (step: unknown) =>
-        (...args: unknown[]) =>
-            mockAnalyticsReport(step, ...args),
-}));
-
 describe('TradingBuyPreviewScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    const renderTradingBuyPreviewScreen = ({
+    const renderTradingBuyPreviewScreen = async ({
         providerMetadata,
         selectedQuote,
     }: {
@@ -41,30 +35,31 @@ describe('TradingBuyPreviewScreen', () => {
         tradingState.currentProviderMetadata = providerMetadata;
         tradingState.buy.selectedQuote = selectedQuote;
 
-        return renderWithTradingProvider(<TradingBuyPreviewScreen />, {
+        return await renderWithTradingProvider(<TradingBuyPreviewScreen />, {
             tradeType: 'buy',
+            services: { analytics: mockNativeAnalytics(mockAnalyticsReport) },
             overrides: { wallet: { trading: tradingState } },
         });
     };
 
-    it('displays error when providerMetadata is missing', () => {
-        const { getByText } = renderTradingBuyPreviewScreen({
+    it('displays error when providerMetadata is missing', async () => {
+        const { getByText } = await renderTradingBuyPreviewScreen({
             selectedQuote: mercuryoApplePayBuyQuote,
         });
 
         expect(getByText(getTranslation('generic.unknownError'))).toBeOnTheScreen();
     });
 
-    it('displays error when quote is missing', () => {
-        const { getByText } = renderTradingBuyPreviewScreen({
+    it('displays error when quote is missing', async () => {
+        const { getByText } = await renderTradingBuyPreviewScreen({
             providerMetadata: buyMercuryo,
         });
 
         expect(getByText(getTranslation('generic.unknownError'))).toBeOnTheScreen();
     });
 
-    it('renders screen title with company name when all data is provided', () => {
-        const { getByText } = renderTradingBuyPreviewScreen({
+    it('renders screen title with company name when all data is provided', async () => {
+        const { getByText } = await renderTradingBuyPreviewScreen({
             selectedQuote: mercuryoApplePayBuyQuote,
             providerMetadata: buyMercuryo,
         });
@@ -78,13 +73,16 @@ describe('TradingBuyPreviewScreen', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should report buy-preview visit on mount', () => {
-        renderTradingBuyPreviewScreen({
+    it('should report buy-preview visit on mount', async () => {
+        await renderTradingBuyPreviewScreen({
             selectedQuote: mercuryoApplePayBuyQuote,
             providerMetadata: buyMercuryo,
         });
 
-        expect(mockAnalyticsReport).toHaveBeenCalledWith('buy-preview', 'visit');
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.tradingBuyEvent.name,
+            payload: expect.objectContaining({ step: 'buy-preview', action: 'visit' }),
+        });
         expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
     });
 });

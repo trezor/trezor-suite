@@ -1,20 +1,29 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { deviceInitialState } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     confirmAddressOnDeviceThunk,
     prepareWalletSettingsReducer,
 } from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
-import { getPurchaseAddress } from './getPurchaseAddress';
+import { type GetPurchaseAddressThunkState, getPurchaseAddressThunk } from './getPurchaseAddress';
 import { accounts } from '../../reducers/__fixtures__/account';
-import { initialState } from '../../reducers/tradingCommonReducer';
-import { prepareTradingReducer } from '../../reducers/tradingReducer';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
-const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
+const walletSettingsReducer = prepareWalletSettingsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadWalletSettings: mockReducer() },
+});
+const reducer = combineReducers({
+    device: () => deviceInitialState,
+    wallet: combineReducers({
+        accounts: () => accounts,
+        settings: walletSettingsReducer,
+    }),
+});
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
@@ -50,24 +59,10 @@ describe('getPurchaseAddress thunk', () => {
         jest.clearAllMocks();
     });
 
-    const createMockStore = (preloadedState = {}) =>
-        configureMockStore({
-            extra: extraDependenciesCommonMock,
-            reducer: combineReducers({
-                wallet: combineReducers({
-                    settings: walletSettingsReducer,
-                    trading: tradingReducer,
-                }),
-            }),
-            preloadedState: {
-                wallet: {
-                    trading: {
-                        ...initialState,
-                        ...preloadedState,
-                    },
-                },
-            },
-        });
+    const createMockStore = () =>
+        createTestCompositionRoot<void, GetPurchaseAddressThunkState>({
+            reducer,
+        }).services.store;
 
     describe('successful address confirmation', () => {
         it('should successfully get purchase address and MAC', async () => {
@@ -83,10 +78,10 @@ describe('getPurchaseAddress thunk', () => {
 
             const store = createMockStore();
             const result = await store.dispatch(
-                getPurchaseAddress({ account: mockAccount, address: mockAddress }),
+                getPurchaseAddressThunk({ account: mockAccount, address: mockAddress }),
             );
 
-            expect(result.type).toBe(getPurchaseAddress.fulfilled.type);
+            expect(result.type).toBe(getPurchaseAddressThunk.fulfilled.type);
             expect(result.payload).toEqual({
                 address: mockAddress,
                 mac: mockMac,
@@ -114,27 +109,23 @@ describe('getPurchaseAddress thunk', () => {
                 })),
             );
 
-            const storeWithNonChunked = configureMockStore({
-                extra: extraDependenciesCommonMock,
-                reducer: combineReducers({
-                    wallet: combineReducers({
-                        settings: walletSettingsReducer,
-                        trading: tradingReducer,
-                    }),
-                }),
+            const { store: storeWithNonChunked } = createTestCompositionRoot<
+                void,
+                GetPurchaseAddressThunkState
+            >({
+                reducer,
                 preloadedState: {
                     wallet: {
                         settings: { addressDisplayType: AddressDisplayOptions.ORIGINAL },
-                        trading: initialState,
                     },
                 },
-            });
+            }).services;
 
             const result = await storeWithNonChunked.dispatch(
-                getPurchaseAddress({ account: mockAccount, address: mockAddress }),
+                getPurchaseAddressThunk({ account: mockAccount, address: mockAddress }),
             );
 
-            expect(result.type).toBe(getPurchaseAddress.fulfilled.type);
+            expect(result.type).toBe(getPurchaseAddressThunk.fulfilled.type);
             expect(confirmAddressOnDeviceThunk).toHaveBeenCalledWith({
                 accountKey: mockAccount.key,
                 addressPath: mockPath,
@@ -148,10 +139,10 @@ describe('getPurchaseAddress thunk', () => {
         it('should reject when address is not in account', async () => {
             const store = createMockStore();
             const result = await store.dispatch(
-                getPurchaseAddress({ account: mockAccount, address: 'non-existent-address' }),
+                getPurchaseAddressThunk({ account: mockAccount, address: 'non-existent-address' }),
             );
 
-            expect(result.type).toBe(getPurchaseAddress.rejected.type);
+            expect(result.type).toBe(getPurchaseAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
                 error: {
@@ -173,10 +164,10 @@ describe('getPurchaseAddress thunk', () => {
 
             const store = createMockStore();
             const result = await store.dispatch(
-                getPurchaseAddress({ account: mockAccount, address: mockAddress }),
+                getPurchaseAddressThunk({ account: mockAccount, address: mockAddress }),
             );
 
-            expect(result.type).toBe(getPurchaseAddress.rejected.type);
+            expect(result.type).toBe(getPurchaseAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
                 error: {
@@ -198,10 +189,10 @@ describe('getPurchaseAddress thunk', () => {
 
             const store = createMockStore();
             const result = await store.dispatch(
-                getPurchaseAddress({ account: mockAccount, address: mockAddress }),
+                getPurchaseAddressThunk({ account: mockAccount, address: mockAddress }),
             );
 
-            expect(result.type).toBe(getPurchaseAddress.rejected.type);
+            expect(result.type).toBe(getPurchaseAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
                 error: {
@@ -213,7 +204,7 @@ describe('getPurchaseAddress thunk', () => {
 
     describe('thunk metadata', () => {
         it('should have correct thunk type prefix', () => {
-            expect(getPurchaseAddress.typePrefix).toBe('@trading/thunk/getPurchaseAddress');
+            expect(getPurchaseAddressThunk.typePrefix).toBe('@trading/thunk/getPurchaseAddress');
         });
     });
 });

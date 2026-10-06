@@ -21,7 +21,7 @@ To run the tests locally, you need to have the following installed:
 With the debug config, the app is running in Expo dev-client and the JavaScript bundle is served from the local Metro server. This configuration is suitable for development and testing purposes because the Metro hot reloads make it easy to debug the test scenarios. To run the tests in debug mode, follow these steps:
 
 1. Navigate to the `suite-native/app` folder
-2. generate Expo native code with `yarn prebuild:clean`
+2. generate Expo native code with `yarn prebuild`
 3. Create a debug build:
     - (**Android**) `yarn build:e2e android.emu.debug`
     - (**iOS**) `yarn build:e2e ios.sim.debug`
@@ -37,7 +37,7 @@ With the debug config, the app is running in Expo dev-client and the JavaScript 
 To test the app in the release mode, you need to build the app with the release configuration. The JavaScript bundle is bundled within the app and the app is running in the standalone mode. To run the tests in the release mode, follow these steps:
 
 1. Navigate to the `suite-native/app` folder
-2. generate Expo native code with `yarn prebuild:clean`
+2. generate Expo native code with `yarn prebuild`
 3. Create a release build:
     - (**Android**) `yarn build:e2e android.emu.release`
     - (**iOS**) `yarn build:e2e ios.sim.release`
@@ -129,7 +129,7 @@ To make the tests as much standalone and independent on third party services as 
 
 Android E2E test run on GitHub CI on every PR that is labeled with a `mobile-app` tag. The workflow is described in the [.github/workflows/native-test-e2e-android.yml](../../../.github/workflows/native-test-e2e-android.yml) file.
 
-For easier debugging of failing tests on the CI, the screenshot and screen recording of failed tests are stored as GitHub action artifacts, so you can see how the app behaved and what went wrong.
+For easier debugging of failing tests on the CI, the screenshots, screen recording and device log of every test attempt are attached to the test results in Currents, so you can see how the app behaved and what went wrong.
 
 ## FAQ
 
@@ -152,7 +152,7 @@ To run specific files in CI you can temporarily change the GH workflow `template
 
 #### How to make prebuild for one platform only?
 
-`yarn prebuild:clean --platform android`
+`yarn prebuild --platform android`
 
 #### How to find testIDs for screens?
 

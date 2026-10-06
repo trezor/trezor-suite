@@ -23,8 +23,11 @@ export type SelectProps<TItemValue extends SelectItemValue> = {
     items: SelectItemType<TItemValue>[];
     value: TItemValue;
     onSelectItem: (value: TItemValue) => void;
+    rightIcon?: ReactNode;
     isConfirmable?: boolean;
     isLabelShown?: boolean;
+    isReadOnly?: boolean;
+    hasError?: boolean;
     testID?: string;
 };
 
@@ -33,8 +36,11 @@ export const Select = <TItemValue extends SelectItemValue>({
     items,
     value,
     onSelectItem,
+    rightIcon,
     isConfirmable = false,
     isLabelShown = false,
+    isReadOnly = false,
+    hasError,
     testID,
 }: SelectProps<TItemValue>) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
@@ -104,7 +110,9 @@ export const Select = <TItemValue extends SelectItemValue>({
                 label={isLabelShown && title}
                 value={selectTriggerItem?.label ?? null}
                 icon={selectTriggerItem?.icon}
-                handlePress={openBottomSheet}
+                handlePress={!isReadOnly ? openBottomSheet : undefined}
+                rightIcon={rightIcon}
+                hasError={hasError}
                 testID={testID}
             />
         </>

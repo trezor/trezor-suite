@@ -1,3 +1,40 @@
+const basicCardanoAccountInfo = {
+    descriptor:
+        '6d17587575a3b4f0f86ebad3977e8f7e4981faa863eccf5c1467065c74fe3435943769446dd290d103fb3d360128e86de4b47faea73ffb0900c94c6a61ef9ea2',
+    empty: false,
+    balance: '27429803',
+    availableBalance: '27256514',
+    history: {
+        total: 6,
+        unconfirmed: 0,
+    },
+    page: {
+        index: 1,
+        size: 25,
+        total: 1,
+    },
+};
+
+const basicCardanoAccountInfoResult = {
+    ...basicCardanoAccountInfo,
+    history: { ...basicCardanoAccountInfo.history, transactions: [] },
+};
+
+const cardanoStaking = {
+    address: 'stake1uxzutrtmxwv2rf2j3hdpps66ch0jydmkr58vwgnetddcdwg32u4rc',
+    rewards: '173289',
+    isActive: true,
+    poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+    drep: {
+        drep_id: 'drep1ygdzk0zdtehhpqvj5w6vt4h8lqy352euf40x7uypj23mf3gs6c9xy',
+        hex: '2b9d3e82e5a5e69f3e9b8d7c1a4f0d2e6c8b7a5d4c3b2a1f0e9d8c7b6a5f4e3d',
+        amount: '1000000000',
+        active: true,
+        active_epoch: 507,
+        has_script: false,
+    },
+};
+
 export default {
     transformUtxos: [
         {
@@ -508,6 +545,7 @@ export default {
                         rewards: '173289',
                         isActive: true,
                         poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+                        drep: null,
                     },
                 },
                 tokens: [
@@ -621,8 +659,96 @@ export default {
                         rewards: '173289',
                         isActive: true,
                         poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+                        drep: null,
                     },
                 },
+            },
+        },
+        {
+            description: 'Transform account info (basic, with DRep)',
+            data: {
+                ...basicCardanoAccountInfo,
+                misc: { staking: cardanoStaking },
+            },
+            result: {
+                ...basicCardanoAccountInfoResult,
+                misc: { staking: cardanoStaking },
+            },
+        },
+        {
+            description: 'Transform account info (basic, without misc)',
+            data: basicCardanoAccountInfo,
+            result: {
+                ...basicCardanoAccountInfoResult,
+                misc: undefined,
+            },
+        },
+        {
+            description: 'Transform account info (basic, without staking)',
+            data: {
+                ...basicCardanoAccountInfo,
+                misc: {},
+            },
+            result: {
+                ...basicCardanoAccountInfoResult,
+                misc: undefined,
+            },
+        },
+        {
+            description: 'Transform account info (basic, staking without isActive)',
+            data: {
+                ...basicCardanoAccountInfo,
+                misc: {
+                    staking: {
+                        address: cardanoStaking.address,
+                        rewards: cardanoStaking.rewards,
+                        poolId: cardanoStaking.poolId,
+                        drep: null,
+                    },
+                },
+            },
+            result: {
+                ...basicCardanoAccountInfoResult,
+                misc: undefined,
+            },
+        },
+        {
+            description: 'Transform account info (basic, staking with a malformed poolId)',
+            data: {
+                ...basicCardanoAccountInfo,
+                misc: {
+                    staking: { ...cardanoStaking, poolId: undefined },
+                },
+            },
+            result: {
+                ...basicCardanoAccountInfoResult,
+                misc: undefined,
+            },
+        },
+        {
+            description: 'Transform account info (basic, staking with a malformed DRep)',
+            data: {
+                ...basicCardanoAccountInfo,
+                misc: {
+                    staking: { ...cardanoStaking, drep: { hex: cardanoStaking.drep.hex } },
+                },
+            },
+            result: {
+                ...basicCardanoAccountInfoResult,
+                misc: undefined,
+            },
+        },
+        {
+            description: 'Transform account info (basic, staking with unknown extra fields)',
+            data: {
+                ...basicCardanoAccountInfo,
+                misc: {
+                    staking: { ...cardanoStaking, extra: 'ignored' },
+                },
+            },
+            result: {
+                ...basicCardanoAccountInfoResult,
+                misc: { staking: cardanoStaking },
             },
         },
     ],
@@ -1361,6 +1487,171 @@ export default {
                     size: 425,
                     totalInput: '5000000',
                     totalOutput: '2825699',
+                },
+            },
+        },
+        {
+            description: 'Transform transaction (self, stake deregistration with rewards)',
+            descriptor:
+                '6d17587575a3b4f0f86ebad3977e8f7e4981faa863eccf5c1467065c74fe3435943769446dd290d103fb3d360128e86de4b47faea73ffb0900c94c6a61ef9ea2',
+            accountAddress: {
+                change: [
+                    {
+                        address:
+                            'addr1qy2mdeuujt253nzxz2v669nn8q0nlmsp7hx7e7qm73nwlpxhh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxslxqfwt',
+                        path: "m/1852'/1815'/i'/1/0",
+                        transfers: 1,
+                        received: '6966065',
+                        sent: '0',
+                    },
+                    {
+                        address:
+                            'addr1qyx542efp7w244zpjkf2gj805leqls76hjyn7cpn8jw4rdkhh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxsn7vajz',
+                        path: "m/1852'/1815'/i'/1/1",
+                        transfers: 0,
+                        received: '0',
+                        sent: '0',
+                    },
+                ],
+                used: [
+                    {
+                        address:
+                            'addr1qx6jxvhq2pnusc6xh0m9pt7pyrjyxy2rtpsx7lnsc325907hh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxs9zkqe2',
+                        path: "m/1852'/1815'/i'/0/0",
+                        transfers: 2,
+                        received: '2400000',
+                        sent: '2400000',
+                    },
+                    {
+                        address:
+                            'addr1q8dsx5dtjd9rjuv78l5rn8827nw9hg7rj42q8gaakzg29g7hh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxs0hzyx8',
+                        path: "m/1852'/1815'/i'/0/1",
+                        transfers: 2,
+                        received: '5000000',
+                        sent: '5000000',
+                    },
+                ],
+                unused: [
+                    {
+                        address:
+                            'addr1qy84tj63d8323q5rs3e7e3ds274h6zpx8ktuw3twl9yjr6khh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxs530lvf',
+                        path: "m/1852'/1815'/i'/0/2",
+                        transfers: 0,
+                        received: '0',
+                        sent: '0',
+                    },
+                ],
+            },
+            data: {
+                txData: {
+                    hash: '81b41f2d9e3b62f1353c1821a8bc106c9ec6fe7d4036d4ebe1c0f691f9caa001',
+                    block: '691ab3192155653929eb9bedfe6c3020326cae543ddc817c052d7585f78cf291',
+                    block_height: 7004268,
+                    block_time: 1647445260,
+                    slot: 55878969,
+                    index: 15,
+                    output_amount: [
+                        {
+                            unit: 'lovelace',
+                            quantity: '6966065',
+                            decimals: 6,
+                        },
+                    ],
+                    fees: '174301',
+                    deposit: '-2000000',
+                    size: 425,
+                    invalid_before: null,
+                    invalid_hereafter: '55885702',
+                    utxo_count: 2,
+                    withdrawal_count: 1,
+                    mir_cert_count: 0,
+                    delegation_count: 0,
+                    stake_cert_count: 1,
+                    pool_update_count: 0,
+                    pool_retire_count: 0,
+                    asset_mint_or_burn_count: 0,
+                    redeemer_count: 0,
+                    valid_contract: true,
+                },
+                txUtxos: {
+                    hash: '81b41f2d9e3b62f1353c1821a8bc106c9ec6fe7d4036d4ebe1c0f691f9caa001',
+                    inputs: [
+                        {
+                            address:
+                                'addr1q8dsx5dtjd9rjuv78l5rn8827nw9hg7rj42q8gaakzg29g7hh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxs0hzyx8',
+                            amount: [
+                                {
+                                    unit: 'lovelace',
+                                    quantity: '5000000',
+                                    decimals: 6,
+                                },
+                            ],
+                            tx_hash:
+                                '6d88e622cb69163eca9df8ebda0a3e92fa5084dbcd2b6adfa8746841c31e87e9',
+                            output_index: 0,
+                            collateral: false,
+                            data_hash: null,
+                        },
+                    ],
+                    outputs: [
+                        {
+                            address:
+                                'addr1qy2mdeuujt253nzxz2v669nn8q0nlmsp7hx7e7qm73nwlpxhh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxslxqfwt',
+                            amount: [
+                                {
+                                    unit: 'lovelace',
+                                    quantity: '6966065',
+                                    decimals: 6,
+                                },
+                            ],
+                            output_index: 0,
+                            data_hash: null,
+                        },
+                    ],
+                },
+                address:
+                    'addr1q8dsx5dtjd9rjuv78l5rn8827nw9hg7rj42q8gaakzg29g7hh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxs0hzyx8',
+                txHash: '81b41f2d9e3b62f1353c1821a8bc106c9ec6fe7d4036d4ebe1c0f691f9caa001',
+            },
+            result: {
+                type: 'self',
+                txid: '81b41f2d9e3b62f1353c1821a8bc106c9ec6fe7d4036d4ebe1c0f691f9caa001',
+                blockTime: 1647445260,
+                blockHeight: 7004268,
+                blockHash: '691ab3192155653929eb9bedfe6c3020326cae543ddc817c052d7585f78cf291',
+                amount: '174301',
+                fee: '174301',
+                targets: [],
+                tokens: [],
+                cardanoSpecific: {
+                    subtype: 'stake_deregistration',
+                    withdrawal: '140366',
+                    deposit: '2000000',
+                },
+                details: {
+                    vin: [
+                        {
+                            n: 0,
+                            addresses: [
+                                'addr1q8dsx5dtjd9rjuv78l5rn8827nw9hg7rj42q8gaakzg29g7hh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxs0hzyx8',
+                            ],
+                            isAddress: true,
+                            value: '5000000',
+                        },
+                    ],
+                    vout: [
+                        {
+                            n: 0,
+                            addresses: [
+                                'addr1qy2mdeuujt253nzxz2v669nn8q0nlmsp7hx7e7qm73nwlpxhh5j3f89h33sgtjs8azqcwr9zmlu49plr870dalvmruxslxqfwt',
+                            ],
+                            isAddress: true,
+                            value: '6966065',
+                        },
+                    ],
+                    size: 425,
+                    totalInput: '5000000',
+                    totalOutput: '6966065',
                 },
             },
         },

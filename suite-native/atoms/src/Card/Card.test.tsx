@@ -5,31 +5,31 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { Card, type CardProps } from './Card';
 
 describe('Card', () => {
-    const renderComponent = (props: Omit<CardProps, 'children'>) => {
+    const renderComponent = async (props: Omit<CardProps, 'children'>) => {
         const cardProps = {
             children: <Text>hello</Text>,
             ...props,
         } as CardProps;
 
-        return renderWithBasicProvider(<Card {...cardProps} />);
+        return await renderWithBasicProvider(<Card {...cardProps} />);
     };
 
-    it('should render children prop', () => {
-        const { getByText } = renderComponent({});
+    it('should render children prop', async () => {
+        const { getByText } = await renderComponent({});
 
         expect(getByText('hello')).toBeTruthy();
     });
 
-    it('should render only children if alertProps are not provided, even if alertPosition is set', () => {
-        const { queryByTestId, getByText } = renderComponent({ alertPosition: 'bottom' });
+    it('should render only children if alertProps are not provided, even if alertPosition is set', async () => {
+        const { queryByTestId, getByText } = await renderComponent({ alertPosition: 'bottom' });
 
         expect(getByText('hello')).toBeTruthy();
         expect(queryByTestId('@atom/card/alert/top')).toBeNull();
         expect(queryByTestId('@atom/card/alert/bottom')).toBeNull();
     });
 
-    it('should render alert only on top when alertPosition is not specified', () => {
-        const { getByTestId, getByText, queryByTestId } = renderComponent({
+    it('should render alert only on top when alertPosition is not specified', async () => {
+        const { getByTestId, getByText, queryByTestId } = await renderComponent({
             alertProps: { title: 'alert', intent: 'info' },
         });
 
@@ -40,8 +40,8 @@ describe('Card', () => {
         expect(queryByTestId('@atom/card/alert/bottom')).toBeNull();
     });
 
-    it('should render alert only on top when alertPosition is top', () => {
-        const { getByTestId, getByText, queryByTestId } = renderComponent({
+    it('should render alert only on top when alertPosition is top', async () => {
+        const { getByTestId, getByText, queryByTestId } = await renderComponent({
             alertProps: { title: 'alert', intent: 'info' },
             alertPosition: 'top',
         });
@@ -53,8 +53,8 @@ describe('Card', () => {
         expect(queryByTestId('@atom/card/alert/bottom')).toBeNull();
     });
 
-    it('should render alert only on bottom when alertPosition is bottom', () => {
-        const { getByTestId, getByText, queryByTestId } = renderComponent({
+    it('should render alert only on bottom when alertPosition is bottom', async () => {
+        const { getByTestId, getByText, queryByTestId } = await renderComponent({
             alertProps: { title: 'alert', intent: 'info' },
             alertPosition: 'bottom',
         });
@@ -66,8 +66,8 @@ describe('Card', () => {
         expect(queryByTestId('@atom/card/alert/top')).toBeNull();
     });
 
-    it('should not reset border radiuses if alert is not present', () => {
-        const { queryByTestId } = renderComponent({});
+    it('should not reset border radiuses if alert is not present', async () => {
+        const { queryByTestId } = await renderComponent({});
 
         expect(queryByTestId('@atom/card/alert/top')).toBeNull();
         expect(queryByTestId('@atom/card/alert/bottom')).toBeNull();

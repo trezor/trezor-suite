@@ -1,5 +1,7 @@
-import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
-import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type AccountAddress } from '@trezor/connect';
 
 import {
     getReceiveAddressForFlowEntry,
@@ -7,7 +9,7 @@ import {
     getReceiveAddressToAdd,
 } from './getReceiveAddressHistory';
 
-type AccountAddress = NonNullable<Account['addresses']>['used'][number];
+const btcSymbol = asNetworkSymbol('btc');
 
 const ACCOUNT_DESCRIPTOR = asAccountDescriptor(
     'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
@@ -36,7 +38,7 @@ const createAccount = (
     descriptor = asAccountDescriptor('descriptor'),
 ) =>
     mockWalletAccount({
-        symbol: 'btc',
+        symbol: btcSymbol,
         descriptor,
         addresses: {
             used: [],
@@ -102,7 +104,7 @@ describe(getReceiveAddressForFlowEntry.name, () => {
 
     it('returns the first unused address above a used address path', () => {
         const account = mockWalletAccount({
-            symbol: 'btc',
+            symbol: btcSymbol,
             addresses: {
                 used: [createAddress(20, 1)],
                 unused: [createAddress(18), createAddress(21)],
@@ -123,7 +125,7 @@ describe(getReceiveAddressForFlowEntry.name, () => {
 
     it('does not return an unused address below a used address path', () => {
         const account = mockWalletAccount({
-            symbol: 'btc',
+            symbol: btcSymbol,
             addresses: {
                 used: [createAddress(20, 1)],
                 unused: [createAddress(18)],
@@ -185,7 +187,7 @@ describe(getReceiveAddressToAdd.name, () => {
 describe(getReceiveAddressHistoryList.name, () => {
     it('keeps an unlabeled unused address when its path is lower than a used address path', () => {
         const account = mockWalletAccount({
-            symbol: 'btc',
+            symbol: btcSymbol,
             addresses: {
                 used: [createAddress(20, 1)],
                 unused: [
@@ -207,17 +209,14 @@ describe(getReceiveAddressHistoryList.name, () => {
     });
 
     it('keeps an unlabeled Cardano unused address when its path is lower than a used address path', () => {
-        const account = mockWalletAccount(
-            {
-                symbol: 'ada',
-                addresses: {
-                    used: [createCardanoAddress(20, 1)],
-                    unused: [createCardanoAddress(18), createCardanoAddress(21)],
-                    change: [],
-                },
+        const account = mockWalletAccount({
+            symbol: asNetworkSymbol('ada'),
+            addresses: {
+                used: [createCardanoAddress(20, 1)],
+                unused: [createCardanoAddress(18), createCardanoAddress(21)],
+                change: [],
             },
-            networkSpecificDefaultCardano,
-        );
+        });
 
         const addresses = getReceiveAddressHistoryList({
             account,
@@ -238,7 +237,7 @@ describe(getReceiveAddressHistoryList.name, () => {
             path: "m/84'/0'/0'/1/18",
         };
         const account = mockWalletAccount({
-            symbol: 'btc',
+            symbol: btcSymbol,
             addresses: {
                 used: [createAddress(20, 1)],
                 unused: [changeAddress],
@@ -345,7 +344,7 @@ describe(getReceiveAddressHistoryList.name, () => {
     it('excludes the current receive address when requested', () => {
         const address = createAddress(18);
         const account = mockWalletAccount({
-            symbol: 'btc',
+            symbol: btcSymbol,
             addresses: {
                 used: [createAddress(20, 1)],
                 unused: [address],

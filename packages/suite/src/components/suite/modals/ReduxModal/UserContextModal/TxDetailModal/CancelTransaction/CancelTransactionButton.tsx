@@ -2,11 +2,12 @@ import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { Modal } from '@trezor/components';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { useDispatch } from 'src/hooks/suite';
 import { useCancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
 
 type CancelTransactionButtonProps = {
@@ -18,7 +19,7 @@ export const CancelTransactionButton = ({ account, onSuccess }: CancelTransactio
     const { device, isLocked } = useDevice();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { composedCancelTx, cancelFormState } = useCancelTxContext();
 
     const handleCancelTx = async () => {

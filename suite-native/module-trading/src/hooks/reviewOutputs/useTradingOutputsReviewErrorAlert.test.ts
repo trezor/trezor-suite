@@ -1,13 +1,18 @@
-import { type AccountKey } from '@suite-common/wallet-types';
-import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { type Store } from '@reduxjs/toolkit';
+
+import { type DeviceRootState } from '@suite-common/device';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { getTranslation } from '@suite-native/intl';
-import { type TestStore, act } from '@suite-native/test-utils-store';
+import { act } from '@suite-native/test-utils-store';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
 import {
-    createTradingLightStore,
+    createTradingTestStore,
     renderHookWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & DeviceRootState;
 
 const mockShowAlert = jest.fn();
 
@@ -18,26 +23,24 @@ jest.mock('@suite-native/alerts', () => ({
 }));
 
 describe('useTradingOutputsReviewErrorAlert', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
-    const renderUseTradingOutputsReviewErrorAlert = (accountKey: AccountKey) =>
-        renderHookWithTradingProvider(() => useTradingOutputsReviewErrorAlert(accountKey), {
-            store,
+    const renderUseTradingOutputsReviewErrorAlert = async () =>
+        await renderHookWithTradingProvider(() => useTradingOutputsReviewErrorAlert(), {
+            services: { store },
         });
 
     beforeEach(() => {
         jest.clearAllMocks();
-        store = createTradingLightStore({ tradeType: 'exchange' });
+        store = createTradingTestStore({ tradeType: 'exchange' });
     });
 
-    it('should show alert', () => {
+    it('should show alert', async () => {
         const mockOnRetry = jest.fn();
         const mockOnCancel = jest.fn();
-        const { result } = renderUseTradingOutputsReviewErrorAlert(
-            mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
-        );
+        const { result } = await renderUseTradingOutputsReviewErrorAlert();
 
-        act(() => {
+        await act(() => {
             result.current(mockOnRetry, mockOnCancel);
         });
 
@@ -53,30 +56,5 @@ describe('useTradingOutputsReviewErrorAlert', () => {
             secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             onPressSecondaryButton: mockOnCancel,
         });
-    });
-
-    it('should show special text fort solana', () => {
-        const mockOnRetry = jest.fn();
-        const mockOnCancel = jest.fn();
-        const { result } = renderUseTradingOutputsReviewErrorAlert(
-            mockAccountKey({
-                symbol: 'sol',
-                descriptor: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
-            }),
-        );
-
-        act(() => {
-            result.current(mockOnRetry, mockOnCancel);
-        });
-
-        expect(mockShowAlert).toHaveBeenCalledTimes(1);
-        expect(mockShowAlert).toHaveBeenCalledWith(
-            expect.objectContaining({
-                title: getTranslation('moduleSend.review.outputs.errorAlert.solana.title'),
-                description: getTranslation(
-                    'moduleSend.review.outputs.errorAlert.solana.description',
-                ),
-            }),
-        );
     });
 });

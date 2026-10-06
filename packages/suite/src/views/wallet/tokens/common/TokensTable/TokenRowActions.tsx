@@ -1,22 +1,24 @@
 import { type ReactNode, useMemo } from 'react';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
 import { useExternalLink } from '@suite/external-links';
+import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
-import { Translation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { showAddressThunk } from '@suite/receive';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
     DefinitionType,
-    type EnhancedTokenInfo,
+    type TokenInfo,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
@@ -30,7 +32,9 @@ import {
 } from '@suite-common/trading';
 import { type Explorer, type Network } from '@suite-common/wallet-config';
 import {
+    getYieldVaultContractAddress,
     getYieldVaultForOutputToken,
+    isWrappedNativeFlowSupported,
     selectExplorer,
     sendFormActions,
 } from '@suite-common/wallet-core';
@@ -39,7 +43,7 @@ import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
     isErc4626,
-    isWrappedNativeToken,
+    isStellarContractToken,
 } from '@suite-common/wallet-utils';
 import {
     Button,
@@ -66,24 +70,27 @@ import {
     RepeatIcon,
     XIcon,
 } from '@trezor/icons';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
-import { SUITE } from 'src/actions/suite/constants';
-import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
+import { setSendFormPrefill, setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
-import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
+import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import type { TokensTableType } from './types';
 
 interface TokenRowBasicActionsProps {
     type?: TokensTableType;
-    token: EnhancedTokenInfo;
+    token: TokenInfo;
     tokenStatusType: TokenManagementAction;
     account: Account;
     network: Network;
     isUnverifiedTable?: boolean;
+    isRemovableContractToken?: boolean;
     yieldOpportunities?: YieldDtoV2[];
-    setShowDeactivateModal: (value: boolean) => void;
+    onDeactivateToken: () => void;
 }
 
 const TokenRowBasicActions = ({
@@ -93,11 +100,11 @@ const TokenRowBasicActions = ({
     account,
     network,
     isUnverifiedTable,
+    isRemovableContractToken,
     yieldOpportunities,
-    setShowDeactivateModal,
+    onDeactivateToken,
 }: TokenRowBasicActionsProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const device = useSelector(selectSelectedDevice);
     const { isLocked } = useDevice();
     const { isBelowTablet } = useLayoutSize();
@@ -105,7 +112,7 @@ const TokenRowBasicActions = ({
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
     const shouldShowUnhideTokenModal = useSelector(selectIsUnhideTokenModalShown);
 
-    const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
+    const { address: unusedAddress } = getUnusedAddressFromAccount(account);
 
     const { coins } = useSelector(selectTradingInfo);
     const isDeviceLocked = isLocked(true);
@@ -123,6 +130,7 @@ const TokenRowBasicActions = ({
         !!tokenTradingOptions && tokenTradingOptions.exchange && token.balance !== '0';
     const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
     const canReceiveToken = !isDeviceLocked && !isDeviceCompromised;
+    const isContractToken = isStellarContractToken(token);
 
     const availableVault = useMemo(
         () =>
@@ -137,81 +145,92 @@ const TokenRowBasicActions = ({
             }),
         [yieldOpportunities, account.symbol, token.contract, token.symbol, token.decimals],
     );
+    const availableVaultAddress = availableVault
+        ? getYieldVaultContractAddress(availableVault)
+        : null;
 
     const isDepositButtonDisabled = !availableVault?.status.enter;
     const isWithdrawButtonDisabled = !availableVault?.status.exit;
 
+    const { isDisabled: isUnwrapDisabled } = useMessageSystemWrappedNative('unwrap');
+
+    const { translationString } = useTranslation();
+    const isUnwrapFirmwareOutdated = !isWrappedNativeFlowSupported(device);
+    const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
+        useFirmwareUpgradeModal();
+
     if (!unusedAddress || !device) return null;
 
-    const goToWithAnalytics = (...[payload]: Parameters<typeof goto>) => {
+    const goToWithAnalytics = (...[payload]: Parameters<typeof gotoThunk>) => {
         if (network.networkType) {
             analytics.report({
                 type: events.accountsActionsEvent.name,
                 payload: { symbol: network.symbol, action: payload.routeName },
             });
         }
-        dispatch(goto(payload));
+        dispatch(gotoThunk(payload));
     };
 
-    const navigateToYieldDeposit = () => {
-        if (!availableVault) return;
+    // This table renders on both the Tokens and the DeFi tab, so the reported origin has to follow
+    // the tab it was rendered for. Unwrap in particular is offered on the Tokens tab.
+    const analyticsFrom = type === 'defi' ? 'account-defi-tokens' : 'account-tokens';
 
-        const yieldId = availableVault.id;
-        const contractAddress = availableVault.token.address;
+    const navigateToYieldDeposit = () => {
+        if (!availableVault || !availableVaultAddress) return;
 
         analytics.report({
             type: sharedEvents.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
-                from: 'account-defi-tokens',
-                to: 'deposit-form',
+                from: analyticsFrom,
+                to: 'deposit-in-a-nutshell-modal',
                 networkSymbol: account.symbol,
-                vaultId: yieldId,
+                vaultId: availableVault.id,
             },
         });
 
         dispatch(
-            goto({
-                routeName: 'earn-yield-deposit',
-                params: getEarnRouteParams({
-                    account,
-                    yieldId,
-                    contractAddress,
-                }),
+            openModal({
+                type: 'earn-in-a-nutshell',
+                flow: EarnFlow.Yield,
+                provider: EarnProvider.Morpho,
+                account,
+                analyticsStep: 'earn-dashboard',
+                yieldContext: {
+                    id: availableVault.id,
+                    vaultAddress: availableVaultAddress,
+                    tokenContractAddress: availableVault.token.address ?? undefined,
+                },
             }),
         );
     };
 
     const navigateToYieldWithdraw = () => {
-        if (!availableVault) return;
-
-        const yieldId = availableVault.id;
-        const contractAddress = availableVault.token.address;
+        if (!availableVault || !availableVaultAddress) return;
 
         analytics.report({
             type: sharedEvents.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
-                from: 'account-defi-tokens',
+                from: analyticsFrom,
                 to: 'withdraw-form',
                 networkSymbol: account.symbol,
-                vaultId: yieldId,
+                vaultId: availableVault.id,
             },
         });
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-yield-withdraw',
                 params: getEarnRouteParams({
                     account,
-                    yieldId,
-                    contractAddress,
+                    vaultAddress: availableVaultAddress,
                 }),
             }),
         );
     };
 
-    const onTradeButtonClick = (type: TradingType, ...[payload]: Parameters<typeof goto>) => {
+    const onTradeButtonClick = (type: TradingType, ...[payload]: Parameters<typeof gotoThunk>) => {
         dispatch(
             tradingActions.setTradingFromPrefilledAccount(
                 getTradingPrefilledFromAccountData(account, tokenCryptoId),
@@ -273,11 +292,7 @@ const TokenRowBasicActions = ({
     };
 
     const onReceiveButtonClick = () => {
-        if (network.networkType === 'cardano') {
-            goToWithAnalytics({ routeName: 'wallet-receive', preserveParams: true });
-        } else {
-            dispatch(showAddressThunk({ path, address: unusedAddress }));
-        }
+        goToWithAnalytics({ routeName: 'wallet-receive', preserveParams: true });
     };
 
     const onShowHideButtonClick = () => {
@@ -292,10 +307,7 @@ const TokenRowBasicActions = ({
     };
 
     const onViewAllTransactionsButtonClick = () => {
-        dispatch({
-            type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
-            payload: token.contract,
-        });
+        dispatch(setTransactionHistoryPrefill(token.contract));
 
         goToWithAnalytics({
             routeName: 'wallet-index',
@@ -307,23 +319,46 @@ const TokenRowBasicActions = ({
         });
     };
 
+    const onUnwrapButtonClick = () => {
+        if (isUnwrapFirmwareOutdated) {
+            openFirmwareModal();
+
+            return;
+        }
+
+        analytics.report({
+            type: sharedEvents.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: analyticsFrom,
+                to: 'unwrap-form',
+                networkSymbol: account.symbol,
+            },
+        });
+
+        dispatch(
+            gotoThunk({
+                routeName: 'earn-yield-unwrap',
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
+    };
+
     const onViewInExplorerButtonClick = () => {
         window.open(explorerUrl, '_blank');
     };
 
-    const onDeactivateTokenButtonClick = () => {
-        setShowDeactivateModal(true);
-    };
-
-    const TokenAddressItem = ({
-        label,
-        address,
-        type,
-    }: {
+    type TokenAddressItemProps = {
         label: ReactNode;
         address: string;
         type: 'contract' | 'fingerprint' | 'policyId';
-    }) => (
+    };
+
+    const TokenAddressItem = ({ label, address, type }: TokenAddressItemProps) => (
         <InfoItem typographyStyle="body-xs" label={label} gap={0}>
             <Link href={explorerUrl}>
                 <Address
@@ -345,7 +380,15 @@ const TokenRowBasicActions = ({
 
     return (
         <Row gap={8}>
+            {isFirmwareModalOpen && (
+                <FirmwareUpgradeNeededModal
+                    onClose={closeFirmwareModal}
+                    onUpdate={updateFirmware}
+                    featureName={translationString('TR_EARN_DEFI_YIELD_TITLE')}
+                />
+            )}
             <Dropdown
+                data-testid="@trading/tokens/more-button"
                 placement={{ position: 'bottom', alignment: 'start' }}
                 tooltip={{ content: <Translation id="TR_SHOW_MORE" />, placement: 'left' }}
                 content={
@@ -429,31 +472,21 @@ const TokenRowBasicActions = ({
                     {
                         label: <Translation id="TR_UNWRAP_NATIVE_TOKEN" />,
                         icon: ArrowUUpLeftIcon,
-                        onClick: () =>
-                            dispatch(
-                                goto({
-                                    routeName: 'earn-yield-unwrap',
-                                    params: {
-                                        symbol: account.symbol,
-                                        accountIndex: account.index,
-                                        accountType: account.accountType,
-                                    },
-                                }),
-                            ),
-                        isDisabled: token.balance === '0',
+                        onClick: onUnwrapButtonClick,
+                        isDisabled: token.balance === '0' || isUnwrapDisabled,
                         isHidden: !isWrappedNativeToken(account.symbol, token.contract),
                     },
                     {
-                        label: <Translation id="TR_EARN_YIELD_DEPOSIT" />,
+                        label: <Translation id="TR_EARN_YIELD_DEPOSIT_BUTTON" />,
                         icon: PlusIcon,
-                        onClick: () => {},
+                        onClick: navigateToYieldDeposit,
                         isDisabled: type === 'defi' ? isDepositButtonDisabled : true,
                         isHidden: type === 'defi' ? !isBelowTablet : !isErc4626(token),
                     },
                     {
                         label: <Translation id="TR_EARN_YIELD_WITHDRAW" />,
                         icon: MinusIcon,
-                        onClick: () => {},
+                        onClick: navigateToYieldWithdraw,
                         isDisabled: type === 'defi' ? isWithdrawButtonDisabled : true,
                         isHidden: type === 'defi' ? !isBelowTablet : !isErc4626(token),
                     },
@@ -483,11 +516,17 @@ const TokenRowBasicActions = ({
                         onClick: onViewInExplorerButtonClick,
                     },
                     {
-                        label: <Translation id="TR_DEACTIVATE_TOKEN" />,
+                        // A contract token has no trustline to deactivate, only a watch list.
+                        label: (
+                            <Translation
+                                id={isContractToken ? 'TR_REMOVE_TOKEN' : 'TR_DEACTIVATE_TOKEN'}
+                            />
+                        ),
                         icon: XIcon,
-                        onClick: onDeactivateTokenButtonClick,
-                        // Only show for Stellar tokens
-                        isHidden: network.networkType !== 'stellar',
+                        onClick: onDeactivateToken,
+                        isHidden:
+                            network.networkType !== 'stellar' ||
+                            (isContractToken && !isRemovableContractToken),
                     },
                 ]}
             />
@@ -500,6 +539,7 @@ const TokenRowBasicActions = ({
                     priority="secondary"
                     icon={RepeatIcon}
                     onClick={onSwapButtonClick}
+                    data-testid="@trading/tokens/swap-button"
                     tooltip={{
                         content: canSwapToken ? (
                             <Translation id="TR_TRADING_SWAP" />
@@ -533,6 +573,7 @@ const TokenRowBasicActions = ({
                         }
                         intent="neutral"
                         priority="secondary"
+                        data-testid="@trading/tokens/unhide-button"
                     >
                         <Translation id="TR_UNHIDE" />
                     </Button>
@@ -544,11 +585,12 @@ const TokenRowBasicActions = ({
                                     icon={PlusIcon}
                                     isDisabled={isDepositButtonDisabled}
                                     onClick={navigateToYieldDeposit}
+                                    data-testid="@trading/tokens/yield-deposit-button"
                                     tooltip={{
                                         content: isDepositButtonDisabled ? (
                                             <Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />
                                         ) : (
-                                            <Translation id="TR_EARN_YIELD_DEPOSIT" />
+                                            <Translation id="TR_EARN_YIELD_DEPOSIT_BUTTON" />
                                         ),
                                     }}
                                 />
@@ -557,6 +599,7 @@ const TokenRowBasicActions = ({
                                     icon={MinusIcon}
                                     isDisabled={isWithdrawButtonDisabled}
                                     onClick={navigateToYieldWithdraw}
+                                    data-testid="@trading/tokens/yield-withdraw-button"
                                     tooltip={{
                                         content: isWithdrawButtonDisabled ? (
                                             <Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />
@@ -573,6 +616,7 @@ const TokenRowBasicActions = ({
                                     icon={ArrowDownIcon}
                                     isDisabled={!canReceiveToken}
                                     onClick={onReceiveButtonClick}
+                                    data-testid="@trading/tokens/receive-button"
                                     tooltip={{
                                         content: (
                                             <Translation
@@ -591,6 +635,7 @@ const TokenRowBasicActions = ({
                                     key="token-send"
                                     icon={ArrowUpIcon}
                                     onClick={onSendButtonClick}
+                                    data-testid="@trading/tokens/send-button"
                                     tooltip={{
                                         content: <Translation id="TR_NAV_SEND" />,
                                     }}
@@ -605,13 +650,14 @@ const TokenRowBasicActions = ({
 
 interface TokenRowActionsProps {
     type?: TokensTableType;
-    token: EnhancedTokenInfo;
+    token: TokenInfo;
     tokenStatusType: TokenManagementAction;
     account: Account;
     network: Network;
     yieldOpportunities?: YieldDtoV2[];
     isUnverifiedTable?: boolean;
-    setShowDeactivateModal: (value: boolean) => void;
+    isRemovableContractToken?: boolean;
+    onDeactivateToken: () => void;
 }
 
 export const TokenRowActions = ({
@@ -622,7 +668,8 @@ export const TokenRowActions = ({
     network,
     yieldOpportunities,
     isUnverifiedTable,
-    setShowDeactivateModal,
+    isRemovableContractToken,
+    onDeactivateToken,
 }: TokenRowActionsProps) => (
     <TokenRowBasicActions
         type={type}
@@ -631,7 +678,8 @@ export const TokenRowActions = ({
         account={account}
         network={network}
         isUnverifiedTable={isUnverifiedTable}
+        isRemovableContractToken={isRemovableContractToken}
         yieldOpportunities={yieldOpportunities}
-        setShowDeactivateModal={setShowDeactivateModal}
+        onDeactivateToken={onDeactivateToken}
     />
 );

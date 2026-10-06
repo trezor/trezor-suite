@@ -9,15 +9,15 @@ describe('ExploreInBlockchainButton', () => {
             getTranslation('moduleTrading.tradingConfirmationScreen.exploreInBlockchain'),
         );
 
-    it('renders the button with correct label', () => {
-        renderWithBasicProvider(<ExploreInBlockchainButton onPress={jest.fn()} />);
+    it('renders the button with correct label', async () => {
+        await renderWithBasicProvider(<ExploreInBlockchainButton onPress={jest.fn()} />);
 
         expect(getButtonByText()).toBeOnTheScreen();
     });
 
     it('calls onPress when pressed', async () => {
         const onPress = jest.fn();
-        renderWithBasicProvider(<ExploreInBlockchainButton onPress={onPress} />);
+        await renderWithBasicProvider(<ExploreInBlockchainButton onPress={onPress} />);
 
         await userEvent.press(getButtonByText());
 

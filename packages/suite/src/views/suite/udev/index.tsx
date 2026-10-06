@@ -19,8 +19,6 @@ interface UdevInfo {
         name: string;
         platform: string[];
         url: string;
-        signature?: string;
-        preferred?: boolean;
     }[];
 }
 
@@ -37,7 +35,6 @@ const udev: UdevInfo = {
             name: 'DEB package',
             platform: ['deb32', 'deb64'],
             url: '/udev/trezor-udev_2_all.deb',
-            preferred: true, // DEB package is the most common
         },
     ],
 };

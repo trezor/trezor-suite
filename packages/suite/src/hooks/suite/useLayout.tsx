@@ -1,11 +1,26 @@
 import { type ReactNode, useContext, useEffect } from 'react';
 
-import { LayoutContext } from 'src/support/suite/LayoutContext';
+import { LayoutSetterContext } from 'src/support/suite/LayoutContext';
 
-export const useLayout = (title?: string, layoutHeader?: ReactNode, layoutFooter?: ReactNode) => {
-    const setLayout = useContext(LayoutContext);
+interface LayoutOptions {
+    isContentStatic?: boolean;
+}
+
+export const useLayout = (
+    title?: string,
+    layoutHeader?: ReactNode,
+    layoutFooter?: ReactNode,
+    layoutOptions?: LayoutOptions,
+) => {
+    const setLayout = useContext(LayoutSetterContext);
+    const { isContentStatic = false } = layoutOptions || {};
 
     useEffect(() => {
-        setLayout({ title, layoutHeader, layoutFooter });
-    }, [setLayout, title, layoutHeader, layoutFooter]);
+        setLayout({
+            title,
+            layoutHeader,
+            layoutFooter,
+            isContentStatic,
+        });
+    }, [setLayout, title, layoutHeader, layoutFooter, isContentStatic]);
 };

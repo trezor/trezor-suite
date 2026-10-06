@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
 
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { injectDesktopApi } from '@suite/desktop-app-api';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { open, setView } from 'src/actions/suite/guideActions';
-import { useDispatch } from 'src/hooks/suite';
 
 // Opens the in-app guide on the right view when triggered from the desktop application
 // menu (Help → Support & feedback / Keyboard shortcuts).
 export const useGuideDesktopMenu = () => {
-    const dispatch = useDispatch();
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
 
     useEffect(() => {
         if (!desktopApi.available) return;
@@ -37,5 +38,5 @@ export const useGuideDesktopMenu = () => {
             desktopApi.removeAllListeners('guide/open-support-feedback');
             desktopApi.removeAllListeners('guide/open-shortcuts');
         };
-    }, [dispatch]);
+    }, [desktopApi, dispatch]);
 };

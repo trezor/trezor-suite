@@ -2,14 +2,14 @@ import { useCallback } from 'react';
 
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { ensureDeviceSession } from '../hooks/ensureDeviceSession';
 
 export const useWrappedNativeDeviceGuard = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
     const { translationString } = useTranslation();
 

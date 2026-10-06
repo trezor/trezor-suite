@@ -1,22 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootStateWithDeviceAndAccounts,
     type TradingTransaction,
     selectDeviceTradingTradesOrderedByDate,
 } from '@suite-common/trading';
 import { Box, EdgeFades } from '@suite-native/atoms';
-import { useBottomSheetControls } from '@suite-native/trading-atoms';
 import { Footer } from '@suite-native/trading-provider-utils';
 import { selectTradeToBeOpened, tradingActions } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { TradeDetailSheet } from './TradeDetailSheet/TradeDetailSheet';
 import { TradeHistoryListItem } from './TradeHistoryListItem/TradeHistoryListItem';
 import { TradeTypeEmptyState } from './TradeTypeEmptyState';
 import { TradingHistoryEmptyState } from './TradingHistoryEmptyState';
@@ -34,18 +34,21 @@ const listFooterStyle = prepareNativeStyle(({ spacings }) => ({
     paddingTop: spacings.sp32,
 }));
 
-const keyExtractor = (item: TradingTransaction) => `${item.key ?? ''}`;
+const keyExtractor = (item: TradingTransaction) =>
+    item.key ?? item.data.orderId ?? `${item.tradeType}-${item.date}`;
 
-export const TradingHistory = () => {
+export type TradingHistoryProps = {
+    onOpenTradeDetail: (orderId: string) => void;
+};
+
+export const TradingHistory = ({ onOpenTradeDetail }: TradingHistoryProps) => {
     const navigation = useNavigation();
     const { applyStyle, utils } = useNativeStyles();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { bottom: insetBottom } = useSafeAreaInsets();
     const tradeToBeOpened = useSelector(selectTradeToBeOpened);
-    const [detailOrderId, setDetailOrderId] = useState<string | undefined>(undefined);
     const flashListRef = useRef<FlashListRef<TradingTransaction>>(null);
     const [activeFilter, setActiveFilter] = useState<TradingHistoryFilter>('all');
-    const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
     const trades = useSelector((state: TradingRootStateWithDeviceAndAccounts) =>
         selectDeviceTradingTradesOrderedByDate(state),
     );
@@ -57,12 +60,13 @@ export const TradingHistory = () => {
         (trade: TradingTransaction) => {
             const { orderId } = trade.data;
 
-            setDetailOrderId(orderId);
-            if (orderId && !isSheetVisible) {
-                showSheet();
+            if (!orderId) {
+                return;
             }
+
+            onOpenTradeDetail(orderId);
         },
-        [isSheetVisible, showSheet],
+        [onOpenTradeDetail],
     );
 
     useEffect(() => {
@@ -110,6 +114,7 @@ export const TradingHistory = () => {
                     }
                     ListFooterComponent={<Footer />}
                     ListFooterComponentStyle={applyStyle(listFooterStyle)}
+                    maintainVisibleContentPosition={{ disabled: true }}
                 />
                 <EdgeFades
                     direction="vertical"
@@ -117,11 +122,6 @@ export const TradingHistory = () => {
                     endSize={Math.max(insetBottom, utils.spacings.sp24)}
                 />
             </Box>
-            <TradeDetailSheet
-                isVisible={isSheetVisible}
-                orderId={detailOrderId}
-                onDismiss={hideSheet}
-            />
         </Box>
     );
 };

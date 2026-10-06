@@ -1,35 +1,34 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import * as fixtures from './__fixtures__/messageSystemActions';
 
 import {
+    type MessageSystemRootState,
     type MessageSystemState,
     initMessageSystemThunk,
     messageSystemActions,
     prepareMessageSystemReducer,
 } from './index';
 
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
-const getInitialState = (state?: MessageSystemState) => ({
+const getInitialState = (state?: MessageSystemState): MessageSystemRootState => ({
     messageSystem: {
         ...messageSystemReducer(undefined, { type: 'foo' } as any),
         ...state,
     },
 });
 
-type State = ReturnType<typeof getInitialState>;
-
-const initStore = (preloadedState: State) => {
-    const store = configureMockStore({
+const initStore = (preloadedState: MessageSystemRootState) =>
+    createTestCompositionRoot<void, MessageSystemRootState>({
         preloadedState,
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
-    });
-
-    return store;
-};
+    }).services.store;
 
 jest.mock('../files/config.v1.ts', () => {
     const { validJwsWithSequence10 } = require('./__fixtures__/messageSystemActions');
@@ -65,9 +64,11 @@ describe('Message system actions', () => {
             const actions = store.getActions();
             expect(actions.length).toBe(5);
             const action = actions[2];
-            expect(action?.type).toBe(messageSystemActions.fetchSuccessUpdate.type);
-            expect(action?.payload.config).not.toBe(undefined);
-            expect(action?.payload.timestamp).toBe(timestamp);
+            expect(messageSystemActions.fetchSuccessUpdate.match(action)).toBe(true);
+            if (messageSystemActions.fetchSuccessUpdate.match(action)) {
+                expect(action.payload.config).not.toBe(undefined);
+                expect(action.payload.timestamp).toBe(timestamp);
+            }
         });
 
         it("does not store the fetched config if it's sequence number is the same as the current one", async () => {
@@ -124,10 +125,12 @@ describe('Message system actions', () => {
             const actions = store.getActions();
             expect(actions.length).toBe(5);
             const action = actions[2];
-            expect(action?.type).toBe(messageSystemActions.fetchSuccessUpdate.type);
-            expect(action?.payload.config).not.toBe(undefined);
-            expect(action?.payload.config.sequence).toBe(10);
-            expect(action?.payload.timestamp).toBe(0);
+            expect(messageSystemActions.fetchSuccessUpdate.match(action)).toBe(true);
+            if (messageSystemActions.fetchSuccessUpdate.match(action)) {
+                expect(action.payload.config).not.toBe(undefined);
+                expect(action.payload.config.sequence).toBe(10);
+                expect(action.payload.timestamp).toBe(0);
+            }
 
             expect(console.error).toHaveBeenCalled();
         });

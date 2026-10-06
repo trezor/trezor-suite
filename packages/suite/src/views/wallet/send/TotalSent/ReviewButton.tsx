@@ -4,6 +4,8 @@ import styled from 'styled-components';
 
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
 import {
@@ -18,7 +20,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 const Container = styled.div`
@@ -30,7 +32,7 @@ const Container = styled.div`
 
 export const ReviewButton = () => {
     const { device, isLocked } = useDevice();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const {
         account: { networkType, symbol },
         control,

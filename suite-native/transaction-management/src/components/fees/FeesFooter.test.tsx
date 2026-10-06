@@ -1,11 +1,12 @@
-import { yup } from '@suite-common/validators';
+import { type Store } from '@reduxjs/toolkit';
+
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
-import { Form, useForm } from '@suite-native/forms';
+import { Form, useForm, yup } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
-    type TestStore,
     createStoreFromPreloadedState,
     renderWithStoreProvider,
     userEvent,
@@ -13,6 +14,8 @@ import {
 
 import { FeesFooter } from './FeesFooter';
 import { getWalletState } from '../../__fixtures__/walletState';
+
+type State = WalletSettingsRootState & FiatRatesRootState;
 
 // Create a simple validation schema for testing
 const testValidationSchema = yup.object({
@@ -54,7 +57,7 @@ const mockSelectAccountTokenDecimals =
     jest.requireMock('@suite-native/tokens').selectAccountTokenDecimals;
 
 describe('FeesFooter', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let mockOnSubmit: jest.Mock;
 
     const defaultProps = {
@@ -68,15 +71,15 @@ describe('FeesFooter', () => {
         withSubmitButton: true,
     };
 
-    const getPreloadedState = () => ({
+    const getPreloadedState = (): State => ({
         wallet: getWalletState(),
     });
 
-    const renderFeesFooter = (props = {}) => {
+    const renderFeesFooter = async (props = {}) => {
         const finalProps = { ...defaultProps, ...props };
         mockOnSubmit = finalProps.onSubmit;
 
-        return renderWithStoreProvider(
+        return await renderWithStoreProvider(
             <TestFormWrapper>
                 {/*
                   FeesFooterProps expects withSubmitButton: true when present.
@@ -85,10 +88,7 @@ describe('FeesFooter', () => {
                 */}
                 <FeesFooter {...(finalProps as React.ComponentProps<typeof FeesFooter>)} />
             </TestFormWrapper>,
-            {
-                store,
-                preloadedState: getPreloadedState(),
-            },
+            { services: { store }, preloadedState: getPreloadedState() },
         );
     };
 
@@ -105,14 +105,14 @@ describe('FeesFooter', () => {
         jest.clearAllMocks();
     });
 
-    it('should render mainnet summary when no token contract is provided', () => {
-        const { getByText } = renderFeesFooter();
+    it('should render mainnet summary when no token contract is provided', async () => {
+        const { getByText } = await renderFeesFooter();
 
         expect(getByText(getTranslation('transactionManagement.fees.totalAmount'))).toBeTruthy();
     });
 
-    it('should render token summary when token contract is provided', () => {
-        const { getByText } = renderFeesFooter({
+    it('should render token summary when token contract is provided', async () => {
+        const { getByText } = await renderFeesFooter({
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
         });
 
@@ -120,24 +120,24 @@ describe('FeesFooter', () => {
         expect(getByText(getTranslation('transactions.detail.feeLabel'))).toBeTruthy();
     });
 
-    it('should display total amount correctly', () => {
-        const { getByText } = renderFeesFooter({
+    it('should display total amount correctly', async () => {
+        const { getByText } = await renderFeesFooter({
             totalAmount: '5000000',
         });
 
         expect(getByText('0.05 BTC')).toBeTruthy();
     });
 
-    it('should show submit button when isSubmittable is true', () => {
-        const { getByTestId } = renderFeesFooter({
+    it('should show submit button when isSubmittable is true', async () => {
+        const { getByTestId } = await renderFeesFooter({
             isSubmittable: true,
         });
 
         expect(getByTestId('@transactionManagement/fees-submit-button')).toBeTruthy();
     });
 
-    it('should not show submit button when isSubmittable is false', () => {
-        const { queryByTestId } = renderFeesFooter({
+    it('should not show submit button when isSubmittable is false', async () => {
+        const { queryByTestId } = await renderFeesFooter({
             isSubmittable: false,
         });
 
@@ -145,7 +145,7 @@ describe('FeesFooter', () => {
     });
 
     it('should call onSubmit when submit button is pressed', async () => {
-        const { getByTestId } = renderFeesFooter({
+        const { getByTestId } = await renderFeesFooter({
             isSubmittable: true,
         });
 
@@ -154,20 +154,20 @@ describe('FeesFooter', () => {
         expect(mockOnSubmit).toHaveBeenCalledTimes(1);
     });
 
-    it('should display token symbol correctly', () => {
+    it('should display token symbol correctly', async () => {
         mockSelectAccountTokenSymbol.mockReturnValue('USDC');
 
-        const { getByText } = renderFeesFooter({
+        const { getByText } = await renderFeesFooter({
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
         });
 
         expect(getByText(/USDC/)).toBeTruthy();
     });
 
-    it('should display token amount with correct decimals', () => {
+    it('should display token amount with correct decimals', async () => {
         mockSelectAccountTokenDecimals.mockReturnValue(6);
 
-        const { getByText } = renderFeesFooter({
+        const { getByText } = await renderFeesFooter({
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
             totalAmount: '1000', // 1 USDC with 6 decimals
         });
@@ -175,18 +175,18 @@ describe('FeesFooter', () => {
         expect(getByText('0.001 USDC')).toBeTruthy();
     });
 
-    it('should handle different token contracts', () => {
+    it('should handle different token contracts', async () => {
         mockSelectAccountTokenSymbol.mockReturnValue('DAI');
 
-        const { getByText } = renderFeesFooter({
+        const { getByText } = await renderFeesFooter({
             tokenContract: '0x6b175474e89094c44da98b954eedeac495271d0f' as TokenAddress,
         });
 
         expect(getByText(/DAI/)).toBeTruthy();
     });
 
-    it('should show submit button when withSubmitButton is true and isSubmittable is true', () => {
-        const { getByText } = renderFeesFooter({
+    it('should show submit button when withSubmitButton is true and isSubmittable is true', async () => {
+        const { getByText } = await renderFeesFooter({
             isSubmittable: true,
             withSubmitButton: true,
         });
@@ -200,8 +200,8 @@ describe('FeesFooter', () => {
         { isSubmittable: false, withSubmitButton: false },
     ])(
         'should not show submit button when withSubmitButton is $withSubmitButton even if isSubmittable is $isSubmittable',
-        props => {
-            const { queryByText } = renderFeesFooter(props);
+        async props => {
+            const { queryByText } = await renderFeesFooter(props);
 
             expect(
                 queryByText(getTranslation('transactionManagement.fees.submitButton')),
@@ -209,8 +209,8 @@ describe('FeesFooter', () => {
         },
     );
 
-    it('should default withSubmitButton to true when not provided', () => {
-        const { getByText } = renderFeesFooter({
+    it('should default withSubmitButton to true when not provided', async () => {
+        const { getByText } = await renderFeesFooter({
             isSubmittable: true,
             // withSubmitButton not provided, should default to true
         });

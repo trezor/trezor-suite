@@ -11,8 +11,6 @@ import { IntlProviderForTests } from '@suite-native/intl';
 import { StylesProvider, createRenderer } from '@trezor/styles-native';
 import { prepareNativeTheme } from '@trezor/theme';
 
-import { extraDependenciesNativeMock } from './extraDependenciesNative.mock';
-
 type ProviderProps = {
     children: ReactNode;
     formattersConfig?: FormatterProviderConfig;
@@ -41,12 +39,7 @@ export const BasicProviderForTests = ({ children, formattersConfig, services }: 
                 <IntlProviderForTests>
                     <StylesProvider theme={theme} renderer={renderer}>
                         <NavigationContainer>
-                            <ServicesProvider
-                                services={{
-                                    ...extraDependenciesNativeMock.services,
-                                    ...services,
-                                }}
-                            >
+                            <ServicesProvider services={services ?? {}}>
                                 <FormatterProvider
                                     config={formattersConfig ?? DEFAULT_FORMATTERS_CONFIG}
                                 >

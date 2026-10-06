@@ -13,7 +13,7 @@ import {
     type TradingSellAction,
     type TradingSellStep,
     events,
-    selectNativeAnalyticsDep,
+    injectNativeAnalytics,
 } from '@suite-native/analytics';
 
 import { getAnalyticsTradingSellPayload } from '../utils/quotesUtils';
@@ -26,7 +26,7 @@ export type TradingSellAnalyticReportCallback = (
 export const useSellAnalyticReportCallback = (
     candidateQuote?: SellFiatTrade,
 ): TradingSellAnalyticReportCallback => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const persistedQuote = useSelector(selectTradingSellSelectedQuote);
     const quote = candidateQuote || persistedQuote;
 

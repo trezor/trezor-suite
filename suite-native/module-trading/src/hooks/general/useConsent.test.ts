@@ -3,18 +3,18 @@ import { act, renderHook, waitFor } from '@suite-native/test-utils';
 import { useConsent } from './useConsent';
 
 describe('useConsent', () => {
-    const renderUseConsent = () => renderHook(() => useConsent());
+    const renderUseConsent = async () => await renderHook(() => useConsent());
 
-    it('should initialize with isConsentRequested as false', () => {
-        const { result } = renderUseConsent();
+    it('should initialize with isConsentRequested as false', async () => {
+        const { result } = await renderUseConsent();
 
         expect(result.current.isConsentRequested).toBe(false);
     });
 
     describe('waitForConsent', () => {
-        it('should return a promise', () => {
-            const { result } = renderUseConsent();
-            act(() => {
+        it('should return a promise', async () => {
+            const { result } = await renderUseConsent();
+            await act(() => {
                 const promise = result.current.waitForConsent();
 
                 expect(promise).toBeInstanceOf(Promise);
@@ -22,9 +22,9 @@ describe('useConsent', () => {
         });
 
         it('should set isConsentRequested to true when called', async () => {
-            const { result } = renderUseConsent();
+            const { result } = await renderUseConsent();
 
-            act(() => {
+            await act(() => {
                 result.current.waitForConsent();
             });
 
@@ -36,11 +36,11 @@ describe('useConsent', () => {
 
     describe('resolveConsent', () => {
         it('should resolve the promise with the provided value', async () => {
-            const { result } = renderUseConsent();
+            const { result } = await renderUseConsent();
 
             let resolvedValue: boolean | undefined;
 
-            act(() => {
+            await act(() => {
                 const promise = result.current.waitForConsent();
                 promise.then(value => {
                     resolvedValue = value;
@@ -51,7 +51,7 @@ describe('useConsent', () => {
                 expect(result.current.isConsentRequested).toBe(true);
             });
 
-            act(() => {
+            await act(() => {
                 result.current.resolveConsent(true);
             });
 
@@ -63,12 +63,12 @@ describe('useConsent', () => {
 
     describe('consent flow', () => {
         it('should handle complete consent flow', async () => {
-            const { result } = renderUseConsent();
+            const { result } = await renderUseConsent();
 
             let consentResult: boolean | undefined;
 
             // Start consent request
-            act(() => {
+            await act(() => {
                 const promise = result.current.waitForConsent();
                 promise.then(value => {
                     consentResult = value;
@@ -81,7 +81,7 @@ describe('useConsent', () => {
             });
 
             // Resolve consent
-            act(() => {
+            await act(() => {
                 result.current.resolveConsent(true);
             });
 
@@ -94,10 +94,10 @@ describe('useConsent', () => {
     });
 
     it('should handle unmounting gracefully', async () => {
-        const { result, unmount } = renderUseConsent();
+        const { result, unmount } = await renderUseConsent();
 
         // Start consent request
-        act(() => {
+        await act(() => {
             result.current.waitForConsent();
         });
 
@@ -107,7 +107,7 @@ describe('useConsent', () => {
         });
 
         // Unmount component
-        unmount();
+        await unmount();
 
         // Wait a bit for cleanup
         await new Promise(resolve => setTimeout(resolve, 0));

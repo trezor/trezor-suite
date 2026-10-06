@@ -1,0 +1,52 @@
+import { type PermissionRequest, UI_EVENTS } from '@trezor/connect-common';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { Assert } from '@trezor/schema-utils';
+
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
+
+export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadDevice> {
+    constructor(message: MethodMessage<'loadDevice'>) {
+        const { payload } = message;
+        // validate bundle type
+        Assert(PROTO.LoadDevice, payload);
+
+        const params = {
+            mnemonics: payload.mnemonics,
+            pin: payload.pin,
+            passphrase_protection: payload.passphrase_protection,
+            language: payload.language,
+            label: payload.label,
+            skip_checksum: payload.skip_checksum,
+            u2f_counter: payload.u2f_counter,
+            needs_backup: payload.needs_backup,
+            no_backup: payload.no_backup,
+        };
+
+        super(message, params);
+        this.allowDeviceMode = [UI_EVENTS.DEVICE_NOT_INITIALIZED];
+        this.useDeviceState = false;
+        this.skipFinalReload = false;
+    }
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
+    }
+
+    get info() {
+        return 'Load seed and related internal settings.';
+    }
+
+    get confirmation() {
+        return {
+            view: 'device-management' as const,
+            label: 'Do you really you want to load device?',
+        };
+    }
+
+    async run() {
+        const cmd = this.getDevice().getCommands();
+        const response = await cmd.typedCall('LoadDevice', 'Success', this.params);
+
+        return response.message;
+    }
+}

@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /**
  * Extended Playwright test object that includes Currents fixtures.
  *

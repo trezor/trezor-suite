@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useMutation } from '@tanstack/react-query';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
     type ComposeAllowanceTransactionThunkParams,
@@ -23,7 +25,7 @@ import {
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { useCurrentRef, useDebounce } from '@trezor/react-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 
 interface UseAllowanceComposeParams {
@@ -41,7 +43,7 @@ export const useAllowanceCompose = ({
     amount,
     token,
 }: UseAllowanceComposeParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const debounce = useDebounce();
 
     const { networkType, symbol } = account;

@@ -1,11 +1,12 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     selectFilterKnownTokens,
@@ -17,7 +18,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { type AccountFormValues, useAccountLabelForm } from '@suite-native/accounts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, Text } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -51,8 +52,7 @@ export const AccountImportConfirmFormScreen = ({
     symbol,
     accountInfo,
 }: AccountImportConfirmFormScreenProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const navigation = useNavigation<NavigationProp>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const showImportError = useShowImportError(symbol, navigation);

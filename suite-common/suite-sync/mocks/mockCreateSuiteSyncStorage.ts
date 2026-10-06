@@ -20,6 +20,7 @@ type CreateSuiteSyncStorageMockParams = {
     accounts?: Partial<AccountTable>;
     addresses?: Partial<AddressTable>;
     outputs?: Partial<OutputTable>;
+    forceResync?: SuiteSyncStorage['forceResync'];
     disconnectRelay?: SuiteSyncStorage['disconnectRelay'];
     updateRelayUrl?: SuiteSyncStorage['updateRelayUrl'];
     dispose?: SuiteSyncStorage['dispose'];
@@ -33,6 +34,7 @@ export const createSuiteSyncStorageMock = (params: CreateSuiteSyncStorageMockPar
             addresses: createSuiteSyncTableMock<AddressTable>(params.addresses),
             outputs: createSuiteSyncTableMock<OutputTable>(params.outputs),
         },
+        forceResync: params.forceResync ?? mockNotExpected('forceResync'),
         disconnectRelay: params.disconnectRelay ?? mockNotExpected('disconnectRelay'),
         dispose: params.dispose ?? mockNotExpected('dispose'),
         updateRelayUrl: params.updateRelayUrl ?? mockNotExpected('updateRelayUrl'),

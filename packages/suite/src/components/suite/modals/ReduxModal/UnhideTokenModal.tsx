@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { selectSelectedAccount } from '@suite/account';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
     TokenManagementAction,
@@ -12,7 +14,6 @@ import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
 
 interface UnhideTokenModalProps {
     address: string;
@@ -23,7 +24,7 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
     const [checked, setChecked] = useState(false);
 
     const account = useSelector(selectSelectedAccount);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     if (!account) return null;
 

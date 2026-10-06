@@ -1,6 +1,8 @@
 import { Translation } from '@suite/intl';
 import { closeModal as closeModalAction } from '@suite/modal';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
@@ -8,7 +10,7 @@ import { PlusIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
@@ -36,7 +38,7 @@ const PassphraseWalletIsEmptyContent = ({
 }: PassphraseWalletIsEmptyContentProps) => {
     const { supportedMainnets } = useNetworkSupport();
     const enabledNetworks = useSelector(selectEnabledNetworks);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const areAllNetworksEnabled = supportedMainnets.every(network =>
         enabledNetworks.includes(network.symbol),
@@ -102,7 +104,7 @@ const PassphraseWalletIsEmptyContent = ({
                                     onClick={() => {
                                         onCancel();
                                         dispatch(closeModalAction());
-                                        dispatch(goto({ routeName: 'settings-coins' }));
+                                        dispatch(gotoThunk({ routeName: 'settings-coins' }));
                                     }}
                                 >
                                     <Translation id="TR_ADD" />

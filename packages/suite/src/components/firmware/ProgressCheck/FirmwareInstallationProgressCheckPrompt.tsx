@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { Button, Column, Divider, H2, Image, Paragraph, Row } from '@trezor/components';
 
-import { SecurityCheckLayout } from '../../suite/SecurityCheck/SecurityCheckLayout';
+import { SecurityCheckLayout } from '../../suite/SecurityCheck/components/SecurityCheckLayout';
 
 // only relevant for bootloader 1.12.1
 const imageAltText = `Install new firmware?

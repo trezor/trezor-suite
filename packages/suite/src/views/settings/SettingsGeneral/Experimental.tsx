@@ -1,15 +1,13 @@
-import { useMemo } from 'react';
-
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { selectIsDebugModeActive } from '@suite/debug';
 import { type ExperimentalFeature } from '@suite/experimental';
 import { LearnMoreButton } from '@suite/external-links';
 import { feedbackRequested } from '@suite/feature-feedback';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectExperimentalFeatures, suiteSettingsActions } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
+import { useImperativeServices, useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -17,8 +15,12 @@ import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteServices } from 'src/support/extraDependencies';
+import { useSelector } from 'src/hooks/suite';
+import { selectSuiteServices } from 'src/support/createSuiteCompositionRoot';
+
+const experimentalFeatures = typedObjectKeys(EXPERIMENTAL_FEATURES).filter(
+    feature => !EXPERIMENTAL_FEATURES[feature]?.isDisabled?.(),
+);
 
 type FeatureLineProps = {
     feature: ExperimentalFeature;
@@ -26,8 +28,8 @@ type FeatureLineProps = {
 };
 
 const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
-    const dispatch = useDispatch();
-    const services = useServices(selectSuiteServices);
+    const { dispatch } = useServices(injectDispatch);
+    const services = useImperativeServices(selectSuiteServices);
     const checked = enabledFeatures.includes(feature);
 
     const config = EXPERIMENTAL_FEATURES[feature];
@@ -56,7 +58,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
 
     const handleClick = () => {
         if (!config.routeName) return;
-        dispatch(goto({ routeName: config.routeName }));
+        dispatch(gotoThunk({ routeName: config.routeName }));
     };
 
     return (
@@ -118,10 +120,9 @@ const bannerMotionDivProps = {
 export const Experimental = () => {
     const enabledFeatures = useSelector(selectExperimentalFeatures);
     const isExperimentalEnabled = enabledFeatures !== undefined;
-    const isDebug = useSelector(selectIsDebugModeActive);
 
-    const dispatch = useDispatch();
-    const services = useServices(selectSuiteServices);
+    const { dispatch } = useServices(injectDispatch);
+    const services = useImperativeServices(selectSuiteServices);
 
     const onSwitchExperimental = () => {
         enabledFeatures?.forEach(feature =>
@@ -138,17 +139,6 @@ export const Experimental = () => {
             ),
         );
     };
-
-    const experimentalFeatures = useMemo(
-        () =>
-            typedObjectKeys(EXPERIMENTAL_FEATURES).filter(
-                feature =>
-                    !EXPERIMENTAL_FEATURES[feature]?.isDisabled?.({
-                        isDebug,
-                    }),
-            ),
-        [isDebug],
-    );
 
     return (
         <>

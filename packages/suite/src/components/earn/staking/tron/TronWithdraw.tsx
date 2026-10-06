@@ -23,6 +23,7 @@ export const TronWithdraw = ({ account }: TronWithdrawProps) => {
                     {step === 'complete' ? (
                         <TronStakeComplete
                             account={account}
+                            flow="withdraw"
                             heading={<Translation id="TR_EARN_TRON_WITHDRAW_COMPLETE" />}
                             description={<Translation id="TR_EARN_TRON_WITHDRAW_DESCRIPTION" />}
                         >

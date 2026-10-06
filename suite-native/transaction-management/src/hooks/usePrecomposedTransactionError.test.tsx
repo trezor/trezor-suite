@@ -1,6 +1,6 @@
 import { Text } from 'react-native';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-native/test-utils';
 
@@ -9,6 +9,9 @@ import {
     usePrecomposedTransactionError,
 } from './usePrecomposedTransactionError';
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+
 const ErrorText = (props: UsePrecomposedTransactionErrorProps) => {
     const msg = usePrecomposedTransactionError(props);
 
@@ -16,7 +19,7 @@ const ErrorText = (props: UsePrecomposedTransactionErrorProps) => {
 };
 
 describe('usePrecomposedTransactionError', () => {
-    const networkSymbol = 'btc' as NetworkSymbol;
+    const networkSymbol = btcSymbol;
     const networkDisplaySymbol = 'BTC';
 
     beforeEach(() => {
@@ -25,8 +28,8 @@ describe('usePrecomposedTransactionError', () => {
 
     it.each([[null], [undefined], ['INVALID_ERROR'], ['']])(
         'should return null when error is %s',
-        error => {
-            const { result } = renderHookWithBasicProvider(() =>
+        async error => {
+            const { result } = await renderHookWithBasicProvider(() =>
                 usePrecomposedTransactionError({ error, networkSymbol }),
             );
 
@@ -86,16 +89,16 @@ describe('usePrecomposedTransactionError', () => {
                 'transactionManagement.precomposedTransaction.errors.stakeNotEnoughFunds',
             ),
         },
-    ])('should return correct translation data for $error', ({ error, expectedErrorMsg }) => {
-        const { getByText } = renderWithBasicProvider(
+    ])('should return correct translation data for $error', async ({ error, expectedErrorMsg }) => {
+        const { getByText } = await renderWithBasicProvider(
             <ErrorText error={error} networkSymbol={networkSymbol} />,
         );
 
         expect(getByText(expectedErrorMsg)).toBeOnTheScreen();
     });
 
-    it('should handle context without network symbol', () => {
-        const { getByText } = renderWithBasicProvider(
+    it('should handle context without network symbol', async () => {
+        const { getByText } = await renderWithBasicProvider(
             <ErrorText error="AMOUNT_NOT_ENOUGH_CURRENCY_FEE" />,
         );
 
@@ -109,9 +112,9 @@ describe('usePrecomposedTransactionError', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should handle different network symbols', () => {
-        const { getByText } = renderWithBasicProvider(
-            <ErrorText error="AMOUNT_NOT_ENOUGH_CURRENCY_FEE" networkSymbol="eth" />,
+    it('should handle different network symbols', async () => {
+        const { getByText } = await renderWithBasicProvider(
+            <ErrorText error="AMOUNT_NOT_ENOUGH_CURRENCY_FEE" networkSymbol={ethSymbol} />,
         );
 
         expect(

@@ -1,10 +1,11 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
+
 import type { ExperimentalFeature } from '@suite/experimental';
 import { type ExtendedMessageDescriptor } from '@suite/intl';
 import { type Route } from '@suite/router';
 import { networksCollection } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
 import {
     EXPERIMENTAL_PASSWORD_MANAGER_KB_URL,
     GITHUB_MCP_DOCS_URL,
@@ -12,8 +13,7 @@ import {
     type Url,
 } from '@trezor/urls';
 
-import { type SuiteServices } from '../../support/extraDependencies';
-import { type Dispatch } from '../../types/suite';
+import { type SuiteServices } from '../../support/createSuiteCompositionRoot';
 
 const experimentalNetworks = networksCollection.filter(
     network => network.isExperimentalOnlyNetwork,
@@ -25,7 +25,7 @@ export type ExperimentalFeatureConfig = {
     description: ExtendedMessageDescriptor;
     knowledgeBaseUrl?: Url;
     routeName?: Route['name'];
-    isDisabled?: (context: { isDebug: boolean }) => boolean;
+    isDisabled?: () => boolean;
     onToggle?: ({
         newValue,
         services,
@@ -33,7 +33,7 @@ export type ExperimentalFeatureConfig = {
     }: {
         newValue: boolean;
         services: SuiteServices;
-        dispatch: Dispatch;
+        dispatch: Dispatch<UnknownAction>;
     }) => void;
 };
 
@@ -49,7 +49,7 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         description: { id: 'TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION' },
         knowledgeBaseUrl: HELP_CENTER_TOR_URL,
         isDisabled: () => !isDesktop(),
-        onToggle: async ({ newValue }) => {
+        onToggle: async ({ newValue, services: { desktopApi } }) => {
             const result = await desktopApi.getTorSettings();
             if (result.success && result.payload.useExternalTor !== newValue) {
                 await desktopApi.changeTorSettings({
@@ -62,7 +62,6 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
     slip24: {
         title: { id: 'TR_EXPERIMENTAL_SLIP24' },
         description: { id: 'TR_EXPERIMENTAL_SLIP24_DESCRIPTION' },
-        isDisabled: ({ isDebug }) => !isDebug,
     },
     'experimental-networks': {
         title: {
@@ -86,7 +85,7 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         description: { id: 'TR_EXPERIMENTAL_MCP_SERVER_DESCRIPTION' },
         knowledgeBaseUrl: GITHUB_MCP_DOCS_URL,
         isDisabled: () => !isDesktop(),
-        onToggle: async ({ newValue }) => {
+        onToggle: async ({ newValue, services: { desktopApi } }) => {
             await desktopApi.mcpSetEnabled(newValue);
         },
     },

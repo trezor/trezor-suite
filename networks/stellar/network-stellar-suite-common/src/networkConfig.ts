@@ -1,0 +1,72 @@
+import {
+    DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    type Explorer,
+    type SuiteCommonNetworkConfig,
+    asDisplayOrderKey,
+    asProtocol,
+} from '@trezor/network-module-suite-common-types';
+import { STELLAR_DECIMALS, type StellarNetworkSymbol } from '@trezor/network-stellar/constants';
+
+const syncIntervalBySymbol: Readonly<Record<StellarNetworkSymbol, number>> = {
+    xlm: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    txlm: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+};
+
+const getExplorerUrls = (baseUrl: string): Explorer => ({
+    base: baseUrl,
+    tx: `${baseUrl}/tx/`,
+    address: `${baseUrl}/account/`,
+    token: `${baseUrl}/asset/`,
+    contract: `${baseUrl}/contract/`,
+});
+
+type NetworkConfig = SuiteCommonNetworkConfig & {
+    readonly networkType: 'stellar';
+};
+
+export const networkConfigBySymbol = {
+    xlm: {
+        color: '#000000',
+        displayOrder: asDisplayOrderKey('aF'),
+        protocols: [asProtocol('stellar'), asProtocol('xlm')],
+        displaySymbol: 'XLM',
+        name: 'Stellar',
+        networkType: 'stellar',
+        bip43Path: "m/44'/148'/i'",
+        decimals: STELLAR_DECIMALS,
+        testnet: false,
+        explorer: getExplorerUrls('https://stellar.expert/explorer/public'),
+        features: ['tokens', 'coin-definitions'],
+        backendOptions: [{ type: 'stellar' }],
+        accountTypes: {},
+        coingeckoId: 'stellar',
+        tradeCryptoId: 'stellar',
+        yieldXyzId: 'stellar',
+        caipId: 'stellar:pubnet',
+    },
+    txlm: {
+        color: '#e75f5f',
+        displayOrder: asDisplayOrderKey('aQ'),
+        protocols: [asProtocol('txlm')],
+        displaySymbol: 'tXLM',
+        name: 'Stellar Testnet',
+        networkType: 'stellar',
+        bip43Path: "m/44'/148'/i'",
+        decimals: STELLAR_DECIMALS,
+        testnet: true,
+        explorer: getExplorerUrls('https://stellar.expert/explorer/testnet'),
+        features: ['tokens'],
+        backendOptions: [{ type: 'stellar' }],
+        accountTypes: {},
+        coingeckoId: undefined,
+        tradeCryptoId: undefined,
+        yieldXyzId: 'stellar-testnet',
+        caipId: 'stellar:testnet',
+    },
+} satisfies Readonly<Record<StellarNetworkSymbol, NetworkConfig>>;
+
+export const getNetworkConfig = (symbol: StellarNetworkSymbol): SuiteCommonNetworkConfig =>
+    networkConfigBySymbol[symbol];
+
+export const getAccountSyncInterval = (symbol: StellarNetworkSymbol): number =>
+    syncIntervalBySymbol[symbol];

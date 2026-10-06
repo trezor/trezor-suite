@@ -1,0 +1,161 @@
+/**
+ * Tray icon handler
+ */
+import { Menu, Tray } from 'electron';
+import path from 'path';
+
+import { type Status, type TraySettings } from '@suite/desktop-app-api';
+import { DEVICE, type DeviceEvent } from '@trezor/connect';
+
+import { ipcMain } from '../ipcMain';
+import { type ModuleInitBackground, mainThreadEmitter } from './module';
+import { APP_NAME_BARE } from '../libs/constants';
+import { app } from '../typed-electron';
+
+export const SERVICE_NAME = 'tray';
+
+export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy, logger }) => {
+    const initialSettings = store.getTraySettings();
+
+    const state = {
+        visible: initialSettings.showOnTray,
+        bridgeStatus: true,
+        devices: 0,
+    };
+    let tray: Tray | undefined;
+
+    const getPlatformIcon = () => {
+        switch (process.platform) {
+            case 'win32':
+                return 'trayWin.ico';
+            case 'darwin':
+                return 'trayMacTemplate.png';
+            default:
+                return 'trayLin.png';
+        }
+    };
+
+    const renderTray = () => {
+        if (!state.visible) {
+            logger.debug(SERVICE_NAME, 'Destroying tray');
+            tray?.destroy();
+            tray = undefined;
+
+            return;
+        }
+        if (!tray) {
+            logger.debug(SERVICE_NAME, 'Creating tray');
+            const iconPath = path.resolve(
+                global.resourcesPath,
+                'images/favicons/',
+                getPlatformIcon(),
+            );
+            tray = new Tray(iconPath);
+            tray.setToolTip(APP_NAME_BARE);
+        }
+        const contextMenu = Menu.buildFromTemplate([
+            {
+                label: state.bridgeStatus
+                    ? '🟢  Trezor Bridge is running'
+                    : '🔴  Trezor Bridge not running',
+                click: () => mainThreadEmitter.emit('module/bridge/toggle'),
+            },
+            // TODO: we can add this back when connect is initialized independently of the Suite app window
+            /*{
+                label:
+                    state.devices > 0
+                        ? `🟢  Devices connected: ${state.devices}`
+                        : '🔴  No device connected',
+            },*/
+            {
+                type: 'separator',
+            },
+            {
+                label: `Launch ${APP_NAME_BARE}`,
+                click: () => mainThreadEmitter.emit('app/show'),
+            },
+            {
+                label: 'Hide icon from tray',
+                click: () => {
+                    store.setTraySettings({
+                        ...store.getTraySettings(),
+                        showOnTray: false,
+                    });
+                    mainWindowProxy
+                        .getInstance()
+                        ?.webContents.send('tray/settings', store.getTraySettings());
+                    state.visible = false;
+                    renderTray();
+                },
+            },
+            {
+                label: 'Stop Trezor Bridge and Quit',
+                click: () => {
+                    mainThreadEmitter.emit('app/fully-quit');
+                    app.quit();
+                },
+            },
+        ]);
+        tray.setContextMenu(contextMenu);
+        // Windows left click to show context menu
+        if (process.platform === 'win32') {
+            tray.on('click', () => {
+                tray?.popUpContextMenu();
+            });
+        }
+    };
+
+    // Listeners for events that affect state
+    mainThreadEmitter.on('module/trezor-connect/device-event', (event: DeviceEvent) => {
+        if (event.type === DEVICE.CONNECT) {
+            state.devices += 1;
+            tray?.displayBalloon({
+                iconType: 'info',
+                title: APP_NAME_BARE,
+                content: `Device ${event.payload.name} connected`,
+            });
+        } else if (event.type === DEVICE.DISCONNECT && state.devices > 0) {
+            state.devices -= 1;
+            tray?.displayBalloon({
+                iconType: 'info',
+                title: APP_NAME_BARE,
+                content: `Device ${event.payload.name} disconnected`,
+            });
+        }
+        renderTray();
+    });
+    mainThreadEmitter.on('module/bridge/status', (status: Status) => {
+        logger.debug(SERVICE_NAME, 'Bridge status ' + status);
+        state.bridgeStatus = status.process;
+        renderTray();
+    });
+
+    ipcMain.handle('tray/change-settings', (_, updatedSettings: TraySettings) => {
+        try {
+            store.setTraySettings({
+                ...store.getTraySettings(),
+                ...updatedSettings,
+            });
+            state.visible = updatedSettings.showOnTray;
+            renderTray();
+
+            return { success: true };
+        } catch (error) {
+            return { success: false, error };
+        }
+    });
+
+    ipcMain.handle('tray/get-settings', () => {
+        try {
+            return { success: true, payload: store.getTraySettings() };
+        } catch (error) {
+            return { success: false, error };
+        }
+    });
+
+    return {
+        onLoad: () => {
+            renderTray();
+        },
+    };
+};

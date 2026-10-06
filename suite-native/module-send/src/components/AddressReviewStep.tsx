@@ -1,14 +1,7 @@
 import { type ReactNode } from 'react';
 import { type LayoutChangeEvent, View } from 'react-native';
 
-import {
-    Box,
-    Card,
-    HStack,
-    OrderedListIcon,
-    type OrderedListIconProps,
-    Text,
-} from '@suite-native/atoms';
+import { Box, Card, HStack, IconSquare, type IconSquareProps, Text } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -19,32 +12,15 @@ type AddressReviewStepProps = {
     onLayout?: (event: LayoutChangeEvent) => void;
 };
 
-const getIconProps = (stepNumber: AddressReviewStepProps['stepNumber']): OrderedListIconProps =>
+const getIconProps = (stepNumber: AddressReviewStepProps['stepNumber']): IconSquareProps =>
     stepNumber
-        ? {
-              iconNumber: stepNumber,
-              iconBackgroundColor: 'elementFillNeutralSofter',
-              iconBorderColor: 'elementBorderNeutralSofter',
-          }
-        : {
-              iconName: 'flagCheckered',
-              iconBackgroundColor: 'elementFillBrandBold',
-              iconColor: 'contentBrand',
-          };
+        ? { icon: stepNumber, intent: 'neutral' }
+        : { icon: 'flagCheckered', intent: 'brand' };
 
-const cardStyle = prepareNativeStyle<{ isFinalStep: boolean }>((utils, { isFinalStep }) => ({
+const cardStyle = prepareNativeStyle(utils => ({
     borderWidth: utils.borders.widths.small,
     borderColor: utils.colors.borderNeutral,
     maxWidth: '100%',
-
-    extend: {
-        condition: isFinalStep,
-        style: {
-            backgroundColor: utils.colors.elementFillBrandSofter,
-            borderColor: utils.colors.elementBorderBrandSofter,
-            ...utils.boxShadows.none,
-        },
-    },
 }));
 
 export const AddressReviewStep = ({
@@ -57,9 +33,9 @@ export const AddressReviewStep = ({
 
     return (
         <View onLayout={onLayout}>
-            <Card style={applyStyle(cardStyle, { isFinalStep: !stepNumber })}>
+            <Card style={applyStyle(cardStyle)}>
                 <HStack spacing="sp12" flexDirection="row" alignItems="center">
-                    <OrderedListIcon {...getIconProps(stepNumber)} />
+                    <IconSquare {...getIconProps(stepNumber)} />
                     <Box flexShrink={1}>
                         <Text variant="body-sm-strong">
                             <Translation id={translationId} />

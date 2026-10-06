@@ -1,8 +1,5 @@
 import { type BoxShadows, type Colors, colorVariants, mapBoxShadowsToCSS } from '@trezor/theme';
 
-// TODO: button hover color could be derived from its based color
-//       by applying something like opacity/darkening, same goes for gradients
-
 /**
  * IMPORTANT:
  *

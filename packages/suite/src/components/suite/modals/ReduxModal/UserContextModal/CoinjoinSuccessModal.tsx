@@ -1,13 +1,14 @@
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
-import { goto, selectRouterParams } from '@suite/router';
+import { gotoThunk, selectRouterParams } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { ArrowsInIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 type CoinjoinSuccessModalProps = {
     relatedAccountKey: AccountKey;
@@ -17,7 +18,7 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
     const routerParams = useSelector(selectRouterParams);
     const relatedAccount = useSelector(state => selectAccountByKey(state, relatedAccountKey));
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     if (!relatedAccount) {
         return null;
@@ -29,7 +30,7 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
     const navigateToRelatedAccount = () => {
         dispatch(closeModal());
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'wallet-index',
                 params: {
                     symbol,

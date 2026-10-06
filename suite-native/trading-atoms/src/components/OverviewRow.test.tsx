@@ -4,8 +4,8 @@ import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 import { OverviewRow } from './OverviewRow';
 
 describe('OverviewRow', () => {
-    it('should use title as left text as well as a11yLabel', () => {
-        const { getByText, getByLabelText } = renderWithBasicProvider(
+    it('should use title as left text as well as a11yLabel', async () => {
+        const { getByText, getByLabelText } = await renderWithBasicProvider(
             <OverviewRow title="Title" onPress={jest.fn()}>
                 <Text>Child</Text>
             </OverviewRow>,
@@ -15,21 +15,21 @@ describe('OverviewRow', () => {
         expect(getByLabelText('Title')).toBeTruthy();
     });
 
-    it('should call onPress callback when clicked', () => {
+    it('should call onPress callback when clicked', async () => {
         const onPress = jest.fn();
-        const { getByText } = renderWithBasicProvider(
+        const { getByText } = await renderWithBasicProvider(
             <OverviewRow title="Title" onPress={onPress}>
                 <Text>Child</Text>
             </OverviewRow>,
         );
 
-        fireEvent.press(getByText('Title'));
+        await fireEvent.press(getByText('Title'));
 
-        expect(onPress).toHaveBeenCalledWith();
+        expect(onPress).toHaveBeenCalledTimes(1);
     });
 
-    it('should render warning when added', () => {
-        const { queryByHintText } = renderWithBasicProvider(
+    it('should render warning when added', async () => {
+        const { queryByHintText } = await renderWithBasicProvider(
             <OverviewRow title="Title" warning="Warning message">
                 <Text>Child</Text>
             </OverviewRow>,
@@ -38,8 +38,8 @@ describe('OverviewRow', () => {
         expect(queryByHintText('Warning')).toHaveTextContent(/^.Warning message$/);
     });
 
-    it('should not render warning when not added', () => {
-        const { queryByHintText } = renderWithBasicProvider(
+    it('should not render warning when not added', async () => {
+        const { queryByHintText } = await renderWithBasicProvider(
             <OverviewRow title="Title">
                 <Text>Child</Text>
             </OverviewRow>,

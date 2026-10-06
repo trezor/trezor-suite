@@ -1,6 +1,7 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncState,
     getSuiteSyncDefaultRelayUrl,
@@ -8,10 +9,9 @@ import {
     selectSuiteSyncRelayUrl,
     updateSuiteSyncDebugEnabled,
 } from '@suite-common/suite-sync';
-import { selectChangeRelayUrlDep } from '@suite-common/suite-sync-types';
-import { yup } from '@suite-common/validators';
+import { injectChangeRelayUrl } from '@suite-common/suite-sync-types';
 import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
-import { Form, TextInputField, useForm } from '@suite-native/forms';
+import { Form, TextInputField, useForm, yup } from '@suite-native/forms';
 import { useToast } from '@suite-native/toasts';
 
 const DEFAULT_CUSTOM_RELAY_URL = '';
@@ -23,10 +23,9 @@ export const SuiteSyncRelaySettings = () => {
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
     const defaultSuiteSyncRelayUrl = getSuiteSyncDefaultRelayUrl({ isTorEnabled: false });
 
-    const { changeRelayUrl } = useServices(selectChangeRelayUrlDep);
+    const { changeRelayUrl, dispatch } = useServices(injectChangeRelayUrl, injectDispatch);
 
     const { showToast } = useToast();
-    const dispatch = useDispatch();
 
     const form = useForm<{ suiteSyncRelayUrl: string }>({
         defaultValues: {

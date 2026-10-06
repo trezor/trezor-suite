@@ -13,7 +13,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { getTxOperation } from '@suite-common/wallet-utils';
 import { Box, VStack } from '@suite-native/atoms';
 import {
-    CryptoAmountFormatter,
+    CompactCryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
     EmptyAmountText,
     SignValueFormatter,
@@ -79,7 +79,7 @@ export const TransactionListItemValues = ({
                     />
                 </Box>
             )}
-            <CryptoAmountFormatter
+            <CompactCryptoAmountFormatter
                 value={amount}
                 symbol={transaction.symbol}
                 isBalance={false}
@@ -97,7 +97,6 @@ export const TransactionListItemValues = ({
 type TransactionTargetProps = Target & {
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
-    isActionDisabled?: boolean;
     isPhishingTransaction?: boolean;
 };
 

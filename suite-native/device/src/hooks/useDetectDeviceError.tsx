@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import {
+    acquireDeviceThunk,
     deviceActions,
     selectHasDeviceFirmwareInstalled,
     selectIsConnectedDeviceUninitialized,
@@ -15,9 +16,10 @@ import {
     selectIsUnacquiredDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { acquireDevice } from '@suite-common/wallet-core';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
@@ -52,8 +54,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const useDetectDeviceError = () => {
     const [wasDeviceEjectedByUser, setWasDeviceEjectedByUser] = useState(false);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const { hideAlert, showAlert } = useAlert();
     const openLink = useOpenLink();
     const navigation = useNavigation<NavigationProps>();
@@ -94,6 +95,7 @@ export const useDetectDeviceError = () => {
     // we cannot work with device anymore. Shouldn't happen on mobile app but just in case.
     useEffect(() => {
         if (
+            selectedDevice &&
             isOnboardingFinished &&
             isUnacquiredDevice &&
             !isDevicePinLocked &&
@@ -107,12 +109,13 @@ export const useDetectDeviceError = () => {
                 pictogramVariant: 'critical',
                 primaryButtonTitle: <Translation id="moduleDevice.unacquiredDeviceModal.button" />,
                 appendix: <UnacquiredDeviceModalAppendix />,
-                onPressPrimaryButton: () => {
-                    dispatch(
-                        acquireDevice({
-                            startDiscovery: true,
-                        }),
+                onPressPrimaryButton: async () => {
+                    const acquireResult = await dispatch(
+                        acquireDeviceThunk({ requestedDevice: selectedDevice }),
                     );
+                    if (acquireResult.type === acquireDeviceThunk.fulfilled.type) {
+                        dispatch(startDiscoveryThunk({ device: selectedDevice }));
+                    }
                 },
                 testID: '@device/errors/alert/unacquired-device',
             });
@@ -120,6 +123,7 @@ export const useDetectDeviceError = () => {
             hideAlert('deviceError');
         }
     }, [
+        selectedDevice,
         isDevicePinLocked,
         isOnboardingFinished,
         isUnacquiredDevice,

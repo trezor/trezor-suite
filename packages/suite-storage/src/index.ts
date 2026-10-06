@@ -20,7 +20,6 @@ export type OnUpgradeFunc<TDBStructure> = (
 ) => Promise<void>;
 
 class CommonDB<TDBStructure> {
-    private static instance: CommonDB<any>;
     dbName!: string;
     version!: number;
     supported: boolean | undefined;
@@ -45,10 +44,6 @@ class CommonDB<TDBStructure> {
         onBlocked?: () => void,
         onBlocking?: () => void,
     ) {
-        if (CommonDB.instance) {
-            return CommonDB.instance;
-        }
-
         this.dbName = dbName;
         this.version = version;
         this.supported = undefined;
@@ -60,8 +55,6 @@ class CommonDB<TDBStructure> {
         this.blocked = false;
 
         this.isSupported();
-
-        CommonDB.instance = this;
     }
 
     static isDBAvailable = () => !!indexedDB || !!window.indexedDB || !!global.indexedDB;

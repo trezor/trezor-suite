@@ -1,0 +1,36 @@
+import { type PermissionRequest } from '@trezor/connect-common';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { Assert } from '@trezor/schema-utils';
+
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
+
+export default class EvoluGetNode extends AbstractMethod<'evoluGetNode', PROTO.EvoluGetNode> {
+    hasBundle?: boolean;
+
+    constructor(message: MethodMessage<'evoluGetNode'>) {
+        const { payload } = message;
+
+        Assert(PROTO.EvoluGetNode, payload);
+
+        const params = {
+            proof_of_delegated_identity: payload.proof_of_delegated_identity,
+        };
+
+        super(message, params);
+    }
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
+    }
+
+    get info() {
+        return 'Evolu get node';
+    }
+
+    async run() {
+        const cmd = this.getDevice().getCommands();
+        const response = await cmd.typedCall('EvoluGetNode', 'EvoluNode', this.params);
+
+        return response.message;
+    }
+}

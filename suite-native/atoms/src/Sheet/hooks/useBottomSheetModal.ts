@@ -4,11 +4,11 @@ import { KeyboardController } from 'react-native-keyboard-controller';
 import { useBottomSheetModal as useGorhomBottomSheetModal } from '@gorhom/bottom-sheet';
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
-type BottomSheetModalProps = {
+export type UseBottomSheetModalProps = {
     isNestedSheet?: boolean;
 };
 
-export const useBottomSheetModal = ({ isNestedSheet = false }: BottomSheetModalProps = {}) => {
+export const useBottomSheetModal = ({ isNestedSheet = false }: UseBottomSheetModalProps = {}) => {
     const { dismiss, dismissAll } = useGorhomBottomSheetModal();
     const bottomSheetRef = useRef<BottomSheetModalMethods>(null);
 

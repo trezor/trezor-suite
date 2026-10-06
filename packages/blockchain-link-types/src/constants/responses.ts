@@ -18,7 +18,7 @@ export const RPC_CALL = 'r_rpc_call';
 export const SUBSCRIBE = 'r_subscribe';
 export const UNSUBSCRIBE = 'r_unsubscribe';
 export const PUSH_TRANSACTION = 'r_push_tx';
-export const VALIDATE_EVM_RPC = 'r_validate_evm_rpc';
+export const GET_EVM_CHAIN_ID = 'r_get_evm_chain_id';
 
 // emitted events
 export const CONNECTED = 'r_connected';

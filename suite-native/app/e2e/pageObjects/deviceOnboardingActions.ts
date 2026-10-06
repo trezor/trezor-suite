@@ -1,13 +1,7 @@
 import type { BackupType } from '@suite-common/suite-types';
-import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import {
-    getModelFromEnv,
-    isElementVisible,
-    scrollUntilVisible,
-    wait,
-    waitForVisible,
-} from '../support/utils';
+import { isElementVisible, scrollUntilVisible, wait, waitForVisible } from '../support/utils';
 
 class DeviceOnboardingActions {
     async selectCreateWalletOption() {
@@ -174,11 +168,8 @@ class DeviceOnboardingActions {
 
         await TrezorUserEnvLink.pressYes();
 
-        if (getModelFromEnv() !== Model.T3W1) {
-            // skip device authenticity check on T3W1 because we are using 2-main FW
-            await this.waitForDeviceAuthenticitySuccess();
-            await this.dismissDeviceAuthenticitySuccess();
-        }
+        await this.waitForDeviceAuthenticitySuccess();
+        await this.dismissDeviceAuthenticitySuccess();
 
         await TrezorUserEnvLink.pressYes();
 

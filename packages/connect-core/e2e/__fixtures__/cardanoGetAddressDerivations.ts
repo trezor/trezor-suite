@@ -1,0 +1,44 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-ignore
+import { MessagesSchema } from '@trezor/protobuf';
+
+import { loadCommonFixture } from './commonFixtures';
+
+const commonFixtures = loadCommonFixture('cardano/get_base_address.derivations.json');
+
+const { CardanoAddressType, CardanoDerivationType } = MessagesSchema;
+
+const legacyResults = {
+    minConnectVersion: {
+        // older FW does support Cardano but Connect does not
+        rules: ['<2.4.3', '1'],
+        payload: false,
+    },
+};
+
+const cardanoGetAddressDerivations: TestCase = {
+    method: 'cardanoGetAddress',
+    enabledCoins: ['ada'] as const,
+    setup: {
+        mnemonic: commonFixtures.setup.mnemonic,
+    },
+    tests: commonFixtures.tests.flatMap(({ name, parameters, result }) => ({
+        description: name,
+        params: {
+            addressParameters: {
+                addressType: CardanoAddressType[parameters.address_type.toUpperCase()],
+                path: parameters.path,
+                stakingPath: parameters.staking_path,
+            },
+            derivationType: CardanoDerivationType[parameters.derivation_type],
+            networkId: parameters.network_id,
+            protocolMagic: parameters.protocol_magic,
+        },
+        result: {
+            address: result.expected_address,
+        },
+        legacyResults: [legacyResults.minConnectVersion],
+    })),
+};
+
+export default cardanoGetAddressDerivations;

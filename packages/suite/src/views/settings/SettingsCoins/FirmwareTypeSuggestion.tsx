@@ -1,15 +1,15 @@
 import { useDevice } from '@suite/device';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { SettingsAnchor, goto } from '@suite/router';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner, Paragraph } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { CurrencyBtcIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite';
-
 export const FirmwareTypeSuggestion = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
 
     const translationId = hasBitcoinOnlyFirmware(device)
@@ -19,7 +19,7 @@ export const FirmwareTypeSuggestion = () => {
     const handleClose = () => dispatch(setFlag({ key: 'firmwareTypeBannerClosed', value: true }));
 
     const goToFirmwareType = () =>
-        dispatch(goto({ routeName: 'settings-device', anchor: SettingsAnchor.FirmwareType }));
+        dispatch(gotoThunk({ routeName: 'settings-device', anchor: SettingsAnchor.FirmwareType }));
 
     return (
         <Banner

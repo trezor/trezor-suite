@@ -8,7 +8,7 @@ import { regional } from '../../regional';
 import { tradeApi } from '../../tradeApi';
 import { toTradingCountryCode } from '../../utils/countryUtils';
 
-export const loadBuyInfoThunk = createThunk<BuyInfo>(
+export const loadBuyInfoThunk = createThunk<BuyInfo, void, void>(
     `${TRADING_BUY_THUNK_PREFIX}/loadInfo`,
     async (_, { fulfillWithValue }) => {
         const buyInfo = await tradeApi.getBuyList();

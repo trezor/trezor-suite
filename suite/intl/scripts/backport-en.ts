@@ -20,7 +20,7 @@ import { messages } from '../src/messages';
 
 const root = path.join(__dirname, '../../../');
 const targetPath = path.join(root, 'suite/intl/src/messages.ts');
-const sourcePath = path.join(root, 'packages/suite-data/files/translations/en-US.json');
+const sourcePath = path.join(root, 'suite/app-assets/files/translations/en-US.json');
 
 const source: Record<string, string> = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 

@@ -1,6 +1,6 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { type ActionTypesDep, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 
 export interface DebugState {
     showDebugMenu: boolean;
@@ -14,6 +14,8 @@ type StorageActionPayload = {
     debug?: DebugState;
 };
 
+type DebugSliceDeps = ActionTypesDep<'storageLoad'>;
+
 export const debugInitialState: DebugState = {
     showDebugMenu: false,
 };
@@ -26,7 +28,7 @@ const debugSlice = createSliceWithExtraDeps({
             state.showDebugMenu = payload;
         },
     },
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: DebugSliceDeps) => {
         builder.addCase(
             extra.actionTypes.storageLoad,
             (state, { payload }: PayloadAction<StorageActionPayload>) =>

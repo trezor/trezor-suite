@@ -6,6 +6,7 @@ export {
     selectSelectedAccount,
     selectSelectedAccountKey,
     selectSelectedAccountStatus,
+    selectSelectedAccountSymbol,
     selectedAccountReducer,
     type SelectedAccountRootState,
     type SelectedAccountRootStateWithTrading,

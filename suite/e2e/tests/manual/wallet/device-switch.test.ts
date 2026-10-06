@@ -23,7 +23,7 @@ test.describe.skip('Device switch', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Wallets,
                 priority: TestPriority.Medium,
-                stream: TestStream.Engagement,
+                stream: TestStream.Wallet,
             }),
         },
         async () => {},

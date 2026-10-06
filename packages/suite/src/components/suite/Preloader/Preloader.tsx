@@ -1,23 +1,31 @@
-import { type FC, type PropsWithChildren, useEffect } from 'react';
+import { type FC, type PropsWithChildren, memo, useEffect } from 'react';
 
-import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
+import { selectShouldDisplayDeviceCompromisedOnRoute } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
 import { KillswitchMessageScreen } from '@suite/message-system';
+import {
+    type RouterAppWithParams,
+    selectHasRoute,
+    selectIsForegroundApp,
+    selectRouterApp,
+    selectRouterLoaded,
+} from '@suite/router';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
-import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    useReportDeviceCompromised,
+    useRetryFwAuthenticityChecks,
+} from '@suite-common/firmware-authenticity';
 import { selectActiveKillswitchMessage } from '@suite-common/message-system';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Card } from '@trezor/components';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
-import { init } from 'src/actions/suite/initAction';
+import { initThunk } from 'src/actions/suite/initAction';
 import { useGuideDesktopMenu, useGuideKeyboard } from 'src/hooks/guide';
-import { useAppShortcuts, useDispatch, useSelector } from 'src/hooks/suite';
+import { useAppShortcuts, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
-import {
-    selectIsTransportInitialized,
-    selectPrerequisite,
-} from 'src/selectors/suite/suiteSelectors';
-import type { AppState } from 'src/types/suite';
+import { selectPrerequisite, selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
 import { Onboarding } from 'src/views/onboarding';
 import { AnalyticsConsentScreen } from 'src/views/start/AnalyticsConsentScreen';
 import { SuiteStart } from 'src/views/start/SuiteStart';
@@ -26,15 +34,15 @@ import { ErrorPage } from 'src/views/suite/ErrorPage';
 import { DatabaseCorruptedModal } from './DatabaseCorruptedModal';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
-import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
+import { useWaitForTransport } from './useWaitForTransport';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
-import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
+import { DeviceCompromisedScreen } from '../SecurityCheck/DeviceCompromisedScreen';
 import { useDeviceCompromisedNotification } from '../SecurityCheck/useDeviceCompromisedNotification';
 import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
-const getFullscreenApp = (route: AppState['router']['route']): FC | undefined => {
-    switch (route?.app) {
+const getFullscreenApp = (app: RouterAppWithParams['app']): FC | undefined => {
+    switch (app) {
         case 'start':
             return SuiteStart;
         case 'onboarding':
@@ -46,10 +54,13 @@ const getFullscreenApp = (route: AppState['router']['route']): FC | undefined =>
 
 // Preloader is a top level wrapper used in _app.tsx.
 // Decides which content should be displayed basing on route and prerequisites.
-export const Preloader = ({ children }: PropsWithChildren) => {
-    const lifecycle = useSelector(state => state.suite.lifecycle);
-    const isTransportInitialized = useSelector(selectIsTransportInitialized);
-    const router = useSelector(state => state.router);
+// Memoised so that a re-render above it (Main) does not cascade through the whole app.
+export const Preloader = memo(function Preloader({ children }: PropsWithChildren) {
+    const lifecycle = useSelector(selectSuiteLifecycle);
+    const isRouterLoaded = useSelector(selectRouterLoaded);
+    const routerApp = useSelector(selectRouterApp);
+    const isForegroundApp = useSelector(selectIsForegroundApp);
+    const hasRoute = useSelector(selectHasRoute);
     const prerequisite = useSelector(selectPrerequisite);
     const shouldDisplayDeviceCompromisedOnRoute = useSelector(
         selectShouldDisplayDeviceCompromisedOnRoute,
@@ -58,25 +69,25 @@ export const Preloader = ({ children }: PropsWithChildren) => {
 
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
 
+    const waitForTransport = useWaitForTransport();
+
     const { device } = useDevice();
-    useReportDeviceCompromised({
-        device,
-        selectAllowPrerelease: selectDesktopUpdateAllowPrerelease,
-    });
+    useReportDeviceCompromised({ device });
     useDeviceCompromisedNotification();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
+    useRetryFwAuthenticityChecks();
 
     useEffect(() => {
         // Analytics needs to be resolved before we show anything to the user. Until this is solved,
-        // we do not init anything. Especially nothing related to the devices/connect. With THP,
+        // we do not initialize anything. Especially nothing related to the devices/connect. With THP,
         // the autoconnect flow may be automatically triggered, resulting in Suite vs. Device Screen inconsistency.
-        dispatch(analyticsActions.init());
+        dispatch(analyticsActions.initThunk());
     }, [dispatch]);
 
     useEffect(() => {
         if (isAnalyticsConsentConfirmed) {
-            dispatch(init());
+            dispatch(initThunk());
         }
     }, [dispatch, isAnalyticsConsentConfirmed]);
 
@@ -90,6 +101,15 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     useAppShortcuts();
     useWindowVisibility();
 
+    // Failed storage loading also prevents persisted analytics consent from loading.
+    // Show the failure before consent so it cannot hide the database error.
+    if (lifecycle.status === 'db-corrupted') {
+        return <DatabaseCorruptedModal />;
+    }
+    if (lifecycle.status === 'db-error') {
+        return <DatabaseUpgradeModal variant={lifecycle.error} />;
+    }
+
     if (!isAnalyticsConsentConfirmed) {
         return <AnalyticsConsentScreen />;
     }
@@ -97,37 +117,31 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     if (lifecycle.status === 'error') {
         throw new Error(lifecycle.error);
     }
-    if (lifecycle.status === 'db-error') {
-        return <DatabaseUpgradeModal variant={lifecycle.error} />;
-    }
-    if (lifecycle.status === 'db-corrupted') {
-        return <DatabaseCorruptedModal />;
-    }
 
     if (killswitch) {
         return <KillswitchMessageScreen />;
     }
 
-    // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
-    // display Loader as full page view
-    if (lifecycle.status !== 'ready' || !router.loaded || !isTransportInitialized) {
+    // @trezor/connect was initialized, but didn't emit "TRANSPORT" event or initially connected
+    // devices yet (it could take a while), display Loader as full page view
+    if (lifecycle.status !== 'ready' || !isRouterLoaded || waitForTransport) {
         // TODO: multiplied by 5, temporarily. Now initActions incorrectly awaits altcoin specific logic which can trigger this timeout easily for bigger accounts
         return <InitialLoading timeout={90 * 5} />;
     }
 
     if (shouldDisplayDeviceCompromisedOnRoute) {
-        return <DeviceCompromised />;
+        return <DeviceCompromisedScreen />;
     }
 
     // TODO: murder the fullscreen app logic, there must be a better way
     // i don't like how it's not clear which layout is used
     // and that the prerequisite screen is handled multiple times
-    const FullscreenApp = getFullscreenApp(router.route);
+    const FullscreenApp = getFullscreenApp(routerApp);
     if (FullscreenApp !== undefined) {
         return <FullscreenApp />;
     }
 
-    if (router.route?.isForegroundApp) {
+    if (isForegroundApp) {
         return <SuiteLayout>{children}</SuiteLayout>;
     }
 
@@ -145,10 +159,10 @@ export const Preloader = ({ children }: PropsWithChildren) => {
 
     // route does not exist, display error page in fullscreen mode
     // because if it is handled by Router it is wrapped in SuiteLayout
-    if (!router.route) {
+    if (!hasRoute) {
         return <ErrorPage />;
     }
 
     // everything is set.
     return <SuiteLayout>{children}</SuiteLayout>;
-};
+});

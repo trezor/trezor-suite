@@ -1,0 +1,11 @@
+{
+    "ignore-patterns": ["libDev", "lib", "build"],
+    "ignores": [
+        "stylelint-config-standard",
+        "postcss-styled-syntax",
+        "// Due to custom linking of packages with @trezor/suite, this needs to be in dependencies",
+        "src",
+        "@trezor/suite",
+        "webpack-cli"
+    ]
+}

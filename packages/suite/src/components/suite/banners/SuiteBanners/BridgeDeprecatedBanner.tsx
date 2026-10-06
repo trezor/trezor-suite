@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useLocalNetworkAccessPermission } from 'src/hooks/suite/useLocalNetworkAccessPermission';
 
 const LEGACY_BRIDGE_URL = 'http://127.0.0.1:21325/';
@@ -64,7 +65,7 @@ export const useLegacyBridgeDetection = () => {
 };
 
 export const BridgeDeprecated = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     return (
         <Banner
@@ -72,7 +73,7 @@ export const BridgeDeprecated = () => {
             intent="info"
             rightContent={
                 <Banner.Button
-                    onClick={() => dispatch(goto({ routeName: 'suite-bridge-deprecated' }))}
+                    onClick={() => dispatch(gotoThunk({ routeName: 'suite-bridge-deprecated' }))}
                     data-testid="@notification/bridge-deprecated/button"
                 >
                     <Translation id="TR_LEARN_MORE" />

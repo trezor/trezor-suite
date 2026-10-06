@@ -1,4 +1,6 @@
 import { type TradingOTC, type useFetchOtc } from '@suite-common/trading';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, screen, userEvent, waitFor } from '@suite-native/test-utils-store';
 import { residenceCheckDisabledState } from '@suite-native/trading-fixtures';
@@ -11,6 +13,7 @@ import {
 } from '../../test-utils/tradingTestUtils';
 
 const mockUseFetchOtc = jest.fn();
+const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
 
@@ -37,14 +40,15 @@ const otcData = {
     ],
 } as TradingOTC;
 
-const renderConciergeTabContent = (
+const renderConciergeTabContent = async (
     overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
 ) =>
-    renderWithTradingProvider(<ConciergeTabContent />, {
+    await renderWithTradingProvider(<ConciergeTabContent />, {
         overrides: {
             ...residenceCheckDisabledState,
             ...overrides,
         },
+        services,
     });
 
 describe('ConciergeTabContent', () => {
@@ -55,8 +59,8 @@ describe('ConciergeTabContent', () => {
         } as unknown as ReturnType<typeof useFetchOtc>);
     });
 
-    it('should use OTC country as form default when saved residence country is not set', () => {
-        renderConciergeTabContent();
+    it('should use OTC country as form default when saved residence country is not set', async () => {
+        await renderConciergeTabContent();
 
         expect(
             screen.getByText(
@@ -66,8 +70,8 @@ describe('ConciergeTabContent', () => {
         expect(screen.getByTestId('@trading/concierge/country/value')).toHaveTextContent('CZE');
     });
 
-    it('should prefer saved residence country over OTC country', () => {
-        renderConciergeTabContent({
+    it('should prefer saved residence country over OTC country', async () => {
+        await renderConciergeTabContent({
             wallet: {
                 trading: {
                     residence: {
@@ -80,8 +84,8 @@ describe('ConciergeTabContent', () => {
         expect(screen.getByTestId('@trading/concierge/country/value')).toHaveTextContent('USA');
     });
 
-    it('should filter providers by form country', () => {
-        const { getAllByText, getByText, queryByText } = renderConciergeTabContent({
+    it('should filter providers by form country', async () => {
+        const { getAllByText, getByText, queryByText } = await renderConciergeTabContent({
             wallet: {
                 trading: {
                     residence: {
@@ -91,14 +95,14 @@ describe('ConciergeTabContent', () => {
             },
         });
 
-        fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.provider')));
+        await fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.provider')));
 
         expect(getAllByText('US OTC').length).toBeGreaterThan(0);
         expect(queryByText('Alpha OTC')).toBeNull();
     });
 
     it('should clear selected provider when country changes', async () => {
-        const { getByText, queryByText } = renderConciergeTabContent({
+        const { getByText, queryByText } = await renderConciergeTabContent({
             wallet: {
                 trading: {
                     residence: {

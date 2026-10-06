@@ -28,8 +28,7 @@ export const useTransactionDetails = ({
     const transaction = useSelector((state: TransactionsRootState) =>
         accountKey && txid
             ? (selectTransactionByAccountKeyAndTxid(state, accountKey, txid) as
-                  | WalletAccountTransaction
-                  | undefined)
+                  WalletAccountTransaction | undefined)
             : undefined,
     );
 

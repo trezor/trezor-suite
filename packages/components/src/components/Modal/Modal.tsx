@@ -78,11 +78,12 @@ const ModalBase = ({
     padding,
     shadowBottom = true,
 }: ModalProps) => {
-    const { scrollElementRef, onScroll, ShadowTop, ShadowBottom } = useScrollShadow({
+    const { scrollElementRef, ScrollSentinels, ShadowTop, ShadowBottom } = useScrollShadow({
         backgroundColor: 'surfaceFillModal',
     });
 
     const hasHeader = onBackClick || onCancel || heading || description;
+    const hasHeadingAndDescription = Boolean(heading && description);
     const isIconPushedTop = onCancel !== undefined && !heading && !description && !onBackClick;
 
     useEvent('keydown', (e: KeyboardEvent) => {
@@ -93,13 +94,19 @@ const ModalBase = ({
 
     return (
         <ModalContext.Provider value={{ intent }}>
-            <Box maxWidth="95%" maxHeight={maxHeight} width={width} height={height}>
+            <Box
+                maxWidth="95%"
+                maxHeight={maxHeight}
+                width={width}
+                height={height}
+                data-component="Modal"
+            >
                 <Container data-testid={dataTest}>
                     <Column height="100%">
                         {hasHeader && (
                             <Row
                                 padding={{ horizontal: 16, top: 16 }}
-                                alignItems={description ? 'flex-start' : 'center'}
+                                alignItems={hasHeadingAndDescription ? 'flex-start' : 'center'}
                                 gap={16}
                                 as="header"
                             >
@@ -119,7 +126,11 @@ const ModalBase = ({
                                 )}
 
                                 {(heading || description) && (
-                                    <Column flex="1" overflow="hidden">
+                                    <Column
+                                        flex="1"
+                                        overflow="hidden"
+                                        margin={{ top: hasHeadingAndDescription ? -8 : 0 }}
+                                    >
                                         {heading && <H3 data-testid="@modal/header">{heading}</H3>}
                                         {description && (
                                             <Text
@@ -155,8 +166,12 @@ const ModalBase = ({
                         )}
                         <Box position={{ type: 'relative' }} overflow="hidden" flex="1">
                             <ShadowTop />
-                            <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
-                                <Column padding={padding ? padding : 16}>
+                            <ScrollContainer ref={scrollElementRef}>
+                                <Column
+                                    padding={padding ? padding : 16}
+                                    position={{ type: 'relative' }}
+                                >
+                                    <ScrollSentinels />
                                     {icon && (
                                         <Box
                                             margin={{

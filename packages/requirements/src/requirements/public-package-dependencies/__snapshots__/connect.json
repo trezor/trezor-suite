@@ -23,11 +23,13 @@
         "@trezor/blockchain-link-utils",
         "@trezor/connect",
         "@trezor/connect-common",
+        "@trezor/connect-core",
         "@trezor/connect-data",
         "@trezor/crypto-utils",
         "@trezor/device-authenticity",
         "@trezor/device-utils",
         "@trezor/env-utils",
+        "@trezor/logger",
         "@trezor/network-cardano",
         "@trezor/network-ripple",
         "@trezor/network-solana",
@@ -36,6 +38,7 @@
         "@trezor/protobuf",
         "@trezor/protocol",
         "@trezor/schema-utils",
+        "@trezor/transport",
         "@trezor/transport-common",
         "@trezor/transport-web",
         "@trezor/type-utils",
@@ -51,10 +54,13 @@
         "socks-proxy-agent",
         "ts-mixer",
         "tslib",
+        "usb",
+        "usb-legacy",
         "varuint-bitcoin",
         "viem",
         "wif",
         "ws",
-        "xrpl"
+        "xrpl",
+        "zod"
     ]
 }

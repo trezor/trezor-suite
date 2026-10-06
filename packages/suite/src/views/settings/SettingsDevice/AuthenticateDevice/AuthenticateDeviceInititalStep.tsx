@@ -1,6 +1,7 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { Icon, type IconComponent, List, Modal, Paragraph } from '@trezor/components';
 import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
+
 const items: Array<{ id: string; icon: IconComponent; text: TranslationKey }> = [
     { id: 'security', icon: ShieldCheckIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
     { id: 'chip', icon: CpuIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_2' },

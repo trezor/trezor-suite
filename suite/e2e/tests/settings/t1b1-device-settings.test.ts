@@ -16,7 +16,7 @@ test.describe('T1B1 - Device settings', { tag: ['@T1B1'] }, () => {
                 testCase: 'Verifies that a user can enable PIN on T1B1 device.',
                 category: TestCategory.Settings,
                 priority: TestPriority.High,
-                stream: TestStream.Foundation,
+                stream: TestStream.Firmware,
             }),
         },
         async ({ page, device, devicePrompt, trezorInput }) => {
@@ -32,27 +32,31 @@ test.describe('T1B1 - Device settings', { tag: ['@T1B1'] }, () => {
         },
     );
 
-    test('pin mismatch', async ({ page, device, devicePrompt }) => {
-        await page.getByTestId('@settings/device/pin-switch').click();
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await device.pressYes();
+    test(
+        'pin mismatch',
+        { annotation: createTestAnnotation({ stream: TestStream.Firmware }) },
+        async ({ page, device, devicePrompt }) => {
+            await page.getByTestId('@settings/device/pin-switch').click();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await device.pressYes();
 
-        await test.step('First input with one number', async () => {
-            await page.getByTestId('@pin/input/1').click();
-            await page.getByTestId('@pin/submit-button').click();
-        });
+            await test.step('First input with one number', async () => {
+                await page.getByTestId('@pin/input/1').click();
+                await page.getByTestId('@pin/submit-button').click();
+            });
 
-        await test.step('Second input with two numbers', async () => {
-            await page.getByTestId('@pin/input/1').click();
-            await page.getByTestId('@pin/input/1').click();
-            await page.getByTestId('@pin/submit-button').click();
-        });
+            await test.step('Second input with two numbers', async () => {
+                await page.getByTestId('@pin/input/1').click();
+                await page.getByTestId('@pin/input/1').click();
+                await page.getByTestId('@pin/submit-button').click();
+            });
 
-        await expect(page.getByTestId('@pin-mismatch')).toBeVisible();
-        await page.getByTestId('@pin-mismatch/try-again-button').click();
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await device.pressYes();
-    });
+            await expect(page.getByTestId('@pin-mismatch')).toBeVisible();
+            await page.getByTestId('@pin-mismatch/try-again-button').click();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await device.pressYes();
+        },
+    );
 
     test(
         'Change homescreen',
@@ -61,6 +65,7 @@ test.describe('T1B1 - Device settings', { tag: ['@T1B1'] }, () => {
                 testCase: 'Verifies that a user can change homescreen background on T1B1 device.',
                 category: TestCategory.Settings,
                 priority: TestPriority.High,
+                stream: TestStream.Firmware,
             }),
         },
         async ({ settingsPage }) => {

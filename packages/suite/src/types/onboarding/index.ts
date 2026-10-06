@@ -39,3 +39,5 @@ export type AnyStepId =
     | typeof STEP.ID_RECOVERY_STEP;
 
 export type AnyPath = typeof STEP.PATH_CREATE | typeof STEP.PATH_RECOVERY;
+
+export type BackupMedium = 'nfc' | 'wordlist';

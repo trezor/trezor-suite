@@ -1,16 +1,18 @@
 import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectAddressValidator } from '@suite-common/networks';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Input, Modal } from '@trezor/components';
 import TrezorConnect, { type TokenInfo } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { addToken } from 'src/actions/wallet/tokenActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 type AddTokenModalProps = {
@@ -23,11 +25,11 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     const [isFetching, setIsFetching] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const account = useSelector(selectSelectedAccount);
-    const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const { analytics, addressValidator } = useServices(
-        selectDesktopAnalyticsDep,
-        selectAddressValidatorDep,
+    const { analytics, addressValidator, dispatch } = useServices(
+        injectDesktopAnalytics,
+        injectAddressValidator,
+        injectDispatch,
     );
 
     const loadTokenInfo = useCallback(
@@ -35,7 +37,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
             if (!acc) return;
             setIsFetching(true);
             const response = await TrezorConnect.getAccountInfo({
-                coin: acc.symbol,
+                coin: asCoinSymbol(acc.symbol),
                 identity: tryGetAccountIdentity(acc),
                 descriptor: acc.descriptor,
                 details: 'tokenBalances',
@@ -105,7 +107,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 payload: {
                     networkSymbol: account.symbol,
                     addedNth: account.tokens ? account.tokens.length + 1 : 0,
-                    token: tokenInfo[0]?.symbol?.toLowerCase() || '',
+                    token: tokenInfo[0]?.symbol || '',
                 },
             });
         }

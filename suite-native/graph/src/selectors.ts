@@ -29,24 +29,26 @@ export const selectPortfolioGraphAccountItems = createMemoizedSelector(
     [selectDeviceMainnetAccounts, selectTokenDefinitions],
     (accounts, tokenDefinitions): AccountItem[] =>
         returnStableArrayIfEmpty(
-            accounts.map(account => {
-                const knownTokens = account.tokens
-                    ? filterKnownTokens(
-                          tokenDefinitions?.[account.symbol]?.coin?.data,
-                          account.symbol,
-                          account.tokens,
-                      )
-                    : undefined;
-                const tokensFilter = knownTokens?.map(token => token.contract as TokenAddress);
+            accounts
+                .filter(account => !account.failed)
+                .map(account => {
+                    const knownTokens = account.tokens
+                        ? filterKnownTokens(
+                              tokenDefinitions?.[account.symbol]?.coin?.data,
+                              account.symbol,
+                              account.tokens,
+                          )
+                        : undefined;
+                    const tokensFilter = knownTokens?.map(token => token.contract as TokenAddress);
 
-                return {
-                    symbol: account.symbol,
-                    descriptor: account.descriptor,
-                    identity: tryGetAccountIdentity(account),
-                    accountKey: account.key,
-                    tokensFilter,
-                };
-            }),
+                    return {
+                        symbol: account.symbol,
+                        descriptor: account.descriptor,
+                        identity: tryGetAccountIdentity(account),
+                        accountKey: account.key,
+                        tokensFilter,
+                    };
+                }),
         ),
     {
         memoizeOptions: {

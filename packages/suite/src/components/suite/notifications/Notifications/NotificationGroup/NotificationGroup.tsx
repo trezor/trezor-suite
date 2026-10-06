@@ -1,9 +1,9 @@
 import { Translation, type TranslationKey } from '@suite/intl';
+import { getSeenAndUnseenNotifications } from '@suite-common/toast-notifications';
 import { Column, H2, H4, IconCircle, Paragraph } from '@trezor/components';
 import { BellZIcon } from '@trezor/icons';
 
 import { type AppState } from 'src/types/suite';
-import { getSeenAndUnseenNotifications } from 'src/utils/suite/notification';
 
 import { NotificationList } from './NotificationList/NotificationList';
 
@@ -24,10 +24,15 @@ export const NotificationGroup = ({
 
     if (unseenCount === 0 && seenCount === 0) {
         return (
-            <Column alignItems="center" gap={16} padding={{ vertical: 64 }}>
+            <Column
+                alignItems="center"
+                gap={16}
+                padding={{ vertical: 64 }}
+                data-testid="@activity/empty"
+            >
                 <IconCircle icon={BellZIcon} size={112} intent="info" />
                 <Column alignItems="center" gap={4}>
-                    <H2>
+                    <H2 data-testid="@activity/empty/title">
                         <Translation id={emptyTitle} />
                     </H2>
                     <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
@@ -39,9 +44,9 @@ export const NotificationGroup = ({
     }
 
     return (
-        <Column gap={24}>
+        <Column gap={24} data-testid="@activity/list">
             {unseenCount > 0 && (
-                <Column gap={12}>
+                <Column gap={12} data-testid="@activity/list/unseen">
                     <H4>
                         <Translation
                             id="NOTIFICATIONS_UNSEEN_TITLE"
@@ -53,7 +58,7 @@ export const NotificationGroup = ({
             )}
 
             {seenCount > 0 && (
-                <Column gap={12}>
+                <Column gap={12} data-testid="@activity/list/seen">
                     <H4>
                         <Translation id="NOTIFICATIONS_SEEN_TITLE" />
                     </H4>

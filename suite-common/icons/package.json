@@ -16,14 +16,15 @@
     },
     "devDependencies": {
         "@suite-common/wallet-config": "workspace:^",
-        "chalk": "^5.6.2",
+        "@trezor/network-ethereum-suite-common": "workspace:*",
+        "chalk": "^6.0.0",
         "fantasticon": "4.1.0",
-        "prettier": "^3.8.4",
+        "prettier": "^3.9.6",
         "sharp": "^0.34.2",
         "svgo": "^4.0.1"
     },
     "dependencies": {
         "@suite-common/http-client": "workspace:^",
-        "zod": "4.3.6"
+        "zod": "4.6.5"
     }
 }

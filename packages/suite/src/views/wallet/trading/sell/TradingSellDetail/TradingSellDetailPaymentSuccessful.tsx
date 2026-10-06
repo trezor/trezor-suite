@@ -1,65 +1,47 @@
 import { type SellFiatTrade, type SellProviderInfo } from 'invity-api';
 
-import { Translation, useTranslation } from '@suite/intl';
-import { Card, Column, Paragraph, type StepListItemState } from '@trezor/components';
+import { Translation } from '@suite/intl';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { Button, Illustration } from '@trezor/components';
 
-import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderInfo';
-import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
-import { TradingDetailSupportBanner } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSupportBanner';
-
-const getState = (trade: SellFiatTrade): StepListItemState => {
-    switch (trade.status) {
-        case 'SUCCESS':
-            return 'active';
-        default:
-            return 'pending';
-    }
-};
+import { type Account } from 'src/types/wallet';
+import { TradingDetailTerminalDetails } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalDetails';
+import { TradingDetailTerminalState } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalState';
 
 type TradingSellDetailPaymentSuccessfulProps = {
     trade: SellFiatTrade;
+    account?: Account;
     provider?: SellProviderInfo;
 };
 
 export const TradingSellDetailPaymentSuccessful = ({
     trade,
+    account,
     provider,
 }: TradingSellDetailPaymentSuccessfulProps) => {
-    const { translationString } = useTranslation();
-    const state = getState(trade);
+    const { dispatch } = useServices(injectDispatch);
 
-    const providerName = provider?.companyName ?? provider?.name ?? '';
+    const handleClick = () => dispatch(gotoThunk({ routeName: 'wallet-trading-sell' }));
 
     return (
-        <TradingDetailStep
-            state={state}
-            title={
-                <Translation
-                    id="TR_TRADING_DETAIL_PROCESSING"
-                    values={{
-                        providerName,
-                        type: translationString('TR_TRADING_SELL').toLowerCase(),
-                    }}
-                />
+        <TradingDetailTerminalState
+            artwork={<Illustration name="tradeSuccess" width={120} />}
+            title={<Translation id="TR_SELL_DETAIL_COMPLETE_TITLE" />}
+            description={<Translation id="TR_SELL_DETAIL_COMPLETE_TEXT" />}
+            action={
+                <Button onClick={handleClick} size="large">
+                    <Translation id="TR_SELL_DETAIL_COMPLETE_BUTTON" />
+                </Button>
             }
         >
-            <Column gap={12}>
-                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                    <Translation id="TR_SELL_DETAIL_PROCESSING_TEXT" values={{ providerName }} />
-                </Paragraph>
-                {provider && (
-                    <Card>
-                        <Column gap={24}>
-                            <TradingDetailProviderInfo
-                                orderId={trade.orderId}
-                                provider={provider}
-                                trade={trade}
-                            />
-                            <TradingDetailSupportBanner provider={provider} trade={trade} />
-                        </Column>
-                    </Card>
-                )}
-            </Column>
-        </TradingDetailStep>
+            <TradingDetailTerminalDetails
+                provider={provider}
+                trade={trade}
+                account={account}
+                txId={trade.txid}
+            />
+        </TradingDetailTerminalState>
     );
 };

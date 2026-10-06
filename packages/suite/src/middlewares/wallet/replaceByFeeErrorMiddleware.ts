@@ -1,16 +1,18 @@
-import { type MiddlewareAPI } from 'redux';
+import { type UnknownAction } from '@reduxjs/toolkit';
+import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
+import { type Dispatch } from '@suite-common/redux-utils';
 import { transactionsActions } from '@suite-common/wallet-core/';
-import { isRbfTransaction } from '@suite-common/wallet-utils';
+import { isPending, isRbfTransaction } from '@suite-common/wallet-utils';
 
-import { type Action, type AppState, type Dispatch } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 import { replaceByFeeErrorThunk } from '../../actions/wallet/send/replaceByFeeErrorThunk';
 
 export const replaceByFeeErrorMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
-    (next: Dispatch) =>
-    (action: Action): Action => {
+    (next: ReduxDispatch<UnknownAction>) =>
+    (action: UnknownAction): UnknownAction => {
         next(action);
 
         if (!transactionsActions.addTransaction.match(action)) {
@@ -30,7 +32,10 @@ export const replaceByFeeErrorMiddleware =
 
         const addedTransaction = transactions.find(tx => tx.txid === precomposedTx.prevTxid);
 
-        if (addedTransaction?.blockHeight !== undefined) {
+        // Fire only when the previous transaction was actually mined. A pending re-add of the same
+        // transaction (blockbook reports pending txs with blockHeight -1, so blockHeight !== undefined
+        // was true for those too) must not trigger the "already mined" error.
+        if (addedTransaction && !isPending(addedTransaction)) {
             api.dispatch(replaceByFeeErrorThunk());
         }
 

@@ -1,7 +1,7 @@
 import { type RbfTransactionParams } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
-import { type EthAccount, ethAccount, evmTx } from './__fixtures__/evmFixtures';
+import { type EthAccount, FOREIGN_SIGNER, ethAccount, evmTx } from './__fixtures__/evmFixtures';
 import { resolveEthereumNonce } from './sendFormEthereumThunks';
 
 const rbf = (ethereumNonce: number) =>
@@ -82,6 +82,22 @@ describe('resolveEthereumNonce', () => {
         const result = await resolveEthereumNonce({
             selectedAccount: accountWithNonce(3),
             accountTransactions: [evmTx(99, { confirmed: false, type: 'recv' })],
+            fetchConfirmedNonce: false,
+        });
+
+        expect(result).toEqual({ nonce: '3', confirmedNonce: '3' });
+    });
+
+    it('ignores a transaction the account did not sign, however it is labelled', async () => {
+        // A stranger's token transfer *out of* the account is labelled 'sent' and indexed against
+        // the account, but carries the stranger's nonce. Counting it offered a nonce one slot too
+        // high, which cannot be mined until the skipped slot is filled.
+        const result = await resolveEthereumNonce({
+            selectedAccount: accountWithNonce(3),
+            accountTransactions: [
+                evmTx(3, { confirmed: true, signer: FOREIGN_SIGNER }),
+                evmTx(4, { confirmed: false, signer: FOREIGN_SIGNER }),
+            ],
             fetchConfirmedNonce: false,
         });
 

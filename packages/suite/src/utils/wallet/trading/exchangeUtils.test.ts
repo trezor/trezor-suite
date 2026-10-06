@@ -1,11 +1,17 @@
 import { type CryptoId, type ExchangeTradeQuoteRequest } from 'invity-api';
 
+import { type DesktopApiDep } from '@suite/desktop-app-api';
+import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 
 import { createQuoteLink } from './exchangeUtils';
 
 describe('exchangeUtils', () => {
+    const deps: DesktopApiDep<'getHttpReceiverAddress'> = {
+        desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
+    };
+
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -35,6 +41,7 @@ describe('exchangeUtils', () => {
         it('should create link for quote', async () => {
             expect(
                 await createQuoteLink(
+                    deps,
                     mockQuotesRequest,
                     mockAccount,
                     mockComposedInfo,
@@ -48,6 +55,7 @@ describe('exchangeUtils', () => {
         it('should create link for quote when selectedFee is high', async () => {
             expect(
                 await createQuoteLink(
+                    deps,
                     mockQuotesRequest,
                     mockAccount,
                     { ...mockComposedInfo, selectedFee: 'high' },
@@ -61,6 +69,7 @@ describe('exchangeUtils', () => {
         it('should create link for quote when selectedFee is custom', async () => {
             expect(
                 await createQuoteLink(
+                    deps,
                     mockQuotesRequest,
                     mockAccount,
                     { ...mockComposedInfo, selectedFee: 'custom' },
@@ -74,6 +83,7 @@ describe('exchangeUtils', () => {
         it('should create link for quote when account network type is solana', async () => {
             expect(
                 await createQuoteLink(
+                    deps,
                     mockQuotesRequest,
                     {
                         ...mockAccount,

@@ -5,7 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { tradingSellActions } from '../../reducers/sellReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingSellInfo } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
 import { getUnusedAddressFromAccount } from '../../utils';
@@ -19,10 +19,16 @@ export type HandleSellTradeThunkProps = {
     processResponseData: (response: SellFiatTradeResponse) => void;
 };
 
-export const handleSellTradeThunk = createThunk(
+export type HandleSellTradeThunkState = TradingRootState;
+
+export const handleSellTradeThunk = createThunk<
+    SellFiatTrade | undefined,
+    HandleSellTradeThunkProps,
+    { state: HandleSellTradeThunkState }
+>(
     `${TRADING_SELL_THUNK_PREFIX}/handleTrade`,
     async (
-        { account, trade, returnUrl, processResponseData }: HandleSellTradeThunkProps,
+        { account, trade, returnUrl, processResponseData },
         { dispatch, getState, fulfillWithValue },
     ) => {
         const sellInfo = selectTradingSellInfo(getState());

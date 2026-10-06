@@ -1,9 +1,13 @@
-import { messageSystemInitialState } from '@suite-common/message-system';
-import { featureFlagsReducer } from '@suite-native/feature-flags';
+import { type Store } from '@reduxjs/toolkit';
+
+import {
+    type MessageSystemRootState,
+    messageSystemInitialState,
+} from '@suite-common/message-system';
+import { type FeatureFlagsRootState, featureFlagsReducer } from '@suite-native/feature-flags';
 import { getTranslation } from '@suite-native/intl';
 import { OnboardingStackRoutes } from '@suite-native/navigation';
 import {
-    type TestStore,
     createLightStore,
     createStaticReducer,
     renderWithStoreProvider,
@@ -11,6 +15,8 @@ import {
 } from '@suite-native/test-utils-store';
 
 import { BiometricsScreen, type BiometricsScreenProps } from './BiometricsScreen';
+
+type State = FeatureFlagsRootState & MessageSystemRootState;
 
 const mockNavigate = jest.fn();
 const mockNavigationDispatch = jest.fn();
@@ -34,23 +40,23 @@ jest.mock('@react-navigation/native', () => ({
 // because the global Request constructor is not available.
 jest.mock('@suite-native/app-init', () => ({
     ...jest.requireActual('@suite-native/app-init'),
-    postOnboardingInit: () => ({
+    postOnboardingInitThunk: () => ({
         type: 'postOnboardingInitMock',
     }),
 }));
 
 describe('BiometricsScreen', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
-    const renderBiometricsScreen = () =>
-        renderWithStoreProvider(
+    const renderBiometricsScreen = async () =>
+        await renderWithStoreProvider(
             <BiometricsScreen
                 navigation={
                     { navigate: mockNavigate } as unknown as BiometricsScreenProps['navigation']
                 }
                 route={mockRoute}
             />,
-            { store },
+            { services: { store } },
         );
 
     beforeEach(() => {
@@ -80,7 +86,7 @@ describe('BiometricsScreen', () => {
                 },
             },
         });
-        const { getByText } = renderBiometricsScreen();
+        const { getByText } = await renderBiometricsScreen();
 
         await userEvent.press(
             getByText(getTranslation('moduleOnboarding.biometricsScreen.button.notNow')),
@@ -112,7 +118,7 @@ describe('BiometricsScreen', () => {
                 },
             },
         });
-        const { getByText } = renderBiometricsScreen();
+        const { getByText } = await renderBiometricsScreen();
 
         await userEvent.press(
             getByText(getTranslation('moduleOnboarding.biometricsScreen.button.notNow')),

@@ -1,11 +1,12 @@
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+import { type PackageJson, readPackageJson } from '@trezor/node-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
-import type { AllowedOnlyInRule, ForbiddenDepsConfig } from './forbiddenDepsTypes';
-import { getWorkspaceDirectoryMap, readPackageJson } from '../../workspaces';
+import type { AllowedOnlyInRule, ForbiddenDepsConfig, ForbiddenInRule } from './forbiddenDepsTypes';
+import { getWorkspaceDirectoryMap } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 
 const FORBIDDEN_DEPS_CONFIG_FILE = 'forbiddenDeps.config.ts';
@@ -20,13 +21,6 @@ const DEPENDENCY_FIELDS = [
 ] as const;
 
 type DependencyField = (typeof DEPENDENCY_FIELDS)[number];
-
-type PackageJson = {
-    readonly dependencies?: Record<string, string>;
-    readonly devDependencies?: Record<string, string>;
-    readonly optionalDependencies?: Record<string, string>;
-    readonly peerDependencies?: Record<string, string>;
-};
 
 type DependencyOccurrence = {
     readonly field: DependencyField;
@@ -63,10 +57,18 @@ const createForbiddenDepsMap = (
     forbiddenDeps: NonNullable<ForbiddenDepsConfig['forbidden-deps']>,
 ) =>
     new Map(
-        forbiddenDeps.map(forbiddenDependency => [
-            forbiddenDependency.packageName,
-            forbiddenDependency,
-        ]),
+        forbiddenDeps.flatMap(forbiddenDependency =>
+            forbiddenDependency.packageName === undefined
+                ? []
+                : [[forbiddenDependency.packageName, forbiddenDependency] as const],
+        ),
+    );
+
+const getForbiddenDependencyPrefixes = (
+    forbiddenDeps: NonNullable<ForbiddenDepsConfig['forbidden-deps']>,
+) =>
+    forbiddenDeps.flatMap(forbiddenDependency =>
+        forbiddenDependency.packageNamePrefix === undefined ? [] : [forbiddenDependency],
     );
 
 const formatAllowedOnlyInPackages = (allowedOnlyInRule: AllowedOnlyInRule) =>
@@ -87,11 +89,40 @@ const loadForbiddenDepsConfig: ForbiddenDepsConfigLoader = async workspaceDir =>
     return configModule.forbiddenDepsConfig ?? configModule.default;
 };
 
+/**
+ * A config also covers the workspaces beneath its directory, so a tree can state its boundary once
+ * instead of repeating it in every package, and a package added later inherits it.
+ */
+const loadInheritedForbiddenDeps = async (repoRoot: string, workspaceDir: string) => {
+    const configs: Array<ForbiddenDepsConfig | undefined> = [];
+
+    for (
+        let directory = dirname(workspaceDir);
+        directory.startsWith(repoRoot) && directory !== dirname(directory);
+        directory = dirname(directory)
+    ) {
+        configs.push(await loadForbiddenDepsConfig(directory));
+    }
+
+    return configs.flatMap(config => config?.['forbidden-deps'] ?? []);
+};
+
 const getWorkspaceDirectoryResolver = (repoRoot: string): WorkspaceDirectories =>
     getWorkspaceDirectoryMap(repoRoot);
 
 const getWorkspaceDirectoryByName: WorkspaceDirectoryResolver = ({ repoRoot, workspaceName }) =>
     getWorkspaceDirectoryResolver(repoRoot).get(workspaceName);
+
+const parseForbiddenInPattern = (rule: ForbiddenInRule) => {
+    try {
+        return { pattern: new RegExp(rule.packageNamePattern), error: null };
+    } catch {
+        return {
+            pattern: null,
+            error: `${JSON.stringify(rule.packageNamePattern)} in "forbidden-in" is not a valid packageNamePattern regular expression.`,
+        };
+    }
+};
 
 type InvalidConfiguredPackagesErrorsParams = {
     readonly dependencyRule: ForbiddenDepsConfig | undefined;
@@ -106,7 +137,19 @@ const getInvalidConfiguredPackagesErrors = ({
 }: InvalidConfiguredPackagesErrorsParams): ReadonlyArray<string> => {
     const errors: string[] = [];
 
+    const forbiddenIn = dependencyRule?.['forbidden-in'];
+    if (forbiddenIn !== undefined) {
+        const { error } = parseForbiddenInPattern(forbiddenIn);
+        if (error !== null) {
+            errors.push(`${workspaceName}: ${error}`);
+        }
+    }
+
     for (const forbiddenDependency of dependencyRule?.['forbidden-deps'] ?? []) {
+        if (forbiddenDependency.packageName === undefined) {
+            continue;
+        }
+
         if (workspaceDirectories.has(forbiddenDependency.packageName)) {
             continue;
         }
@@ -135,15 +178,24 @@ type ForbiddenDependencyErrorsParams = {
     readonly workspaceName: string;
 };
 
-const getForbiddenDependencyErrors = ({
+export const getForbiddenDependencyErrors = ({
     dependencyOccurrences,
     dependencyRule,
     workspaceName,
 }: ForbiddenDependencyErrorsParams): ReadonlyArray<string> => {
     const forbiddenDepsMap = createForbiddenDepsMap(dependencyRule?.['forbidden-deps'] ?? []);
+    const forbiddenDependencyPrefixes = getForbiddenDependencyPrefixes(
+        dependencyRule?.['forbidden-deps'] ?? [],
+    );
 
     return dependencyOccurrences.flatMap(dependencyOccurrence => {
-        const forbiddenDependency = forbiddenDepsMap.get(dependencyOccurrence.name);
+        const forbiddenDependency =
+            forbiddenDepsMap.get(dependencyOccurrence.name) ??
+            forbiddenDependencyPrefixes.find(
+                ({ packageNamePrefix, except }) =>
+                    dependencyOccurrence.name.startsWith(packageNamePrefix) &&
+                    !(except ?? []).includes(dependencyOccurrence.name),
+            );
 
         if (forbiddenDependency === undefined) {
             return [];
@@ -155,7 +207,7 @@ const getForbiddenDependencyErrors = ({
     });
 };
 
-type AllowedOnlyErrorsParams = {
+type DependencyConsumerErrorsParams = {
     readonly dependencyOccurrences: ReadonlyArray<DependencyOccurrence>;
     readonly getWorkspaceDirByName: WorkspaceDirectoryResolver;
     readonly loadConfig: ForbiddenDepsConfigLoader;
@@ -163,13 +215,13 @@ type AllowedOnlyErrorsParams = {
     readonly workspaceName: string;
 };
 
-const getAllowedOnlyErrors = async ({
+export const getDependencyConsumerErrors = async ({
     dependencyOccurrences,
     getWorkspaceDirByName,
     loadConfig,
     repoRoot,
     workspaceName,
-}: AllowedOnlyErrorsParams): Promise<ReadonlyArray<string>> => {
+}: DependencyConsumerErrorsParams): Promise<ReadonlyArray<string>> => {
     const errors: string[] = [];
 
     for (const dependencyOccurrence of dependencyOccurrences) {
@@ -185,13 +237,25 @@ const getAllowedOnlyErrors = async ({
         const dependencyRule = await loadConfig(dependencyWorkspaceDir);
         const allowedOnlyIn = dependencyRule?.['allowed-only-in'];
 
-        if (allowedOnlyIn === undefined || allowedOnlyIn.packages.includes(workspaceName)) {
+        if (allowedOnlyIn !== undefined && !allowedOnlyIn.packages.includes(workspaceName)) {
+            errors.push(
+                `${workspaceName}: ${JSON.stringify(dependencyOccurrence.name)} is allowed only in ${formatAllowedOnlyInPackages(allowedOnlyIn)} and must not be listed in ${dependencyOccurrence.field}. Reason: ${allowedOnlyIn.reason}`,
+            );
+        }
+
+        const forbiddenIn = dependencyRule?.['forbidden-in'];
+        if (forbiddenIn === undefined) {
             continue;
         }
 
-        errors.push(
-            `${workspaceName}: ${JSON.stringify(dependencyOccurrence.name)} is allowed only in ${formatAllowedOnlyInPackages(allowedOnlyIn)} and must not be listed in ${dependencyOccurrence.field}. Reason: ${allowedOnlyIn.reason}`,
-        );
+        const { pattern, error } = parseForbiddenInPattern(forbiddenIn);
+        if (error !== null) {
+            errors.push(`${dependencyOccurrence.name}: ${error}`);
+        } else if (pattern.test(workspaceName)) {
+            errors.push(
+                `${workspaceName}: ${JSON.stringify(dependencyOccurrence.name)} is forbidden in ${dependencyOccurrence.field} by its "forbidden-in" rule. Reason: ${forbiddenIn.reason}`,
+            );
+        }
     }
 
     return errors;
@@ -212,21 +276,28 @@ export const requireForbiddenDeps: Requirement<'workspace'> = {
         }
 
         const localRule = await loadForbiddenDepsConfig(context.workspaceDir);
+        const dependencyRule: ForbiddenDepsConfig = {
+            ...localRule,
+            'forbidden-deps': [
+                ...(localRule?.['forbidden-deps'] ?? []),
+                ...(await loadInheritedForbiddenDeps(context.repoRoot, context.workspaceDir)),
+            ],
+        };
         const workspaceDirectories = getWorkspaceDirectoryResolver(context.repoRoot);
 
         const dependencyOccurrences = collectDependencyOccurrences(packageJson);
         const errors = new Set<string>([
             ...getInvalidConfiguredPackagesErrors({
-                dependencyRule: localRule,
+                dependencyRule,
                 workspaceDirectories,
                 workspaceName: context.workspaceName,
             }),
             ...getForbiddenDependencyErrors({
                 dependencyOccurrences,
-                dependencyRule: localRule,
+                dependencyRule,
                 workspaceName: context.workspaceName,
             }),
-            ...(await getAllowedOnlyErrors({
+            ...(await getDependencyConsumerErrors({
                 dependencyOccurrences,
                 getWorkspaceDirByName: getWorkspaceDirectoryByName,
                 loadConfig: loadForbiddenDepsConfig,

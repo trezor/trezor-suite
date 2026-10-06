@@ -6,6 +6,7 @@ import {
 } from '@suite-common/suite-sync-evolu';
 import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import type { SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
 import type { AccountDescriptor } from '@suite-common/wallet-types';
 import { type WalletDescriptor, asWalletDescriptor } from '@trezor/device-utils';
@@ -18,7 +19,7 @@ import {
     createWalletRowId,
 } from './createEvoluRowIds';
 
-const networkSymbol = 'btc' as const;
+const networkSymbol = asNetworkSymbol('btc');
 const BTC_TX_TARGET_ID = '0';
 
 type SuiteSyncFixtureParams = {
@@ -76,8 +77,11 @@ const createSuiteSyncFixtures = ({
             outputIndex,
             txId,
         }) as OutputSeed;
+    type BuildExpectedWalletParams<T extends string | null> = { label: T };
 
-    const buildExpectedWallet = <T extends string | null>({ label }: { label: T }) => ({
+    const buildExpectedWallet = <T extends string | null>({
+        label,
+    }: BuildExpectedWalletParams<T>) => ({
         id: createWalletRowId(walletDescriptor),
         updatedAt: null,
         isDeleted: null,
@@ -85,8 +89,11 @@ const createSuiteSyncFixtures = ({
         walletDescriptor,
         label,
     });
+    type BuildExpectedAccountParams<T extends string | null> = { label: T };
 
-    const buildExpectedAccount = <T extends string | null>({ label }: { label: T }) => ({
+    const buildExpectedAccount = <T extends string | null>({
+        label,
+    }: BuildExpectedAccountParams<T>) => ({
         id: createAccountRowId(accountDescriptor, networkSymbol),
         updatedAt: null,
         isDeleted: null,
@@ -95,14 +102,15 @@ const createSuiteSyncFixtures = ({
         networkSymbol,
         label,
     });
+    type BuildExpectedAddressParams<T extends string | null> = {
+        address: string;
+        label: T;
+    };
 
     const buildExpectedAddress = <T extends string | null>({
         address,
         label,
-    }: {
-        address: string;
-        label: T;
-    }) => ({
+    }: BuildExpectedAddressParams<T>) => ({
         id: createAddressRowId(address, networkSymbol),
         updatedAt: null,
         isDeleted: null,
@@ -112,16 +120,17 @@ const createSuiteSyncFixtures = ({
         address,
         label,
     });
+    type BuildExpectedOutputParams<T extends string | null> = {
+        txId: string;
+        outputIndex: string;
+        label: T;
+    };
 
     const buildExpectedOutput = <T extends string | null>({
         txId,
         outputIndex,
         label,
-    }: {
-        txId: string;
-        outputIndex: string;
-        label: T;
-    }) => ({
+    }: BuildExpectedOutputParams<T>) => ({
         id: createOutputRowId(txId, asTxTargetId(outputIndex)),
         updatedAt: null,
         isDeleted: null,

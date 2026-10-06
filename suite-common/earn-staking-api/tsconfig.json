@@ -5,6 +5,7 @@
         { "path": "../http-client" },
         { "path": "../react-query" },
         { "path": "../wallet-types" },
-        { "path": "../../packages/env-utils" }
+        { "path": "../../packages/env-utils" },
+        { "path": "../wallet-config" }
     ]
 }

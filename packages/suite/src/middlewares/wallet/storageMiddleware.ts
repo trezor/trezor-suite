@@ -1,17 +1,26 @@
-import { isAnyOf } from '@reduxjs/toolkit';
-import { type MiddlewareAPI } from 'redux';
+import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { COINJOIN } from '@suite/coinjoin';
+import {
+    clientOnPrisonEvent,
+    isCoinjoinAccountPersistenceAction,
+    setDebugSettings,
+} from '@suite/coinjoin';
 import { debugActions } from '@suite/debug';
 import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/feature-feedback';
-import { markNewContentIndicatorAsSeen, setFlag, setNewContentIndicatorSeen } from '@suite/flags';
-import { METADATA, metadataActions } from '@suite/metadata';
-import { suiteSettingsActions } from '@suite/settings';
+import {
+    type FlagsRootState,
+    markNewContentIndicatorAsSeen,
+    setFlag,
+    setNewContentIndicatorSeen,
+} from '@suite/flags';
+import { metadataActions } from '@suite/metadata';
+import { type SuiteSettingsRootState, suiteSettingsActions } from '@suite/settings';
 import { dismissUnsupportedDeviceBanner } from '@suite/suite-sync';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { connectPopupActions } from '@suite-common/connect-popup';
 import {
+    type DeviceRootState,
     deviceActions,
     selectDeviceByState,
     selectDeviceByStaticSessionId,
@@ -21,8 +30,15 @@ import {
 import { discreetModeActions } from '@suite-common/discreet-mode';
 import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { receiveActions } from '@suite-common/receive';
-import { type ActionFromMatcher, createLegacyActionTypeMatcher } from '@suite-common/redux-utils';
+import {
+    type ActionFromMatcher,
+    type Dispatch,
+    type TypeGuard,
+    type WithServices,
+    createMiddlewareWithExtraDeps,
+} from '@suite-common/redux-utils';
 import {
     setSuiteSyncOwner,
     setSuiteSyncRelayUrl,
@@ -37,36 +53,61 @@ import { TokenManagementAction } from '@suite-common/token-definitions';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 import { tradingActions } from '@suite-common/trading';
 import {
-    WALLET_SETTINGS,
+    type AccountsRootState,
+    type FiatRatesRootState,
+    type WalletSettingsRootState,
     accountsActions,
     blockchainActions,
     changeNetworks,
+    earnOnboardingActions,
     explorerActions,
     phishingActions,
     selectAccountByKey,
     selectAccountsByDeviceState,
     selectHistoricFiatRates,
     selectIsDeviceAutoEjectEnabled,
+    setAddressDisplayType,
+    setAutoEjectEnabled,
     setBaseCurrency,
+    setBitcoinAmountUnits,
+    setMevProtection,
+    setNetworkReserve,
+    setSuspiciousTransactionsFilter,
+    stellarContractTokensActions,
     transactionsActions,
     updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { findAccountDevice, isAccountSuccessful } from '@suite-common/wallet-utils';
 import { walletConnectActions } from '@suite-common/walletconnect';
+import { DEVICE, isDeviceEventOfType } from '@trezor/connect';
 
-import { STORAGE, SUITE } from 'src/actions/suite/constants';
 import * as storageActions from 'src/actions/suite/storageActions';
-import { GRAPH } from 'src/actions/wallet/constants';
-import { db } from 'src/storage';
-import type { AppState, Dispatch, GetState, Action as SuiteAction } from 'src/types/suite';
-import type { WalletAction } from 'src/types/wallet';
+import {
+    closeEvmExplanationBanner,
+    confirmEvmExplanationModal,
+} from 'src/actions/suite/suiteActions';
+import { accountGraphFail, accountGraphSuccess } from 'src/actions/wallet/graphActions';
+import { type SuiteState } from 'src/reducers/suite/suiteReducer';
+import { selectGraph } from 'src/reducers/wallet/graphReducer';
+import { type GraphState } from 'src/reducers/wallet/graphReducer';
+import { type DbDep } from 'src/storage/createDb';
 
-type StorageAction = SuiteAction | WalletAction;
+type StorageMiddlewareDeps = WithServices<DbDep>;
 
-const matchLegacyActionType = createLegacyActionTypeMatcher<StorageAction>();
+export type StorageMiddlewareState = AccountsRootState &
+    DeviceRootState &
+    FiatRatesRootState &
+    WalletSettingsRootState &
+    FlagsRootState &
+    SuiteSettingsRootState & {
+        suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
+        wallet: {
+            graph: GraphState;
+        };
+    };
 
-const getDeviceByAccountKey = (accountKey: AccountKey, state: AppState) => {
+const getDeviceByAccountKey = (accountKey: AccountKey, state: StorageMiddlewareState) => {
     const account = selectAccountByKey(state, accountKey);
 
     return account ? findAccountDevice(account, selectDevices(state)) : undefined;
@@ -77,24 +118,22 @@ type RememberedDeviceSaveParams<TAction> = {
     device: TrezorDevice;
 };
 
-type RememberedDeviceSaveDeps = {
+type RememberedDeviceSaveDeps = DbDep & {
     dispatch: Dispatch;
-    getState: GetState;
+    getState: () => StorageMiddlewareState;
 };
 
 type RememberedDeviceHandler = {
-    match: ReadonlyArray<(action: StorageAction) => boolean>;
-    getDevice: (action: any, state: AppState) => TrezorDevice | undefined;
+    match: ReadonlyArray<(action: UnknownAction) => boolean>;
+    getDevice: (action: any, state: StorageMiddlewareState) => TrezorDevice | undefined;
     save: (params: RememberedDeviceSaveParams<any>, deps: RememberedDeviceSaveDeps) => void;
 };
 
-const defineRememberedDeviceHandler = <
-    Matchers extends ReadonlyArray<(action: StorageAction) => boolean>,
->(handler: {
+const defineRememberedDeviceHandler = <Matchers extends ReadonlyArray<TypeGuard<any>>>(handler: {
     match: readonly [...Matchers];
     getDevice: (
         action: ActionFromMatcher<Matchers[number]>,
-        state: AppState,
+        state: StorageMiddlewareState,
     ) => TrezorDevice | undefined;
     save: (
         params: RememberedDeviceSaveParams<ActionFromMatcher<Matchers[number]>>,
@@ -112,16 +151,18 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
             accountsActions.changeAccountVisibility.match,
             accountsActions.updateAccount.match,
         ],
-        getDevice: (action, state) => findAccountDevice(action.payload, selectDevices(state)),
-        save: ({ action }, { dispatch }) => {
-            const account = action.payload;
+        getDevice: (action, state) =>
+            findAccountDevice(action.payload.account, selectDevices(state)),
+        save: ({ action }, deps) => {
+            const account = selectAccountByKey(deps.getState(), action.payload.account.key);
+            if (!account) return;
 
             if (!isAccountSuccessful(account)) {
                 return;
             }
 
-            storageActions.saveAccounts([account]);
-            dispatch(storageActions.saveCoinjoinAccount(account.key));
+            storageActions.saveAccounts(deps, [account]);
+            deps.dispatch(storageActions.saveCoinjoinAccountThunk(account.key));
         },
     }),
     defineRememberedDeviceHandler({
@@ -130,35 +171,57 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         // persisted, so try to do it now.
         match: [deviceActions.setDeviceState.match, deviceActions.addAuthorizedDevice.match],
         getDevice: (action, state) => selectDeviceByState(state, action.payload.state),
-        save: ({ action, device }, { getState }) => {
+        save: ({ action, device }, deps) => {
             if (device.useEmptyPassphrase) {
                 return;
             }
 
-            const accounts = selectAccountsByDeviceState(getState(), action.payload.state).filter(
-                isAccountSuccessful,
-            );
+            const accounts = selectAccountsByDeviceState(
+                deps.getState(),
+                action.payload.state,
+            ).filter(isAccountSuccessful);
 
-            storageActions.saveAccounts(accounts);
+            storageActions.saveAccounts(deps, accounts);
         },
     }),
     defineRememberedDeviceHandler({
         // If there is a change in account.metadata (metadataActions.setAccountLoaded), update database.
         match: [metadataActions.setAccountAdd.match],
         getDevice: (action, state) => findAccountDevice(action.payload, selectDevices(state)),
-        save: ({ action }) => {
+        save: ({ action }, deps) => {
             if (!isAccountSuccessful(action.payload)) {
                 return;
             }
 
-            storageActions.saveAccounts([action.payload]);
+            storageActions.saveAccounts(deps, [action.payload]);
         },
     }),
     defineRememberedDeviceHandler({
-        match: [receiveActions.showAddress.match, receiveActions.setCurrentFreshAddress.match],
+        match: [
+            receiveActions.showAddress.match,
+            receiveActions.touchAddress.match,
+            receiveActions.setCurrentFreshAddress.match,
+        ],
+        getDevice: (action, state) => getDeviceByAccountKey(action.payload.accountKey, state),
+        save: ({ action }, deps) => {
+            deps.dispatch(storageActions.saveAccountReceiveThunk(action.payload.accountKey));
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: [
+            stellarContractTokensActions.addContractToken.match,
+            stellarContractTokensActions.removeContractToken.match,
+        ],
         getDevice: (action, state) => getDeviceByAccountKey(action.payload.accountKey, state),
         save: ({ action }, { dispatch }) => {
-            dispatch(storageActions.saveAccountReceive(action.payload.accountKey));
+            dispatch(storageActions.saveStellarContractTokensThunk(action.payload.accountKey));
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: [earnOnboardingActions.confirmEarnOnboarding.match],
+        getDevice: (action, state) => getDeviceByAccountKey(action.payload.accountKey, state),
+        save: ({ action }, deps) => {
+            deps.dispatch(storageActions.saveEarnOnboardingThunk(action.payload.accountKey));
         },
     }),
     defineRememberedDeviceHandler({
@@ -168,21 +231,21 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         ],
         getDevice: (action, state) =>
             findAccountDevice(action.payload.account, selectDevices(state)),
-        save: ({ action }, { dispatch }) => {
+        save: ({ action }, deps) => {
             const { account } = action.payload;
 
-            storageActions.removeAccountTransactions(account);
-            dispatch(storageActions.saveAccountTransactions(account));
+            storageActions.removeAccountTransactions(deps, account);
+            deps.dispatch(storageActions.saveAccountTransactionsThunk(account));
         },
     }),
     defineRememberedDeviceHandler({
         match: [transactionsActions.markTransactionAsNotScam.match],
         getDevice: (action, state) => getDeviceByAccountKey(action.payload.key, state),
-        save: ({ action }, { dispatch, getState }) => {
-            const account = selectAccountByKey(getState(), action.payload.key);
+        save: ({ action }, deps) => {
+            const account = selectAccountByKey(deps.getState(), action.payload.key);
 
             if (account) {
-                dispatch(storageActions.saveAccountTransactions(account));
+                deps.dispatch(storageActions.saveAccountTransactionsThunk(account));
             }
         },
     }),
@@ -196,360 +259,363 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
 
             return account ? getDeviceByAccountKey(account.key, state) : undefined;
         },
-        save: ({ action }, { dispatch, getState }) => {
+        save: ({ action }, deps) => {
             const { account } = action.payload;
 
             if (!account) {
                 return;
             }
 
-            storageActions.removeAccountHistoricRates(account.key);
+            storageActions.removeAccountHistoricRates(deps, account.key);
 
-            const historicRates = selectHistoricFiatRates(getState());
+            const historicRates = selectHistoricFiatRates(deps.getState());
             if (historicRates) {
-                dispatch(storageActions.saveAccountHistoricRates(account.key, historicRates));
+                deps.dispatch(
+                    storageActions.saveAccountHistoricRatesThunk(account.key, historicRates),
+                );
             }
         },
     }),
     defineRememberedDeviceHandler({
         match: [deviceActions.updateSelectedDevice.match],
         getDevice: action => action.payload,
-        save: ({ device }, { getState }) => {
-            const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
+        save: ({ device }, deps) => {
+            const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(deps.getState());
 
             if (device.mode !== 'normal' || isAutoEjectEnabled) {
                 return;
             }
 
-            (storageActions.saveAccounts([]) ?? Promise.resolve())
+            (storageActions.saveAccounts(deps, []) ?? Promise.resolve())
                 // This is a bit strange workaround to ensure that device data will be stored after all account-related db transactions are settled,
                 // in order not to persist successful discovery before persisting all its accounts
-                .then(() => storageActions.saveDevice(device));
+                .then(() => storageActions.saveDevice(deps, device));
         },
     }),
     defineRememberedDeviceHandler({
         match: [suiteSettingsActions.setCoinjoinReceiveWarningHidden.match],
         getDevice: (_action, state) => selectSelectedDevice(state),
-        save: (_params, { dispatch }) => {
-            dispatch(storageActions.saveSuiteSettings());
+        save: (_params, deps) => {
+            deps.dispatch(storageActions.saveSuiteSettingsThunk());
         },
     }),
     defineRememberedDeviceHandler({
-        match: [matchLegacyActionType(GRAPH.ACCOUNT_GRAPH_SUCCESS, GRAPH.ACCOUNT_GRAPH_FAIL)],
+        match: [accountGraphSuccess.match, accountGraphFail.match],
         getDevice: (action, state) =>
             selectDevices(state).find(
                 device => device.state?.staticSessionId === action.payload.account.deviceState,
             ),
-        save: ({ action }) => {
-            storageActions.saveGraph([action.payload]);
+        save: ({ action }, deps) => {
+            const { account } = action.payload;
+            const graphEntry = selectGraph(deps.getState()).data.find(
+                d =>
+                    d.account.deviceState === account.deviceState &&
+                    d.account.descriptor === account.descriptor &&
+                    d.account.symbol === account.symbol,
+            );
+            if (graphEntry) {
+                storageActions.saveGraph(deps, [graphEntry]);
+            }
         },
     }),
     defineRememberedDeviceHandler({
-        match: [matchLegacyActionType(METADATA.SET_ERROR_FOR_DEVICE)],
+        match: [metadataActions.setErrorForDevice.match],
         getDevice: (action, state) =>
             selectDeviceByStaticSessionId(state, action.payload.deviceState),
-        save: ({ device }, { dispatch }) => {
-            dispatch(storageActions.saveDeviceMetadataError(device));
+        save: ({ device }, deps) => {
+            deps.dispatch(storageActions.saveDeviceMetadataErrorThunk(device));
         },
     }),
     defineRememberedDeviceHandler({
         // Au, this hurts, I need to call saveDevice manually. Saved device should be updated
         // automatically anytime any of its properties change.
-        match: [matchLegacyActionType(METADATA.SET_DEVICE_METADATA)],
+        match: [metadataActions.setDeviceMetadata.match],
         getDevice: (action, state) =>
             selectDeviceByStaticSessionId(state, action.payload.deviceState),
-        save: ({ action, device }) => {
-            storageActions.saveDevice({
+        save: ({ action, device }, deps) => {
+            storageActions.saveDevice(deps, {
                 ...device,
                 metadata: action.payload.metadata,
             });
         },
     }),
     defineRememberedDeviceHandler({
-        match: [
-            matchLegacyActionType(
-                COINJOIN.ACCOUNT_DISCOVERY_RESET,
-                COINJOIN.ACCOUNT_DISCOVERY_PROGRESS,
-                COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS,
-                COINJOIN.ACCOUNT_UNREGISTER,
-                COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION,
-                COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY,
-                COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE,
-                COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS,
-            ),
-        ],
+        match: [isCoinjoinAccountPersistenceAction],
         getDevice: (action, state) =>
             getDeviceByAccountKey(action.payload.accountKey as AccountKey, state),
-        save: ({ action }, { dispatch }) => {
-            dispatch(storageActions.saveCoinjoinAccount(action.payload.accountKey as AccountKey));
+        save: ({ action }, deps) => {
+            deps.dispatch(
+                storageActions.saveCoinjoinAccountThunk(action.payload.accountKey as AccountKey),
+            );
         },
     }),
 ];
 
-export const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
-    db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
-    db.onBlocked = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocked' });
+export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
+    StorageMiddlewareDeps,
+    UnknownAction,
+    StorageMiddlewareState
+>((action, api) => {
+    // pass action
+    api.next(action);
 
-    return (next: Dispatch) =>
-        (action: SuiteAction | WalletAction): SuiteAction | WalletAction => {
-            // pass action
-            next(action);
+    // IMPORTANT: The single place enforcing that device-scoped data is persisted only for
+    //            remembered devices (see rememberedDeviceHandlers above).
+    rememberedDeviceHandlers.forEach(({ match, getDevice, save }) => {
+        if (!match.some(matcher => matcher(action))) {
+            return;
+        }
 
-            // IMPORTANT: The single place enforcing that device-scoped data is persisted only for
-            //            remembered devices (see rememberedDeviceHandlers above).
-            rememberedDeviceHandlers.forEach(({ match, getDevice, save }) => {
-                if (!match.some(matcher => matcher(action))) {
-                    return;
-                }
+        const device = getDevice(action, api.getState());
 
-                const device = getDevice(action, api.getState());
+        if (device && getIsDeviceRemembered(device)) {
+            save(
+                { action, device },
+                { db: api.extra.services.db, dispatch: api.dispatch, getState: api.getState },
+            );
+        }
+    });
 
-                if (device && getIsDeviceRemembered(device)) {
-                    save({ action, device }, { dispatch: api.dispatch, getState: api.getState });
-                }
-            });
+    if (accountsActions.removeAccount.match(action)) {
+        action.payload.forEach(
+            storageActions.removeAccountWithDependencies({
+                db: api.extra.services.db,
+                getState: api.getState,
+            }),
+        );
+    }
 
-            if (accountsActions.removeAccount.match(action)) {
-                action.payload.forEach(storageActions.removeAccountWithDependencies(api.getState));
+    if (changeNetworks.match(action)) {
+        api.dispatch(storageActions.saveWalletSettingsThunk());
+    }
+
+    if (transactionsActions.resetTransaction.match(action)) {
+        const { account } = action.payload;
+
+        storageActions.removeAccountTransactions(api.extra.services, account);
+        storageActions.removeAccountHistoricRates(api.extra.services, account.key);
+        storageActions.removeAccountPhishing(api.extra.services, account.key);
+    }
+
+    if (phishingActions.setDustPhishing.match(action)) {
+        api.dispatch(
+            storageActions.savePhishingMetadataThunk({
+                dustPhishing: action.payload,
+            }),
+        );
+    }
+
+    if (blockchainActions.setBackend.match(action)) {
+        api.dispatch(storageActions.saveBackendThunk(action.payload.symbol));
+    }
+
+    if (blockchainActions.setBackendGapLimit.match(action)) {
+        api.dispatch(storageActions.saveBackendThunk(action.payload.symbol));
+    }
+
+    if (explorerActions.setExplorer.match(action)) {
+        storageActions.saveExplorer(api.extra.services, action.payload);
+    }
+
+    if (
+        isAnyOf(
+            messageSystemActions.fetchSuccessUpdate,
+            messageSystemActions.dismissMessage,
+            messageSystemActions.setConfigSource,
+        )(action)
+    ) {
+        api.dispatch(storageActions.saveMessageSystemThunk());
+    }
+
+    if (
+        isAnyOf(
+            analyticsActions.initAnalytics,
+            analyticsActions.enableAnalytics,
+            analyticsActions.disableAnalytics,
+            analyticsActions.setCustomAnalyticsUrl,
+            analyticsActions.setLoggerEnabled,
+        )(action)
+    ) {
+        api.dispatch(storageActions.saveAnalyticsThunk());
+    }
+
+    if (
+        isAnyOf(
+            updateSuiteSyncDebugEnabled,
+            updateSuiteSyncEnabled,
+            dismissUnsupportedDeviceBanner,
+            setSuiteSyncRelayUrl,
+        )(action)
+    ) {
+        api.dispatch(storageActions.saveSuiteSyncSettingsThunk());
+    }
+
+    if (setSuiteSyncOwner.match(action)) {
+        api.dispatch(storageActions.saveSuiteSyncOwnerThunk(action.payload));
+    }
+
+    if (
+        isAnyOf(
+            suiteSyncQuotaManagerActions.quotaManagerDeviceFetched,
+            suiteSyncQuotaManagerActions.updateQuotaManagerBaseUrl,
+            suiteSyncQuotaManagerActions.enforceQuotaManagerUpdated,
+            suiteSyncQuotaManagerActions.eraseFetchedData,
+        )(action)
+    ) {
+        api.dispatch(storageActions.saveSuiteSyncQuotaManagerThunk());
+    }
+
+    if (deviceActions.setRememberDevice.match(action)) {
+        const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(api.getState());
+
+        if (action.payload.remember && !isAutoEjectEnabled) {
+            api.dispatch(storageActions.rememberDeviceThunk(action.payload.device));
+        } else {
+            api.dispatch(storageActions.forgetDeviceThunk(action.payload.device));
+        }
+    }
+
+    if (deviceActions.forgetDevice.match(action)) {
+        api.dispatch(storageActions.forgetDeviceThunk(action.payload.device));
+    }
+
+    if (tokenDefinitionsActions.setTokenStatus.match(action)) {
+        api.dispatch(
+            storageActions.saveTokenManagementThunk(
+                action.payload.symbol,
+                action.payload.type,
+                TokenManagementAction.HIDE,
+            ),
+        );
+        api.dispatch(
+            storageActions.saveTokenManagementThunk(
+                action.payload.symbol,
+                action.payload.type,
+                TokenManagementAction.SHOW,
+            ),
+        );
+    }
+
+    if (
+        isAnyOf(
+            deviceActions.connectDevice, // Known device is stored
+            deviceActions.connectUnacquiredDevice, // Known device is stored
+            bluetoothActions.knownDevicesUpdateAction,
+            bluetoothActions.removeKnownDeviceAction,
+            bluetoothActions.deviceUpdateAction, // Known devices may be updated
+        )(action)
+    ) {
+        api.dispatch(storageActions.saveKnownDevicesThunk());
+    }
+
+    if (
+        isAnyOf(
+            connectPopupActions.rememberAppPermissions,
+            connectPopupActions.forgetAppPermissions,
+            connectPopupActions.forgetAppPermission,
+            connectPopupActions.setAppSilentMode,
+            walletConnectActions.saveSession,
+            walletConnectActions.removeSession,
+        )(action)
+    ) {
+        api.dispatch(storageActions.saveConnectSettingsThunk());
+    }
+
+    if (firmwareActions.setFirmwareChannel.match(action)) {
+        api.dispatch(storageActions.saveFirmwareSettingsThunk());
+    }
+
+    if (isAnyOf(featureUsed, feedbackRequested, feedbackDismissed)(action)) {
+        api.dispatch(storageActions.saveFeatureFeedbackThunk());
+    }
+
+    if (
+        thpActions.removeCredentials.match(action) ||
+        isDeviceEventOfType(action, DEVICE.THP_CREDENTIALS_CHANGED) ||
+        (isDeviceEventOfType(action, DEVICE.THP_PAIRING_STATUS_CHANGED) &&
+            action.payload.status === 'finished')
+    ) {
+        api.dispatch(storageActions.saveThpCredentialsThunk());
+    }
+
+    if (
+        isAnyOf(
+            deviceActions.connectDevice,
+            deviceActions.deviceChanged,
+            persistentDeviceDataActions.setEntropyCheckResult,
+            persistentDeviceDataActions.setDeviceAuthenticityResult,
+            persistentDeviceDataActions.setManualDeviceCheckSuccess,
+            persistentDeviceDataActions.clearDevicePersistentData,
+            persistentDeviceDataActions.forgetDevicePersistentData,
+        )(action)
+    ) {
+        api.dispatch(storageActions.savePersistentDeviceDataThunk());
+    }
+
+    if (discreetModeActions.setDiscreetMode.match(action)) {
+        api.dispatch(storageActions.saveDiscreetModeThunk());
+    }
+
+    if (
+        isAnyOf(
+            setBaseCurrency,
+            setBitcoinAmountUnits,
+            setMevProtection,
+            setNetworkReserve,
+            setAutoEjectEnabled,
+            setAddressDisplayType,
+            setSuspiciousTransactionsFilter,
+        )(action)
+    ) {
+        api.dispatch(storageActions.saveWalletSettingsThunk());
+    } else if (
+        isAnyOf(
+            suiteSettingsActions.setLanguage,
+            setFlag,
+            markNewContentIndicatorAsSeen,
+            setNewContentIndicatorSeen,
+            suiteSettingsActions.setDebugMode,
+            suiteSettingsActions.setExperimentalFeatures,
+            suiteSettingsActions.setOnionLinks,
+            suiteSettingsActions.setTheme,
+            suiteSettingsActions.setAutodetect,
+            suiteSettingsActions.setSidebarWidth,
+            suiteSettingsActions.toggleDeviceAuthenticityCheck,
+            suiteSettingsActions.toggleFirmwareRevisionCheck,
+            suiteSettingsActions.toggleFirmwareHashCheck,
+            suiteSettingsActions.toggleDeviceMetaChecks,
+            suiteSettingsActions.setIsCoinsFilterVisible,
+            closeEvmExplanationBanner,
+            confirmEvmExplanationModal,
+        )(action)
+    ) {
+        api.dispatch(storageActions.saveSuiteSettingsThunk());
+    } else if (debugActions.setShowDebugMenu.match(action)) {
+        api.dispatch(storageActions.saveDebugSettingsThunk());
+    } else if (tradingActions.saveTrade.match(action)) {
+        storageActions.saveTradingTrade(api.extra.services, action.payload);
+    } else if (
+        metadataActions.enableMetadata.match(action) ||
+        metadataActions.disableMetadata.match(action) ||
+        metadataActions.addMetadataProvider.match(action) ||
+        metadataActions.removeMetadataProvider.match(action)
+    ) {
+        api.dispatch(storageActions.saveMetadataSettingsThunk());
+    } else if (setDebugSettings.match(action)) {
+        api.dispatch(storageActions.saveCoinjoinDebugSettingsThunk());
+    } else if (clientOnPrisonEvent.match(action)) {
+        // Not a rememberedDeviceHandlers entry: unlike those handlers (one action ->
+        // one device), this one action affects multiple accounts on potentially
+        // different devices, so the remembered-device check must be applied per account.
+        const affectedAccounts = action.payload.map(inmate => inmate.accountKey as AccountKey);
+        const state = api.getState();
+        affectedAccounts.forEach(key => {
+            const device = getDeviceByAccountKey(key, state);
+            if (device && getIsDeviceRemembered(device)) {
+                api.dispatch(storageActions.saveCoinjoinAccountThunk(key));
             }
+        });
+    }
 
-            if (changeNetworks.match(action)) {
-                api.dispatch(storageActions.saveWalletSettings());
-            }
-
-            if (transactionsActions.resetTransaction.match(action)) {
-                const { account } = action.payload;
-
-                storageActions.removeAccountTransactions(account);
-                storageActions.removeAccountHistoricRates(account.key);
-                storageActions.removeAccountPhishing(account.key);
-            }
-
-            if (phishingActions.setDustPhishing.match(action)) {
-                api.dispatch(
-                    storageActions.savePhishingMetadata({
-                        dustPhishing: action.payload,
-                    }),
-                );
-            }
-
-            if (blockchainActions.setBackend.match(action)) {
-                api.dispatch(storageActions.saveBackend(action.payload.symbol));
-            }
-
-            if (blockchainActions.setBackendGapLimit.match(action)) {
-                api.dispatch(storageActions.saveBackend(action.payload.symbol));
-            }
-
-            if (explorerActions.setExplorer.match(action)) {
-                storageActions.saveExplorer(action.payload);
-            }
-
-            if (
-                isAnyOf(
-                    messageSystemActions.fetchSuccessUpdate,
-                    messageSystemActions.dismissMessage,
-                    messageSystemActions.setConfigSource,
-                )(action)
-            ) {
-                api.dispatch(storageActions.saveMessageSystem());
-            }
-
-            if (
-                isAnyOf(
-                    analyticsActions.initAnalytics,
-                    analyticsActions.enableAnalytics,
-                    analyticsActions.disableAnalytics,
-                    analyticsActions.setCustomAnalyticsUrl,
-                    analyticsActions.setLoggerEnabled,
-                )(action)
-            ) {
-                api.dispatch(storageActions.saveAnalytics());
-            }
-
-            if (
-                isAnyOf(
-                    updateSuiteSyncDebugEnabled,
-                    updateSuiteSyncEnabled,
-                    dismissUnsupportedDeviceBanner,
-                    setSuiteSyncRelayUrl,
-                )(action)
-            ) {
-                api.dispatch(storageActions.saveSuiteSyncSettings());
-            }
-
-            if (setSuiteSyncOwner.match(action)) {
-                api.dispatch(storageActions.saveSuiteSyncOwner(action.payload));
-            }
-
-            if (
-                isAnyOf(
-                    suiteSyncQuotaManagerActions.quotaManagerDeviceFetched,
-                    suiteSyncQuotaManagerActions.updateQuotaManagerBaseUrl,
-                    suiteSyncQuotaManagerActions.enforceQuotaManagerUpdated,
-                    suiteSyncQuotaManagerActions.eraseFetchedData,
-                )(action)
-            ) {
-                api.dispatch(storageActions.saveSuiteSyncQuotaManager());
-            }
-
-            if (deviceActions.setRememberDevice.match(action)) {
-                const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(api.getState());
-
-                if (action.payload.remember && !isAutoEjectEnabled) {
-                    api.dispatch(storageActions.rememberDevice(action.payload.device));
-                } else {
-                    api.dispatch(storageActions.forgetDevice(action.payload.device));
-                }
-            }
-
-            if (deviceActions.forgetDevice.match(action)) {
-                api.dispatch(storageActions.forgetDevice(action.payload.device));
-            }
-
-            if (tokenDefinitionsActions.setTokenStatus.match(action)) {
-                api.dispatch(
-                    storageActions.saveTokenManagement(
-                        action.payload.symbol,
-                        action.payload.type,
-                        TokenManagementAction.HIDE,
-                    ),
-                );
-                api.dispatch(
-                    storageActions.saveTokenManagement(
-                        action.payload.symbol,
-                        action.payload.type,
-                        TokenManagementAction.SHOW,
-                    ),
-                );
-            }
-
-            if (
-                isAnyOf(
-                    deviceActions.connectDevice, // Known device is stored
-                    deviceActions.connectUnacquiredDevice, // Known device is stored
-                    bluetoothActions.knownDevicesUpdateAction,
-                    bluetoothActions.removeKnownDeviceAction,
-                    bluetoothActions.deviceUpdateAction, // Known devices may be updated
-                )(action)
-            ) {
-                api.dispatch(storageActions.saveKnownDevices());
-            }
-
-            if (
-                isAnyOf(
-                    connectPopupActions.rememberAppPermissions,
-                    connectPopupActions.forgetAppPermissions,
-                    connectPopupActions.forgetAppPermission,
-                    connectPopupActions.setAppSilentMode,
-                    walletConnectActions.saveSession,
-                    walletConnectActions.removeSession,
-                )(action)
-            ) {
-                api.dispatch(storageActions.saveConnectSettings());
-            }
-
-            if (firmwareActions.setFirmwareChannel.match(action)) {
-                api.dispatch(storageActions.saveFirmwareSettings());
-            }
-
-            if (isAnyOf(featureUsed, feedbackRequested, feedbackDismissed)(action)) {
-                api.dispatch(storageActions.saveFeatureFeedback());
-            }
-
-            if (
-                thpActions.removeCredentials.match(action) ||
-                action.type === 'device-thp_credentials_changed' ||
-                (action.type === 'device-thp_pairing_status_changed' &&
-                    action.payload.status === 'finished')
-            ) {
-                api.dispatch(storageActions.saveThpCredentials());
-            }
-
-            if (
-                isAnyOf(
-                    deviceActions.connectDevice,
-                    deviceActions.deviceChanged,
-                    deviceActions.setEntropyCheckResult,
-                    deviceActions.setDeviceAuthenticityResult,
-                    deviceActions.setManualDeviceCheckSuccess,
-                    deviceActions.clearDevicePersistentData,
-                    deviceActions.forgetDevicePersistentData,
-                )(action)
-            ) {
-                api.dispatch(storageActions.savePersistentDeviceData());
-            }
-
-            if (discreetModeActions.setDiscreetMode.match(action)) {
-                api.dispatch(storageActions.saveDiscreetMode());
-            }
-
-            switch (action.type) {
-                case setBaseCurrency.type:
-                case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
-                case WALLET_SETTINGS.SET_MEV_PROTECTION:
-                case WALLET_SETTINGS.SET_NETWORK_RESERVE:
-                case WALLET_SETTINGS.SET_AUTO_EJECT:
-                case WALLET_SETTINGS.SET_ADDRESS_DISPLAY_TYPE:
-                    api.dispatch(storageActions.saveWalletSettings());
-
-                    break;
-                case suiteSettingsActions.setLanguage.type:
-                case setFlag.type:
-                case markNewContentIndicatorAsSeen.type:
-                case setNewContentIndicatorSeen.type:
-                case suiteSettingsActions.setDebugMode.type:
-                case suiteSettingsActions.setExperimentalFeatures.type:
-                case suiteSettingsActions.setOnionLinks.type:
-                case suiteSettingsActions.setTheme.type:
-                case suiteSettingsActions.setAutodetect.type:
-                case suiteSettingsActions.setSidebarWidth.type:
-                case suiteSettingsActions.toggleDeviceAuthenticityCheck.type:
-                case suiteSettingsActions.toggleFirmwareRevisionCheck.type:
-                case suiteSettingsActions.toggleFirmwareHashCheck.type:
-                case suiteSettingsActions.toggleDeviceMetaChecks.type:
-                case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:
-                case SUITE.EVM_CLOSE_EXPLANATION_BANNER:
-                case suiteSettingsActions.setIsCoinsFilterVisible.type:
-                    api.dispatch(storageActions.saveSuiteSettings());
-                    break;
-                case debugActions.setShowDebugMenu.type:
-                    api.dispatch(storageActions.saveDebugSettings());
-                    break;
-                case tradingActions.saveTrade.type: {
-                    const { type, ...trade } = action;
-                    storageActions.saveTradingTrade(trade.payload);
-                    break;
-                }
-                case METADATA.ENABLE:
-                case METADATA.DISABLE:
-                case METADATA.ADD_PROVIDER:
-                case METADATA.REMOVE_PROVIDER:
-                    api.dispatch(storageActions.saveMetadataSettings());
-                    break;
-                case COINJOIN.SET_DEBUG_SETTINGS:
-                    api.dispatch(storageActions.saveCoinjoinDebugSettings());
-                    break;
-
-                // Not a rememberedDeviceHandlers entry: unlike those handlers (one action ->
-                // one device), this one action affects multiple accounts on potentially
-                // different devices, so the remembered-device check must be applied per account.
-                case COINJOIN.CLIENT_PRISON_EVENT: {
-                    const affectedAccounts = action.payload.map(inmate => inmate.accountKey);
-                    const state = api.getState();
-                    affectedAccounts.forEach(key => {
-                        const device = getDeviceByAccountKey(key as AccountKey, state);
-                        if (device && getIsDeviceRemembered(device)) {
-                            api.dispatch(storageActions.saveCoinjoinAccount(key as AccountKey));
-                        }
-                    });
-                    break;
-                }
-
-                default:
-                    break;
-            }
-
-            return action;
-        };
-};
+    return action;
+});

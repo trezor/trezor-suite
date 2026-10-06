@@ -83,7 +83,7 @@ export const Input = ({
     const hasShowClearButton = showClearButton && !!value && value.length > 0;
 
     return (
-        <FormCell {...formCellProps} data-testid={dataTest}>
+        <FormCell {...formCellProps} data-component="Input" data-testid={dataTest}>
             <InputWrapper
                 hasError={hasError}
                 isDisabled={isDisabled ?? false}

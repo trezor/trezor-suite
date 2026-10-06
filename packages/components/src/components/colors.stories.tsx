@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { type Meta } from '@storybook/react';
 import styled, { useTheme } from 'styled-components';
 
-import { colorVariants, colorsV2, typography } from '@trezor/theme';
+import { colorVariants, typography } from '@trezor/theme';
 import { hexToRgba, throwError } from '@trezor/utils';
 
 import { Box } from './Box/Box';
@@ -32,7 +32,9 @@ const Sticky = styled.div`
 type ThemeKey = keyof typeof colorVariants;
 const themes: ThemeKey[] = ['standard', 'dark'];
 
-const colorTokens = Object.keys(colorsV2.light);
+const colorTokens = Object.keys(colorVariants.standard).filter(
+    colorToken => colorToken !== 'transparent',
+);
 
 const ThemeVariantIcon = styled.div<{
     currentTheme: ThemeKey;

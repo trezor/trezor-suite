@@ -1,17 +1,34 @@
 import { useMemo } from 'react';
+import { type UseFormReturn } from 'react-hook-form';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import styled from 'styled-components';
+
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { FractionButton, Row } from '@trezor/components';
+import { TRADING_FORM_AMOUNT_INPUT_SOURCE } from '@suite-common/trading';
+import { Row, TextButton } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { type TradingAllFormProps } from 'src/types/trading/tradingForm';
 import { isTradingSellContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 
+import { TRADING_FORM_CARD_COMPONENT } from './TradingFormCard';
 import { generateFractionButtons } from './tradingFormInputsUtils';
+
+const FractionButtonsContainer = styled.div`
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+
+    [data-component='${TRADING_FORM_CARD_COMPONENT}']:hover &,
+    &:focus-within {
+        opacity: 1;
+    }
+`;
 
 export const TradingFractionButtons = () => {
     const context = useTradingFormContext<'sell' | 'exchange'>();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { setValue } = context as UseFormReturn<TradingAllFormProps>;
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const analyticsType = isTradingSellContext(context) ? 'sell' : 'swap';
     const fractionButtons = useMemo(
@@ -20,24 +37,28 @@ export const TradingFractionButtons = () => {
     );
 
     return (
-        <Row gap={8} data-testid="@trading/form/fraction-buttons">
-            {fractionButtons.map(button => {
-                const { percentValue, onClick, ...buttonProps } = button;
-
-                return (
-                    <FractionButton
-                        key={buttonProps.id}
-                        {...buttonProps}
+        <FractionButtonsContainer>
+            <Row gap={12} data-testid="@trading/form/fraction-buttons">
+                {fractionButtons.map(({ id, children, isDisabled, percentValue, onClick }) => (
+                    <TextButton
+                        key={id}
+                        intent="brand"
+                        size="small"
+                        isUnderlined
+                        isDisabled={isDisabled}
                         onClick={() => {
                             analytics.report({
                                 type: events.appFormPercentButtonsEvent.name,
                                 payload: { type: analyticsType, value: percentValue },
                             });
+                            setValue(TRADING_FORM_AMOUNT_INPUT_SOURCE, 'fraction');
                             onClick();
                         }}
-                    />
-                );
-            })}
-        </Row>
+                    >
+                        {children}
+                    </TextButton>
+                ))}
+            </Row>
+        </FractionButtonsContainer>
     );
 };

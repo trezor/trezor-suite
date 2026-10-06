@@ -1,201 +1,256 @@
 import { messages } from '@suite/intl';
-import { cryptoIdToSymbol } from '@suite-common/trading';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { localizeNumber } from '@suite-common/wallet-utils';
+import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
+import { type NetworkSymbol, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { TestStream } from '@trezor/e2e-utils';
+import { localizeNumber } from '@trezor/utils';
 
 import { tradeEndpoint } from '../../fixtures/trading';
 import { PENDING_TRADE, SEEDED_TRADES } from '../../fixtures/trading/swap/swap-history';
+import { toCompactAmount } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
-    test.use({ deviceSetup: { mnemonic: 'mnemonic_academic' } });
+const btcSymbol = asNetworkSymbol('btc');
 
-    test.beforeEach(async ({ page, onboardingPage, settingsPage, tradingStore }) => {
-        // The app periodically calls `/exchange/watch/*` to refresh trade status.
-        // For this test we keep status stable by echoing the current status from
-        // the request body, so seeded `CONFIRMING` remains `Pending` in UI.
-        await page.route(tradeEndpoint.swapWatch, async route => {
-            const body = route.request().postDataJSON() as { status?: string } | null;
-            await route.fulfill({ json: { status: body?.status ?? 'SUCCESS' } });
+const listStatusTranslationKeys = {
+    SUCCESS: 'TR_EXCHANGE_STATUS_SUCCESS',
+    ERROR: 'TR_EXCHANGE_STATUS_ERROR',
+    CONFIRMING: 'TR_EXCHANGE_STATUS_CONFIRMING',
+} as const;
+
+const CSV_BOM = '\uFEFF';
+
+const parseCsvRows = (csvContent: string): string[][] =>
+    csvContent
+        .replace(CSV_BOM, '')
+        .split('\n')
+        .map(line => line.split(','));
+
+const formatTradeDate = (date: string) =>
+    new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+    }).format(new Date(date));
+
+test.describe(
+    'Trading - Swap history',
+    { tag: ['@webOnly', '@T3T1', '@T3W1', '@optional'] },
+    () => {
+        test.use({ deviceSetup: { mnemonic: 'mnemonic_academic' } });
+
+        test.beforeEach(async ({ page, onboardingPage, settingsPage, tradingStore }) => {
+            // The app periodically calls `/exchange/watch/*` to refresh trade status.
+            // For this test we keep status stable by echoing the current status from
+            // the request body, so seeded `CONFIRMING` remains `Pending` in UI.
+            await page.route(tradeEndpoint.swapWatch, async route => {
+                const body = route.request().postDataJSON() as { status?: string } | null;
+                await route.fulfill({ json: { status: body?.status ?? 'SUCCESS' } });
+            });
+
+            await onboardingPage.completeOnboarding();
+            await settingsPage.changeNetworks({
+                enableNetworks: [btcSymbol, asNetworkSymbol('eth'), asNetworkSymbol('ltc')],
+            });
+            await tradingStore.insertSwapHistory(SEEDED_TRADES);
         });
 
-        await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc', 'eth', 'ltc'] });
-        await tradingStore.insertSwapHistory(SEEDED_TRADES);
-    });
-
-    test('View swap order history details', async ({ walletPage, tradingPage }) => {
-        await test.step('Navigate to swap/exchange trading section', async () => {
-            await walletPage.openSwapTrading({ symbol: 'btc' });
-        });
-
-        await test.step('Open trading transactions history', async () => {
-            await tradingPage.transactions.menuButton.click();
-
-            await expect(tradingPage.transactions.heading).toHaveTranslation(
-                'TR_TRADING_LAST_TRANSACTIONS',
-            );
-        });
-
-        await test.step('Verify trades are ordered by date descending', async () => {
-            const expectedOrderedIds = [...SEEDED_TRADES]
-                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                .map(t => t.orderId);
-
-            await expect(tradingPage.transactions.allSwapRows).toHaveCount(
-                expectedOrderedIds.length,
-            );
-
-            for (const [index, orderId] of expectedOrderedIds.entries()) {
-                await expect(tradingPage.transactions.swapRowAt(index)).toHaveAttribute(
-                    'data-testid',
-                    `@trading/transactions/list/swap-transaction/${orderId}`,
-                );
-            }
-        });
-
-        await test.step('Verify trade appears in history list', async () => {
-            const statusTranslationKeys = {
-                SUCCESS: 'TR_EXCHANGE_STATUS_SUCCESS',
-                ERROR: 'TR_EXCHANGE_STATUS_ERROR',
-                CONFIRMING: 'TR_EXCHANGE_STATUS_CONFIRMING',
-            } as const;
-
-            await expect(tradingPage.transactions.count).toHaveTranslation(
-                'TR_TRADING_TRADE_HISTORY_COUNTER',
-                { values: { totalBuys: 0, totalSells: 0, totalSwaps: SEEDED_TRADES.length } },
-            );
-
-            for (const trade of SEEDED_TRADES) {
-                type StatusKey = keyof typeof statusTranslationKeys;
-                const row = tradingPage.transactions.swapTransactionRow(trade.orderId);
-                const receiveSymbol = (
-                    cryptoIdToSymbol(
-                        trade.data.receive as Parameters<typeof cryptoIdToSymbol>[0],
-                    ) ?? trade.data.receive
-                ).toUpperCase();
-
-                await expect(row.root).toBeVisible();
-                await expect.soft(row.provider).toHaveText(trade.data.exchange, {
-                    ignoreCase: true,
+        test(
+            'View swap order history details',
+            { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
+            async ({ walletPage, tradingPage }) => {
+                await test.step('Navigate to swap/exchange trading section', async () => {
+                    await walletPage.openSwapTrading({ symbol: btcSymbol });
                 });
-                await expect
-                    .soft(row.orderId)
-                    .toHaveText(
-                        `${messages['TR_TRADING_TRANS_ID'].defaultMessage} ${trade.orderId}`,
+
+                await test.step('Open trading transactions history', async () => {
+                    await tradingPage.transactions.menuButton.click();
+
+                    await expect(tradingPage.transactions.heading).toHaveTranslation(
+                        'TR_TRADING_LAST_TRANSACTIONS',
                     );
-                await expect
-                    .soft(row.status)
-                    .toHaveTranslation(statusTranslationKeys[trade.data.status as StatusKey]);
-                await expect
-                    .soft(row.sendAmount)
-                    .toHaveText(
-                        `${localizeNumber(trade.data.sendStringAmount)} ${trade.sendSymbol.toUpperCase()}`,
+                });
+
+                await test.step('Verify trades are ordered by date descending', async () => {
+                    const expectedDates = [...SEEDED_TRADES]
+                        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                        .map(trade => formatTradeDate(trade.date));
+
+                    await expect(tradingPage.transactions.rowDates).toHaveText(expectedDates);
+                });
+
+                await test.step('Verify trade appears in history list', async () => {
+                    for (const trade of SEEDED_TRADES) {
+                        type StatusKey = keyof typeof listStatusTranslationKeys;
+                        const row = tradingPage.transactions.transactionRow(trade.orderId);
+                        const receiveSymbol = (
+                            cryptoIdToNetworkSymbol(
+                                trade.data.receive as Parameters<typeof cryptoIdToNetworkSymbol>[0],
+                            ) ?? trade.data.receive
+                        ).toUpperCase();
+
+                        await expect(row.root).toBeVisible();
+                        await expect
+                            .soft(row.status)
+                            .toHaveAttribute(
+                                'aria-label',
+                                messages[listStatusTranslationKeys[trade.data.status as StatusKey]]
+                                    .defaultMessage,
+                            );
+                        await expect
+                            .soft(row.sendAmount)
+                            .toHaveText(
+                                `${toCompactAmount(trade.data.sendStringAmount)} ${trade.sendSymbol.toUpperCase()}`,
+                            );
+                        await expect
+                            .soft(row.receiveAmount)
+                            .toHaveText(
+                                `${toCompactAmount(trade.data.receiveStringAmount)} ${receiveSymbol}`,
+                            );
+                    }
+                });
+
+                await test.step('Filter the history by trade type', async () => {
+                    await tradingPage.transactions.tab('sell').click();
+                    await expect(tradingPage.transactions.rows).toHaveCount(0);
+                    await expect(tradingPage.transactions.typeEmptyState).toContainTranslation(
+                        'TR_TRADING_TRADE_HISTORY_NO_SELLS',
                     );
-                await expect
-                    .soft(row.receiveAmount)
-                    .toHaveText(
-                        `${localizeNumber(trade.data.receiveStringAmount)} ${receiveSymbol}`,
+                    await tradingPage.transactions.showAllTradesButton.click();
+                    await expect(tradingPage.transactions.rows).toHaveCount(SEEDED_TRADES.length);
+                    await tradingPage.transactions.tab('exchange').click();
+                    await expect(tradingPage.transactions.rows).toHaveCount(SEEDED_TRADES.length);
+                    await tradingPage.transactions.tab('all').click();
+                });
+
+                const detailStatusTranslationKeys = {
+                    SUCCESS: 'TR_EXCHANGE_DETAIL_COMPLETE_TITLE',
+                    ERROR: 'TR_EXCHANGE_DETAIL_RETURNED_TITLE',
+                    CONFIRMING: 'TR_TRADING_DETAIL_SENDING_TRANSACTION',
+                } as const;
+
+                for (const trade of SEEDED_TRADES) {
+                    const receiveSymbol = (
+                        cryptoIdToNetworkSymbol(
+                            trade.data.receive as Parameters<typeof cryptoIdToNetworkSymbol>[0],
+                        ) ?? trade.data.receive
+                    ).toUpperCase();
+
+                    await test.step(`Open detail for trade ${trade.orderId}`, async () => {
+                        await tradingPage.transactions.transactionRow(trade.orderId).root.click();
+                    });
+
+                    await test.step(`Verify detail page for trade ${trade.orderId}`, async () => {
+                        type DetailStatusKey = keyof typeof detailStatusTranslationKeys;
+
+                        await expect(tradingPage.transactionDetail).toBeVisible();
+                        await expect
+                            .soft(tradingPage.transactionDetailStatus)
+                            .toHaveTranslation(
+                                detailStatusTranslationKeys[trade.data.status as DetailStatusKey],
+                            );
+
+                        await expect
+                            .soft(tradingPage.transactionDetailSidebar.sendAmount)
+                            .toHaveText(
+                                `${localizeNumber(trade.data.sendStringAmount)} ${trade.sendSymbol.toUpperCase()}`,
+                            );
+                        await expect
+                            .soft(tradingPage.transactionDetailSidebar.receiveAmount)
+                            .toHaveText(
+                                `${localizeNumber(trade.data.receiveStringAmount)} ${receiveSymbol}`,
+                            );
+
+                        await expect
+                            .soft(tradingPage.transactionDetailSidebar.provider)
+                            .toBeVisible();
+                        await expect
+                            .soft(tradingPage.transactionDetailSidebar.provider)
+                            .toHaveText(trade.data.exchange, { ignoreCase: true });
+
+                        await expect
+                            .soft(tradingPage.transactionDetailSidebar.orderId)
+                            .toHaveText(
+                                `${trade.orderId.slice(0, 8)}...${trade.orderId.slice(-8)}`,
+                            );
+
+                        await expect(
+                            tradingPage.transactionDetailSidebar.sendAccount,
+                        ).toContainText(getNetwork(trade.sendSymbol as NetworkSymbol).name);
+                        await expect(
+                            tradingPage.transactionDetailSidebar.receiveAccount,
+                        ).toBeVisible();
+                    });
+
+                    await test.step(`Navigate back to transaction list`, async () => {
+                        await tradingPage.backButton.click();
+                        await expect(tradingPage.transactions.heading).toBeVisible();
+                    });
+                }
+            },
+        );
+
+        test(
+            'Ongoing swap detail shows the processing header',
+            { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
+            async ({ walletPage, tradingPage }) => {
+                await test.step('Navigate to swap/exchange trading section', async () => {
+                    await walletPage.openSwapTrading({ symbol: btcSymbol });
+                });
+
+                await test.step('Open trading transactions history', async () => {
+                    await tradingPage.transactions.menuButton.click();
+                    await expect(tradingPage.transactions.heading).toHaveTranslation(
+                        'TR_TRADING_LAST_TRANSACTIONS',
                     );
-                const expectedDate = new Intl.DateTimeFormat('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    hourCycle: 'h23',
-                }).format(new Date(trade.date));
-                await expect.soft(row.date).toHaveText(expectedDate);
-            }
-        });
+                });
 
-        const detailStatusTranslationKeys = {
-            SUCCESS: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
-            ERROR: 'TR_EXCHANGE_DETAIL_ERROR_TITLE',
-            CONFIRMING: 'TR_EXCHANGE_DETAIL_SENDING_TRANSACTION',
-        } as const;
+                await test.step('Open detail for the ongoing (CONFIRMING) trade', async () => {
+                    await tradingPage.transactions
+                        .transactionRow(PENDING_TRADE.orderId)
+                        .root.click();
+                    await expect(tradingPage.transactionDetail).toBeVisible();
+                });
 
-        for (const trade of SEEDED_TRADES) {
-            const receiveSymbol = (
-                cryptoIdToSymbol(trade.data.receive as Parameters<typeof cryptoIdToSymbol>[0]) ??
-                trade.data.receive
-            ).toUpperCase();
-
-            await test.step(`Open detail for trade ${trade.orderId}`, async () => {
-                await tradingPage.transactions
-                    .swapTransactionRow(trade.orderId)
-                    .viewDetailsButton.click();
-            });
-
-            await test.step(`Verify detail page for trade ${trade.orderId}`, async () => {
-                type DetailStatusKey = keyof typeof detailStatusTranslationKeys;
-
-                await expect(tradingPage.transactionDetail).toBeVisible();
-                await expect
-                    .soft(tradingPage.transactionDetailStatus)
-                    .toHaveTranslation(
-                        detailStatusTranslationKeys[trade.data.status as DetailStatusKey],
+                await test.step('Verify the processing header is shown', async () => {
+                    await expect(tradingPage.transactionDetailHeader).toHaveTranslation(
+                        'TR_TRADING_HEADER_PROCESSING_TITLE',
+                        { values: { type: 'swap' } },
                     );
+                });
+            },
+        );
 
-                await expect
-                    .soft(tradingPage.transactionDetailSidebar.sendAmount)
-                    .toHaveText(
-                        `${localizeNumber(trade.data.sendStringAmount)} ${trade.sendSymbol.toUpperCase()}`,
+        test(
+            'User can export trade history as CSV',
+            { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
+            async ({ walletPage, tradingPage }) => {
+                await test.step('Navigate to swap/exchange trading section', async () => {
+                    await walletPage.openSwapTrading({ symbol: btcSymbol });
+                });
+
+                await test.step('Open trading transactions history', async () => {
+                    await tradingPage.transactions.menuButton.click();
+                    await expect(tradingPage.transactions.heading).toHaveTranslation(
+                        'TR_TRADING_LAST_TRANSACTIONS',
                     );
-                await expect
-                    .soft(tradingPage.transactionDetailSidebar.receiveAmount)
-                    .toHaveText(
-                        `${localizeNumber(trade.data.receiveStringAmount)} ${receiveSymbol}`,
+                    await expect(tradingPage.transactions.rows).toHaveCount(SEEDED_TRADES.length);
+                });
+
+                const csvContent = await test.step('Export the trade history', () =>
+                    tradingPage.transactions.downloadExportedCsv());
+
+                await test.step('Verify the exported file holds the seeded trades', () => {
+                    const [, ...tradeRows] = parseCsvRows(csvContent);
+
+                    expect(tradeRows.map(([orderId]) => orderId).sort()).toEqual(
+                        SEEDED_TRADES.map(trade => trade.orderId).sort(),
                     );
-
-                await expect
-                    .soft(tradingPage.transactionDetailSidebar.providerInStatusCard)
-                    .toBeVisible();
-                await expect
-                    .soft(tradingPage.transactionDetailSidebar.providerInStatusCard)
-                    .toHaveText(trade.data.exchange, { ignoreCase: true });
-
-                await expect
-                    .soft(tradingPage.transactionDetailSidebar.orderIdInStatusCard)
-                    .toHaveText(trade.orderId);
-
-                await expect(tradingPage.transactionDetailSidebar.sendAccount).toContainText(
-                    getNetwork(trade.sendSymbol as NetworkSymbol).name,
-                );
-                await expect(tradingPage.transactionDetailSidebar.receiveAccount).toBeVisible();
-            });
-
-            await test.step(`Navigate back to transaction list`, async () => {
-                await tradingPage.backButton.click();
-                await expect(tradingPage.transactions.heading).toBeVisible();
-            });
-        }
-    });
-
-    test('Ongoing swap detail shows the processing header', async ({ walletPage, tradingPage }) => {
-        await test.step('Navigate to swap/exchange trading section', async () => {
-            await walletPage.openSwapTrading({ symbol: 'btc' });
-        });
-
-        await test.step('Open trading transactions history', async () => {
-            await tradingPage.transactions.menuButton.click();
-            await expect(tradingPage.transactions.heading).toHaveTranslation(
-                'TR_TRADING_LAST_TRANSACTIONS',
-            );
-        });
-
-        await test.step('Open detail for the ongoing (CONFIRMING) trade', async () => {
-            await tradingPage.transactions
-                .swapTransactionRow(PENDING_TRADE.orderId)
-                .viewDetailsButton.click();
-            await expect(tradingPage.transactionDetail).toBeVisible();
-        });
-
-        await test.step('Verify the processing header is shown', async () => {
-            await expect(tradingPage.transactionDetailHeader).toHaveTranslation(
-                'TR_TRADING_HEADER_PROCESSING_TITLE',
-                { values: { type: 'swap' } },
-            );
-        });
-    });
-});
+                });
+            },
+        );
+    },
+);

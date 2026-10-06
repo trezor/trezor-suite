@@ -1,17 +1,18 @@
 import { useCallback, useMemo, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingSendRejectedProps,
     exchangeThunks,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { type TxKeyPath } from '@suite-native/intl';
 import {
     type ExchangeFlowType,
@@ -50,17 +51,17 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
             StackNavigationProps<
                 RootStackParamList,
                 | RootStackRoutes.TradingExchangePreview
-                | RootStackRoutes.TradingExchangeOutputsReview
+                | RootStackRoutes.TradingExchangeTransactionReview
             >
         >();
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const device = useSelector(selectSelectedDevice);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
 
     const { openBrowserForFormData } = useBrowserAuth('exchange');
     const quoteStatus = quote?.status;
+    const isDexExchange = quote?.isDex;
 
     useFocusEffect(
         useCallback(() => {
@@ -230,5 +231,6 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
         serializedTx,
         resolveTransactionSendConsent,
         isTransactionSendConsentRequested,
+        isDexExchange,
     };
 };

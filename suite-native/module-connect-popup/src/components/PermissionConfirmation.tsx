@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Button,
     Card,
@@ -22,7 +24,7 @@ import { GroupedPermissionsList } from './GroupedPermissionsList';
 import { ConnectAppIcon } from '../components/ConnectAppIcon';
 
 export const PermissionConfirmation = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation();
     const popupCall = useSelector(selectConnectPopupCall);
 

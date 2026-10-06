@@ -1,13 +1,19 @@
 import { type CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { isAccountEligibleForTrade } from './tradingAccountUtils';
 
+const ethSymbol = asNetworkSymbol('eth');
+
 const TOKEN_CRYPTO_ID = 'ethereum--0xTokenContract' as CryptoId;
 
-const withBalance = mockWalletAccount({ symbol: 'eth', balance: '1000000000000000000' });
-const zeroBalance = mockWalletAccount({ symbol: 'eth', balance: '0', tokens: [] });
+const withBalance = mockWalletAccount({
+    symbol: ethSymbol,
+    balance: '1000000000000000000',
+});
+const zeroBalance = mockWalletAccount({ symbol: ethSymbol, balance: '0', tokens: [] });
 
 describe('isAccountEligibleForTrade', () => {
     it('is always eligible for buy regardless of balance', () => {

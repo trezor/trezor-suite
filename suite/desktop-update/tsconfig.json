@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
@@ -19,6 +22,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../analytics" },
+        { "path": "../desktop-app-api" },
         { "path": "../intl" },
         { "path": "../router" },
         { "path": "../../packages/components" },
@@ -27,9 +31,6 @@
         { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"
-        },
-        {
-            "path": "../../packages/suite-desktop-api"
         },
         { "path": "../../packages/utils" }
     ]

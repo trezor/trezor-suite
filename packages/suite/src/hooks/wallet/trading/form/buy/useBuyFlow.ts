@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type selectTradingBuyQuotesRequest, tradingThunks } from '@suite-common/trading';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { useTradingClearStaleQuotes } from '../common/useTradingClearStaleQuotes';
 
@@ -14,7 +14,7 @@ type UseBuyFlowProps = {
 };
 
 export const useBuyFlow = ({ isFromRedirect, quotesRequest, isAmountEmpty }: UseBuyFlowProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: 'buy' }));
@@ -24,7 +24,7 @@ export const useBuyFlow = ({ isFromRedirect, quotesRequest, isAmountEmpty }: Use
 
     useEffect(() => {
         if (isFromRedirect && quotesRequest) {
-            dispatch(goto({ routeName: 'wallet-trading-buy-confirm' }));
+            dispatch(gotoThunk({ routeName: 'wallet-trading-buy-confirm' }));
         }
     }, [isFromRedirect, quotesRequest, dispatch]);
 };

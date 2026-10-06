@@ -1,27 +1,27 @@
 import { useCallback, useState } from 'react';
 
 import { useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isMacOs } from '@trezor/env-utils';
 
 import {
     requestBioAuthChangeThunk,
     requestBioAuthValidationThunk,
 } from 'src/actions/suite/bioAuthThunks';
-
-import { useDispatch } from './useDispatch';
-import { useSelector } from './useSelector';
+import { useSelector } from 'src/hooks/suite';
+import { selectBioAuth } from 'src/reducers/bioAuth';
 
 export const useBioAuthDesktopApi = () => {
-    const { isBioAuthAvailable, isBioAuthEnabled, isBioAuthValidationRequired, cancelled } =
-        useSelector(state => ({
-            isBioAuthAvailable: state.bioAuth.bioAuthAvailable,
-            isBioAuthEnabled: state.bioAuth.bioAuthEnabled,
-            isBioAuthValidationRequired: state.bioAuth.bioAuthValidationRequired,
-            cancelled: state.bioAuth.cancelled,
-        }));
+    const {
+        bioAuthAvailable: isBioAuthAvailable,
+        bioAuthEnabled: isBioAuthEnabled,
+        bioAuthValidationRequired: isBioAuthValidationRequired,
+        cancelled,
+    } = useSelector(selectBioAuth);
 
     const { translationString } = useTranslation();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const messageSuccess = translationString(
         isMacOs() ? 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC' : 'TR_BIO_AUTH_SYSTEM_MESSAGE_WIN',
     );

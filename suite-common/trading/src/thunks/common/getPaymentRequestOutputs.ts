@@ -13,7 +13,7 @@ import {
     formatSlip24SendAmountByNetwork,
 } from '../../utils/signature/signatureUtils';
 
-export const getPaymentRequestOutputs = createThunk<
+export const getPaymentRequestOutputsThunk = createThunk<
     PaymentRequestOutput[],
     {
         network: Network;

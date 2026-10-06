@@ -15,8 +15,8 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 describe('OriginalLimit', () => {
-    const renderOriginalLimit = () =>
-        renderWithStoreProvider(<OriginalLimit />, {
+    const renderOriginalLimit = async () =>
+        await renderWithStoreProvider(<OriginalLimit />, {
             preloadedState: {
                 wallet: getWalletState({
                     tradeType: 'exchange',
@@ -37,21 +37,21 @@ describe('OriginalLimit', () => {
             { send: 'bitcoin', preapprovedStringAmount: '' },
         ],
         ['quote.preapprovedStringAmount is "0"', { send: 'bitcoin', preapprovedStringAmount: '0' }],
-    ] as const)('should render nothing when %s', (_description, quote) => {
+    ] as const)('should render nothing when %s', async (_description, quote) => {
         mockSelectTradingExchangeSelectedQuote.mockReturnValue(quote);
 
-        const { toJSON } = renderOriginalLimit();
+        const { toJSON } = await renderOriginalLimit();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render limit label and amount when quote has valid data', () => {
+    it('should render limit label and amount when quote has valid data', async () => {
         mockSelectTradingExchangeSelectedQuote.mockReturnValue({
             send: 'bitcoin',
             preapprovedStringAmount: '100',
         } as Partial<ExchangeTrade>);
 
-        const { getByText } = renderOriginalLimit();
+        const { getByText } = await renderOriginalLimit();
 
         expect(
             getByText(

@@ -1,5 +1,4 @@
 import { type ComponentType, type JSX } from 'react';
-import { useSelector } from 'react-redux';
 
 import { type ErrorCode } from 'invity-api';
 
@@ -15,8 +14,17 @@ import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notific
 import { getTradingErrorDisplay } from '@suite-common/trading';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { DEVICE } from '@trezor/connect';
-import { ArrowDownIcon, ArrowUpIcon, CheckIcon, GearIcon, TorBrowserIcon } from '@trezor/icons';
+import {
+    ArrowDownIcon,
+    ArrowUpIcon,
+    CheckIcon,
+    GearIcon,
+    PiggyBankIcon,
+    TorBrowserIcon,
+} from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { ActionRenderer } from './ActionRenderer';
 import { AutoEjectRenderer } from './AutoEjectRenderer';
@@ -103,6 +111,23 @@ export const NotificationRenderer = ({
                 values: { error: notification.error },
             });
 
+        case 'account-added':
+            return renderNotificationView(render, notification, {
+                variant: 'transparent',
+                message: 'TOAST_ACCOUNT_ADDED',
+                values: { networkName: notification.networkName },
+            });
+
+        case 'accounts-discovered':
+            return renderNotificationView(render, notification, {
+                variant: 'transparent',
+                message: 'TOAST_ACCOUNTS_DISCOVERED',
+                values: {
+                    count: notification.count,
+                    networkName: notification.networkName,
+                },
+            });
+
         case 'backup-failed':
             return renderNotificationView(render, notification, {
                 variant: 'error',
@@ -171,7 +196,7 @@ export const NotificationRenderer = ({
                     render={render}
                     notification={notification}
                     icon={ArrowUpIcon}
-                    variant="success"
+                    variant="warning"
                     message="TOAST_TX_SENT"
                     messageValues={{
                         account: notification.descriptor,
@@ -238,6 +263,12 @@ export const NotificationRenderer = ({
             return renderNotificationView(render, notification, {
                 variant: 'success',
                 message: 'TOAST_VERIFY_MESSAGE_SUCCESS',
+            });
+
+        case 'verify-message-cancelled':
+            return renderNotificationView(render, notification, {
+                variant: 'error',
+                message: 'TR_VERIFICATION_CANCELED',
             });
 
         case 'error':
@@ -347,7 +378,7 @@ export const NotificationRenderer = ({
 
         case 'auto-updater-no-new':
             return renderNotificationView(render, notification, {
-                variant: 'info',
+                variant: 'transparent',
                 message: 'TOAST_AUTO_UPDATER_NO_NEW',
             });
 
@@ -457,7 +488,6 @@ export const NotificationRenderer = ({
                     variant="info"
                     message="TOAST_TX_RECEIVED"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     }}
                 />
@@ -469,7 +499,7 @@ export const NotificationRenderer = ({
                     render={render}
                     notification={notification}
                     icon={ArrowUpIcon}
-                    variant="success"
+                    variant="warning"
                     message="TOAST_TX_REVOKED"
                     messageValues={{
                         tokenSymbol: notification.token.symbol,
@@ -483,10 +513,9 @@ export const NotificationRenderer = ({
                     render={render}
                     notification={notification}
                     icon={ArrowUpIcon}
-                    variant="success"
+                    variant="warning"
                     message="TOAST_TX_APPROVED"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         tokenSymbol: notification.token.symbol,
                     }}
                 />
@@ -498,7 +527,7 @@ export const NotificationRenderer = ({
                     render={render}
                     notification={notification}
                     icon={ArrowUpIcon}
-                    variant="success"
+                    variant="warning"
                     message="TOAST_TX_EXCHANGE_BROADCASTED"
                 />
             );
@@ -531,10 +560,9 @@ export const NotificationRenderer = ({
                     render={render}
                     notification={notification}
                     icon={ArrowUpIcon}
-                    variant="success"
+                    variant="warning"
                     message="TOAST_TX_SENT"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     }}
                 />
@@ -548,7 +576,6 @@ export const NotificationRenderer = ({
                     variant="info"
                     message="TOAST_TX_CONFIRMED"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     }}
                 />
@@ -595,11 +622,10 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon={ArrowUpIcon}
-                    variant="success"
+                    icon={PiggyBankIcon}
+                    variant="warning"
                     message="TOAST_TX_STAKED"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     }}
                 />
@@ -610,11 +636,11 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon={ArrowUpIcon}
-                    variant="success"
+                    icon={PiggyBankIcon}
+                    variant="warning"
                     message="TOAST_TX_UNSTAKED"
                     messageValues={{
-                        amount: notification.formattedAmount,
+                        account: notification.descriptor,
                     }}
                 />
             );
@@ -624,11 +650,11 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon={ArrowUpIcon}
-                    variant="success"
+                    icon={PiggyBankIcon}
+                    variant="warning"
                     message="TOAST_TX_CLAIMED"
                     messageValues={{
-                        amount: notification.formattedAmount,
+                        account: notification.descriptor,
                     }}
                 />
             );
@@ -639,7 +665,7 @@ export const NotificationRenderer = ({
                     render={render}
                     notification={notification}
                     icon={ArrowUpIcon}
-                    variant="success"
+                    variant="warning"
                     message="TOAST_TX_YIELD_DEPOSIT"
                     messageValues={{
                         account: notification.descriptor,
@@ -653,7 +679,7 @@ export const NotificationRenderer = ({
                     render={render}
                     notification={notification}
                     icon={ArrowUpIcon}
-                    variant="success"
+                    variant="warning"
                     message="TOAST_TX_YIELD_WITHDRAW"
                     messageValues={{
                         account: notification.descriptor,
@@ -667,7 +693,7 @@ export const NotificationRenderer = ({
                     render={render}
                     notification={notification}
                     icon={ArrowUpIcon}
-                    variant="success"
+                    variant="warning"
                     message="TOAST_TX_YIELD_CLAIM"
                     messageValues={{
                         account: notification.descriptor,

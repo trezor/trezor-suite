@@ -12,7 +12,7 @@ import { type WalletDescriptor, parseStaticSessionId } from '@trezor/device-util
 
 import type { MigrateLegacyLabelsToSuiteSync } from './migrateLegacyLabelsToSuiteSync';
 
-export type CreateMigrateLabelsIfAvailableDeps = {
+export type MigrateLabelsIfAvailableDeps = {
     dispatch: Dispatch;
     migrateLegacyLabelsToSuiteSync: MigrateLegacyLabelsToSuiteSync;
     getIsMetadataEnabled: () => boolean;
@@ -24,7 +24,7 @@ export type CreateMigrateLabelsIfAvailableDeps = {
 };
 
 export const createMigrateLabelsIfAvailable = (
-    deps: CreateMigrateLabelsIfAvailableDeps,
+    deps: MigrateLabelsIfAvailableDeps,
 ): OnStorageEnsured => {
     const isMigratingByWalletDescriptor = new Map<WalletDescriptor, true>();
 

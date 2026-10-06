@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Banner,
     Card,
@@ -13,8 +15,7 @@ import {
     Text,
 } from '@trezor/components';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 
 /**
  * A Modal that allows user to set the `safety_checks` feature of connected Trezor.
@@ -25,9 +26,9 @@ import { useDispatch } from 'src/hooks/suite';
 export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
     const { device, isLocked } = useDevice();
     const [level, setLevel] = useState(device?.features?.safety_checks || undefined);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
-    const confirm = () => dispatch(applySettings({ safety_checks: level }));
+    const confirm = () => dispatch(applySettingsThunk({ safety_checks: level }));
 
     return (
         <Modal

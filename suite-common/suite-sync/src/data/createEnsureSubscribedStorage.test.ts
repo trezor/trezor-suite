@@ -10,6 +10,7 @@ import {
     createSuiteSyncOutputId,
 } from '@suite-common/suite-sync-storage';
 import { type SuiteSyncListener } from '@suite-common/suite-sync-types';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { asWalletDescriptor } from '@trezor/device-utils';
@@ -18,13 +19,14 @@ import { err, ok } from '@trezor/type-utils';
 import { createSuiteSyncStorageMock } from '../../mocks/mockCreateSuiteSyncStorage';
 import { SuiteSyncUnavailableOnDeviceError } from '../createEnsureSuiteSyncKeys';
 import {
-    type CreateEnsureSubscribedStorageDeps,
+    type EnsureSubscribedStorageDeps,
     createEnsureSubscribedStorage,
 } from './createEnsureSubscribedStorage';
 import { createStorageIdFromDeviceStaticSessionId } from '../storage/createStorageIdFromDeviceStaticSessionId';
 import { createSubscriptionStorage } from '../storage/createSubscriptionStorage';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
+const btcSymbol = asNetworkSymbol('btc');
 
 const createListenerMock = (): SuiteSyncListener => ({
     onUnsubscribe: jest.fn(),
@@ -80,7 +82,7 @@ describe(createEnsureSubscribedStorage.name, () => {
         const suiteSyncListener = createListenerMock();
         const storageResult = err(SuiteSyncUnavailableOnDeviceError());
 
-        const deps = createMockDeps<CreateEnsureSubscribedStorageDeps>({
+        const deps = createMockDeps<EnsureSubscribedStorageDeps>({
             ensureStorage: () => Promise.resolve(storageResult),
             subscriptionStorage: createSubscriptionStorage(),
             suiteSyncListener,
@@ -113,7 +115,7 @@ describe(createEnsureSubscribedStorage.name, () => {
             unsubscribe: jest.fn(),
         });
 
-        const deps = createMockDeps<CreateEnsureSubscribedStorageDeps>({
+        const deps = createMockDeps<EnsureSubscribedStorageDeps>({
             ensureStorage: () => Promise.resolve(ok(storage)),
             subscriptionStorage,
             suiteSyncListener,
@@ -138,7 +140,7 @@ describe(createEnsureSubscribedStorage.name, () => {
             outputs: { subscribe: () => () => {} },
         });
 
-        const deps = createMockDeps<CreateEnsureSubscribedStorageDeps>({
+        const deps = createMockDeps<EnsureSubscribedStorageDeps>({
             ensureStorage: () => Promise.resolve(ok(storage)),
             subscriptionStorage: createSubscriptionStorage(),
             suiteSyncListener,
@@ -171,7 +173,7 @@ describe(createEnsureSubscribedStorage.name, () => {
 
         const storage = createStorageWithEmitters(storageEmitters);
 
-        const deps = createMockDeps<CreateEnsureSubscribedStorageDeps>({
+        const deps = createMockDeps<EnsureSubscribedStorageDeps>({
             ensureStorage: () => Promise.resolve(ok(storage)),
             subscriptionStorage: createSubscriptionStorage(),
             suiteSyncListener,
@@ -194,10 +196,10 @@ describe(createEnsureSubscribedStorage.name, () => {
         storageEmitters.accounts.forEach(it =>
             it.onChange([
                 {
-                    id: createSuiteSyncAccountId(asAccountDescriptor('account-1'), 'btc'),
+                    id: createSuiteSyncAccountId(asAccountDescriptor('account-1'), btcSymbol),
                     accountDescriptor: asAccountDescriptor('account-1'),
                     label: 'Account for Drugs',
-                    networkSymbol: 'btc',
+                    networkSymbol: btcSymbol,
                 },
             ]),
         );
@@ -208,7 +210,7 @@ describe(createEnsureSubscribedStorage.name, () => {
                     id: 'account-1-btc',
                     accountDescriptor: 'account-1',
                     label: 'Account for Drugs',
-                    networkSymbol: 'btc',
+                    networkSymbol: btcSymbol,
                 },
             ],
         );
@@ -216,8 +218,8 @@ describe(createEnsureSubscribedStorage.name, () => {
         storageEmitters.addresses.forEach(it =>
             it.onChange([
                 {
-                    id: createSuiteSyncAddressId('address', 'btc'),
-                    networkSymbol: 'btc',
+                    id: createSuiteSyncAddressId('address', btcSymbol),
+                    networkSymbol: btcSymbol,
                     accountDescriptor: asAccountDescriptor('account-1'),
                     address: 'address',
                     label: 'Address for drugs',
@@ -232,7 +234,7 @@ describe(createEnsureSubscribedStorage.name, () => {
                     accountDescriptor: 'account-1',
                     address: 'address',
                     label: 'Address for drugs',
-                    networkSymbol: 'btc',
+                    networkSymbol: btcSymbol,
                 },
             ],
         );
@@ -241,7 +243,7 @@ describe(createEnsureSubscribedStorage.name, () => {
             it.onChange([
                 {
                     id: createSuiteSyncOutputId('transaction-id', '0'),
-                    networkSymbol: 'btc',
+                    networkSymbol: btcSymbol,
                     accountDescriptor: asAccountDescriptor('account-1'),
                     txId: 'transaction-id',
                     txTargetId: '0',

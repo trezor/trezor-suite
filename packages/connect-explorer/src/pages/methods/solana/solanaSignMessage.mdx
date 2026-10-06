@@ -1,0 +1,88 @@
+import { SolanaSignMessage } from '@trezor/connect-common/src/types/api/solana/common';
+
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ParamsTable } from '../../../components/ParamsTable';
+import signMessage from '../../../data/methods/solana/signMessage.ts';
+
+<ApiPlayground
+    options={[
+        { title: 'Sign message', legacyConfig: signMessage[0] },
+        {
+            title: 'Advanced schema',
+            method: 'solanaSignMessage',
+            schema: SolanaSignMessage,
+        },
+    ]}
+/>
+
+export const paramDescriptions = {
+    path: 'minimum length is `2`. [read more](/details/path)',
+    message: 'UTF-8 message text to sign.',
+    signers:
+        'Optional array of base58-encoded signer public keys to embed in the OCMS v1 envelope. Must include the signing key. When omitted, the public key derived from `path` is used as the sole signer.',
+    chunkify: 'If `true`, long strings will be split into multiple chunks on the device display.',
+};
+
+## Solana: Sign message
+
+Asks device to sign a Solana off-chain message ([OCMS v1](https://docs.anza.xyz/proposals/off-chain-message-signing#envelope)). User is asked to confirm the message on Trezor.
+
+```javascript
+const result = await TrezorConnect.solanaSignMessage(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### SolanaSignMessage
+
+<ParamsTable schema={SolanaSignMessage} descriptions={paramDescriptions} />
+
+### Example
+
+```javascript
+TrezorConnect.solanaSignMessage({
+    path: "m/44'/501'/0'/0'",
+    message: 'Hello, Trezor!',
+});
+```
+
+With explicit signers (the signing key derived from `path` must be included):
+
+```javascript
+TrezorConnect.solanaSignMessage({
+    path: "m/44'/501'/0'/0'",
+    message: 'Hello, Trezor!',
+    signers: [
+        '14CCvQzQzHCVgZM3j9soPnXuJXh1RmCfwLVUcdfbZVBS', // signing key
+        '7v91N7iZ9mNicL8WfG6cgSCKyRXydQjLh6UYBWwm6y1Q', // additional co-signer
+    ],
+});
+```
+
+### Result
+
+[SolanaSignedMessage type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/solana/common.ts)
+
+```javascript
+{
+    success: true,
+    payload: {
+        signature: string,   // hex-encoded Ed25519 signature over the OCMS v1 envelope
+        signedData: string,  // hex-encoded serialized OCMS v1 envelope (optional)
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    error: {
+        message: string // error message
+    }
+}
+```

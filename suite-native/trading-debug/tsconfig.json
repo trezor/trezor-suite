@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/trading" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../feature-flags" },
@@ -9,7 +10,6 @@
         {
             "path": "../../packages/styles-native"
         },
-        { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/wallet-core"
         },

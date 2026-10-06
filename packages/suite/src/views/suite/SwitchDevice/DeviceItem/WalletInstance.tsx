@@ -1,16 +1,20 @@
 import { useState } from 'react';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
-import { selectIsLegacyLabelingVisible } from '@suite/metadata';
+import { selectIsLegacyLabelingVisible, selectLabelingValueBeingEdited } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { useWalletLabel } from '@suite/wallet';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDeviceThunk } from '@suite-common/device';
+import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import {
     getAccountsByDeviceState,
+    selectAccounts,
     selectAllAccountsToList,
     selectBaseCurrency,
     selectCurrentFiatRates,
-    selectDeviceThunk,
 } from '@suite-common/wallet-core';
 import { getAllAccounts } from '@suite-common/wallet-utils';
 import {
@@ -31,8 +35,7 @@ import { AsteriskIcon, EjectIcon, XIcon } from '@trezor/icons';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useStore } from 'src/hooks/suite/useStore';
+import { useSelector } from 'src/hooks/suite';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { type AcquiredDevice, type ForegroundAppProps } from 'src/types/suite';
 
@@ -53,13 +56,12 @@ export const WalletInstance = ({
     ...rest
 }: WalletInstanceProps) => {
     const [isEjecting, setIsEjecting] = useState(false);
-    const accounts = useSelector(state => state.wallet.accounts);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const accounts = useSelector(selectAccounts);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const editing = useSelector(state => state.metadata.editing);
-    const dispatch = useDispatch();
-    const store = useStore();
+    const editing = useSelector(selectLabelingValueBeingEdited);
+    const { dispatch, getState } = useServices(injectDispatch, injectGetState);
     const { translationString } = useTranslation();
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const { defaultLabel, label } = useWalletLabel({ device: instance });
@@ -86,7 +88,7 @@ export const WalletInstance = ({
 
             // NOTE: to determine which account is the first one, we need to filter out empty accounts
             // that are currently displayed in the UI
-            const unfilteredUIAccountGroups = selectAllAccountsToList(store.getState());
+            const unfilteredUIAccountGroups = selectAllAccountsToList(getState());
             const currentFirstAccount = unfilteredUIAccountGroups[0];
             // NOTE: attempt to determine, if the currently selected account
             // has a corresponding account in the next wallet accounts
@@ -128,8 +130,8 @@ export const WalletInstance = ({
         >
             <Box padding={{ vertical: 12, right: 12, left: 16 }}>
                 <Collapsible isOpen={isEjecting}>
-                    <Column gap={8}>
-                        <Row justifyContent="space-between">
+                    <Column gap={8} alignItems="flex-start">
+                        <Row justifyContent="space-between" width="100%">
                             <Text
                                 as="div"
                                 intent="neutral"

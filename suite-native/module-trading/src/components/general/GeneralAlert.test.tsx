@@ -3,23 +3,23 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { GeneralAlert, type GeneralAlertProps } from './GeneralAlert';
 
 describe('GeneralAlert', () => {
-    const renderGeneralAlert = (props: GeneralAlertProps) =>
-        renderWithBasicProvider(<GeneralAlert {...props} />);
+    const renderGeneralAlert = async (props: GeneralAlertProps) =>
+        await renderWithBasicProvider(<GeneralAlert {...props} />);
 
-    it('should render nothing when no text is provided', () => {
-        const { toJSON } = renderGeneralAlert({});
-
-        expect(toJSON()).toBeNull();
-    });
-
-    it('should render nothing for empty text', () => {
-        const { toJSON } = renderGeneralAlert({ text: '' });
+    it('should render nothing when no text is provided', async () => {
+        const { toJSON } = await renderGeneralAlert({});
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render alert with provided text', () => {
-        const { getByText } = renderGeneralAlert({ text: 'Test Alert' });
+    it('should render nothing for empty text', async () => {
+        const { toJSON } = await renderGeneralAlert({ text: '' });
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it('should render alert with provided text', async () => {
+        const { getByText } = await renderGeneralAlert({ text: 'Test Alert' });
 
         expect(getByText('Test Alert')).toBeTruthy();
     });

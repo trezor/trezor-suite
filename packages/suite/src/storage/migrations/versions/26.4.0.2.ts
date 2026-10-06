@@ -15,8 +15,7 @@ export default createMigration<SuiteDBSchema>('26.4.0.2', async (db, tx) => {
             'experimentalFeedback',
         );
         const oldData = (await oldStore.get('experimentalFeedback')) as
-            | FeatureFeedbackState
-            | undefined;
+            FeatureFeedbackState | undefined;
 
         if (oldData) {
             tx.objectStore('featureFeedback').put(oldData, 'featureFeedback');

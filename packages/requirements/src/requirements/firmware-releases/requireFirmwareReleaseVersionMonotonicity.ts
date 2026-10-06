@@ -1,6 +1,7 @@
-import { readFileSync, readdirSync } from 'node:fs';
+import { readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
+import { readJson } from '@trezor/node-utils';
 import { type VersionArray, versionUtils } from '@trezor/utils';
 
 import { normalizePath } from '../../fileSystem';
@@ -53,7 +54,7 @@ const readChannelReleases = (channelDir: string): FirmwareRelease[] => {
         }
 
         const file = join(channelDir, entry.name);
-        const data = JSON.parse(readFileSync(file, 'utf-8')) as FirmwareReleaseFile;
+        const data = readJson<FirmwareReleaseFile>(file);
 
         releases.push({ file, data });
     }

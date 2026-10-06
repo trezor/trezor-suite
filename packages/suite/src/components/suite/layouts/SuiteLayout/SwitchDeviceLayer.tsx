@@ -1,17 +1,19 @@
-import { closeModalApp } from '@suite/router';
+import { closeModalAppThunk } from '@suite/router';
 import {
     TurnOnSuiteSyncModals,
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
 } from '@suite/suite-sync';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
-import { useDispatch, usePreferredModal, useSelector } from 'src/hooks/suite';
+import { usePreferredModal, useSelector } from 'src/hooks/suite';
 import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
 
 export const SwitchDeviceLayer = () => {
     const modal = usePreferredModal();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const deviceStaticSessionId = useSelector(selectShowEnableSuiteSyncModal);
 
     if (modal.type !== 'foreground-app' || modal.payload.app !== 'switch-device') return null;
@@ -20,7 +22,7 @@ export const SwitchDeviceLayer = () => {
         <>
             <SwitchDevice
                 cancelable={modal.payload.cancelable}
-                onCancel={() => dispatch(closeModalApp())}
+                onCancel={() => dispatch(closeModalAppThunk())}
             />
             <TurnOnSuiteSyncModals
                 deviceStaticSessionId={deviceStaticSessionId}

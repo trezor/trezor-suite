@@ -31,7 +31,6 @@ import { getMessageId } from './getMessageId';
 import { NetworkList } from './NetworkList/NetworkList';
 import { StatusLight } from './StatusLight';
 import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
-import { TorLoader } from './TorLoader/TorLoader';
 import { CountdownTimer } from './CountdownTimer';
 import { CoinBalance } from './CoinBalance';
 import { Preloader } from './Preloader/Preloader';
@@ -70,7 +69,6 @@ export {
     NetworkList,
     StatusLight,
     AmountUnitSwitchWrapper,
-    TorLoader,
     CountdownTimer,
     CoinBalance,
     Preloader,

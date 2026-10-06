@@ -22,7 +22,7 @@ jest.mock('@suite-native/atoms', () => ({
 describe('Footer', () => {
     const mockOpenLink = jest.spyOn(Linking, 'openURL');
 
-    const renderFooter = (overrides: Partial<TradingState>) => {
+    const renderFooter = async (overrides: Partial<TradingState>) => {
         const walletState = getWalletState();
         const preloadedState = {
             wallet: {
@@ -34,15 +34,15 @@ describe('Footer', () => {
             },
         };
 
-        return renderWithStoreProvider(<Footer />, { preloadedState });
+        return await renderWithStoreProvider(<Footer />, { preloadedState });
     };
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should render footer info', () => {
-        const { getByText } = renderFooter({});
+    it('should render footer info', async () => {
+        const { getByText } = await renderFooter({});
 
         expect(
             getByText(
@@ -56,20 +56,18 @@ describe('Footer', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render nothing when isAmountInputActive is true', () => {
-        const { toJSON } = renderFooter({ isAmountInputActive: true });
+    it('should render nothing when isAmountInputActive is true', async () => {
+        const { toJSON } = await renderFooter({ isAmountInputActive: true });
 
         expect(toJSON()).toBeNull();
     });
 
     it("should render provider's Terms & Conditions link when quote and provider infos are provided", async () => {
-        const { getByText } = renderFooter({ currentProviderMetadata: exchangeCexdirect });
+        const { getByText } = await renderFooter({ currentProviderMetadata: exchangeCexdirect });
 
         expect(getByText(/Cexdirect/)).toBeOnTheScreen();
         await userEvent.press(
-            getByText(
-                getTranslation('moduleTrading.tradingScreen.footer.howTradingWorksSheet.item5'),
-            ),
+            getByText(getTranslation('moduleTrading.tradingScreen.footer.termsApply')),
         );
 
         expect(mockOpenLink).toHaveBeenCalledTimes(1);
@@ -77,7 +75,7 @@ describe('Footer', () => {
     });
 
     it('pressing link should open sheet', async () => {
-        const { getByText } = renderFooter({});
+        const { getByText } = await renderFooter({});
 
         await userEvent.press(
             getByText(

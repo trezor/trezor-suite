@@ -2,14 +2,15 @@ import { useEffect, useRef } from 'react';
 
 import { type DexApprovalType } from 'invity-api';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import { parseCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
-import { isWrappedNativeToken } from '@suite-common/wallet-utils';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 
 import { type AllowanceModalProvider } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/AllowanceModalProviderInfo';
@@ -40,7 +41,7 @@ export const YieldApproveModal = ({
     onCancel,
     onSuccess,
 }: YieldApproveModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const {
         state: { isApproveModalOpen, isRevokeModalOpen, openApproveModal, openRevokeModal },
@@ -65,10 +66,13 @@ export const YieldApproveModal = ({
               }
             : getAssetLogoUrl({
                   coingeckoId: networkId,
-                  contractAddress: parsedContract,
+                  contractAddress: parsedContract
+                      ? getContractAddressForNetworkSymbol(account.symbol, parsedContract)
+                      : undefined,
                   size: 80,
               }),
         label: 'TR_EARN_YIELD_VAULT',
+        kind: 'vault',
     };
 
     useEffect(() => {

@@ -287,6 +287,14 @@ describe('sellSelectors', () => {
             expect(selectSellSelectedSendAccount(state)).toBe(selectSellSelectedSendAccount(state));
         });
 
+        it('should be stable across dispatches that do not change the account', () => {
+            const first = selectSellSelectedSendAccount(state);
+            // A dispatch produces a new top-level state reference while the account stays the same.
+            const nextState = { ...state };
+
+            expect(selectSellSelectedSendAccount(nextState)).toBe(first);
+        });
+
         it('should return undefined when no account with given key exists', () => {
             state.wallet.trading.sell.tradingAccountKey = mockAccountKey({
                 descriptor: 'unknownAccountKey',

@@ -1,6 +1,8 @@
 import TrezorConnect from '@trezor/connect-web';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe(
     'TrezorConnect.ethereumSignMessage',
@@ -24,27 +26,27 @@ test.describe(
             });
         });
 
-        test('TrezorConnect.ethereumSignMessage', async ({
-            connectPermissionsModal,
-            page,
-            device,
-        }) => {
-            const res = TrezorConnect.ethereumSignMessage({
-                path: "m/44'/60'/0'",
-                message: 'example message',
-            });
+        test(
+            'TrezorConnect.ethereumSignMessage',
+            { annotation: createTestAnnotation({ stream: TestStream.Connect }) },
+            async ({ connectPermissionsModal, page, device }) => {
+                const res = TrezorConnect.ethereumSignMessage({
+                    path: "m/44'/60'/0'",
+                    message: 'example message',
+                });
 
-            await connectPermissionsModal.confirmButton.click();
+                await connectPermissionsModal.confirmButton.click();
 
-            const text = page.getByTestId('@sign-message-modal/message');
-            await expect(text).toHaveText('example message');
+                const text = page.getByTestId('@sign-message-modal/message');
+                await expect(text).toHaveText('example message');
 
-            await device.pressContinue();
-            await device.pressContinue();
+                await device.pressContinue();
+                await device.pressContinue();
 
-            await device.pressYes();
-            expect(await res).toMatchObject({ success: true });
-        });
+                await device.pressYes();
+                expect(await res).toMatchObject({ success: true });
+            },
+        );
 
         // todo: use account not available in suite (weird derivation path)
     },

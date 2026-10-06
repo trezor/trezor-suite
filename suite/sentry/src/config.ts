@@ -11,6 +11,7 @@ import {
     COINJOIN_NETWORK_TAG,
     COINJOIN_REPORT_TAG,
     type ChainableBeforeSend,
+    redactInvalidParameterValue,
     redactSentryEvent,
 } from '@suite-common/sentry';
 import { isDevEnv } from '@suite-common/suite-utils';
@@ -31,7 +32,7 @@ import { ignoreErrors } from './ignoreErrors';
  *
  * This is relevant only on Desktop.
  */
-const redactUserPath: ChainableBeforeSend = event => {
+export const redactUserPath: ChainableBeforeSend = event => {
     if (event === null) return null;
     try {
         const eventAsString = JSON.stringify(event);
@@ -50,7 +51,7 @@ const redactUserPath: ChainableBeforeSend = event => {
 };
 
 // Leaves only what is really necessary on a coinjoin error event
-const redactCoinjoinData: ChainableBeforeSend = event => {
+export const redactCoinjoinData: ChainableBeforeSend = event => {
     if (event === null) return null;
     if (event.tags?.[COINJOIN_REPORT_TAG]) {
         return {
@@ -69,16 +70,21 @@ const redactCoinjoinData: ChainableBeforeSend = event => {
 };
 
 const beforeSend: ChainableBeforeSend = event =>
-    redactSentryEvent(redactUserPath(redactCoinjoinData(event)));
+    redactSentryEvent(redactInvalidParameterValue(redactUserPath(redactCoinjoinData(event))));
 
-const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
+export const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
+    const { category } = breadcrumb;
+    // Sentry types breadcrumb.data as arbitrary data object, making the `url` typed as `any`. We expect string.
+    const url: unknown = breadcrumb.data?.url;
+
     // filter out analytics requests and image fetches
     const isAnalytics =
-        breadcrumb.category === 'fetch' &&
-        breadcrumb.data?.url?.contains?.('data.trezor.io/suite/log');
+        category === 'fetch' &&
+        typeof url === 'string' &&
+        url.includes?.('data.trezor.io/suite/log');
     const isImageFetch =
-        breadcrumb.category === 'xhr' && breadcrumb.data?.url?.contains?.('/assets/');
-    const isConsole = breadcrumb.category === 'console';
+        category === 'xhr' && typeof url === 'string' && url.includes?.('/assets/');
+    const isConsole = category === 'console';
 
     if (isAnalytics || isImageFetch || isConsole) {
         return null;

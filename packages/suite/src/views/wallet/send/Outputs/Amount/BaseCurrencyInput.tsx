@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { formInputsMaxLength } from '@suite-common/validators';
-import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { AMOUNT_MAX_LENGTH, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
     type BaseCurrencyOption,
     type FiatRatesResult,
@@ -31,6 +31,7 @@ import { Select } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
+import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { validateDecimals } from 'src/utils/suite/validation';
@@ -68,7 +69,7 @@ export const BaseCurrencyInput = ({
 
     const locale = useSelector(selectLanguage);
     const { translationString } = useTranslation();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const baseCurrencyInputName = `outputs.${outputId}.fiat` as const;
     const currencyInputName = `outputs.${outputId}.currency` as const;
@@ -239,7 +240,7 @@ export const BaseCurrencyInput = ({
             name={baseCurrencyInputName}
             data-testid={baseCurrencyInputName}
             defaultValue={baseCurrencyValue}
-            maxLength={formInputsMaxLength.fiat}
+            maxLength={AMOUNT_MAX_LENGTH}
             rules={rules}
             bottomText={bottomText || null}
             rightContent={

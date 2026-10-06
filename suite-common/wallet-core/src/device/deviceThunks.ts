@@ -1,20 +1,42 @@
-import { bluetoothActions, selectKnownDeviceByDeviceId } from '@suite-common/bluetooth';
+import { type AnalyticsDep } from '@suite-common/analytics';
+import {
+    type BluetoothDeviceCommon,
+    type ForgetBluetoothDeviceDep,
+    type WithBluetoothState,
+    bluetoothActions,
+    selectKnownDeviceByDeviceId,
+} from '@suite-common/bluetooth';
 import {
     DEVICE_MODULE_PREFIX,
+    type DeviceRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,
+    acquireDeviceThunk,
     deviceActions,
     portfolioTrackerDevice,
     selectDeviceById,
+    selectDeviceThunk,
     selectDevices,
-    selectPersistentDeviceDataById,
+    selectNewlyConnectedDeviceThunk,
     selectPhysicalDeviceWallets,
     selectSelectedDevice,
     shouldDeviceBeRemembered,
     sortDevices,
 } from '@suite-common/device';
-import { selectIsFirmwareInstallationRunning } from '@suite-common/firmware';
-import { createThunk } from '@suite-common/redux-utils';
-import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
+import {
+    type FirmwareRootState,
+    selectIsFirmwareInstallationRunning,
+} from '@suite-common/firmware';
+import {
+    type PersistentDeviceDataRootState,
+    persistentDeviceDataActions,
+    selectPersistentDeviceDataById,
+} from '@suite-common/persistent-device-data';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
+import {
+    type AcquiredDevice,
+    type OpenModalDep,
+    type TrezorDevice,
+} from '@suite-common/suite-types';
 import {
     getDeviceInstances,
     getFirstDeviceInstance,
@@ -25,7 +47,7 @@ import {
 } from '@suite-common/suite-utils';
 import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import {
     getAddressParameters,
     getDerivationType,
@@ -44,70 +66,83 @@ import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
 
 import { getAddressForNetworkType } from './deviceAddressUtils';
+import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
-import { startDiscoveryThunk } from '../discovery/discoveryThunks';
-import { selectDeviceThunk, selectNewlyConnectedDeviceThunk } from '../discovery/selectDeviceThunk';
 import { setAutoEjectEnabled } from '../settings/walletSettingsActions';
-import { selectIsDeviceAutoEjectEnabled } from '../settings/walletSettingsReducer';
+import {
+    type WalletSettingsRootState,
+    selectIsDeviceAutoEjectEnabled,
+} from '../settings/walletSettingsReducer';
+
+export type HandleDeviceDisconnectThunkState = DeviceRootState;
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT`
  * @param {Device} device
  */
-export const handleDeviceDisconnect = createThunk(
-    `${DEVICE_MODULE_PREFIX}/handleDeviceDisconnect`,
-    (device: Device | TrezorDevice, { dispatch, getState }) => {
-        const selectedDevice = selectSelectedDevice(getState());
-        if (!selectedDevice) return;
-        if (selectedDevice.path !== device.path) return;
+export const handleDeviceDisconnectThunk = createThunk<
+    void,
+    Device | TrezorDevice,
+    { state: HandleDeviceDisconnectThunkState }
+>(`${DEVICE_MODULE_PREFIX}/handleDeviceDisconnect`, (device, { dispatch, getState }) => {
+    const selectedDevice = selectSelectedDevice(getState());
+    if (!selectedDevice) return;
+    if (selectedDevice.path !== device.path) return;
 
-        const devices = selectDevices(getState());
+    const devices = selectDevices(getState());
 
-        // selected device is disconnected, decide what to do next
-        // device is still present in reducer (remembered or candidate to remember)
-        const devicePresent = getSelectedDevice(selectedDevice, devices);
-        const deviceInstances = getDeviceInstances(selectedDevice, devices);
-        if (deviceInstances.length > 0) {
-            // if selected device is gone from reducer, switch to first instance
-            if (!devicePresent) {
-                dispatch(selectDeviceThunk({ device: deviceInstances[0] }));
-            }
-
-            return;
+    // selected device is disconnected, decide what to do next
+    // device is still present in reducer (remembered or candidate to remember)
+    const devicePresent = getSelectedDevice(selectedDevice, devices);
+    const deviceInstances = getDeviceInstances(selectedDevice, devices);
+    if (deviceInstances.length > 0) {
+        // if selected device is gone from reducer, switch to first instance
+        if (!devicePresent) {
+            dispatch(selectDeviceThunk({ device: deviceInstances[0] }));
         }
 
-        const available = getFirstDeviceInstance(devices);
-        dispatch(selectDeviceThunk({ device: available[0] }));
-    },
-);
+        return;
+    }
+
+    const available = getFirstDeviceInstance(devices);
+    dispatch(selectDeviceThunk({ device: available[0] }));
+});
+
+type ForgetDisconnectedDevicesThunkParams = {
+    device: Device | TrezorDevice;
+    forceForget?: boolean;
+};
+
+type ForgetDisconnectedDevicesThunkState = DeviceRootState;
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT` via suiteMiddleware
  * Remove all data related to all instances of disconnected device if they are not remembered
  * @param {Device} device
  */
-export const forgetDisconnectedDevices = createThunk(
-    `${DEVICE_MODULE_PREFIX}/forgetDisconnectedDevices`,
-    (params: { device: Device | TrezorDevice; forceForget?: boolean }, { dispatch, getState }) => {
-        const { device, forceForget = false } = params;
-        const devices = selectDevices(getState());
-        const deviceInstances = devices.filter(d => d.id === device.id);
+export const forgetDisconnectedDevicesThunk = createThunk<
+    void,
+    ForgetDisconnectedDevicesThunkParams,
+    { state: ForgetDisconnectedDevicesThunkState }
+>(`${DEVICE_MODULE_PREFIX}/forgetDisconnectedDevices`, (params, { dispatch, getState }) => {
+    const { device, forceForget = false } = params;
+    const devices = selectDevices(getState());
+    const deviceInstances = devices.filter(d => d.id === device.id);
 
-        deviceInstances.forEach(d => {
-            if (
-                d.features &&
-                (forceForget ||
-                    !d.remember ||
-                    // Forget if not in normal state
-                    !d.id ||
-                    !d.state ||
-                    d.mode !== 'normal')
-            ) {
-                dispatch(deviceActions.forgetDevice({ device: d }));
-            }
-        });
-    },
-);
+    deviceInstances.forEach(d => {
+        if (
+            d.features &&
+            (forceForget ||
+                !d.remember ||
+                // Forget if not in normal state
+                !d.id ||
+                !d.state ||
+                d.mode !== 'normal')
+        ) {
+            dispatch(deviceActions.forgetDevice({ device: d }));
+        }
+    });
+});
 
 type ObserveSelectedDeviceResult = {
     isDeviceChanged: boolean;
@@ -115,12 +150,18 @@ type ObserveSelectedDeviceResult = {
     isDeviceBecomingConnected: boolean;
 };
 
+type ObserveSelectedDeviceThunkState = DeviceRootState;
+
 /**
  * Keep selected device synchronized with the `devices` reducer, because selected device is a copy
  * of one of the `devices` (and those are updated via DEVICE.CHANGED. etc.).
  * Called from `suiteMiddleware` (Desktop) or `deviceMiddleware` (Mobile).
  */
-export const observeSelectedDevice = createThunk<ObserveSelectedDeviceResult, void>(
+export const observeSelectedDeviceThunk = createThunk<
+    ObserveSelectedDeviceResult,
+    void,
+    { state: ObserveSelectedDeviceThunkState }
+>(
     `${DEVICE_MODULE_PREFIX}/observeSelectedDevice`,
     (_, { dispatch, getState, fulfillWithValue }) => {
         const devices = selectDevices(getState());
@@ -162,50 +203,9 @@ export const observeSelectedDevice = createThunk<ObserveSelectedDeviceResult, vo
     },
 );
 
-/**
- * Called from <AcquireDevice /> component
- * Fetch device features without asking for pin/passphrase
- * this is the only place where useEmptyPassphrase should be always set to "true"
- */
-export const acquireDevice = createThunk(
-    `${DEVICE_MODULE_PREFIX}/acquireDevice`,
-    async (
-        {
-            requestedDevice,
-            startDiscovery,
-        }: {
-            requestedDevice?: TrezorDevice | null;
-            startDiscovery?: boolean;
-        },
-        { dispatch, getState },
-    ) => {
-        const device = requestedDevice ?? selectSelectedDevice(getState());
+type InitDevicesThunkState = DeviceRootState;
 
-        if (!device) return;
-
-        const response = await TrezorConnect.getFeatures({ device });
-
-        if (!response.success) {
-            if (response.error.code !== 'Device_ThpPairingTagInvalid') {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'acquire-error',
-                        device,
-                        error: response.error.message,
-                    }),
-                );
-            }
-        } else if (startDiscovery) {
-            dispatch(
-                startDiscoveryThunk({
-                    device,
-                }),
-            );
-        }
-    },
-);
-
-export const initDevices = createThunk(
+export const initDevicesThunk = createThunk<void, void, { state: InitDevicesThunkState }>(
     `${DEVICE_MODULE_PREFIX}/initDevices`,
     (_, { dispatch, getState }) => {
         const devices = selectDevices(getState());
@@ -218,10 +218,15 @@ export const initDevices = createThunk(
     },
 );
 
+export type CreateImportedDeviceThunkState = DeviceRootState;
+
 export const createImportedDeviceThunk = createThunk<
     void,
     undefined,
-    { rejectValue: { error: 'already-created' } }
+    {
+        rejectValue: { error: 'already-created' };
+        state: CreateImportedDeviceThunkState;
+    }
 >(`${DEVICE_MODULE_PREFIX}/createImportedDevice`, (_, { dispatch, getState, rejectWithValue }) => {
     if (selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID)) {
         return rejectWithValue({ error: 'already-created' });
@@ -247,10 +252,16 @@ type ConfirmAddressOnDeviceThunk = {
     showOnTrezor?: boolean;
 };
 
-export const confirmAddressOnDeviceThunk = createThunk(
+export type ConfirmAddressOnDeviceThunkState = AccountsRootState & DeviceRootState;
+
+export const confirmAddressOnDeviceThunk = createThunk<
+    ConnectResponse<Address | CardanoAddress>,
+    ConfirmAddressOnDeviceThunk,
+    { state: ConfirmAddressOnDeviceThunkState }
+>(
     `${DEVICE_MODULE_PREFIX}/confirmAddressOnDeviceThunk`,
     async (
-        { accountKey, addressPath, chunkify, showOnTrezor = true }: ConfirmAddressOnDeviceThunk,
+        { accountKey, addressPath, chunkify, showOnTrezor = true },
         { getState },
     ): Promise<ConnectResponse<Address | CardanoAddress>> => {
         const device = selectSelectedDevice(getState());
@@ -285,86 +296,96 @@ export const confirmAddressOnDeviceThunk = createThunk(
 
 type DeviceConnectThunkEventType = typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED;
 
-type DeviceConnectThunksParams = {
+type DeviceConnectThunkParams = {
     type: DeviceConnectThunkEventType;
     device: Device;
 };
 
-export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, void>(
-    `${DEVICE_MODULE_PREFIX}/deviceConnectThunk`,
-    ({ type, device }, { dispatch, getState }) => {
-        // TODO (THP phase): Using selectIsFirmwareInstallationRunning = (hidden) circular dependency.
-        const isFwInstallation = selectIsFirmwareInstallationRunning(getState());
-        switch (type) {
-            case DEVICE.CONNECT:
-                dispatch(deviceActions.connectDevice({ device }));
-                dispatch(selectNewlyConnectedDeviceThunk({ device }));
-                break;
-            case DEVICE.CONNECT_UNACQUIRED:
-                dispatch(deviceActions.connectUnacquiredDevice({ device }));
-                if (getIsThpDevice(device) && !isFwInstallation) {
-                    // This needs to be re-selected to convert Device to TrezorDevice.
-                    const requestedDevice = selectDevices(getState()).find(
-                        d => d.path === device.path,
-                    );
-                    dispatch(acquireDevice({ requestedDevice }));
-                }
-                dispatch(selectNewlyConnectedDeviceThunk({ device }));
-                break;
-            default:
-                exhaustive(type);
-        }
-    },
-);
+export type DeviceConnectThunkState = FirmwareRootState & DeviceRootState;
+
+export type DeviceConnectThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
+
+export const deviceConnectThunk = createThunk<
+    void,
+    DeviceConnectThunkParams,
+    { state: DeviceConnectThunkState; extra: DeviceConnectThunkDeps }
+>(`${DEVICE_MODULE_PREFIX}/deviceConnectThunk`, ({ type, device }, { dispatch, getState }) => {
+    // TODO (THP phase): Using selectIsFirmwareInstallationRunning = (hidden) circular dependency.
+    const isFwInstallation = selectIsFirmwareInstallationRunning(getState());
+    switch (type) {
+        case DEVICE.CONNECT:
+            dispatch(deviceActions.connectDevice({ device }));
+            dispatch(selectNewlyConnectedDeviceThunk({ device }));
+            break;
+        case DEVICE.CONNECT_UNACQUIRED:
+            dispatch(deviceActions.connectUnacquiredDevice({ device }));
+            if (getIsThpDevice(device) && !isFwInstallation) {
+                // This needs to be re-selected to convert Device to TrezorDevice.
+                const requestedDevice = selectDevices(getState()).find(d => d.path === device.path);
+                dispatch(acquireDeviceThunk({ requestedDevice }));
+            }
+            dispatch(selectNewlyConnectedDeviceThunk({ device }));
+            break;
+        default:
+            exhaustive(type);
+    }
+});
 
 type SetDeviceAutoEjectThunkParams = {
     shouldEnable: boolean;
 };
 
-export const setDeviceAutoEjectThunk = createThunk(
-    `${DEVICE_MODULE_PREFIX}/setDeviceAutoEjectThunk`,
-    ({ shouldEnable }: SetDeviceAutoEjectThunkParams, { dispatch, getState }) => {
-        const isEnabled = selectIsDeviceAutoEjectEnabled(getState());
+export type SetDeviceAutoEjectThunkState = DeviceRootState & WalletSettingsRootState;
 
-        if (isEnabled === shouldEnable) {
+export const setDeviceAutoEjectThunk = createThunk<
+    void,
+    SetDeviceAutoEjectThunkParams,
+    { state: SetDeviceAutoEjectThunkState }
+>(`${DEVICE_MODULE_PREFIX}/setDeviceAutoEjectThunk`, ({ shouldEnable }, { dispatch, getState }) => {
+    const isEnabled = selectIsDeviceAutoEjectEnabled(getState());
+
+    if (isEnabled === shouldEnable) {
+        return;
+    }
+
+    dispatch(setAutoEjectEnabled(shouldEnable));
+
+    const physicalDeviceWallets = selectPhysicalDeviceWallets(getState());
+    physicalDeviceWallets.forEach(wallet => {
+        const shouldRemember = shouldDeviceBeRemembered({
+            isAutoEjectEnabled: shouldEnable,
+            device: wallet,
+        });
+
+        if (wallet.remember === shouldRemember) {
             return;
         }
 
-        dispatch(setAutoEjectEnabled(shouldEnable));
-
-        const physicalDeviceWallets = selectPhysicalDeviceWallets(getState());
-        physicalDeviceWallets.forEach(wallet => {
-            const shouldRemember = shouldDeviceBeRemembered({
-                isAutoEjectEnabled: shouldEnable,
-                device: wallet,
-            });
-
-            if (wallet.remember === shouldRemember) {
-                return;
-            }
-
-            dispatch(
-                deviceActions.setRememberDevice({
-                    device: wallet,
-                    remember: shouldRemember,
-                }),
-            );
-
-            if (shouldEnable && !wallet.connected) {
-                dispatch(forgetDisconnectedDevices({ device: wallet, forceForget: true }));
-            }
-        });
-    },
-);
-
-export const toggleAutoEjectThunk = createThunk(
-    `${DEVICE_MODULE_PREFIX}/toggleAutoEjectThunk`,
-    (_, { dispatch, getState }) =>
         dispatch(
-            setDeviceAutoEjectThunk({
-                shouldEnable: !selectIsDeviceAutoEjectEnabled(getState()),
+            deviceActions.setRememberDevice({
+                device: wallet,
+                remember: shouldRemember,
             }),
-        ),
+        );
+
+        if (shouldEnable && !wallet.connected) {
+            dispatch(forgetDisconnectedDevicesThunk({ device: wallet, forceForget: true }));
+        }
+    });
+});
+
+type ToggleAutoEjectThunkState = WalletSettingsRootState;
+
+export const toggleAutoEjectThunk = createThunk<
+    unknown,
+    void,
+    { state: ToggleAutoEjectThunkState }
+>(`${DEVICE_MODULE_PREFIX}/toggleAutoEjectThunk`, (_, { dispatch, getState }) =>
+    dispatch(
+        setDeviceAutoEjectThunk({
+            shouldEnable: !selectIsDeviceAutoEjectEnabled(getState()),
+        }),
+    ),
 );
 
 type ForgetDevicePersistentDataThunkParams = {
@@ -379,15 +400,25 @@ type ForgetDevicePersistentDataThunkParams = {
  * This includes wallets, `persistentDeviceData`, Bluetooth, THP.
  * But not wallets, see `forgetDevice` (ejecting wallets & forgetting the rest are separate features).
  */
-export const forgetDevicePersistentDataThunk = createThunk(
+export type ForgetDevicePersistentDataThunkState = DeviceRootState &
+    PersistentDeviceDataRootState &
+    WithBluetoothState<BluetoothDeviceCommon>;
+
+export type ForgetDevicePersistentDataThunkDeps = {
+    thunks: ForgetBluetoothDeviceDep;
+};
+
+export const forgetDevicePersistentDataThunk = createThunk<
+    void,
+    ForgetDevicePersistentDataThunkParams,
+    {
+        state: ForgetDevicePersistentDataThunkState;
+        extra: ForgetDevicePersistentDataThunkDeps;
+    }
+>(
     `${DEVICE_MODULE_PREFIX}/forgetSingleDevicePersistentDataThunk`,
     async (
-        {
-            deviceId,
-            skipToggleModalConnection,
-            isOsUnpairingFinished,
-            skipDisconnect,
-        }: ForgetDevicePersistentDataThunkParams,
+        { deviceId, skipToggleModalConnection, isOsUnpairingFinished, skipDisconnect },
         { dispatch, extra, getState },
     ) => {
         if (!deviceId) return;
@@ -395,7 +426,7 @@ export const forgetDevicePersistentDataThunk = createThunk(
         const device = selectDeviceById(getState(), deviceId);
         const matchingDevice = selectPersistentDeviceDataById(getState(), deviceId);
 
-        dispatch(deviceActions.forgetDevicePersistentData({ deviceId }));
+        dispatch(persistentDeviceDataActions.forgetDevicePersistentData({ deviceId }));
 
         const bluetoothId =
             matchingDevice?.descriptor?.apiType === 'bluetooth' && matchingDevice.descriptor.id
@@ -435,15 +466,23 @@ export type ForgetDeviceThunkParams = {
     deviceId?: TrezorDevice['id'];
 };
 
-export const forgetDeviceThunk = createThunk(
+export type ForgetDeviceThunkState = ForgetDevicePersistentDataThunkState;
+
+export type ForgetDeviceThunkDeps = {
+    thunks: ForgetBluetoothDeviceDep;
+};
+
+export const forgetDeviceThunk = createThunk<
+    void,
+    ForgetDeviceThunkParams | undefined,
+    {
+        state: ForgetDeviceThunkState;
+        extra: ForgetDeviceThunkDeps;
+    }
+>(
     `${DEVICE_MODULE_PREFIX}/forgetDevice`,
     async (
-        {
-            skipToggleModalConnection,
-            isOsUnpairingFinished,
-            skipDisconnect,
-            deviceId,
-        }: ForgetDeviceThunkParams | undefined = {},
+        { skipToggleModalConnection, isOsUnpairingFinished, skipDisconnect, deviceId } = {},
         { dispatch, getState },
     ) => {
         const devices = selectDevices(getState());
@@ -476,18 +515,28 @@ export const forgetDeviceThunk = createThunk(
  * This includes forgetting old/new device instances, clearing persistent data,
  * showing a success toast, and requesting a reconnect.
  */
-const handlePostWipeCleanupThunk = createThunk(
+type HandlePostWipeCleanupThunkParams = {
+    initialDevice: TrezorDevice;
+    deviceInstances: AcquiredDevice[];
+};
+
+type HandlePostWipeCleanupThunkState = ForgetDevicePersistentDataThunkState;
+
+type HandlePostWipeCleanupThunkDeps = {
+    actions: OpenModalDep;
+    thunks: ForgetBluetoothDeviceDep;
+};
+
+const handlePostWipeCleanupThunk = createThunk<
+    void,
+    HandlePostWipeCleanupThunkParams,
+    {
+        state: HandlePostWipeCleanupThunkState;
+        extra: HandlePostWipeCleanupThunkDeps;
+    }
+>(
     `${DEVICE_MODULE_PREFIX}/handlePostWipeCleanup`,
-    async (
-        {
-            initialDevice,
-            deviceInstances,
-        }: {
-            initialDevice: TrezorDevice;
-            deviceInstances: AcquiredDevice[];
-        },
-        { dispatch, getState, extra },
-    ) => {
+    async ({ initialDevice, deviceInstances }, { dispatch, getState, extra }) => {
         // Wiping a device triggers device.id change, and this change is propagated to device reducer via @trezor/connect DEVICE.CHANGE event.
         // Accounts data are related to the old device.id; to properly clear reducers and indexed db,
         // we need to retrieve device objects BEFORE and AFTER the wipe process.
@@ -519,47 +568,69 @@ const handlePostWipeCleanupThunk = createThunk(
     },
 );
 
-export const deviceWipedFromDeviceThunk = createThunk(
-    `${DEVICE_MODULE_PREFIX}/deviceWipedFromDeviceThunk`,
-    (_, { dispatch, getState }) => {
-        const device = selectSelectedDevice(getState());
-        if (!device) return;
-        const devices = selectDevices(getState());
-        // collect devices with old "device.id" to be removed (see description below)
-        const deviceInstances = getDeviceInstances(device, devices);
+type DeviceWipedFromDeviceThunkState = ForgetDevicePersistentDataThunkState;
 
-        // Successful wipe happened on the device itself, so we just run the cleanup.
+type DeviceWipedFromDeviceThunkDeps = {
+    thunks: ForgetBluetoothDeviceDep;
+    actions: OpenModalDep;
+};
+
+export const deviceWipedFromDeviceThunk = createThunk<
+    void,
+    void,
+    {
+        state: DeviceWipedFromDeviceThunkState;
+        extra: DeviceWipedFromDeviceThunkDeps;
+    }
+>(`${DEVICE_MODULE_PREFIX}/deviceWipedFromDeviceThunk`, (_, { dispatch, getState }) => {
+    const device = selectSelectedDevice(getState());
+    if (!device) return;
+    const devices = selectDevices(getState());
+    // collect devices with old "device.id" to be removed (see description below)
+    const deviceInstances = getDeviceInstances(device, devices);
+
+    // Successful wipe happened on the device itself, so we just run the cleanup.
+    dispatch(handlePostWipeCleanupThunk({ initialDevice: device, deviceInstances }));
+});
+
+type WipeDeviceThunkState = ForgetDevicePersistentDataThunkState;
+
+type WipeDeviceThunkDeps = {
+    thunks: ForgetBluetoothDeviceDep;
+    actions: OpenModalDep;
+};
+
+export const wipeDeviceThunk = createThunk<
+    void,
+    void,
+    {
+        state: WipeDeviceThunkState;
+        extra: WipeDeviceThunkDeps;
+        rejectValue: string;
+    }
+>(`${DEVICE_MODULE_PREFIX}/wipeDevice`, async (_, { dispatch, getState, rejectWithValue }) => {
+    const device = selectSelectedDevice(getState());
+    if (!device) return;
+
+    const devices = selectDevices(getState());
+    // collect devices with old "device.id" to be removed (see description below)
+    const deviceInstances = getDeviceInstances(device, devices);
+
+    const result = await TrezorConnect.wipeDevice({
+        device: { path: device.path },
+    });
+
+    if (
+        result.success ||
+        // This is an expected success for Bluetooth-connected devices
+        (device.descriptor.apiType === 'bluetooth' && result.error.code === 'Device_Disconnected')
+    ) {
+        // The wipe was successful, now run the shared cleanup logic.
+        // We pass the original `device` object to the cleanup thunk.
         dispatch(handlePostWipeCleanupThunk({ initialDevice: device, deviceInstances }));
-    },
-);
+    } else {
+        dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
 
-export const wipeDeviceThunk = createThunk(
-    `${DEVICE_MODULE_PREFIX}/wipeDevice`,
-    async (_, { dispatch, getState, rejectWithValue }) => {
-        const device = selectSelectedDevice(getState());
-        if (!device) return;
-
-        const devices = selectDevices(getState());
-        // collect devices with old "device.id" to be removed (see description below)
-        const deviceInstances = getDeviceInstances(device, devices);
-
-        const result = await TrezorConnect.wipeDevice({
-            device: { path: device.path },
-        });
-
-        if (
-            result.success ||
-            // This is an expected success for Bluetooth-connected devices
-            (device.descriptor.apiType === 'bluetooth' &&
-                result.error.code === 'Device_Disconnected')
-        ) {
-            // The wipe was successful, now run the shared cleanup logic.
-            // We pass the original `device` object to the cleanup thunk.
-            dispatch(handlePostWipeCleanupThunk({ initialDevice: device, deviceInstances }));
-        } else {
-            dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
-
-            return rejectWithValue(result.error.message);
-        }
-    },
-);
+        return rejectWithValue(result.error.message);
+    }
+});

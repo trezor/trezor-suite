@@ -1,3 +1,7 @@
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { act, screen, userEvent } from '@suite-native/test-utils-store';
 
@@ -5,6 +9,10 @@ import { ExchangeTabContent } from './ExchangeTabContent';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 let mockUseTradingExchangeData: jest.Mock;
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
+    analytics: mockNativeAnalytics(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
+};
 
 jest.mock('../../hooks/exchange/useExchangeData', () => ({
     useExchangeData: (...params: unknown[]) => mockUseTradingExchangeData(...params),
@@ -13,6 +21,12 @@ jest.mock('../../hooks/exchange/useExchangeData', () => ({
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),
     selectIsTradingExchangeEnabled: () => true,
+}));
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({ navigate: jest.fn(), setParams: jest.fn() }),
+    useRoute: () => ({ params: {} }),
 }));
 
 describe('ExchangeTab', () => {
@@ -24,8 +38,11 @@ describe('ExchangeTab', () => {
         }));
     });
 
-    const renderExchangeTab = () =>
-        renderWithTradingProvider(<ExchangeTabContent />, { tradeType: 'exchange' });
+    const renderExchangeTab = async () =>
+        await renderWithTradingProvider(<ExchangeTabContent />, {
+            services,
+            tradeType: 'exchange',
+        });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);
@@ -44,68 +61,64 @@ describe('ExchangeTab', () => {
         expect(screen.getByText("It's not you, it's us.")).toBeOnTheScreen();
     };
 
-    it('should render Exchange skeleton when isLoading is true', () => {
+    it('should render Exchange skeleton when isLoading is true', async () => {
         mockUseTradingExchangeData.mockReturnValue({
             isLoading: true,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        renderExchangeTab();
+        await renderExchangeTab();
 
         expectSkeleton();
     });
 
-    it('should render Exchange skeleton when lastLoadedTimestamp is 0', () => {
+    it('should render Exchange skeleton when lastLoadedTimestamp is 0', async () => {
         mockUseTradingExchangeData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 0,
             isFullyLoaded: false,
         });
 
-        renderExchangeTab();
+        await renderExchangeTab();
 
         expectSkeleton();
     });
 
-    it('should render Exchange form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', () => {
+    it('should render Exchange form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', async () => {
         mockUseTradingExchangeData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: true,
         });
 
-        renderExchangeTab();
+        await renderExchangeTab();
 
         expectExchangeForm();
     });
 
-    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', () => {
+    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', async () => {
         mockUseTradingExchangeData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        renderExchangeTab();
+        await renderExchangeTab();
 
         expectServerOffline();
     });
 
     it('should reload data when server error info is displayed and user presses "Try again" button', async () => {
-        mockUseTradingExchangeData
-            .mockReturnValueOnce({
-                isLoading: false,
-                lastLoadedTimestamp: 1,
-                isFullyLoaded: false,
-            })
-            .mockReturnValue({
-                isLoading: false,
-                lastLoadedTimestamp: 1,
-                isFullyLoaded: true,
-            });
+        const refetch = jest.fn();
+        mockUseTradingExchangeData.mockReturnValue({
+            isLoading: false,
+            lastLoadedTimestamp: 1,
+            isFullyLoaded: false,
+            refetch,
+        });
 
-        const { getByText } = renderExchangeTab();
+        const { getByText } = await renderExchangeTab();
 
         const reloadButton = getByText(getTranslation('tradingAtoms.error.serverOfflineRetry'));
 
@@ -113,9 +126,6 @@ describe('ExchangeTab', () => {
             await userEvent.press(reloadButton);
         });
 
-        expectExchangeForm();
-        expect(mockUseTradingExchangeData).toHaveBeenCalledTimes(2);
-        expect(mockUseTradingExchangeData).toHaveBeenCalledWith(0);
-        expect(mockUseTradingExchangeData).toHaveBeenCalledWith(1);
+        expect(refetch).toHaveBeenCalledTimes(1);
     });
 });

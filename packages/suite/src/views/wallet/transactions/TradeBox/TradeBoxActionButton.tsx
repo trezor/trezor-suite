@@ -1,14 +1,14 @@
 import { type ReactNode } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { type Route, goto } from '@suite/router';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { type Route, gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { Button } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 // All action buttons share a fixed minimum so the row reads as a uniform group.
@@ -30,8 +30,7 @@ export const TradeBoxActionButton = ({
     children,
     isDisabled = false,
 }: TradeBoxActionButtonProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const dataTestId =
         type === 'earn' ? '@account/tradebox/earn' : `@trading/menu/wallet-trading-${type}`;
@@ -49,7 +48,7 @@ export const TradeBoxActionButton = ({
                     ),
                 );
 
-                dispatch(goto({ routeName: gotoRouteName }));
+                dispatch(gotoThunk({ routeName: gotoRouteName }));
 
                 analytics.report({
                     type: events.tradeNavigateEvent.name,
@@ -64,7 +63,7 @@ export const TradeBoxActionButton = ({
                 break;
             }
             case 'earn': {
-                dispatch(goto({ routeName: 'suite-earn' }));
+                dispatch(gotoThunk({ routeName: 'suite-earn' }));
 
                 analytics.report({
                     type: sharedEvents.yieldNavigateEvent.name,

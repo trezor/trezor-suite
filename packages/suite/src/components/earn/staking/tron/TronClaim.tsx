@@ -23,6 +23,7 @@ export const TronClaim = ({ account }: TronClaimProps) => {
                     {step === 'complete' ? (
                         <TronStakeComplete
                             account={account}
+                            flow="claim"
                             heading={<Translation id="TR_EARN_TRON_CLAIM_COMPLETE" />}
                             description={<Translation id="TR_EARN_TRON_CLAIM_DESCRIPTION" />}
                         >

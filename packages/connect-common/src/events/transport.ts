@@ -2,10 +2,10 @@
 // usb dependencies for example. so maybe we are going to split this package into transport-types and transport-rest
 
 import type { TRANSPORT, Transport } from '@trezor/transport-common';
+import { createTypeGuardByType } from '@trezor/type-utils';
 
 import { serializeError } from '../constants/errors';
 import type { ConnectSettingsTransport } from '../types/settings';
-import type { MessageFactoryFn } from '../types/utils';
 
 export const TRANSPORT_EVENT = 'TRANSPORT_EVENT';
 
@@ -13,6 +13,7 @@ export interface TransportInfo {
     apiType: Transport['apiType'];
     type: Transport['name'];
     version: string;
+    initialDeviceCount?: number;
 }
 
 export interface TransportError {
@@ -25,6 +26,8 @@ export type TransportEvent =
     | { type: typeof TRANSPORT.START; payload: TransportInfo }
     | { type: typeof TRANSPORT.ERROR; payload: TransportError };
 
+export const isTransportEventOfType = createTypeGuardByType<TransportEvent>();
+
 export interface TransportSetTransports {
     type: typeof TRANSPORT.SET_TRANSPORTS;
     payload: { transports?: ConnectSettingsTransport[] };
@@ -35,20 +38,14 @@ export interface TransportRequestWebUSBDevice {
     payload?: undefined;
 }
 
-export interface TransportGetInfo {
-    id: string;
-    type: typeof TRANSPORT.GET_INFO;
-    payload?: undefined;
-}
-
 export type TransportEventMessage = TransportEvent & { event: typeof TRANSPORT_EVENT };
 
-export const createTransportMessage: MessageFactoryFn<typeof TRANSPORT_EVENT, TransportEvent> = (
-    type,
-    payload,
+export const createTransportMessage = <T extends TransportEvent['type']>(
+    type: T,
+    payload: Extract<TransportEvent, { type: T }>['payload'],
 ) =>
     ({
         event: TRANSPORT_EVENT,
         type,
         payload: 'error' in payload ? serializeError(payload) : payload,
-    }) as any;
+    }) as Extract<TransportEventMessage, { type: T }>;

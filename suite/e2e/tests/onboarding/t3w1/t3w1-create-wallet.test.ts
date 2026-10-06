@@ -1,5 +1,6 @@
 import type { BackupType } from '@suite-common/suite-types';
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
@@ -41,6 +42,7 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
                     testCase,
                     category: TestCategory.Onboarding,
                     priority: TestPriority.Critical,
+                    stream: TestStream.Growth,
                 }),
             },
             async ({
@@ -51,12 +53,13 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
                 analyticsSection,
                 dashboardPage,
                 assetsSection,
+                promoBanner,
             }) => {
                 await test.step('Complete device onboarding', async () => {
                     await onboardingPage.optionallyDismissFwHashCheckError();
                     await analyticsSection.continueButton.click();
                     await onboardingPage.pairTHP();
-                    await analyticsSection.continueButton.click();
+                    await onboardingPage.setupDeviceButton.click();
                     await onboardingPage.firmware.continueThroughFirmware();
                     await page.waitForTimeout(500);
                     await onboardingPage.tutorial.skip();
@@ -88,17 +91,20 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
                 await test.step('Finish wallet creation', async () => {
                     await onboardingPage.finalButton.click();
 
-                    await expect(onboardingPage.onboardingFeedbackBanner).toBeVisible();
-                    await onboardingPage.onboardingFeedbackBannerCTAButton.click();
+                    await expect(promoBanner.onboardingFeedbackBanner).toBeVisible();
+                    await promoBanner.onboardingFeedbackBannerCTAButton.click();
 
                     await dashboardPage.discoveryEmptyPrimaryButton.click();
-                    await assetsSection.enableNetworkViaActivateAssetsModal(['btc', 'eth']);
+                    await assetsSection.enableNetworkViaActivateAssetsModal([
+                        asNetworkSymbol('btc'),
+                        asNetworkSymbol('eth'),
+                    ]);
 
                     await expect(onboardingPage.suiteLoadedIndicator).toBeVisible({
                         timeout: 30_000,
                     });
                     await expect(dashboardPage.walletReady).toBeVisible({ timeout: 30_000 });
-                    await expect(onboardingPage.onboardingFeedbackBanner).toBeHidden();
+                    await expect(promoBanner.onboardingFeedbackBanner).toBeHidden();
                 });
             },
         );

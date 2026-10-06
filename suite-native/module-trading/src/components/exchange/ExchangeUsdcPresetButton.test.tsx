@@ -1,13 +1,20 @@
+import { type Store } from '@reduxjs/toolkit';
+
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { type TestStore, fireEvent, screen } from '@suite-native/test-utils-store';
+import { fireEvent, screen } from '@suite-native/test-utils-store';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { ExchangeUsdcPresetButton } from './ExchangeUsdcPresetButton';
 import {
-    createTradingLightStore,
     createTradingPreloadedState,
+    createTradingTestStore,
     renderWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState;
 
 const mockSetValue = jest.fn();
 const mockGetValues = jest.fn();
@@ -17,7 +24,7 @@ jest.mock('../../hooks/exchange/useExchangeFormContext', () => ({
 }));
 
 const ethAccountWithUsdc = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     accountType: 'normal',
     descriptor: asAccountDescriptor('ethusdc'),
     tokens: [
@@ -39,35 +46,35 @@ describe('ExchangeUsdcPresetButton', () => {
         mockSetValue.mockClear();
     });
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('without a matching account shows an error message', () => {
-        const store = createTradingLightStore({ tradeType: 'exchange' });
-        renderWithTradingProvider(<ExchangeUsdcPresetButton />, { store });
+    it('without a matching account shows an error message', async () => {
+        const store = createTradingTestStore({ tradeType: 'exchange' });
+        await renderWithTradingProvider(<ExchangeUsdcPresetButton />, { services: { store } });
 
         expect(screen.getByText('No account with USDC found.')).toBeOnTheScreen();
     });
 
     describe('with a matching ETH account that has a USDC token', () => {
-        let store: TestStore;
+        let store: Store<State>;
 
-        beforeEach(() => {
-            const preloadedState = createTradingPreloadedState({
+        beforeEach(async () => {
+            const preloadedState: State = createTradingPreloadedState({
                 tradeType: 'exchange',
                 overrides: { wallet: { accounts: [ethAccountWithUsdc] } },
             });
-            store = createTradingLightStore({ tradeType: 'exchange', overrides: preloadedState });
-            renderWithTradingProvider(<ExchangeUsdcPresetButton />, { store });
+            store = createTradingTestStore({ tradeType: 'exchange', overrides: preloadedState });
+            await renderWithTradingProvider(<ExchangeUsdcPresetButton />, { services: { store } });
         });
 
         it('renders the preset button', () => {
             expect(screen.getByText('Prefill 1 USDC→USDT')).toBeOnTheScreen();
         });
 
-        it('fills form for 1 USDC -> USDT trade', () => {
-            fireEvent.press(screen.getByText(/1 USDC.*USDT/));
+        it('fills form for 1 USDC -> USDT trade', async () => {
+            await fireEvent.press(screen.getByText(/1 USDC.*USDT/));
 
             expect(mockSetValue).toHaveBeenCalledWith(
                 'sendAsset',

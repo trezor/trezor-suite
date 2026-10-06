@@ -5,7 +5,7 @@ import { type RecursiveDeps, type ServiceFunction } from './service';
 
 export type MockDeps<T extends RecursiveDeps> = {
     [K in keyof T]: T[K] extends ServiceFunction<any, any>
-        ? jest.Mock<ReturnType<T[K]>, Parameters<T[K]>>
+        ? jest.MockedFunction<T[K]>
         : T[K] extends RecursiveDeps
           ? MockDeps<T[K]>
           : T[K];
@@ -38,7 +38,9 @@ export const createMockDeps = <T extends RecursiveDeps>(
             // Service is either a function, or null value in place of the function.
             // We either pass the function (should be jest.fn() mock),
             // or if it's null (not mocked) we assume it SHALL NOT be called
-            result[key] = jest.fn(value ?? mockNotExpected(key)) as MockDeps<T>[typeof key];
+            result[key] = jest.fn(
+                value ?? mockNotExpected(key),
+            ) as unknown as MockDeps<T>[typeof key];
         } else if (typeof value === 'object') {
             // Recursive case, dependency is an object containing other dependencies/function
             result[key] = createMockDeps(value as RecursiveDeps) as MockDeps<T>[typeof key];

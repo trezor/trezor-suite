@@ -1,98 +1,69 @@
 import { Translation } from '@suite/intl';
+import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDecimalsWithFallback } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue, HiddenPlaceholder } from 'src/components/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { tradingGetAccountLabel } from 'src/utils/wallet/trading/tradingUtils';
 
-interface TradingBalanceProps {
+type TradingBalanceProps = {
     balance: string | undefined;
     symbol: NetworkSymbol;
-    displaySymbol: string | undefined;
     tokenAddress?: TokenAddress | undefined;
     showOnlyAmount?: boolean;
-    amountInCrypto?: boolean;
+    isInSats?: boolean;
     decimals?: number;
-}
+};
 
 export const TradingBalance = ({
-    balance, // expects a value in full units (BTC not sats)
+    balance,
     symbol,
-    displaySymbol,
     tokenAddress,
     showOnlyAmount,
-    amountInCrypto,
-    decimals: networkDecimals = getNetworkDecimalsWithFallback(symbol),
+    isInSats,
+    decimals = getNetworkDecimalsWithFallback(symbol),
 }: TradingBalanceProps) => {
-    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(symbol);
-    const balanceCurrency = tradingGetAccountLabel(displaySymbol ?? '', shouldSendInSats);
-    const stringBalance = !isNaN(Number(balance)) ? balance : '0';
-    const formattedBalance =
-        stringBalance && shouldSendInSats
-            ? convertAmountUnitsToSubunits(stringBalance, networkDecimals)
-            : stringBalance;
-
-    const { fiatAmount } = useFiatFromCryptoValue({
-        amount: stringBalance || '',
-        symbol,
-        tokenAddress,
-        rateType: 'current',
-    });
+    const { CryptoAmountFormatter } = useFormatters();
+    const amount = balance && !isNaN(Number(balance)) ? balance : '0';
+    const amountInUnits = isInSats
+        ? subunitsToUnits({ value: asAmountSubunit(new BigNumber(amount)), decimals }).toString()
+        : amount;
 
     if (showOnlyAmount) {
-        if (Number(balance) === 0 || isNaN(Number(balance))) return null;
-
         return (
             <Text
                 intent="neutral"
                 priority="secondary"
-                typographyStyle="body-xs"
+                typographyStyle="body-sm"
                 overflowWrap="anywhere"
             >
-                {!amountInCrypto ? (
-                    <HiddenPlaceholder>
-                        &asymp; {formattedBalance} {balanceCurrency}
-                    </HiddenPlaceholder>
-                ) : (
-                    stringBalance &&
-                    fiatAmount &&
-                    symbol && (
-                        <BaseCurrencyValue
-                            amount={stringBalance}
-                            symbol={symbol}
-                            tokenAddress={tokenAddress}
-                            rateType="current"
-                            showApproximationIndicator
-                        />
-                    )
-                )}
+                <BaseCurrencyValue
+                    amount={amountInUnits}
+                    symbol={symbol}
+                    tokenAddress={tokenAddress}
+                    rateType="current"
+                />
             </Text>
         );
     }
 
     return (
-        <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
+        <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
             <Translation id="TR_BALANCE" />
             {': '}
             <HiddenPlaceholder>
-                {formattedBalance} {balanceCurrency}
+                <CryptoAmountFormatter
+                    value={amountInUnits}
+                    symbol={symbol}
+                    tokenDecimals={tokenAddress ? decimals : undefined}
+                    withSymbol={false}
+                    formatStyle="compact-balance"
+                    isBalance
+                />
             </HiddenPlaceholder>
-            {stringBalance && fiatAmount && symbol && stringBalance !== '0' && (
-                <>
-                    <>&nbsp;≈&nbsp;</>
-                    <BaseCurrencyValue
-                        amount={stringBalance}
-                        symbol={symbol}
-                        tokenAddress={tokenAddress}
-                        rateType="current"
-                    />
-                </>
-            )}
         </Text>
     );
 };

@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingExchangeAmountLimitProps,
     exchangeThunks,
@@ -27,6 +29,7 @@ import {
 import type { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
 
 import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
+import { type TradingFormWithMetadata } from '../general/form/tradingFormTypes';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
 import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccountChangeEffect';
@@ -52,11 +55,11 @@ const useExchangeQuotesChangeEffect = ({ getValues, setValue }: ExchangeFormType
             let candidateQuotes: ExchangeTrade[];
 
             if (isDex) {
-                candidateQuotes = quoteGroups.dex;
+                candidateQuotes = quoteGroups.float.filter(quote => quote.isDex);
             } else if (isFixedRate) {
                 candidateQuotes = quoteGroups.fixed;
             } else {
-                candidateQuotes = quoteGroups.float;
+                candidateQuotes = quoteGroups.float.filter(quote => !quote.isDex);
             }
 
             bestQuote = candidateQuotes.find(quote => quote.exchange === exchange);
@@ -77,8 +80,6 @@ const useExchangeQuotesChangeEffect = ({ getValues, setValue }: ExchangeFormType
                 bestQuote = quoteGroups.fixed[0];
             } else if (quoteGroups.float.length > 0) {
                 bestQuote = quoteGroups.float[0];
-            } else if (quoteGroups.dex.length > 0) {
-                bestQuote = quoteGroups.dex[0];
             }
         }
 
@@ -97,9 +98,11 @@ const useExchangeQuoteChangeEffect = ({ control, setValue }: ExchangeFormType) =
         selectIsAmountInSats(state, symbol),
     );
 
+    const isQuoteMatchingAsset = selectedQuote && selectedQuote.receive === receiveAsset?.cryptoId;
+    const amount = selectedQuote?.receiveStringAmount;
+
     useEffect(() => {
-        const amount = selectedQuote?.receiveStringAmount;
-        if (!amount) {
+        if (!isQuoteMatchingAsset || !amount) {
             setValue('receiveCryptoAmount', undefined, { shouldValidate: true });
 
             return;
@@ -110,7 +113,15 @@ const useExchangeQuoteChangeEffect = ({ control, setValue }: ExchangeFormType) =
                 ? convertAmountUnitsToSubunits(amount, getNetwork(symbol).decimals)
                 : amount;
         setValue('receiveCryptoAmount', value, { shouldValidate: true });
-    }, [selectedQuote, isAmountInSats, symbol, setValue]);
+    }, [
+        selectedQuote,
+        isQuoteMatchingAsset,
+        amount,
+        receiveAsset?.cryptoId,
+        isAmountInSats,
+        symbol,
+        setValue,
+    ]);
 };
 
 const useDexQuoteApprovalInfoChangeEffect = ({
@@ -118,7 +129,7 @@ const useDexQuoteApprovalInfoChangeEffect = ({
     getValues,
     setValue,
 }: ExchangeFormType) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const quote = useWatch({ control, name: 'quote' });
 
@@ -177,10 +188,19 @@ const useDexQuoteApprovalInfoChangeEffect = ({
     }, [dispatch, getValues, quote, sendAccount, setValue]);
 };
 
-const useValidations = (
-    { trigger, setValue }: ExchangeFormType,
-    limits: TradingExchangeAmountLimitProps | undefined,
-) => {
+type UseValidationsParams = {
+    form: ExchangeFormType;
+    limits: TradingExchangeAmountLimitProps | undefined;
+    balance: string | undefined;
+    maxSpendableAmount: string | undefined;
+};
+
+const useValidations = ({
+    form: { trigger, setValue },
+    limits,
+    balance,
+    maxSpendableAmount,
+}: UseValidationsParams) => {
     const { translate } = useTranslate();
     const quotes = useSelector(selectExchangeQuotes);
     const quoteRequest = useSelector(selectTradingExchangeQuotesRequest);
@@ -192,24 +212,30 @@ const useValidations = (
 
     useEffect(() => {
         trigger(['sendCryptoAmount']);
-    }, [limits, trigger]);
+    }, [limits, balance, maxSpendableAmount, trigger]);
 
     useEffect(() => {
         setValue('generalAlert', generalAlertMsg);
     }, [generalAlertMsg, setValue]);
 };
 
-export const useExchangeForm = () => {
+export const useExchangeForm = (): TradingFormWithMetadata<ExchangeFormType> => {
     const limits = useSelector(selectExchangeAmountLimits);
-    const { context, setBalance, setSendSymbol, setContractAddress, setAccountKey } =
-        useContextForTradingForm(limits);
+    const {
+        context,
+        setBalance,
+        setSendNetworkSymbol,
+        setSendAssetSymbol,
+        setContractAddress,
+        setAccountKey,
+    } = useContextForTradingForm(limits);
 
     const form = useForm<ExchangeFormValues>({
         validation: exchangeFormValidationSchema,
         context,
     });
     const { control, setValue } = form;
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const receiveAsset = useWatch({ control, name: 'receiveAsset' });
 
     const onSendAssetCleared = useCallback(() => {
@@ -231,14 +257,20 @@ export const useExchangeForm = () => {
     useSendAccountAssetBalance({
         control,
         setBalance,
-        setSendSymbol,
+        setSendNetworkSymbol,
+        setSendAssetSymbol,
         setContractAddress,
         setAccountKey,
     });
-    useValidations(form, limits);
+    useValidations({
+        form,
+        limits,
+        balance: context.balance,
+        maxSpendableAmount: context.maxSpendableAmount,
+    });
     useProviderMetadataChangeEffect(control, 'exchange');
 
-    return form;
+    return { ...form, metadata: { maxSpendableAmount: context.maxSpendableAmount } };
 };
 
 export const clearExchangeFormQuoteData = (form: ExchangeFormType) => {

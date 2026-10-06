@@ -1,7 +1,7 @@
 export * from './mocks';
-export * from './configureMockStore';
-export * from './extraDependenciesCommonMock';
+export { filterThunkActionTypes, initPreloadedState } from './createTestStore';
+export * from './createTestCompositionRoot';
 export * from './wireEnabledNetworksMock';
-export { renderHookWithStoreProvider, type TestStore } from './renderWithStore';
-
+export { renderHookWithStoreProvider } from './renderWithStore';
+export { renderHookWithQueryClient, newTestQueryClient } from './renderWithQueryClient';
 export * from '@testing-library/react';

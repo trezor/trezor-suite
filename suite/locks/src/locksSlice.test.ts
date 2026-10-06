@@ -1,9 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import {
     LOCK_TYPE,
+    type LocksRootState,
     lockDevice,
     lockRouter,
     lockUI,
@@ -16,10 +17,10 @@ import {
 } from './locksSlice';
 
 const getStore = (overrides: Partial<typeof locksInitialState> = {}) =>
-    configureMockStore({
+    createTestCompositionRoot<void, LocksRootState>({
         reducer: combineReducers({ locks: locksReducer }),
         preloadedState: { locks: { ...locksInitialState, ...overrides } },
-    });
+    }).services.store;
 
 const getState = (overrides: Partial<typeof locksInitialState> = {}) => ({
     locks: { ...locksInitialState, ...overrides },

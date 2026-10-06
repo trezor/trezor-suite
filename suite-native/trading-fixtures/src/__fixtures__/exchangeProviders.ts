@@ -11,7 +11,7 @@ export const exchangeInvity: ExchangeProviderInfo = {
     supportUrl: 'https://invity.io/invest-crypto',
     termsUrl: 'https://invity.io/terms',
     isDex: true,
-    isFixedRate: true,
+    isFixedRate: false,
     kycPolicyType: 'DEX',
     addressFormats: {},
 };

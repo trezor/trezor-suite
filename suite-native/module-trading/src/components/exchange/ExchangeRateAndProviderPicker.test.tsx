@@ -33,10 +33,10 @@ describe('ExchangeRateAndProviderPicker', () => {
         },
     };
 
-    const renderExchangeRateAndProviderPicker = (
+    const renderExchangeRateAndProviderPicker = async (
         extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) => {
-        const result = renderWithTradingProvider(<ExchangeRateAndProviderPicker />, {
+        const result = await renderWithTradingProvider(<ExchangeRateAndProviderPicker />, {
             services,
             tradeType: 'exchange',
             overrides: { ...baseOverrides, ...extraOverrides },
@@ -48,10 +48,10 @@ describe('ExchangeRateAndProviderPicker', () => {
         return result;
     };
 
-    beforeEach(() => {
+    beforeEach(async () => {
         jest.clearAllMocks();
 
-        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+        const { result } = await renderHookWithTradingProvider(() => useExchangeForm(), {
             services,
             tradeType: 'exchange',
             overrides: baseOverrides,
@@ -59,33 +59,33 @@ describe('ExchangeRateAndProviderPicker', () => {
         exchangeForm = result.current;
     });
 
-    afterEach(() => {
+    afterEach(async () => {
         if (unmount) {
-            unmount();
+            await unmount();
             unmount = undefined;
         }
     });
 
-    it('should render nothing when no quote is selected and quotes are not loading', () => {
-        const { toJSON } = renderExchangeRateAndProviderPicker();
+    it('should render nothing when no quote is selected and quotes are not loading', async () => {
+        const { toJSON } = await renderExchangeRateAndProviderPicker();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render provider picker when no quote is selected and quotes are loading', () => {
-        const { getByText } = renderExchangeRateAndProviderPicker({
+    it('should render provider picker when no quote is selected and quotes are loading', async () => {
+        const { getByText } = await renderExchangeRateAndProviderPicker({
             wallet: { trading: { exchange: { isLoading: true } } },
         });
 
         expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
     });
 
-    it('should render provider when quote is selected', () => {
-        act(() => {
+    it('should render provider when quote is selected', async () => {
+        await act(() => {
             exchangeForm.setValue('quote', mercuryoFixedWorstQuote);
         });
 
-        const { getByText } = renderExchangeRateAndProviderPicker();
+        const { getByText } = await renderExchangeRateAndProviderPicker();
 
         expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
@@ -96,15 +96,15 @@ describe('ExchangeRateAndProviderPicker', () => {
             wallet: { trading: { exchange: { quotes: exchangeQuotes } } },
         };
 
-        beforeEach(() => {
-            act(() => {
+        beforeEach(async () => {
+            await act(() => {
                 exchangeForm.setValue('quote', mercuryoFixedWorstQuote);
             });
             reportMock.mockClear();
         });
 
         it('should fire analytics event on provider select', async () => {
-            const { getByText } = renderExchangeRateAndProviderPicker(withQuotes);
+            const { getByText } = await renderExchangeRateAndProviderPicker(withQuotes);
 
             await userEvent.press(
                 getByText(getTranslation('moduleTrading.tradingScreen.provider')),
@@ -128,7 +128,8 @@ describe('ExchangeRateAndProviderPicker', () => {
         });
 
         it('should not fire analytics event when same provider is selected', async () => {
-            const { getByText, getAllByText } = renderExchangeRateAndProviderPicker(withQuotes);
+            const { getByText, getAllByText } =
+                await renderExchangeRateAndProviderPicker(withQuotes);
 
             await userEvent.press(
                 getByText(getTranslation('moduleTrading.tradingScreen.provider')),

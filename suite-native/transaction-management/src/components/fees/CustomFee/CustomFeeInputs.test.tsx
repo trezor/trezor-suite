@@ -1,9 +1,11 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Store } from '@reduxjs/toolkit';
+
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type FeesRootState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
-    type TestStore,
     createStoreFromPreloadedState,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
@@ -13,6 +15,8 @@ import { CustomFeeInputs, type CustomFeeInputsProps } from './CustomFeeInputs';
 import { type FeesFormType } from '../../..';
 import { ETH_ACCOUNT_KEY, getWalletState } from '../../../__fixtures__/walletState';
 import { useFeesForm } from '../../../hooks';
+
+type State = FeesRootState;
 
 // Mock the selectors
 jest.mock('@suite-common/wallet-core', () => ({
@@ -24,33 +28,33 @@ const mockSelectConvertedNetworkFeeInfo = jest.requireMock(
     '@suite-common/wallet-core',
 ).selectConvertedNetworkFeeInfo;
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+
 describe('CustomFeeInputs', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
     const defaultProps = {
-        symbol: 'btc' as NetworkSymbol,
+        symbol: btcSymbol,
     };
-    const defaultState = {
+    const defaultState: State = {
         wallet: getWalletState(),
     };
 
-    const renderUseFeesForm = (accountKey: AccountKey = ETH_ACCOUNT_KEY) => {
-        const { result } = renderHookWithStoreProvider(
+    const renderUseFeesForm = async (accountKey: AccountKey = ETH_ACCOUNT_KEY) => {
+        const { result } = await renderHookWithStoreProvider(
             () =>
                 useFeesForm({
                     accountKey,
                     defaultFeePerUnit: '1',
                 }),
-            {
-                store,
-                preloadedState: defaultState,
-            },
+            { services: { store }, preloadedState: defaultState },
         );
 
         return result.current;
     };
 
-    const renderCustomFeeInputs = ({
+    const renderCustomFeeInputs = async ({
         form,
         props,
     }: {
@@ -59,9 +63,9 @@ describe('CustomFeeInputs', () => {
     }) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return renderWithStoreProvider(<CustomFeeInputs {...finalProps} />, {
+        return await renderWithStoreProvider(<CustomFeeInputs {...finalProps} />, {
             preloadedState: defaultState,
-            store,
+            services: { store },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };
@@ -78,9 +82,9 @@ describe('CustomFeeInputs', () => {
         jest.clearAllMocks();
     });
     describe('Rendering', () => {
-        it('should render fee per unit input for bitcoin', () => {
-            const form = renderUseFeesForm();
-            const { getByText, getByTestId } = renderCustomFeeInputs({
+        it('should render fee per unit input for bitcoin', async () => {
+            const form = await renderUseFeesForm();
+            const { getByText, getByTestId } = await renderCustomFeeInputs({
                 form,
             });
             expect(
@@ -91,11 +95,11 @@ describe('CustomFeeInputs', () => {
             expect(getByTestId('@transactionManagement/customFeePerUnit-input')).toBeTruthy();
         });
 
-        it('should render fee per unit input for ethereum', () => {
-            const form = renderUseFeesForm();
-            const { getByText, getByTestId } = renderCustomFeeInputs({
+        it('should render fee per unit input for ethereum', async () => {
+            const form = await renderUseFeesForm();
+            const { getByText, getByTestId } = await renderCustomFeeInputs({
                 form,
-                props: { symbol: 'eth' },
+                props: { symbol: ethSymbol },
             });
 
             expect(
@@ -106,11 +110,11 @@ describe('CustomFeeInputs', () => {
             expect(getByTestId('@transactionManagement/customFeePerUnit-input')).toBeTruthy();
         });
 
-        it('should render fee limit input for ethereum', () => {
-            const form = renderUseFeesForm();
-            const { getByText, getByTestId } = renderCustomFeeInputs({
+        it('should render fee limit input for ethereum', async () => {
+            const form = await renderUseFeesForm();
+            const { getByText, getByTestId } = await renderCustomFeeInputs({
                 form,
-                props: { symbol: 'eth' },
+                props: { symbol: ethSymbol },
             });
 
             expect(
@@ -121,11 +125,11 @@ describe('CustomFeeInputs', () => {
             expect(getByTestId('@transactionManagement/customFeeLimit-input')).toBeTruthy();
         });
 
-        it('should not render fee limit input for bitcoin', () => {
-            const form = renderUseFeesForm();
-            const { queryByText, queryByTestId } = renderCustomFeeInputs({
+        it('should not render fee limit input for bitcoin', async () => {
+            const form = await renderUseFeesForm();
+            const { queryByText, queryByTestId } = await renderCustomFeeInputs({
                 form,
-                props: { symbol: 'btc' },
+                props: { symbol: btcSymbol },
             });
             expect(
                 queryByText(
@@ -135,26 +139,26 @@ describe('CustomFeeInputs', () => {
             expect(queryByTestId('@transactionManagement/customFeeLimit-input')).toBeNull();
         });
 
-        it('should display correct units for different networks', () => {
-            const form = renderUseFeesForm();
-            const { getByText } = renderCustomFeeInputs({
+        it('should display correct units for different networks', async () => {
+            const form = await renderUseFeesForm();
+            const { getByText } = await renderCustomFeeInputs({
                 form,
-                props: { symbol: 'btc' },
+                props: { symbol: btcSymbol },
             });
             expect(getByText('sat/vB')).toBeTruthy();
 
-            const { getByText: getByText2 } = renderCustomFeeInputs({
+            const { getByText: getByText2 } = await renderCustomFeeInputs({
                 form,
-                props: { symbol: 'eth' },
+                props: { symbol: ethSymbol },
             });
             expect(getByText2('Gwei')).toBeTruthy();
         });
 
-        it('should show minimum fee hint for bitcoin', () => {
-            const form = renderUseFeesForm();
-            const { getByText } = renderCustomFeeInputs({
+        it('should show minimum fee hint for bitcoin', async () => {
+            const form = await renderUseFeesForm();
+            const { getByText } = await renderCustomFeeInputs({
                 form,
-                props: { symbol: 'btc' },
+                props: { symbol: btcSymbol },
             });
             expect(
                 getByText(
@@ -165,11 +169,11 @@ describe('CustomFeeInputs', () => {
             ).toBeTruthy();
         });
 
-        it('should not show minimum fee hint for ethereum', () => {
-            const form = renderUseFeesForm();
-            const { queryByText } = renderCustomFeeInputs({
+        it('should not show minimum fee hint for ethereum', async () => {
+            const form = await renderUseFeesForm();
+            const { queryByText } = await renderCustomFeeInputs({
                 form,
-                props: { symbol: 'eth' },
+                props: { symbol: ethSymbol },
             });
             expect(
                 queryByText(

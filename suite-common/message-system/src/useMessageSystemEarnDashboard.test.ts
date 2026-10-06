@@ -1,16 +1,15 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import {
-    configureMockStore,
-    extraDependenciesCommonMock,
-    renderHookWithStoreProvider,
-} from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
-import { type MessageSystemState } from './messageSystemTypes';
+import { type MessageSystemRootState, type MessageSystemState } from './messageSystemTypes';
 import { useMessageSystemEarnDashboard } from './useMessageSystemEarnDashboard';
 
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 const stateWithMessages = {
     ...messageSystemInitialState,
@@ -52,16 +51,15 @@ const stateWithMessages = {
     },
 } as unknown as MessageSystemState;
 
-const createStore = (state: MessageSystemState = stateWithMessages) =>
-    configureMockStore({
-        extra: {},
+const createTestServices = (state: MessageSystemState = stateWithMessages) =>
+    createTestCompositionRoot<void, MessageSystemRootState>({
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: { messageSystem: state } as { messageSystem: MessageSystemState },
-    });
+    }).services;
 
 const renderHook = (props: Parameters<typeof useMessageSystemEarnDashboard>[0]) =>
     renderHookWithStoreProvider(() => useMessageSystemEarnDashboard(props), {
-        store: createStore(),
+        services: createTestServices(),
     });
 
 describe('useMessageSystemEarnDashboard', () => {
@@ -92,10 +90,10 @@ describe('useMessageSystemEarnDashboard', () => {
     });
 
     it('returns not disabled without content when no messages are configured', () => {
-        const store = createStore(messageSystemInitialState);
+        const services = createTestServices(messageSystemInitialState);
         const { result } = renderHookWithStoreProvider(
             () => useMessageSystemEarnDashboard({ type: 'yield', locale: 'en' }),
-            { store },
+            { services },
         );
 
         expect(result.current).toMatchObject({

@@ -8,7 +8,7 @@ import {
     type DemoAccountQuestionnaireQuestion,
     type DemoAccountQuestionnaireQuestionOption,
     events,
-    selectNativeAnalyticsDep,
+    injectNativeAnalytics,
 } from '@suite-native/analytics';
 import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
@@ -42,7 +42,7 @@ export const DemoAccountQuestionnaireScreenContent = ({
     answerOptions,
     nextRoute,
 }: DemoAccountQuestionnaireScreenContentProps) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const navigation =
         useNavigation<
             StackNavigationProps<

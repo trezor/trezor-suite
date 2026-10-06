@@ -1,17 +1,22 @@
 import { type NavigationAction, type RouteProp } from '@react-navigation/native';
+import { type Store } from '@reduxjs/toolkit';
 
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
+import { events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import {
     type RootStackParamList,
     RootStackRoutes,
     useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
-import { type TestStore } from '@suite-native/test-utils-store';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { TradingExchangeRevokeScreen } from './TradingExchangeRevokeScreen';
-import { createTradingLightStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+import { createTradingTestStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+
+type State = TradingRootState;
 
 const mockShowSheet = jest.fn();
 const mockHideSheet = jest.fn();
@@ -65,8 +70,8 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
-jest.mock('@suite-native/trading-atoms', () => ({
-    ...jest.requireActual('@suite-native/trading-atoms'),
+jest.mock('@suite-native/atoms', () => ({
+    ...jest.requireActual('@suite-native/atoms'),
     useBottomSheetControls: () => ({
         isSheetVisible: false,
         showSheet: mockShowSheet,
@@ -81,29 +86,24 @@ jest.mock('@suite-common/device', () => ({
 }));
 
 const mockAnalyticsReport = jest.fn();
-jest.mock('@suite-native/trading-analytics', () => ({
-    ...jest.requireActual('@suite-native/trading-analytics'),
-    useExchangeAnalyticsStepReport:
-        (action: unknown) =>
-        (...args: unknown[]) =>
-            mockAnalyticsReport(action, ...args),
-}));
-
 const testQuote = mercuryoFixedWorstQuote;
 
 describe('TradingExchangeRevokeScreen', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let unmount: (() => void) | undefined;
 
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    const renderScreen = (params: Record<string, unknown> = {}) => {
-        const result = renderWithTradingProvider(
+    const renderScreen = async (params: Record<string, unknown> = {}) => {
+        const result = await renderWithTradingProvider(
             <TradingExchangeRevokeScreen
                 route={{ params } as any}
                 navigation={{ dispatch: mockNavigationDispatch } as any}
             />,
-            { store, tradeType: 'exchange' },
+            {
+                services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
+                tradeType: 'exchange',
+            },
         );
 
         ({ unmount } = result);
@@ -116,20 +116,20 @@ describe('TradingExchangeRevokeScreen', () => {
 
         mockIsDeviceConnected = true;
 
-        store = createTradingLightStore({ tradeType: 'exchange' });
+        store = createTradingTestStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
         store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1NormalAccount.key));
     });
 
-    afterEach(() => {
+    afterEach(async () => {
         if (unmount) {
-            unmount();
+            await unmount();
             unmount = undefined;
         }
     });
 
-    it('should confirm revoke with ZERO approval type', () => {
-        renderScreen();
+    it('should confirm revoke with ZERO approval type', async () => {
+        await renderScreen();
 
         expect(mockConfirmApproval).toHaveBeenCalledTimes(1);
         expect(mockConfirmApproval).toHaveBeenCalledWith(
@@ -137,30 +137,30 @@ describe('TradingExchangeRevokeScreen', () => {
         );
     });
 
-    it('should render the revoke screen with quote details', () => {
-        const { getByText } = renderScreen();
+    it('should render the revoke screen with quote details', async () => {
+        const { getByText } = await renderScreen();
 
         expect(getByText('ETH Account #1')).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
         expect(errorSpy).not.toHaveBeenCalled();
     });
 
-    it('should display provider information correctly', () => {
-        const { getByText } = renderScreen();
+    it('should display provider information correctly', async () => {
+        const { getByText } = await renderScreen();
 
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
-    it('should render continue button', () => {
-        const { getByText } = renderScreen();
+    it('should render continue button', async () => {
+        const { getByText } = await renderScreen();
 
         expect(getByText(getTranslation('generic.buttons.continue'))).toBeOnTheScreen();
     });
 
-    it('should render alert when no quote is provided', () => {
+    it('should render alert when no quote is provided', async () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-        const { getByText, queryByText } = renderScreen();
+        const { getByText, queryByText } = await renderScreen();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangeRevokeScreen.revokeErrorAlert')),
@@ -170,9 +170,9 @@ describe('TradingExchangeRevokeScreen', () => {
         expect(errorSpy).toHaveBeenCalledWith('No quote to revoke approval');
     });
 
-    it('should clear selected quote on back navigation', () => {
+    it('should clear selected quote on back navigation', async () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
-        renderScreen();
+        await renderScreen();
 
         const backAction: NavigationAction = { type: 'GO_BACK' };
 
@@ -183,8 +183,8 @@ describe('TradingExchangeRevokeScreen', () => {
         expect(mockNavigationDispatch).toHaveBeenCalledWith(backAction);
     });
 
-    it('should render low limit info alert when shouldIncreaseLimit is true', () => {
-        const { getByText } = renderScreen({ shouldIncreaseLimit: true });
+    it('should render low limit info alert when shouldIncreaseLimit is true', async () => {
+        const { getByText } = await renderScreen({ shouldIncreaseLimit: true });
 
         expect(
             getByText(
@@ -193,10 +193,10 @@ describe('TradingExchangeRevokeScreen', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should display device guard when device is not connected', () => {
+    it('should display device guard when device is not connected', async () => {
         mockIsDeviceConnected = false;
 
-        const { getByText } = renderScreen();
+        const { getByText } = await renderScreen();
 
         expect(
             getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
@@ -204,20 +204,26 @@ describe('TradingExchangeRevokeScreen', () => {
     });
 
     describe('analytics', () => {
-        it('should report revoke-preview visit ', () => {
-            renderScreen();
+        it('should report revoke-preview visit ', async () => {
+            await renderScreen();
 
-            expect(mockAnalyticsReport).toHaveBeenCalledWith('revoke-preview', 'visit');
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.tradingExchangeEvent.name,
+                payload: expect.objectContaining({ step: 'revoke-preview', action: 'visit' }),
+            });
             expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
         });
 
-        it('should report revoke-preview cancel on back navigation', () => {
+        it('should report revoke-preview cancel on back navigation', async () => {
             store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
-            renderScreen();
+            await renderScreen();
 
             triggerPreventNavigationRemove({ type: 'GO_BACK' });
 
-            expect(mockAnalyticsReport).toHaveBeenCalledWith('revoke-preview', 'cancel');
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.tradingExchangeEvent.name,
+                payload: expect.objectContaining({ step: 'revoke-preview', action: 'cancel' }),
+            });
         });
     });
 });

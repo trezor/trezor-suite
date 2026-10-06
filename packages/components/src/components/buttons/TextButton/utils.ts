@@ -38,14 +38,14 @@ const colorMap: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'>, Colo
         info: 'contentInfo',
         warning: 'contentWarning',
         critical: 'contentCritical',
-        accentViolet: 'contentAccentViolet',
+        explore: 'contentAccentViolet',
     },
     inverse: {
         brand: 'contentOnDarkBrand',
         info: 'contentOnDarkInfo',
         warning: 'contentOnDarkWarning',
         critical: 'contentOnDarkCritical',
-        accentViolet: 'contentOnDarkAccentViolet',
+        explore: 'contentOnDarkAccentViolet',
     },
 };
 
@@ -66,14 +66,14 @@ const colorMapHovered: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'
         info: 'contentInfoHovered',
         warning: 'contentWarningHovered',
         critical: 'contentCriticalHovered',
-        accentViolet: 'contentAccentVioletHovered',
+        explore: 'contentAccentVioletHovered',
     },
     inverse: {
         brand: 'contentOnDarkBrandHovered',
         info: 'contentOnDarkInfoHovered',
         warning: 'contentOnDarkWarningHovered',
         critical: 'contentOnDarkCriticalHovered',
-        accentViolet: 'contentOnDarkAccentVioletHovered',
+        explore: 'contentOnDarkAccentVioletHovered',
     },
 };
 
@@ -94,14 +94,14 @@ const colorMapPressed: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'
         info: 'contentInfoPressed',
         warning: 'contentWarningPressed',
         critical: 'contentCriticalPressed',
-        accentViolet: 'contentAccentVioletPressed',
+        explore: 'contentAccentVioletPressed',
     },
     inverse: {
         brand: 'contentOnDarkBrandPressed',
         info: 'contentOnDarkInfoPressed',
         warning: 'contentOnDarkWarningPressed',
         critical: 'contentOnDarkCriticalPressed',
-        accentViolet: 'contentOnDarkAccentVioletPressed',
+        explore: 'contentOnDarkAccentVioletPressed',
     },
 };
 

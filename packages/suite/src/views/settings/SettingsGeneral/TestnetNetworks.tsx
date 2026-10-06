@@ -1,12 +1,14 @@
 import { Translation } from '@suite/intl';
 import { selectIsTestnetNetworksEnabled, suiteSettingsActions } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const TestnetNetworks = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const isEnabled = useSelector(selectIsTestnetNetworksEnabled);
 
     const handleSwitchChange = () => {

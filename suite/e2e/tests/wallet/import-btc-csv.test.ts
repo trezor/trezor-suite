@@ -1,18 +1,19 @@
 import fs from 'fs';
 import path from 'path';
 
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { csvToJson } from '../../support/csvToJson';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1', '@optional'] }, () => {
     test.beforeEach(async ({ metadataMock, onboardingPage, settingsPage, metadataPage }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
         await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
     });
 
@@ -23,6 +24,7 @@ test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 testCase: 'Verify that a user can successfully import a BTC csv file.',
                 category: TestCategory.UriLinkHandler,
                 priority: TestPriority.Low,
+                stream: TestStream.Wallet,
             }),
         },
         async ({ page, dashboardPage, walletPage }) => {

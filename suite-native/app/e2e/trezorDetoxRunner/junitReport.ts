@@ -1,10 +1,31 @@
 /* eslint-disable no-console */
 import * as fs from 'fs';
 import * as path from 'path';
+import { stripVTControlCharacters } from 'util';
 import xml2js from 'xml2js';
 
+import type { CurrentsArtifact } from './detoxArtifacts';
+import { getAttemptArtifacts } from './detoxArtifacts';
 import type { Action } from './quarantine';
 import { getTitlePath, isQuarantined } from './quarantine';
+import type { TestAttempts } from './testAttempts';
+
+type JUnitProperty = { $: { name: string; value: string } };
+type JUnitProperties = { property?: JUnitProperty[] };
+
+type JUnitTestCase = {
+    $: { name: string };
+    failure?: string[];
+    error?: unknown[];
+    skipped?: unknown[];
+    properties?: JUnitProperties[];
+};
+
+type JUnitTestSuite = {
+    $?: { name?: string; failures?: string; errors?: string; skipped?: string };
+    testcase?: JUnitTestCase[];
+    properties?: JUnitProperties[];
+};
 
 /** Remove skipped testcases from a suite that don't match the grep regex. */
 const filterSuiteByGrep = (suite: any, regex: RegExp): void => {
@@ -16,16 +37,49 @@ const filterSuiteByGrep = (suite: any, regex: RegExp): void => {
     });
 };
 
-/** Convert quarantined failures/errors in a suite to skipped and update suite-level counters. */
+const MISSING_RETRY_REASON =
+    'Jest did not record the reason of this failed attempt (jest.retryTimes without logErrorsBeforeRetry).';
+
+// Jest records one retry reason per error rather than per attempt, so the reasons can only be
+// attributed to the individual retries when their counts match.
+const getRetryFailures = ({ invocations, retryReasons }: TestAttempts): string[] => {
+    const retries = Math.max(invocations - 1, 0);
+    const reasons = retryReasons.map(reason => stripVTControlCharacters(reason));
+    if (reasons.length === retries) return reasons;
+
+    return Array.from({ length: retries }, () => reasons.join('\n\n') || MISSING_RETRY_REASON);
+};
+
+/**
+ * The Currents JUnit converter creates one attempt per <failure> element, while jest-junit writes
+ * one per error (a failing test plus its failing afterEach hook make two). Every failed test gets
+ * exactly one <failure> per invocation to keep the artifacts of the individual attempts apart.
+ */
+const setOneFailurePerAttempt = (
+    suite: JUnitTestSuite,
+    testAttempts: Map<string, TestAttempts>,
+): void => {
+    suite.testcase?.forEach(testCase => {
+        if (testCase.failure === undefined) return;
+
+        const attempts = testAttempts.get(testCase.$.name);
+        const retryFailures = attempts ? getRetryFailures(attempts) : [];
+
+        testCase.failure = [...retryFailures, testCase.failure.join('\n\n')];
+    });
+};
+
+// Keep successful tests passed; only quarantine failures and errors.
 const applySuiteQuarantine = (
-    suite: any,
+    suite: JUnitTestSuite,
     projectName: string,
     quarantinedActions: Action[],
 ): void => {
     let quarantinedFailures = 0;
     let quarantinedErrors = 0;
+    let quarantinedCount = 0;
 
-    suite.testcase.forEach((tc: any) => {
+    suite.testcase?.forEach(tc => {
         const hasFailure = tc.failure !== undefined;
         const hasError = tc.error !== undefined;
         if (!hasFailure && !hasError) return;
@@ -48,9 +102,20 @@ const applySuiteQuarantine = (
             quarantinedErrors++;
         }
         tc.skipped = [{}];
+        quarantinedCount++;
+
+        // The Currents JUnit converter keeps only attempt 0 for skipped tests. Keep all retry
+        // artifacts on that attempt; their names still identify the original invocation.
+        tc.properties?.forEach(properties => {
+            properties.property?.forEach(property => {
+                property.$.name = property.$.name.replace(
+                    /^currents\.artifact\.attempt\.\d+\./,
+                    'currents.artifact.attempt.0.',
+                );
+            });
+        });
     });
 
-    const quarantinedCount = quarantinedFailures + quarantinedErrors;
     if (quarantinedCount === 0 || !suite.$) return;
 
     if (quarantinedFailures > 0) {
@@ -68,6 +133,75 @@ const applySuiteQuarantine = (
     console.log(
         `[quarantine] ${projectName}/${suite.$?.name ?? 'suite'}: ${quarantinedCount} test(s) quarantined (${quarantinedFailures} failure(s), ${quarantinedErrors} error(s)).`,
     );
+};
+
+const toArtifactProperties = (
+    propertyPrefix: string,
+    artifact: CurrentsArtifact,
+): JUnitProperty[] => {
+    const toProperty = (key: keyof CurrentsArtifact): JUnitProperty => ({
+        $: { name: `${propertyPrefix}.${key}`, value: artifact[key] },
+    });
+
+    return [toProperty('path'), toProperty('type'), toProperty('contentType'), toProperty('name')];
+};
+
+const appendProperties = (
+    node: { properties?: JUnitProperties[] },
+    properties: JUnitProperty[],
+): void => {
+    if (properties.length === 0) return;
+
+    const existingProperties = node.properties?.[0]?.property ?? [];
+    node.properties = [{ property: [...existingProperties, ...properties] }];
+};
+
+// Every attempt before the last one failed, otherwise Jest would not have retried the test.
+const getAttemptStatus = (attempts: TestAttempts, invocation: number): TestAttempts['status'] =>
+    invocation < attempts.invocations ? 'failed' : attempts.status;
+
+type AddAttemptArtifactsParams = {
+    suite: JUnitTestSuite;
+    testAttempts: Map<string, TestAttempts>;
+    artifactsRootDir: string;
+};
+
+const addAttemptArtifacts = ({
+    suite,
+    testAttempts,
+    artifactsRootDir,
+}: AddAttemptArtifactsParams): void => {
+    suite.testcase?.forEach(testCase => {
+        const attempts = testAttempts.get(testCase.$.name);
+        if (!attempts || testCase.skipped !== undefined) return;
+
+        const invocations = Array.from({ length: attempts.invocations }, (_, index) => index + 1);
+        const properties = invocations.flatMap(invocation =>
+            getAttemptArtifacts({
+                rootDir: artifactsRootDir,
+                fullName: attempts.fullName,
+                status: getAttemptStatus(attempts, invocation),
+                invocation,
+            }).flatMap(artifact =>
+                toArtifactProperties(`currents.artifact.attempt.${invocation - 1}`, artifact),
+            ),
+        );
+
+        appendProperties(testCase, properties);
+    });
+};
+
+const addInstanceAttachments = (suite: JUnitTestSuite, attachments: string[]): void => {
+    const properties = attachments.flatMap(filePath =>
+        toArtifactProperties('currents.artifact.instance', {
+            path: filePath,
+            type: 'attachment',
+            contentType: 'text/plain',
+            name: path.basename(filePath),
+        }),
+    );
+
+    appendProperties(suite, properties);
 };
 
 /** Recompute root <testsuites> aggregate counters from the (now-updated) <testsuite> children. */
@@ -88,28 +222,49 @@ const recomputeAggregates = (testsuites: any): void => {
     testsuites.$.skipped = String(totals.skipped);
 };
 
+const hasSuiteFailures = (suite: JUnitTestSuite): boolean =>
+    parseInt(suite.$?.failures ?? '0', 10) > 0 || parseInt(suite.$?.errors ?? '0', 10) > 0;
+
 const hasAnyFailures = (testsuites: any): boolean =>
-    testsuites.testsuite.some(
-        (suite: any) =>
-            parseInt(suite.$?.failures ?? '0', 10) > 0 || parseInt(suite.$?.errors ?? '0', 10) > 0,
-    );
+    testsuites.testsuite.some((suite: JUnitTestSuite) => hasSuiteFailures(suite));
+
+export const getJUnitReportPath = (projectName: string): string =>
+    path.resolve(process.cwd(), 'reports', `${projectName}-junit-report.xml`);
+
+type ProcessJUnitReportParams = {
+    projectName: string;
+    detoxFailed: boolean;
+    grep?: string;
+    quarantinedActions: Action[];
+    testAttempts: Map<string, TestAttempts>;
+    /** Detox artifacts directory of this run, relative to the working directory like the report paths. */
+    artifactsRootDir?: string;
+    /** Files attached to every failing suite in the Currents report. */
+    instanceAttachments: string[];
+};
 
 /**
  * Process the JUnit XML report for a project.
  * - Filters out skipped tests that don't match grep.
- * - When quarantinedActions are provided, converts failing testcases that are
- *   quarantined into skipped ones and adjusts suite-level counters.
+ * - Reshapes the failures into one <failure> per attempt so Currents shows each attempt separately.
+ * - Attaches the Detox artifacts of every attempt and the instance attachments as Currents
+ *   artifact properties.
+ * - Marks quarantined failures/errors as skipped while keeping successful tests passed and all
+ *   their artifacts available to Currents.
  *
  * Returns true when there are still genuine (non-quarantined) failures remaining,
  * false when every failure was quarantined (or there were no failures).
  */
-export const processJUnitReport = async (
-    projectName: string,
-    detoxFailed: boolean,
-    grep?: string,
-    quarantinedActions: Action[] = [],
-): Promise<boolean> => {
-    const reportPath = path.resolve(process.cwd(), 'reports', `${projectName}-junit-report.xml`);
+export const processJUnitReport = async ({
+    projectName,
+    detoxFailed,
+    grep,
+    quarantinedActions,
+    testAttempts,
+    artifactsRootDir,
+    instanceAttachments,
+}: ProcessJUnitReportParams): Promise<boolean> => {
+    const reportPath = getJUnitReportPath(projectName);
     const reportExists = fs.existsSync(reportPath);
 
     // Detox crashed without producing a report — treat as genuine failure regardless of other options.
@@ -120,9 +275,6 @@ export const processJUnitReport = async (
 
         return true;
     }
-
-    // Nothing to process — report either passed cleanly or doesn't exist for a benign reason.
-    if (!grep && quarantinedActions.length === 0) return false;
 
     if (!reportExists) {
         console.warn(`Report not found at ${reportPath}`);
@@ -137,7 +289,7 @@ export const processJUnitReport = async (
         if (!result.testsuites?.testsuite) {
             console.log(`No test suites found in report for ${projectName}.`);
 
-            return false;
+            return detoxFailed;
         }
 
         const regex = grep ? new RegExp(grep) : null;
@@ -149,16 +301,32 @@ export const processJUnitReport = async (
                 filterSuiteByGrep(suite, regex);
             }
 
-            if (quarantinedActions.length > 0) {
-                applySuiteQuarantine(suite, projectName, quarantinedActions);
+            setOneFailurePerAttempt(suite, testAttempts);
+
+            if (artifactsRootDir) {
+                addAttemptArtifacts({ suite, testAttempts, artifactsRootDir });
+            }
+
+            if (hasSuiteFailures(suite)) {
+                addInstanceAttachments(suite, instanceAttachments);
             }
         });
+
+        if (quarantinedActions.length > 0) {
+            result.testsuites.testsuite.forEach((suite: any) => {
+                if (suite.testcase) {
+                    applySuiteQuarantine(suite, projectName, quarantinedActions);
+                }
+            });
+        }
 
         recomputeAggregates(result.testsuites);
 
         const newXml = new xml2js.Builder().buildObject(result);
         fs.writeFileSync(reportPath, newXml);
         console.log(`Processed and updated JUnit report for ${projectName}`);
+
+        if (!grep && quarantinedActions.length === 0) return detoxFailed;
 
         return hasAnyFailures(result.testsuites);
     } catch (error) {

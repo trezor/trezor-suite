@@ -3,7 +3,10 @@ import { type Resolver, useForm } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type TradingAssetOption,
     type TradingBuyFormProps,
@@ -11,10 +14,14 @@ import {
     buyInitialState,
     initialState as tradingInitialState,
 } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+
+import { type AppState } from 'src/reducers/store';
 
 import { useBuyQuotes } from './useBuyQuotes';
 import { DEBOUNCE_DELAY_MS } from '../common/useTradingQuoteRequest';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const QUOTES: BuyTrade[] = [
     {
@@ -38,11 +45,6 @@ const mockHandleRequest = jest.fn((payload: unknown) => {
     return Object.assign(thunk, { payload });
 });
 
-jest.mock('@suite-common/dependency-injection', () => ({
-    ...jest.requireActual('@suite-common/dependency-injection'),
-    useServices: () => ({ analytics: { report: jest.fn() } }),
-}));
-
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
 
@@ -59,7 +61,7 @@ const VALID_DEFAULTS: TradingBuyFormProps = {
     fiatInput: '100',
     cryptoInput: '',
     currencySelect: { value: 'eur', label: 'EUR' },
-    cryptoSelect: { id: 'bitcoin' as CryptoId, networkSymbol: 'btc' } as TradingAssetOption,
+    cryptoSelect: { id: 'bitcoin' as CryptoId, networkSymbol: btcSymbol } as TradingAssetOption,
     countrySelect: { value: 'DE', label: 'Germany' } as TradingCountryOption,
     countrySubdivisionSelect: undefined,
     paymentMethod: undefined,
@@ -78,12 +80,16 @@ const wait = (ms: number) =>
             }),
     );
 
+type RenderBuyQuotesOptions = {
+    resolver?: Resolver<TradingBuyFormProps>;
+};
+
 const renderBuyQuotes = (
     defaultValues: TradingBuyFormProps,
-    options: { resolver?: Resolver<TradingBuyFormProps> } = {},
+    { resolver }: RenderBuyQuotesOptions = {},
 ) => {
-    const { resolver } = options;
-    const store = configureMockStore({
+    const report = jest.fn();
+    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
         preloadedState: {
             wallet: {
                 trading: {
@@ -92,21 +98,24 @@ const renderBuyQuotes = (
                 },
             },
         },
+        services: () => ({ analytics: mockDesktopAnalytics(report) }),
     });
 
-    return renderHookWithStoreProvider(
+    const rendered = renderHookWithStoreProvider(
         () => {
             const methods = useForm<TradingBuyFormProps>({
                 mode: 'onChange',
                 defaultValues,
                 resolver,
             });
-            useBuyQuotes({ methods, network: getNetwork('btc'), shouldSendInSats: false });
+            useBuyQuotes({ methods, network: getNetwork(btcSymbol), shouldSendInSats: false });
 
             return methods;
         },
-        { store },
+        { services },
     );
+
+    return { ...rendered, report };
 };
 
 describe('useBuyQuotes', () => {
@@ -184,6 +193,65 @@ describe('useBuyQuotes', () => {
         await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
     });
 
+    it('reports the input the amount was entered in with the received quotes', async () => {
+        const { result, report } = renderBuyQuotes(VALID_DEFAULTS);
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+
+        act(() => {
+            result.current.setValue('amountInputSource', 'fiat');
+            result.current.setValue('fiatInput', '200');
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
+        await waitFor(() =>
+            expect(report).toHaveBeenLastCalledWith({
+                type: events.tradeReceivedQuotesEvent.name,
+                payload: { type: 'buy', count: QUOTES.length, input: 'fiat' },
+            }),
+        );
+    });
+
+    it('ignores the derived crypto input while fiat is the active side', async () => {
+        const { result } = renderBuyQuotes(VALID_DEFAULTS);
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+
+        act(() => {
+            result.current.setValue('cryptoInput', '0.5');
+        });
+        await wait(NO_REFETCH_WAIT_MS);
+
+        expect(mockHandleRequest).toHaveBeenCalledTimes(1);
+        expect(mockAbort).not.toHaveBeenCalled();
+    });
+
+    it('refetches once when the crypto input is written and the amount side flips', async () => {
+        const { result } = renderBuyQuotes(VALID_DEFAULTS);
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+
+        act(() => {
+            result.current.setValue('cryptoInput', '0.5');
+            result.current.setValue('amountInCrypto', true);
+            result.current.setValue('fiatInput', '');
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
+        await wait(NO_REFETCH_WAIT_MS);
+
+        expect(mockHandleRequest).toHaveBeenCalledTimes(2);
+        expect(mockHandleRequest).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+                formValues: expect.objectContaining({
+                    cryptoInput: '0.5',
+                    fiatInput: '',
+                    amountInCrypto: true,
+                }),
+            }),
+        );
+    });
+
     it('does not refetch when only a non-key field (provider) changes', async () => {
         const { result } = renderBuyQuotes(VALID_DEFAULTS);
 
@@ -201,7 +269,7 @@ describe('useBuyQuotes', () => {
         expect(mockHandleRequest).toHaveBeenCalledTimes(1);
     });
 
-    it('does not fetch while the form is invalid', async () => {
+    it('does not fetch while the active amount is invalid', async () => {
         const invalidResolver: Resolver<TradingBuyFormProps> = () => ({
             values: {},
             errors: { fiatInput: { type: 'manual', message: 'invalid' } },
@@ -214,5 +282,15 @@ describe('useBuyQuotes', () => {
         await wait(NO_REFETCH_WAIT_MS);
 
         expect(mockHandleRequest).not.toHaveBeenCalled();
+    });
+
+    it('fetches while only the inactive amount is invalid', async () => {
+        const invalidResolver: Resolver<TradingBuyFormProps> = () => ({
+            values: {},
+            errors: { cryptoInput: { type: 'manual', message: 'invalid' } },
+        });
+        renderBuyQuotes(VALID_DEFAULTS, { resolver: invalidResolver });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
     });
 });

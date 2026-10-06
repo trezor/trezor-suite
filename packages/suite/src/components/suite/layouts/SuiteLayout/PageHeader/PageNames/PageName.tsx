@@ -1,10 +1,10 @@
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import {
+    injectSuiteRouterHistory,
     isAccountTabRoute,
     resolveEffectiveBackgroundRouteName,
     selectRoute,
-    selectSuiteRouterHistoryDep,
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 
@@ -17,7 +17,7 @@ import { SettingsName } from './SettingsName';
 
 export const PageName = () => {
     const route = useSelector(selectRoute);
-    const { suiteRouterHistory } = useServices(selectSuiteRouterHistoryDep);
+    const { suiteRouterHistory } = useServices(injectSuiteRouterHistory);
     const currentRoute = resolveEffectiveBackgroundRouteName(
         route,
         suiteRouterHistory.getLocation(),
@@ -44,6 +44,14 @@ export const PageName = () => {
         return (
             <BasicName>
                 <Translation id="TR_NOTIFICATIONS" />
+            </BasicName>
+        );
+    }
+
+    if (currentRoute === 'apps-embedding-index') {
+        return (
+            <BasicName>
+                <Translation id="TR_APPS_EMBEDDING" />
             </BasicName>
         );
     }

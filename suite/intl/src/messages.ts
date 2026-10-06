@@ -90,11 +90,26 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_VAULT',
     },
     TR_EARN_YIELD_APPROVE_TOKEN_SPENDING_DESCRIPTION: {
-        defaultMessage: 'Approve provider to spend your {displaySymbol} to deposit.',
+        defaultMessage:
+            'Approve the vault to spend your {displaySymbol} for the deposit. The vault pulls the tokens from your account, which is why this approval comes first.',
         id: 'TR_EARN_YIELD_APPROVE_TOKEN_SPENDING_DESCRIPTION',
     },
+    TR_EARN_YIELD_APPROVAL_VALUE_MINIMAL_INFO: {
+        id: 'TR_EARN_YIELD_APPROVAL_VALUE_MINIMAL_INFO',
+        defaultMessage:
+            "Approve the exact amount for the vault. Valid until fully used or revoked, then you'll need to approve again and pay a network fee.",
+    },
+    TR_EARN_YIELD_APPROVAL_VALUE_INFINITE_INFO: {
+        id: 'TR_EARN_YIELD_APPROVAL_VALUE_INFINITE_INFO',
+        defaultMessage:
+            'Approve once and avoid future network fees. The vault can spend any amount until you revoke the approval.',
+    },
+    TR_EARN_YIELD_APPROVAL_VALUE_INFINITE_WARNING: {
+        id: 'TR_EARN_YIELD_APPROVAL_VALUE_INFINITE_WARNING',
+        defaultMessage: 'If the vault is compromised, all your {send} may be lost.',
+    },
     TR_EARN_YIELD_REVOKE_TOKEN_SPENDING_DESCRIPTION: {
-        defaultMessage: 'Revoke provider to spend your {displaySymbol} to deposit.',
+        defaultMessage: "Revoke this vault's approved spending limit for your {displaySymbol}.",
         id: 'TR_EARN_YIELD_REVOKE_TOKEN_SPENDING_DESCRIPTION',
     },
     TR_ACCOUNT_OUT_OF_SYNC: {
@@ -139,6 +154,14 @@ export const messages = defineMessages({
         defaultMessage: 'Crypto moves fast. Our filters may not always be 100% up to date.',
         id: 'TR_HIDE_SUSPICIOUS_TRANSACTIONS_DESCRIPTION',
     },
+    TR_SHOW_UNBLURRED: {
+        defaultMessage: 'Show unblurred',
+        id: 'TR_SHOW_UNBLURRED',
+    },
+    TR_SHOW_UNBLURRED_TRANSACTIONS_DESCRIPTION: {
+        defaultMessage: "Suspicious transactions stay flagged but details aren't blurred.",
+        id: 'TR_SHOW_UNBLURRED_TRANSACTIONS_DESCRIPTION',
+    },
     TR_ACCOUNT_IS_EMPTY_TITLE: {
         defaultMessage: 'No transactions',
         id: 'TR_ACCOUNT_IS_EMPTY_TITLE',
@@ -176,9 +199,30 @@ export const messages = defineMessages({
         id: 'TR_ADD',
         defaultMessage: 'Add',
     },
+    TR_ENABLE: {
+        id: 'TR_ENABLE',
+        defaultMessage: 'Enable',
+    },
     TR_ADD_ACCOUNT: {
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
+    },
+    TR_ACCOUNT_COUNT: {
+        defaultMessage: '{count, plural, one {# account} other {# accounts}}',
+        id: 'TR_ACCOUNT_COUNT',
+    },
+    TR_ADD_ACCOUNT_NETWORKS_BANNER_TITLE: {
+        defaultMessage: 'Networks power your accounts',
+        id: 'TR_ADD_ACCOUNT_NETWORKS_BANNER_TITLE',
+    },
+    TR_ADD_ACCOUNT_NETWORKS_BANNER_DESCRIPTION: {
+        defaultMessage:
+            "You'll only see accounts on networks you've already enabled. Enable more and your accounts will load automatically.",
+        id: 'TR_ADD_ACCOUNT_NETWORKS_BANNER_DESCRIPTION',
+    },
+    TR_OK_GOT_IT: {
+        defaultMessage: 'Ok, got it',
+        id: 'TR_OK_GOT_IT',
     },
     TR_SHOW_COINS_FILTER: {
         defaultMessage: 'Show filter',
@@ -192,9 +236,9 @@ export const messages = defineMessages({
         defaultMessage: 'Add {network} account',
         id: 'TR_ADD_NETWORK_ACCOUNT',
     },
-    TR_SELECT_TYPE: {
-        defaultMessage: 'Select type',
-        id: 'TR_SELECT_TYPE',
+    TR_SELECT_ADDRESS_TYPE: {
+        defaultMessage: 'Select address type',
+        id: 'TR_SELECT_ADDRESS_TYPE',
     },
     TR_ADD_HIDDEN_WALLET: {
         defaultMessage: 'Passphrase wallet',
@@ -326,6 +370,42 @@ export const messages = defineMessages({
         defaultMessage: '{providerName} is processing your {type}',
         id: 'TR_TRADING_DETAIL_PROCESSING',
     },
+    TR_TRADING_DETAIL_WILL_PROCESS: {
+        defaultMessage: '{providerName} will process your {type}',
+        id: 'TR_TRADING_DETAIL_WILL_PROCESS',
+    },
+    TR_TRADING_DETAIL_PROCESSED: {
+        defaultMessage: '{providerName} has processed your {type}',
+        id: 'TR_TRADING_DETAIL_PROCESSED',
+    },
+    TR_TRADING_DETAIL_SWAPPING_ON_PROVIDER: {
+        defaultMessage: 'Swapping on {providerName}',
+        id: 'TR_TRADING_DETAIL_SWAPPING_ON_PROVIDER',
+    },
+    TR_TRADING_DETAIL_SWAPPED_ON_PROVIDER: {
+        defaultMessage: 'Swapped on {providerName}',
+        id: 'TR_TRADING_DETAIL_SWAPPED_ON_PROVIDER',
+    },
+    TR_TRADING_DETAIL_SENDING_TRANSACTION: {
+        defaultMessage: 'Sending transaction',
+        id: 'TR_TRADING_DETAIL_SENDING_TRANSACTION',
+    },
+    TR_TRADING_DETAIL_TRANSACTION_SENT: {
+        defaultMessage: 'Transaction sent',
+        id: 'TR_TRADING_DETAIL_TRANSACTION_SENT',
+    },
+    TR_TRADING_DETAIL_PLACED: {
+        defaultMessage: 'Placed',
+        id: 'TR_TRADING_DETAIL_PLACED',
+    },
+    TR_TRADING_DETAIL_TRANSACTION_ID: {
+        defaultMessage: 'Transaction ID',
+        id: 'TR_TRADING_DETAIL_TRANSACTION_ID',
+    },
+    TR_TRADING_DETAIL_CHECK_STATUS: {
+        defaultMessage: 'Check status on {providerName}',
+        id: 'TR_TRADING_DETAIL_CHECK_STATUS',
+    },
     TR_TRADING_SWAP_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
         id: 'TR_TRADING_SWAP_MODAL_SECURITY_HEADER',
@@ -343,6 +423,10 @@ export const messages = defineMessages({
     TR_TRADING_MISSING_FEE_LEVEL: {
         defaultMessage: 'Missing fee level',
         id: 'TR_TRADING_MISSING_FEE_LEVEL',
+    },
+    TR_TRADING_COMPOSE_FAILED: {
+        defaultMessage: 'Unable to create transaction. {error}',
+        id: 'TR_TRADING_COMPOSE_FAILED',
     },
     TR_TRADING_ERROR_WITH_PARTNER_MESSAGE: {
         defaultMessage: '{base} Message from partner: {partnerMessage}',
@@ -486,6 +570,10 @@ export const messages = defineMessages({
         defaultMessage: 'All networks',
         id: 'TR_ALL_NETWORKS',
     },
+    TR_ASSET_PICKER_NETWORK_FILTER: {
+        defaultMessage: 'Network',
+        id: 'TR_ASSET_PICKER_NETWORK_FILTER',
+    },
     TR_SELECT_TOKEN: {
         defaultMessage: 'Select asset',
         id: 'TR_SELECT_TOKEN',
@@ -522,55 +610,43 @@ export const messages = defineMessages({
         defaultMessage: 'Converting',
         id: 'TR_EXCHANGE_STATUS_CONVERTING',
     },
-    TR_EXCHANGE_DETAIL_SUCCESS_TITLE: {
-        defaultMessage: 'Swap successful',
-        id: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
-    },
-    TR_EXCHANGE_DETAIL_SUCCESS_TEXT: {
-        defaultMessage: 'Your transaction was successful.',
-        id: 'TR_EXCHANGE_DETAIL_SUCCESS_TEXT',
-    },
-    TR_EXCHANGE_DETAIL_SUCCESS_BUTTON: {
-        defaultMessage: 'Make another Swap',
-        id: 'TR_EXCHANGE_DETAIL_SUCCESS_BUTTON',
-    },
-    TR_EXCHANGE_DETAIL_ERROR_TITLE: {
-        defaultMessage: 'Transaction failed',
-        id: 'TR_EXCHANGE_DETAIL_ERROR_TITLE',
-    },
-    TR_EXCHANGE_DETAIL_ERROR_TEXT: {
-        defaultMessage:
-            "Your transaction failed or was rejected. Your assets haven't been swapped.",
-        id: 'TR_EXCHANGE_DETAIL_ERROR_TEXT',
-    },
-    TR_EXCHANGE_DETAIL_ERROR_BUTTON: {
-        defaultMessage: 'Back to Swap',
-        id: 'TR_EXCHANGE_DETAIL_ERROR_BUTTON',
-    },
-    TR_EXCHANGE_DETAIL_KYC_TITLE: {
-        defaultMessage: 'KYC request',
-        id: 'TR_EXCHANGE_DETAIL_KYC_TITLE',
-    },
-    TR_EXCHANGE_DETAIL_KYC_TEXT: {
-        defaultMessage:
-            "The provider has marked this transaction as suspicious and you may be required to complete their KYC process to finish the trade. Contact the provider's support to proceed.",
-        id: 'TR_EXCHANGE_DETAIL_KYC_TEXT',
-    },
-    TR_EXCHANGE_DETAIL_KYC_SUPPORT: {
-        defaultMessage: 'Go to provider support',
-        id: 'TR_EXCHANGE_DETAIL_KYC_SUPPORT',
-    },
-    TR_EXCHANGE_DETAIL_SENDING_TRANSACTION: {
-        defaultMessage: 'Sending transaction',
-        id: 'TR_EXCHANGE_DETAIL_SENDING_TRANSACTION',
-    },
-    TR_EXCHANGE_DETAIL_TRANSACTION_SENT: {
-        defaultMessage: 'Transaction sent',
-        id: 'TR_EXCHANGE_DETAIL_TRANSACTION_SENT',
-    },
-    TR_EXCHANGE_COMPLETE: {
+    TR_EXCHANGE_DETAIL_COMPLETE_TITLE: {
         defaultMessage: 'Swap complete',
-        id: 'TR_EXCHANGE_COMPLETE',
+        id: 'TR_EXCHANGE_DETAIL_COMPLETE_TITLE',
+    },
+    TR_EXCHANGE_DETAIL_COMPLETE_TEXT: {
+        defaultMessage: 'Funds are in your account. View your swap in trade history.',
+        id: 'TR_EXCHANGE_DETAIL_COMPLETE_TEXT',
+    },
+    TR_EXCHANGE_DETAIL_COMPLETE_BUTTON: {
+        defaultMessage: 'Start new swap',
+        id: 'TR_EXCHANGE_DETAIL_COMPLETE_BUTTON',
+    },
+    TR_EXCHANGE_DETAIL_RETURNED_TITLE: {
+        defaultMessage: 'Your swap returned',
+        id: 'TR_EXCHANGE_DETAIL_RETURNED_TITLE',
+    },
+    TR_EXCHANGE_DETAIL_RETURNED_TEXT: {
+        defaultMessage:
+            'Your funds have been returned to your account. Reach out to {providerName}’s support if you have any issues.',
+        id: 'TR_EXCHANGE_DETAIL_RETURNED_TEXT',
+    },
+    TR_EXCHANGE_DETAIL_RETURNED_BUTTON: {
+        defaultMessage: 'Start new swap',
+        id: 'TR_EXCHANGE_DETAIL_RETURNED_BUTTON',
+    },
+    TR_EXCHANGE_DETAIL_KYC_REQUESTED_TITLE: {
+        defaultMessage: 'KYC requested',
+        id: 'TR_EXCHANGE_DETAIL_KYC_REQUESTED_TITLE',
+    },
+    TR_EXCHANGE_DETAIL_KYC_REQUESTED_TEXT: {
+        defaultMessage:
+            'The provider has marked this transaction as “suspicious” and you may be required to complete their KYC process to finish the trade. Contact {providerName}’s support to proceed.',
+        id: 'TR_EXCHANGE_DETAIL_KYC_REQUESTED_TEXT',
+    },
+    TR_EXCHANGE_DETAIL_KYC_REQUESTED_BUTTON: {
+        defaultMessage: 'Contact {providerName}',
+        id: 'TR_EXCHANGE_DETAIL_KYC_REQUESTED_BUTTON',
     },
     TR_APPROVAL_APPROVE_TOKEN_SPENDING: {
         defaultMessage: 'Approve {displaySymbol} spending',
@@ -706,14 +782,6 @@ export const messages = defineMessages({
         defaultMessage: 'Confirm on Trezor & send',
         id: 'TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND',
     },
-    TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP: {
-        id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP',
-        defaultMessage: 'Receive account is outside of Trezor Suite.',
-    },
-    TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP: {
-        id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP',
-        defaultMessage: 'This is the address for receiving your assets.',
-    },
     TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED: {
         defaultMessage: 'Receive address is required',
         id: 'TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED',
@@ -733,14 +801,6 @@ export const messages = defineMessages({
     TR_EXCHANGE_EXTRA_FIELD_INVALID: {
         defaultMessage: '{extraFieldName} is invalid',
         id: 'TR_EXCHANGE_EXTRA_FIELD_INVALID',
-    },
-    TR_EXCHANGE_CREATE_SUITE_ACCOUNT: {
-        defaultMessage: 'Create a new {symbol} account',
-        id: 'TR_EXCHANGE_CREATE_SUITE_ACCOUNT',
-    },
-    TR_EXCHANGE_USE_NON_SUITE_ACCOUNT: {
-        defaultMessage: "Use an account ({symbol}) that isn't in Trezor Suite.",
-        id: 'TR_EXCHANGE_USE_NON_SUITE_ACCOUNT',
     },
     TR_EXCHANGE_FIXED: {
         defaultMessage: 'Fixed-rate offer',
@@ -874,17 +934,29 @@ export const messages = defineMessages({
         defaultMessage: 'Proceed',
         id: 'TR_SELL_GO_TO_TRANSACTION',
     },
-    TR_SELL_DETAIL_ERROR_TITLE: {
-        defaultMessage: 'Transaction failed',
-        id: 'TR_SELL_DETAIL_ERROR_TITLE',
+    TR_SELL_DETAIL_COMPLETE_TITLE: {
+        defaultMessage: 'Sell complete',
+        id: 'TR_SELL_DETAIL_COMPLETE_TITLE',
     },
-    TR_SELL_DETAIL_ERROR_TEXT: {
-        defaultMessage: 'Your transaction was rejected or failed.',
-        id: 'TR_SELL_DETAIL_ERROR_TEXT',
+    TR_SELL_DETAIL_COMPLETE_TEXT: {
+        defaultMessage: 'Funds are in your account. View your sell in trade history.',
+        id: 'TR_SELL_DETAIL_COMPLETE_TEXT',
     },
-    TR_SELL_DETAIL_ERROR_BUTTON: {
-        defaultMessage: 'Back to Sell',
-        id: 'TR_SELL_DETAIL_ERROR_BUTTON',
+    TR_SELL_DETAIL_COMPLETE_BUTTON: {
+        defaultMessage: 'Start new sell',
+        id: 'TR_SELL_DETAIL_COMPLETE_BUTTON',
+    },
+    TR_SELL_DETAIL_FAILED_TITLE: {
+        defaultMessage: 'Sell failed',
+        id: 'TR_SELL_DETAIL_FAILED_TITLE',
+    },
+    TR_SELL_DETAIL_FAILED_TEXT: {
+        defaultMessage: 'Your transaction failed or was rejected. Funds are in your account.',
+        id: 'TR_SELL_DETAIL_FAILED_TEXT',
+    },
+    TR_SELL_DETAIL_FAILED_BUTTON: {
+        defaultMessage: 'Start new sell',
+        id: 'TR_SELL_DETAIL_FAILED_BUTTON',
     },
     TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO: {
         defaultMessage: 'Waiting for {providerName}',
@@ -901,14 +973,6 @@ export const messages = defineMessages({
     TR_SELL_HEADER_TITLE: {
         defaultMessage: 'Your sell',
         id: 'TR_SELL_HEADER_TITLE',
-    },
-    TR_SELL_DETAIL_SENDING_TRANSACTION: {
-        defaultMessage: 'Sending transaction',
-        id: 'TR_SELL_DETAIL_SENDING_TRANSACTION',
-    },
-    TR_SELL_DETAIL_TRANSACTION_SENT: {
-        defaultMessage: 'Transaction sent',
-        id: 'TR_SELL_DETAIL_TRANSACTION_SENT',
     },
     TR_SELL_DETAIL_PROCESSING_TEXT: {
         defaultMessage:
@@ -992,17 +1056,9 @@ export const messages = defineMessages({
         defaultMessage: 'Trade ID',
         id: 'TR_TRADE_ID',
     },
-    TR_TRADING_PROCESSING_STATUS: {
-        defaultMessage: "<link>Check your order status</link> on the {providerName}'s website.",
-        id: 'TR_TRADING_PROCESSING_STATUS',
-    },
     TR_TRADING_PROCESSING_SUPPORT: {
         defaultMessage: "Need help? Reach out to <link>{providerName}'s support</link>.",
         id: 'TR_TRADING_PROCESSING_SUPPORT',
-    },
-    TR_BUY_COMPLETE: {
-        defaultMessage: 'Buy complete',
-        id: 'TR_BUY_COMPLETE',
     },
     TR_BUY_HEADER_TITLE: {
         defaultMessage: 'Your buy',
@@ -1012,46 +1068,38 @@ export const messages = defineMessages({
         defaultMessage: 'Receive address',
         id: 'TR_BUY_RECEIVING_ADDRESS',
     },
-    TR_BUY_NOT_TRANSACTIONS: {
-        defaultMessage: 'No transactions',
-        id: 'TR_BUY_NOT_TRANSACTIONS',
-    },
     TR_BUY_RECEIVING_ACCOUNT: {
         defaultMessage: 'Receive account',
         id: 'TR_BUY_RECEIVING_ACCOUNT',
     },
-    TR_BUY_DETAIL_SUCCESS_TITLE: {
-        defaultMessage: 'Buy successful',
-        id: 'TR_BUY_DETAIL_SUCCESS_TITLE',
+    TR_BUY_DETAIL_COMPLETE_TITLE: {
+        defaultMessage: 'Buy complete',
+        id: 'TR_BUY_DETAIL_COMPLETE_TITLE',
     },
-    TR_BUY_DETAIL_SUCCESS_TEXT: {
-        defaultMessage: 'Your transaction has been approved. Wait for it to finish.',
-        id: 'TR_BUY_DETAIL_SUCCESS_TEXT',
+    TR_BUY_DETAIL_COMPLETE_TEXT: {
+        defaultMessage: 'Funds are in your account. View your buy in trade history.',
+        id: 'TR_BUY_DETAIL_COMPLETE_TEXT',
     },
-    TR_BUY_DETAIL_SUCCESS_BUTTON: {
-        defaultMessage: 'Make another Buy',
-        id: 'TR_BUY_DETAIL_SUCCESS_BUTTON',
+    TR_BUY_DETAIL_COMPLETE_BUTTON: {
+        defaultMessage: 'Start new buy',
+        id: 'TR_BUY_DETAIL_COMPLETE_BUTTON',
     },
-    TR_BUY_DETAIL_ERROR_TITLE: {
-        defaultMessage: 'Transaction failed',
-        id: 'TR_BUY_DETAIL_ERROR_TITLE',
+    TR_BUY_DETAIL_FAILED_TITLE: {
+        defaultMessage: 'Buy failed',
+        id: 'TR_BUY_DETAIL_FAILED_TITLE',
     },
-    TR_BUY_DETAIL_ERROR_TEXT: {
+    TR_BUY_DETAIL_FAILED_TEXT: {
         defaultMessage:
             "Your transaction failed or was rejected. Your payment method hasn't been charged.",
-        id: 'TR_BUY_DETAIL_ERROR_TEXT',
+        id: 'TR_BUY_DETAIL_FAILED_TEXT',
     },
-    TR_BUY_DETAIL_ERROR_BUTTON: {
-        defaultMessage: 'Back to Buy',
-        id: 'TR_BUY_DETAIL_ERROR_BUTTON',
+    TR_BUY_DETAIL_FAILED_BUTTON: {
+        defaultMessage: 'Start new buy',
+        id: 'TR_BUY_DETAIL_FAILED_BUTTON',
     },
     TR_BUY_DETAIL_SUBMITTED_TEXT: {
         defaultMessage: "Click to complete your details on the provider's website.",
         id: 'TR_BUY_DETAIL_SUBMITTED_TEXT',
-    },
-    TR_BUY_DETAIL_SUBMITTED_GATE: {
-        defaultMessage: 'Proceed to pay',
-        id: 'TR_BUY_DETAIL_SUBMITTED_GATE',
     },
     TR_BUY_DETAIL_WAITING_FOR_USER_TITLE: {
         defaultMessage: 'Complete your transaction',
@@ -1066,9 +1114,14 @@ export const messages = defineMessages({
             '{providerName} needs some final details to finish this transaction. Visit their site to proceed.',
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_TEXT',
     },
-    TR_BUY_DETAIL_WAITING_FOR_USER_GATE: {
-        defaultMessage: "Go to the provider's website",
-        id: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
+    TR_BUY_DETAIL_PAYMENT_INTERRUPTION_TITLE: {
+        defaultMessage: "Left the provider's website before paying?",
+        id: 'TR_BUY_DETAIL_PAYMENT_INTERRUPTION_TITLE',
+    },
+    TR_BUY_DETAIL_PAYMENT_INTERRUPTION_TEXT: {
+        defaultMessage:
+            "No worries – you haven't been charged. Just go back and create a new trade.",
+        id: 'TR_BUY_DETAIL_PAYMENT_INTERRUPTION_TEXT',
     },
     TR_BUY_SELL_OFFERS_EMPTY: {
         defaultMessage: 'Select your assets and amount to search for your best offer.',
@@ -1089,6 +1142,18 @@ export const messages = defineMessages({
     TR_TRADING_SHOW_OFFERS: {
         defaultMessage: 'Compare offers',
         id: 'TR_TRADING_SHOW_OFFERS',
+    },
+    TR_TRADING_PROVIDER_FILTER_ALL: {
+        defaultMessage: 'All providers',
+        id: 'TR_TRADING_PROVIDER_FILTER_ALL',
+    },
+    TR_TRADING_PROVIDER_FILTER_CENTRALIZED: {
+        defaultMessage: 'Centralized',
+        id: 'TR_TRADING_PROVIDER_FILTER_CENTRALIZED',
+    },
+    TR_TRADING_PROVIDER_FILTER_DECENTRALIZED: {
+        defaultMessage: 'Decentralized',
+        id: 'TR_TRADING_PROVIDER_FILTER_DECENTRALIZED',
     },
     TR_TRADING_LAST_TRANSACTIONS: {
         defaultMessage: 'Trade history',
@@ -1122,9 +1187,52 @@ export const messages = defineMessages({
         defaultMessage: 'You get',
         id: 'TR_TRADING_YOU_GET',
     },
-    TR_TRADING_FIAT_DEVIATION_WARNING: {
-        defaultMessage: 'Receiving over {percentage} less in estimated fiat value.',
-        id: 'TR_TRADING_FIAT_DEVIATION_WARNING',
+    TR_TRADING_SWAP_RECEIVE_AMOUNT_TOOLTIP: {
+        defaultMessage: "For now, swaps only let you enter the amount you're paying.",
+        id: 'TR_TRADING_SWAP_RECEIVE_AMOUNT_TOOLTIP',
+    },
+    TR_TRADING_REVIEW_SWAP: {
+        defaultMessage: 'Review your swap',
+        id: 'TR_TRADING_REVIEW_SWAP',
+    },
+    TR_TRADING_SIMULATING: {
+        defaultMessage: 'Simulating transaction',
+        id: 'TR_TRADING_SIMULATING',
+    },
+    TR_TRADING_CONTINUE_ANYWAY: {
+        defaultMessage: 'Continue anyway',
+        id: 'TR_TRADING_CONTINUE_ANYWAY',
+    },
+    TR_TRADING_BACK_TO_TRADE_FORM: {
+        defaultMessage: 'Back to trade form',
+        id: 'TR_TRADING_BACK_TO_TRADE_FORM',
+    },
+    TR_TRADING_PRICE_IMPACT_TITLE: {
+        defaultMessage: "You'll lose {percent} in value",
+        id: 'TR_TRADING_PRICE_IMPACT_TITLE',
+    },
+    TR_TRADING_PRICE_IMPACT_DESCRIPTION: {
+        defaultMessage:
+            'Low market liquidity is affecting this swap. Try another provider or wait for the market to stabilize.',
+        id: 'TR_TRADING_PRICE_IMPACT_DESCRIPTION',
+    },
+    TR_TRADING_HIGH_RISK_SWAP_TITLE: {
+        defaultMessage: 'High-risk swap detected',
+        id: 'TR_TRADING_HIGH_RISK_SWAP_TITLE',
+    },
+    TR_TRADING_HIGH_RISK_SWAP_DESCRIPTION: {
+        defaultMessage:
+            "This swap was flagged as unsafe. The provider's contract interaction may put your funds at risk. Choose another provider.",
+        id: 'TR_TRADING_HIGH_RISK_SWAP_DESCRIPTION',
+    },
+    TR_TRADING_SLIPPAGE_TOO_LOW_TITLE: {
+        defaultMessage: 'Slippage is too low',
+        id: 'TR_TRADING_SLIPPAGE_TOO_LOW_TITLE',
+    },
+    TR_TRADING_SLIPPAGE_TOO_LOW_DESCRIPTION: {
+        defaultMessage:
+            'This swap might fail with your current slippage. Your funds are safe, but the network fee won’t be refunded. Increase slippage or choose another provider.',
+        id: 'TR_TRADING_SLIPPAGE_TOO_LOW_DESCRIPTION',
     },
     TR_TRADING_COUNTRY: {
         defaultMessage: 'Country of residence',
@@ -1206,6 +1314,18 @@ export const messages = defineMessages({
         defaultMessage: 'Network fee',
         id: 'TR_TRADING_NETWORK_FEE',
     },
+    TR_TRADING_NETWORK_FEE_MODAL_DESC: {
+        defaultMessage: 'Paid to the network that processes your transaction, not to Trezor.',
+        id: 'TR_TRADING_NETWORK_FEE_MODAL_DESC',
+    },
+    TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS: {
+        defaultMessage: 'Not enough {networkDisplaySymbol} for the network fee',
+        id: 'TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS',
+    },
+    TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS_DESC: {
+        defaultMessage: 'Select a lower fee, or go back and reduce the send amount in trade form.',
+        id: 'TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS_DESC',
+    },
     TR_TRADING_TREZOR_FEE: {
         defaultMessage: 'Trezor fee (incl.)',
         id: 'TR_TRADING_TREZOR_FEE',
@@ -1215,14 +1335,117 @@ export const messages = defineMessages({
             "This is Trezor's fee to facilitate your trade (already included in your offer).",
         id: 'TR_TRADING_TREZOR_FEE_TOOLTIP',
     },
-    TR_TRADING_TRADE_HISTORY_COUNTER: {
-        defaultMessage:
-            '{totalBuys, plural, =0 {{totalBuys} buys} one {{totalBuys} buy} other {{totalBuys} buys} } • {totalSells, plural, =0 {{totalSells} sells} one {{totalSells} sell} other {{totalSells} sells} } • {totalSwaps, plural, =0 {{totalSwaps} swaps} one {{totalSwaps} swap} other {{totalSwaps} swaps} }',
-        id: 'TR_TRADING_TRADE_HISTORY_COUNTER',
+    TR_TRADING_TRADE_HISTORY_TAB_ALL: {
+        defaultMessage: 'All trades',
+        id: 'TR_TRADING_TRADE_HISTORY_TAB_ALL',
     },
-    TR_TRADING_ENTER_AMOUNT_IN: {
-        defaultMessage: 'Enter amount in {currency}',
-        id: 'TR_TRADING_ENTER_AMOUNT_IN',
+    TR_TRADING_TRADE_HISTORY_TAB_SWAPS: {
+        defaultMessage: 'Swaps',
+        id: 'TR_TRADING_TRADE_HISTORY_TAB_SWAPS',
+    },
+    TR_TRADING_TRADE_HISTORY_TAB_BUYS: {
+        defaultMessage: 'Buys',
+        id: 'TR_TRADING_TRADE_HISTORY_TAB_BUYS',
+    },
+    TR_TRADING_TRADE_HISTORY_TAB_SELLS: {
+        defaultMessage: 'Sells',
+        id: 'TR_TRADING_TRADE_HISTORY_TAB_SELLS',
+    },
+    TR_TRADING_TRADE_HISTORY_EMPTY_TITLE: {
+        defaultMessage: 'No trades yet',
+        id: 'TR_TRADING_TRADE_HISTORY_EMPTY_TITLE',
+    },
+    TR_TRADING_TRADE_HISTORY_EMPTY_DESCRIPTION: {
+        defaultMessage: 'Your trades will appear here and you can track their status.',
+        id: 'TR_TRADING_TRADE_HISTORY_EMPTY_DESCRIPTION',
+    },
+    TR_TRADING_TRADE_HISTORY_EMPTY_BUTTON: {
+        defaultMessage: 'Back to trade form',
+        id: 'TR_TRADING_TRADE_HISTORY_EMPTY_BUTTON',
+    },
+    TR_TRADING_TRADE_HISTORY_NO_SWAPS: {
+        defaultMessage: 'No swaps yet',
+        id: 'TR_TRADING_TRADE_HISTORY_NO_SWAPS',
+    },
+    TR_TRADING_TRADE_HISTORY_NO_BUYS: {
+        defaultMessage: 'No buys yet',
+        id: 'TR_TRADING_TRADE_HISTORY_NO_BUYS',
+    },
+    TR_TRADING_TRADE_HISTORY_NO_SELLS: {
+        defaultMessage: 'No sells yet',
+        id: 'TR_TRADING_TRADE_HISTORY_NO_SELLS',
+    },
+    TR_TRADING_TRADE_HISTORY_SHOW_ALL: {
+        defaultMessage: 'Show all trades',
+        id: 'TR_TRADING_TRADE_HISTORY_SHOW_ALL',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_BUTTON: {
+        defaultMessage: 'Export trades',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_BUTTON',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_TOOLTIP: {
+        defaultMessage: 'Downloads a CSV file with all your trades',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_TOOLTIP',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_ORDER_ID: {
+        defaultMessage: 'Trade ID',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_ORDER_ID',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_DATE: {
+        defaultMessage: 'Date and time',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_DATE',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_TYPE: {
+        defaultMessage: 'Type',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_TYPE',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPENT_AMOUNT: {
+        defaultMessage: 'Spent amount',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPENT_AMOUNT',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPEND_TICKER: {
+        defaultMessage: 'Spend ticker',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPEND_TICKER',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPEND_NETWORK: {
+        defaultMessage: 'Spend network',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPEND_NETWORK',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPEND_TRANSACTION_ID: {
+        defaultMessage: 'Spend transaction ID',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_SPEND_TRANSACTION_ID',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_AMOUNT: {
+        defaultMessage: 'Receive amount',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_AMOUNT',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_TICKER: {
+        defaultMessage: 'Receive ticker',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_TICKER',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_NETWORK: {
+        defaultMessage: 'Receive network',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_NETWORK',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_PROVIDER: {
+        defaultMessage: 'Provider',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_PROVIDER',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_STATUS: {
+        defaultMessage: 'Status',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_STATUS',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_TRANSACTION_ID: {
+        defaultMessage: 'Receive transaction ID',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_RECEIVE_TRANSACTION_ID',
+    },
+    TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_PAYMENT_ID: {
+        defaultMessage: 'Payment ID',
+        id: 'TR_TRADING_TRADE_HISTORY_EXPORT_COLUMN_PAYMENT_ID',
+    },
+    TR_ENTER_AMOUNT_IN: {
+        defaultMessage: 'Enter in {currency}',
+        id: 'TR_ENTER_AMOUNT_IN',
     },
     TR_TRADING_SELL: {
         id: 'TR_TRADING_SELL',
@@ -1252,6 +1475,10 @@ export const messages = defineMessages({
         id: 'TR_TRADING_RATE',
         defaultMessage: 'Rate',
     },
+    TR_TRADING_LESS_TO_RECEIVE_THAN_REQUESTED: {
+        id: 'TR_TRADING_LESS_TO_RECEIVE_THAN_REQUESTED',
+        defaultMessage: '{percent} less to receive than requested ({amount})',
+    },
     TR_TRADING_FIX_RATE_DESCRIPTION: {
         id: 'TR_TRADING_FIX_RATE_DESCRIPTION',
         defaultMessage: 'Lock in your rate for 15 minutes by paying a higher fee.',
@@ -1263,12 +1490,10 @@ export const messages = defineMessages({
     TR_TRADING_CEX_TOOLTIP: {
         id: 'TR_TRADING_CEX_TOOLTIP',
         defaultMessage: 'Centralized exchange',
-        dynamic: true,
     },
     TR_TRADING_DEX_TOOLTIP: {
         id: 'TR_TRADING_DEX_TOOLTIP',
         defaultMessage: 'Decentralized exchange',
-        dynamic: true,
     },
     TR_TRADING_NO_METHODS_AVAILABLE: {
         defaultMessage: 'No payout methods',
@@ -1282,29 +1507,29 @@ export const messages = defineMessages({
         defaultMessage: 'KYC policy',
         id: 'TR_TRADING_KYC_POLICY',
     },
-    TR_TRADING_KYC_POLICY_NEVER_REQUIRED: {
-        defaultMessage: 'KYC is never required',
-        id: 'TR_TRADING_KYC_POLICY_NEVER_REQUIRED',
-    },
     TR_TRADING_KYC_REQUIRED: {
         defaultMessage: 'KYC is required',
         id: 'TR_TRADING_KYC_REQUIRED',
     },
     TR_TRADING_KYC_NO_REFUND: {
-        defaultMessage: 'KYC is only required in exceptional cases. It may be needed for refunds.',
+        defaultMessage: 'KYC may be required in exceptional cases.',
         id: 'TR_TRADING_KYC_NO_REFUND',
     },
     TR_TRADING_KYC_YES_REFUND: {
-        defaultMessage: "KYC is only required in exceptional cases. It's not needed for refunds.",
+        defaultMessage: 'KYC may be required in exceptional cases.',
         id: 'TR_TRADING_KYC_YES_REFUND',
     },
     TR_TRADING_KYC_NO_KYC: {
         defaultMessage: 'KYC is never required. Exceptional cases are automatically refunded.',
         id: 'TR_TRADING_KYC_NO_KYC',
     },
-    TR_TRADING_KYC_ANONYMOUS: {
-        defaultMessage: 'Anonymous',
-        id: 'TR_TRADING_KYC_ANONYMOUS',
+    TR_TRADING_KYC_NO_KYC_LABEL: {
+        defaultMessage: 'No KYC',
+        id: 'TR_TRADING_KYC_NO_KYC_LABEL',
+    },
+    TR_TRADING_KYC_NO_IDENTITY_VERIFICATION: {
+        defaultMessage: 'No identity verification (KYC).',
+        id: 'TR_TRADING_KYC_NO_IDENTITY_VERIFICATION',
     },
     TR_TRADING_SWAP: {
         defaultMessage: 'Swap',
@@ -1313,30 +1538,6 @@ export const messages = defineMessages({
     TR_TRADING_SWAP_UNAVAILABLE: {
         defaultMessage: 'Swap unavailable',
         id: 'TR_TRADING_SWAP_UNAVAILABLE',
-    },
-    TR_TRADING_APPROVE_TOKEN: {
-        defaultMessage: 'Approve {tokenSymbol} spending',
-        id: 'TR_TRADING_APPROVE_TOKEN',
-    },
-    TR_TRADING_APPROVE_TOKEN_BUTTON: {
-        defaultMessage: 'Approve {tokenSymbol}',
-        id: 'TR_TRADING_APPROVE_TOKEN_BUTTON',
-    },
-    TR_TRADING_REVOKE_TOKEN: {
-        defaultMessage: 'Revoke {tokenSymbol} spending',
-        id: 'TR_TRADING_REVOKE_TOKEN',
-    },
-    TR_TRADING_REVOKE_TOKEN_BUTTON: {
-        defaultMessage: 'Revoke {tokenSymbol}',
-        id: 'TR_TRADING_REVOKE_TOKEN_BUTTON',
-    },
-    TR_TRADING_TRANS_ID: {
-        defaultMessage: 'Trade ID:',
-        id: 'TR_TRADING_TRANS_ID',
-    },
-    TR_TRADING_VIEW_DETAILS: {
-        defaultMessage: 'View details',
-        id: 'TR_TRADING_VIEW_DETAILS',
     },
     TR_TRADING_OTC_INFO_BUY: {
         defaultMessage:
@@ -1388,13 +1589,25 @@ export const messages = defineMessages({
         defaultMessage: 'No providers available for this country.',
         id: 'TR_TRADING_NO_PROVIDERS_AVAILABLE',
     },
-    TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE: {
-        defaultMessage: 'Account not found',
-        id: 'TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE',
+    TR_TRADING_RECEIVE_SELECT_ACCOUNT: {
+        defaultMessage: 'Select account',
+        id: 'TR_TRADING_RECEIVE_SELECT_ACCOUNT',
     },
-    TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TEXT: {
-        defaultMessage: "We couldn't find an account that matches this asset.",
-        id: 'TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TEXT',
+    TR_TRADING_RECEIVE_ADD_ACCOUNT: {
+        defaultMessage: 'Add account',
+        id: 'TR_TRADING_RECEIVE_ADD_ACCOUNT',
+    },
+    TR_TRADING_RECEIVE_USE_EXTERNAL_ACCOUNT: {
+        defaultMessage: 'Use external account',
+        id: 'TR_TRADING_RECEIVE_USE_EXTERNAL_ACCOUNT',
+    },
+    TR_TRADING_RECEIVE_NO_ACCOUNT_TITLE: {
+        defaultMessage: 'No account',
+        id: 'TR_TRADING_RECEIVE_NO_ACCOUNT_TITLE',
+    },
+    TR_TRADING_RECEIVE_NO_ACCOUNT_TEXT: {
+        defaultMessage: "It seems that you don't have any account matching the selected asset.",
+        id: 'TR_TRADING_RECEIVE_NO_ACCOUNT_TEXT',
     },
     TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TITLE: {
         defaultMessage: 'Address not found',
@@ -1404,9 +1617,22 @@ export const messages = defineMessages({
         defaultMessage: 'Check the address or browse the list to select an option.',
         id: 'TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TEXT',
     },
-    TR_TRADING_RECEIVE_ADDRESS_ENTER_TEXT: {
-        defaultMessage: "Enter {networkName} address that isn't in Trezor Suite.",
-        id: 'TR_TRADING_RECEIVE_ADDRESS_ENTER_TEXT',
+    TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_TITLE: {
+        defaultMessage: 'Enter external address',
+        id: 'TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_TITLE',
+    },
+    TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_WARNING_TITLE: {
+        defaultMessage: 'Check the address carefully.',
+        id: 'TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_WARNING_TITLE',
+    },
+    TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_WARNING_TEXT: {
+        defaultMessage:
+            "External address balances won't appear in Trezor Suite. We can't recover funds sent to the wrong address.",
+        id: 'TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_WARNING_TEXT',
+    },
+    TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_LABEL: {
+        defaultMessage: 'Your external address',
+        id: 'TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_LABEL',
     },
     TR_TRADING_RECEIVE_ADDRESS_NEW_ADDRESS: {
         defaultMessage: 'New address',
@@ -1550,6 +1776,18 @@ export const messages = defineMessages({
         defaultMessage:
             'Add spaces to addresses for easier reading. When off, addresses are shown as a continuous string.',
         id: 'TR_ADDRESS_DISPLAY_DESCRIPTION',
+    },
+    TR_HOME_ASSET_TOTAL_BALANCE: {
+        defaultMessage: 'Total balance',
+        id: 'TR_HOME_ASSET_TOTAL_BALANCE',
+    },
+    TR_HOME_ASSET_WEEK_PERIOD: {
+        defaultMessage: '7d',
+        id: 'TR_HOME_ASSET_WEEK_PERIOD',
+    },
+    TR_ASSET: {
+        defaultMessage: 'Asset',
+        id: 'TR_ASSET',
     },
     TR_ASSETS: {
         defaultMessage: 'Network',
@@ -1823,11 +2061,6 @@ export const messages = defineMessages({
         defaultMessage: "I don't have a wallet backup",
         id: 'TR_DONT_HAVE_BACKUP',
     },
-    TR_BCH_ADDRESS_INFO: {
-        defaultMessage:
-            'Bitcoin Cash changed the address format to cashaddr. Find more info about how to convert your address on our blog. {TR_LEARN_MORE}',
-        id: 'TR_BCH_ADDRESS_INFO',
-    },
     TR_BUY: {
         defaultMessage: 'Buy',
         id: 'TR_BUY',
@@ -1928,6 +2161,10 @@ export const messages = defineMessages({
         defaultMessage: "Follow the instructions on your Trezor's screen.",
         id: 'TR_CONFIRM_ACTION_ON_YOUR',
     },
+    TR_COMPARE_ADDRESS_ON_TREZOR: {
+        defaultMessage: 'View the address on your Trezor',
+        id: 'TR_COMPARE_ADDRESS_ON_TREZOR',
+    },
     TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON: {
         defaultMessage: 'Confirm empty Passphrase wallet on your {deviceLabel}',
         id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON',
@@ -1946,7 +2183,7 @@ export const messages = defineMessages({
     },
     TR_PASSPHRASE_NON_ASCII_CHARS: {
         defaultMessage:
-            'Use only  <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code>, and <code>these special characters</code>.',
+            'Use only <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code>, and <code>these special characters</code>.',
         id: 'TR_PASSPHRASE_NON_ASCII_CHARS',
     },
     TR_PASSPHRASE_NON_ASCII_CHARS_WARNING: {
@@ -2020,10 +2257,6 @@ export const messages = defineMessages({
     TR_SETUP_MY_TREZOR: {
         defaultMessage: 'Set up my Trezor',
         id: 'TR_SETUP_MY_TREZOR',
-    },
-    TR_YES_SETUP_MY_TREZOR: {
-        defaultMessage: 'Yes, I have',
-        id: 'TR_YES_SETUP_MY_TREZOR',
     },
     TR_UNHIDE_TOKEN_TITLE: {
         defaultMessage: 'Show this token?',
@@ -2106,12 +2339,6 @@ export const messages = defineMessages({
         description: 'Category in Settings, step in Onboarding',
         id: 'TR_DEVICE',
     },
-    TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION: {
-        defaultMessage:
-            'Your Trezor was disconnected during the wallet backup setup. We strongly recommend that you use the factory reset option in device settings to wipe your device and start the wallet backup setup again.',
-        description: 'Error message. Instruction what to do.',
-        id: 'TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION',
-    },
     TR_DEVICE_LABEL_IS_NOT_BACKED_UP: {
         defaultMessage: "Device {deviceLabel} isn't backed up",
         id: 'TR_DEVICE_LABEL_IS_NOT_BACKED_UP',
@@ -2152,6 +2379,30 @@ export const messages = defineMessages({
     TR_ADDRESS_CANT_VERIFY_HISTORY: {
         defaultMessage: 'Unable to verify address history. Check that the address is correct.',
         id: 'TR_ADDRESS_CANT_VERIFY_HISTORY',
+    },
+    TR_ENS_RESOLVING: {
+        defaultMessage: 'Resolving name…',
+        id: 'TR_ENS_RESOLVING',
+    },
+    TR_ENS_WALLET_ADDRESS: {
+        defaultMessage: 'Wallet address: {address}',
+        id: 'TR_ENS_WALLET_ADDRESS',
+    },
+    TR_ENS_PRIMARY_NAME: {
+        defaultMessage: 'Wallet: {name}',
+        id: 'TR_ENS_PRIMARY_NAME',
+    },
+    TR_ENS_RESOLVE_FAILED: {
+        defaultMessage: 'Could not resolve name. Check it is correct.',
+        id: 'TR_ENS_RESOLVE_FAILED',
+    },
+    TR_SEND_ADDRESS_CONFIRMATION_ENS_NOTE: {
+        defaultMessage: 'Sending to {ensName}',
+        id: 'TR_SEND_ADDRESS_CONFIRMATION_ENS_NOTE',
+    },
+    TR_SEND_ADDRESS_CONFIRMATION_ENS_WALLET_ADDRESS: {
+        defaultMessage: 'Wallet address: {address}',
+        id: 'TR_SEND_ADDRESS_CONFIRMATION_ENS_WALLET_ADDRESS',
     },
     TR_EVM_ADDRESS_IS_CONTRACT: {
         defaultMessage: "You're sending funds to a contract address.",
@@ -2526,9 +2777,9 @@ export const messages = defineMessages({
         defaultMessage: 'Rate not available',
         id: 'TR_FIAT_RATES_NOT_AVAILABLE',
     },
-    TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP: {
-        defaultMessage: 'The 7D change rate is currently not available.',
-        id: 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP',
+    TR_EXCHANGE_RATE_NOT_AVAILABLE_TOOLTIP: {
+        defaultMessage: 'The exchange rate is currently not available.',
+        id: 'TR_EXCHANGE_RATE_NOT_AVAILABLE_TOOLTIP',
     },
     TR_FIRMWARE: {
         defaultMessage: 'Firmware',
@@ -2743,7 +2994,7 @@ export const messages = defineMessages({
     },
     TR_NETWORK_RESERVE_DESCRIPTION: {
         defaultMessage:
-            'Reserve a small amount of the native token on {supportedNetworks} to cover any extra network fees when you send, swap, or sell your assets.',
+            'Reserve a small amount of the native token to cover any extra network fees when you send, swap, or sell your assets.',
         id: 'TR_NETWORK_RESERVE_DESCRIPTION',
     },
     TR_SETTINGS_ADVANCED: {
@@ -2877,6 +3128,11 @@ export const messages = defineMessages({
         id: 'TR_ACCOUNT_TYPE_LEDGER',
         dynamic: true,
     },
+    TR_ACCOUNT_TYPE_ROOT: {
+        defaultMessage: 'Root',
+        id: 'TR_ACCOUNT_TYPE_ROOT',
+        dynamic: true,
+    },
     TR_ACCOUNT_TYPE_IMPORTED: {
         defaultMessage: 'Imported',
         id: 'TR_ACCOUNT_TYPE_IMPORTED',
@@ -2905,11 +3161,6 @@ export const messages = defineMessages({
         id: 'TR_LOG_DESCRIPTION',
         defaultMessage:
             'Use this log to access essential technical information about Trezor Suite, which may be needed when contacting Trezor Support.',
-    },
-    TR_LTC_ADDRESS_INFO: {
-        defaultMessage:
-            'Litecoin changed the address format. Find more info about how to convert your address on our blog. {TR_LEARN_MORE}',
-        id: 'TR_LTC_ADDRESS_INFO',
     },
     TR_MAXIMUM_PIN_LENGTH: {
         defaultMessage: 'Enter up to 50 digits.',
@@ -2979,15 +3230,15 @@ export const messages = defineMessages({
         id: 'TR_INCLUDING_TOKENS_AND_STAKING',
     },
     TR_BALANCE_EXCLUDES_TOKENS: {
-        defaultMessage: "Token amounts aren't included in the balance.",
+        defaultMessage: "Tokens aren't included in the balance.",
         id: 'TR_BALANCE_EXCLUDES_TOKENS',
     },
     TR_BALANCE_EXCLUDES_STAKING: {
-        defaultMessage: "Staked amounts aren't included in the balance.",
+        defaultMessage: "Staked {networkDisplaySymbol} isn't included in the balance.",
         id: 'TR_BALANCE_EXCLUDES_STAKING',
     },
     TR_BALANCE_EXCLUDES_TOKENS_AND_STAKING: {
-        defaultMessage: "Token and staked amounts aren't included in the balance.",
+        defaultMessage: "Tokens and staked {networkDisplaySymbol} aren't included in the balance.",
         id: 'TR_BALANCE_EXCLUDES_TOKENS_AND_STAKING',
     },
     TR_NETWORK_TITLE: {
@@ -3145,9 +3396,63 @@ export const messages = defineMessages({
         defaultMessage: 'Receive',
         id: 'TR_RECEIVE',
     },
-    TR_RECEIVE_DESCRIPTION: {
-        defaultMessage: 'Learn how to <a>select the right network</a> to receive your tokens',
-        id: 'TR_RECEIVE_DESCRIPTION',
+    TR_GLOBAL_RECEIVE_ACCOUNTS_TAB: {
+        defaultMessage: 'Accounts',
+        id: 'TR_GLOBAL_RECEIVE_ACCOUNTS_TAB',
+    },
+    TR_GLOBAL_RECEIVE_ALL_ASSETS: {
+        defaultMessage: 'All assets',
+        id: 'TR_GLOBAL_RECEIVE_ALL_ASSETS',
+    },
+    TR_GLOBAL_RECEIVE_ASSETS_TAB: {
+        defaultMessage: 'Assets',
+        id: 'TR_GLOBAL_RECEIVE_ASSETS_TAB',
+    },
+    TR_GLOBAL_RECEIVE_ASSET_ON_NETWORK: {
+        defaultMessage: '{asset} on {network}',
+        id: 'TR_GLOBAL_RECEIVE_ASSET_ON_NETWORK',
+    },
+    TR_GLOBAL_RECEIVE_DESCRIPTION: {
+        defaultMessage: 'Select the <a>right network</a> to receive your assets',
+        id: 'TR_GLOBAL_RECEIVE_DESCRIPTION',
+    },
+    TR_GLOBAL_RECEIVE_GETTING_ACCOUNT_READY: {
+        defaultMessage: 'Getting your account ready',
+        id: 'TR_GLOBAL_RECEIVE_GETTING_ACCOUNT_READY',
+    },
+    TR_GLOBAL_RECEIVE_NO_ACCOUNT_FOUND: {
+        defaultMessage: 'No receive account was found for the selected network.',
+        id: 'TR_GLOBAL_RECEIVE_NO_ACCOUNT_FOUND',
+    },
+    TR_GLOBAL_RECEIVE_NO_ASSETS_RESULTS_DESCRIPTION: {
+        defaultMessage:
+            'If the token uses a network supported by Trezor Suite, you can receive it using that network account instead.',
+        id: 'TR_GLOBAL_RECEIVE_NO_ASSETS_RESULTS_DESCRIPTION',
+    },
+    TR_GLOBAL_RECEIVE_NO_RESULTS: {
+        defaultMessage: 'No results',
+        id: 'TR_GLOBAL_RECEIVE_NO_RESULTS',
+    },
+    TR_GLOBAL_RECEIVE_NO_RESULTS_DESCRIPTION: {
+        defaultMessage:
+            'Make sure your search terms are spelled correctly or try different keywords.',
+        id: 'TR_GLOBAL_RECEIVE_NO_RESULTS_DESCRIPTION',
+    },
+    TR_GLOBAL_RECEIVE_SEARCH_ASSETS: {
+        defaultMessage: 'Search by name or symbol',
+        id: 'TR_GLOBAL_RECEIVE_SEARCH_ASSETS',
+    },
+    TR_GLOBAL_RECEIVE_SELECT_ACCOUNT: {
+        defaultMessage: 'Select receive account:',
+        id: 'TR_GLOBAL_RECEIVE_SELECT_ACCOUNT',
+    },
+    TR_GLOBAL_RECEIVE_SETUP_DESCRIPTION: {
+        defaultMessage: 'Turning on the {network} network and checking for your account.',
+        id: 'TR_GLOBAL_RECEIVE_SETUP_DESCRIPTION',
+    },
+    TR_GLOBAL_RECEIVE_VIEW_ACCOUNTS: {
+        defaultMessage: 'View accounts',
+        id: 'TR_GLOBAL_RECEIVE_VIEW_ACCOUNTS',
     },
     TR_RECEIVE_SEARCH: {
         defaultMessage: 'Search account',
@@ -3156,10 +3461,6 @@ export const messages = defineMessages({
     TR_RECEIVE_NETWORK: {
         defaultMessage: 'Receive {networkDisplaySymbol}',
         id: 'TR_RECEIVE_NETWORK',
-    },
-    TR_RECEIVE_NETWORK_INCLUDING_TOKENS: {
-        defaultMessage: 'Receive {networkDisplaySymbol} including tokens',
-        id: 'TR_RECEIVE_NETWORK_INCLUDING_TOKENS',
     },
     TR_SEND_SEARCH: {
         defaultMessage: 'Search account',
@@ -3370,10 +3671,6 @@ export const messages = defineMessages({
         description: 'Sign button in Sign and Verify form',
         id: 'TR_SIGN',
     },
-    TR_SIGNED: {
-        defaultMessage: 'Signed',
-        id: 'TR_SIGNED',
-    },
     TR_SIGN_MESSAGE: {
         defaultMessage: 'Sign message',
         description: 'Header for the Sign and Verify form',
@@ -3387,6 +3684,11 @@ export const messages = defineMessages({
     TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER: {
         defaultMessage: 'Generated after signing',
         id: 'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
+    },
+    TR_SIGNED_MESSAGE_BADGE: {
+        defaultMessage: 'Message signed',
+        description: 'Badge shown in the Sign and Verify form after a message was signed',
+        id: 'TR_SIGNED_MESSAGE_BADGE',
     },
     TR_SKIP: {
         defaultMessage: 'Skip',
@@ -3633,7 +3935,8 @@ export const messages = defineMessages({
         id: 'TR_TX_FEE',
     },
     TR_TX_FEE_COUNT: {
-        defaultMessage: '{count, plural, =0 {Fee} =1 {Fee} other {{count}× Fees}}',
+        defaultMessage:
+            '{count, plural, =0 {Network fee} =1 {Network fee} other {{count}× Network fee}}',
         id: 'TR_TX_FEE_COUNT',
     },
     TR_TX_FEE_INCLUDING_RENT: {
@@ -3781,19 +4084,19 @@ export const messages = defineMessages({
         id: 'TR_YOUR_CURRENT_FIRMWARE_UNKNOWN',
     },
     TR_YOUR_CURRENT_VERSION: {
-        defaultMessage: 'Current version {version}',
+        defaultMessage: 'Current version: {version}',
         id: 'TR_YOUR_CURRENT_VERSION',
     },
     TR_YOUR_NEW_VERSION: {
-        defaultMessage: 'Version {version} is available.',
+        defaultMessage: 'New version: {version}',
         id: 'TR_YOUR_NEW_VERSION',
     },
     TR_YOUR_NEW_VERSION_IS_DOWNLOADING: {
-        defaultMessage: 'Version {version} is downloading...',
+        defaultMessage: 'Downloading: {version}',
         id: 'TR_YOUR_NEW_VERSION_IS_DOWNLOADING',
     },
     TR_YOUR_NEW_VERSION_IS_READY: {
-        defaultMessage: 'Version {version} has been downloaded and is ready to be installed.',
+        defaultMessage: 'Ready to install: {version}',
         id: 'TR_YOUR_NEW_VERSION_IS_READY',
     },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
@@ -3924,6 +4227,11 @@ export const messages = defineMessages({
         id: 'TR_ACCOUNT_TYPE_LEDGER_DESC',
         defaultMessage:
             'Ledger accounts are compatible with Ledger Wallet derivation paths, enabling smooth migration from Ledger to Trezor.',
+    },
+    TR_ACCOUNT_TYPE_ROOT_DESC: {
+        id: 'TR_ACCOUNT_TYPE_ROOT_DESC',
+        defaultMessage:
+            'Root accounts hold funds directly at the coin level of the derivation path, allowing accounts from compatible wallets to migrate smoothly to Trezor.',
     },
     TR_ACCOUNT_TYPE_LEGACY_DESC: {
         id: 'TR_ACCOUNT_TYPE_LEGACY_DESC',
@@ -4128,6 +4436,15 @@ export const messages = defineMessages({
     TOAST_DISCOVERY_ERROR: {
         id: 'TOAST_DISCOVERY_ERROR',
         defaultMessage: 'Account discovery error: {error}',
+    },
+    TOAST_ACCOUNT_ADDED: {
+        id: 'TOAST_ACCOUNT_ADDED',
+        defaultMessage: 'New {networkName} account added',
+    },
+    TOAST_ACCOUNTS_DISCOVERED: {
+        id: 'TOAST_ACCOUNTS_DISCOVERED',
+        defaultMessage:
+            "We've found {count, plural, one {# account} other {# accounts}} on {networkName}",
     },
     TOAST_BACKUP_FAILED: {
         id: 'TOAST_BACKUP_FAILED',
@@ -4657,14 +4974,6 @@ export const messages = defineMessages({
         defaultMessage:
             "This wallet backup check is precisely the same as the normal recovery process. You should only trust the information and instructions displayed on your Trezor's screen.",
     },
-    TR_ACTIVATED_COINS: {
-        id: 'TR_ACTIVATED_COINS',
-        defaultMessage: 'Add account to active network',
-    },
-    TR_INACTIVE_COINS: {
-        id: 'TR_INACTIVE_COINS',
-        defaultMessage: 'Activate network and add account',
-    },
     TR_ACTIVATION_IN_PROGRESS_BANNER: {
         id: 'TR_ACTIVATION_IN_PROGRESS_BANNER',
         defaultMessage: 'Activation transaction is being processed.',
@@ -4698,6 +5007,10 @@ export const messages = defineMessages({
         id: 'TR_DEACTIVATE_TOKEN',
         defaultMessage: 'Deactivate token',
     },
+    TR_REMOVE_TOKEN: {
+        id: 'TR_REMOVE_TOKEN',
+        defaultMessage: 'Remove token',
+    },
     TR_DEACTIVATE_TOKEN_HEADING: {
         id: 'TR_DEACTIVATE_TOKEN_HEADING',
         defaultMessage: 'Deactivate {token}',
@@ -4720,13 +5033,32 @@ export const messages = defineMessages({
         defaultMessage:
             'Insufficient funds. You need {required} to cover the reserve and network fee, but only {available} is available.',
     },
-    TR_ASSET_CODE: {
-        id: 'TR_ASSET_CODE',
-        defaultMessage: 'Asset code',
-    },
     TR_ASSET_CODE_INVALID: {
         id: 'TR_ASSET_CODE_INVALID',
         defaultMessage: 'Invalid asset code. Enter a valid asset code.',
+    },
+    TR_ASSET_CODE_OR_CONTRACT_ID: {
+        id: 'TR_ASSET_CODE_OR_CONTRACT_ID',
+        defaultMessage: 'Asset code or contract ID',
+    },
+    TR_STELLAR_CONTRACT_TOKEN_DETECTED: {
+        id: 'TR_STELLAR_CONTRACT_TOKEN_DETECTED',
+        defaultMessage:
+            'Soroban contract token. It has no issuer and needs no trustline — its balance is read from the contract.',
+    },
+    TR_STELLAR_CONTRACT_TOKEN_MEMO_UNAVAILABLE: {
+        id: 'TR_STELLAR_CONTRACT_TOKEN_MEMO_UNAVAILABLE',
+        defaultMessage:
+            'A contract token moves in a Soroban transaction, and the network does not allow a memo on it.',
+    },
+    TR_STELLAR_SIMULATION_FAILED: {
+        id: 'TR_STELLAR_SIMULATION_FAILED',
+        defaultMessage: 'The network could not simulate this transfer: {reason}',
+    },
+    TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE: {
+        id: 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
+        defaultMessage:
+            'The recipient has not added {symbol}. The receiving account has to add this asset before it can receive it.',
     },
     TR_INACTIVE_TOKENS_EMPTY: {
         id: 'TR_INACTIVE_TOKENS_EMPTY',
@@ -4756,7 +5088,7 @@ export const messages = defineMessages({
     },
     MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT: {
         id: 'MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT',
-        defaultMessage: "There isn't an empty account available.",
+        defaultMessage: 'An empty account already exists. Use it before adding a new one.',
     },
     MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY: {
         id: 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY',
@@ -4765,14 +5097,6 @@ export const messages = defineMessages({
     MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED',
         defaultMessage: 'You can have only one coinjoin account per wallet.',
-    },
-    MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT: {
-        id: 'MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT',
-        defaultMessage: 'Update your firmware to use coinjoin',
-    },
-    MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED: {
-        id: 'MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED',
-        defaultMessage: 'Update your firmware to enable the coinjoin feature.',
     },
     MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY',
@@ -4889,6 +5213,14 @@ export const messages = defineMessages({
         id: 'RECEIVE_TITLE',
         defaultMessage: 'Receive {networkDisplaySymbol}',
     },
+    RECEIVE_TITLE_ASSETS: {
+        id: 'RECEIVE_TITLE_ASSETS',
+        defaultMessage: 'Receive assets on {network}',
+    },
+    RECEIVE_ASSETS_TOOLTIP: {
+        id: 'RECEIVE_ASSETS_TOOLTIP',
+        defaultMessage: 'Receive {networkDisplaySymbol} and any {network} token on this address.',
+    },
     RECEIVE_DESC_BITCOIN: {
         id: 'RECEIVE_DESC_BITCOIN',
         defaultMessage:
@@ -4898,22 +5230,55 @@ export const messages = defineMessages({
         id: 'RECEIVE_DESC_ETHEREUM',
         defaultMessage: 'Use this address to receive tokens as well.',
     },
-    RECEIVE_ADDRESS_FRESH: {
-        id: 'RECEIVE_ADDRESS_FRESH',
-        defaultMessage: 'Fresh address',
-    },
     RECEIVE_ADDRESS: {
         id: 'RECEIVE_ADDRESS',
         defaultMessage: 'Address',
         description: 'Alternative title for alt-coins',
     },
-    RECEIVE_ADDRESS_REVEAL: {
-        id: 'RECEIVE_ADDRESS_REVEAL',
-        defaultMessage: 'Show full address',
+    RECEIVE_ADDRESS_COPIED_TITLE: {
+        id: 'RECEIVE_ADDRESS_COPIED_TITLE',
+        defaultMessage: 'Address copied. Verify before you receive.',
     },
-    RECEIVE_UNVERIFIED_ADDRESS_REVEAL: {
-        id: 'RECEIVE_UNVERIFIED_ADDRESS_REVEAL',
-        defaultMessage: 'Generate unverified address',
+    RECEIVE_ADDRESS_COPIED_STEP_PASTE: {
+        id: 'RECEIVE_ADDRESS_COPIED_STEP_PASTE',
+        defaultMessage:
+            'Paste the address into the exchange or app from where you will receive the funds.',
+    },
+    RECEIVE_ADDRESS_COPIED_STEP_VERIFY: {
+        id: 'RECEIVE_ADDRESS_COPIED_STEP_VERIFY',
+        defaultMessage: 'Verify the pasted address against your Trezor for maximum safety.',
+    },
+    RECEIVE_VERIFY_ON_TREZOR: {
+        id: 'RECEIVE_VERIFY_ON_TREZOR',
+        defaultMessage: 'Verify on Trezor',
+    },
+    RECEIVE_SHARE: {
+        id: 'RECEIVE_SHARE',
+        defaultMessage: 'Share',
+    },
+    RECEIVE_NEWEST_ADDRESS: {
+        id: 'RECEIVE_NEWEST_ADDRESS',
+        defaultMessage: 'Newest address',
+    },
+    RECEIVE_ADDRESS_TITLE: {
+        id: 'RECEIVE_ADDRESS_TITLE',
+        defaultMessage: 'Receive address',
+    },
+    RECEIVE_ADDRESS_HISTORY: {
+        id: 'RECEIVE_ADDRESS_HISTORY',
+        defaultMessage: 'Address history',
+    },
+    RECEIVE_SHOW_NEXT: {
+        id: 'RECEIVE_SHOW_NEXT',
+        defaultMessage: 'Show next',
+    },
+    RECEIVE_COPY_ADDRESS: {
+        id: 'RECEIVE_COPY_ADDRESS',
+        defaultMessage: 'Copy address',
+    },
+    RECEIVE_SKIP_VERIFICATION: {
+        id: 'RECEIVE_SKIP_VERIFICATION',
+        defaultMessage: 'Skip verification',
     },
     RECEIVE_ADDRESS_COINJOIN_DISALLOW: {
         id: 'RECEIVE_ADDRESS_COINJOIN_DISALLOW',
@@ -4924,21 +5289,13 @@ export const messages = defineMessages({
         id: 'TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED',
         defaultMessage: 'Your device may have been compromised. Do not send funds to it.',
     },
-    RECEIVE_ADDRESS_LIMIT_REACHED: {
-        id: 'RECEIVE_ADDRESS_LIMIT_REACHED',
-        defaultMessage: "You've reached the maximum limit of 21 fresh, unused addresses",
-    },
-    RECEIVE_ADDRESS_UNAVAILABLE: {
-        id: 'RECEIVE_ADDRESS_UNAVAILABLE',
-        defaultMessage: 'Unavailable',
+    RECEIVE_UNUSED_ADDRESS_LIMIT_REACHED: {
+        id: 'RECEIVE_UNUSED_ADDRESS_LIMIT_REACHED',
+        defaultMessage: 'You can generate up to 20 unused addresses.',
     },
     RECEIVE_TABLE_ADDRESS: {
         id: 'RECEIVE_TABLE_ADDRESS',
         defaultMessage: 'Address',
-    },
-    RECEIVE_TABLE_RECEIVED: {
-        id: 'RECEIVE_TABLE_RECEIVED',
-        defaultMessage: 'Total received',
     },
     RECEIVE_TABLE_NOT_USED: {
         id: 'RECEIVE_TABLE_NOT_USED',
@@ -5005,15 +5362,6 @@ export const messages = defineMessages({
         id: 'TR_REMOVE_WIPE_CODE',
         defaultMessage: 'Remove',
     },
-    TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP: {
-        id: 'TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
-        defaultMessage:
-            'Your assets will be sent to this account once the transaction is complete.',
-    },
-    TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP: {
-        id: 'TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
-        defaultMessage: 'This is the address for receiving your assets.',
-    },
     TR_PAYMENT_METHOD_CREDITCARD: {
         id: 'TR_PAYMENT_METHOD_CREDITCARD',
         defaultMessage: 'Credit/Debit Card',
@@ -5065,6 +5413,10 @@ export const messages = defineMessages({
     TR_EARN: {
         id: 'TR_EARN',
         defaultMessage: 'Earn',
+    },
+    TR_APPS_EMBEDDING: {
+        id: 'TR_APPS_EMBEDDING',
+        defaultMessage: 'Apps embedding',
     },
     TR_WALLET: {
         id: 'TR_WALLET',
@@ -5241,6 +5593,8 @@ export const messages = defineMessages({
     TR_HEX_FORMAT: {
         id: 'TR_HEX_FORMAT',
         defaultMessage: 'Hex format',
+        description:
+            'Label of the switch reading the message as hex instead of text in Sign and Verify form',
     },
     TR_YOUR_DEVICE_IS_SEEDLESS: {
         id: 'TR_YOUR_DEVICE_IS_SEEDLESS',
@@ -5343,7 +5697,8 @@ export const messages = defineMessages({
     },
     TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION: {
         id: 'TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION',
-        defaultMessage: 'To activate a token, enter its asset code and issuer address.',
+        defaultMessage:
+            'To activate a token, enter its contract ID, or its asset code and issuer address.',
     },
     TR_MAKE_SURE_NO_ONE_CAN_PEEK: {
         id: 'TR_MAKE_SURE_NO_ONE_CAN_PEEK',
@@ -5647,7 +6002,7 @@ export const messages = defineMessages({
     TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT: {
         id: 'TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT',
         defaultMessage:
-            'Use Trezor Suite to securely delegate your voting rights to {representativeName}. Enjoy competitive rewards, rely on a trusted Super Representative, and keep full ownership of your TRX at all times. To process rewards correctly, your voting transaction ID is shared with the Trezor backend.',
+            'Use Trezor Suite to securely delegate your voting rights to {representativeName}. Earn rewards, rely on a trusted Super Representative, and keep full ownership of your TRX at all times. To process rewards correctly, your voting transaction ID is shared with the Trezor backend.',
     },
     TR_TRON_BANDWIDTH: {
         id: 'TR_TRON_BANDWIDTH',
@@ -5669,7 +6024,7 @@ export const messages = defineMessages({
     TR_TRON_ENERGY_TOOLTIP: {
         id: 'TR_TRON_ENERGY_TOOLTIP',
         defaultMessage:
-            'Used for smart contract actions, such as sending tokens. If it runs out, TRX is burned to cover network fees. It refills every 24 hours.',
+            'Used for smart contract actions, such as sending tokens. If it runs out, TRX is burned to cover network fees. You get Energy by freezing TRX, and it refills every 24 hours.',
     },
     TR_TRON_FEE_BANDWIDTH: {
         id: 'TR_TRON_FEE_BANDWIDTH',
@@ -5710,15 +6065,6 @@ export const messages = defineMessages({
     TR_FEE_LIMIT: {
         id: 'TR_FEE_LIMIT',
         defaultMessage: 'Fee limit',
-    },
-    TR_TRON_ACCOUNT_ACTIVATION_FEE: {
-        id: 'TR_TRON_ACCOUNT_ACTIVATION_FEE',
-        defaultMessage: 'Activation fee',
-    },
-    TR_TRON_ACCOUNT_ACTIVATION_FEE_TOOLTIP: {
-        id: 'TR_TRON_ACCOUNT_ACTIVATION_FEE_TOOLTIP',
-        defaultMessage:
-            'New TRON accounts require a one-time 1 {networkDisplaySymbol} network fee to activate.',
     },
     TR_TRON_TX_CREATE_ACCOUNT: {
         id: 'TR_TRON_TX_CREATE_ACCOUNT',
@@ -6108,10 +6454,6 @@ export const messages = defineMessages({
         id: 'TR_RELEASE_NOTES',
         defaultMessage: 'Release notes',
     },
-    TR_RELEASE_NOTES_LOADING: {
-        id: 'TR_RELEASE_NOTES_LOADING',
-        defaultMessage: 'Loading release notes…',
-    },
     TR_RELEASE_NOTES_VERSION: {
         id: 'TR_RELEASE_NOTES_VERSION',
         defaultMessage: 'Version',
@@ -6256,6 +6598,10 @@ export const messages = defineMessages({
         defaultMessage: 'Address',
         id: 'RECIPIENT_ADDRESS',
     },
+    RECIPIENT_ADDRESS_OR_ENS: {
+        defaultMessage: 'Address or ENS',
+        id: 'RECIPIENT_ADDRESS_OR_ENS',
+    },
     RECIPIENT_ADD: {
         id: 'RECIPIENT_ADD',
         defaultMessage: 'Add recipient',
@@ -6267,11 +6613,6 @@ export const messages = defineMessages({
     RECIPIENT_IS_NOT_VALID: {
         defaultMessage: "Address isn't valid",
         id: 'RECIPIENT_IS_NOT_VALID',
-    },
-    RECIPIENT_REQUIRES_UPDATE: {
-        defaultMessage:
-            "Taproot isn't supported by your firmware version. Update your device firmware.",
-        id: 'RECIPIENT_REQUIRES_UPDATE',
     },
     TR_UNSUPPORTED_ADDRESS_FORMAT: {
         defaultMessage: 'Unsupported address format.',
@@ -6769,6 +7110,19 @@ export const messages = defineMessages({
         id: 'TR_CHANGE_ADDRESS_TOOLTIP',
         defaultMessage: 'This is a change address created from a previous send.',
         description: 'Tooltip over an icon in Coin control section',
+    },
+    TR_ACCOUNT_TOKENS_COUNT: {
+        id: 'TR_ACCOUNT_TOKENS_COUNT',
+        defaultMessage: '{count, plural, one {+{count} token} other {+{count} tokens}}',
+    },
+    TR_OWN_ADDRESS_TOOLTIP: {
+        id: 'TR_OWN_ADDRESS_TOOLTIP',
+        defaultMessage: 'This is your address.',
+    },
+    TR_CHANGE_OUTPUT_TOOLTIP: {
+        id: 'TR_CHANGE_OUTPUT_TOOLTIP',
+        defaultMessage:
+            'A change address of this account. The remainder of a send transaction normally returns here.',
     },
     TR_IN_PENDING_TRANSACTION: {
         id: 'TR_IN_PENDING_TRANSACTION',
@@ -7358,7 +7712,7 @@ export const messages = defineMessages({
     },
     SETTINGS_UPDATE_AVAILABLE: {
         id: 'SETTINGS_UPDATE_AVAILABLE',
-        defaultMessage: 'Get the latest version',
+        defaultMessage: 'Download update',
     },
     SETTINGS_UPDATE_DOWNLOADING: {
         id: 'SETTINGS_UPDATE_DOWNLOADING',
@@ -7525,6 +7879,10 @@ export const messages = defineMessages({
     TR_EXPLORER_TOKEN: {
         id: 'TR_EXPLORER_TOKEN',
         defaultMessage: 'Token',
+    },
+    TR_EXPLORER_CONTRACT: {
+        id: 'TR_EXPLORER_CONTRACT',
+        defaultMessage: 'Contract',
     },
     TR_EXPLORER_SET_DEFAULT: {
         id: 'TR_EXPLORER_SET_DEFAULT',
@@ -7901,9 +8259,15 @@ export const messages = defineMessages({
         id: 'TR_GUIDE_FORUM',
         defaultMessage: 'Trezor Forum',
     },
-    TR_GUIDE_SUPPORT_AND_FEEDBACK: {
-        id: 'TR_GUIDE_SUPPORT_AND_FEEDBACK',
+    TR_GUIDE_HELP_AND_SUPPORT: {
+        id: 'TR_GUIDE_HELP_AND_SUPPORT',
         defaultMessage: 'Help & Support',
+        description: 'Tooltip and aria-label of the Guide icon in the bottom-right corner.',
+    },
+    TR_GUIDE_HELP_AND_FEEDBACK: {
+        id: 'TR_GUIDE_HELP_AND_FEEDBACK',
+        defaultMessage: 'Help & Feedback',
+        description: 'Title of the card inside the Guide panel that opens support and feedback.',
     },
     TR_GUIDE_SEARCH_MIN_QUERY_LENGTH: {
         id: 'TR_GUIDE_SEARCH_MIN_QUERY_LENGTH',
@@ -8435,6 +8799,10 @@ export const messages = defineMessages({
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_BUTTON_DISABLED',
         defaultMessage: 'Turn on',
     },
+    TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_TITLE: {
+        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_TITLE',
+        defaultMessage: 'Device authenticity check',
+    },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_BUTTON: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_BUTTON',
         defaultMessage: 'Turn off',
@@ -8483,6 +8851,10 @@ export const messages = defineMessages({
     TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON_DISABLED: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON_DISABLED',
         defaultMessage: 'Turn on',
+    },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_TITLE: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_TITLE',
+        defaultMessage: 'Firmware authenticity check',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_BUTTON: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_BUTTON',
@@ -8676,9 +9048,21 @@ export const messages = defineMessages({
         id: 'TR_COMPATIBILITY_SIG_FORMAT',
         defaultMessage: 'Electrum',
     },
-    TR_COPY_SIGNED_MESSAGE: {
-        id: 'TR_COPY_SIGNED_MESSAGE',
-        defaultMessage: 'Copy signed message',
+    TR_VERIFIED_MESSAGE_BADGE: {
+        id: 'TR_VERIFIED_MESSAGE_BADGE',
+        defaultMessage: 'Message verified',
+        description: 'Badge shown in the Sign and Verify form after a signature was verified',
+    },
+    TR_VERIFICATION_FAILED_BADGE: {
+        id: 'TR_VERIFICATION_FAILED_BADGE',
+        defaultMessage: 'Verification failed',
+        description:
+            'Badge shown in the Sign and Verify form when a signature did not match the message',
+    },
+    TR_CLEAR: {
+        id: 'TR_CLEAR',
+        defaultMessage: 'Clear',
+        description: 'Button resetting the Sign and Verify form after signing or verifying',
     },
     TR_NAV_STAKING: {
         defaultMessage: 'Staking',
@@ -8699,7 +9083,7 @@ export const messages = defineMessages({
     TR_SOL_STAKING_REWARD_WARNING: {
         id: 'TR_SOL_STAKING_REWARD_WARNING',
         defaultMessage:
-            'Your recent rewards are securely on the blockchain and may take more time to appear in Trezor Suite.',
+            'Your latest reward is already recorded on-chain, but it may take some time to appear in Rewards history.',
     },
     TR_STAKING_STAKE_ADDRESS: {
         id: 'TR_STAKING_STAKE_ADDRESS',
@@ -8707,16 +9091,11 @@ export const messages = defineMessages({
     },
     TR_STAKING_ESTIMATED_GAINS: {
         id: 'TR_STAKING_ESTIMATED_GAINS',
-        defaultMessage: 'Estimated gains',
+        defaultMessage: 'Estimated rewards',
     },
     TR_STAKING_ONCE_YOU_CONFIRM: {
         id: 'TR_STAKING_ONCE_YOU_CONFIRM',
-        defaultMessage: 'Once you confirm',
-    },
-    TR_STAKING_YOUR_EARNINGS: {
-        id: 'TR_STAKING_YOUR_EARNINGS',
-        defaultMessage:
-            'Your rewards are automatically restaked, allowing you to earn <a>compound interest</a>.',
+        defaultMessage: 'Staking timeline',
     },
     TR_STAKE_ON_EVERSTAKE: {
         id: 'TR_STAKE_ON_EVERSTAKE',
@@ -8776,7 +9155,7 @@ export const messages = defineMessages({
     TR_EARN_INSTANTLY_UNSTAKED_WITH_DAYS: {
         id: 'TR_EARN_INSTANTLY_UNSTAKED_WITH_DAYS',
         defaultMessage:
-            "You've received {amount} {symbol} instantly. {days, plural, =0 {} one {The remaining is paid out within # day.} other {The remaining is paid out within # days.}}",
+            "You've received {amount} {symbol} instantly. {days, plural, =0 {} one {The remainder is paid out within # day.} other {The remainder is paid out within # days.}}",
     },
     TR_EARN_STAKING_GETTING_READY: {
         id: 'TR_EARN_STAKING_GETTING_READY',
@@ -8796,15 +9175,27 @@ export const messages = defineMessages({
     },
     TR_EARN_CLAIM_REWARDS_LABEL: {
         id: 'TR_EARN_CLAIM_REWARDS_LABEL',
-        defaultMessage: 'Available rewards',
+        defaultMessage: 'Available bonus rewards',
     },
     TR_EARN_CLAIM_REWARDS_BUTTON: {
         id: 'TR_EARN_CLAIM_REWARDS_BUTTON',
         defaultMessage: 'Claim',
     },
-    TR_EARN_ENTER_AMOUNT_IN: {
-        id: 'TR_EARN_ENTER_AMOUNT_IN',
-        defaultMessage: 'Enter amount in {currency}',
+    TR_EARN_CLAIM_REWARDS_SUMMARY: {
+        id: 'TR_EARN_CLAIM_REWARDS_SUMMARY',
+        defaultMessage: '{amount}<text>in</text>{tokens}',
+    },
+    TR_EARN_CLAIM_REWARDS_SUMMARY_WITH_ACCOUNTS: {
+        id: 'TR_EARN_CLAIM_REWARDS_SUMMARY_WITH_ACCOUNTS',
+        defaultMessage: '{amount}<text>in</text>{tokens}<text>across</text>{accounts}',
+    },
+    TR_EARN_CLAIM_REWARDS_TOKENS_COUNT: {
+        id: 'TR_EARN_CLAIM_REWARDS_TOKENS_COUNT',
+        defaultMessage: '{tokens, plural, one {# token} other {# tokens}}',
+    },
+    TR_EARN_CLAIM_REWARDS_ACCOUNTS_COUNT: {
+        id: 'TR_EARN_CLAIM_REWARDS_ACCOUNTS_COUNT',
+        defaultMessage: '{accounts, plural, one {# account} other {# accounts}}',
     },
     TR_RECEIVING_SYMBOL: {
         id: 'TR_RECEIVING_SYMBOL',
@@ -9691,6 +10082,11 @@ export const messages = defineMessages({
         id: 'TR_PHISHING_TOOLTIP_TRC10_TRANSFER',
         defaultMessage: 'This TRC10 token transfer may be a scam. <a>Learn more</a>',
     },
+    TR_PHISHING_TOOLTIP_UNSOLICITED_ASSET_OFFER: {
+        id: 'TR_PHISHING_TOOLTIP_UNSOLICITED_ASSET_OFFER',
+        defaultMessage:
+            'Someone offered this balance to your account. Nothing has been received, and claiming it costs a reserve. <a>Learn more</a>',
+    },
     TR_ZERO_PHISHING_BANNER: {
         id: 'TR_ZERO_PHISHING_BANNER',
         defaultMessage:
@@ -9720,6 +10116,11 @@ export const messages = defineMessages({
         id: 'TR_PHISHING_BANNER_TRC10_TRANSFER',
         defaultMessage:
             'Proceed with caution. This transaction is a TRC10 transfer and may be suspicious. <a>Learn more</a>',
+    },
+    TR_PHISHING_BANNER_UNSOLICITED_ASSET_OFFER: {
+        id: 'TR_PHISHING_BANNER_UNSOLICITED_ASSET_OFFER',
+        defaultMessage:
+            'Proceed with caution. Someone offered this balance to your account without being asked. Nothing has been received unless you claim it, and claiming locks up a reserve. <a>Learn more</a>',
     },
     TR_HIDE_TRANSACTION: {
         id: 'TR_HIDE_TRANSACTION',
@@ -9829,18 +10230,6 @@ export const messages = defineMessages({
         id: 'TR_DASHBOARD_REFERRAL_BUTTON',
         defaultMessage: 'Earn $20 per referral',
     },
-    TR_PROMO_BANNER_DASHBOARD_TEX_TITLE: {
-        id: 'TR_PROMO_BANNER_DASHBOARD_TEX_TITLE',
-        defaultMessage: '<rest>Trezor Expert</rest> <underline>Consultation</underline>',
-    },
-    TR_PROMO_BANNER_DASHBOARD_TEX_DESCRIPTION: {
-        id: 'TR_PROMO_BANNER_DASHBOARD_TEX_DESCRIPTION',
-        defaultMessage: 'Unlock the full potential of your hardware wallet.',
-    },
-    TR_PROMO_BANNER_DASHBOARD_TEX_BUTTON: {
-        id: 'TR_PROMO_BANNER_DASHBOARD_TEX_BUTTON',
-        defaultMessage: 'Learn more',
-    },
     TR_PROMO_BANNER_DASHBOARD_TS7_TITLE: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_TITLE',
         defaultMessage: 'Introducing Trezor Safe 7',
@@ -9853,17 +10242,41 @@ export const messages = defineMessages({
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_BUTTON',
         defaultMessage: 'Learn more',
     },
-    TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_TITLE: {
-        id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_TITLE',
-        defaultMessage: 'Earn on your stablecoins',
+    TR_PROMO_BANNER_DASHBOARD_ETH_VAULT_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_ETH_VAULT_TITLE',
+        defaultMessage: 'A new way to earn with ETH',
     },
-    TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_DESCRIPTION: {
-        id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_DESCRIPTION',
-        defaultMessage: 'Earn yield on USDC and USDT with Trezor-grade security.',
+    TR_PROMO_BANNER_DASHBOARD_ETH_VAULT_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_ETH_VAULT_DESCRIPTION',
+        defaultMessage: 'The new ETH vault is now available in DeFi Yield.',
     },
-    TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_BUTTON: {
-        id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_BUTTON',
+    TR_PROMO_BANNER_DASHBOARD_ETH_VAULT_BUTTON: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_ETH_VAULT_BUTTON',
+        defaultMessage: 'Explore vault',
+    },
+    TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_TITLE',
+        defaultMessage: 'Put your assets to work securely',
+    },
+    TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_DESCRIPTION',
+        defaultMessage: 'Earn DeFi yield on ETH, USDC and USDT with Trezor-grade security.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_BUTTON: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_BUTTON',
         defaultMessage: 'Get started',
+    },
+    TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_TITLE',
+        defaultMessage: 'Trading in Suite just got an upgrade',
+    },
+    TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_DESCRIPTION',
+        defaultMessage: 'Discover new DEX swaps, better rates, and a fresh design.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_BUTTON: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_BUTTON',
+        defaultMessage: "See what's new",
     },
     TR_ONBOARDING_FEEDBACK_BANNER_TITLE: {
         id: 'TR_ONBOARDING_FEEDBACK_BANNER_TITLE',
@@ -9896,11 +10309,11 @@ export const messages = defineMessages({
     },
     TR_NO_DEVICE_ESHOP_BANNER_BULLET_SECURITY: {
         id: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_SECURITY',
-        defaultMessage: 'Advanced open-source security',
+        defaultMessage: '100% open-source code & design',
     },
     TR_NO_DEVICE_ESHOP_BANNER_BULLET_APP: {
         id: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_APP',
-        defaultMessage: 'Powerful crypto app for mobile & desktop',
+        defaultMessage: 'Secure crypto app for mobile & desktop',
     },
     TR_NO_DEVICE_ESHOP_BANNER_BULLET_SETUP: {
         id: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_SETUP',
@@ -10055,6 +10468,14 @@ export const messages = defineMessages({
         id: 'TR_TX_DATA_INPUT_DATA',
         defaultMessage: 'Input data',
     },
+    TR_TX_DATA_CONTRACT: {
+        id: 'TR_TX_DATA_CONTRACT',
+        defaultMessage: 'Contract',
+    },
+    TR_TX_DATA_AUTHORIZED_CALLS: {
+        id: 'TR_TX_DATA_AUTHORIZED_CALLS',
+        defaultMessage: 'Authorized calls',
+    },
     TR_FROM: {
         id: 'TR_FROM',
         defaultMessage: 'From',
@@ -10069,12 +10490,11 @@ export const messages = defineMessages({
     },
     TR_EARN_STAKING_DASHBOARD_TEXT: {
         id: 'TR_EARN_STAKING_DASHBOARD_TEXT',
-        defaultMessage:
-            'Grow your crypto by locking it to help secure the network—and earn rewards in return.',
+        defaultMessage: 'Stake your crypto to help secure the network and earn rewards in return.',
     },
     TR_EARN_DEFI_YIELD_DASHBOARD_TEXT: {
         id: 'TR_EARN_DEFI_YIELD_DASHBOARD_TEXT',
-        defaultMessage: 'Put your assets to work and earn rewards.',
+        defaultMessage: 'Put your assets to work and earn yield.',
     },
     TR_EARN_YIELD_DASHBOARD_DEPOSIT_MORE: {
         id: 'TR_EARN_YIELD_DASHBOARD_DEPOSIT_MORE',
@@ -10090,6 +10510,10 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_WITHDRAW: {
         id: 'TR_EARN_YIELD_WITHDRAW',
+        defaultMessage: 'Withdraw',
+    },
+    TR_EARN_YIELD_WITHDRAW_TITLE: {
+        id: 'TR_EARN_YIELD_WITHDRAW_TITLE',
         defaultMessage: 'Withdraw',
     },
     TR_EARN_YIELD_REDEEM: {
@@ -10120,7 +10544,20 @@ export const messages = defineMessages({
     TR_EARN_YIELD_WRAP_RESERVE_RECOMMENDED: {
         id: 'TR_EARN_YIELD_WRAP_RESERVE_RECOMMENDED',
         defaultMessage:
-            "It's recommended to leave {amount} {nativeSymbol} so you can pay for withdrawal fees.",
+            'We recommend leaving {amount} {nativeSymbol} so you can pay future network fees.',
+    },
+    TR_EARN_YIELD_WRAP_RESERVE_KEPT: {
+        id: 'TR_EARN_YIELD_WRAP_RESERVE_KEPT',
+        defaultMessage: 'We left {amount} {nativeSymbol} so you can pay future network fees.',
+    },
+    TR_EARN_YIELD_INSUFFICIENT_FEE_RESERVE: {
+        id: 'TR_EARN_YIELD_INSUFFICIENT_FEE_RESERVE',
+        defaultMessage: 'You need at least {amount} {nativeSymbol} to cover the network fees.',
+    },
+    TR_EARN_YIELD_FEE_RESERVE_TOP_UP_RECOMMENDED: {
+        id: 'TR_EARN_YIELD_FEE_RESERVE_TOP_UP_RECOMMENDED',
+        defaultMessage:
+            'We recommend holding at least {amount} {nativeSymbol} to cover future network fees, including withdrawal.',
     },
     TR_EARN_YIELD_WRAP_RECEIVING: {
         id: 'TR_EARN_YIELD_WRAP_RECEIVING',
@@ -10137,7 +10574,7 @@ export const messages = defineMessages({
     TR_EARN_YIELD_UNWRAP_DESCRIPTION: {
         id: 'TR_EARN_YIELD_UNWRAP_DESCRIPTION',
         defaultMessage:
-            'You can also unwrap {tokenSymbol} anytime from the {networkName} account screen.',
+            "You can also unwrap {tokenSymbol} anytime in your {networkName} account's token list.",
     },
     TR_EARN_YIELD_UNWRAP_AMOUNT: {
         id: 'TR_EARN_YIELD_UNWRAP_AMOUNT',
@@ -10183,13 +10620,17 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_DEPOSIT',
         defaultMessage: 'Deposit',
     },
+    TR_EARN_YIELD_DEPOSIT_BUTTON: {
+        id: 'TR_EARN_YIELD_DEPOSIT_BUTTON',
+        defaultMessage: 'Deposit',
+    },
     TR_EARN_YIELD_BADGE_RATE: {
         id: 'TR_EARN_YIELD_BADGE_RATE',
-        defaultMessage: '{apy}% Yield',
+        defaultMessage: '{apy}% APY',
     },
     TR_EARN_YIELD_BADGE_UP_TO_RATE: {
         id: 'TR_EARN_YIELD_BADGE_UP_TO_RATE',
-        defaultMessage: 'up to {apy}% Yield',
+        defaultMessage: 'up to {apy}% APY',
     },
     TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST: {
         id: 'TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST',
@@ -10197,7 +10638,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_APY_SOURCE_PROTOCOL_INCENTIVE: {
         id: 'TR_EARN_YIELD_APY_SOURCE_PROTOCOL_INCENTIVE',
-        defaultMessage: 'Manually claim and deposit to compound.',
+        defaultMessage: 'Bonus rewards, claimed separately in the Earn tab.',
     },
     TR_EARN_YIELD_APY_TOOLTIP_FOOTER: {
         id: 'TR_EARN_YIELD_APY_TOOLTIP_FOOTER',
@@ -10231,10 +10672,6 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_WITHDRAWN',
         defaultMessage: 'Withdrawn',
     },
-    TR_EARN_YIELD_ENTER_AMOUNT_IN_TOKEN: {
-        id: 'TR_EARN_YIELD_ENTER_AMOUNT_IN_TOKEN',
-        defaultMessage: 'Enter amount in {tokenSymbol}',
-    },
     TR_EARN_YIELD_APPROVED_AMOUNT: {
         id: 'TR_EARN_YIELD_APPROVED_AMOUNT',
         defaultMessage: 'Approved amount',
@@ -10265,7 +10702,11 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_CLAIM_COMPLETE_DESCRIPTION: {
         id: 'TR_EARN_YIELD_CLAIM_COMPLETE_DESCRIPTION',
-        defaultMessage: 'Bonus rewards added to your token balance.',
+        defaultMessage: 'Bonus rewards added to your balance.',
+    },
+    TR_EARN_YIELD_BONUS_REWARDS: {
+        id: 'TR_EARN_YIELD_BONUS_REWARDS',
+        defaultMessage: 'Bonus rewards',
     },
     TR_EARN_YIELD_STATUS: {
         id: 'TR_EARN_YIELD_STATUS',
@@ -10300,33 +10741,41 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_CLAIM_DISABLED',
         defaultMessage: 'Claim is currently disabled.',
     },
+    TR_EARN_YIELD_WRAP_DISABLED: {
+        id: 'TR_EARN_YIELD_WRAP_DISABLED',
+        defaultMessage: 'Wrapping is currently disabled.',
+    },
+    TR_EARN_YIELD_UNWRAP_DISABLED: {
+        id: 'TR_EARN_YIELD_UNWRAP_DISABLED',
+        defaultMessage: 'Unwrapping is currently disabled.',
+    },
     TR_EARN_DEFI_YIELD_TITLE: {
         id: 'TR_EARN_DEFI_YIELD_TITLE',
         defaultMessage: 'DeFi Yield',
     },
     TR_EARN_YIELD_PENDING_DEPOSIT: {
         id: 'TR_EARN_YIELD_PENDING_DEPOSIT',
-        defaultMessage: 'Confirming deposit...',
+        defaultMessage: 'Confirming deposit…',
     },
     TR_EARN_YIELD_PENDING_WITHDRAW: {
         id: 'TR_EARN_YIELD_PENDING_WITHDRAW',
-        defaultMessage: 'Confirming withdrawal...',
+        defaultMessage: 'Confirming withdrawal…',
     },
     TR_EARN_YIELD_PENDING_WRAP: {
         id: 'TR_EARN_YIELD_PENDING_WRAP',
-        defaultMessage: 'Confirming wrap...',
+        defaultMessage: 'Confirming wrap…',
     },
     TR_EARN_YIELD_PENDING_UNWRAP: {
         id: 'TR_EARN_YIELD_PENDING_UNWRAP',
-        defaultMessage: 'Confirming unwrap...',
+        defaultMessage: 'Confirming unwrap…',
     },
     TR_EARN_YIELD_PENDING_CLAIM: {
         id: 'TR_EARN_YIELD_PENDING_CLAIM',
-        defaultMessage: 'Confirming claim...',
+        defaultMessage: 'Confirming claim…',
     },
     TR_EARN_YIELD_APPROVAL_TOO_LOW: {
         id: 'TR_EARN_YIELD_APPROVAL_TOO_LOW',
-        defaultMessage: 'Approval is too low. Change approval or lower amount.',
+        defaultMessage: 'Approval is too low. Change approval or lower the deposit amount.',
     },
     TR_APPROVE_OVER_BALANCE: {
         id: 'TR_APPROVE_OVER_BALANCE',
@@ -10339,7 +10788,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_INCREASE_APPROVAL: {
         id: 'TR_EARN_YIELD_INCREASE_APPROVAL',
-        defaultMessage: 'Increase approval',
+        defaultMessage: 'Increase approval limit',
     },
     TR_EARN_YIELD_REVOKE_APPROVAL: {
         id: 'TR_EARN_YIELD_REVOKE_APPROVAL',
@@ -10395,11 +10844,11 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_REVIEW_WITHDRAW_TITLE: {
         id: 'TR_EARN_YIELD_REVIEW_WITHDRAW_TITLE',
-        defaultMessage: 'Redeem',
+        defaultMessage: 'Withdraw',
     },
     TR_EARN_YIELD_REVIEW_WITHDRAW_DESCRIPTION: {
         id: 'TR_EARN_YIELD_REVIEW_WITHDRAW_DESCRIPTION',
-        defaultMessage: 'Review details to redeem from vault.',
+        defaultMessage: 'Review details to withdraw from vault.',
     },
     TR_EARN_YIELD_REVIEW_REDEEM_TITLE: {
         id: 'TR_EARN_YIELD_REVIEW_REDEEM_TITLE',
@@ -10427,7 +10876,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_REVIEW_WITHDRAW_AMOUNT: {
         id: 'TR_EARN_YIELD_REVIEW_WITHDRAW_AMOUNT',
-        defaultMessage: 'Redeem amount',
+        defaultMessage: 'Withdraw amount',
     },
     TR_EARN_YIELD_REVIEW_REDEEM_AMOUNT: {
         id: 'TR_EARN_YIELD_REVIEW_REDEEM_AMOUNT',
@@ -10440,11 +10889,11 @@ export const messages = defineMessages({
     TR_STAKING_MODAL_OUTDATED: {
         id: 'TR_STAKING_MODAL_OUTDATED',
         defaultMessage:
-            "You're earning nearly 0% in ADA rewards right now. Switch to Everstake to earn up to {apy}% APY. Your funds and past rewards are safe.",
+            'Your Cardano is no longer earning rewards. Switch to our partner Everstake to earn up to {apy}% APY. Your ADA and past rewards are safe.',
     },
     TR_STAKING_REWARDS_REDUCED: {
         id: 'TR_STAKING_REWARDS_REDUCED',
-        defaultMessage: 'Rewards reduced',
+        defaultMessage: 'No rewards',
     },
     TR_STAKING_MODAL_OUTDATED_BUTTON: {
         id: 'TR_STAKING_MODAL_OUTDATED_BUTTON',
@@ -10470,9 +10919,17 @@ export const messages = defineMessages({
         id: 'TR_EARN_DASHBOARD_TABLE_YEARLY_REWARDS',
         defaultMessage: 'Your yearly rewards',
     },
+    TR_EARN_DASHBOARD_TABLE_YEARLY_YIELD: {
+        id: 'TR_EARN_DASHBOARD_TABLE_YEARLY_YIELD',
+        defaultMessage: 'Your yearly yield',
+    },
     TR_EARN_DASHBOARD_TABLE_POTENTIAL_REWARDS: {
         id: 'TR_EARN_DASHBOARD_TABLE_POTENTIAL_REWARDS',
-        defaultMessage: 'Potential rewards',
+        defaultMessage: 'Potential yearly rewards',
+    },
+    TR_EARN_DASHBOARD_TABLE_POTENTIAL_YIELD: {
+        id: 'TR_EARN_DASHBOARD_TABLE_POTENTIAL_YIELD',
+        defaultMessage: 'Potential yearly yield',
     },
     TR_EARN_STAKING_DASHBOARD_STAKE_NOW: {
         id: 'TR_EARN_STAKING_DASHBOARD_STAKE_NOW',
@@ -10482,9 +10939,13 @@ export const messages = defineMessages({
         id: 'TR_EARN_STAKING_DASHBOARD_STAKE_MORE',
         defaultMessage: 'Stake more',
     },
+    TR_EARN_STAKING_DASHBOARD_CLAIM_FUNDS: {
+        id: 'TR_EARN_STAKING_DASHBOARD_CLAIM_FUNDS',
+        defaultMessage: 'Claim funds',
+    },
     TR_EARN_STAKING_DASHBOARD_ACTIVATE: {
         id: 'TR_EARN_STAKING_DASHBOARD_ACTIVATE',
-        defaultMessage: 'Activate {networkName}',
+        defaultMessage: 'Enable {networkName}',
     },
     TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE: {
         id: 'TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE',
@@ -10504,11 +10965,19 @@ export const messages = defineMessages({
     },
     TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER: {
         id: 'TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER',
-        defaultMessage: 'Update to Everstake and earn ~{apy}% APY',
+        defaultMessage: 'Switch to Everstake and earn ~{apy}% APY',
+    },
+    TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER_NO_APY: {
+        id: 'TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER_NO_APY',
+        defaultMessage: 'Switch to Everstake to start earning again',
     },
     TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES: {
         id: 'TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES',
-        defaultMessage: 'Vote with all votes to earn ~{apr}% APR',
+        defaultMessage: 'You only earn ~{apr}% APR on assigned votes. Assign the rest too.',
+    },
+    TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES_NO_APR: {
+        id: 'TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES_NO_APR',
+        defaultMessage: 'You only earn rewards on assigned votes. Assign the rest too.',
     },
     TR_STAKING_BANNER_DETAIL_TITLE: {
         id: 'TR_STAKING_BANNER_DETAIL_TITLE',
@@ -10534,7 +11003,7 @@ export const messages = defineMessages({
     },
     TR_STAKING_BANNER_ETH_EARN_TITLE: {
         id: 'TR_STAKING_BANNER_ETH_EARN_TITLE',
-        defaultMessage: 'Earn up to {apy}% on your {displaySymbol}',
+        defaultMessage: 'Earn up to {apy}% APY on your {displaySymbol}',
     },
     TR_STAKING_BANNER_ETH_EARN_TITLE_NO_RATE: {
         id: 'TR_STAKING_BANNER_ETH_EARN_TITLE_NO_RATE',
@@ -10543,7 +11012,7 @@ export const messages = defineMessages({
     TR_STAKING_BANNER_ETH_EARN_TEXT: {
         id: 'TR_STAKING_BANNER_ETH_EARN_TEXT',
         defaultMessage:
-            'Stake {displaySymbol} for network rewards, or deposit it in a yield vault.',
+            'Stake {displaySymbol} for network rewards, or deposit it in a yield vault for more flexibility.',
     },
     TR_STAKING_BANNER_ETH_EARN_BUTTON: {
         id: 'TR_STAKING_BANNER_ETH_EARN_BUTTON',
@@ -10563,7 +11032,7 @@ export const messages = defineMessages({
     },
     TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE: {
         id: 'TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE',
-        defaultMessage: 'Update your provider now to keep your rewards growing',
+        defaultMessage: 'Your Cardano is no longer earning rewards',
     },
     TR_STAKING_NEW_PROVIDER_TEXT: {
         id: 'TR_STAKING_NEW_PROVIDER_TEXT',
@@ -10573,7 +11042,7 @@ export const messages = defineMessages({
     TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT: {
         id: 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT',
         defaultMessage:
-            'Your current provider is reducing its rewards. Update to Everstake for {apy}% APY and keep maximizing earnings. Your {displaySymbol} and past rewards stay safe.',
+            'Switch to Everstake to earn {apy}% APY and start earning again. Your {displaySymbol} and past rewards stay safe.',
     },
     TR_EARN_UPDATE_PROVIDER: {
         id: 'TR_EARN_UPDATE_PROVIDER',
@@ -10592,30 +11061,76 @@ export const messages = defineMessages({
         id: 'TR_STAKING_NEW_PROVIDER',
         defaultMessage: 'New provider',
     },
-    TR_STAKING_DELEGATE_YOUR_VOTING_RIGHTS: {
-        id: 'TR_STAKING_DELEGATE_YOUR_VOTING_RIGHTS',
-        defaultMessage: 'Delegate your voting rights',
-    },
-    TR_STAKING_DELEGATE_TO_EVERSTAKE: {
-        id: 'TR_STAKING_DELEGATE_TO_EVERSTAKE',
-        defaultMessage: 'Delegate to Everstake',
-    },
-    TR_STAKING_DELEGATE_TO_ANOTHER_DREP: {
-        id: 'TR_STAKING_DELEGATE_TO_ANOTHER_DREP',
-        defaultMessage: 'Delegate to another DRep',
+    TR_STAKING_KEEP_CURRENT_DELEGATION: {
+        id: 'TR_STAKING_KEEP_CURRENT_DELEGATION',
+        defaultMessage: 'Keep your current delegation',
     },
     TR_STAKING_DELEGATION_INFO_TEXT: {
         id: 'TR_STAKING_DELEGATION_INFO_TEXT',
         defaultMessage:
-            "You can choose to support the Cardano ecosystem by delegating your community voting rights. This helps strengthen the network's resilience, sustainability, and community-driven governance. This has no effect on your staking.",
+            'You can choose to support the Cardano ecosystem by delegating your community voting rights. This has no effect on your staking.',
     },
     TR_STAKING_INVALID_DREP_ID: {
         id: 'TR_STAKING_INVALID_DREP_ID',
         defaultMessage: 'Invalid DRep ID',
     },
+    TR_STAKING_DREP_ID_IS_CURRENT_DELEGATE: {
+        id: 'TR_STAKING_DREP_ID_IS_CURRENT_DELEGATE',
+        defaultMessage: 'This DRep is already your current delegate',
+    },
     TR_STAKING_DREP_ID: {
         id: 'TR_STAKING_DREP_ID',
         defaultMessage: 'DRep ID',
+    },
+    TR_STAKING_WHO_VOTES_WITH_YOUR_FUNDS: {
+        id: 'TR_STAKING_WHO_VOTES_WITH_YOUR_FUNDS',
+        defaultMessage: 'Who votes with your {displaySymbol}?',
+    },
+    TR_STAKING_VOTING_PREFERENCE_DESCRIPTION: {
+        id: 'TR_STAKING_VOTING_PREFERENCE_DESCRIPTION',
+        defaultMessage:
+            "Cardano asks every staker to set a voting preference. It doesn't move your funds — change it anytime.",
+    },
+    TR_STAKING_VOTE_ABSTAIN: {
+        id: 'TR_STAKING_VOTE_ABSTAIN',
+        defaultMessage: 'Abstain',
+    },
+    TR_STAKING_VOTE_ABSTAIN_DESCRIPTION: {
+        id: 'TR_STAKING_VOTE_ABSTAIN_DESCRIPTION',
+        defaultMessage: "Stay neutral — your voting power won't count for or against proposals.",
+    },
+    TR_STAKING_VOTE_LET_EVERSTAKE_VOTE: {
+        id: 'TR_STAKING_VOTE_LET_EVERSTAKE_VOTE',
+        defaultMessage: 'Let Everstake vote for you',
+    },
+    TR_STAKING_VOTE_LET_EVERSTAKE_VOTE_DESCRIPTION: {
+        id: 'TR_STAKING_VOTE_LET_EVERSTAKE_VOTE_DESCRIPTION',
+        defaultMessage: 'Your stake pool operator votes on your behalf.',
+    },
+    TR_STAKING_VOTE_CHOOSE_OWN_DREP: {
+        id: 'TR_STAKING_VOTE_CHOOSE_OWN_DREP',
+        defaultMessage: 'Choose your own DRep',
+    },
+    TR_STAKING_VOTE_CHOOSE_OWN_DREP_DESCRIPTION: {
+        id: 'TR_STAKING_VOTE_CHOOSE_OWN_DREP_DESCRIPTION',
+        defaultMessage: 'Delegate to any registered representative by pasting their DRep ID.',
+    },
+    TR_STAKING_CHANGE_VOTING_PREFERENCE: {
+        id: 'TR_STAKING_CHANGE_VOTING_PREFERENCE',
+        defaultMessage: 'Change voting preference',
+    },
+    TR_STAKING_CURRENT_PREFERENCE: {
+        id: 'TR_STAKING_CURRENT_PREFERENCE',
+        defaultMessage: 'Current preference',
+    },
+    TR_STAKING_NEW_PREFERENCE: {
+        id: 'TR_STAKING_NEW_PREFERENCE',
+        defaultMessage: 'New preference',
+    },
+    TR_STAKING_NEW_PREFERENCE_DESCRIPTION: {
+        id: 'TR_STAKING_NEW_PREFERENCE_DESCRIPTION',
+        defaultMessage:
+            "Pick who votes with your {displaySymbol} in Cardano governance. It doesn't move your funds and has no effect on your staking rewards.",
     },
     TR_STAKING_CARD_TEXT_FUNDS_STAY: {
         id: 'TR_STAKING_CARD_TEXT_FUNDS_STAY',
@@ -10655,7 +11170,7 @@ export const messages = defineMessages({
     },
     TR_STAKING_CARD_FREEZE_AND_VOTE_TEXT: {
         id: 'TR_STAKING_CARD_FREEZE_AND_VOTE_TEXT',
-        defaultMessage: 'Freeze your funds and vote for representatives to start earning yield.',
+        defaultMessage: 'Freeze your funds and vote for representatives to start earning rewards.',
     },
     TR_STAKING_CARD_UNSTAKE_ANYTIME_TITLE: {
         id: 'TR_STAKING_CARD_UNSTAKE_ANYTIME_TITLE',
@@ -10688,11 +11203,11 @@ export const messages = defineMessages({
     },
     TR_STAKING_CARD_RESTAKE_TITLE: {
         id: 'TR_STAKING_CARD_RESTAKE_TITLE',
-        defaultMessage: 'Restake automatically',
+        defaultMessage: 'Automatic compounding',
     },
     TR_STAKING_CARD_RESTAKE_TEXT: {
         id: 'TR_STAKING_CARD_RESTAKE_TEXT',
-        defaultMessage: 'Your rewards are restaked automatically—so your balance grows faster.',
+        defaultMessage: 'Your rewards are automatically restaked, so you earn compound interest.',
     },
     TR_STAKE_RESTAKED_BADGE: {
         id: 'TR_STAKE_RESTAKED_BADGE',
@@ -10726,7 +11241,7 @@ export const messages = defineMessages({
     TR_EARN_STAKE_ALL_YOUR_FUNDS_IS_STAKED: {
         id: 'TR_EARN_STAKE_ALL_YOUR_FUNDS_IS_STAKED',
         defaultMessage:
-            'All your available {networkDisplaySymbol} is currently staked. Any new {networkDisplaySymbol} you receive will become active after two epochs.',
+            'All your available {networkDisplaySymbol} is staked. Any new {networkDisplaySymbol} you receive is automatically staked after two epochs.',
     },
     TR_EARN_RETURNABLE_DEPOSIT_IS_REQUIRED: {
         id: 'TR_EARN_RETURNABLE_DEPOSIT_IS_REQUIRED',
@@ -10735,7 +11250,7 @@ export const messages = defineMessages({
     },
     TR_EARN_ENTER_ACTIVATION_PERIOD: {
         id: 'TR_EARN_ENTER_ACTIVATION_PERIOD',
-        defaultMessage: 'Enter activation period',
+        defaultMessage: 'Staking activation',
     },
     TR_EARN_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER: {
         id: 'TR_EARN_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER',
@@ -10743,7 +11258,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_ACTIVATION_PERIOD: {
         id: 'TR_STAKE_ACTIVATION_PERIOD',
-        defaultMessage: 'Activation period',
+        defaultMessage: 'Staking activation',
     },
     TR_EARN_INSTANTLY: {
         id: 'TR_EARN_INSTANTLY',
@@ -10751,11 +11266,7 @@ export const messages = defineMessages({
     },
     TR_EARN_RECEIVE_DEPOSIT_IN_ACCOUNT: {
         id: 'TR_EARN_RECEIVE_DEPOSIT_IN_ACCOUNT',
-        defaultMessage: 'Receive deposit and rewards in account',
-    },
-    TR_EARN_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY: {
-        id: 'TR_EARN_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY',
-        defaultMessage: 'Instantly',
+        defaultMessage: 'Deposit refunded and rewards paid to account',
     },
     TR_EARN_YOUR_DEPOSIT_IS_RETURNED: {
         id: 'TR_EARN_YOUR_DEPOSIT_IS_RETURNED',
@@ -10787,7 +11298,7 @@ export const messages = defineMessages({
     },
     TR_EARN_APY_REQUIRED: {
         id: 'TR_EARN_APY_REQUIRED',
-        defaultMessage: 'APY is required to calculate rewards',
+        defaultMessage: 'A rate is needed for an estimate',
     },
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
@@ -10799,7 +11310,7 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_STAKING_IN_A_NUTSHELL: {
         id: 'TR_EARN_TRON_STAKING_IN_A_NUTSHELL',
-        defaultMessage: 'Staking in a nutshell',
+        defaultMessage: 'How staking works',
     },
     TR_EARN_TRON_NUTSHELL_RESOURCES: {
         id: 'TR_EARN_TRON_NUTSHELL_RESOURCES',
@@ -10807,7 +11318,7 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_NUTSHELL_FREEZE_VOTE: {
         id: 'TR_EARN_TRON_NUTSHELL_FREEZE_VOTE',
-        defaultMessage: 'Freeze and vote to start earning yield.',
+        defaultMessage: 'Freeze {displaySymbol} and vote to start earning rewards.',
     },
     TR_EARN_TRON_NUTSHELL_UNSTAKE: {
         id: 'TR_EARN_TRON_NUTSHELL_UNSTAKE',
@@ -10815,7 +11326,7 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_FREEZE_TRANSACTION: {
         id: 'TR_EARN_TRON_FREEZE_TRANSACTION',
-        defaultMessage: 'Freeze TRX transaction',
+        defaultMessage: 'Freeze {displaySymbol} transaction',
     },
     TR_EARN_TRON_FREEZE: {
         id: 'TR_EARN_TRON_FREEZE',
@@ -10835,7 +11346,11 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_EARN_REWARDS: {
         id: 'TR_EARN_TRON_EARN_REWARDS',
-        defaultMessage: 'Earn rewards',
+        defaultMessage: 'Voting rewards',
+    },
+    TR_EARN_TRON_REWARDS_CLAIMED_MANUALLY: {
+        id: 'TR_EARN_TRON_REWARDS_CLAIMED_MANUALLY',
+        defaultMessage: 'Rewards are claimed manually and can be staked again.',
     },
     TR_EARN_TRON_RESOURCE_TO_EARN: {
         id: 'TR_EARN_TRON_RESOURCE_TO_EARN',
@@ -10848,11 +11363,11 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_BANDWIDTH: {
         id: 'TR_EARN_TRON_BANDWIDTH',
-        defaultMessage: '{count, plural, one {}=0 {Bandwidth} other {+# bandwidth}}',
+        defaultMessage: '{count, plural, =0 {Bandwidth} one {+# bandwidth} other {+# bandwidth}}',
     },
     TR_EARN_TRON_ENERGY: {
         id: 'TR_EARN_TRON_ENERGY',
-        defaultMessage: '{count, plural, one {}=0 {Energy} other {+# energy}}',
+        defaultMessage: '{count, plural, =0 {Energy} one {+# energy} other {+# energy}}',
     },
     TR_EARN_TRON_STAKE_TITLE: {
         id: 'TR_EARN_TRON_STAKE_TITLE',
@@ -10860,11 +11375,11 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_STAKE_COMPLETE: {
         id: 'TR_EARN_TRON_STAKE_COMPLETE',
-        defaultMessage: 'Stake complete',
+        defaultMessage: 'Staking complete',
     },
     TR_EARN_TRON_STAKE_COMPLETE_DESCRIPTION: {
         id: 'TR_EARN_TRON_STAKE_COMPLETE_DESCRIPTION',
-        defaultMessage: 'Your stake is now earning rewards',
+        defaultMessage: 'Your {displaySymbol} is now staked and earning rewards.',
     },
     TR_EARN_TRON_APR_LABEL: {
         id: 'TR_EARN_TRON_APR_LABEL',
@@ -10876,7 +11391,7 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_SUPPLIED: {
         id: 'TR_EARN_TRON_SUPPLIED',
-        defaultMessage: 'Supplied',
+        defaultMessage: 'Staked',
     },
     TR_EARN_TRON_VOTE_COMPLETE: {
         id: 'TR_EARN_TRON_VOTE_COMPLETE',
@@ -10892,7 +11407,7 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_FREEZE_STEP_TITLE: {
         id: 'TR_EARN_TRON_FREEZE_STEP_TITLE',
-        defaultMessage: 'Freeze your funds',
+        defaultMessage: 'Freeze your {displaySymbol}',
     },
     TR_EARN_TRON_VOTE_STEP_TITLE: {
         id: 'TR_EARN_TRON_VOTE_STEP_TITLE',
@@ -10925,16 +11440,12 @@ export const messages = defineMessages({
     TR_EARN_TRON_RESERVE_LEFT_FOR_VOTING: {
         id: 'TR_EARN_TRON_RESERVE_LEFT_FOR_VOTING',
         defaultMessage:
-            "We've left {amount} {networkDisplaySymbol} in your account so you can pay for voting fees.",
+            "We've left {amount} {networkDisplaySymbol} in your account so you can pay voting fees.",
     },
     TR_EARN_TRON_RESERVE_RECOMMENDED_FOR_VOTING: {
         id: 'TR_EARN_TRON_RESERVE_RECOMMENDED_FOR_VOTING',
         defaultMessage:
-            "It's recommended to leave {amount} {networkDisplaySymbol} so you can pay for voting fees.",
-    },
-    TR_EARN_TRON_CLAIM_ADDRESS: {
-        id: 'TR_EARN_TRON_CLAIM_ADDRESS',
-        defaultMessage: 'Claim address',
+            'We recommend leaving {amount} {networkDisplaySymbol} so you can pay voting fees.',
     },
     TR_EARN_TRON_WITHDRAW_COMPLETE: {
         id: 'TR_EARN_TRON_WITHDRAW_COMPLETE',
@@ -10960,6 +11471,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_CLAIM_CONFIRM',
         defaultMessage: 'Claim voting rewards?',
     },
+    TR_EARN_TRON_CLAIM_WITHDRAW: {
+        id: 'TR_EARN_TRON_CLAIM_WITHDRAW',
+        defaultMessage: 'Claim unfrozen balance?',
+    },
     TR_EARN_TRON_CLAIM_COMPLETE: {
         id: 'TR_EARN_TRON_CLAIM_COMPLETE',
         defaultMessage: 'Rewards claimed',
@@ -10978,11 +11493,11 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_UNSTAKE_DESCRIPTION: {
         id: 'TR_EARN_TRON_UNSTAKE_DESCRIPTION',
-        defaultMessage: 'Withdraw your TRX in 14 days',
+        defaultMessage: 'You can withdraw your {displaySymbol} in 14 days.',
     },
     TR_EARN_TRON_UNSTAKE_COMPLETE: {
         id: 'TR_EARN_TRON_UNSTAKE_COMPLETE',
-        defaultMessage: 'Unstake complete',
+        defaultMessage: 'Unstaking complete',
     },
     TR_EARN_TRON_UNSTAKED: {
         id: 'TR_EARN_TRON_UNSTAKED',
@@ -10998,11 +11513,15 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_REMAINING_VOTES: {
         id: 'TR_EARN_TRON_REMAINING_VOTES',
-        defaultMessage: '{remaining}/{total} remaining votes',
+        defaultMessage: '{total, plural, one {# vote assigned} other {All # votes assigned}}',
+    },
+    TR_EARN_TRON_ASSIGNED_VOTES_LABEL: {
+        id: 'TR_EARN_TRON_ASSIGNED_VOTES_LABEL',
+        defaultMessage: 'Assigned votes',
     },
     TR_EARN_TRON_VOTES_TO_ALLOCATE: {
         id: 'TR_EARN_TRON_VOTES_TO_ALLOCATE',
-        defaultMessage: '{count} remaining votes',
+        defaultMessage: '{count, plural, one {1 unassigned vote} other {# unassigned votes}}',
     },
     TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP: {
         id: 'TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP',
@@ -11020,17 +11539,65 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_REPRESENTATIVE',
         defaultMessage: 'Representative',
     },
-    TR_EARN_TRON_REMAINING_VOTES_LABEL: {
-        id: 'TR_EARN_TRON_REMAINING_VOTES_LABEL',
-        defaultMessage: 'Remaining votes',
-    },
     TR_EARN_TRON_ASSIGN_VOTES_BANNER: {
         id: 'TR_EARN_TRON_ASSIGN_VOTES_BANNER',
-        defaultMessage: 'Assign all of your votes to earn more rewards.',
+        defaultMessage: 'Assign all votes to earn more rewards.',
     },
     TR_EARN_TRON_NO_VOTES: {
         id: 'TR_EARN_TRON_NO_VOTES',
         defaultMessage: 'You haven’t voted for any representatives yet.',
+    },
+    TR_EARN_TRON_SELECT_REPRESENTATIVES: {
+        id: 'TR_EARN_TRON_SELECT_REPRESENTATIVES',
+        defaultMessage: 'Select representatives',
+    },
+    TR_EARN_TRON_SELECT_REPRESENTATIVES_DESCRIPTION: {
+        id: 'TR_EARN_TRON_SELECT_REPRESENTATIVES_DESCRIPTION',
+        defaultMessage: 'You can vote for one or multiple representatives.',
+    },
+    TR_EARN_TRON_CHANGE_REPRESENTATIVES: {
+        id: 'TR_EARN_TRON_CHANGE_REPRESENTATIVES',
+        defaultMessage: 'Change representatives',
+    },
+    TR_EARN_TRON_ADD_REPRESENTATIVE: {
+        id: 'TR_EARN_TRON_ADD_REPRESENTATIVE',
+        defaultMessage: 'Add representative',
+    },
+    TR_EARN_TRON_REMAINING_VOTES_OF_TOTAL: {
+        id: 'TR_EARN_TRON_REMAINING_VOTES_OF_TOTAL',
+        defaultMessage: '{remaining} / {total} remaining votes',
+    },
+    TR_EARN_TRON_REMAINING_VOTES_LABEL: {
+        id: 'TR_EARN_TRON_REMAINING_VOTES_LABEL',
+        defaultMessage: 'Remaining votes',
+    },
+    TR_EARN_TRON_REASSIGN_VOTES: {
+        id: 'TR_EARN_TRON_REASSIGN_VOTES',
+        defaultMessage: 'Reassign your votes',
+    },
+    TR_EARN_TRON_REASSIGN_VOTES_DESCRIPTION: {
+        id: 'TR_EARN_TRON_REASSIGN_VOTES_DESCRIPTION',
+        defaultMessage: 'Remove votes from one representative to assign them to another.',
+    },
+    TR_EARN_TRON_APR_TOOLTIP: {
+        id: 'TR_EARN_TRON_APR_TOOLTIP',
+        defaultMessage: 'Estimated annual return from rewards.',
+    },
+    TR_EARN_TRON_REPRESENTATIVE_ALREADY_SELECTED: {
+        id: 'TR_EARN_TRON_REPRESENTATIVE_ALREADY_SELECTED',
+        defaultMessage: 'This representative is already selected.',
+    },
+    TR_EARN_TRON_VOTES_EXCEED_TOTAL: {
+        id: 'TR_EARN_TRON_VOTES_EXCEED_TOTAL',
+        defaultMessage: 'You can assign at most {total} votes.',
+    },
+    TR_EARN_TRON_INVALID_VOTE_COUNT: {
+        id: 'TR_EARN_TRON_INVALID_VOTE_COUNT',
+        defaultMessage: 'Enter a whole number of votes.',
+    },
+    TR_EARN_TRON_ASSIGN_AT_LEAST_ONE_VOTE: {
+        id: 'TR_EARN_TRON_ASSIGN_AT_LEAST_ONE_VOTE',
+        defaultMessage: 'Assign at least one vote to continue.',
     },
     TR_EARN_TRON_UNSTAKING: {
         id: 'TR_EARN_TRON_UNSTAKING',
@@ -11050,7 +11617,7 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_HOW_IT_WORKS: {
         id: 'TR_EARN_TRON_HOW_IT_WORKS',
-        defaultMessage: 'How does TRX staking work?',
+        defaultMessage: 'How staking works',
     },
     TR_EARN_TRON_MY_ENERGY: {
         id: 'TR_EARN_TRON_MY_ENERGY',
@@ -11115,27 +11682,15 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_BANDWIDTH_REDUCTION: {
         id: 'TR_EARN_TRON_BANDWIDTH_REDUCTION',
-        defaultMessage: '{count, plural, one {}other {-# bandwidth}}',
+        defaultMessage: '{count, plural, =0 {} one {-# bandwidth} other {-# bandwidth}}',
     },
     TR_EARN_TRON_ENERGY_REDUCTION: {
         id: 'TR_EARN_TRON_ENERGY_REDUCTION',
-        defaultMessage: '{count, plural, one {}other {-# energy}}',
-    },
-    TR_EARN_TRON_SELECT_REPRESENTATIVE: {
-        id: 'TR_EARN_TRON_SELECT_REPRESENTATIVE',
-        defaultMessage: 'Select representative',
-    },
-    TR_EARN_TRON_ENTER_DIFFERENT_REPRESENTATIVE: {
-        id: 'TR_EARN_TRON_ENTER_DIFFERENT_REPRESENTATIVE',
-        defaultMessage: 'Enter different representative',
+        defaultMessage: '{count, plural, =0 {} one {-# energy} other {-# energy}}',
     },
     TR_EARN_TRON_ENTER_REPRESENTATIVE_ADDRESS: {
         id: 'TR_EARN_TRON_ENTER_REPRESENTATIVE_ADDRESS',
         defaultMessage: 'Enter representative address',
-    },
-    TR_EARN_TRON_APR: {
-        id: 'TR_EARN_TRON_APR',
-        defaultMessage: 'APR {apr}%',
     },
     TR_EARN_DEFI_YIELD_IN_A_NUTSHELL: {
         id: 'TR_EARN_DEFI_YIELD_IN_A_NUTSHELL',
@@ -11158,7 +11713,7 @@ export const messages = defineMessages({
     TR_EARN_YIELD_NUTSHELL_CLAIM_REWARDS: {
         id: 'TR_EARN_YIELD_NUTSHELL_CLAIM_REWARDS',
         defaultMessage:
-            "You'll earn {rewardsSymbol} as rewards. They may only be offered for a limited time, but once earned, you can claim them in the Earn tab.",
+            "You'll also earn bonus rewards in {rewardsSymbol}. They may only be offered for a limited time, but once earned, you can claim them in the Earn tab.",
     },
     TR_EARN_WETH_NUTSHELL_WRAP: {
         id: 'TR_EARN_WETH_NUTSHELL_WRAP',
@@ -11199,7 +11754,8 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK: {
         id: 'TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK',
-        defaultMessage: 'Earn rewards with each confirmed block',
+        defaultMessage:
+            'Your {vaultSymbol} amount stays the same, but its value grows with every block',
     },
     TR_EARN_YIELD_RECEIVE_IN_ACCOUNT: {
         id: 'TR_EARN_YIELD_RECEIVE_IN_ACCOUNT',
@@ -11259,7 +11815,7 @@ export const messages = defineMessages({
     },
     TR_EARN_ENTER_THE_STAKING_POOL: {
         id: 'TR_EARN_ENTER_THE_STAKING_POOL',
-        defaultMessage: 'Enter staking pool',
+        defaultMessage: 'Staking activation',
     },
     TR_EARN_HOW_IT_WORKS: {
         id: 'TR_EARN_HOW_IT_WORKS',
@@ -11271,7 +11827,7 @@ export const messages = defineMessages({
     },
     TR_EARN_WARM_UP_PERIOD: {
         id: 'TR_EARN_WARM_UP_PERIOD',
-        defaultMessage: 'Enter warm-up period',
+        defaultMessage: 'Staking activation',
     },
     TR_EARN_REWARDS_EVERY: {
         id: 'TR_EARN_REWARDS_EVERY',
@@ -11279,7 +11835,7 @@ export const messages = defineMessages({
     },
     TR_EARN_COOL_DOWN_PERIOD: {
         id: 'TR_EARN_COOL_DOWN_PERIOD',
-        defaultMessage: 'Enter cool-down period',
+        defaultMessage: 'Staking deactivation',
     },
     TR_EARN_STAKING_WAIT_FOR_DEACTIVATION: {
         id: 'TR_EARN_STAKING_WAIT_FOR_DEACTIVATION',
@@ -11287,7 +11843,7 @@ export const messages = defineMessages({
     },
     TR_EARN_REWARDS_WEEKLY: {
         id: 'TR_EARN_REWARDS_WEEKLY',
-        defaultMessage: 'Receive rewards weekly',
+        defaultMessage: 'Receive weekly rewards',
     },
     TR_EARN_SIGN_UNSTAKING_TRANSACTION: {
         id: 'TR_EARN_SIGN_UNSTAKING_TRANSACTION',
@@ -11303,7 +11859,7 @@ export const messages = defineMessages({
     },
     TR_EARN_LEAVE_STAKING_POOL: {
         id: 'TR_EARN_LEAVE_STAKING_POOL',
-        defaultMessage: 'Leave staking pool',
+        defaultMessage: 'Staking deactivation',
     },
     TR_EARN_CLAIM_UNSTAKED: {
         id: 'TR_EARN_CLAIM_UNSTAKED',
@@ -11321,18 +11877,18 @@ export const messages = defineMessages({
     TR_EARN_ETH_UNSTAKING_TAKES: {
         id: 'TR_EARN_ETH_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking currently takes approximately {count, plural, one {# day} other {# days}}. Once completed, you can swap or send your funds.',
+            'Unstaking currently takes approximately {count, plural, one {# day} other {# days}}. Once completed, just claim your funds and use them freely.',
     },
     TR_EARN_SOL_UNSTAKING_TAKES: {
         id: 'TR_EARN_SOL_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking takes approximately {count, plural, one {# day} other {# days}}. Once completed, you can swap or send your funds.',
+            'Unstaking takes approximately {count, plural, one {# day} other {# days}}. Once completed, just claim your funds and use them freely.',
         description: 'In comparison with ETH, it always takes 1 epoch',
     },
     TR_EARN_STAKE_REWARDS: {
         id: 'TR_EARN_STAKE_REWARDS',
         defaultMessage:
-            'Keep your rewards staked and watch your {networkDisplaySymbol} grow even faster.',
+            'Rewards are automatically restaked, so your {networkDisplaySymbol} grows faster through compounding.',
     },
     TR_STAKE_AVAILABLE: {
         id: 'TR_STAKE_AVAILABLE',
@@ -11358,6 +11914,15 @@ export const messages = defineMessages({
         defaultMessage:
             "The maximum fee you're willing to pay for the transaction. You'll only pay what's necessary—typically the minimum fee during light network traffic. Higher fees help prioritize your transaction during network congestion.",
     },
+    TR_TRON_FEE_DESC: {
+        id: 'TR_TRON_FEE_DESC',
+        defaultMessage: 'The fee charged by the Tron network to process your transaction.',
+    },
+    TR_TRON_FEE_ACTIVATION_DESC: {
+        id: 'TR_TRON_FEE_ACTIVATION_DESC',
+        defaultMessage:
+            'The fee charged by the Tron network to process your transaction. This also covers a 1 {networkDisplaySymbol} charge to activate an unused receiving address.',
+    },
     TR_STELLAR_LIMIT_HISTORY_TITLE: {
         id: 'TR_STELLAR_LIMIT_HISTORY_TITLE',
         defaultMessage: 'Transaction history is limited to 12 months',
@@ -11375,6 +11940,58 @@ export const messages = defineMessages({
         id: 'TR_STELLAR_TRUSTLINE_REMOVED',
         defaultMessage: 'Removed trustline to {assetCode}',
     },
+    TR_STELLAR_TX_ACCOUNT_MERGE: {
+        id: 'TR_STELLAR_TX_ACCOUNT_MERGE',
+        defaultMessage: 'Merged account',
+    },
+    TR_STELLAR_TX_CLAIMABLE_BALANCE_CLAIMED: {
+        id: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CLAIMED',
+        defaultMessage: 'Claimed balance',
+    },
+    TR_STELLAR_TX_CLAIMABLE_BALANCE_OFFERED: {
+        id: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_OFFERED',
+        defaultMessage: 'Balance offered to claim',
+    },
+    TR_STELLAR_TX_CLAIMABLE_BALANCE_CREATED: {
+        id: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CREATED',
+        defaultMessage: 'Offered balance to claim',
+    },
+    TR_STELLAR_TX_DATA_ENTRY: {
+        id: 'TR_STELLAR_TX_DATA_ENTRY',
+        defaultMessage: 'Updated account data',
+    },
+    TR_STELLAR_TX_FOOTPRINT: {
+        id: 'TR_STELLAR_TX_FOOTPRINT',
+        defaultMessage: 'Extended contract data rent',
+    },
+    TR_STELLAR_TX_LIQUIDITY_POOL: {
+        id: 'TR_STELLAR_TX_LIQUIDITY_POOL',
+        defaultMessage: 'Liquidity pool operation',
+    },
+    TR_STELLAR_TX_OFFER: {
+        id: 'TR_STELLAR_TX_OFFER',
+        defaultMessage: 'Managed an offer',
+    },
+    TR_STELLAR_TX_TRUSTLINE_UPDATED: {
+        id: 'TR_STELLAR_TX_TRUSTLINE_UPDATED',
+        defaultMessage: 'Updated trustline',
+    },
+    TR_STELLAR_TX_SEQUENCE_BUMPED: {
+        id: 'TR_STELLAR_TX_SEQUENCE_BUMPED',
+        defaultMessage: 'Bumped account sequence',
+    },
+    TR_STELLAR_TX_SET_OPTIONS: {
+        id: 'TR_STELLAR_TX_SET_OPTIONS',
+        defaultMessage: 'Changed account settings',
+    },
+    TR_STELLAR_TX_SPONSORSHIP: {
+        id: 'TR_STELLAR_TX_SPONSORSHIP',
+        defaultMessage: 'Changed reserve sponsorship',
+    },
+    TR_STELLAR_TX_TRUSTLINE_FLAGS: {
+        id: 'TR_STELLAR_TX_TRUSTLINE_FLAGS',
+        defaultMessage: 'Changed trustline authorization',
+    },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',
         defaultMessage:
@@ -11383,21 +12000,21 @@ export const messages = defineMessages({
     TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL: {
         id: 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL',
         defaultMessage:
-            "We've left {amount} {networkDisplaySymbol} in your account so you can pay for withdrawal fees.",
+            "We've left {amount} {networkDisplaySymbol} in your account so you can pay future network fees.",
     },
     TR_STAKE_LEFT_SMALL_AMOUNT_FOR_WITHDRAWAL: {
         id: 'TR_STAKE_LEFT_SMALL_AMOUNT_FOR_WITHDRAWAL',
         defaultMessage:
-            "We've left a small amount of {networkDisplaySymbol} in your account so you can pay for withdrawal fees.",
+            "We've left a small amount of {networkDisplaySymbol} in your account so you can pay future network fees.",
     },
     TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS: {
         id: 'TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS',
         defaultMessage:
-            "It's recommended to leave {amount} {networkDisplaySymbol} so you can pay for withdrawal fees.",
+            'We recommend leaving {amount} {networkDisplaySymbol} so you can pay future network fees.',
     },
     TR_STAKE_CONFIRM_ENTRY_PERIOD: {
         id: 'TR_STAKE_CONFIRM_ENTRY_PERIOD',
-        defaultMessage: 'Confirm entry period',
+        defaultMessage: 'Confirm activation period',
     },
     TR_STAKE_CONFIRM_AND_STAKE: {
         id: 'TR_STAKE_CONFIRM_AND_STAKE',
@@ -11406,12 +12023,12 @@ export const messages = defineMessages({
     TR_STAKE_ENTERING_POOL_MAY_TAKE: {
         id: 'TR_STAKE_ENTERING_POOL_MAY_TAKE',
         defaultMessage:
-            'Entering the staking pool may take up to {count, plural, one {# day} other {# days}}.',
+            'Due to network rules, staking activation may take up to {count, plural, one {# day} other {# days}}.',
     },
     TR_STAKE_ACTIVATION_COULD_TAKE: {
         id: 'TR_STAKE_ACTIVATION_COULD_TAKE',
         defaultMessage:
-            'It takes up to {count, plural, one {# day} other {# days}} to stake your {networkDisplaySymbol}.',
+            'Due to network rules, it takes up to {count, plural, one {# day} other {# days}} to stake your {networkDisplaySymbol}.',
     },
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
@@ -11420,7 +12037,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD: {
         id: 'TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD',
-        defaultMessage: 'I acknowledge the entry period.',
+        defaultMessage: 'I acknowledge and accept the staking activation period.',
     },
     TR_TX_STAKE_STAKE: {
         id: 'TR_TX_STAKE_STAKE',
@@ -11432,7 +12049,7 @@ export const messages = defineMessages({
     },
     TR_TX_STAKE_CLAIM: {
         id: 'TR_TX_STAKE_CLAIM',
-        defaultMessage: 'Claim withdraw request',
+        defaultMessage: 'Claim unstaked funds',
     },
     TR_TX_WRAP: {
         id: 'TR_TX_WRAP',
@@ -11450,6 +12067,10 @@ export const messages = defineMessages({
         id: 'TR_STAKE_STAKE',
         defaultMessage: 'Stake',
     },
+    TR_STAKE_STAKED: {
+        id: 'TR_STAKE_STAKED',
+        defaultMessage: 'Staked',
+    },
     TR_STAKE_STAKED_AUTOMATICALLY: {
         id: 'TR_STAKE_STAKED_AUTOMATICALLY',
         defaultMessage: 'Staked automatically',
@@ -11460,7 +12081,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_FUNDS_FULLY_ACCESSIBLE: {
         id: 'TR_STAKE_FUNDS_FULLY_ACCESSIBLE',
-        defaultMessage: 'Your {networkDisplaySymbol} stays fully accessible while earning rewards.',
+        defaultMessage: 'Your {networkDisplaySymbol} stays fully accessible while staked.',
     },
     TR_STAKE_UNSTAKE: {
         id: 'TR_STAKE_UNSTAKE',
@@ -11514,6 +12135,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_APPROXIMATE_DAYS',
         defaultMessage: '~{count, plural, one {# day} other {# days}}',
     },
+    TR_EARN_APPROXIMATE_DAYS_RANGE: {
+        id: 'TR_EARN_APPROXIMATE_DAYS_RANGE',
+        defaultMessage: '~{minDays}–{maxDays} days',
+    },
     TR_STAKE_MAX_REWARD_DAYS: {
         id: 'TR_STAKE_MAX_REWARD_DAYS',
         defaultMessage: 'Max {count, plural, one {# day} other {# days}}',
@@ -11542,13 +12167,14 @@ export const messages = defineMessages({
         id: 'TR_STAKE_CHANGE_DELEGATE',
         defaultMessage: 'Change delegate',
     },
+    TR_STAKE_DREP_DELEGATION_REQUIRED: {
+        id: 'TR_STAKE_DREP_DELEGATION_REQUIRED',
+        defaultMessage:
+            "Delegate your voting rights first. Cardano doesn't allow claiming rewards or unstaking without it.",
+    },
     TR_STAKE_CHANGE_YOUR_DELEGATE: {
         id: 'TR_STAKE_CHANGE_YOUR_DELEGATE',
         defaultMessage: 'Change your stake delegate?',
-    },
-    TR_STAKE_CURRENT_DELEGATE: {
-        id: 'TR_STAKE_CURRENT_DELEGATE',
-        defaultMessage: 'Current delegate',
     },
     TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP: {
         id: 'TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP',
@@ -11565,11 +12191,19 @@ export const messages = defineMessages({
     TR_STAKE_ETH_REWARDS_EARN_APY: {
         id: 'TR_STAKE_ETH_REWARDS_EARN_APY',
         defaultMessage:
-            'Your {networkDisplaySymbol} rewards also earn the APY rate. Keep your funds staked or add more to increase your rewards.',
+            'Your {networkDisplaySymbol} rewards are automatically restaked and earn the same APY, so you earn compound interest.',
     },
     TR_STAKE_REWARDS: {
         id: 'TR_STAKE_REWARDS',
         defaultMessage: 'Rewards',
+    },
+    TR_STAKE_TOTAL_REWARDS: {
+        id: 'TR_STAKE_TOTAL_REWARDS',
+        defaultMessage: 'Total rewards',
+    },
+    TR_STAKING_TRANSACTIONS: {
+        id: 'TR_STAKING_TRANSACTIONS',
+        defaultMessage: 'Staking transactions',
     },
     TR_TX_CONFIRMED: {
         id: 'TR_TX_CONFIRMED',
@@ -11589,7 +12223,7 @@ export const messages = defineMessages({
     },
     TR_EARN_ADDING_TO_POOL: {
         id: 'TR_EARN_ADDING_TO_POOL',
-        defaultMessage: 'Adding to staking pool',
+        defaultMessage: 'Staking activation',
     },
     TR_STAKE_STAKED_AND_EARNING: {
         id: 'TR_STAKE_STAKED_AND_EARNING',
@@ -11597,7 +12231,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_CLAIM_AFTER_UNSTAKING: {
         id: 'TR_STAKE_CLAIM_AFTER_UNSTAKING',
-        defaultMessage: 'You can claim once the unstaking period is complete.',
+        defaultMessage: 'Once the deactivation period is over, you can claim your funds.',
     },
     TR_STAKE_UNSTAKE_WITH_REWARDS: {
         id: 'TR_STAKE_UNSTAKE_WITH_REWARDS',
@@ -11605,7 +12239,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_UNSTAKING_APPROXIMATE: {
         id: 'TR_STAKE_UNSTAKING_APPROXIMATE',
-        defaultMessage: 'Estimated {symbol} available instantly',
+        defaultMessage: 'Instantly available',
     },
     TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION: {
         id: 'TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION',
@@ -11628,21 +12262,18 @@ export const messages = defineMessages({
         id: 'TR_STAKE_TIME_TO_CLAIM',
         defaultMessage: 'Time to claim',
     },
-    TR_STAKE_INSTANT: {
-        id: 'TR_STAKE_INSTANT',
-        defaultMessage: 'Instant',
-    },
     TR_STAKE_CLAIM_PENDING: {
         id: 'TR_STAKE_CLAIM_PENDING',
         defaultMessage: 'Claim pending',
     },
     TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED: {
         id: 'TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED',
-        defaultMessage: 'The claimed amount is transferred to your {networkDisplaySymbol} account.',
+        defaultMessage: 'The claimed amount will be transferred to your account.',
     },
-    TR_STAKE_CLAIMING_PERIOD: {
-        id: 'TR_STAKE_CLAIMING_PERIOD',
-        defaultMessage: 'Claiming period',
+    TR_STAKE_CLAIM_REWARDS_DESCRIPTION: {
+        id: 'TR_STAKE_CLAIM_REWARDS_DESCRIPTION',
+        defaultMessage:
+            "Rewards aren't included in your balance yet. Claim them to use them freely.",
     },
     TR_STAKE_MIN_AMOUNT_TOOLTIP: {
         id: 'TR_STAKE_MIN_AMOUNT_TOOLTIP',
@@ -11682,7 +12313,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_TOTAL_PENDING: {
         id: 'TR_STAKE_TOTAL_PENDING',
-        defaultMessage: 'Total stake pending',
+        defaultMessage: 'Pending stake',
     },
     TR_STAKE_UNSTAKING: {
         id: 'TR_STAKE_UNSTAKING',
@@ -11691,7 +12322,7 @@ export const messages = defineMessages({
     TR_STAKE_CAN_CLAIM_WARNING: {
         id: 'TR_STAKE_CAN_CLAIM_WARNING',
         defaultMessage:
-            'You can already claim {amount} {symbol}. {br}Claim now or wait until your new unstake is processed.',
+            'You currently have {amount} {symbol} from unstaking ready to claim. {br}Claim it now, or wait until your new unstake is processed and claim everything at once.',
     },
     TR_STAKE_CAN_UNSTAKE_FROM_ACCOUNTS: {
         id: 'TR_STAKE_CAN_UNSTAKE_FROM_ACCOUNTS',
@@ -11715,11 +12346,7 @@ export const messages = defineMessages({
     TR_STAKE_CAN_CLAIM_FROM_ACCOUNTS: {
         id: 'TR_STAKE_CAN_CLAIM_FROM_ACCOUNTS',
         defaultMessage:
-            'Claiming is limited to {limit} accounts per transaction. You can claim up to {amount} {symbol}. Repeat to claim more.',
-    },
-    TR_STAKE_CLAIM_IN_NEXT_BLOCK: {
-        id: 'TR_STAKE_CLAIM_IN_NEXT_BLOCK',
-        defaultMessage: 'in the next block',
+            'Due to transaction size limits, you can claim from up to {limit} accounts per transaction. This transaction claims up to {amount} {symbol}. Repeat to claim the rest.',
     },
     TR_STAKE_PROVIDED_BY: {
         id: 'TR_STAKE_PROVIDED_BY',
@@ -11741,7 +12368,7 @@ export const messages = defineMessages({
     TR_EARN_STAKE_TREZOR_NO_LIABILITY: {
         id: 'TR_EARN_STAKE_TREZOR_NO_LIABILITY',
         defaultMessage:
-            "When you stake, the responsibility for your funds' security transitions from your Trezor to Everstake.",
+            "When you stake, the responsibility for your funds' security transitions from your Trezor device to Everstake.",
     },
     TR_EARN_BY_STAKING_YOU_CAN_EARN_REWARDS: {
         id: 'TR_EARN_BY_STAKING_YOU_CAN_EARN_REWARDS',
@@ -11751,7 +12378,7 @@ export const messages = defineMessages({
     TR_EARN_SECURELY_DELEGATE_TO_EVERSTAKE: {
         id: 'TR_EARN_SECURELY_DELEGATE_TO_EVERSTAKE',
         defaultMessage:
-            'With Trezor Suite, easily and securely delegate your {symbol} voting rights to the Everstake validator node. Enjoy competitive rewards, rely on a trusted validator, and retain full ownership of your assets.',
+            'With Trezor Suite, easily and securely delegate your {symbol} voting rights to the Everstake validator node. Earn rewards, rely on a trusted validator, and retain full ownership of your assets.',
     },
     TR_EARN_CONSENT_TO_STAKING_WITH_PROVIDER: {
         id: 'TR_EARN_CONSENT_TO_STAKING_WITH_PROVIDER',
@@ -12521,7 +13148,7 @@ export const messages = defineMessages({
     },
     TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION: {
         id: 'TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION',
-        defaultMessage: 'Update firmware on the device {name} to use {featureName}.',
+        defaultMessage: 'Update firmware on the device {name} to continue',
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE',
@@ -12617,6 +13244,22 @@ export const messages = defineMessages({
         id: 'TR_SIMULATION_NO_ASSETS',
         defaultMessage: 'No changes to your assets were detected.',
     },
+    TR_SIMULATION_SENDING_ASSET: {
+        id: 'TR_SIMULATION_SENDING_ASSET',
+        defaultMessage: 'Sending {amount}',
+        description: 'An outgoing asset in a transaction simulation, e.g. "Sending 1 USDC".',
+    },
+    TR_SIMULATION_RECEIVING_ASSET: {
+        id: 'TR_SIMULATION_RECEIVING_ASSET',
+        defaultMessage: 'Receiving {amount}',
+        description: 'An incoming asset in a transaction simulation, e.g. "Receiving 0.003 TSLAx".',
+    },
+    TR_SIMULATION_CROSS_CHAIN_ASSET: {
+        id: 'TR_SIMULATION_CROSS_CHAIN_ASSET',
+        defaultMessage: '{amount} on {chain}',
+        description:
+            'An asset moving on another chain as part of a bridge, e.g. "1 USDC on Arbitrum".',
+    },
     TR_NETWORK_RESERVE_BANNER: {
         id: 'TR_NETWORK_RESERVE_BANNER',
         defaultMessage: "We've reserved {amount} {displaySymbol} to cover any extra network fees.",
@@ -12634,9 +13277,9 @@ export const messages = defineMessages({
         id: 'TR_FEEDBACK_CARD_DESCRIPTION',
         defaultMessage: "Tell us what's working and what's not—we read every reply.",
     },
-    TR_FEEDBACK_CARD_SEND: {
-        id: 'TR_FEEDBACK_CARD_SEND',
-        defaultMessage: 'Submit',
+    TR_FEEDBACK_CARD_SEND_FEEDBACK: {
+        id: 'TR_FEEDBACK_CARD_SEND_FEEDBACK',
+        defaultMessage: 'Send feedback',
     },
     TR_FEEDBACK_CARD_SUCCESS_TITLE: {
         id: 'TR_FEEDBACK_CARD_SUCCESS_TITLE',
@@ -12819,10 +13462,6 @@ export const messages = defineMessages({
         id: 'TR_PUBLIC_KEY',
         defaultMessage: 'Public key',
     },
-    TR_PUBLIC_KEY_FORMAT: {
-        id: 'TR_PUBLIC_KEY_FORMAT',
-        defaultMessage: 'Public key format',
-    },
     TR_PUBLIC_KEY_RAW: {
         id: 'TR_PUBLIC_KEY_RAW',
         defaultMessage: 'Raw key (default)',
@@ -12893,14 +13532,6 @@ export const messages = defineMessages({
         id: 'TR_ASSET_PICKER_SEARCH_PLACEHOLDER',
         defaultMessage: 'Search coin or token',
     },
-    TR_ASSET_PICKER_YOUR_ASSETS: {
-        id: 'TR_ASSET_PICKER_YOUR_ASSETS',
-        defaultMessage: 'Your assets',
-    },
-    TR_ASSET_PICKER_ALL_ASSETS: {
-        id: 'TR_ASSET_PICKER_ALL_ASSETS',
-        defaultMessage: 'All assets',
-    },
     TR_ASSET_PICKER_SEARCH_NO_RESULTS: {
         id: 'TR_ASSET_PICKER_SEARCH_NO_RESULTS',
         defaultMessage: 'No asset found',
@@ -12917,9 +13548,13 @@ export const messages = defineMessages({
         id: 'TR_HIDDEN_TOKEN_WITHOUT_FIAT',
         defaultMessage: 'No trading pair',
     },
-    TR_NON_TRADABLE_TOKENS: {
-        id: 'TR_NON_TRADABLE_TOKENS',
-        defaultMessage: 'Non-tradable tokens',
+    TR_ASSET_PICKER_LOW_BALANCE: {
+        id: 'TR_ASSET_PICKER_LOW_BALANCE',
+        defaultMessage: 'Low balance',
+    },
+    TR_ASSET_PICKER_NON_TRADABLE: {
+        id: 'TR_ASSET_PICKER_NON_TRADABLE',
+        defaultMessage: 'Non-tradable',
     },
     TR_FEATURE_FEEDBACK_MODAL_HEADING: {
         id: 'TR_FEATURE_FEEDBACK_MODAL_HEADING',
@@ -12956,6 +13591,10 @@ export const messages = defineMessages({
     TR_EARN_YIELD_CLAIM: {
         id: 'TR_EARN_YIELD_CLAIM',
         defaultMessage: 'Claim',
+    },
+    TR_EARN_YIELD_CLAIM_REWARDS: {
+        id: 'TR_EARN_YIELD_CLAIM_REWARDS',
+        defaultMessage: 'Claim rewards',
     },
     TR_EARN_YIELD_CLAIM_MODAL_TITLE: {
         id: 'TR_EARN_YIELD_CLAIM_MODAL_TITLE',

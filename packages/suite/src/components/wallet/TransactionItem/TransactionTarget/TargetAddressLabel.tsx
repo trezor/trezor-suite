@@ -1,36 +1,44 @@
+import { useMemo } from 'react';
+
 import { Address, selectAddressLabelsForAccount } from '@suite/address';
 import { Translation } from '@suite/intl';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectAccounts } from '@suite-common/wallet-core';
 import type { AccountKey } from '@suite-common/wallet-types';
-import type { StaticSessionId } from '@trezor/connect';
+import { findTransactionSenderAccount } from '@suite-common/wallet-utils';
 import { type ArrayElement } from '@trezor/type-utils';
 
 import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AccountLabelForOwnAddress';
+import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import { useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 type TargetAddressLabelProps = {
-    symbol: NetworkSymbol;
+    transaction: WalletAccountTransaction;
     target: ArrayElement<WalletAccountTransaction['targets']>;
-    type: WalletAccountTransaction['type'];
     accountKey: AccountKey;
-    deviceStaticSessionId: StaticSessionId;
 };
 
 export const TargetAddressLabel = ({
-    symbol,
+    transaction,
     target,
-    type,
     accountKey,
-    deviceStaticSessionId,
 }: TargetAddressLabelProps) => {
+    const { symbol, type } = transaction;
     const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
     const addressLabels = useSelector(state =>
         selectAddressLabelsForAccount(state, {
             addresses: target.addresses ?? [],
             accountKey,
-            deviceStaticId: deviceStaticSessionId,
+            deviceStaticId: transaction.deviceState,
         }),
+    );
+    const accounts = useSelector(selectAccounts);
+
+    // Targets of a received transaction hold the account's own receiving address, so the sender is
+    // resolved instead — a transfer from a sibling account shows its label, like token transfers do.
+    const senderAccount = useMemo(
+        () => (type === 'recv' ? findTransactionSenderAccount(transaction, accounts) : undefined),
+        [type, transaction, accounts],
     );
 
     if (isLocalTarget) {
@@ -46,11 +54,30 @@ export const TargetAddressLabel = ({
 
                 // either it may be AccountLabelForOwnAddress - sent to another account associated with this device, e.g: "Bitcoin #2"
                 // or it may show address metadata label added from receive tab e.g "My address for illegal things"
-                return type === 'sent' ? (
+                if (type === 'sent') {
                     // Using index as a key is safe as the array doesn't change (no filter/reordering, pushing new items)
-                    <AccountLabelForOwnAddress key={i} address={a} symbol={symbol} />
-                ) : (
-                    <span key={i}>{addressLabels[a] ?? <Address value={a} isTruncated />}</span>
+                    return <AccountLabelForOwnAddress key={i} address={a} symbol={symbol} />;
+                }
+
+                if (addressLabels[a]) {
+                    return <span key={i}>{addressLabels[a]}</span>;
+                }
+
+                if (senderAccount) {
+                    return (
+                        <AccountLabeling
+                            key={i}
+                            account={senderAccount}
+                            accountTypeBadgeSize="small"
+                            showAccountTypeBadge
+                        />
+                    );
+                }
+
+                return (
+                    <span key={i}>
+                        <Address value={a} isTruncated />
+                    </span>
                 );
             })}
         </span>

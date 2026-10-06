@@ -6,7 +6,11 @@ import {
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
-import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    ExactTokenAmountFormatter,
+    TokenToFiatAmountFormatter,
+    convertTokenValueToDecimal,
+} from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
@@ -38,14 +42,20 @@ export const TokenInfoCard = ({
         <AccountImportOverviewCard
             coinName={name}
             cryptoAmount={
-                <TokenAmountFormatter
-                    value={balance}
+                <ExactTokenAmountFormatter
+                    value={convertTokenValueToDecimal(balance, decimals ?? 0)}
                     tokenSymbol={tokenSymbol}
-                    decimals={decimals}
+                    maxDisplayedDecimals={decimals}
                     variant="body-xs"
                 />
             }
-            icon={<TokenIcon symbol={symbol} contractAddress={contract} />}
+            icon={
+                <TokenIcon
+                    networkSymbol={symbol}
+                    contractAddress={contract}
+                    tokenSymbol={tokenSymbol || name}
+                />
+            }
         >
             <TokenToFiatAmountFormatter
                 symbol={symbol}

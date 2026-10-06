@@ -1,6 +1,12 @@
-import { createThunk } from '@suite-common/redux-utils';
-import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { type MessageSystemRootState } from '@suite-common/message-system';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
+    type WithSuiteSyncAndDeviceState,
+    selectIsSuiteSyncEnabled,
+} from '@suite-common/suite-sync';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import {
+    type SendRootState,
     createSimpleTargetId,
     selectPrecomposedSendForm,
     selectSendPrecomposedTx,
@@ -16,13 +22,19 @@ type AddTransactionLabelingThunkParams = {
     txId: string;
 };
 
+export type AddTransactionLabelingThunkState = WithSuiteSyncAndDeviceState &
+    MessageSystemRootState &
+    SendRootState;
+
+export type AddTransactionLabelingThunkDeps = WithServices<SuiteSyncDep>;
+
 // Todo: This code below is kinda copy-paste from `applySendFormMetadataLabelsThunk` in Desktop.
 //       However, desktop code is polluted by Legacy Labeling (Metadata) so it cannot be easily reused.
 //       After we get rid of old Labeling, this shall be unified and move to the wallet-core.
 export const addTransactionLabelingThunk = createThunk<
     void,
     AddTransactionLabelingThunkParams,
-    void
+    { state: AddTransactionLabelingThunkState; extra: AddTransactionLabelingThunkDeps }
 >(
     `${TRANSACTION_MANAGEMENT_PREFIX}/sendTransactionThunk`,
     ({ selectedAccount, txId }, { dispatch, getState, extra }) => {

@@ -7,7 +7,8 @@ import {
     type TradingCountrySubdivisionOption,
     useCountrySubdivisionFilteredData,
 } from '@suite-common/trading';
-import { CardList, Column, Input, Modal, Paragraph, Text } from '@trezor/components';
+import { CardList, Column, Icon, Input, Modal, Paragraph, Text } from '@trezor/components';
+import { MagnifyingGlassIcon } from '@trezor/icons';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { type TradingTradeBuySellType } from 'src/types/trading/trading';
@@ -47,6 +48,14 @@ export const CountrySubdivisionSelectModal = ({
                     value={filterValue}
                     onChange={event => setFilterValue(event.target.value)}
                     placeholder={translationString('TR_SEARCH_COUNTRY_SUBDIVISION_PLACEHOLDER')}
+                    leftContent={
+                        <Icon
+                            as={MagnifyingGlassIcon}
+                            intent="neutral"
+                            priority="secondary"
+                            size={16}
+                        />
+                    }
                 />
                 {filteredData.length > 0 && (
                     <CardList>

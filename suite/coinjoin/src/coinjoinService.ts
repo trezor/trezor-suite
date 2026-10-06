@@ -1,3 +1,4 @@
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type CoinjoinBackend,
     type CoinjoinClient,
@@ -5,7 +6,6 @@ import {
 } from '@trezor/coinjoin';
 import { isDesktop } from '@trezor/env-utils';
 import { createIpcProxy } from '@trezor/ipc-proxy';
-import { type PartialRecord } from '@trezor/type-utils';
 
 import type { CoinjoinNetworksConfig, CoinjoinSymbol } from './config';
 import { getCoinjoinConfig } from './config';
@@ -33,7 +33,7 @@ type CoinjoinCreateInstance = {
 };
 
 export class CoinjoinService {
-    private static instances: PartialRecord<CoinjoinSymbol, CoinjoinServiceInstance> = {};
+    private static instances: Record<NetworkSymbol, CoinjoinServiceInstance> = {};
 
     static async createInstance({ symbol, prison, settings }: CoinjoinCreateInstance) {
         if (this.instances[symbol]) return this.instances[symbol];

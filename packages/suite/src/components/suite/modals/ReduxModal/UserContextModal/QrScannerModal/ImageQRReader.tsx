@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useMutation } from '@suite-common/react-query';
 import { Card, Column, Icon, Paragraph, Row, ShortcutBadge, Spinner } from '@trezor/components';
 import { QrCodeIcon, WarningIcon } from '@trezor/icons';
 import { DropZone } from '@trezor/product-components';
@@ -14,52 +15,30 @@ type ImageQRReaderProps = {
 };
 
 export const ImageQRReader = ({ onResult }: ImageQRReaderProps) => {
-    const [isDecoding, setIsDecoding] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const processImageFile = useCallback(
-        async (file: File) => {
-            if (!file.type.startsWith('image/')) {
-                return;
-            }
-
-            setIsDecoding(true);
-            setError(null);
-
-            try {
-                const result = await decodeQRFromImage(file);
-                onResult(result);
-            } catch {
-                setError('TR_QR_NOT_FOUND');
-            } finally {
-                setIsDecoding(false);
-            }
-        },
-        [onResult],
-    );
-
-    const handleSelect = useCallback(
-        (file: File) => {
-            processImageFile(file);
-        },
-        [processImageFile],
-    );
+    const {
+        mutate: processImageFile,
+        isPending: isDecoding,
+        error,
+    } = useMutation({
+        mutationFn: decodeQRFromImage,
+        onError: (_: Error) => 'TR_QR_NOT_FOUND',
+        onSuccess: onResult,
+    });
 
     useEffect(() => {
         const handlePaste = (event: ClipboardEvent) => {
-            const items = event.clipboardData?.items;
-            if (!items) return;
+            const imageItem = Array.from(event.clipboardData?.items ?? []).find(item =>
+                item.type.startsWith('image/'),
+            );
+            const imageFile = imageItem?.getAsFile();
 
-            for (const item of items) {
-                if (item.type.startsWith('image/')) {
-                    const file = item.getAsFile();
-                    if (file) {
-                        processImageFile(file);
-                    }
+            if (!imageFile) return;
 
-                    break;
-                }
+            if (!IMAGE_ACCEPT.split(',').some(ext => imageFile.name.toLowerCase().endsWith(ext))) {
+                return;
             }
+
+            processImageFile(imageFile);
         };
 
         document.addEventListener('paste', handlePaste);
@@ -86,7 +65,11 @@ export const ImageQRReader = ({ onResult }: ImageQRReaderProps) => {
                         emptyLabel={<Translation id="TR_DROPZONE" />}
                         emptyError={<Translation id="TR_DROPZONE_ERROR_EMPTY" />}
                         fileTypeError={<Translation id="TR_DROPZONE_ERROR_FILETYPE" />}
-                        onSelect={handleSelect}
+                        onSelect={file => {
+                            if (file.type.startsWith('image/')) {
+                                processImageFile(file);
+                            }
+                        }}
                     />
                     {error && (
                         <Card>

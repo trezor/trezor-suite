@@ -14,7 +14,7 @@ export function ItemClickableContainer({
     onClick,
     padding = {
         left: 8,
-        vertical: 8,
+        vertical: 12,
         right: 12,
     },
     isDisabled = false,
@@ -22,7 +22,7 @@ export function ItemClickableContainer({
     return (
         <GhostContainer
             width="100%"
-            height={ASSET_ROW_HEIGHT - 8}
+            height={ASSET_ROW_HEIGHT}
             padding={padding}
             onClick={e => {
                 e.stopPropagation();

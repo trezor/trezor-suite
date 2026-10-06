@@ -1,4 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -7,7 +8,7 @@ import type { TransactionsState } from '../transactionsReducerTypes';
 
 const ACCOUNT = mockWalletAccount({
     descriptor: asAccountDescriptor('btc1'),
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     deviceState: '1@2:3',
 });
 
@@ -182,6 +183,31 @@ export const addTransaction: {
             transactions: [testMocks.getWalletTransaction({ txid: '00' })],
         },
         result: { [ACCOUNT.key]: [testMocks.getWalletTransaction({ txid: '00' })] },
+    },
+    {
+        description: 'confirmed tx replaces the fake pending record in place, keeping its position',
+        initialState: {
+            transactions: {
+                [ACCOUNT.key]: [
+                    testMocks.getWalletTransaction({
+                        txid: '00',
+                        blockHeight: undefined,
+                        deadline: 10,
+                    }),
+                    testMocks.getWalletTransaction({ txid: '01' }),
+                ],
+            },
+        },
+        actionPayload: {
+            account: ACCOUNT,
+            transactions: [testMocks.getWalletTransaction({ txid: '00', blockHeight: 11 })],
+        },
+        result: {
+            [ACCOUNT.key]: [
+                testMocks.getWalletTransaction({ txid: '00', blockHeight: 11 }),
+                testMocks.getWalletTransaction({ txid: '01' }),
+            ],
+        },
     },
 ];
 

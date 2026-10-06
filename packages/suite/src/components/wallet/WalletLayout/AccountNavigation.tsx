@@ -1,5 +1,5 @@
 import { selectSelectedAccount } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectRouterParams } from '@suite/router';
 import { selectIsNftSectionEnabled } from '@suite/settings';
@@ -13,7 +13,7 @@ import { useSelector } from 'src/hooks/suite';
 import { type WalletParams } from 'src/types/wallet';
 
 export const AccountNavigation = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(selectRouterParams) as WalletParams;
     const enabledNftSection = useSelector(selectIsNftSectionEnabled);

@@ -1,10 +1,29 @@
-import { act, renderHook } from '@testing-library/react';
+import { act } from '@testing-library/react';
 
+import { mockNetworksState } from '@suite-common/networks/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+
+import { type AppState } from 'src/reducers/store';
 
 import { useStakingAccountsVisibility } from './useStakingAccountsVisibility';
 
+const createTestServices = () =>
+    createTestCompositionRoot<void, AppState>({
+        preloadedState: {
+            networks: mockNetworksState([
+                asNetworkSymbol('eth'),
+                asNetworkSymbol('sol'),
+                asNetworkSymbol('ada'),
+            ]),
+        },
+    }).services;
+
 const mockGetAccountTotalStakingBalance = jest.fn<string | null, [Account]>();
+const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
+const adaSymbol = asNetworkSymbol('ada');
 
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),
@@ -16,7 +35,7 @@ const createMockAccount = (overrides: Partial<Account>): Account =>
     ({
         key: 'default-key',
         index: 0,
-        symbol: 'eth',
+        symbol: ethSymbol,
         networkType: 'ethereum',
         accountType: 'normal',
         formattedBalance: '0',
@@ -40,11 +59,13 @@ describe('useStakingAccountsVisibility', () => {
 
     describe('hasAnyRewardsData', () => {
         it('should be false when there are no staking accounts', () => {
-            const { result } = renderHook(() =>
-                useStakingAccountsVisibility({
-                    ...defaultProps,
-                    stakingAccounts: [],
-                }),
+            const { result } = renderHookWithStoreProvider(
+                () =>
+                    useStakingAccountsVisibility({
+                        ...defaultProps,
+                        stakingAccounts: [],
+                    }),
+                { services: createTestServices() },
             );
 
             expect(result.current.hasAnyRewardsData).toBe(false);
@@ -53,23 +74,25 @@ describe('useStakingAccountsVisibility', () => {
         it('should be false when all accounts have insufficient funds and no staking', () => {
             mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-            const { result } = renderHook(() =>
-                useStakingAccountsVisibility({
-                    ...defaultProps,
-                    stakingAccounts: [
-                        createMockAccount({
-                            key: 'eth-0' as Account['key'],
-                            symbol: 'eth',
-                            formattedBalance: '0.005',
-                        }),
-                        createMockAccount({
-                            key: 'sol-0' as Account['key'],
-                            symbol: 'sol',
-                            networkType: 'solana',
-                            formattedBalance: '0.001',
-                        }),
-                    ],
-                }),
+            const { result } = renderHookWithStoreProvider(
+                () =>
+                    useStakingAccountsVisibility({
+                        ...defaultProps,
+                        stakingAccounts: [
+                            createMockAccount({
+                                key: 'eth-0' as Account['key'],
+                                symbol: ethSymbol,
+                                formattedBalance: '0.005',
+                            }),
+                            createMockAccount({
+                                key: 'sol-0' as Account['key'],
+                                symbol: solSymbol,
+                                networkType: 'solana',
+                                formattedBalance: '0.001',
+                            }),
+                        ],
+                    }),
+                { services: createTestServices() },
             );
 
             expect(result.current.hasAnyRewardsData).toBe(false);
@@ -78,22 +101,24 @@ describe('useStakingAccountsVisibility', () => {
         it('should be true when at least one account has sufficient funds to stake', () => {
             mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-            const { result } = renderHook(() =>
-                useStakingAccountsVisibility({
-                    ...defaultProps,
-                    stakingAccounts: [
-                        createMockAccount({
-                            key: 'eth-0' as Account['key'],
-                            symbol: 'eth',
-                            formattedBalance: '0.01',
-                        }),
-                        createMockAccount({
-                            key: 'eth-1' as Account['key'],
-                            symbol: 'eth',
-                            formattedBalance: '1.0',
-                        }),
-                    ],
-                }),
+            const { result } = renderHookWithStoreProvider(
+                () =>
+                    useStakingAccountsVisibility({
+                        ...defaultProps,
+                        stakingAccounts: [
+                            createMockAccount({
+                                key: 'eth-0' as Account['key'],
+                                symbol: ethSymbol,
+                                formattedBalance: '0.01',
+                            }),
+                            createMockAccount({
+                                key: 'eth-1' as Account['key'],
+                                symbol: ethSymbol,
+                                formattedBalance: '1.0',
+                            }),
+                        ],
+                    }),
+                { services: createTestServices() },
             );
 
             expect(result.current.hasAnyRewardsData).toBe(true);
@@ -102,17 +127,19 @@ describe('useStakingAccountsVisibility', () => {
         it('should be true when at least one account is actively staking', () => {
             mockGetAccountTotalStakingBalance.mockReturnValue('0.5');
 
-            const { result } = renderHook(() =>
-                useStakingAccountsVisibility({
-                    ...defaultProps,
-                    stakingAccounts: [
-                        createMockAccount({
-                            key: 'eth-0' as Account['key'],
-                            symbol: 'eth',
-                            formattedBalance: '0',
-                        }),
-                    ],
-                }),
+            const { result } = renderHookWithStoreProvider(
+                () =>
+                    useStakingAccountsVisibility({
+                        ...defaultProps,
+                        stakingAccounts: [
+                            createMockAccount({
+                                key: 'eth-0' as Account['key'],
+                                symbol: ethSymbol,
+                                formattedBalance: '0',
+                            }),
+                        ],
+                    }),
+                { services: createTestServices() },
             );
 
             expect(result.current.hasAnyRewardsData).toBe(true);
@@ -123,44 +150,46 @@ describe('useStakingAccountsVisibility', () => {
         it('should pick the lowest-index account per network when no account has rewards data', () => {
             mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-            const { result } = renderHook(() =>
-                useStakingAccountsVisibility({
-                    ...defaultProps,
-                    stakingAccounts: [
-                        createMockAccount({
-                            key: 'eth-2' as Account['key'],
-                            symbol: 'eth',
-                            index: 2,
-                            formattedBalance: '0',
-                        }),
-                        createMockAccount({
-                            key: 'eth-1' as Account['key'],
-                            symbol: 'eth',
-                            index: 1,
-                            formattedBalance: '0',
-                        }),
-                        createMockAccount({
-                            key: 'eth-0' as Account['key'],
-                            symbol: 'eth',
-                            index: 0,
-                            formattedBalance: '0',
-                        }),
-                        createMockAccount({
-                            key: 'sol-3' as Account['key'],
-                            symbol: 'sol',
-                            networkType: 'solana',
-                            index: 3,
-                            formattedBalance: '0',
-                        }),
-                        createMockAccount({
-                            key: 'sol-0' as Account['key'],
-                            symbol: 'sol',
-                            networkType: 'solana',
-                            index: 0,
-                            formattedBalance: '0',
-                        }),
-                    ],
-                }),
+            const { result } = renderHookWithStoreProvider(
+                () =>
+                    useStakingAccountsVisibility({
+                        ...defaultProps,
+                        stakingAccounts: [
+                            createMockAccount({
+                                key: 'eth-2' as Account['key'],
+                                symbol: ethSymbol,
+                                index: 2,
+                                formattedBalance: '0',
+                            }),
+                            createMockAccount({
+                                key: 'eth-1' as Account['key'],
+                                symbol: ethSymbol,
+                                index: 1,
+                                formattedBalance: '0',
+                            }),
+                            createMockAccount({
+                                key: 'eth-0' as Account['key'],
+                                symbol: ethSymbol,
+                                index: 0,
+                                formattedBalance: '0',
+                            }),
+                            createMockAccount({
+                                key: 'sol-3' as Account['key'],
+                                symbol: solSymbol,
+                                networkType: 'solana',
+                                index: 3,
+                                formattedBalance: '0',
+                            }),
+                            createMockAccount({
+                                key: 'sol-0' as Account['key'],
+                                symbol: solSymbol,
+                                networkType: 'solana',
+                                index: 0,
+                                formattedBalance: '0',
+                            }),
+                        ],
+                    }),
+                { services: createTestServices() },
             );
 
             const ethFallback = result.current.displayedAccounts.find(
@@ -177,26 +206,28 @@ describe('useStakingAccountsVisibility', () => {
         it('should still pick the lowest-index account when input order is reversed by network', () => {
             mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-            const { result } = renderHook(() =>
-                useStakingAccountsVisibility({
-                    ...defaultProps,
-                    stakingAccounts: [
-                        createMockAccount({
-                            key: 'ada-5' as Account['key'],
-                            symbol: 'ada',
-                            networkType: 'cardano',
-                            index: 5,
-                            formattedBalance: '0',
-                        }),
-                        createMockAccount({
-                            key: 'ada-1' as Account['key'],
-                            symbol: 'ada',
-                            networkType: 'cardano',
-                            index: 1,
-                            formattedBalance: '0',
-                        }),
-                    ],
-                }),
+            const { result } = renderHookWithStoreProvider(
+                () =>
+                    useStakingAccountsVisibility({
+                        ...defaultProps,
+                        stakingAccounts: [
+                            createMockAccount({
+                                key: 'ada-5' as Account['key'],
+                                symbol: adaSymbol,
+                                networkType: 'cardano',
+                                index: 5,
+                                formattedBalance: '0',
+                            }),
+                            createMockAccount({
+                                key: 'ada-1' as Account['key'],
+                                symbol: adaSymbol,
+                                networkType: 'cardano',
+                                index: 1,
+                                formattedBalance: '0',
+                            }),
+                        ],
+                    }),
+                { services: createTestServices() },
             );
 
             const adaFallback = result.current.displayedAccounts.find(
@@ -209,30 +240,32 @@ describe('useStakingAccountsVisibility', () => {
         it('should pick the lowest-index account when insufficient balances are equal but non-zero', () => {
             mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-            const { result } = renderHook(() =>
-                useStakingAccountsVisibility({
-                    ...defaultProps,
-                    stakingAccounts: [
-                        createMockAccount({
-                            key: 'eth-2' as Account['key'],
-                            symbol: 'eth',
-                            index: 2,
-                            formattedBalance: '0.005',
-                        }),
-                        createMockAccount({
-                            key: 'eth-1' as Account['key'],
-                            symbol: 'eth',
-                            index: 1,
-                            formattedBalance: '0.005',
-                        }),
-                        createMockAccount({
-                            key: 'eth-0' as Account['key'],
-                            symbol: 'eth',
-                            index: 0,
-                            formattedBalance: '0.005',
-                        }),
-                    ],
-                }),
+            const { result } = renderHookWithStoreProvider(
+                () =>
+                    useStakingAccountsVisibility({
+                        ...defaultProps,
+                        stakingAccounts: [
+                            createMockAccount({
+                                key: 'eth-2' as Account['key'],
+                                symbol: ethSymbol,
+                                index: 2,
+                                formattedBalance: '0.005',
+                            }),
+                            createMockAccount({
+                                key: 'eth-1' as Account['key'],
+                                symbol: ethSymbol,
+                                index: 1,
+                                formattedBalance: '0.005',
+                            }),
+                            createMockAccount({
+                                key: 'eth-0' as Account['key'],
+                                symbol: ethSymbol,
+                                index: 0,
+                                formattedBalance: '0.005',
+                            }),
+                        ],
+                    }),
+                { services: createTestServices() },
             );
 
             const ethFallback = result.current.displayedAccounts.find(
@@ -246,36 +279,38 @@ describe('useStakingAccountsVisibility', () => {
             mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
             const equalBalance = '0.5';
-            const { result } = renderHook(() =>
-                useStakingAccountsVisibility({
-                    ...defaultProps,
-                    stakingAccounts: [
-                        createMockAccount({
-                            key: 'ada-legacy-0' as Account['key'],
-                            symbol: 'ada',
-                            networkType: 'cardano',
-                            accountType: 'legacy',
-                            index: 0,
-                            formattedBalance: equalBalance,
-                        }),
-                        createMockAccount({
-                            key: 'ada-normal-3' as Account['key'],
-                            symbol: 'ada',
-                            networkType: 'cardano',
-                            accountType: 'normal',
-                            index: 3,
-                            formattedBalance: equalBalance,
-                        }),
-                        createMockAccount({
-                            key: 'ada-ledger-1' as Account['key'],
-                            symbol: 'ada',
-                            networkType: 'cardano',
-                            accountType: 'ledger',
-                            index: 1,
-                            formattedBalance: equalBalance,
-                        }),
-                    ],
-                }),
+            const { result } = renderHookWithStoreProvider(
+                () =>
+                    useStakingAccountsVisibility({
+                        ...defaultProps,
+                        stakingAccounts: [
+                            createMockAccount({
+                                key: 'ada-legacy-0' as Account['key'],
+                                symbol: adaSymbol,
+                                networkType: 'cardano',
+                                accountType: 'legacy',
+                                index: 0,
+                                formattedBalance: equalBalance,
+                            }),
+                            createMockAccount({
+                                key: 'ada-normal-3' as Account['key'],
+                                symbol: adaSymbol,
+                                networkType: 'cardano',
+                                accountType: 'normal',
+                                index: 3,
+                                formattedBalance: equalBalance,
+                            }),
+                            createMockAccount({
+                                key: 'ada-ledger-1' as Account['key'],
+                                symbol: adaSymbol,
+                                networkType: 'cardano',
+                                accountType: 'ledger',
+                                index: 1,
+                                formattedBalance: equalBalance,
+                            }),
+                        ],
+                    }),
+                { services: createTestServices() },
             );
 
             const adaFallback = result.current.displayedAccounts.find(
@@ -288,44 +323,46 @@ describe('useStakingAccountsVisibility', () => {
         it('should group insufficient-funds accounts by network and sort them by index in expanded view', () => {
             mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-            const { result } = renderHook(() =>
-                useStakingAccountsVisibility({
-                    ...defaultProps,
-                    stakingAccounts: [
-                        createMockAccount({
-                            key: 'eth-8' as Account['key'],
-                            symbol: 'eth',
-                            index: 8,
-                            formattedBalance: '0',
-                        }),
-                        createMockAccount({
-                            key: 'eth-7' as Account['key'],
-                            symbol: 'eth',
-                            index: 7,
-                            formattedBalance: '0',
-                        }),
-                        createMockAccount({
-                            key: 'sol-1' as Account['key'],
-                            symbol: 'sol',
-                            networkType: 'solana',
-                            index: 1,
-                            formattedBalance: '0',
-                        }),
-                        createMockAccount({
-                            key: 'eth-9' as Account['key'],
-                            symbol: 'eth',
-                            index: 9,
-                            formattedBalance: '0',
-                        }),
-                        createMockAccount({
-                            key: 'ada-0' as Account['key'],
-                            symbol: 'ada',
-                            networkType: 'cardano',
-                            index: 0,
-                            formattedBalance: '0',
-                        }),
-                    ],
-                }),
+            const { result } = renderHookWithStoreProvider(
+                () =>
+                    useStakingAccountsVisibility({
+                        ...defaultProps,
+                        stakingAccounts: [
+                            createMockAccount({
+                                key: 'eth-8' as Account['key'],
+                                symbol: ethSymbol,
+                                index: 8,
+                                formattedBalance: '0',
+                            }),
+                            createMockAccount({
+                                key: 'eth-7' as Account['key'],
+                                symbol: ethSymbol,
+                                index: 7,
+                                formattedBalance: '0',
+                            }),
+                            createMockAccount({
+                                key: 'sol-1' as Account['key'],
+                                symbol: solSymbol,
+                                networkType: 'solana',
+                                index: 1,
+                                formattedBalance: '0',
+                            }),
+                            createMockAccount({
+                                key: 'eth-9' as Account['key'],
+                                symbol: ethSymbol,
+                                index: 9,
+                                formattedBalance: '0',
+                            }),
+                            createMockAccount({
+                                key: 'ada-0' as Account['key'],
+                                symbol: adaSymbol,
+                                networkType: 'cardano',
+                                index: 0,
+                                formattedBalance: '0',
+                            }),
+                        ],
+                    }),
+                { services: createTestServices() },
             );
 
             act(() => {
@@ -340,36 +377,38 @@ describe('useStakingAccountsVisibility', () => {
         it('should prefer normal accountType over legacy/ledger even when index is higher', () => {
             mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-            const { result } = renderHook(() =>
-                useStakingAccountsVisibility({
-                    ...defaultProps,
-                    stakingAccounts: [
-                        createMockAccount({
-                            key: 'ada-ledger-0' as Account['key'],
-                            symbol: 'ada',
-                            networkType: 'cardano',
-                            accountType: 'ledger',
-                            index: 0,
-                            formattedBalance: '0',
-                        }),
-                        createMockAccount({
-                            key: 'ada-legacy-0' as Account['key'],
-                            symbol: 'ada',
-                            networkType: 'cardano',
-                            accountType: 'legacy',
-                            index: 0,
-                            formattedBalance: '0',
-                        }),
-                        createMockAccount({
-                            key: 'ada-normal-5' as Account['key'],
-                            symbol: 'ada',
-                            networkType: 'cardano',
-                            accountType: 'normal',
-                            index: 5,
-                            formattedBalance: '0',
-                        }),
-                    ],
-                }),
+            const { result } = renderHookWithStoreProvider(
+                () =>
+                    useStakingAccountsVisibility({
+                        ...defaultProps,
+                        stakingAccounts: [
+                            createMockAccount({
+                                key: 'ada-ledger-0' as Account['key'],
+                                symbol: adaSymbol,
+                                networkType: 'cardano',
+                                accountType: 'ledger',
+                                index: 0,
+                                formattedBalance: '0',
+                            }),
+                            createMockAccount({
+                                key: 'ada-legacy-0' as Account['key'],
+                                symbol: adaSymbol,
+                                networkType: 'cardano',
+                                accountType: 'legacy',
+                                index: 0,
+                                formattedBalance: '0',
+                            }),
+                            createMockAccount({
+                                key: 'ada-normal-5' as Account['key'],
+                                symbol: adaSymbol,
+                                networkType: 'cardano',
+                                accountType: 'normal',
+                                index: 5,
+                                formattedBalance: '0',
+                            }),
+                        ],
+                    }),
+                { services: createTestServices() },
             );
 
             const adaFallback = result.current.displayedAccounts.find(

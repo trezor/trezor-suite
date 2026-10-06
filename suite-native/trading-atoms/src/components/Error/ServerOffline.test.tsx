@@ -4,17 +4,17 @@ import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-util
 import { ServerOffline, type ServerOfflineProps } from './ServerOffline';
 
 describe('ServerOffline', () => {
-    const renderServerOffline = (props: Partial<ServerOfflineProps>) =>
-        renderWithBasicProvider(<ServerOffline onRetryPress={jest.fn()} {...props} />);
+    const renderServerOffline = async (props: Partial<ServerOfflineProps>) =>
+        await renderWithBasicProvider(<ServerOffline onRetryPress={jest.fn()} {...props} />);
 
-    it('should call onRetryPress when "Try again" button is pressed', () => {
+    it('should call onRetryPress when "Try again" button is pressed', async () => {
         const retryPressMock = jest.fn();
-        const { getByText } = renderServerOffline({ onRetryPress: retryPressMock });
+        const { getByText } = await renderServerOffline({ onRetryPress: retryPressMock });
 
         const retryButton = getByText(getTranslation('tradingAtoms.error.serverOfflineRetry'));
 
-        act(() => {
-            fireEvent.press(retryButton);
+        await act(async () => {
+            await fireEvent.press(retryButton);
         });
 
         expect(retryPressMock).toHaveBeenCalledTimes(1);

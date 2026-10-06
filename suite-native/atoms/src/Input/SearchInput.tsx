@@ -84,6 +84,7 @@ export type SearchInputProps = {
     onFocus?: () => void;
     onBlur?: () => void;
     isBottomSheetInput?: boolean;
+    autoCapitalize?: TextInputProps['autoCapitalize'];
 };
 
 export const SearchInput = forwardRef<TextInput, SearchInputProps>(
@@ -101,6 +102,7 @@ export const SearchInput = forwardRef<TextInput, SearchInputProps>(
             autoCorrect,
             testId,
             isBottomSheetInput = false,
+            autoCapitalize,
         },
         ref,
     ) => {
@@ -154,6 +156,7 @@ export const SearchInput = forwardRef<TextInput, SearchInputProps>(
                         value={value}
                         autoCorrect={autoCorrect}
                         testID={testId}
+                        autoCapitalize={autoCapitalize}
                     />
 
                     <SearchInputClearButton

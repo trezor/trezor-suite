@@ -1,5 +1,20 @@
 {
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
-    "references": []
+    "references": [
+        {
+            "path": "../../../packages/connect-common"
+        },
+        {
+            "path": "../../../packages/crypto-utils"
+        },
+        {
+            "path": "../../../packages/device-utils"
+        },
+        { "path": "../network-module-types" },
+        {
+            "path": "../../../packages/type-utils"
+        },
+        { "path": "../../../packages/utils" }
+    ]
 }

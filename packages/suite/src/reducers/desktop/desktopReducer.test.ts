@@ -1,4 +1,4 @@
-import type { HandshakeElectron } from '@trezor/suite-desktop-api';
+import type { HandshakeElectron } from '@suite/desktop-app-api';
 
 import * as SUITE from 'src/actions/suite/constants/suiteConstants';
 

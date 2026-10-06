@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TransactionsRootState,
     selectAccountTransactions,
@@ -18,7 +20,7 @@ export const useFetchMissingTransactionFiatRates = ({
     accountKey,
     isEnabled = true,
 }: UseFetchMissingTransactionFiatRatesParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const localCurrency = useSelector(selectBaseCurrency);
     const transactions = useSelector((state: TransactionsRootState) =>
         selectAccountTransactions(state, accountKey ?? null),

@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
+    getNetworkAdjustedStakingBalance,
     getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';

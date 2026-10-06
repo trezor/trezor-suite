@@ -1,136 +1,202 @@
-import { selectFlags, setFlag } from '@suite/flags';
-import { metadataLabelingActions } from '@suite/metadata';
-import { initialRedirection, routerInit } from '@suite/router';
-import { selectEarnYieldWorkerBaseUrl, suiteSettingsActions } from '@suite/settings';
+import { type UnknownAction } from '@reduxjs/toolkit';
+import { type ThunkDispatch } from 'redux-thunk';
+
+import { type DesktopApiDep } from '@suite/desktop-app-api';
+import { type FlagsRootState, selectFlags, setFlag } from '@suite/flags';
+import { type MetadataRootState, metadataLabelingActions } from '@suite/metadata';
+import {
+    type GotoThunkDeps,
+    type GotoThunkState,
+    initialRedirectionThunk,
+    routerInitThunk,
+} from '@suite/router';
+import {
+    type SuiteSettingsRootState,
+    selectEarnYieldWorkerBaseUrl,
+    selectLanguage,
+    suiteSettingsActions,
+} from '@suite/settings';
+import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
 import * as trezorConnectActions from '@suite-common/connect-init';
+import { type ConnectInitThunkDeps, type ConnectInitThunkState } from '@suite-common/connect-init';
+import { type DeviceRootState } from '@suite-common/device';
 import { earnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-api';
 import {
+    type MessageSystemRootState,
     initMessageSystemThunk,
     prepareCachedEnvData,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
-import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
+import { type WithServices } from '@suite-common/redux-utils';
 import {
+    type InitTokenDefinitionsThunkDeps,
+    type InitTokenDefinitionsThunkState,
+    periodicCheckTokenDefinitionsThunk,
+} from '@suite-common/token-definitions';
+import {
+    type InitBlockchainThunkDeps,
+    type InitBlockchainThunkState,
+    type InitStakeDataThunkState,
+    type PeriodicFetchFiatRatesThunkDeps,
+    type PeriodicFetchFiatRatesThunkState,
+    type UpdateMissingTxFiatRatesThunkState,
+    type WalletSettingsRootState,
     initBlockchainThunk,
-    initDevices,
+    initDevicesThunk,
     periodicCheckStakeDataThunk,
     periodicFetchFiatRatesThunk,
+    selectBaseCurrency,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
+import {
+    type WalletConnectInitThunkDeps,
+    type WalletConnectInitThunkState,
+} from '@suite-common/walletconnect';
 import * as walletConnectActions from '@suite-common/walletconnect';
 import { isDesktop } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
-import type { Dispatch, GetState } from 'src/types/suite';
+import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
+import { selectSuiteLifecycleStatus } from 'src/selectors/suite/suiteSelectors';
 
-import { SUITE } from './constants';
-import { onSuiteReady } from './suiteActions';
+import { setSuiteError } from './suiteActions';
 
-export const init = () => async (dispatch: Dispatch, getState: GetState) => {
-    const {
-        suite: {
-            lifecycle: { status },
-        },
-        suiteSettings: { language },
-        wallet: {
-            settings: { localCurrency },
-        },
-    } = getState();
-    const { enableAutoupdateOnNextRun } = selectFlags(getState());
+export type InitThunkState = ConnectInitThunkState &
+    DeviceRootState &
+    FlagsRootState &
+    GotoThunkState &
+    InitBlockchainThunkState &
+    InitStakeDataThunkState &
+    InitTokenDefinitionsThunkState &
+    MessageSystemRootState &
+    MetadataRootState &
+    PeriodicFetchFiatRatesThunkState &
+    SuiteRootState &
+    SuiteSettingsRootState &
+    UpdateMissingTxFiatRatesThunkState &
+    WalletConnectInitThunkState &
+    WalletSettingsRootState;
 
-    if (status !== 'initial') return;
+type InitThunkDeps = ConnectInitThunkDeps &
+    GotoThunkDeps &
+    InitBlockchainThunkDeps &
+    InitTokenDefinitionsThunkDeps &
+    PeriodicFetchFiatRatesThunkDeps &
+    WalletConnectInitThunkDeps &
+    WithServices<InitThunkDesktopApiDep>;
 
-    dispatch({ type: SUITE.INIT });
+export type InitThunkDesktopApiDep = DesktopApiDep<
+    | 'setAutomaticUpdateEnabled'
+    | 'getBioAuthSettings'
+    | 'getBioAuthStatus'
+    | 'isBioAuthAvailable'
+    | 'on'
+>;
 
-    // apply the earn yield worker base url from debug settings (or the default for this build)
-    earnYieldWorkerBaseUrl.set(selectEarnYieldWorkerBaseUrl(getState()));
+export const initThunk =
+    () =>
+    async (
+        dispatch: ThunkDispatch<InitThunkState, InitThunkDeps, UnknownAction>,
+        getState: () => InitThunkState,
+        extra: InitThunkDeps,
+    ) => {
+        const status = selectSuiteLifecycleStatus(getState());
+        const language = selectLanguage(getState());
+        const localCurrency = selectBaseCurrency(getState());
+        const { enableAutoupdateOnNextRun } = selectFlags(getState());
 
-    await dispatch(initDevices());
+        if (status !== 'initial') return;
 
-    /**
-     * ----------------------------------------------
-     * Right after storage is loaded, we might start:
-     * ----------------------------------------------
-     *
-     * Todo: This is good place to be refactored into separate functions.
-     *       Those number-comments are very strong indicator that this code
-     *       has many responsibilities and should be split into smaller parts.
-     */
+        dispatch(onSuiteInit());
 
-    // 2. fetching locales
-    dispatch(suiteSettingsActions.setLanguage(language));
+        // apply the earn yield worker base url from debug settings (or the default for this build)
+        earnYieldWorkerBaseUrl.set(selectEarnYieldWorkerBaseUrl(getState()));
 
-    // 3. fetch message system config
-    await prepareCachedEnvData();
-    await dispatch(initMessageSystemThunk());
+        await dispatch(initDevicesThunk());
 
-    // 4. turn on auto updates if needed
-    if (isDesktop() && enableAutoupdateOnNextRun) {
-        dispatch(setFlag({ key: 'enableAutoupdateOnNextRun', value: false }));
-        desktopApi.setAutomaticUpdateEnabled(true);
-    }
+        /**
+         * ----------------------------------------------
+         * Right after storage is loaded, we might start:
+         * ----------------------------------------------
+         *
+         * Todo: This is good place to be refactored into separate functions.
+         *       Those number-comments are very strong indicator that this code
+         *       has many responsibilities and should be split into smaller parts.
+         */
 
-    // 5. redirecting user into welcome screen (if needed)
-    dispatch(initialRedirection({ isInitialRun: selectFlags(getState()).initialRun }));
+        // 2. fetching locales
+        dispatch(suiteSettingsActions.setLanguage(language));
 
-    // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
-    const activeKillswitchMessage = selectActiveKillswitchMessage(getState());
-    if (activeKillswitchMessage) return;
+        // 3. fetch message system config
+        await prepareCachedEnvData();
+        await dispatch(initMessageSystemThunk());
 
-    // 6. init connect (could throw an error, then the error is caught in <ErrorBoundary /> in Main.tsx.
-    try {
-        // it is necessary to unwrap the result here because init calls async thunk from redux-toolkit which is always resolved
-        // see more details here: https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions
-        await dispatch(trezorConnectActions.connectInitThunk()).unwrap();
-    } catch (err) {
-        dispatch({ type: SUITE.ERROR, error: err.message });
+        // 4. turn on auto updates if needed
+        if (isDesktop() && enableAutoupdateOnNextRun) {
+            dispatch(setFlag({ key: 'enableAutoupdateOnNextRun', value: false }));
+            extra.services.desktopApi.setAutomaticUpdateEnabled(true);
+        }
 
-        return;
-    }
+        // 5. redirecting user into welcome screen (if needed)
+        dispatch(initialRedirectionThunk({ isInitialRun: selectFlags(getState()).initialRun }));
 
-    // 7. init backends
-    await dispatch(initBlockchainThunk())
-        .unwrap()
-        .catch(err => console.error(err));
+        // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
+        const activeKillswitchMessage = selectActiveKillswitchMessage(getState());
+        if (activeKillswitchMessage) return;
 
-    // 8. fetch token definitions (has to be fetched before fiat rates)
-    await dispatch(periodicCheckTokenDefinitionsThunk());
+        // 6. init connect (could throw an error, then the error is caught in <ErrorBoundary /> in Main.tsx.
+        try {
+            // it is necessary to unwrap the result here because init calls async thunk from redux-toolkit which is always resolved
+            // see more details here: https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions
+            await dispatch(trezorConnectActions.connectInitThunk()).unwrap();
+        } catch (err) {
+            dispatch(setSuiteError(err.message));
 
-    // 9. init periodic fetching of fiat rates
-    await dispatch(
-        periodicFetchFiatRatesThunk({
-            rateType: 'current',
-            localCurrency,
-        }),
-    );
-    await dispatch(
-        periodicFetchFiatRatesThunk({
-            rateType: 'lastWeek',
-            localCurrency,
-        }),
-    );
+            return;
+        }
 
-    // 10. fetch rates for transactions with missing rates
-    await dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
+        // 7. init backends
+        await dispatch(initBlockchainThunk())
+            .unwrap()
+            .catch(err => console.error(err));
 
-    // 11. dispatch initial location change
-    dispatch(routerInit());
+        // 8. fetch token definitions (has to be fetched before fiat rates)
+        await dispatch(periodicCheckTokenDefinitionsThunk());
 
-    // 12. fetch metadata. metadata is not saved together with other data in storage.
-    // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
-    // immediately after suite start.
-    dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevices());
+        // 9. init periodic fetching of fiat rates
+        await dispatch(
+            periodicFetchFiatRatesThunk({
+                rateType: 'current',
+                localCurrency,
+            }),
+        );
+        await dispatch(
+            periodicFetchFiatRatesThunk({
+                rateType: 'lastWeek',
+                localCurrency,
+            }),
+        );
 
-    // 13. start fetching staking data if needed, does need to be waited
-    dispatch(periodicCheckStakeDataThunk());
+        // 10. fetch rates for transactions with missing rates
+        await dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
 
-    // 14. init wallet connect
-    dispatch(walletConnectActions.walletConnectInitThunk());
-    // 15. bio auth
-    if (isDesktop()) {
-        dispatch(bioAuthThunks.init());
-    }
-    // 16. backend connected, suite is ready to use
-    dispatch(onSuiteReady());
-};
+        // 11. dispatch initial location change
+        dispatch(routerInitThunk());
+
+        // 12. fetch metadata. metadata is not saved together with other data in storage.
+        // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
+        // immediately after suite start.
+        dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevicesThunk());
+
+        // 13. start fetching staking data if needed, does need to be waited
+        dispatch(periodicCheckStakeDataThunk());
+
+        // 14. init wallet connect
+        dispatch(walletConnectActions.walletConnectInitThunk());
+        // 15. bio auth
+        if (isDesktop()) {
+            dispatch(bioAuthThunks.initBioAuthThunk());
+        }
+        // 16. backend connected, suite is ready to use
+        dispatch(onSuiteReady());
+    };

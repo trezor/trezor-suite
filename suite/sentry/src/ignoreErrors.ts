@@ -12,9 +12,6 @@ export const ignoreErrors = [
     /.*The database connection is closing.*/,
     /.*Error: InvalidStateError: Failed to execute 'transaction' on 'IDBDatabase'.*/,
 
-    // Common Electron lifecycle errors
-    /.*Frame property was accessed after it navigated or was destroyed.*/, // Renderer process already closed while main is still responding to its IPC
-
     // nodeJS deprecation errors
     /.*DEP0040.*punycode.*/, // used deep within tech stack, not much we can do about it atm
 

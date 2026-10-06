@@ -1,9 +1,10 @@
-import { isAnyOf } from '@reduxjs/toolkit';
-import type { MiddlewareAPI } from 'redux';
+import { type UnknownAction } from '@reduxjs/toolkit';
+import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { selectSelectedAccountKey } from '@suite/account';
 import { routerLocationChange, selectRouteName } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
 import {
@@ -11,22 +12,24 @@ import {
     accountsActions,
     blockchainActions,
     convertSendFormDraftsBtcAmountUnitsThunk,
+    selectAllNetworkSymbolsOfVisibleAccounts,
+    selectNetworksWithPendingTxs,
     sendFormActions,
     setCustomBackendThunk,
     stakeActions,
-    subscribeBlockchainThunk,
+    syncAccountsWithBlockchainThunk,
     transactionsActions,
-    unsubscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
 
+import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
-import type { Action, AppState, Dispatch } from 'src/types/suite';
+import type { AppState } from 'src/types/suite';
 
 const walletMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
-    (next: Dispatch) =>
-    (action: Action): Action => {
+    (next: ReduxDispatch<UnknownAction>) =>
+    (action: UnknownAction): UnknownAction => {
         const prevState = api.getState();
 
         if (deviceActions.forgetDevice.match(action)) {
@@ -42,7 +45,7 @@ const walletMiddleware =
 
         if (accountsActions.createAccount.match(action)) {
             // gather transactions from account.create action
-            const account = action.payload;
+            const { account } = action.payload;
             api.dispatch(
                 transactionsActions.addTransaction({
                     transactions: account.history.transactions || [],
@@ -53,17 +56,30 @@ const walletMiddleware =
             );
         }
 
-        if (isAnyOf(accountsActions.createAccount, accountsActions.updateAccount)(action)) {
-            api.dispatch(subscribeBlockchainThunk({ symbol: action.payload.symbol }));
-        }
-
-        if (accountsActions.removeAccount.match(action)) {
-            api.dispatch(unsubscribeBlockchainThunk(action.payload));
-        }
-
         // Update custom backends
         if (blockchainActions.setBackend.match(action)) {
             api.dispatch(setCustomBackendThunk(action.payload.symbol));
+        }
+
+        /**
+         * Make sure to update pending txs for visible accounts when the window is focused again.
+         * Else the tx hangs there even though it has already been confirmed in the blockchain.
+         * - Updating only specific account doesn't trigger update of receiver account balance / txs.
+         */
+        if (
+            updateWindowVisibility.match(action) &&
+            action.payload.isVisible &&
+            !prevState.window.isVisible
+        ) {
+            const state = api.getState();
+            const visibleNetworks = new Set(selectAllNetworkSymbolsOfVisibleAccounts(state));
+            const networksWithPendingTxs = selectNetworksWithPendingTxs(state);
+
+            Array.from(networksWithPendingTxs)
+                .filter(symbol => visibleNetworks.has(symbol))
+                .forEach(symbol => {
+                    api.dispatch(syncAccountsWithBlockchainThunk(symbol));
+                });
         }
 
         const prevRouter = prevState.router;
@@ -90,6 +106,7 @@ const walletMiddleware =
             api.dispatch(sendFormActions.dispose());
             api.dispatch(tradingActions.setVerifiedAddress(undefined));
             api.dispatch(stakeActions.dispose());
+            api.dispatch(stakeActions.clearAccountVotingDelegation());
         }
 
         if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {
@@ -101,10 +118,10 @@ const walletMiddleware =
                     isOnSendPage: suiteRouteName === 'wallet-send',
                 }),
             );
-            api.dispatch(tradingCommonActions.convertDrafts());
+            api.dispatch(tradingCommonActions.convertDraftsThunk());
         }
 
-        api.dispatch(selectedAccountActions.syncSelectedAccount(action));
+        api.dispatch(selectedAccountActions.syncSelectedAccountThunk(action));
 
         return action;
     };

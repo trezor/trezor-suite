@@ -1,6 +1,7 @@
 import { type MouseEvent, type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { Button, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
@@ -13,6 +14,7 @@ type EarnStakingActionButtonsProps = {
     isVotingDisabled: boolean | undefined;
     votingMessageContent: ReactNode;
     canClaim: boolean;
+    networkType: NetworkType;
     isClaimButtonDisabled: boolean | undefined;
     claimingMessageContent: ReactNode;
     onBuy: (event: MouseEvent<HTMLButtonElement>) => void;
@@ -30,6 +32,7 @@ export const EarnStakingActionButtons = ({
     isVotingDisabled,
     votingMessageContent,
     canClaim,
+    networkType,
     isClaimButtonDisabled,
     claimingMessageContent,
     onBuy,
@@ -46,14 +49,21 @@ export const EarnStakingActionButtons = ({
             (canClaim ? (
                 <Tooltip content={claimingMessageContent}>
                     <Button
-                        intent="brand"
+                        intent={isClaimButtonDisabled ? 'neutral' : 'brand'}
+                        priority={isClaimButtonDisabled ? 'secondary' : 'primary'}
                         size="small"
                         isDisabled={isClaimButtonDisabled}
                         iconLeft={isClaimButtonDisabled ? InfoIcon : undefined}
                         onClick={onClaim}
                         data-testid="@account/staking/claim-button"
                     >
-                        <Translation id="TR_STAKE_CLAIM" />
+                        <Translation
+                            id={
+                                networkType === 'cardano'
+                                    ? 'TR_EARN_CLAIM_REWARDS'
+                                    : 'TR_EARN_STAKING_DASHBOARD_CLAIM_FUNDS'
+                            }
+                        />
                     </Button>
                 </Tooltip>
             ) : (

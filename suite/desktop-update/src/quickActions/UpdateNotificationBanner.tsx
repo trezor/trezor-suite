@@ -1,7 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type DiscoveryRootState, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { SidebarBanner } from '@trezor/product-components';
 
@@ -66,7 +68,7 @@ type UpdateNotificationBannerProps = {
 };
 
 export const UpdateNotificationBanner = ({ onDismiss }: UpdateNotificationBannerProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const updateStatusData: {
         updateStatus: UpdateStatus;
         updateStatusDevice: UpdateStatusDevice;

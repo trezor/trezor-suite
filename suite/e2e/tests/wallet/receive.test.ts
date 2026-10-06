@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { DEVICE_RENDERED_EVM_INDENT } from '../../support/common';
@@ -6,11 +6,7 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.use({
-        contextOptions: {
-            permissions: ['clipboard-read', 'clipboard-write'],
-        },
-    });
+    test.use({ webClipboardRead: true });
 
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
@@ -23,25 +19,25 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
         deviceDisplayPrefix: string;
     }> = [
         {
-            coin: 'btc',
+            coin: asNetworkSymbol('btc'),
             category: TestCategory.BTC,
             addressFormat: /^(bc1[a-z0-9]{39,59}|[13][a-km-zA-HJ-NP-Z1-9]{25,34})$/,
             deviceDisplayPrefix: '',
         },
         {
-            coin: 'eth',
+            coin: asNetworkSymbol('eth'),
             category: TestCategory.ETH,
             addressFormat: /^ {2}0x[a-fA-F0-9]{40}$/,
             deviceDisplayPrefix: DEVICE_RENDERED_EVM_INDENT,
         },
         {
-            coin: 'sol',
+            coin: asNetworkSymbol('sol'),
             category: TestCategory.Solana,
             addressFormat: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
             deviceDisplayPrefix: '',
         },
         {
-            coin: 'trx',
+            coin: asNetworkSymbol('trx'),
             category: TestCategory.Coins,
             addressFormat: /^T[1-9A-HJ-NP-Za-km-z]{33}$/,
             deviceDisplayPrefix: '',
@@ -55,35 +51,39 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
                     testCase: `Verifies that a user can receive a ${coin.toUpperCase()} transaction.`,
                     category,
                     priority: TestPriority.Critical,
-                    stream: TestStream.Engagement,
+                    stream: TestStream.Wallet,
                 }),
             },
-            async ({ page, devicePrompt, settingsPage, walletPage }) => {
-                await settingsPage.changeNetworks({ enableNetworks: [coin] });
-                await walletPage.accountButton({ symbol: coin }).click();
-                await walletPage.receiveButton.click();
-                await walletPage.revealAddressButton.click();
-                const address = await devicePrompt.getAddressFromDisplay();
-                await devicePrompt.waitForPromptAndConfirm();
-                // Intercept writeText before clicking copy — Chromium enforces Permissions-Policy
-                // at the HTTP header level, so navigator.clipboard.readText() is blocked in CI
-                // even when context permissions are granted. Capture the value on write instead.
-                await page.evaluate(() => {
-                    const clipboard = navigator.clipboard as any;
-                    const original = clipboard.writeText.bind(clipboard);
-                    clipboard.writeText = (text: string) => {
-                        (window as any).__clipboardCapture = text;
-
-                        return original(text).catch(() => undefined);
-                    };
+            async ({ devicePrompt, settingsPage, walletPage, clipboard }) => {
+                await test.step(`Enable ${coin.toUpperCase()} and open the receive tab`, async () => {
+                    await settingsPage.changeNetworks({ enableNetworks: [coin] });
+                    await walletPage.accountButton({ symbol: coin }).click();
+                    await walletPage.receiveButton.click();
                 });
-                await walletPage.copyAddressButton.click();
-                await expect(walletPage.copyToCliboardToast).toBeVisible();
-                const clipboardText = await page.evaluate(
-                    () => (window as any).__clipboardCapture as string,
-                );
-                expect.soft(address).toEqual(`${deviceDisplayPrefix}${clipboardText}`);
-                expect.soft(address).toMatch(addressFormat);
+
+                await test.step('Copy the receive address', async () => {
+                    // Copying is the entry point to verification: it opens the prompt offering to
+                    // verify the address that was just copied.
+                    await walletPage.copyAddressButton.click();
+                    await expect(walletPage.copyToCliboardToast).toBeVisible();
+                    await expect(walletPage.addressCopiedModal).toBeVisible();
+                });
+
+                const address = await test.step('Verify the address on the device', async () => {
+                    await walletPage.addressCopiedModalVerifyButton.click();
+                    const displayedAddress = await devicePrompt.getAddressFromDisplay();
+                    await devicePrompt.waitForPromptAndConfirm();
+                    await expect(walletPage.addressCopiedModal).toBeHidden();
+
+                    return displayedAddress;
+                });
+
+                await test.step('Verify the copied address matches the device display and QR code', async () => {
+                    const clipboardText = await clipboard.read();
+                    expect.soft(address).toEqual(`${deviceDisplayPrefix}${clipboardText}`);
+                    expect.soft(address).toMatch(addressFormat);
+                    await expect(walletPage.receiveQrCode).toHaveQrCodeValue(clipboardText);
+                });
             },
         );
     });

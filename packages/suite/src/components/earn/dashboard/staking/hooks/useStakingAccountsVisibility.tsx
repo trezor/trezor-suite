@@ -1,11 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
+import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     compareEarnByAmountDesc,
     getAccountTotalStakingBalance,
-    getStakingLimitsByNetworkSymbol,
     isStakingSymbol,
     sortByCoin,
     toFiatCurrency,
@@ -29,6 +31,7 @@ export const useStakingAccountsVisibility = ({
     adaNotActivated,
     trxNotActivated,
 }: UseAccountVisibilityProps) => {
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleExpanded = useCallback(() => {
@@ -39,7 +42,9 @@ export const useStakingAccountsVisibility = ({
         (account: Account) =>
             toFiatCurrency({
                 amount: getAccountTotalStakingBalance(account) ?? '0',
-                rate: isStakingSymbol(account.symbol) ? currentRates[account.symbol] : undefined,
+                rate: isStakingSymbol(account.symbol)
+                    ? currentRates[account.symbol as StakingNetworkSymbol]
+                    : undefined,
             }) ?? '0',
         [currentRates],
     );
@@ -48,7 +53,9 @@ export const useStakingAccountsVisibility = ({
         (account: Account) =>
             toFiatCurrency({
                 amount: account.formattedBalance,
-                rate: isStakingSymbol(account.symbol) ? currentRates[account.symbol] : undefined,
+                rate: isStakingSymbol(account.symbol)
+                    ? currentRates[account.symbol as StakingNetworkSymbol]
+                    : undefined,
             }) ?? '0',
         [currentRates],
     );
@@ -97,7 +104,10 @@ export const useStakingAccountsVisibility = ({
         const hasAdaBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'ada');
         const hasTrxBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'trx');
 
-        const sortedInsufficientFundsAccounts = sortByCoin([...accountsInsufficientFunds]);
+        const sortedInsufficientFundsAccounts = sortByCoin(
+            [...accountsInsufficientFunds],
+            supportedNetworks,
+        );
 
         const additionalAccounts: Account[] = [];
 
@@ -133,10 +143,11 @@ export const useStakingAccountsVisibility = ({
             if (account) additionalAccounts.push(account);
         }
 
-        return sortByCoin([...additionalAccounts]);
+        return sortByCoin([...additionalAccounts], supportedNetworks);
     }, [
         alwaysVisibleAccounts,
         accountsInsufficientFunds,
+        supportedNetworks,
         ethNotActivated,
         solNotActivated,
         adaNotActivated,
@@ -147,7 +158,7 @@ export const useStakingAccountsVisibility = ({
 
     const expandedAccounts = [
         ...alwaysVisibleAccounts,
-        ...sortByCoin([...accountsInsufficientFunds]),
+        ...sortByCoin([...accountsInsufficientFunds], supportedNetworks),
     ];
 
     const displayedAccounts = isExpanded ? expandedAccounts : collapsedAccounts;

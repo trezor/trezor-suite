@@ -1,16 +1,19 @@
-import { deviceActions } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import type { StoredAuthenticateDeviceResult, TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import type { AuthenticateDeviceResult, Response } from '@trezor/connect';
 import type { Err, Ok } from '@trezor/type-utils';
 
-import { checkDeviceAuthenticityThunk } from './checkDeviceAuthenticityThunk';
+import {
+    type CheckDeviceAuthenticityThunkState,
+    checkDeviceAuthenticityThunk,
+} from './checkDeviceAuthenticityThunk';
 
 const initStore = (device?: TrezorDevice) =>
-    configureMockStore({
+    createTestCompositionRoot<void, CheckDeviceAuthenticityThunkState>({
         preloadedState: {
             device: {
                 selectedDevice: device,
@@ -18,7 +21,7 @@ const initStore = (device?: TrezorDevice) =>
             },
             messageSystem: messageSystemInitialState,
         },
-    });
+    }).services.store;
 
 const getDevice = (isLocked: boolean) => ({
     ...mockSuiteDevice(undefined, { bootloader_locked: isLocked }),
@@ -153,16 +156,24 @@ describe('Check device authenticity', () => {
             if (f.expectedToastType) {
                 expectedActions.splice(1, 0, notificationsActions.addToast.type);
                 const toastAction = actions[actions.length - 3];
-                expect(toastAction?.payload.type).toBe(f.expectedToastType);
+                expect(notificationsActions.addToast.match(toastAction)).toBe(true);
+                if (notificationsActions.addToast.match(toastAction)) {
+                    expect(toastAction.payload.type).toBe(f.expectedToastType);
+                }
             }
             // thunk is expected to fail fast if there is no device, and not emit a result, which is always bound to device
             if (f.device) {
-                expectedActions.push(deviceActions.setDeviceAuthenticityResult.type);
+                expectedActions.push(persistentDeviceDataActions.setDeviceAuthenticityResult.type);
             }
             if (f.expectedFulfilled) {
                 expectedActions.push(checkDeviceAuthenticityThunk.fulfilled.type);
-                const fulfilledAction = actions[actions.length - 2];
-                expect(fulfilledAction?.payload.result).toEqual(f.expectedResult);
+                const resultAction = actions[actions.length - 2];
+                expect(
+                    persistentDeviceDataActions.setDeviceAuthenticityResult.match(resultAction),
+                ).toBe(true);
+                if (persistentDeviceDataActions.setDeviceAuthenticityResult.match(resultAction)) {
+                    expect(resultAction.payload.result).toEqual(f.expectedResult);
+                }
             } else {
                 expectedActions.push(checkDeviceAuthenticityThunk.rejected.type);
             }

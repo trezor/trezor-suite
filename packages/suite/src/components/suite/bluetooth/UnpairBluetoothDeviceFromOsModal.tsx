@@ -1,13 +1,14 @@
 import { useState } from 'react';
 
+import { openSystemSettingsThunk, selectIsUnpairingDevice } from '@suite/bluetooth';
 import { toggleConnectionModal } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner, Column, H3, Modal, Paragraph, Spinner } from '@trezor/components';
 
-import { selectIsUnpairingDevice } from 'src/actions/bluetooth/desktopBluetoothSelectors';
-import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type UnpairBluetoothDeviceFromOsModalProps = {
     onFinish?: () => void;
@@ -18,7 +19,7 @@ export const UnpairBluetoothDeviceFromOsModal = ({
     onFinish,
     skipToggleModalConnection = false,
 }: UnpairBluetoothDeviceFromOsModalProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const isUnpairingDevice = useSelector(selectIsUnpairingDevice);
 
     const [hasDeeplinkFailed, setHasDeeplinkFailed] = useState(false);

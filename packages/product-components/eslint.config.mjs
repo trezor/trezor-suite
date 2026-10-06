@@ -1,4 +1,4 @@
-import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/eslint';
+import { allowDevDependenciesIn, eslint } from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -12,18 +12,5 @@ export default [
             'import/no-default-export': 'off',
         },
     },
-    {
-        rules: {
-            'import/no-extraneous-dependencies': [
-                'error',
-                {
-                    devDependencies: [
-                        ...globalNoExtraneousDependenciesDevDependencies,
-                        '**/*.stories.*',
-                        '**/.storybook/**',
-                    ],
-                },
-            ],
-        },
-    },
+    allowDevDependenciesIn(['**/*.stories.*', '**/.storybook/**']),
 ];

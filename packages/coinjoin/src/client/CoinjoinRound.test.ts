@@ -1,3 +1,4 @@
+import { loggerMock } from '@trezor/logger/mocks';
 import * as trezorUtils from '@trezor/utils';
 
 import { createServer } from '../../mocks/server';
@@ -34,12 +35,7 @@ jest.mock('../constants', () => {
 
 describe(`CoinjoinRound`, () => {
     let server: Awaited<ReturnType<typeof createServer>>;
-    const logger = {
-        warn: jest.fn(),
-        info: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
-    };
+    const logger = loggerMock;
 
     beforeAll(async () => {
         server = await createServer();
@@ -98,6 +94,20 @@ describe(`CoinjoinRound`, () => {
         expect(logger.error).toHaveBeenCalledWith(
             expect.stringMatching(/Missing affiliate request/),
         );
+    });
+
+    it('onPhaseChange records phaseStartLowerBound and only updates it on an actual phase change', async () => {
+        const round = createCoinjoinRound([], { ...server?.requestOptions, logger });
+
+        // entering the signing phase records the lower bound the client passes (the previous
+        // committed poll's request time) so transactionSigning can size the send window safely
+        await round.onPhaseChange({ ...DEFAULT_ROUND, Phase: 3 }, 70000);
+        expect(round.phaseStartLowerBound).toBe(70000);
+
+        // a later same-phase re-poll must NOT overwrite it (a later poll time is a worse lower
+        // bound); the assignment lives inside the `this.phase !== changed.Phase` guard on purpose
+        await round.onPhaseChange({ ...DEFAULT_ROUND, Phase: 3 }, 90000);
+        expect(round.phaseStartLowerBound).toBe(70000);
     });
 
     it('catch errored Round', async () => {

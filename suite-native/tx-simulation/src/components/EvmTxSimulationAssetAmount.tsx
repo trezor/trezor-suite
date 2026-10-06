@@ -7,7 +7,7 @@ import { Box, Text, type TextProps } from '@suite-native/atoms';
 type EvmTxSimulationAssetAmountProps = {
     fiatAmount?: BaseCurrencyAmount;
     fiatSign?: ReactNode;
-    summary?: string;
+    summary?: ReactNode;
     summaryColor: TextProps['color'];
 };
 

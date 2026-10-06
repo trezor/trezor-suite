@@ -7,7 +7,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingExchangeAccountKey,
     selectTradingExchangeProviders,
@@ -16,6 +16,7 @@ import {
 } from '../../selectors/tradingSelectors';
 import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
+import { normalizeDexTransactionData } from '../../utils/exchange/normalizeDexTransactionData';
 import { tradingThunks } from '../common';
 import { buildRecomposeInputsFromTrade } from '../common/buildRecomposeInputsFromTrade';
 import { type RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
@@ -32,11 +33,14 @@ export type SendDexTransactionThunkProps = {
     signAndPushSendFormTransaction: RecomposeAndSignTxThunkProps['signAndPushSendFormTransaction'];
 };
 
+export type SendDexTransactionThunkState = TradingRootState;
+
 export const sendDexTransactionThunk = createThunk<
     undefined,
     SendDexTransactionThunkProps,
     {
         rejectValue: TradingSendRejectedProps;
+        state: SendDexTransactionThunkState;
     }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/sendDexTransaction`,
@@ -49,7 +53,7 @@ export const sendDexTransactionThunk = createThunk<
             processResponseData,
             triggerAnalyticsTradeConfirmation,
             signAndPushSendFormTransaction,
-        }: SendDexTransactionThunkProps,
+        },
         { dispatch, getState, rejectWithValue },
     ) => {
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
@@ -79,13 +83,13 @@ export const sendDexTransactionThunk = createThunk<
             receiveAccountKey,
         });
 
-        let serializedTx = selectedQuote.dexTx.data;
-        if (account.networkType === 'solana' && serializedTx) {
-            // let's assume data obtained from trading api are always base64
-            // convert from base64 to hex (base16)
+        let serializedTx: string | undefined;
+        if (selectedQuote.dexTx.data) {
             try {
-                const transactionBuffer = Buffer.from(serializedTx, 'base64');
-                serializedTx = transactionBuffer.toString('hex');
+                serializedTx = normalizeDexTransactionData({
+                    data: selectedQuote.dexTx.data,
+                    networkType: account.networkType,
+                });
             } catch (error) {
                 console.error(error);
 
@@ -100,6 +104,7 @@ export const sendDexTransactionThunk = createThunk<
             dexTx: selectedQuote.dexTx,
             partnerPaymentExtraId: selectedQuote.partnerPaymentExtraId,
             serializedTx,
+            networkType: account.networkType,
         });
         const recomposeAndSignTx = await dispatch(
             tradingThunks.recomposeAndSignTxThunk({
@@ -113,8 +118,6 @@ export const sendDexTransactionThunk = createThunk<
 
         if (isRejectedWithValue(recomposeAndSignTx) || !recomposeAndSignTx.payload?.success) {
             const { payload } = recomposeAndSignTx;
-
-            console.error('Failed to send dex transaction - sign tx error');
 
             return rejectWithValue({
                 type: payload && 'type' in payload ? payload.type : 'sign-tx-error',

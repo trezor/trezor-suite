@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Card, Column, Modal, Text } from '@trezor/components';
+
 type ThpPairingConfirmStepProps = {
     modalHeading: ReactNode;
 };

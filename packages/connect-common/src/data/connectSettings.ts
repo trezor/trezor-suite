@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/ConnectSettings.js
 
+import { sanitizeName } from './sanitizeName';
 import { parseThpSettings } from './thpSettings';
 import { VERSION } from './version';
 import { DEFINITIONS_CHANNELS } from '../types/definitions';
@@ -14,22 +15,22 @@ import type { ConnectSettings, LocalFirmwares, Manifest } from '../types/setting
 const initialSettings: ConnectSettings = {
     debug: false,
     transports: undefined,
-    pendingTransportEvent: true,
-    transportReconnect: true,
 };
 
 export const parseManifest = (manifest?: Manifest) => {
     if (!manifest) return;
     if (typeof manifest.email !== 'string') return;
     if (typeof manifest.appUrl !== 'string') return;
-    // todo [connect10]: appName should become required
-    if (typeof manifest.appName !== 'undefined' && typeof manifest.appName !== 'string') return;
+    if (typeof manifest.appName !== 'string') return;
     if (typeof manifest.appIcon !== 'undefined' && typeof manifest.appIcon !== 'string') return;
+
+    const appName = sanitizeName(manifest.appName);
+    if (!appName) return;
 
     return {
         email: manifest.email,
         appUrl: manifest.appUrl,
-        appName: manifest.appName,
+        appName,
         appIcon: manifest.appIcon,
     };
 };
@@ -80,10 +81,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.createLogger = input.createLogger;
     }
 
-    if (typeof input.transportReconnect === 'boolean') {
-        settings.transportReconnect = input.transportReconnect;
-    }
-
     if (typeof input.localFirmwares === 'object') {
         settings.localFirmwares = parseLocalFirmwares(input.localFirmwares);
     }
@@ -98,10 +95,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (Array.isArray(input.transports)) {
         settings.transports = input.transports;
-    }
-
-    if (typeof input.pendingTransportEvent === 'boolean') {
-        settings.pendingTransportEvent = input.pendingTransportEvent;
     }
 
     if (typeof input.manifest === 'object') {

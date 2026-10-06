@@ -21,8 +21,8 @@ const defaultPreloadedState = {
 };
 
 describe('FaqCard', () => {
-    const renderFaqCard = (preloadedState = {}) =>
-        renderWithStoreProvider(<FaqCard />, {
+    const renderFaqCard = async (preloadedState = {}) =>
+        await renderWithStoreProvider(<FaqCard />, {
             preloadedState: { ...defaultPreloadedState, ...preloadedState },
         });
 
@@ -35,8 +35,8 @@ describe('FaqCard', () => {
             mockIsAndroid = true;
         });
 
-        it('should render appropriate sections when BT is enabled', () => {
-            const { getByText } = renderFaqCard();
+        it('should render appropriate sections when BT is enabled', async () => {
+            const { getByText } = await renderFaqCard();
 
             // Android BT-specific info
             expect(
@@ -53,10 +53,10 @@ describe('FaqCard', () => {
             ).toBeOnTheScreen();
         });
 
-        it('should not render trading section when trading is disabled', () => {
+        it('should not render trading section when trading is disabled', async () => {
             mockIsTradingEnabled = false;
 
-            const { queryByText } = renderFaqCard();
+            const { queryByText } = await renderFaqCard();
 
             expect(queryByText(getTranslation('moduleSettings.faq.trading.question'))).toBeNull();
         });
@@ -67,8 +67,8 @@ describe('FaqCard', () => {
             mockIsAndroid = false;
         });
 
-        it('should render appropriate sections when BT is enabled', () => {
-            const { getByText } = renderFaqCard();
+        it('should render appropriate sections when BT is enabled', async () => {
+            const { getByText } = await renderFaqCard();
 
             // iOS BT-specific info
             expect(
@@ -81,10 +81,10 @@ describe('FaqCard', () => {
             ).toBeOnTheScreen();
         });
 
-        it('should not render trading section when trading is disabled', () => {
+        it('should not render trading section when trading is disabled', async () => {
             mockIsTradingEnabled = false;
 
-            const { queryByText } = renderFaqCard();
+            const { queryByText } = await renderFaqCard();
 
             expect(queryByText(getTranslation('moduleSettings.faq.trading.question'))).toBeNull();
         });

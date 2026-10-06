@@ -5,16 +5,18 @@ import styled from 'styled-components';
 import {
     selectCoinjoinClient,
     selectStartCoinjoinSessionArguments,
-    startCoinjoinSession,
+    startCoinjoinSessionThunk,
 } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, H3, Note, Paragraph, Tooltip, variables } from '@trezor/components';
 import { CircuitryIcon, ClockIcon, LockKeyIcon } from '@trezor/icons';
 
 import { Error } from 'src/components/suite/Error';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { Tile, type TileProps } from './Tile';
 
@@ -82,7 +84,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
         selectStartCoinjoinSessionArguments(state, account.key),
     );
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const { coinjoinSessionBlockedMessage, isCoinjoinSessionBlocked } = useCoinjoinSessionBlockers(
         account.key,
@@ -108,7 +110,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     };
     const anonymize = async () => {
         setIsLoading(true);
-        await dispatch(startCoinjoinSession(...startCoinjoinArgs));
+        await dispatch(startCoinjoinSessionThunk(...startCoinjoinArgs));
         setIsLoading(false);
     };
 

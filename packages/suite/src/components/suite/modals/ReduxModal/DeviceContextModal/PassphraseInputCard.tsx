@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { formInputsMaxLength } from '@suite-common/validators';
+import { PASSPHRASE_MAX_LENGTH } from '@suite-common/device';
 import {
     Box,
     Button,
@@ -71,7 +71,7 @@ export const PassphraseInputCard = ({
     const value = externalValue ?? internalValue;
     const setValue = setExternalValue ?? setInternalValue;
 
-    const isPassphraseTooLong = countBytesInString(value) > formInputsMaxLength.passphrase;
+    const isPassphraseTooLong = countBytesInString(value) > PASSPHRASE_MAX_LENGTH;
     const isUsingNonAsciiCharacters = allowNonAsciiCharacters
         ? false
         : getNonAsciiChars(value) !== null;
@@ -202,7 +202,7 @@ export const PassphraseInputCard = ({
                             isLoading={isLoading}
                             size="large"
                         >
-                            Confirm
+                            <Translation id="TR_CONFIRM" />
                         </Button>
                     </Tooltip>
                 </Column>

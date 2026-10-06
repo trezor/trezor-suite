@@ -14,20 +14,22 @@ describe('CountrySubdivisionListItem', () => {
         name: 'California',
     } satisfies TradingCountrySubdivisionOption;
 
-    const renderCountrySubdivisionListItem = (props: Partial<CountrySubdivisionListItemProps>) =>
-        renderWithBasicProvider(
+    const renderCountrySubdivisionListItem = async (
+        props: Partial<CountrySubdivisionListItemProps>,
+    ) =>
+        await renderWithBasicProvider(
             <CountrySubdivisionListItem onPress={jest.fn()} {...subdivisionData} {...props} />,
         );
 
-    it('should render the name', () => {
-        const { getByText } = renderCountrySubdivisionListItem({});
+    it('should render the name', async () => {
+        const { getByText } = await renderCountrySubdivisionListItem({});
 
         expect(getByText('California')).toBeOnTheScreen();
     });
 
     it('should call onPress on item press', async () => {
         const onPress = jest.fn();
-        const { getByText } = renderCountrySubdivisionListItem({ onPress });
+        const { getByText } = await renderCountrySubdivisionListItem({ onPress });
 
         await userEvent.press(getByText('California'));
 

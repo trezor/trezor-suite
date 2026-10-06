@@ -9,11 +9,11 @@ import {
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
 import { setSuiteSyncOwner } from '../suiteSyncSlice';
 
-export type CreateTurnOffSuiteSyncForWalletDeps = SuiteSyncStorageRepositoryDep &
+export type TurnOffSuiteSyncForWalletDeps = SuiteSyncStorageRepositoryDep &
     SubscriptionStorageDep & { dispatch: Dispatch };
 
 export const createTurnOffSuiteSyncForWallet =
-    (deps: CreateTurnOffSuiteSyncForWalletDeps): TurnOffSuiteSyncForWallet =>
+    (deps: TurnOffSuiteSyncForWalletDeps): TurnOffSuiteSyncForWallet =>
     async ({ deviceStaticSessionId }) => {
         const storageId = createStorageIdFromDeviceStaticSessionId(deviceStaticSessionId);
 

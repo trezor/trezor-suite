@@ -42,5 +42,8 @@
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
     }
 }

@@ -3,7 +3,8 @@ import { type FeeInfo } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { Icon, Row, Text } from '@trezor/components';
 import { GasPumpIcon, ReceiptIcon } from '@trezor/icons';
-import { FeeRate } from '@trezor/product-components';
+
+import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
 
 import { useFeesContext } from '../../context/FeesContext';
 
@@ -41,7 +42,7 @@ export const CurrentFee = () => {
             </Text>
             <Text intent="neutral" typographyStyle="body-sm">
                 <Row alignItems="center" gap={4}>
-                    <Text>
+                    <Text data-testid="@fee-card/current-rate">
                         <FeeRate feeRate={currentFeeRate} networkType={networkType} />
                     </Text>
                     <Icon as={networkType === 'ethereum' ? GasPumpIcon : ReceiptIcon} size={20} />

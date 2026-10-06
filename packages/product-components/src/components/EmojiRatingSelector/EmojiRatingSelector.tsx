@@ -1,25 +1,31 @@
 import styled from 'styled-components';
 
 import { type Rating, ratingOptions } from '@suite-common/feedback';
-import { Row } from '@trezor/components';
+import { Row, commonFocusStyles } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
-const Item = styled.button<{ $selected?: boolean }>`
+const Item = styled.button<{ $isSelected: boolean }>`
     width: 40px;
     height: 40px;
-    border-radius: calc(infinity * 1px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    font-size: 22px;
     padding: 0;
-
-    border: none;
-    background: ${({ $selected, theme }) =>
-        $selected ? theme.elementFillElevatedPressed : 'transparent'};
+    border: 0;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    ${typography['headline-sm']}
+    cursor: pointer;
+    transition: 0.1s ease-in-out;
+    background: ${({ $isSelected, theme }) =>
+        $isSelected ? theme.elementFillContrast : theme.elementFillNeutralSoft};
 
     &:hover {
-        background: ${({ theme }) => theme.elementFillElevatedHovered};
+        background: ${({ $isSelected, theme }) =>
+            $isSelected ? theme.elementFillContrastHovered : theme.elementFillNeutralSoftHovered};
+    }
+
+    &:focus-visible {
+        ${commonFocusStyles}
     }
 `;
 
@@ -34,12 +40,12 @@ export const EmojiRatingSelector = ({
     onChange,
     'data-testid': dataTestId,
 }: EmojiRatingSelectorProps) => (
-    <Row gap={8} data-testid={dataTestId}>
+    <Row gap={8} flexWrap="wrap" data-testid={dataTestId}>
         {ratingOptions.map(({ id, emoji }) => (
             <Item
                 key={id}
-                $selected={value === id}
-                data-testid={`${dataTestId}/${id}`}
+                $isSelected={value === id}
+                data-testid={dataTestId && `${dataTestId}/${id}`}
                 onClick={() => onChange(id)}
                 type="button"
             >

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FormState } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
@@ -6,14 +7,15 @@ import { FeeSelectorRow } from './FeeSelectorRow';
 import { BTC_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
 
 const noopThunk = jest.fn();
+const btcSymbol = asNetworkSymbol('btc');
 
 describe('FeeSelectorRow', () => {
     const getPreloadedState = () => ({
         wallet: getWalletState(),
     });
 
-    const renderRow = () =>
-        renderWithStoreProvider(
+    const renderRow = async () =>
+        await renderWithStoreProvider(
             <FeeSelectorRow
                 accountKey={BTC_ACCOUNT_KEY}
                 updateThunk={noopThunk}
@@ -23,22 +25,25 @@ describe('FeeSelectorRow', () => {
             { preloadedState: getPreloadedState() },
         );
 
-    it('should render the fee row with its testID for a Bitcoin account', () => {
-        const { getByTestId } = renderRow();
+    it('should render the fee row with its testID for a Bitcoin account', async () => {
+        const { getByTestId } = await renderRow();
 
         expect(getByTestId('@transactionManagement/fee-selector-row')).toBeOnTheScreen();
     });
 
-    it('should render the crypto fee amount formatter', () => {
-        const { getByTestId } = renderRow();
+    it('should render the crypto fee amount formatter', async () => {
+        const { getByTestId } = await renderRow();
 
         expect(getByTestId('@transactionManagement/fee-crypto-amount')).toBeOnTheScreen();
     });
 
-    it('should render nothing when the account is not in the store', () => {
-        const missingAccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'unknownAccount' });
+    it('should render nothing when the account is not in the store', async () => {
+        const missingAccountKey = mockAccountKey({
+            symbol: btcSymbol,
+            descriptor: 'unknownAccount',
+        });
 
-        const { toJSON } = renderWithStoreProvider(
+        const { toJSON } = await renderWithStoreProvider(
             <FeeSelectorRow
                 accountKey={missingAccountKey}
                 updateThunk={noopThunk}
@@ -51,7 +56,7 @@ describe('FeeSelectorRow', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render an alert when fees are unavailable and a form draft is set', () => {
+    it('should render an alert when fees are unavailable and a form draft is set', async () => {
         const baseWalletState = getWalletState();
         const preloadedState = {
             wallet: {
@@ -69,7 +74,7 @@ describe('FeeSelectorRow', () => {
             },
         };
 
-        const { queryByTestId, getByText } = renderWithStoreProvider(
+        const { queryByTestId, getByText } = await renderWithStoreProvider(
             <FeeSelectorRow
                 accountKey={BTC_ACCOUNT_KEY}
                 updateThunk={noopThunk}

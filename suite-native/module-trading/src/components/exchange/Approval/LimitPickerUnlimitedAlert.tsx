@@ -4,7 +4,7 @@ import type { CryptoId } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import { type TradingRootState, selectTradingCoinSymbolByCryptoId } from '@suite-common/trading';
-import { InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type LimitPickerUnlimitedAlertProps = {
@@ -19,7 +19,7 @@ export const LimitPickerUnlimitedAlert = ({ cryptoId }: LimitPickerUnlimitedAler
     invariant(coinSymbol, 'Unknown cryptoId provided to LimitPickerUnlimitedAlert');
 
     return (
-        <InlineAlertBox
+        <BannerInline
             title={
                 <Translation
                     id="moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.alert"

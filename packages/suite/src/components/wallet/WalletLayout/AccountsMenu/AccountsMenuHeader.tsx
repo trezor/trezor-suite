@@ -1,15 +1,19 @@
+import { useState } from 'react';
+
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectIsCoinsFilterVisible, suiteSettingsActions } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Column, Divider, Icon, Row, Skeleton, Tooltip } from '@trezor/components';
 import { FunnelSimpleIcon } from '@trezor/icons';
 
 import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
-import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
+import { useAccountSearch, useSelector } from 'src/hooks/suite';
 
 import { AccountSearchBox } from './AccountSearchBox';
 import { AddAccountButton } from './AddAccountButton';
@@ -36,12 +40,13 @@ export const AccountsMenuHeader = () => {
 
     const device = useSelector(selectSelectedDevice);
     const accounts = useSelector(selectAllAccountsToList);
+    const [isHovered, setIsHovered] = useState(false);
 
     const isEmpty = accounts.length === 0;
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const isCoinsFilterVisible = useSelector(selectIsCoinsFilterVisible);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const availableNetworksSymbols = useAvailableNetworkSymbols();
 
     const toggleCoinsFilter = () =>
@@ -71,13 +76,22 @@ export const AccountsMenuHeader = () => {
                                             />
                                         }
                                     >
-                                        <RelativeWrapper>
+                                        <RelativeWrapper
+                                            onMouseEnter={() => setIsHovered(true)}
+                                            onMouseLeave={() => setIsHovered(false)}
+                                        >
                                             {coinFilter.length > 0 && <Indicator />}
                                             <Icon
                                                 size={16}
-                                                intent={isCoinsFilterVisible ? 'brand' : 'neutral'}
+                                                intent={
+                                                    isCoinsFilterVisible && !isHovered
+                                                        ? 'brand'
+                                                        : 'neutral'
+                                                }
                                                 priority={
-                                                    isCoinsFilterVisible ? 'primary' : 'secondary'
+                                                    isCoinsFilterVisible || isHovered
+                                                        ? 'primary'
+                                                        : 'secondary'
                                                 }
                                                 as={FunnelSimpleIcon}
                                                 onClick={toggleCoinsFilter}

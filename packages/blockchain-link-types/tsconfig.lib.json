@@ -6,8 +6,11 @@
         "rootDir": "./src"
     },
     "references": [
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
+        { "path": "../type-utils" },
         { "path": "../utils" },
-        { "path": "../utxo-lib" },
-        { "path": "../type-utils" }
+        { "path": "../utxo-lib" }
     ]
 }

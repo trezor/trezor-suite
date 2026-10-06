@@ -21,6 +21,7 @@ export type TradeableAsset = {
     symbol: NetworkSymbolExtended;
     contractAddress?: TokenAddress | undefined;
     cryptoId: CryptoId;
+    decimals?: number;
     networkId: string;
 } & Omit<CoinInfo, 'symbol' | 'services'>;
 
@@ -31,17 +32,10 @@ export type MyAsset = {
     fiatBalance: BaseCurrencyAmount | null;
     tokenSymbol?: TokenSymbol | null;
     contract?: TokenAddress;
+    decimals?: number;
     cryptoId?: CryptoId;
     isEnabled: boolean;
 };
-
-export type MyAssetTradeable = Omit<MyAsset, 'isEnabled'> & { isEnabled: true };
-export type MyAssetsDisabled = {
-    count: number;
-    name: 'non-tradeable-assets';
-    isEnabled: false;
-};
-export type MyAssetRow = MyAssetTradeable | MyAssetsDisabled;
 
 export type ReceiveAccount = {
     account: Account;
@@ -90,9 +84,10 @@ export type TradingFormContext = Partial<TradingAmountLimitProps> & {
     FiatAmountFormatter: Formatters['BaseCurrencyAmountFormatter'];
     CryptoAmountFormatter: Formatters['CryptoAmountFormatter'];
     convertNumberToBaseUnit: ConvertNumberToBaseUnit;
-    sendSymbol: string | undefined;
+    sendNetworkSymbol: NetworkSymbol | undefined;
+    sendAssetSymbol: string | undefined;
+    contractAddress: TokenAddress | undefined;
     balance: string | undefined;
-    networkReserve?: string;
     maxSpendableAmount?: string;
 };
 

@@ -20,7 +20,10 @@ import {
     prepareCryptoAmountFormatter,
 } from './formatters/prepareCryptoAmountFormatter';
 import { prepareDateFormatter } from './formatters/prepareDateFormatter';
-import { prepareDateTimeFormatter } from './formatters/prepareDateTimeFormatter';
+import {
+    type DateTimeFormatterDataContext,
+    prepareDateTimeFormatter,
+} from './formatters/prepareDateTimeFormatter';
 import {
     type DisplaySymbolFormatterDataContext,
     prepareDisplaySymbolFormatter,
@@ -52,7 +55,7 @@ export type Formatters = {
     >;
     DateFormatter: Formatter<Date | number, string>;
     TimeFormatter: Formatter<Date | number, string>;
-    DateTimeFormatter: Formatter<Date | number | null, string | null>;
+    DateTimeFormatter: Formatter<Date | number | null, string | null, DateTimeFormatterDataContext>;
     MonthNameFormatter: Formatter<Date, string>;
 };
 

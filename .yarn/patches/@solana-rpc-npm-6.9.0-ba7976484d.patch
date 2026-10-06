@@ -1,0 +1,132 @@
+diff --git a/dist/index.browser.cjs b/dist/index.browser.cjs
+index a996c60f9a3ff4f1bb352ea4d9343e458c127ac5..5e98e9aea5fc4cc38151efc39c97dbc4f8b05672 100644
+--- a/dist/index.browser.cjs
++++ b/dist/index.browser.cjs
+@@ -101,7 +101,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {
+     if (signal) {
+       const responsePromise = coalescedRequest.responsePromise;
+       return await new Promise((resolve, reject) => {
+-        const handleAbort = (e) => {
++        const handleAbort = () => {
+           signal.removeEventListener("abort", handleAbort);
+           coalescedRequest.numConsumers -= 1;
+           queueMicrotask(() => {
+@@ -110,7 +110,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {
+               abortController.abort(EXPLICIT_ABORT_TOKEN ||= createExplicitAbortToken());
+             }
+           });
+-          reject(e.target.reason);
++          reject(signal.reason);
+         };
+         signal.addEventListener("abort", handleAbort);
+         responsePromise.then(resolve).catch(reject).finally(() => {
+diff --git a/dist/index.browser.mjs b/dist/index.browser.mjs
+index 30c318ed9ac07f1488d36a264f6f0d60e4b18243..69903ee174a8acabfadaac13350e411ba8595f50 100644
+--- a/dist/index.browser.mjs
++++ b/dist/index.browser.mjs
+@@ -97,7 +97,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {
+     if (signal) {
+       const responsePromise = coalescedRequest.responsePromise;
+       return await new Promise((resolve, reject) => {
+-        const handleAbort = (e) => {
++        const handleAbort = () => {
+           signal.removeEventListener("abort", handleAbort);
+           coalescedRequest.numConsumers -= 1;
+           queueMicrotask(() => {
+@@ -106,7 +106,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {
+               abortController.abort(EXPLICIT_ABORT_TOKEN ||= createExplicitAbortToken());
+             }
+           });
+-          reject(e.target.reason);
++          reject(signal.reason);
+         };
+         signal.addEventListener("abort", handleAbort);
+         responsePromise.then(resolve).catch(reject).finally(() => {
+diff --git a/dist/index.native.mjs b/dist/index.native.mjs
+index 69900bba74cc8c2b7c34628fe29e63a9d4a24d60..b887f51283c41901b90f6316c0ac60cf5b0772ce 100644
+--- a/dist/index.native.mjs
++++ b/dist/index.native.mjs
+@@ -97,7 +97,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {
+     if (signal) {
+       const responsePromise = coalescedRequest.responsePromise;
+       return await new Promise((resolve, reject) => {
+-        const handleAbort = (e) => {
++        const handleAbort = () => {
+           signal.removeEventListener("abort", handleAbort);
+           coalescedRequest.numConsumers -= 1;
+           queueMicrotask(() => {
+@@ -106,7 +106,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {
+               abortController.abort(EXPLICIT_ABORT_TOKEN ||= createExplicitAbortToken());
+             }
+           });
+-          reject(e.target.reason);
++          reject(signal.reason);
+         };
+         signal.addEventListener("abort", handleAbort);
+         responsePromise.then(resolve).catch(reject).finally(() => {
+diff --git a/dist/index.node.cjs b/dist/index.node.cjs
+index 747e2dfcd3123458b48c16bc7d575e1813a5677c..13d6c2fbd47c29e74da084df8be8a4d55a9bf4bb 100644
+--- a/dist/index.node.cjs
++++ b/dist/index.node.cjs
+@@ -104,7 +104,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {
+     if (signal) {
+       const responsePromise = coalescedRequest.responsePromise;
+       return await new Promise((resolve, reject) => {
+-        const handleAbort = (e2) => {
++        const handleAbort = () => {
+           signal.removeEventListener("abort", handleAbort);
+           coalescedRequest.numConsumers -= 1;
+           queueMicrotask(() => {
+@@ -113,7 +113,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {
+               abortController.abort(EXPLICIT_ABORT_TOKEN ||= createExplicitAbortToken());
+             }
+           });
+-          reject(e2.target.reason);
++          reject(signal.reason);
+         };
+         signal.addEventListener("abort", handleAbort);
+         responsePromise.then(resolve).catch(reject).finally(() => {
+diff --git a/dist/index.node.mjs b/dist/index.node.mjs
+index 269c0b64413153ec600f49224491febddfc70411..006c4ef1148974cb19f8829bf1fd71e89954f03a 100644
+--- a/dist/index.node.mjs
++++ b/dist/index.node.mjs
+@@ -100,7 +100,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {
+     if (signal) {
+       const responsePromise = coalescedRequest.responsePromise;
+       return await new Promise((resolve, reject) => {
+-        const handleAbort = (e2) => {
++        const handleAbort = () => {
+           signal.removeEventListener("abort", handleAbort);
+           coalescedRequest.numConsumers -= 1;
+           queueMicrotask(() => {
+@@ -109,7 +109,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {
+               abortController.abort(EXPLICIT_ABORT_TOKEN ||= createExplicitAbortToken());
+             }
+           });
+-          reject(e2.target.reason);
++          reject(signal.reason);
+         };
+         signal.addEventListener("abort", handleAbort);
+         responsePromise.then(resolve).catch(reject).finally(() => {
+diff --git a/src/rpc-request-coalescer.ts b/src/rpc-request-coalescer.ts
+index 9d83032ea47141be79e3cb3d424cb4657a2904c6..67e7a481ba41534d4782de72b48c69f3bc2a47f0 100644
+--- a/src/rpc-request-coalescer.ts
++++ b/src/rpc-request-coalescer.ts
+@@ -75,7 +75,7 @@ export function getRpcTransportWithRequestCoalescing<TTransport extends RpcTrans
+         if (signal) {
+             const responsePromise = coalescedRequest.responsePromise as Promise<RpcResponse<TResponse>>;
+             return await new Promise<RpcResponse<TResponse>>((resolve, reject) => {
+-                const handleAbort = (e: AbortSignalEventMap['abort']) => {
++                const handleAbort = () => {
+                     signal.removeEventListener('abort', handleAbort);
+                     coalescedRequest.numConsumers -= 1;
+                     queueMicrotask(() => {
+@@ -85,7 +85,7 @@ export function getRpcTransportWithRequestCoalescing<TTransport extends RpcTrans
+                         }
+                     });
+                     // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+-                    reject((e.target as AbortSignal).reason);
++                    reject(signal.reason);
+                 };
+                 signal.addEventListener('abort', handleAbort);
+                 responsePromise

@@ -1,14 +1,20 @@
 import { useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
-    type EnhancedTokenInfo,
+    type TokenInfo,
     type TokenManagementAction,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
+import {
+    removeStellarContractTokenThunk,
+    selectIsStellarContractTokenWatched,
+} from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
@@ -31,7 +37,7 @@ import type { TokensTableType } from './types';
 type TokenRowProps = {
     type?: TokensTableType;
     account: Account;
-    token: EnhancedTokenInfo;
+    token: TokenInfo;
     network: Network;
     tokenStatusType: TokenManagementAction;
     hideRates?: boolean;
@@ -51,6 +57,7 @@ export const TokenRow = ({
     isCollapsed,
     yieldOpportunities,
 }: TokenRowProps) => {
+    const { dispatch } = useServices(injectDispatch);
     const device = useSelector(selectSelectedDevice);
     const isTokenKnown = useSelector(state =>
         selectIsSpecificCoinDefinitionKnown(state, account.symbol, token.contract as TokenAddress),
@@ -65,13 +72,37 @@ export const TokenRow = ({
 
     const [showDeactivateModal, setShowDeactivateModal] = useState(false);
 
+    const isWatchedContractToken = useSelector(state =>
+        selectIsStellarContractTokenWatched(state, account.key, token.contract),
+    );
+    // A curated token was never added by the user; the worker would surface it again.
+    const isRemovableContractToken =
+        token.standard === 'STELLAR-CONTRACT' && isWatchedContractToken;
+
+    const handleDeactivateToken = () => {
+        if (token.standard !== 'STELLAR-CONTRACT') {
+            setShowDeactivateModal(true);
+
+            return;
+        }
+
+        if (isRemovableContractToken) {
+            dispatch(
+                removeStellarContractTokenThunk({
+                    accountKey: account.key,
+                    contract: token.contract,
+                }),
+            );
+        }
+    };
+
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
 
     if (!unusedAddress || !device) return null;
 
     return (
         <>
-            <Table.Row isCollapsed={isCollapsed}>
+            <Table.Row isCollapsed={isCollapsed} data-testid={`@token-row/${token.symbol}`}>
                 <Table.Cell>
                     <Row gap={8}>
                         <TokenIcon
@@ -113,6 +144,8 @@ export const TokenRow = ({
                                 value={token.balance}
                                 symbol={token.symbol}
                                 contractAddress={token.contract}
+                                isCompact
+                                tokenDecimals={token.decimals}
                             />
                         </Text>
                     </Column>
@@ -148,7 +181,8 @@ export const TokenRow = ({
                         network={network}
                         yieldOpportunities={yieldOpportunities}
                         isUnverifiedTable={isUnverifiedTable}
-                        setShowDeactivateModal={setShowDeactivateModal}
+                        isRemovableContractToken={isRemovableContractToken}
+                        onDeactivateToken={handleDeactivateToken}
                     />
                 </Table.Cell>
             </Table.Row>

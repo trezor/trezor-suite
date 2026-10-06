@@ -1,10 +1,12 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { getTorUrlIfAvailable } from '@suite/external-links';
-import { type Route, goto } from '@suite/router';
+import { type Route, gotoThunk } from '@suite/router';
 import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
-import { selectTorState } from '@suite/tor';
+import { selectIsTorEnabled } from '@suite/tor';
+import { useServices } from '@suite-common/dependency-injection';
 import { resolveMessageContent } from '@suite-common/message-system';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Message } from '@suite-common/suite-types';
 import { Banner, type ButtonProps } from '@trezor/components';
 
@@ -14,10 +16,10 @@ type MessageSystemButtonProps = {
 } & Pick<ButtonProps, 'iconLeft' | 'iconRight' | 'size' | 'intent'>;
 
 export const MessageSystemButton = ({ cta, id, ...props }: MessageSystemButtonProps) => {
-    const { isTorEnabled } = useSelector(selectTorState);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
     const language = useSelector(selectLanguage);
     const torOnionLinks = useSelector(selectTorOnionLinks);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     if (!cta) return null;
 
@@ -26,7 +28,9 @@ export const MessageSystemButton = ({ cta, id, ...props }: MessageSystemButtonPr
     const onClick = () => {
         switch (action) {
             case 'internal-link':
-                dispatch(goto({ routeName: link as Route['name'], anchor, preserveParams: true }));
+                dispatch(
+                    gotoThunk({ routeName: link as Route['name'], anchor, preserveParams: true }),
+                );
                 break;
             case 'external-link':
                 window.open(

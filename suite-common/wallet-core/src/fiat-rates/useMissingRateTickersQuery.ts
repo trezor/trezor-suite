@@ -1,6 +1,6 @@
-import { useDispatch } from 'react-redux';
-
+import { useServices } from '@suite-common/dependency-injection';
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TickerId, type Timestamp } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
@@ -15,9 +15,8 @@ export const useMissingRateTickersQuery = ({
     missingRateTickers,
     baseCurrencyCode,
 }: UseMissingRateTickersQueryProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- dispatch from useDispatch() is referentially stable and is not part of the query identity (missingRateTickers + baseCurrencyCode)
     return useQuery({
         queryKey: commonQueryKeys.missingRateTickers(missingRateTickers, baseCurrencyCode),
         queryFn: () =>

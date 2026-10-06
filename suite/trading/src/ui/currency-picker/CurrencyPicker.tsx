@@ -1,13 +1,18 @@
 import { useState } from 'react';
 
+import { getFiatCurrencyFlag } from '@suite-common/flags';
+import { Button, Flag, Row } from '@trezor/components';
+import { CaretDownIcon } from '@trezor/icons';
+
 import { CurrencyPickerModal } from './CurrencyPickerModal';
-import { FakeSelect, type FakeSelectProps } from '../Form/FakeSelect';
 import { type CurrencyPickerOption } from './types/currencyPickerTypes';
 
-type CurrencyPickerProps = Omit<FakeSelectProps, 'onClick' | 'value'> & {
+type CurrencyPickerProps = {
     value: CurrencyPickerOption;
     options: CurrencyPickerOption[];
     onSelect: (currency: CurrencyPickerOption) => void;
+    isDisabled?: boolean;
+    isLoading?: boolean;
     dataTestId?: string;
 };
 
@@ -18,9 +23,9 @@ export const CurrencyPicker = ({
     isLoading,
     onSelect,
     dataTestId = '@trading/form/currency-picker/input',
-    ...props
 }: CurrencyPickerProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const flag = getFiatCurrencyFlag(value.value);
 
     const handleCurrencySelect = (currency: CurrencyPickerOption) => {
         onSelect(currency);
@@ -29,15 +34,21 @@ export const CurrencyPicker = ({
 
     return (
         <>
-            <FakeSelect
-                {...props}
-                value={value.shortLabel}
+            <Button
+                intent="neutral"
+                priority="secondary"
+                iconRight={CaretDownIcon}
                 isDisabled={isDisabled}
                 isLoading={isLoading}
                 onClick={() => setIsModalOpen(true)}
-                size="small"
+                flex="0 0 auto"
                 data-testid={dataTestId}
-            />
+            >
+                <Row gap={8} alignItems="center">
+                    {!!flag && <Flag country={flag} size={20} />}
+                    {value.shortLabel}
+                </Row>
+            </Button>
             {isModalOpen && (
                 <CurrencyPickerModal
                     onCancel={() => setIsModalOpen(false)}

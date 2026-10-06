@@ -19,5 +19,5 @@ export const RPC_CALL = 'm_rpc_call';
 export const SUBSCRIBE = 'm_subscribe';
 export const UNSUBSCRIBE = 'm_unsubscribe';
 export const PUSH_TRANSACTION = 'm_push_tx';
-export const VALIDATE_EVM_RPC = 'm_validate_evm_rpc';
+export const GET_EVM_CHAIN_ID = 'm_get_evm_chain_id';
 export const TERMINATE = 'terminate';

@@ -13,11 +13,10 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@scure/base": "^2.0.0",
         "@suite-common/address": "workspace:*",
         "@suite-common/calldata": "workspace:*",
-        "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
+        "@suite-common/legacy-network-config": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
@@ -28,8 +27,10 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/network-ethereum-suite-common": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
         "@trezor/network-tron": "workspace:*",

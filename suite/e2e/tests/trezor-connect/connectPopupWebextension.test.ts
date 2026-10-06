@@ -1,7 +1,7 @@
 import { type BrowserContext, chromium } from '@playwright/test';
 import path from 'path';
 
-import { createTestAnnotation } from '@trezor/e2e-utils';
+import { TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { mockRemoteMessageSystem } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
@@ -148,6 +148,7 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
         {
             annotation: createTestAnnotation({
                 testCase: 'Suite Web Connect (webextension): Happy path scenario with getAddress',
+                stream: TestStream.Connect,
             }),
         },
         async ({ model, device, context: defaultContext }) => {
@@ -186,6 +187,7 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
         {
             annotation: createTestAnnotation({
                 testCase: 'Suite Web Connect (webextension): Call cancelled by user',
+                stream: TestStream.Connect,
             }),
         },
         async ({ model, device, context: defaultContext }) => {
@@ -242,10 +244,11 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
             annotation: createTestAnnotation({
                 testCase:
                     'Suite Web Connect (webextension): Call cancelled via TrezorConnect.cancel() from the calling app',
+                stream: TestStream.Connect,
             }),
         },
         async ({ model, device, context: defaultContext }) => {
-            const { context, page, suite } = await setupWebextensionTest(
+            const { context, page } = await setupWebextensionTest(
                 model,
                 device,
                 defaultContext,
@@ -262,11 +265,6 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
                 const response = page.getByTestId('@response');
                 await expect(response).toHaveText(/success: false/);
                 await expect(response).toHaveText(/Method_Interrupted/);
-
-                // The popup (suite tab) should show a cancellation message.
-                await expect(suite.getByText('Request was canceled by the user')).toBeVisible({
-                    timeout: 15_000,
-                });
             } finally {
                 await context.close();
             }
@@ -279,6 +277,7 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
             annotation: createTestAnnotation({
                 testCase:
                     'Suite Web Connect (webextension): Closing the popup window (not close button) returns a proper error',
+                stream: TestStream.Connect,
             }),
         },
         async ({ model, device, context: defaultContext }) => {
@@ -308,6 +307,7 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
             annotation: createTestAnnotation({
                 testCase:
                     'Suite Web Connect (webextension): After popup is force-closed, next call should still work',
+                stream: TestStream.Connect,
             }),
         },
         async ({ model, device, context: defaultContext }) => {
@@ -374,6 +374,7 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
             annotation: createTestAnnotation({
                 testCase:
                     'Suite Web Connect (webextension): If popup is already open, it should be focused instead of opening a new one',
+                stream: TestStream.Connect,
             }),
         },
         async ({ model, device, context: defaultContext }) => {

@@ -1,9 +1,8 @@
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
+import { type AccountAddress } from '@trezor/connect';
 import { comparePath } from '@trezor/crypto-utils';
 
 import { getFirstFreshAddress, getFreshAddresses } from './getFirstFreshAddress';
-
-type AccountAddress = NonNullable<Account['addresses']>['used'][number];
 
 type CurrentFreshAddress = {
     path: string;

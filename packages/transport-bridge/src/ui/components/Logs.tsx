@@ -3,10 +3,11 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 
 import { H2 } from '@trezor/components/src/components/typography/Heading/Heading';
-import { type LogMessage } from '@trezor/utils';
+import type { LogMessage } from '@trezor/logger';
 
 import { Card } from './Card';
 import { Translation } from './Translation';
+
 const Log = styled.div`
     font-family: monospace;
     font-size: 12px;

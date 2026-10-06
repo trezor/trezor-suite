@@ -1,0 +1,184 @@
+// origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/outputs.js
+
+import type {
+    BitcoinNetworkInfo,
+    ComposeOutput,
+    ComposeResultFinal,
+    PROTO,
+    ProtoWithDerivationPath,
+} from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { ComposeOutput as ComposeOutputBase, Network } from '@trezor/utxo-lib';
+import { address as BitcoinJsAddress, payments as BitcoinJsPayments } from '@trezor/utxo-lib';
+
+import { isValidAddress } from '../../utils/addressUtils';
+import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
+import { fixPath, getHDPath, getOutputScriptType } from '../../utils/pathUtils';
+import { validateParams } from '../common/paramsValidator';
+
+/** *****
+ * SignTransaction: validation
+ ****** */
+export const validateTrezorOutputs = (
+    outputs: ProtoWithDerivationPath<PROTO.TxOutputType>[],
+    coinInfo: BitcoinNetworkInfo,
+): PROTO.TxOutputType[] => {
+    const trezorOutputs = outputs
+        .map(o => fixPath(o))
+        .map(o => convertMultisigPubKey(coinInfo.network, o));
+
+    trezorOutputs.forEach(output => {
+        validateParams(output, [
+            { name: 'address_n', type: 'array' },
+            { name: 'address', type: 'string' },
+            { name: 'amount', type: 'uint' },
+            { name: 'op_return_data', type: 'string' },
+            { name: 'script_type', type: 'string' },
+            { name: 'multisig', type: 'object' },
+        ]);
+
+        if (
+            Object.prototype.hasOwnProperty.call(output, 'address_n') &&
+            Object.prototype.hasOwnProperty.call(output, 'address')
+        ) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'Cannot use address and address_n in one output',
+            );
+        }
+
+        if (output.address_n && !output.script_type) {
+            output.script_type = getOutputScriptType(output.address_n);
+        }
+
+        if ('address' in output && typeof output.address === 'string') {
+            const externalOutput = output as { address: string; script_type?: string };
+            if (!externalOutput.script_type) {
+                externalOutput.script_type = 'PAYTOADDRESS';
+            } else if (externalOutput.script_type !== 'PAYTOADDRESS') {
+                throw ERRORS.TypedError(
+                    'Method_InvalidParameter',
+                    `External output (with address) must use script_type PAYTOADDRESS, got ${externalOutput.script_type}`,
+                );
+            }
+            if (!isValidAddress(externalOutput.address, coinInfo)) {
+                throw ERRORS.TypedError(
+                    'Method_InvalidParameter',
+                    `Invalid ${coinInfo.label} output address ${externalOutput.address}`,
+                );
+            }
+        }
+    });
+
+    return trezorOutputs;
+};
+
+/** *****
+ * ComposeTransaction: validation
+ ****** */
+export const validateHDOutput = (
+    output: ComposeOutput,
+    coinInfo: BitcoinNetworkInfo,
+): ComposeOutputBase => {
+    const validateAddress = (address?: string) => {
+        if (!address || !isValidAddress(address, coinInfo)) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                `Invalid ${coinInfo.label} output address format`,
+            );
+        }
+    };
+
+    switch (output.type) {
+        case 'opreturn':
+            validateParams(output, [{ name: 'dataHex', type: 'string' }]);
+
+            return {
+                type: 'opreturn',
+                dataHex: output.dataHex,
+            };
+
+        case 'send-max':
+            validateParams(output, [{ name: 'address', type: 'string', required: true }]);
+            validateAddress(output.address);
+
+            return {
+                type: 'send-max',
+                address: output.address,
+            };
+
+        case 'payment-noaddress':
+            validateParams(output, [{ name: 'amount', type: 'uint', required: true }]);
+
+            return {
+                type: 'payment-noaddress',
+                amount: output.amount,
+            };
+
+        case 'send-max-noaddress':
+            return {
+                type: 'send-max-noaddress',
+            };
+
+        default:
+            validateParams(output, [
+                { name: 'amount', type: 'uint', required: true },
+                { name: 'address', type: 'string', required: true },
+            ]);
+            validateAddress(output.address);
+
+            return {
+                type: 'payment',
+                address: output.address,
+                amount: output.amount,
+            };
+    }
+};
+
+/** *****
+ * Transform the result of @trezor/utxo-lib `composeTx` to Trezor protobuf
+ ****** */
+export const outputToTrezor = (
+    output: ComposeResultFinal['outputs'][number],
+): PROTO.TxOutputType => {
+    if (output.type === 'opreturn') {
+        return {
+            amount: '0',
+            op_return_data: output.dataHex,
+            script_type: 'PAYTOOPRETURN',
+        };
+    }
+
+    if (output.type === 'change') {
+        const address_n = getHDPath(output.path);
+
+        return {
+            address_n,
+            amount: output.amount,
+            script_type: getOutputScriptType(address_n),
+        };
+    }
+
+    return {
+        address: output.address,
+        amount: output.amount,
+        script_type: 'PAYTOADDRESS',
+    };
+};
+
+export const parseOutputScript = (output: Buffer, network?: Network) => {
+    try {
+        const address = BitcoinJsAddress.fromOutputScript(output, network);
+
+        return { type: 'address', address } as const;
+    } catch {
+        try {
+            const { data: embedScript } = BitcoinJsPayments.embed({ output }, { validate: true });
+            const data = embedScript?.shift()?.toString('hex'); // shift OP code
+
+            return { type: 'data', data } as const;
+        } catch {
+            return { type: 'unknown' } as const;
+        }
+    }
+};

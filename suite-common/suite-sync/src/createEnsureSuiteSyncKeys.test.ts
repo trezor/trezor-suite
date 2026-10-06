@@ -1,9 +1,5 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
-import { type EnsureDelegatedIdentityKey } from '@suite-common/delegated-identity-key-types';
-import { mockNotExpected } from '@suite-common/dependency-injection';
+import { createMockDeps as createDependencyMocks } from '@suite-common/dependency-injection';
 import { asSuiteSyncOwnerId, asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
-import { type EnsureSuiteSyncOwner } from '@suite-common/suite-sync-types';
 import { type TrezorDevice, asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { ok } from '@trezor/type-utils';
 
@@ -11,19 +7,14 @@ import {
     type EnsureSuiteSyncKeysDeps,
     createEnsureSuiteSyncKeys,
 } from './createEnsureSuiteSyncKeys';
-import { type GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
 
 const createMockDeps = () =>
-    ({
-        dispatch: mockNotExpected<Dispatch>('dispatch'),
-        ensureSuiteSyncOwner: mockNotExpected<EnsureSuiteSyncOwner>('ensureSuiteSyncOwner'),
-        ensureDelegatedIdentityKey: mockNotExpected<EnsureDelegatedIdentityKey>(
-            'ensureDelegatedIdentityKey',
-        ),
-        getDeviceForStaticSessionId: mockNotExpected<GetDeviceForStaticSessionId>(
-            'getDeviceForStaticSessionId',
-        ),
-    }) satisfies EnsureSuiteSyncKeysDeps;
+    createDependencyMocks<EnsureSuiteSyncKeysDeps>({
+        dispatch: null,
+        ensureSuiteSyncOwner: null,
+        ensureDelegatedIdentityKey: null,
+        getDeviceForStaticSessionId: null,
+    });
 
 const OWNER_1 = {
     ownerId: asSuiteSyncOwnerId('new-owner-id'),

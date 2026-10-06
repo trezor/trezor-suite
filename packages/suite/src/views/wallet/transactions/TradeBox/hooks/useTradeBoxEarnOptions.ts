@@ -1,6 +1,6 @@
+import { useNativeYieldVault } from '@suite-common/earn-stablecoin';
 import { hasNetworkFeatures, isApyAvailable } from '@suite-common/wallet-utils';
 
-import { useNativeYieldVault } from 'src/hooks/earn/useNativeYieldVault';
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 import { type Account } from 'src/types/wallet';
 
@@ -15,7 +15,7 @@ type TradeBoxEarnOptions = {
 };
 
 export const useTradeBoxEarnOptions = (account: Account): TradeBoxEarnOptions => {
-    const { hasYieldOption, bestVault } = useNativeYieldVault(account);
+    const { hasYieldOption, bestVault } = useNativeYieldVault({ account });
     const { rate: stakingRate } = useStakingRate({
         symbol: account.symbol,
         accountKey: account.key,

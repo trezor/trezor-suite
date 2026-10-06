@@ -8,11 +8,7 @@ export type PaymentName =
     | 'p2wpkh'
     | 'p2wsh'
     | 'p2ms' // Multisig
-    | 'embed' // OP_RETURN
-    | 'sstxchange' // Decred
-    | 'sstxcommitment' // Decred
-    | 'sstxpkh' // Decred
-    | 'sstxsh'; // Decred
+    | 'embed'; // OP_RETURN
 
 export interface Payment {
     name?: PaymentName;
@@ -30,7 +26,6 @@ export interface Payment {
     hash?: Buffer;
     redeem?: Payment;
     witness?: Buffer[];
-    amount?: string; // sstxcommitment
 }
 
 export declare type PaymentCreator = (a: Payment, opts?: PaymentOpts) => Payment;

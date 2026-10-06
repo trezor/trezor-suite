@@ -38,6 +38,7 @@ export type StepListProps = AllowedFrameProps & {
     bulletGap?: SpacingValue;
     titleGap?: SpacingValue;
     isOrdered?: boolean;
+    isContentFullWidth?: boolean;
     bulletSize?: BulletSize;
     lineWidth?: StepLineWidth;
     direction?: StepListDirection;
@@ -50,6 +51,7 @@ export const StepList = ({
     bulletGap = 24,
     titleGap = 8,
     isOrdered = false,
+    isContentFullWidth = false,
     bulletSize = 'large',
     lineWidth = 2,
     direction = 'vertical',
@@ -66,12 +68,18 @@ export const StepList = ({
                 bulletGap,
                 titleGap,
                 isOrdered,
+                isContentFullWidth,
                 bulletSize,
                 lineWidth,
                 direction,
             }}
         >
-            <Container data-testid={dataTestId} {...frameProps} $direction={direction}>
+            <Container
+                data-component="StepList"
+                data-testid={dataTestId}
+                {...frameProps}
+                $direction={direction}
+            >
                 {children}
             </Container>
         </StepListContext.Provider>

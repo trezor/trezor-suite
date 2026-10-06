@@ -87,6 +87,7 @@ export class TxWeightCalculator {
                 : input.multisig.pubkeys.length;
             let multisig_script_size = _TXSIZE_MULTISIGSCRIPT + n * (1 + _TXSIZE_PUBKEY);
             if (SEGWIT_INPUT_SCRIPT_TYPES.includes(input.script_type)) {
+                // eslint-disable-next-line no-useless-assignment -- Fixed separately in #31838.
                 multisig_script_size += getVarIntSize(multisig_script_size);
             } else {
                 multisig_script_size += getOpPushSize(multisig_script_size);

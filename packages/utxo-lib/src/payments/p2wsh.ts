@@ -196,7 +196,6 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
                 // match hash against other sources
                 const hash2 = bcrypto.sha256(a.redeem.output);
                 if (hash.length > 0 && !hash.equals(hash2)) throw new TypeError('Hash mismatch');
-                else hash = hash2;
             }
 
             if (a.redeem.input && !bscript.isPushOnly(_rchunks()))

@@ -6,12 +6,12 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { type EthereumSpecific, type TokenInfo } from '@trezor/blockchain-link-types';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { asAmountSubunit, asAmountUnit } from './AmountTypes';
 import { unitsToSubunits } from './amountUtils';
-import { isWrappedNativeToken } from './tokenUtils';
 
 export const isEip1559 = (
     tx: Record<string, any> | null | undefined,
@@ -33,14 +33,14 @@ export const hasEip1559MaxPriorityFee = (
 export const padLeftEven = (hex: string): string => (hex.length % 2 !== 0 ? `0${hex}` : hex);
 
 export const sanitizeHex = ($hex: string): string => {
-    const hex = $hex.toLowerCase().substring(0, 2) === '0x' ? $hex.substring(2) : $hex;
+    const hex = $hex.toLowerCase().startsWith('0x') ? $hex.substring(2) : $hex;
     if (hex === '') return '';
 
     return `0x${padLeftEven(hex)}`;
 };
 
 export const strip = (str: string): string => {
-    if (str.indexOf('0x') === 0) {
+    if (str.startsWith('0x')) {
         return padLeftEven(str.substring(2, str.length));
     }
 
@@ -146,6 +146,25 @@ export const isEvmApprovalTxByTextSignature = (
 
 export const isEvmYieldTxByTextSignature = (textSignature?: EvmTransactionPurpose) =>
     textSignature === 'deposit' || textSignature === 'withdraw' || textSignature === 'redeem';
+
+/**
+ * DeFi yield flow transactions: vault deposit/withdraw/redeem, rewards claim, and the native
+ * wrap/unwrap steps of the deposit/withdraw flows.
+ */
+export const isYieldTypeTx = (transaction: WalletAccountTransaction): boolean => {
+    const purpose = getEvmTransactionPurpose({
+        networkSymbol: transaction.symbol,
+        to: getWrappedNativeTxTarget(transaction),
+        data: transaction.ethereumSpecific?.data,
+    });
+
+    return (
+        purpose === 'wrap' ||
+        purpose === 'unwrap' ||
+        purpose === 'claim' ||
+        isEvmYieldTxByTextSignature(purpose)
+    );
+};
 
 export const ensureHexPrefix = (hex?: string): string => {
     if (!hex) return '';

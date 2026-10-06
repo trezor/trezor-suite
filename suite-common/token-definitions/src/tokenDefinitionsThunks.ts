@@ -1,11 +1,16 @@
 import { D } from '@mobily/ts-belt';
 
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TimerId } from '@trezor/type-utils';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
-import { type DefinitionType, TokenStructureType } from './tokenDefinitionsTypes';
+import {
+    type DefinitionType,
+    type GetTokenDefinitionsEnabledNetworksDep,
+    type TokenDefinitionsRootState,
+    TokenStructureType,
+} from './tokenDefinitionsTypes';
 import { fetchTokenDefinitions, getSupportedDefinitionTypes } from './tokenDefinitionsUtils';
 
 const TOKEN_DEFINITIONS_MODULE = '@common/wallet-core/token-definitions';
@@ -15,7 +20,8 @@ export const getTokenDefinitionThunk = createThunk<
     {
         symbol: NetworkSymbol;
         type: DefinitionType;
-    }
+    },
+    void
 >(
     `${TOKEN_DEFINITIONS_MODULE}/getTokenDefinitionsThunk`,
     async (params, { fulfillWithValue, rejectWithValue }) => {
@@ -33,56 +39,69 @@ export const getTokenDefinitionThunk = createThunk<
     },
 );
 
-export const initTokenDefinitionsThunk = createThunk(
-    `${TOKEN_DEFINITIONS_MODULE}/initTokenDefinitionsThunk`,
-    (_, { getState, dispatch, extra }) => {
-        const enabledNetworks = extra.selectors.selectTokenDefinitionsEnabledNetworks(getState());
+export type InitTokenDefinitionsThunkState = TokenDefinitionsRootState;
 
-        const promises = enabledNetworks
-            .map(symbol => {
-                let definitionTypes = getSupportedDefinitionTypes(symbol);
+export type InitTokenDefinitionsThunkDeps = WithServices<GetTokenDefinitionsEnabledNetworksDep>;
 
-                const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
+export const initTokenDefinitionsThunk = createThunk<
+    unknown[],
+    void,
+    { state: InitTokenDefinitionsThunkState; extra: InitTokenDefinitionsThunkDeps }
+>(`${TOKEN_DEFINITIONS_MODULE}/initTokenDefinitionsThunk`, (_, { getState, dispatch, extra }) => {
+    const enabledNetworks = extra.services.getTokenDefinitionsEnabledNetworks();
 
-                if (tokenDefinitions) {
-                    // Filter out definition types that have data or are in a loading state
-                    definitionTypes = definitionTypes.filter(type => {
-                        const definition = tokenDefinitions[type];
+    const promises = enabledNetworks
+        .map(symbol => {
+            let definitionTypes = getSupportedDefinitionTypes(symbol);
 
-                        return !(definition && (definition.data || definition.isLoading));
-                    });
-                }
+            const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 
-                if (D.isEmpty(definitionTypes)) return [];
+            if (tokenDefinitions) {
+                // Filter out definition types that have data or are in a loading state
+                definitionTypes = definitionTypes.filter(type => {
+                    const definition = tokenDefinitions[type];
 
-                return definitionTypes.map(type =>
-                    dispatch(
-                        getTokenDefinitionThunk({
-                            symbol,
-                            type,
-                        }),
-                    ),
-                );
-            })
-            .flat();
+                    return !(definition && (definition.data || definition.isLoading));
+                });
+            }
 
-        return Promise.all(promises);
-    },
-);
+            if (D.isEmpty(definitionTypes)) return [];
+
+            return definitionTypes.map(type =>
+                dispatch(
+                    getTokenDefinitionThunk({
+                        symbol,
+                        type,
+                    }),
+                ),
+            );
+        })
+        .flat();
+
+    return Promise.all(promises);
+});
 
 let tokenDefinitionsTimeout: TimerId | null = null;
 
-export const periodicCheckTokenDefinitionsThunk = createThunk(
-    `${TOKEN_DEFINITIONS_MODULE}/periodicCheckTokenDefinitionsThunk`,
-    (_, { dispatch }) => {
-        if (tokenDefinitionsTimeout) {
-            clearTimeout(tokenDefinitionsTimeout);
-        }
+type PeriodicCheckTokenDefinitionsThunkState = InitTokenDefinitionsThunkState;
 
-        tokenDefinitionsTimeout = setTimeout(() => {
-            dispatch(periodicCheckTokenDefinitionsThunk());
-        }, 60_000);
+type PeriodicCheckTokenDefinitionsThunkDeps = InitTokenDefinitionsThunkDeps;
 
-        return dispatch(initTokenDefinitionsThunk());
-    },
-);
+export const periodicCheckTokenDefinitionsThunk = createThunk<
+    void,
+    void,
+    {
+        state: PeriodicCheckTokenDefinitionsThunkState;
+        extra: PeriodicCheckTokenDefinitionsThunkDeps;
+    }
+>(`${TOKEN_DEFINITIONS_MODULE}/periodicCheckTokenDefinitionsThunk`, async (_, { dispatch }) => {
+    if (tokenDefinitionsTimeout) {
+        clearTimeout(tokenDefinitionsTimeout);
+    }
+
+    tokenDefinitionsTimeout = setTimeout(() => {
+        dispatch(periodicCheckTokenDefinitionsThunk());
+    }, 60_000);
+
+    await dispatch(initTokenDefinitionsThunk());
+});

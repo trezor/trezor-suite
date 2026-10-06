@@ -8,14 +8,14 @@ import {
 } from '@trezor/coinjoin/src/constants';
 import type { PartialRecord } from '@trezor/type-utils';
 
-export type CoinjoinSymbol = Extract<NetworkSymbol, 'btc' | 'test' | 'regtest'>;
+export type CoinjoinSymbol = NetworkSymbol & ('btc' | 'test' | 'regtest');
 export type CoinjoinServerEnvironment = 'public' | 'staging' | 'localhost';
 export type CoinjoinNetworksConfig = CoinjoinBackendSettings &
     CoinjoinClientSettings & { blockbookUrls: string[] };
 
 type ServerEnvironment = PartialRecord<CoinjoinServerEnvironment, CoinjoinNetworksConfig>;
 
-export const COINJOIN_NETWORKS: PartialRecord<CoinjoinSymbol, ServerEnvironment> = {
+export const COINJOIN_NETWORKS: PartialRecord<'btc' | 'test' | 'regtest', ServerEnvironment> = {
     btc: {
         /* default, see getCoinjoinConfig */
         public: {
@@ -164,7 +164,7 @@ export const getCoinjoinConfig = (
     symbol: CoinjoinSymbol,
     environment?: CoinjoinServerEnvironment,
 ): CoinjoinNetworksConfig => {
-    const config = COINJOIN_NETWORKS[symbol];
+    const config = COINJOIN_NETWORKS[symbol as keyof typeof COINJOIN_NETWORKS];
     const settings = config
         ? config[environment ?? (Object.keys(config)[0] as CoinjoinServerEnvironment)]
         : undefined;

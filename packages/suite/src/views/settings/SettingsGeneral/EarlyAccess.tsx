@@ -1,15 +1,17 @@
-import { openEarlyAccessSetup } from '@suite/desktop-update';
+import { injectDesktopApi } from '@suite/desktop-app-api';
+import { openEarlyAccessSetup, selectDesktopUpdate } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Row } from '@trezor/components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const EarlyAccess = () => {
-    const desktopUpdate = useSelector(state => state.desktopUpdate);
-    const dispatch = useDispatch();
+    const desktopUpdate = useSelector(selectDesktopUpdate);
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
 
     const setupEarlyAccess = () => {
         dispatch(openEarlyAccessSetup(desktopUpdate.allowPrerelease));

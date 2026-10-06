@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { selectThpPairingRequestId } from '@suite-common/thp';
 import { PinInput, Row, Spinner } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { type SignedSpacingValue } from '@trezor/theme';
 
 const SPINNER_SIZE = 32;
@@ -23,7 +23,7 @@ export const ThpPairingCodeEntry = ({ disabled, lastCode }: ThpPairingPinEntryPr
         (tag: string) => {
             setLoading(true);
             TrezorConnect.uiResponse({
-                type: 'ui-receive_thp_pairing_tag',
+                type: UI_RESPONSE.RECEIVE_THP_PAIRING_TAG,
                 payload: { tag },
                 requestId,
             });

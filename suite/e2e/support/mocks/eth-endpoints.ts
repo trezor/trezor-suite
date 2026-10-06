@@ -89,8 +89,20 @@ export const fixtures = [
         method: 'estimateFee',
         default: true,
         response: ({ params }: any) => {
-            // deposit(assets, receiver) === 0x6e553f65
-            if (params?.specific?.data?.startsWith('0x6e553f65')) {
+            const CONTRACT_CALL_SELECTORS = {
+                vaultDeposit: '0x6e553f65', // ERC-4626 deposit
+                wethWrap: '0xd0e30db0', // WETH deposit() — wrap
+                wethUnwrap: '0x2e1a7d4d', // WETH withdraw(uint256) — unwrap
+                vaultWithdraw: '0xb460af94', // ERC-4626 withdraw
+                vaultRedeem: '0xba087652', // ERC-4626 redeem
+                merklClaim: '0x71ee95c0', // Merkl distributor claim
+            } as const;
+
+            if (
+                Object.values(CONTRACT_CALL_SELECTORS).some(selector =>
+                    params?.specific?.data?.startsWith(selector),
+                )
+            ) {
                 return {
                     data: [
                         {

@@ -20,7 +20,7 @@ const config: StorybookConfig = {
 
     staticDirs: [
         '../public',
-        { from: '../../suite-data/files', to: '/static' },
+        { from: '../../../suite/app-assets/files', to: '/static' },
         { from: '../../../suite-common/flags/assets', to: '/static' },
     ],
 

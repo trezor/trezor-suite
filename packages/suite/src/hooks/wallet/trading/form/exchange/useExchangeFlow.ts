@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTransactionExchange,
     tradingExchangeActions,
     tradingThunks,
 } from '@suite-common/trading';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { useTradingClearStaleQuotes } from '../common/useTradingClearStaleQuotes';
 
@@ -23,7 +23,7 @@ export const useExchangeFlow = ({
     transactionId,
     isAmountEmpty,
 }: UseExchangeFlowProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: 'exchange' }));

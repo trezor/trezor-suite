@@ -1,12 +1,14 @@
-import { localizeNumber } from '@suite-common/wallet-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { calculatePercentageOfBalance } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-let ethereumStakingBalance: string | null;
+const ethSymbol = asNetworkSymbol('eth');
+
+let ethereumStakingBalance: string;
 const WITHDRAWAL_BUFFER = 0.005;
 
 test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
@@ -24,7 +26,7 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await settingsPage.changeNetworks({
             enableNetworks: [
-                { symbol: 'eth', backend: { type: 'blockbook', url: blockbookMock.url } },
+                { symbol: ethSymbol, backend: { type: 'blockbook', url: blockbookMock.url } },
             ],
         });
     });
@@ -36,19 +38,26 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user can use staking form functions.',
                 category: TestCategory.ETH,
                 priority: TestPriority.Medium,
-                stream: TestStream.Trends,
+                stream: TestStream.Earn,
             }),
         },
-        async ({ walletPage, stakingSection }) => {
+        async ({ page, walletPage, stakingSection }) => {
             await test.step('Identify possible staking balance', async () => {
-                await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
-                ethereumStakingBalance = await walletPage.topPanelBalance.textContent();
-                if (!ethereumStakingBalance) {
-                    throw new Error('Ethereum staking balance is undefined or null');
-                }
-                ethereumStakingBalance = ethereumStakingBalance?.replace(/,/g, '');
+                await walletPage.openAccount({ symbol: ethSymbol, type: 'normal', atIndex: 0 });
+                await expect(walletPage.topPanelBalance).toHaveText(/\d/);
+                ethereumStakingBalance = (await walletPage.topPanelBalance.innerText()).replace(
+                    /,/g,
+                    '',
+                );
                 await stakingSection.stakingTabButton.click();
                 await stakingSection.stakeMoreButton.click();
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKING_IN_A_NUTSHELL');
+                await stakingSection.continueButton.click();
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKE_TOKEN', {
+                    values: { symbol: 'ETH' },
+                });
+                await stakingSection.everstakeAcknowledgeCheckbox.click();
+                await stakingSection.confirmButton.click();
             });
 
             await test.step('Check limits for staking', async () => {
@@ -105,8 +114,8 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                             .click();
                         const expectedValue = calculatePercentageOfBalance({
                             percentage,
-                            balance: ethereumStakingBalance!,
-                            symbol: 'eth',
+                            balance: ethereumStakingBalance,
+                            symbol: ethSymbol,
                         });
                         await expect.soft(stakingSection.cryptoInput).toHaveValue(expectedValue);
                     });
@@ -121,7 +130,7 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                         .toHaveTranslation('TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL', {
                             values: { amount: '0.005', networkDisplaySymbol: 'ETH' },
                         });
-                    const expectedMax = new BigNumber(ethereumStakingBalance!).minus(
+                    const expectedMax = new BigNumber(ethereumStakingBalance).minus(
                         WITHDRAWAL_BUFFER,
                     );
                     const formattedExpectedMax = localizeNumber(expectedMax);

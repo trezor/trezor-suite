@@ -1,23 +1,18 @@
-import { type ExchangeTrade, type ExchangeTradeQuoteRequest } from 'invity-api';
+import { type ExchangeTradeQuoteRequest } from 'invity-api';
 
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { type Account } from 'src/types/wallet';
 
-export type ExchangeQuotesByType = {
-    fixed: ExchangeTrade[];
-    float: ExchangeTrade[];
-    dex: ExchangeTrade[];
-};
-
 export const createQuoteLink = async (
+    { desktopApi }: DesktopApiDep<'getHttpReceiverAddress'>,
     request: ExchangeTradeQuoteRequest,
     account: Account,
     composedInfo: TradingComposedTransactionInfo,
     orderId: string,
-) => {
+): Promise<string> => {
     const assetPrefix = process.env.ASSET_PREFIX || '';
     const locationOrigin = getLocationOrigin();
     let hash = `${request.send}/${request.receive}/${request.sendStringAmount}/${orderId}`;

@@ -1,20 +1,21 @@
 import type { BuyTrade, CryptoId, FiatCurrencyCode } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type DesktopApiDep } from '@suite/desktop-app-api';
+import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
+import { locksReducer } from '@suite/locks';
+import { modalReducer } from '@suite/modal';
+import { type GotoThunkState, type SuiteRouterHistoryDep, routerReducer } from '@suite/router';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { type TradingRootState, initialState as tradingInitialState } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { useTradingBuyConfirm } from './useTradingBuyConfirm';
-
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    goto: jest.fn((payload: unknown) => ({ type: '@router/goto', payload })),
-}));
-
-jest.mock('@suite-common/dependency-injection', () => ({
-    ...jest.requireActual('@suite-common/dependency-injection'),
-    useServices: () => ({ analytics: { report: jest.fn() } }),
-}));
 
 const mockConfirmTradeThunk = jest.fn((args: unknown) => {
     const thunk = () => ({ unwrap: () => Promise.resolve({ paymentId: 'payment-1' }) });
@@ -34,7 +35,8 @@ jest.mock('@suite-common/trading', () => {
     };
 });
 
-const ACCOUNT = mockWalletAccount({ symbol: 'btc' });
+const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
+const RECEIVE_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
 const EURO_FIAT_CURRENCY = 'EUR' as FiatCurrencyCode;
 
@@ -59,19 +61,24 @@ type StateOverrides = {
     receiveAddress?: string;
     isLoading?: boolean;
     accountKey?: AccountKey;
+    receiveAccountKey?: AccountKey;
     accounts?: Account[];
 };
 
-const DEFAULTS: Required<StateOverrides> = {
+const DEFAULTS = {
     selectedQuote: SELECTED_QUOTE,
     receiveAddress: 'bc1qreceive',
     isLoading: false,
     accountKey: ACCOUNT.key,
+    receiveAccountKey: undefined,
     accounts: [ACCOUNT],
-};
+} satisfies StateOverrides;
 
-const buildState = (overrides: StateOverrides = {}) => {
-    const { selectedQuote, receiveAddress, isLoading, accountKey, accounts } = {
+// The hook reads trading and account selectors in addition to dispatching gotoThunk.
+type State = GotoThunkState & TradingRootState & AccountsRootState;
+
+const buildState = (overrides: StateOverrides = {}): Pick<State, 'wallet'> => {
+    const { selectedQuote, receiveAddress, isLoading, accountKey, receiveAccountKey, accounts } = {
         ...DEFAULTS,
         ...overrides,
     };
@@ -80,34 +87,51 @@ const buildState = (overrides: StateOverrides = {}) => {
         wallet: {
             accounts,
             trading: {
+                ...tradingInitialState,
                 buy: {
+                    ...tradingInitialState.buy,
                     selectedQuote,
                     receiveAddress,
                     isLoading,
                     tradingAccountKey: accountKey,
-                    receiveAccountKey: undefined,
+                    receiveAccountKey,
                     buyInfo: undefined,
-                },
-                sell: {
-                    tradingAccountKey: undefined,
-                },
-                exchange: {
-                    tradingAccountKey: undefined,
                 },
             },
         },
     };
 };
 
+type UseTradingBuyConfirmServices = DesktopAnalyticsDep &
+    DesktopApiDep<'getHttpReceiverAddress'> &
+    SuiteRouterHistoryDep;
+
 const renderConfirm = (overrides?: StateOverrides) => {
-    const store = configureMockStore({ preloadedState: buildState(overrides) });
-    const { result } = renderHookWithStoreProvider(() => useTradingBuyConfirm(), { store });
+    const state = buildState(overrides);
+    const suiteRouterHistory = { ...mockSuiteRouterHistory(), navigate: jest.fn() };
+    const { services } = createTestCompositionRoot<
+        { services: UseTradingBuyConfirmServices },
+        State
+    >({
+        preloadedState: state,
+        reducer: {
+            router: routerReducer,
+            locks: locksReducer,
+            modal: modalReducer,
+            wallet: (wallet = state.wallet) => wallet,
+        },
+        services: () => ({
+            analytics: mockDesktopAnalytics(),
+            suiteRouterHistory,
+            desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
+        }),
+    });
+    const { result } = renderHookWithStoreProvider(() => useTradingBuyConfirm(), {
+        services,
+    });
 
-    return { store, result };
+    return { services, result, suiteRouterHistory };
 };
-
-const gotoActions = (store: ReturnType<typeof renderConfirm>['store']) =>
-    store.getActions().filter(action => action.type === '@router/goto');
 
 describe('useTradingBuyConfirm', () => {
     beforeEach(() => {
@@ -140,17 +164,18 @@ describe('useTradingBuyConfirm', () => {
 
     describe('readiness guard', () => {
         it('does not redirect when every requirement is satisfied', () => {
-            const { store } = renderConfirm();
+            const { suiteRouterHistory } = renderConfirm();
 
-            expect(gotoActions(store)).toHaveLength(0);
+            expect(suiteRouterHistory.navigate).not.toHaveBeenCalled();
         });
 
         it('redirects to the buy form when a requirement is missing', () => {
-            const { store } = renderConfirm({ selectedQuote: undefined });
+            const { suiteRouterHistory } = renderConfirm({ selectedQuote: undefined });
 
-            expect(gotoActions(store)).toEqual([
-                { type: '@router/goto', payload: { routeName: 'wallet-trading-buy' } },
-            ]);
+            expect(suiteRouterHistory.navigate).toHaveBeenCalledWith({
+                pathname: '/accounts/coinmarket/buy',
+                hash: '',
+            });
         });
     });
 
@@ -176,6 +201,34 @@ describe('useTradingBuyConfirm', () => {
             await result.current.confirmTrade();
 
             expect(mockConfirmTradeThunk).not.toHaveBeenCalled();
+        });
+
+        it('uses the receive account, not the form account, for the trade and return url', async () => {
+            const { result } = renderConfirm({
+                receiveAccountKey: RECEIVE_ACCOUNT.key,
+                accounts: [ACCOUNT, RECEIVE_ACCOUNT],
+            });
+
+            await result.current.confirmTrade();
+
+            expect(mockConfirmTradeThunk).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    account: RECEIVE_ACCOUNT,
+                    returnUrl: expect.stringContaining(
+                        `detail/${RECEIVE_ACCOUNT.symbol}/${RECEIVE_ACCOUNT.accountType}/${RECEIVE_ACCOUNT.index}/`,
+                    ),
+                }),
+            );
+        });
+
+        it('falls back to the form account when there is no Suite receive account', async () => {
+            const { result } = renderConfirm();
+
+            await result.current.confirmTrade();
+
+            expect(mockConfirmTradeThunk).toHaveBeenCalledWith(
+                expect.objectContaining({ account: ACCOUNT }),
+            );
         });
     });
 });

@@ -1,16 +1,19 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { openModal } from '@suite/modal';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     EarnFlow,
     type EarnModalAction,
+    type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    DEFAULT_VOTING_OPTION,
-    selectVotingDelegationOption,
+    earnOnboardingActions,
+    getEarnOpportunityKey,
+    getYieldEarnOpportunityKey,
     stakeActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -18,12 +21,11 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 
 interface UseEarnProviderConsentActionsProps {
     flow: EarnFlow;
+    provider: EarnProvider;
     onCancel: () => void;
-    includeVotingDelegation?: boolean;
     account: Account;
     networkSymbol?: NetworkSymbol;
     yieldContext?: EarnYieldContext;
@@ -31,15 +33,13 @@ interface UseEarnProviderConsentActionsProps {
 
 export const useEarnProviderConsentActions = ({
     flow,
+    provider,
     onCancel,
-    includeVotingDelegation = false,
     account,
     networkSymbol,
     yieldContext,
 }: UseEarnProviderConsentActionsProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const report = (action: EarnModalAction) => {
         if (flow === EarnFlow.Yield) return;
@@ -50,26 +50,36 @@ export const useEarnProviderConsentActions = ({
                 action,
                 step: 'funds-maintained-modal',
                 networkSymbol,
-                ...(includeVotingDelegation
-                    ? { votingDelegation: selectedVotingDelegation.type }
-                    : {}),
             },
         });
     };
 
     const proceedToEarnFlow = () => {
+        const opportunity =
+            flow === EarnFlow.Yield
+                ? getYieldEarnOpportunityKey(yieldContext?.vaultAddress)
+                : getEarnOpportunityKey({ type: 'staking', provider });
+
+        if (opportunity) {
+            dispatch(
+                earnOnboardingActions.confirmEarnOnboarding({
+                    accountKey: account.key,
+                    opportunity,
+                }),
+            );
+        }
+
         onCancel();
 
         switch (flow) {
             case EarnFlow.Yield:
-                if (yieldContext) {
+                if (yieldContext?.vaultAddress) {
                     dispatch(
-                        goto({
+                        gotoThunk({
                             routeName: 'earn-yield-deposit',
                             params: getEarnRouteParams({
                                 account,
-                                yieldId: yieldContext.id,
-                                contractAddress: yieldContext.tokenContractAddress,
+                                vaultAddress: yieldContext.vaultAddress,
                             }),
                         }),
                     );
@@ -95,7 +105,7 @@ export const useEarnProviderConsentActions = ({
     const onCancelClick = () => {
         onCancel();
 
-        dispatch(stakeActions.setVotingDelegationOption(DEFAULT_VOTING_OPTION));
+        dispatch(stakeActions.clearAccountVotingDelegation());
         report('cancel');
     };
 

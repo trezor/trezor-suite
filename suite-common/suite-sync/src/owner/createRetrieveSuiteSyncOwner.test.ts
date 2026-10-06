@@ -6,10 +6,10 @@ import {
 } from '@suite-common/suite-sync-storage';
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { asDeviceUniquePath } from '@trezor/connect';
+import { type GetTrezorConnect } from '@trezor/connect-common';
 import { ok } from '@trezor/type-utils';
 
 import {
-    type RetrieveSuiteSyncOwnerDeps,
     type RetrieveSuiteSyncOwnerParams,
     createRetrieveSuiteSyncOwner,
 } from './createRetrieveSuiteSyncOwner';
@@ -29,19 +29,19 @@ const owner1: SuiteSyncOwner = {
     ownerSecret: asSuiteSyncOwnerSecretHex('owner1secretHex'),
 };
 
-const trezorConnect: RetrieveSuiteSyncOwnerDeps['trezorConnect'] = {
+const mockGetTrezorConnect: GetTrezorConnect<'evoluGetNode'> = () => ({
     evoluGetNode: () =>
         Promise.resolve({
             payload: { data: 'evoluNodeData' },
             success: true,
         }),
-};
+});
 
 describe(createRetrieveSuiteSyncOwner.name, () => {
     it('succeeds for valid delegated key', async () => {
         const ensureSuiteSyncOwner = createRetrieveSuiteSyncOwner({
             createSuiteSyncOwner: () => ok(owner1),
-            trezorConnect,
+            getTrezorConnect: mockGetTrezorConnect,
         });
 
         const result = await ensureSuiteSyncOwner({ device, delegatedKey: DELEGATED_IDENTITY_KEY });
@@ -53,7 +53,7 @@ describe(createRetrieveSuiteSyncOwner.name, () => {
     it('fails for invalid DelegatedIdentityKey', async () => {
         const ensureSuiteSyncOwner = createRetrieveSuiteSyncOwner({
             createSuiteSyncOwner: () => ok(owner1),
-            trezorConnect,
+            getTrezorConnect: mockGetTrezorConnect,
         });
 
         const delegatedKey = asDelegatedIdentityKey('delegated-broke-key');
@@ -65,10 +65,10 @@ describe(createRetrieveSuiteSyncOwner.name, () => {
     });
 
     it('returns DeviceNotConnectedError without calling Connect when device is not connected', async () => {
-        const evoluGetNode = jest.fn();
+        const getTrezorConnect = jest.fn();
         const ensureSuiteSyncOwner = createRetrieveSuiteSyncOwner({
             createSuiteSyncOwner: () => ok(owner1),
-            trezorConnect: { evoluGetNode },
+            getTrezorConnect,
         });
 
         const result = await ensureSuiteSyncOwner({
@@ -78,6 +78,6 @@ describe(createRetrieveSuiteSyncOwner.name, () => {
 
         expect(result.success).toBe(false);
         expect(!result.success && result.error.type).toBe('DeviceNotConnectedError');
-        expect(evoluGetNode).not.toHaveBeenCalled();
+        expect(getTrezorConnect).not.toHaveBeenCalled();
     });
 });

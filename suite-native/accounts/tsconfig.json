@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/address" },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
@@ -10,6 +13,7 @@
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -24,9 +28,6 @@
         },
         {
             "path": "../../suite-common/token-definitions"
-        },
-        {
-            "path": "../../suite-common/validators"
         },
         {
             "path": "../../suite-common/wallet-config"
@@ -49,8 +50,8 @@
         { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../navigation" },
+        { "path": "../scrollview" },
         { "path": "../search" },
-        { "path": "../staking" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

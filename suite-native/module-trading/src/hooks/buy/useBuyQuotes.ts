@@ -1,9 +1,11 @@
 import { type RefObject, useCallback, useEffect, useEffectEvent, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigs } from '@suite-common/networks';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type HandleBuyRequestThunkProps,
@@ -16,7 +18,7 @@ import {
     useTradingRefetchScheduler,
 } from '@suite-common/trading';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { buyActions, selectValidTradingBuyQuotesNative } from '@suite-native/trading-state';
@@ -102,8 +104,7 @@ const useBuyQuotesThunk = (
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const asset = useWatch({ control: form.control, name: 'asset' });
     const symbol = getSymbolFromTradeableAsset(asset);
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
@@ -115,6 +116,7 @@ const useBuyQuotesThunk = (
     const platformInfo = useSelector((state: TradingRootState) =>
         selectTradingPlatformByCryptoId(state, asset?.cryptoId),
     );
+    const networkConfigs = useSelector(selectNetworkConfigs);
     const {
         isFetchAllowed,
         cryptoId,
@@ -127,6 +129,10 @@ const useBuyQuotesThunk = (
     } = requestState;
 
     const fetchQuotes = useCallback(async () => {
+        if (!coinInfo) {
+            return;
+        }
+
         const selectedAsset = form.getValues('asset');
         invariant(selectedAsset, 'Asset is not defined');
         const network = cryptoIdToNetwork(selectedAsset.cryptoId);
@@ -134,7 +140,12 @@ const useBuyQuotesThunk = (
 
         const payload: HandleBuyRequestThunkProps = {
             network,
-            formValues: tradingBuyFormToTradingBuyFormProps(form, coinInfo, platformInfo),
+            formValues: tradingBuyFormToTradingBuyFormProps(
+                form,
+                coinInfo,
+                platformInfo,
+                networkConfigs,
+            ),
             shouldSendInSats,
         };
         const requestPromise = dispatch(buyThunks.handleRequestThunk(payload));
@@ -148,7 +159,16 @@ const useBuyQuotesThunk = (
                 },
             });
         }
-    }, [form, coinInfo, platformInfo, shouldSendInSats, quotesPromiseRef, dispatch, analytics]);
+    }, [
+        form,
+        coinInfo,
+        platformInfo,
+        networkConfigs,
+        shouldSendInSats,
+        quotesPromiseRef,
+        dispatch,
+        analytics,
+    ]);
 
     const requestQuotes = useEffectEvent(() => {
         if (quotesPromiseRef.current?.abort) {

@@ -1,14 +1,12 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectIsDeviceOrUiLocked } from '@suite/locks';
-import { closeModalApp, goto } from '@suite/router';
-import {
-    selectDeviceThunk,
-    selectIsAnyNetworkEnabled,
-    startAddWalletDiscoveryThunk,
-} from '@suite-common/wallet-core';
+import { closeModalAppThunk, gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDeviceThunk } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { selectIsAnyNetworkEnabled, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
 import { FolderOpenIcon, PlusCircleFilledIcon, PlusIcon, XIcon } from '@trezor/icons';
@@ -32,7 +30,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     const isDeviceOrUiLocked = useSelector(selectIsDeviceOrUiLocked);
     const isAnyNetworkEnabled = useSelector(selectIsAnyNetworkEnabled);
     const isPassphraseProtectionEnabled = Boolean(device?.features?.passphrase_protection);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const isLocked = !device || !device.connected || isDeviceOrUiLocked;
     const isPassphraseAddDisabled = isLocked || !isAnyNetworkEnabled;
     const showNoNetworksTooltip = !isLocked && !isAnyNetworkEnabled;
@@ -40,8 +38,8 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
 
     const goToCoinsSettings = () => {
         onCancel?.(false);
-        dispatch(closeModalApp());
-        dispatch(goto({ routeName: 'settings-coins' }));
+        dispatch(closeModalAppThunk());
+        dispatch(gotoThunk({ routeName: 'settings-coins' }));
     };
 
     const noNetworksTooltipContent = (
@@ -63,16 +61,15 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
         return null;
     }
 
-    const onAddWallet = ({
-        walletType,
-        isExisting,
-    }: {
+    type OnAddWalletParams = {
         walletType: WalletType;
         isExisting?: boolean;
-    }) => {
+    };
+
+    const onAddWallet = ({ walletType, isExisting }: OnAddWalletParams) => {
         onCancel?.(false);
         dispatch(selectDeviceThunk({ device }));
-        dispatch(closeModalApp());
+        dispatch(closeModalAppThunk());
         // TODO: when creating a new hidden wallet, we should not start discovery yet, but only after going through the best practices flow
         dispatch(
             startAddWalletDiscoveryThunk({
@@ -81,7 +78,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                 isAddingExistingWallet: isExisting,
             }),
         );
-        dispatch(goto({ routeName: 'suite-index' }));
+        dispatch(gotoThunk({ routeName: 'suite-index' }));
     };
 
     const ExpandedPassphraseContainer = () => (

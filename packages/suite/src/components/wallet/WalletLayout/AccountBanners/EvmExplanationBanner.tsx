@@ -1,10 +1,12 @@
 import { Translation } from '@suite/intl';
 import { selectRouteName } from '@suite/router';
-import { networks } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { getNetwork } from '@suite-common/wallet-config';
 
-import { SUITE } from 'src/actions/suite/constants';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { closeEvmExplanationBanner } from 'src/actions/suite/suiteActions';
+import { useSelector } from 'src/hooks/suite';
+import { selectEvmSettings } from 'src/selectors/suite/suiteSelectors';
 import { type Account } from 'src/types/wallet';
 
 import { BannerPoints } from './BannerPoints';
@@ -15,9 +17,9 @@ interface EvmExplanationBannerProps {
 }
 
 export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => {
-    const { explanationBannerClosed } = useSelector(state => state.suite.evmSettings);
+    const { explanationBannerClosed } = useSelector(selectEvmSettings);
     const routeName = useSelector(selectRouteName);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const isReceiveRoute = routeName === 'wallet-receive';
 
@@ -25,20 +27,16 @@ export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => 
         account &&
         !explanationBannerClosed[account.symbol] &&
         account.symbol !== 'eth' &&
-        networks[account.symbol].networkType === 'ethereum' &&
+        getNetwork(account.symbol).networkType === 'ethereum' &&
         !isReceiveRoute;
 
     if (!isVisible) {
         return null;
     }
 
-    const network = networks[account.symbol];
+    const network = getNetwork(account.symbol);
 
-    const close = () =>
-        dispatch({
-            type: SUITE.EVM_CLOSE_EXPLANATION_BANNER,
-            symbol: account?.symbol,
-        });
+    const close = () => dispatch(closeEvmExplanationBanner(account.symbol));
 
     const points = [
         <Translation id="TR_EVM_EXPLANATION_DESCRIPTION" key="TR_EVM_EXPLANATION_DESCRIPTION" />,

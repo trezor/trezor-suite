@@ -1,22 +1,20 @@
 import { useCallback } from 'react';
 
-import {
-    MODAL_CONTEXT_DEVICE,
-    MODAL_CONTEXT_DEVICE_CONFIRMATION,
-    selectModalRequestId,
-} from '@suite/modal';
-import { goto } from '@suite/router';
+import { selectIsDeviceInteractionModalActive, selectModalRequestId } from '@suite/modal';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,
     selectIsDiscoveryStatusConfirmEmptyPassphrase,
-    submitPassphrase,
+    submitPassphraseThunk,
 } from '@suite-common/wallet-core';
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_EVENTS } from '@trezor/connect';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { PassphraseWalletExistsFlow } from './PassphraseWalletExistsFlow';
 import { PassphraseWalletIsNotExistFlow } from './PassphraseWalletIsNotExistFlow';
@@ -24,21 +22,19 @@ import { DiscoveryLoader } from '../../ModalSwitcher/DiscoveryLoader';
 import { PassphraseDuplicateModal } from '../UserContextModal/PassphraseDuplicateModal';
 import { PassphraseMismatchModal } from '../UserContextModal/PassphraseMismatchModal';
 
-export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
+type PassphraseModalProps = { device: TrezorDevice };
+
+export const PassphraseModal = ({ device }: PassphraseModalProps) => {
     const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device?.path));
     const requestId = useSelector(selectModalRequestId);
-    const dispatch = useDispatch();
-    const isDeviceInteractionModalActive = useSelector(
-        state =>
-            state.modal.context === MODAL_CONTEXT_DEVICE ||
-            state.modal.context === MODAL_CONTEXT_DEVICE_CONFIRMATION,
-    );
+    const { dispatch } = useServices(injectDispatch);
+    const isDeviceInteractionModalActive = useSelector(selectIsDeviceInteractionModalActive);
     const onPassphraseConfirm = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
             if (!discovery) return;
 
             dispatch(
-                submitPassphrase({
+                submitPassphraseThunk({
                     device,
                     passphrase: value,
                     passphraseOnDevice,
@@ -55,13 +51,13 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
 
     const onBackToInitial = () => {
         dispatch(cancelDiscoveryThunk(device));
-        dispatch({ type: UI_REQUEST.CLOSE_UI_WINDOW });
-        dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
+        dispatch({ type: UI_EVENTS.CLOSE_UI_WINDOW });
+        dispatch(gotoThunk({ routeName: 'suite-switch-device', params: { cancelable: true } }));
     };
 
     const onCancel = () => {
         dispatch(cancelDiscoveryThunk(device));
-        dispatch({ type: UI_REQUEST.CLOSE_UI_WINDOW });
+        dispatch({ type: UI_EVENTS.CLOSE_UI_WINDOW });
     };
 
     const onSubmit = useCallback(
@@ -75,7 +71,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
             }
 
             dispatch(
-                submitPassphrase({
+                submitPassphraseThunk({
                     device,
                     passphrase: value,
                     passphraseOnDevice,

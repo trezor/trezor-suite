@@ -5,26 +5,23 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import {
-    selectTurnOffSuiteSyncDep,
-    selectTurnOnSuiteSyncDep,
-} from '@suite-common/suite-sync-types';
+import { injectTurnOffSuiteSync, injectTurnOnSuiteSync } from '@suite-common/suite-sync-types';
 import { useAlert } from '@suite-native/alerts';
-import { events as nativeEvents, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics, events as nativeEvents } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { StorageContext } from '@suite-native/storage';
 import { useShowSuiteSyncEnabledToast, useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 
 export const ToggleSuiteSyncCard = () => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const storageContext = useContext(StorageContext);
     const { showAlert } = useAlert();
     const { showSuiteSyncEnabledToast } = useShowSuiteSyncEnabledToast();
 
     const { turnOffSuiteSync, turnOnSuiteSync } = useServices(
-        selectTurnOffSuiteSyncDep,
-        selectTurnOnSuiteSyncDep,
+        injectTurnOffSuiteSync,
+        injectTurnOnSuiteSync,
     );
 
     const { handleSuiteSyncError } = useSuiteSyncErrorHandler();

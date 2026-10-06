@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { Tooltip } from '@trezor/components';
 
@@ -11,7 +12,7 @@ interface AppNavigationTooltipProps {
 }
 
 export const AppNavigationTooltip = ({ children, isActiveTab }: AppNavigationTooltipProps) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
 
     const isAccountLoading = selectedAccount.status === 'loading';
 

@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
+    TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
     type TradingAmountLimitProps,
@@ -17,12 +20,12 @@ import {
     selectTradingSendAccount,
     tradingSellActions,
 } from '@suite-common/trading';
-import { networks } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
+import { useTradingAmountUnitSync } from 'src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
-import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type TradingSellFormContextProps } from 'src/types/trading/tradingForm';
@@ -37,7 +40,7 @@ import { useTradingFormAccount } from '../useTradingFormAccount';
 
 export const useTradingSellForm = (): TradingSellFormContextProps => {
     const type = 'sell';
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const isLoading = useSelector(selectTradingSellIsLoading);
     const quotesRequest = useSelector(selectTradingSellQuotesRequest);
     const isFromRedirect = useSelector(selectTradingSellIsFromRedirect);
@@ -56,7 +59,7 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
 
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
-    const network = account ? networks[account.symbol] : undefined;
+    const network = account ? getNetwork(account.symbol) : undefined;
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
 
     const { defaultValues } = useTradingSellFormDefaultValues(
@@ -70,16 +73,17 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         mode: 'onChange',
         defaultValues: redirectValues ?? defaultValues,
     });
-    const { register, reset, control, formState } = methods;
+    const { register, reset, control, formState, getValues } = methods;
     // Watch only those values that are relevant in the render function
-    const [outputAmount] = useWatch({
+    const [outputAmount, outputFiat, amountInCrypto] = useWatch({
         control,
-        name: [TRADING_FORM_OUTPUT_AMOUNT],
+        name: [TRADING_FORM_OUTPUT_AMOUNT, TRADING_FORM_OUTPUT_FIAT, TRADING_FORM_AMOUNT_IN_CRYPTO],
     });
+    const activeAmount = amountInCrypto ? outputAmount : outputFiat;
 
     const formIsValid = Object.keys(formState.errors).length === 0;
-    const hasValues = !!outputAmount;
-    const isAmountEmpty = outputAmount === '';
+    const hasValues = !!activeAmount;
+    const isAmountEmpty = activeAmount === '';
     const noProviders = Object.keys(sellInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !sellInfo?.providerInfos;
 
@@ -106,13 +110,10 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         isInitialDataLoading || formState.isSubmitting || isLoading || isComposing;
     const isFormInvalid = !(formIsValid && hasValues);
 
-    const { toggleAmountInCrypto } = useTradingCurrencySwitcher<TradingSellFormProps>({
-        account,
+    useTradingAmountUnitSync({
+        networkSymbol: account?.symbol,
         methods,
-        inputNames: {
-            cryptoInput: TRADING_FORM_OUTPUT_AMOUNT,
-            fiatInput: TRADING_FORM_OUTPUT_FIAT,
-        },
+        cryptoInputName: TRADING_FORM_OUTPUT_AMOUNT,
     });
 
     const { isScheduledQuotesRefresh } = useSellQuotes({
@@ -120,6 +121,10 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         network,
         shouldSendInSats,
         composeRequestCallback: () => {
+            if (!getValues(TRADING_FORM_AMOUNT_IN_CRYPTO)) {
+                return;
+            }
+
             composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
         },
     });
@@ -167,31 +172,22 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
                 isFormLoading,
                 isFormInvalid,
                 isLoadingOrInvalid,
-
-                toggleAmountInCrypto,
             },
             helpers,
         },
         ...methods,
         methods,
-        sellInfo,
-        quotesRequest,
         composedLevels,
-        composedTransactionInfo,
         feeInfo,
         isComposing,
         amountLimits,
         network,
         shouldSendInSats,
-        trade,
         isAmountEmpty,
         changeFeeLevel,
         composeRequest,
         setAmountLimits,
         showReserveBanner,
         setShowReserveBanner,
-        clearQuotesAndParams: () => {
-            dispatch(tradingSellActions.clearQuotesAndParams());
-        },
     };
 };

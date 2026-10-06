@@ -1,0 +1,44 @@
+import { useSelector } from 'react-redux';
+
+import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type AccountsRootState,
+    type StakeRootState,
+    selectAccountByKey,
+    selectRewardsBalanceByAccountKey,
+} from '@suite-common/wallet-core';
+import { type AccountDescriptor, type AccountKey } from '@suite-common/wallet-types';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
+
+const NON_SOLANA_PLACEHOLDER_ACCOUNT = {
+    symbol: asNetworkSymbol('btc'),
+    descriptor: '' as AccountDescriptor,
+} as const;
+
+export const useStakingTotalRewards = (accountKey: AccountKey) => {
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
+    const rewardsBalance = useSelector((state: StakeRootState) =>
+        selectRewardsBalanceByAccountKey(state, accountKey),
+    );
+
+    const solanaRewardsTotalQuery = useSolanaRewardsTotal(
+        account ?? NON_SOLANA_PLACEHOLDER_ACCOUNT,
+    );
+
+    // Only mainnet 'sol' is served by the Earn rewards API.
+    // Other networks keep the Redux-derived rewards balance.
+    if (account?.symbol === 'sol') {
+        const totalRewards = subunitsToUnits({
+            value: asAmountSubunit(new BigNumber(solanaRewardsTotalQuery.data ?? '0')),
+            symbol: account.symbol,
+        }).toString();
+
+        return { totalRewards, isTotalRewardsLoading: solanaRewardsTotalQuery.isLoading };
+    }
+
+    return { totalRewards: rewardsBalance, isTotalRewardsLoading: false };
+};

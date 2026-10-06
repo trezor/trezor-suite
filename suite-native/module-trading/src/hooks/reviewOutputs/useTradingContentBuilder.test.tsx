@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type {
     AccountKey,
     FormStateTradingCryptoCurrency,
@@ -7,22 +8,21 @@ import type {
 } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
-import type { ReviewOutputItemContentDataProps } from '@suite-native/transaction-management';
 
-import { useTradingContentBuilder } from './useTradingContentBuilder';
+import { type ContentBuilderProps, useTradingContentBuilder } from './useTradingContentBuilder';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 const mockSend: FormStateTradingCryptoCurrency = {
     cryptoId: 'bitcoin' as CryptoId,
     accountKey: undefined,
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     amount: '1.22',
 };
 
 const mockReceiveCrypto: FormStateTradingCryptoCurrency = {
     cryptoId: 'ethereum' as CryptoId,
     accountKey: btc1NormalAccount.key,
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     amount: '0.462586',
 };
 
@@ -31,7 +31,7 @@ const mockReceiveFiat: FormStateTradingFiatCurrency = {
     fiatCurrency: 'USD',
 };
 
-const baseProps: ReviewOutputItemContentDataProps = {
+const baseProps: ContentBuilderProps = {
     accountKey: 'account-key' as AccountKey,
     outputType: 'traded_assets',
     value: '',
@@ -40,35 +40,31 @@ const baseProps: ReviewOutputItemContentDataProps = {
 };
 
 describe('useTradingContentBuilder', () => {
-    const ContentBuilderWrapper = ({
-        props,
-    }: {
-        props: Partial<ReviewOutputItemContentDataProps>;
-    }) => {
+    const ContentBuilderWrapper = ({ props }: { props: Partial<ContentBuilderProps> }) => {
         const contentBuilder = useTradingContentBuilder();
 
         return <>{contentBuilder({ ...baseProps, ...props })}</>;
     };
 
-    const renderContentBuilder = (props: Partial<ReviewOutputItemContentDataProps> = {}) =>
-        renderWithTradingProvider(<ContentBuilderWrapper props={props} />, {
+    const renderContentBuilder = async (props: Partial<ContentBuilderProps> = {}) =>
+        await renderWithTradingProvider(<ContentBuilderWrapper props={props} />, {
             tradeType: 'exchange',
         });
 
-    it('returns undefined for non-traded_assets output type', () => {
-        const { toJSON } = renderContentBuilder({ outputType: 'note' });
+    it('returns undefined for non-traded_assets output type', async () => {
+        const { toJSON } = await renderContentBuilder({ outputType: 'note' });
 
         expect(toJSON()).toBeNull();
     });
 
-    it('returns undefined when send is missing', () => {
-        const { toJSON } = renderContentBuilder({ send: undefined });
+    it('returns undefined when send is missing', async () => {
+        const { toJSON } = await renderContentBuilder({ send: undefined });
 
         expect(toJSON()).toBeNull();
     });
 
-    it('renders the send leg only for a partial swap (receive missing)', () => {
-        const { getByText, queryByText } = renderContentBuilder({ receive: undefined });
+    it('renders the send leg only for a partial swap (receive missing)', async () => {
+        const { getByText, queryByText } = await renderContentBuilder({ receive: undefined });
 
         expect(getByText('-1.22 BTC')).toBeOnTheScreen();
         expect(queryByText('+0.45796014 ETH')).toBeNull();
@@ -79,27 +75,32 @@ describe('useTradingContentBuilder', () => {
         ).toBeNull();
     });
 
-    it('returns undefined when receive is fiat (no cryptoId)', () => {
-        const { toJSON } = renderContentBuilder({ receive: mockReceiveFiat });
+    it('renders crypto and fiat icons when receive is fiat', async () => {
+        const { getByLabelText, getByText } = await renderContentBuilder({
+            receive: mockReceiveFiat,
+        });
 
-        expect(toJSON()).toBeNull();
+        expect(getByLabelText('BTC')).toBeOnTheScreen();
+        expect(getByText('-1.22 BTC')).toBeOnTheScreen();
+        expect(getByLabelText('flag-US')).toHaveStyle({ height: 24, width: 24 });
+        expect(getByText('+$1,500.00')).toBeOnTheScreen();
     });
 
-    it('renders send amount with minus prefix', () => {
-        const { getByText } = renderContentBuilder();
+    it('renders send amount with minus prefix', async () => {
+        const { getByText } = await renderContentBuilder();
 
         expect(getByText('-1.22 BTC')).toBeOnTheScreen();
     });
 
-    it('renders receive amount adjusted by slippage with plus prefix', () => {
-        const { getByText } = renderContentBuilder();
+    it('renders receive amount adjusted by slippage with plus prefix', async () => {
+        const { getByText } = await renderContentBuilder();
 
         expect(getByText('+0.45796014 ETH')).toBeOnTheScreen();
     });
 
     describe('recipient row', () => {
-        it('renders recipient label and address when receive account is found', () => {
-            const { getByText } = renderContentBuilder({});
+        it('renders recipient label and address when receive account is found', async () => {
+            const { getByText } = await renderContentBuilder({});
 
             expect(
                 getByText(
@@ -109,8 +110,8 @@ describe('useTradingContentBuilder', () => {
             expect(getByText(btc1NormalAccount.descriptor)).toBeOnTheScreen();
         });
 
-        it('does not render recipient row when receive account is not found', () => {
-            const { queryByText } = renderContentBuilder({
+        it('does not render recipient row when receive account is not found', async () => {
+            const { queryByText } = await renderContentBuilder({
                 receive: {
                     ...mockReceiveCrypto,
                     accountKey: 'non-existent-account-key' as AccountKey,

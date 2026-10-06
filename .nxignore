@@ -140,11 +140,11 @@ _.hprof
 !.yarn/sdks
 !.yarn/versions
 
-# @trezor/suite-data
+# @suite/app-assets
 
-packages/suite-data/files/browser-detection
-packages/suite-data/files/guide
-packages/suite-data/files/translations/master.json
+suite/app-assets/files/browser-detection
+suite/app-assets/files/guide
+suite/app-assets/files/translations/master.json
 
 # @trezor/connect-explorer
 

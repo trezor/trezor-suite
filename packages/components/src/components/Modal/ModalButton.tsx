@@ -13,7 +13,13 @@ export const ModalButton = ({
 
     return (
         <ModalContext.Provider value={{ intent: modalIntent }}>
-            <Button intent={resolvedIntent} size={size} minWidth={minWidth} {...rest}>
+            <Button
+                intent={resolvedIntent}
+                size={size}
+                minWidth={minWidth}
+                {...rest}
+                data-component="ModalButton"
+            >
                 {children}
             </Button>
         </ModalContext.Provider>

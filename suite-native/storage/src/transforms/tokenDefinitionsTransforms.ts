@@ -1,9 +1,10 @@
 import { createTransform } from 'redux-persist';
 
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 type PersistedTokenDefinitionsState = {
-    [symbol: string]: {
+    [symbol: NetworkSymbol]: {
         coin?: { hide: string[]; show: string[] };
     };
 };
@@ -17,10 +18,11 @@ export const tokenDefinitionsPersistTransform = createTransform<
 
         for (const [symbol, definitions] of Object.entries(inboundState)) {
             if (!definitions) continue;
-            result[symbol] = {};
+            const networkSymbol = symbol as NetworkSymbol;
+            result[networkSymbol] = {};
 
             if (definitions.coin) {
-                result[symbol].coin = {
+                result[networkSymbol].coin = {
                     hide: definitions.coin.hide ?? [],
                     show: definitions.coin.show ?? [],
                 };
@@ -29,6 +31,6 @@ export const tokenDefinitionsPersistTransform = createTransform<
 
         return result;
     },
-    outboundState => outboundState,
+    outboundState => outboundState as TokenDefinitionsState,
     { whitelist: ['tokenDefinitions'] },
 );

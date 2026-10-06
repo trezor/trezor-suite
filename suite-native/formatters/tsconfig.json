@@ -23,12 +23,12 @@
         { "path": "../atoms" },
         { "path": "../intl" },
         { "path": "../tokens" },
-        { "path": "../../packages/env-utils" },
         { "path": "../../packages/protobuf" },
         {
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/theme" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
     selectAutodetectLanguage,
@@ -7,6 +7,8 @@ import {
     selectShowTranslationKeys,
     suiteSettingsActions,
 } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import { KEYBOARD_CODE } from '@trezor/components';
 
@@ -17,7 +19,7 @@ const languages: { value: Locale; label: string }[] = Object.entries(LANGUAGES)
     .map(([value, { name }]) => ({ value: value as Locale, label: name }));
 
 export const useDebugLanguageShortcut = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const isDebug = useSelector(selectIsDebugModeActive);
     const language = useSelector(selectLanguage);

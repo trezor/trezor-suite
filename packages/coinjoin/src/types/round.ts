@@ -1,3 +1,4 @@
+import type { Logger } from '@trezor/logger';
 import type { Network } from '@trezor/utxo-lib';
 
 import type { AccountAddress } from './account';
@@ -8,7 +9,6 @@ import type {
     CoinjoinRoundParameters,
     Round,
 } from './coordinator';
-import type { Logger } from './logger';
 import type { RawLiquidityClue } from './middleware';
 import type { CoinjoinPrisonShape } from './prison';
 import type { EndRoundState, RoundPhase, SessionPhase } from '../enums';
@@ -46,6 +46,7 @@ export interface CoinjoinRoundShape {
     inputs: AliceShape[]; // list of registered inputs
     failed: AliceShape[]; // list of failed inputs
     phaseDeadline: number; // deadline is inaccurate, phase may change earlier
+    phaseStartLowerBound?: number; // safe lower bound (ms) for when the current phase started (see getSigningSendDeadline)
     roundDeadline: number; // deadline is inaccurate,round may end earlier
     commitmentData: string; // commitment data used for ownership proof and witness requests
     addresses: (AccountAddress & { accountKey: string })[]; // list of addresses (outputs) used in this round in outputRegistration phase

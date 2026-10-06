@@ -19,6 +19,11 @@ MHQCAQEEINi7lfZE3Y5U9srS58A+AN7Ul7HeBXsHEfzVzijColOkoAcGBSuBBAAKoUQDQgAEbSUHJlr1
 const getPrivateKey = () => {
     // Only CI jobs flagged with "codesign", sign message system config by production private key. All other branches use development key.
     // The isCodesignBuild() util cannot be used here because the lib is not built at this point. Building libs would make the release script slower.
+    //
+    // Warning: Keys are secp256k1 instead of P-256, which is a deviation from the ES256 specification (RFC 7518). This issue is known and it has been accepted,
+    // as it has no security implications.
+    // Impact: It is not possible to easily replace `jws` library, as most alternatives verify that the used keys are P-256.
+
     if (process.env.IS_CODESIGN_BUILD !== 'true') {
         console.log('Signing config using develop private key!');
 

@@ -32,7 +32,7 @@ describe('Account management [@noDevice]', () => {
 
         await onAccountDetailSettings.renameAccount({ newAccountName });
 
-        await detoxExpect(element(by.id('@screen/sub-header/title'))).toHaveText(newAccountName);
+        await detoxExpect(element(by.text(newAccountName))).toBeVisible();
     });
 
     it('Import account and remove it', async () => {

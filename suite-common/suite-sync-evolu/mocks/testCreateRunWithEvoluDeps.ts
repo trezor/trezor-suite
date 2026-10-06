@@ -20,17 +20,22 @@ import {
     initSharedWorker,
     startDbWorker,
 } from '@evolu/common/local-first';
+import { installPolyfills } from '@evolu/common/polyfills';
 import { createBetterSqliteDriver } from '@evolu/nodejs';
 
 export const testCreateSqliteDeps: CreateSqliteDriverDep = {
     createSqliteDriver: name => createBetterSqliteDriver(name, { mode: 'memory' }),
 };
 
+type TestCreateRunWithEvoluDepsParams = {
+    createWebSocket: CreateWebSocket;
+};
+
 export const testCreateRunWithEvoluDeps = ({
     createWebSocket,
-}: {
-    createWebSocket: CreateWebSocket;
-}) => {
+}: TestCreateRunWithEvoluDepsParams) => {
+    installPolyfills();
+
     const consoleStoreOutput = createConsoleStoreOutput();
     const lockManager = testCreateLockManager();
 

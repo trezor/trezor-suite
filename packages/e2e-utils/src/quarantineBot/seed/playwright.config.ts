@@ -1,4 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies, import/no-default-export */
+/* eslint-disable import/no-default-export */
 /**
  * Playwright config for seeding fake test results into Currents.dev.
  *

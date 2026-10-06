@@ -1,7 +1,10 @@
 import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { deviceInitialState } from '@suite-common/device';
+import { mockNetworkMetadata, mockNetworksState } from '@suite-common/networks/mocks';
 import { type TradingAssetOption } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btc1NormalAccount,
@@ -15,19 +18,28 @@ import { type BuyFormType } from '@suite-native/trading-types';
 import { getPaymentMethodFromBuyForm, tradingBuyFormToTradingBuyFormProps } from './quotesUtils';
 import { useBuyForm } from '../../hooks/buy/useBuyForm';
 
+const networkConfigs = [
+    {
+        ...mockNetworkMetadata.btc,
+        coingeckoId: 'bitcoin',
+        tradeCryptoId: 'bitcoin',
+    },
+];
+
 describe('quotesUtils', () => {
     let form: BuyFormType;
 
-    const renderUseTradingBuyForm = () =>
-        renderHookWithStoreProvider(() => useBuyForm(), {
+    const renderUseTradingBuyForm = async () =>
+        await renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState: {
+                networks: mockNetworksState(mockGetSupportedNetworks()),
                 device: deviceInitialState,
                 wallet: { trading: getInitializedTradingState() },
             },
         });
 
-    beforeEach(() => {
-        const { result } = renderUseTradingBuyForm();
+    beforeEach(async () => {
+        const { result } = await renderUseTradingBuyForm();
         form = result.current;
     });
 
@@ -36,8 +48,8 @@ describe('quotesUtils', () => {
             expect(getPaymentMethodFromBuyForm(form)).toBeUndefined();
         });
 
-        it('should return TradingPaymentMethodListProps object when quote is set', () => {
-            act(() => {
+        it('should return TradingPaymentMethodListProps object when quote is set', async () => {
+            await act(() => {
                 form.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
@@ -51,13 +63,13 @@ describe('quotesUtils', () => {
     describe('tradingBuyFormToTradingBuyFormProps', () => {
         it('should throw when crypto value is not selected', () => {
             expect(() =>
-                tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin, undefined),
+                tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin, undefined, networkConfigs),
             ).toThrow('Asset is required');
         });
 
         describe('with buy form populated', () => {
-            beforeEach(() => {
-                act(() => {
+            beforeEach(async () => {
+                await act(() => {
                     form.setValue('fiatValue', '100');
                     form.setValue('asset', btcAsset);
                     form.setValue('country', {
@@ -79,12 +91,17 @@ describe('quotesUtils', () => {
 
             it('should throw when info is not defined', () => {
                 expect(() =>
-                    tradingBuyFormToTradingBuyFormProps(form, undefined, undefined),
+                    tradingBuyFormToTradingBuyFormProps(form, undefined, undefined, networkConfigs),
                 ).toThrow('CoinInfo is required');
             });
 
             it('should return correct props', () => {
-                const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin, undefined);
+                const props = tradingBuyFormToTradingBuyFormProps(
+                    form,
+                    coins.bitcoin,
+                    undefined,
+                    networkConfigs,
+                );
                 expect(props).toEqual({
                     fiatInput: '100',
                     cryptoInput: '0.001000168',
@@ -99,10 +116,10 @@ describe('quotesUtils', () => {
                         coingeckoId: 'bitcoin',
                         contractAddress: null,
                         name: 'Bitcoin',
-                        symbol: 'btc',
+                        symbol: asNetworkSymbol('btc'),
                         displaySymbol: 'BTC',
                         networkName: 'Bitcoin',
-                        networkSymbol: 'btc',
+                        networkSymbol: asNetworkSymbol('btc'),
                     } satisfies TradingAssetOption,
                     countrySelect: {
                         label: '🇺🇸 United States',
@@ -126,15 +143,20 @@ describe('quotesUtils', () => {
                 });
             });
 
-            it('should set receiveAddress from address', () => {
-                act(() => {
+            it('should set receiveAddress from address', async () => {
+                await act(() => {
                     form.setValue('receiveAccount', {
                         account: btc1NormalAccount,
                         address: btc1NormalAccount.addresses!.unused[0],
                     });
                 });
 
-                const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin, undefined);
+                const props = tradingBuyFormToTradingBuyFormProps(
+                    form,
+                    coins.bitcoin,
+                    undefined,
+                    networkConfigs,
+                );
 
                 expect(props).toEqual(
                     expect.objectContaining({
@@ -143,15 +165,20 @@ describe('quotesUtils', () => {
                 );
             });
 
-            it('should set paymentMethod to undefined when provided quote is not complete', () => {
-                act(() => {
+            it('should set paymentMethod to undefined when provided quote is not complete', async () => {
+                await act(() => {
                     form.setValue('quote', {
                         ...mercuryoApplePayBuyQuote,
                         paymentMethodName: undefined,
                     } as unknown as BuyTrade);
                 });
 
-                const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin, undefined);
+                const props = tradingBuyFormToTradingBuyFormProps(
+                    form,
+                    coins.bitcoin,
+                    undefined,
+                    networkConfigs,
+                );
 
                 expect(props).toEqual(
                     expect.objectContaining({

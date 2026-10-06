@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-// eslint-disable-next-line import/no-extraneous-dependencies
 import chalk from 'chalk';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { FontAssetType, OtherAssetType, generateFonts } from 'fantasticon';
@@ -33,6 +32,8 @@ const usedIcons = [
     'atom',
     'backspace',
     'bank',
+    'bell',
+    'bellZ',
     'bluetooth',
     'bluetoothConnected',
     'bluetoothSlash',
@@ -51,6 +52,7 @@ const usedIcons = [
     'caretRight',
     'caretUp',
     'caretUpDown',
+    'caretUpDownReverse',
     'caretUpFilled',
     'change',
     'chatCircle',
@@ -79,8 +81,12 @@ const usedIcons = [
     'devicesFilled',
     'discover',
     'discoverFilled',
+    'downloadSimple',
+    'dualCpu',
+    'eggCrack',
     'eject',
     'ejectSimple',
+    'encryptionKey',
     'everstakeLogo',
     'eye',
     'eyeSlash',
@@ -142,6 +148,7 @@ const usedIcons = [
     'qrCode',
     'question',
     'questionSimple',
+    'recoverySeed',
     'repeat',
     'rocketLaunch',
     'rocketLaunchFilled',

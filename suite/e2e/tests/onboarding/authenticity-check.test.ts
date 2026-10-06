@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -22,6 +22,7 @@ test.describe('Device authenticity check', { tag: ['@T3B1', '@T3T1'] }, () => {
                 testCase: 'Verify Suite completes device authenticity check.',
                 category: TestCategory.Onboarding,
                 priority: TestPriority.Critical,
+                stream: TestStream.Growth,
             }),
         },
         async ({ analyticsSection, onboardingPage }) => {

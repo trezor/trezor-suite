@@ -1,10 +1,24 @@
+import { type TradingType } from '@suite-common/trading';
+
 import {
     getBackRoute,
+    getTradingFormRoute,
     getTradingHeaderTitle,
     isTradingTopLevelRoute,
+    isTradingTransactionsRoute,
 } from './tradingPageHeaderUtils';
 
 describe('tradingPageHeaderUtils', () => {
+    describe('getTradingFormRoute', () => {
+        it.each<[TradingType, string]>([
+            ['buy', 'wallet-trading-buy'],
+            ['sell', 'wallet-trading-sell'],
+            ['exchange', 'wallet-trading-exchange'],
+        ])('returns the %s form route', (tradeType, route) => {
+            expect(getTradingFormRoute(tradeType)).toBe(route);
+        });
+    });
+
     describe('isTradingTopLevelRoute', () => {
         it.each([
             'wallet-trading-buy',
@@ -23,6 +37,21 @@ describe('tradingPageHeaderUtils', () => {
             undefined,
         ] as const)('returns false for %s', route => {
             expect(isTradingTopLevelRoute(route)).toBe(false);
+        });
+    });
+
+    describe('isTradingTransactionsRoute', () => {
+        it('returns true for the transactions route', () => {
+            expect(isTradingTransactionsRoute('wallet-trading-transactions')).toBe(true);
+        });
+
+        it.each([
+            'wallet-trading-buy',
+            'wallet-trading-exchange-detail',
+            'suite-index',
+            undefined,
+        ] as const)('returns false for %s', route => {
+            expect(isTradingTransactionsRoute(route)).toBe(false);
         });
     });
 

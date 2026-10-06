@@ -1,6 +1,7 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import {
+    type GeolocationRootState,
     geolocationActions,
     geolocationReducer,
     selectCountryCode,
@@ -8,13 +9,14 @@ import {
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
 import { useGeolocationCountryCode } from './useGeolocationCountryCode';
+
+type State = GeolocationRootState;
 
 jest.mock('@suite-common/geolocation', () => {
     const actual = jest.requireActual('@suite-common/geolocation');
@@ -39,22 +41,24 @@ describe('useGeolocationCountryCode', () => {
             },
         });
 
-    const renderUseGeolocationCountryCode = (store: TestStore) =>
-        renderHookWithStoreProvider(() => useGeolocationCountryCode(), { store });
+    const renderUseGeolocationCountryCode = async (store: Store<State>) =>
+        await renderHookWithStoreProvider(() => useGeolocationCountryCode(), {
+            services: { store },
+        });
 
-    it('should call geolocation thunk on mount', () => {
+    it('should call geolocation thunk on mount', async () => {
         const store = createGeolocationTestStore();
 
-        renderUseGeolocationCountryCode(store);
+        await renderUseGeolocationCountryCode(store);
 
         expect(selectCountryCode(store.getState())).toBe('US');
     });
 
-    it('should not call geolocation thunk if country code is already known', () => {
+    it('should not call geolocation thunk if country code is already known', async () => {
         const store = createGeolocationTestStore();
         store.dispatch(geolocationActions.setCountryCode('CZ'));
 
-        renderUseGeolocationCountryCode(store);
+        await renderUseGeolocationCountryCode(store);
 
         expect(selectCountryCode(store.getState())).toBe('CZ');
     });

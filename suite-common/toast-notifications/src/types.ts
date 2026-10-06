@@ -1,10 +1,11 @@
 import { type CSSProperties } from 'react';
 
-import { type DesktopAppUpdateState, type Protocol } from '@suite-common/suite-constants';
+import { type DesktopAppUpdateState } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FormStateTradingExchange } from '@suite-common/wallet-types';
 import { type DEVICE, type TokenInfo } from '@trezor/connect';
+import type { Protocol } from '@trezor/network-module-suite-common-types';
 
 export type UnknownTranslationKey = string;
 
@@ -12,20 +13,20 @@ export type NotificationId = number;
 
 export interface NotificationOptions {
     seen?: boolean;
-    resolved?: boolean;
     autoClose?: number | false;
     style?: CSSProperties;
 }
 
 type TransactionNotificationPayload = {
-    formattedAmount: string;
+    /** The amount in main units, unformatted: the notification is rendered, not the string. */
+    amount: string;
     device?: TrezorDevice;
     descriptor: string;
     symbol: NetworkSymbol;
     txid: string;
 };
 
-type BaseTransactionNotificationPayload = Omit<TransactionNotificationPayload, 'formattedAmount'>;
+type BaseTransactionNotificationPayload = Omit<TransactionNotificationPayload, 'amount'>;
 
 type SentTransactionNotification = {
     type: 'tx-sent';
@@ -64,19 +65,27 @@ type WrapTransactionMetadata = {
     receive: WrapTransactionAsset;
 };
 
+// Set when the wrap/unwrap is a step of a yield deposit/withdraw rather than the standalone page,
+// which report their analytics on `yield/deposit` / `yield/withdraw` instead.
+type YieldFlowStepFlag = {
+    isYieldFlowStep?: boolean;
+};
+
 type WrapTransactionNotification = {
     type: 'tx-wrap';
     metadata: WrapTransactionMetadata;
-} & TransactionNotificationPayload;
+} & YieldFlowStepFlag &
+    TransactionNotificationPayload;
 
 type UnwrapTransactionNotification = {
     type: 'tx-unwrap';
     metadata: WrapTransactionMetadata;
-} & TransactionNotificationPayload;
+} & YieldFlowStepFlag &
+    TransactionNotificationPayload;
 
 type ReceivedTransactionNotification = {
     type: 'tx-received' | 'tx-confirmed';
-    token?: Pick<TokenInfo, 'contract' | 'name' | 'symbol'>;
+    token?: Pick<TokenInfo, 'contract' | 'name' | 'symbol' | 'decimals'>;
 } & TransactionNotificationPayload;
 
 type StakedTransactionNotification = {
@@ -102,6 +111,17 @@ type YieldWithdrawTransactionNotification = {
 type YieldClaimTransactionNotification = {
     type: 'tx-yield-claim';
 } & BaseTransactionNotificationPayload;
+
+type AccountAddedNotification = {
+    type: 'account-added';
+    networkName: string;
+};
+
+type AccountsDiscoveredNotification = {
+    type: 'accounts-discovered';
+    count: number;
+    networkName: string;
+};
 
 export type ErrorToastPayload = {
     type:
@@ -143,6 +163,7 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
               | 'backup-failed'
               | 'sign-message-success'
               | 'verify-message-success'
+              | 'verify-message-cancelled'
               | 'device-authenticity-success'
               | 'clear-storage'
               | 'add-token-success'
@@ -231,6 +252,8 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | YieldDepositTransactionNotification
     | YieldWithdrawTransactionNotification
     | YieldClaimTransactionNotification
+    | AccountAddedNotification
+    | AccountsDiscoveredNotification
     | {
           type: 'cannot-open-bluetooth-settings-error';
       }
@@ -250,7 +273,6 @@ export type NotificationEventPayload = (
     | {
           type: typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED;
           device: TrezorDevice;
-          needAttention?: boolean;
       }
 ) &
     NotificationOptions;
@@ -272,8 +294,7 @@ type EventNotification = { context: 'event' } & CommonNotificationPayload &
     NotificationEventPayload;
 
 export type NotificationEntry<TranslationKey extends string = UnknownTranslationKey> =
-    | ToastNotification<TranslationKey>
-    | EventNotification;
+    ToastNotification<TranslationKey> | EventNotification;
 
 export type AddNotificationAction<TranslationKey extends string = UnknownTranslationKey> = {
     payload: NotificationEntry<TranslationKey>;
@@ -286,10 +307,15 @@ export type NotificationsRootState<TranslationKey extends string = UnknownTransl
     notifications: NotificationsState<TranslationKey>;
 };
 
-export type TransactionNotification = (
-    | SentTransactionNotification
-    | ReceivedTransactionNotification
-) &
-    CommonNotificationPayload;
+export type TransactionNotification = Extract<
+    NotificationEntry,
+    { type: TransactionNotificationType }
+>;
 
-export type TransactionNotificationType = TransactionNotification['type'];
+// Derived from the payload union so every new `tx-*` notification is forced through
+// the `satisfies Record<TransactionNotificationType, ...>` maps in consumers.
+// Must stay in sync with the runtime check in `isTransactionNotification`.
+export type TransactionNotificationType = Extract<
+    NotificationEntry['type'],
+    `tx-${string}` | 'raw-tx-sent'
+>;

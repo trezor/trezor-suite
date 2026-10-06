@@ -1,6 +1,7 @@
 export {
     receiveActions,
     receiveInitialState,
+    selectReceiveAccountState,
     selectCurrentFreshAddress,
     selectTouchedAddresses,
     prepareReceiveReducer,

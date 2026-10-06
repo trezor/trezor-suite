@@ -1,17 +1,18 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { close, open } from 'src/actions/suite/guideActions';
-import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { selectIsGuideOpen } from 'src/selectors/suite/guideSelectors';
 
 import { usePreferredModal } from '../suite';
 
 export const GUIDE_ANIMATION_DURATION_MS = 300;
 
 export const useGuide = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const isGuideOpen = useSelector(state => state.guide.open);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const isGuideOpen = useSelector(selectIsGuideOpen);
 
     const { isBelowLaptop } = useLayoutSize();
 

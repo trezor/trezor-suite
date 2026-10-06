@@ -6,6 +6,7 @@
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
+        { "path": "../toast-notifications" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
@@ -13,7 +14,6 @@
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" },
-        { "path": "../test-utils" }
+        { "path": "../../packages/utils" }
     ]
 }

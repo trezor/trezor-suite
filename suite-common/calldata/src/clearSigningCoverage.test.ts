@@ -84,6 +84,18 @@ describe(getEvmClearSignedSwapCoverage.name, () => {
             ).toBeUndefined();
         });
 
+        it('returns undefined for wrapped-native wrap/unwrap (clear-signed, but not a swap)', () => {
+            const WETH_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+            // deposit() / withdraw(uint256) are recognised by isEvmClearSigningTx but are
+            // deliberately not swap coverage.
+            expect(
+                getEvmClearSignedSwapCoverage(1, WETH_MAINNET, '0xd0e30db0', '2.13.0'),
+            ).toBeUndefined();
+            expect(
+                getEvmClearSignedSwapCoverage(1, WETH_MAINNET, '0x2e1a7d4ddead', '2.13.0'),
+            ).toBeUndefined();
+        });
+
         it('returns undefined (does not throw) for an empty firmware version', () => {
             expect(
                 getEvmClearSignedSwapCoverage(1, ONEINCH, ONEINCH_FIXTURES.swap, ''),

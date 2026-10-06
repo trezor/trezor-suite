@@ -2,17 +2,19 @@ import { createMemoryHistory } from 'history';
 
 import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import * as fixtures from './__fixtures__/routerThunks';
 import { createSuiteRouterHistory } from './createSuiteRouterHistory';
 import { routerReducer } from './routerReducer';
 import {
-    closeModalApp,
-    goto,
-    initialRedirection,
-    onLocationChange,
-    routerInit,
+    type GotoThunkDeps,
+    type GotoThunkState,
+    closeModalAppThunk,
+    gotoThunk,
+    initialRedirectionThunk,
+    onLocationChangeThunk,
+    routerInitThunk,
 } from './routerThunks';
 
 const EMPTY_ACTION = { type: 'foo' };
@@ -25,7 +27,10 @@ const defaultLocation = {
     search: '',
 } as const;
 
-const getInitialState = (state?: any) => {
+const getInitialState = (state?: {
+    router?: Record<string, unknown>;
+    locks?: Partial<GotoThunkState['locks']>;
+}): GotoThunkState => {
     const router = state?.router;
     const locks = state?.locks;
 
@@ -33,11 +38,8 @@ const getInitialState = (state?: any) => {
         router: {
             ...routerReducer(undefined, EMPTY_ACTION),
             ...router,
-        },
+        } as GotoThunkState['router'],
         modal: modalReducer(undefined, EMPTY_ACTION),
-        analytics: {
-            confirmed: false,
-        },
         locks: {
             ...locksInitialState,
             ...locks,
@@ -45,20 +47,17 @@ const getInitialState = (state?: any) => {
     };
 };
 
-const initStore = (state: ReturnType<typeof getInitialState>) => {
+const initStore = (state: GotoThunkState) => {
     const suiteRouterHistory = createSuiteRouterHistory({ history: createMemoryHistory() });
-    const store = configureMockStore({
+    const { store } = createTestCompositionRoot<GotoThunkDeps, GotoThunkState>({
         reducer: {
             router: routerReducer,
             modal: modalReducer,
             locks: locksReducer,
-            analytics: (s: any = { confirmed: false }) => s,
         },
         preloadedState: state,
-        extra: {
-            services: { suiteRouterHistory } as any,
-        },
-    });
+        services: () => ({ suiteRouterHistory }),
+    }).services;
 
     return { store, suiteRouterHistory };
 };
@@ -69,13 +68,13 @@ describe('Router thunks', () => {
             const state = getInitialState(f.state);
             const { store, suiteRouterHistory } = initStore(state);
             suiteRouterHistory.navigate(defaultLocation);
-            store.dispatch(routerInit());
+            store.dispatch(routerInitThunk());
             if (f.result) {
                 expect(store.getState().router).toEqual(f.result);
             } else {
                 const actionsWithoutThunkLifecycleEvents = store
                     .getActions()
-                    .filter(a => !a.type.startsWith(routerInit.typePrefix));
+                    .filter(a => !a.type.startsWith(routerInitThunk.typePrefix));
                 expect(actionsWithoutThunkLifecycleEvents.length).toEqual(0);
             }
         });
@@ -86,11 +85,11 @@ describe('Router thunks', () => {
             const state = getInitialState(f.state);
             const { store, suiteRouterHistory } = initStore(state);
             suiteRouterHistory.navigate({ ...defaultLocation, hash: `#${f.hash}` });
-            store.dispatch(onLocationChange(suiteRouterHistory.getLocation()));
+            store.dispatch(onLocationChangeThunk(suiteRouterHistory.getLocation()));
 
             store.dispatch(
-                goto({
-                    routeName: f.url as Parameters<typeof goto>[0]['routeName'],
+                gotoThunk({
+                    routeName: f.url as Parameters<typeof gotoThunk>[0]['routeName'],
                     preserveParams: f.preserveHash,
                 }),
             );
@@ -109,10 +108,10 @@ describe('Router thunks', () => {
             router: { loaded: true },
         });
         const { store } = initStore(state);
-        store.dispatch(onLocationChange({ pathname: '/' }));
+        store.dispatch(onLocationChangeThunk({ pathname: '/' }));
         const actionsWithoutThunkLifecycleEvents = store
             .getActions()
-            .filter(a => !a.type.startsWith(onLocationChange.typePrefix));
+            .filter(a => !a.type.startsWith(onLocationChangeThunk.typePrefix));
         expect(actionsWithoutThunkLifecycleEvents.length).toEqual(0);
     });
 
@@ -124,7 +123,7 @@ describe('Router thunks', () => {
             pathname: '/accounts/send',
         });
 
-        store.dispatch(closeModalApp());
+        store.dispatch(closeModalAppThunk());
         expect(store.getState().router.app).toEqual('wallet');
         expect(store.getState().router.pathname).toEqual('/accounts/send');
     });
@@ -139,7 +138,7 @@ describe('Router thunks', () => {
                 pathname: f.pathname || '/',
             });
 
-            store.dispatch(initialRedirection({ isInitialRun: f.isInitialRun }));
+            store.dispatch(initialRedirectionThunk({ isInitialRun: f.isInitialRun }));
             expect(store.getState().router.app).toEqual(f.app);
         });
     });

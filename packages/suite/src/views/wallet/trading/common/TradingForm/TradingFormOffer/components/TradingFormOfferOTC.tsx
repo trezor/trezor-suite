@@ -1,21 +1,23 @@
 import { type FiatCurrencyCode } from 'invity-api';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTradeBuySellType,
     cryptoIdToNetworkAndContractAddress,
     getOtcProvidersByCountry,
     useFetchOtc,
 } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { localizeNumber } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
+import { localizeNumber } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
@@ -24,8 +26,7 @@ import {
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 
 export const TradingFormOfferOTC = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const otcQuery = useFetchOtc();
     const { data: otcData, isSuccess } = otcQuery;
     const context = useTradingFormContext<TradingTradeBuySellType>();
@@ -71,7 +72,7 @@ export const TradingFormOfferOTC = () => {
 
     const { fiatAmount: fiatAmountConverted } = useFiatFromCryptoValue({
         amount: cryptoAmount || '0',
-        symbol: network?.symbol || 'btc',
+        symbol: network?.symbol || asNetworkSymbol('btc'),
         tokenAddress: contractAddress,
         rateType: 'current',
     });
@@ -100,7 +101,7 @@ export const TradingFormOfferOTC = () => {
     const isBuy = context.type === 'buy';
 
     const handleConciergeClick = () => {
-        dispatch(goto({ routeName: 'wallet-trading-concierge' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-concierge' }));
 
         analytics.report({
             type: events.tradeNavigateEvent.name,

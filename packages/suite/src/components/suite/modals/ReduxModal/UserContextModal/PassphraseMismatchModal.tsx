@@ -1,26 +1,26 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { cancelDiscoveryThunk, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 
-import { useDispatch } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
-export const PassphraseMismatchModal = ({
-    device,
-    discovery,
-}: {
+type PassphraseMismatchModalProps = {
     device: TrezorDevice;
     discovery: DiscoveryStatus;
-}) => {
+};
+
+export const PassphraseMismatchModal = ({ device, discovery }: PassphraseMismatchModalProps) => {
     const { isLocked } = useDevice();
 
     const isDeviceLocked = isLocked();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const onStartOver = () => {
         dispatch(cancelDiscoveryThunk(device));

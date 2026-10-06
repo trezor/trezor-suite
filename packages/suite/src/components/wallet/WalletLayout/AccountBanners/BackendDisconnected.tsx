@@ -1,20 +1,25 @@
+import { selectFullSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectBlockchainState } from '@suite-common/wallet-core';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 
 import { useBackendReconnection } from 'src/hooks/settings/backends';
 import { useSelector } from 'src/hooks/suite';
+import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
+
+type DisconnectedNotificationProps = {
+    symbol: NetworkSymbol;
+    identity?: string;
+    resolveTime: number | undefined;
+};
 
 const DisconnectedNotification = ({
     symbol,
     identity,
     resolveTime,
-}: {
-    symbol: NetworkSymbol;
-    identity?: string;
-    resolveTime: number | undefined;
-}) => {
+}: DisconnectedNotificationProps) => {
     const { reconnect, isReconnecting, countdownSeconds } = useBackendReconnection(
         symbol,
         identity,
@@ -44,9 +49,9 @@ const DisconnectedNotification = ({
 };
 
 export const BackendDisconnected = () => {
-    const blockchain = useSelector(state => state.wallet.blockchain);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const online = useSelector(state => state.suite.online);
+    const blockchain = useSelector(selectBlockchainState);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
+    const online = useSelector(selectIsSuiteOnline);
 
     if (!online) return null;
 
@@ -62,8 +67,9 @@ export const BackendDisconnected = () => {
 
     const identity = tryGetAccountIdentity(account);
 
+    const networkBlockchain = blockchain[symbol as keyof typeof blockchain];
     const chain =
-        (identity && blockchain[symbol]?.identityConnections?.[identity]) ?? blockchain[symbol];
+        (identity && networkBlockchain?.identityConnections?.[identity]) ?? networkBlockchain;
 
     if (!chain || chain.connected) return null;
 

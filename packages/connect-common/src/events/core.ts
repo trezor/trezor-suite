@@ -7,11 +7,11 @@ import type { SetEnabledNetworksMessage } from './networks';
 import type { PopupClosedMessage, PopupEventMessage } from './popup';
 import type {
     TransportEventMessage,
-    TransportGetInfo,
     TransportRequestWebUSBDevice,
     TransportSetTransports,
 } from './transport';
-import type { UiEventMessage } from './ui-request';
+import type { UiEventMessage } from './ui-event';
+import type { UiRequestMessage } from './ui-request';
 import type { UiResponseEvent } from './ui-response';
 import type { ErrorCode, SerializedError, TrezorError } from '../constants/errors';
 
@@ -22,7 +22,6 @@ export type CoreRequestMessage =
     | CoreCallCancelMessage
     | TransportSetTransports
     | TransportRequestWebUSBDevice
-    | TransportGetInfo
     | UiResponseEvent
     | CoreCallMessage
     | SetEnabledNetworksMessage;
@@ -35,6 +34,7 @@ export type CoreEventMessage = {
     | DeviceEventMessage
     | TransportEventMessage
     | UiEventMessage
+    | UiRequestMessage
     | MethodResponseMessage
     | PopupEventMessage
 );

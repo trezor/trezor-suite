@@ -29,6 +29,7 @@ export const CardListItem = ({
         onClick={onClick}
         isDisabled={!onClick}
         {...rest}
+        data-component="CardListItem"
     >
         <Row justifyContent="space-between" gap={12} overflow="hidden">
             {children}

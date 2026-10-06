@@ -17,6 +17,7 @@ export class TradingConfirmationModal {
     readonly detailSendAccount: Locator;
     readonly detailReceiveAccount: Locator;
     readonly fiatAmount: Locator;
+    readonly fiatCurrency: Locator;
     readonly provider: Locator;
     readonly address: Locator;
     readonly paymentMethod: Locator;
@@ -24,6 +25,8 @@ export class TradingConfirmationModal {
     readonly exchangeType: Locator;
     readonly transactionId: Locator;
     readonly copyTransactionIdButton: Locator;
+    readonly issueBanner: Locator;
+    readonly continueAnywayButton: Locator;
     readonly finishButton: Locator;
     readonly confirmAndSendButton: Locator;
     readonly buyButton: Locator;
@@ -32,6 +35,7 @@ export class TradingConfirmationModal {
     readonly dexMinimumReceivedAmount: Locator;
     readonly dexNetworkFee: Locator;
     readonly dexExchangeType: Locator;
+    readonly dexSimulationSubtitle: Locator;
 
     constructor(
         private readonly page: Page,
@@ -55,6 +59,7 @@ export class TradingConfirmationModal {
             '@trading/transaction/detail/receive-account',
         );
         this.fiatAmount = this.page.getByTestId('@trading/form/info/fiat-amount');
+        this.fiatCurrency = this.page.getByTestId('@trading/form/info/fiat-currency');
         this.provider = this.page.getByTestId('@trading/form/info/provider');
         this.address = this.page.getByTestId('@trading/form/verify/address');
         this.paymentMethod = this.page.getByTestId('@trading/form/info/payment-method');
@@ -64,6 +69,8 @@ export class TradingConfirmationModal {
         this.copyTransactionIdButton = this.page
             .getByTestId('@trading/form/info')
             .getByRole('button', { name: 'Copy' });
+        this.issueBanner = this.page.getByTestId('@trading/offer/issue-banner');
+        this.continueAnywayButton = this.page.getByTestId('@trading/offer/continue-anyway');
         this.finishButton = this.page.getByTestId('@trading/offer/continue-transaction-button');
         this.confirmAndSendButton = this.page.getByTestId(
             '@trading/offer/confirm-on-trezor-and-send',
@@ -76,6 +83,7 @@ export class TradingConfirmationModal {
         );
         this.dexNetworkFee = this.page.getByTestId('@trading/offer/info/network-fee');
         this.dexExchangeType = this.page.getByTestId('@trading/offer/info/exchange-dex-type');
+        this.dexSimulationSubtitle = this.page.getByTestId('@trading/offer/simulation-subtitle');
     }
 
     @step()
@@ -97,7 +105,15 @@ export class TradingConfirmationModal {
 
     @step()
     async openConfirmAndSendModal() {
-        await this.confirmAndSendButton.click({ timeout: 30_000 });
+        // Swap quotes and fiat rates are both live, so a price alert can legitimately show up on
+        // any offer. It replaces the confirm button, and the swap continues from the banner.
+        await expect(this.section).toBeVisible();
+        const isPriceAlertShown = await this.issueBanner.isVisible();
+        const continueButton = isPriceAlertShown
+            ? this.continueAnywayButton
+            : this.confirmAndSendButton;
+
+        await continueButton.click({ timeout: 30_000 });
         await expect(this.modal).toBeVisible();
         await expect(this.devicePrompt.sendButton).toBeDisabled();
     }

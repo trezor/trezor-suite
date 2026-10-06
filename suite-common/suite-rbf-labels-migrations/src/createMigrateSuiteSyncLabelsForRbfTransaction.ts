@@ -14,8 +14,10 @@ import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
+type SetLabelsForSuiteSyncDeps = UpdateOutputLabelDep;
+
 export const createSetLabelsForSuiteSync =
-    (deps: UpdateOutputLabelDep): SetLabelsForSuiteSync =>
+    (deps: SetLabelsForSuiteSyncDeps): SetLabelsForSuiteSync =>
     ({ newTxId, deviceStaticSessionId, suiteSyncOutputLabelsToBeUpdated }) =>
         Promise.all(
             suiteSyncOutputLabelsToBeUpdated.map(outputLabel =>
@@ -30,8 +32,10 @@ export const createSetLabelsForSuiteSync =
             ),
         );
 
+type DeleteLabelsForSuiteSyncDeps = UpdateOutputLabelDep;
+
 export const createDeleteLabelsForSuiteSync =
-    (deps: UpdateOutputLabelDep): DeleteLabelsForSuiteSync =>
+    (deps: DeleteLabelsForSuiteSyncDeps): DeleteLabelsForSuiteSync =>
     ({ deviceStaticSessionId, transactionOutputsToDelete }) =>
         Promise.all(
             transactionOutputsToDelete.flatMap(deleteOutput =>

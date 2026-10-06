@@ -11,5 +11,5 @@
         "declarationMap": false,
         "emitDeclarationOnly": false
     },
-    "include": ["./*.ts"]
+    "include": ["./**/*.ts"]
 }

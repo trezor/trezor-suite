@@ -1,3 +1,7 @@
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 
 import { ExchangeTab } from './ExchangeTab';
@@ -7,6 +11,10 @@ let mockIsDeviceInViewOnlyMode = false;
 let mockIsPortfolioTrackerDevice = false;
 let mockHasBitcoinOnlyFirmware = false;
 let mockIsTradingExchangeEnabled = true;
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
+    analytics: mockNativeAnalytics(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
+};
 
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
@@ -28,9 +36,15 @@ jest.mock('@suite-native/trading-state', () => ({
     selectIsTradingExchangeEnabled: () => mockIsTradingExchangeEnabled,
 }));
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({ navigate: jest.fn(), setParams: jest.fn() }),
+    useRoute: () => ({ params: {} }),
+}));
+
 describe('ExchangeTab', () => {
-    const renderExchangeTab = () =>
-        renderWithTradingProvider(<ExchangeTab />, { tradeType: 'exchange' });
+    const renderExchangeTab = async () =>
+        await renderWithTradingProvider(<ExchangeTab />, { services, tradeType: 'exchange' });
 
     beforeEach(() => {
         mockIsDeviceInViewOnlyMode = false;
@@ -39,8 +53,8 @@ describe('ExchangeTab', () => {
         mockIsTradingExchangeEnabled = true;
     });
 
-    it('should render exchange form', () => {
-        const { getByText } = renderExchangeTab();
+    it('should render exchange form', async () => {
+        const { getByText } = await renderExchangeTab();
 
         expect(
             getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
@@ -50,9 +64,9 @@ describe('ExchangeTab', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render disabled info when exchange FF is not enabled', () => {
+    it('should render disabled info when exchange FF is not enabled', async () => {
         mockIsTradingExchangeEnabled = false;
-        const { getByText, queryByText } = renderExchangeTab();
+        const { getByText, queryByText } = await renderExchangeTab();
 
         expect(
             getByText(
@@ -64,20 +78,20 @@ describe('ExchangeTab', () => {
         expect(queryByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel'))).toBeNull();
     });
 
-    it('should display BTC only firmware info with BTC only wallet connected', () => {
+    it('should display BTC only firmware info with BTC only wallet connected', async () => {
         mockHasBitcoinOnlyFirmware = true;
-        const { getByText } = renderExchangeTab();
+        const { getByText } = await renderExchangeTab();
 
         expect(
             getByText(getTranslation('tradingAtoms.error.btcOnlyFirmwareTitle')),
         ).toBeOnTheScreen();
     });
 
-    it('should display Portfolio Tracker info with Portfolio Tracker "wallet" selected', () => {
+    it('should display Portfolio Tracker info with Portfolio Tracker "wallet" selected', async () => {
         // Portfolio Tracker sets both selectors to true
         mockIsPortfolioTrackerDevice = true;
         mockIsDeviceInViewOnlyMode = true;
-        const { getByText, queryByText } = renderExchangeTab();
+        const { getByText, queryByText } = await renderExchangeTab();
 
         expect(
             getByText(getTranslation('tradingAtoms.error.portfolioTrackerTitle')),
@@ -85,9 +99,9 @@ describe('ExchangeTab', () => {
         expect(queryByText('View-only wallet')).toBeNull();
     });
 
-    it('should display exchange form for view-only wallet', () => {
+    it('should display exchange form for view-only wallet', async () => {
         mockIsDeviceInViewOnlyMode = true;
-        const { getByText } = renderExchangeTab();
+        const { getByText } = await renderExchangeTab();
 
         expect(
             getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),

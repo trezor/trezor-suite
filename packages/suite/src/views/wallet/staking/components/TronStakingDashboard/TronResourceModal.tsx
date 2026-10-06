@@ -1,18 +1,14 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { getResourceGain } from '@suite-common/wallet-core';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
-import {
-    getResourceGain,
-    getTronResources,
-    getTronStakingInfo,
-    sunToTrx,
-} from '@suite-common/wallet-utils';
+import { getTronResources, getTronStakingInfo, sunToTrx } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Divider, Icon, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import {
@@ -27,8 +23,7 @@ interface TronResourceModalProps {
 }
 
 export const TronResourceModal = ({ account, resourceType, onClose }: TronResourceModalProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const resources = getTronResources(account);
     const stakingInfo = getTronStakingInfo(account);
     const isEnergy = resourceType === 'energy';
@@ -91,7 +86,7 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-tron-stake',
                 params: {
                     symbol: account.symbol,

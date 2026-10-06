@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
-import { AccountLabel, AccountTypeBadge } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';
@@ -13,10 +14,11 @@ import {
     switchSelectedAccountThunk,
     walletConnectActions,
 } from '@suite-common/walletconnect';
-import { Column, Modal, type Option, Row, Select } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
+import { Column, Modal, type Option, Select } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
+
+import { WalletConnectAccountOption } from './WalletConnectAccountOption';
 
 interface WalletConnectSwitchAccountModalProps {
     sessionTopic: string;
@@ -25,7 +27,8 @@ interface WalletConnectSwitchAccountModalProps {
 export const WalletConnectSwitchAccountModal = ({
     sessionTopic,
 }: WalletConnectSwitchAccountModalProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const sessions = useSelector(selectSessions);
     const session = sessions.find(s => s.topic === sessionTopic);
     const accounts = useSelector(selectAllAccountsToList);
@@ -39,9 +42,10 @@ export const WalletConnectSwitchAccountModal = ({
                           .flatMap(network =>
                               accounts.filter(account => account.symbol === network.symbol),
                           ),
+                      supportedNetworks,
                   )
                 : [],
-        [accounts, session],
+        [accounts, session, supportedNetworks],
     );
     const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
         session?.lastAccount || selectableAccounts[0] || null,
@@ -80,18 +84,11 @@ export const WalletConnectSwitchAccountModal = ({
                     isSearchable={false}
                     isClearable={false}
                     size="large"
+                    isMenuFullWidth
                     value={selectedDefaultAccount}
                     options={selectableAccounts}
                     formatOptionLabel={(account: Account) => (
-                        <Row gap={8}>
-                            {account.symbol && <TokenIcon symbol={account.symbol} size={24} />}
-                            <AccountLabel account={account} key={account.descriptor} />
-                            <AccountTypeBadge
-                                accountType={account.accountType}
-                                networkType={account.networkType}
-                                size="small"
-                            />
-                        </Row>
+                        <WalletConnectAccountOption account={account} />
                     )}
                     onChange={(option: Option) => setSelectedDefaultAccount(option)}
                 />

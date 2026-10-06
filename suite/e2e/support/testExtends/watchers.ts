@@ -65,11 +65,28 @@ const installToastObserver = () => {
 const isExceptionIgnored = (message: string, ignoreJSExceptions: string[]): boolean =>
     ignoreJSExceptions.some(pattern => message.toLowerCase().includes(pattern.toLowerCase()));
 
+const expectedWarningToastTestIds = new Set([
+    '@toast/raw-tx-sent',
+    '@toast/tx-approved',
+    '@toast/tx-claimed',
+    '@toast/tx-exchange',
+    '@toast/tx-revoked',
+    '@toast/tx-sent',
+    '@toast/tx-staked',
+    '@toast/tx-unstaked',
+    '@toast/tx-yield-claim',
+    '@toast/tx-yield-deposit',
+    '@toast/tx-yield-withdraw',
+]);
+
 const isToastIgnored = (toast: CapturedToast, ignoreToastErrors: string[]): boolean =>
+    expectedWarningToastTestIds.has(toast.testId) ||
     ignoreToastErrors.some(pattern => toast.text.toLowerCase().includes(pattern.toLowerCase()));
 
+type JsExceptionWatcherParams = { page: Page; ignoreJSExceptions: string[] };
+
 export const jsExceptionWatcher = async (
-    { page, ignoreJSExceptions }: { page: Page; ignoreJSExceptions: string[] },
+    { page, ignoreJSExceptions }: JsExceptionWatcherParams,
     use: (watcher: Watcher) => Promise<void>,
     testInfo: TestInfo,
 ) => {
@@ -103,8 +120,10 @@ export const jsExceptionWatcher = async (
     }
 };
 
+type ToastErrorWatcherParams = { page: Page; ignoreToastErrors: string[] };
+
 export const toastErrorWatcher = async (
-    { page, ignoreToastErrors }: { page: Page; ignoreToastErrors: string[] },
+    { page, ignoreToastErrors }: ToastErrorWatcherParams,
     use: (watcher: Watcher) => Promise<void>,
     testInfo: TestInfo,
 ) => {

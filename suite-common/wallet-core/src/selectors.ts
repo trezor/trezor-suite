@@ -1,15 +1,19 @@
-import {
-    type DeviceRootState,
-    selectHasOnlyPortfolioDevice,
-    selectSelectedDevice,
-} from '@suite-common/device';
+import { type DeviceRootState, selectHasOnlyPortfolioDevice } from '@suite-common/device';
+import { type NetworksRootState } from '@suite-common/networks';
+import { type PersistentDeviceDataRootState } from '@suite-common/persistent-device-data';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
+import {
+    type Network,
+    type NetworkSymbol,
+    getNetwork,
+    isSingleAccountType,
+    networksCollection,
+} from '@suite-common/wallet-config';
 import {
     type Account,
-    type ReviewOutput,
     type SuccessfulAccount,
+    type TransactionReviewOutput,
 } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
@@ -30,7 +34,7 @@ import {
     selectVisibleDeviceAccounts,
 } from './accounts/accountsSelectors';
 import { type BlockchainRootState, selectGapLimit } from './blockchain/blockchainReducer';
-import { selectSupportedNetworkByDevice } from './device/deviceSelectors';
+import { selectDeviceSupportedNetworks } from './device/deviceSelectors';
 import { type DiscoveryRootState } from './discovery/discoveryReducer';
 import { selectHasRunningDiscovery } from './discovery/discoverySelectors';
 import {
@@ -45,15 +49,16 @@ to prevent circular dependencies between reducers
 
 export type WalletCoreCompoundRootState = AccountsRootState &
     DeviceRootState &
+    PersistentDeviceDataRootState &
     DiscoveryRootState &
     WalletSettingsRootState &
-    BlockchainRootState;
+    BlockchainRootState &
+    NetworksRootState;
 const createMemoizedSelector = createWeakMapSelector.withTypes<WalletCoreCompoundRootState>();
 
 const selectEnabledSupportedNetworks = createMemoizedSelector(
-    [selectEnabledNetworks, selectSelectedDevice],
-    (enabledNetworks, device) => {
-        const deviceNetworks = selectSupportedNetworkByDevice(device);
+    [selectEnabledNetworks, selectDeviceSupportedNetworks],
+    (enabledNetworks, deviceNetworks) => {
         const supportedNetworks = enabledNetworks.filter(n => deviceNetworks.includes(n));
 
         return returnStableArrayIfEmpty(supportedNetworks);
@@ -98,22 +103,29 @@ const getDeviceAccountsPerEnabledNetwork = (
     return symbols.map(symbol => ({ symbol, accounts: symbolMap[symbol] }));
 };
 
-const getAccountChainsPerAccountType = (accounts: Account[]) =>
+const getAccountChainsPerAccountType = (network: Network, accounts: Account[]) =>
     Object.entries(arrayToDictionary(accounts, acc => acc.accountType, true)).map(
-        ([type, accs]) => ({
-            type,
+        ([type, accs]) => {
             // account with the highest index
-            lastAccount: accs.reduce((last, current) =>
+            const lastAccount = accs.reduce((last, current) =>
                 current.index > last.index ? current : last,
-            ),
-            // failed account with the lowest index; a failed account may sit below other known
-            // accounts when a known-accounts refresh fails for some of them (e.g. flaky backend)
-            firstFailedAccount: accs
-                .filter(isAccountFailed)
-                .reduce<
-                    Account | undefined
-                >((first, current) => (!first || current.index < first.index ? current : first), undefined),
-        }),
+            );
+
+            return {
+                type,
+                lastAccount,
+                // failed account with the lowest index; a failed account may sit below other known
+                // accounts when a known-accounts refresh fails for some of them (e.g. flaky backend)
+                firstFailedAccount: accs
+                    .filter(isAccountFailed)
+                    .reduce<Account | undefined>(
+                        (first, current) =>
+                            !first || current.index < first.index ? current : first,
+                        undefined,
+                    ),
+                canDiscoverNextAccount: !lastAccount.empty && !isSingleAccountType(network, type),
+            };
+        },
     );
 
 export const selectDiscoveryAccountsParam = (
@@ -122,7 +134,8 @@ export const selectDiscoveryAccountsParam = (
     knownOnly?: boolean,
 ): DiscoveryAccountsParam =>
     getDeviceAccountsPerEnabledNetwork(state, deviceState).map(({ symbol, accounts }) => {
-        const { networkType } = networks[symbol];
+        const network = getNetwork(symbol);
+        const { networkType } = network;
         const identity = tryGetAccountIdentity({ networkType, deviceState });
         const bitcoinGap = networkType === 'bitcoin' ? selectGapLimit(state, symbol) : undefined;
 
@@ -138,13 +151,13 @@ export const selectDiscoveryAccountsParam = (
                 gap: bitcoinGap,
             } as DiscoveryAccountsParam[number];
 
-        const known = getAccountChainsPerAccountType(accounts).map(
-            ({ type, lastAccount, firstFailedAccount }) => {
+        const known = getAccountChainsPerAccountType(network, accounts).map(
+            ({ type, lastAccount, firstFailedAccount, canDiscoverNextAccount }) => {
                 // some account failed; rediscover the whole chain from the first failed one
                 if (firstFailedAccount) return { type, skip: firstFailedAccount.index };
                 // last account is a used one; skip it and try to discover next one
-                else if (!lastAccount.empty) return { type, skip: lastAccount.index + 1 };
-                // last account is an empty one; skip this type completely
+                else if (canDiscoverNextAccount) return { type, skip: lastAccount.index + 1 };
+                // last account is an empty one or the only account of its type; skip this type completely
                 else return { type };
             },
         );
@@ -192,10 +205,11 @@ export const selectShouldRediscover = (
     if (!device.discovered) return true;
 
     return getDeviceAccountsPerEnabledNetwork(state, staticSessionId).some(
-        ({ accounts }) =>
+        ({ symbol, accounts }) =>
             !accounts ||
-            getAccountChainsPerAccountType(accounts).some(
-                ({ lastAccount }) => !lastAccount.failed && !lastAccount.empty,
+            getAccountChainsPerAccountType(getNetwork(symbol), accounts).some(
+                ({ lastAccount, canDiscoverNextAccount }) =>
+                    !lastAccount.failed && canDiscoverNextAccount,
             ),
     );
 };
@@ -234,7 +248,11 @@ export const selectHasOnlyEmptyPortfolioTracker = createMemoizedSelector(
 export const selectIsTxOutputInternal = createMemoizedSelector(
     [
         selectDeviceAccountsByNetworkSymbol,
-        (_state: WalletCoreCompoundRootState, symbol?: NetworkSymbol, output?: ReviewOutput) => ({
+        (
+            _state: WalletCoreCompoundRootState,
+            symbol?: NetworkSymbol,
+            output?: TransactionReviewOutput,
+        ) => ({
             symbol,
             output,
         }),

@@ -21,6 +21,7 @@ type NetworkCardProps = {
     onClick?: (symbol: NetworkSymbol, isEnabled: boolean) => void;
     onSettings?: (symbol: NetworkSymbol) => void;
     rightContent?: ReactNode;
+    showRepresentativeAssets?: boolean;
 };
 
 export const NetworkCard = ({
@@ -33,6 +34,7 @@ export const NetworkCard = ({
     onClick,
     onSettings,
     rightContent,
+    showRepresentativeAssets = true,
 }: NetworkCardProps) => {
     const isBelowMobile = useIsContentBelowBreakpoint();
 
@@ -56,7 +58,9 @@ export const NetworkCard = ({
                         </Text>
                     </Column>
                     <Row gap={12} onClick={e => e.stopPropagation()} flex="0 0 auto">
-                        {!isBelowMobile && <RepresentativeAssetIconSet symbol={symbol} />}
+                        {!isBelowMobile && showRepresentativeAssets && (
+                            <RepresentativeAssetIconSet symbol={symbol} />
+                        )}
                         {onSettings && (
                             // Make the clickable area bigger
                             <Box padding={8} margin={-8} onClick={() => onSettings(symbol)}>

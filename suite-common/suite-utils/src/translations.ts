@@ -16,7 +16,7 @@ const IGNORED_TRANSLATION_PATHS = [
     '__tests__',
     'coverage',
     '.git',
-    'suite-data',
+    'app-assets',
     'connect-common',
     '.yarn',
     'screenshots',

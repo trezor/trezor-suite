@@ -10,27 +10,30 @@ import {
     openModal,
     preserveModal,
     removePreserveModal,
+    selectModalContext,
     selectModalType,
 } from '@suite/modal';
-import { goto, selectRouteName } from '@suite/router';
+import { gotoThunk, selectRouteName } from '@suite/router';
 import {
     connectPopupActions,
-    connectPopupCallThunkInner,
+    connectPopupCallInnerThunk,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isDiscoveryInProgress, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const useConnectPopupModals = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const popupCall = useSelector(selectConnectPopupCall);
     const discovery = useSelector(selectDiscoveryForSelectedDevice);
     const isInDiscoveryFlow = isDiscoveryInProgress(discovery);
 
     // Modal opening control
-    const modalContext = useSelector(state => state.modal.context);
+    const modalContext = useSelector(selectModalContext);
     const modalType = useSelector(selectModalType);
     const activeRoute = useSelector(selectRouteName);
     const isConnectionModalOpen = useSelector(selectIsConnectionModalOpen);
@@ -48,7 +51,7 @@ export const useConnectPopupModals = () => {
             ].includes(modalType);
 
         // During a connect popup call the device may request interaction
-        // (e.g. REQUEST_BUTTON / REQUEST_PIN).  This replaces the current
+        // (e.g. BUTTON_REQUEST / REQUEST_PIN).  This replaces the current
         // MODAL_CONTEXT_USER modal with a MODAL_CONTEXT_DEVICE modal that
         // inherits preserve=true.  After the device interaction finishes,
         // CLOSE_UI_WINDOW is blocked by preserve, leaving the device modal
@@ -75,7 +78,7 @@ export const useConnectPopupModals = () => {
                 (modalContext === MODAL_CONTEXT_NONE || isReplaceableByConnectModal)
             ) {
                 dispatch(openModal({ type }));
-                // Prevent UI_REQUEST.CLOSE_UI_WINDOW from unrelated TrezorConnect
+                // Prevent UI_EVENTS.CLOSE_UI_WINDOW from unrelated TrezorConnect
                 // calls (e.g. discovery finishing in the background) from closing
                 // the connect popup modal.
                 dispatch(preserveModal());
@@ -131,7 +134,7 @@ export const useConnectPopupModals = () => {
                     dispatch(removePreserveModal());
                     dispatch(cancelModal());
                     dispatch(
-                        goto({
+                        gotoThunk({
                             routeName: 'suite-switch-device',
                             params: {
                                 cancelable: true,
@@ -183,7 +186,7 @@ export const useConnectPopupModals = () => {
             !isConnectionModalOpen
         ) {
             dispatch(
-                connectPopupCallThunkInner({
+                connectPopupCallInnerThunk({
                     ...popupCall,
                 }),
             );

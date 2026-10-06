@@ -140,7 +140,7 @@ export abstract class BaseWorker<API> {
         const { data } = event;
         const { id } = data;
 
-        this.debug('onmessage', data);
+        this.debug('onmessage', data.type);
 
         if (data.type === MESSAGES.HANDSHAKE) {
             this.settings = data.settings;

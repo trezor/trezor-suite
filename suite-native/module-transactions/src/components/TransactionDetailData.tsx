@@ -1,6 +1,8 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type PhishingDetectorId,
     type TokenDefinitionsRootState,
@@ -18,8 +20,8 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { Box, Card, FullAlertBox, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { BannerFull, Box, Card, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
@@ -43,6 +45,8 @@ const getPhishingWarningTranslationId = (detectorId?: PhishingDetectorId) => {
             return 'transactions.phishing.warningZeroAmount';
         case 'TRC10_TRANSFER':
             return 'transactions.phishing.warningTrc10Transfer';
+        case 'UNSOLICITED_ASSET_OFFER':
+            return 'transactions.phishing.warningUnsolicitedAssetOffer';
         default:
             return 'transactions.phishing.warning';
     }
@@ -59,7 +63,7 @@ export const TransactionDetailData = ({
     accountKey,
     tokenTransfer,
 }: TransactionDetailDataProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const { DateFormatter, TimeFormatter } = useFormatters();
     const { translate } = useTranslate();
@@ -124,7 +128,7 @@ export const TransactionDetailData = ({
     return (
         <VStack spacing="sp16">
             {isPhishingTransaction && (
-                <FullAlertBox
+                <BannerFull
                     intent="warning"
                     title={<Translation id={getPhishingWarningTranslationId(phishingDetectorId)} />}
                     primaryButtonLabel={
@@ -141,7 +145,7 @@ export const TransactionDetailData = ({
             )}
 
             {!isPhishingTransaction && isTxMarkedAsNotScam && (
-                <FullAlertBox
+                <BannerFull
                     intent="info"
                     title={<Translation id="transactions.phishing.markedAsRecognized" />}
                     primaryButtonProps={{
@@ -159,7 +163,7 @@ export const TransactionDetailData = ({
                 <VStack spacing="sp24">
                     <TransactionDetailRow title={translate('transactions.detail.feeLabel')}>
                         <Box alignItems="flex-end">
-                            <CryptoAmountFormatter
+                            <ExactCryptoAmountFormatter
                                 value={transaction.fee}
                                 symbol={transaction.symbol}
                                 variant="body-sm"

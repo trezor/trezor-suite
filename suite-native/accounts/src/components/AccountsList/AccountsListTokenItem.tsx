@@ -1,7 +1,12 @@
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
-import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    CompactTokenAmountFormatter,
+    TokenToFiatAmountFormatter,
+    asDecimalTokenAmount,
+} from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { type TokensRootState, getTokenName, selectAccountTokenSymbol } from '@suite-native/tokens';
 
@@ -12,6 +17,7 @@ type AccountListTokenItemProps = {
     account: Account;
     onSelectAccount: () => void;
 
+    badges?: ReactNode;
     hasBackground?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
@@ -22,6 +28,7 @@ export const AccountsListTokenItem = ({
     token,
     account,
     onSelectAccount,
+    badges,
     hasBackground,
     isFirst,
     isLast,
@@ -40,12 +47,14 @@ export const AccountsListTokenItem = ({
             onPress={onSelectAccount}
             icon={
                 <TokenIcon
-                    symbol={account.symbol}
+                    networkSymbol={account.symbol}
                     contractAddress={token.contract}
+                    tokenSymbol={token.symbol || token.name}
                     showNetworkIcon
                 />
             }
             title={getTokenName(token.name)}
+            badges={badges}
             mainValue={
                 showFiatValue && (
                     <TokenToFiatAmountFormatter
@@ -56,10 +65,12 @@ export const AccountsListTokenItem = ({
                 )
             }
             secondaryValue={
-                <TokenAmountFormatter
-                    value={balance}
+                <CompactTokenAmountFormatter
+                    value={asDecimalTokenAmount(balance)}
                     tokenSymbol={tokenSymbol}
+                    tokenDecimals={token.decimals}
                     numberOfLines={1}
+                    adjustsFontSizeToFit
                     ellipsizeMode="tail"
                 />
             }

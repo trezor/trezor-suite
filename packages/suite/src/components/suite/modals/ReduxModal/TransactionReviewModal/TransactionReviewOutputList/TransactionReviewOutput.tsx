@@ -14,8 +14,8 @@ import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts } from '@suite-common/wallet-core';
 import {
     type EvmTransactionPurpose,
-    type ReviewOutput,
     type StakeType,
+    type TransactionReviewOutput as TransactionReviewOutputType,
     type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import {
@@ -25,11 +25,11 @@ import {
     isAllowanceUnlimited,
     isEvmApprovalTxByTextSignature,
     isTestnet,
-    localizeNumber,
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { TransactionReviewOutputAssets } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputAssets';
 import { useSelector } from 'src/hooks/suite';
@@ -119,6 +119,19 @@ const isYieldAction = (
 ): evmTxType is keyof typeof yieldStrings =>
     !!evmTxType && Object.keys(yieldStrings).includes(evmTxType);
 
+type WrappedNativeAction = Extract<EvmTransactionPurpose, 'wrap' | 'unwrap'>;
+
+const isWrappedNativeAction = (
+    evmTxType: EvmTransactionPurpose | undefined,
+): evmTxType is WrappedNativeAction => evmTxType === 'wrap' || evmTxType === 'unwrap';
+
+// Mirrors the firmware's clear-signing "Intent" screen, which reads "Wrap ETH to WETH" /
+// "Unwrap WETH to ETH" for a canonical WETH deposit()/withdraw().
+const wrappedNativeIntentStrings: Record<WrappedNativeAction, TranslationKey> = {
+    wrap: 'TR_EARN_YIELD_WRAP_TITLE',
+    unwrap: 'TR_EARN_YIELD_UNWRAP_TITLE',
+};
+
 const getTranslationValues = (
     networkType: NetworkType,
     stakeType?: StakeType,
@@ -173,7 +186,7 @@ const getContractTitle = (
 };
 
 const getOutputTitle = (
-    type: ReviewOutput['type'],
+    type: TransactionReviewOutputType['type'],
     networkType: NetworkType,
     value: string,
     isRbf: boolean,
@@ -223,7 +236,7 @@ const getOutputTitle = (
             return <Translation id={translation ? translation.label : 'TR_RECIPIENT_ADDRESS'} />;
 
         case 'amount':
-            if (isYieldAction(evmTxType)) {
+            if (isYieldAction(evmTxType) || isWrappedNativeAction(evmTxType)) {
                 return <Translation id="AMOUNT" />;
             }
 
@@ -255,6 +268,7 @@ const getOutputTitle = (
         case 'recipient_name':
             return <Translation id="TR_TRADING_PROVIDER" />;
         case 'swap_intent':
+        case 'contract_intent':
             return <Translation id="TR_TRADING_INTENT" />;
         case 'traded_assets':
             return <Translation id={receiveAddress ? 'TR_CONTRACT' : 'TR_MY_ASSETS'} />;
@@ -265,7 +279,6 @@ const getOutputTitle = (
         case 'tron-vote':
             return <Translation id="TR_SUMMARY" />;
         case 'tron-withdraw':
-            return <Translation id="TR_SUMMARY" />;
         case 'tron-claim':
             return <Translation id="TR_STAKE_CLAIM" />;
         default:
@@ -274,7 +287,7 @@ const getOutputTitle = (
 };
 
 interface GetOutputLinesParams {
-    type: ReviewOutput['type'];
+    type: TransactionReviewOutputType['type'];
     account: Account;
     value: string;
     value2?: string;
@@ -282,7 +295,7 @@ interface GetOutputLinesParams {
     stakeType?: StakeType;
     evmTxType?: EvmTransactionPurpose;
     device?: TrezorDevice;
-    token?: ReviewOutput['token'];
+    token?: TransactionReviewOutputType['token'];
     nativeToken?: TokenInfo;
     rewards?: YieldClaimReward[];
     translationString: TranslationFunction;
@@ -467,6 +480,19 @@ const getOutputLines = ({
                     value: translationString('TR_TRADING_INTENT_SWAP', {}),
                 },
             ];
+        case 'contract_intent':
+            return [
+                {
+                    id: 'contract_intent',
+                    type: 'data',
+                    value: isWrappedNativeAction(evmTxType)
+                        ? translationString(wrappedNativeIntentStrings[evmTxType], {
+                              nativeSymbol: getNetworkDisplaySymbol(symbol),
+                              tokenSymbol: getWrappedNativeSymbol(symbol),
+                          })
+                        : '',
+                },
+            ];
         case 'amount': {
             if (isYieldAction(evmTxType)) {
                 return [
@@ -489,7 +515,11 @@ const getOutputLines = ({
             const output: OutputElementLine[] = [
                 {
                     id: type,
-                    label: <Translation id="AMOUNT" />,
+                    // The card heading already reads "Amount" for a wrap/unwrap, so labelling
+                    // the line too would print it twice.
+                    label: isWrappedNativeAction(evmTxType) ? undefined : (
+                        <Translation id="AMOUNT" />
+                    ),
                     value,
                     type: 'amount',
                     token: token || nativeToken,
@@ -533,7 +563,7 @@ const getOutputLines = ({
 
             return [
                 {
-                    id: `${type}-amount`,
+                    id: 'approve-amount',
                     label: (
                         <Translation
                             id={isApprovalTx ? 'TR_APPROVE_AMOUNT_TITLE' : 'TR_REVOKE_AMOUNT_TITLE'}
@@ -544,7 +574,7 @@ const getOutputLines = ({
                     type,
                 },
                 {
-                    id: `${type}-chain`,
+                    id: 'approve-chain',
                     label: <Translation id="TR_CHAIN" />,
                     value: value2,
                     type: 'data',
@@ -588,10 +618,9 @@ const getOutputLines = ({
         case 'tron-withdraw':
             return [
                 {
-                    id: 'address',
-                    type: 'safe-address',
-                    label: <Translation id="TR_EARN_TRON_CLAIM_ADDRESS" />,
-                    value,
+                    id: 'tron-withdraw',
+                    type: 'data',
+                    value: translationString('TR_EARN_TRON_CLAIM_WITHDRAW'),
                 },
             ];
         case 'tron-claim':
@@ -616,7 +645,7 @@ export type TransactionReviewOutputProps = {
     evmTxType?: EvmTransactionPurpose;
     nativeToken?: TokenInfo;
     isTronStakeFreeze?: boolean;
-} & ReviewOutput;
+} & TransactionReviewOutputType;
 
 export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => {
     const {

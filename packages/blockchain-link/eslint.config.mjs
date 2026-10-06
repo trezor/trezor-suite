@@ -1,4 +1,4 @@
-import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/eslint';
+import { allowDevDependenciesIn, eslint } from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -9,16 +9,7 @@ export default [
             'no-console': 'warn',
             'import/no-default-export': 'off',
             '@typescript-eslint/no-shadow': 'off', // Todo: shall be fixed
-            'import/no-extraneous-dependencies': [
-                'error',
-                {
-                    devDependencies: [
-                        ...globalNoExtraneousDependenciesDevDependencies,
-                        '**/tests/**',
-                        '**/webpack/**',
-                    ],
-                },
-            ],
         },
     },
+    allowDevDependenciesIn(['**/tests/**', '**/webpack/**']),
 ];

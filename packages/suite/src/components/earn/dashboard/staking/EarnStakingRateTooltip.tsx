@@ -20,7 +20,11 @@ interface EarnStakingRateTooltipProps {
 
 export const EarnStakingRateTooltip = ({ networkType, rate }: EarnStakingRateTooltipProps) => {
     if (!rate) {
-        return <Translation id="TR_EARN_NOT_AVAILABLE" />;
+        return (
+            <Text typographyStyle="body-sm">
+                <Translation id="TR_EARN_NOT_AVAILABLE" />
+            </Text>
+        );
     }
 
     return (

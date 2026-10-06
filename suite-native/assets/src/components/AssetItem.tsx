@@ -5,12 +5,17 @@ import { useNavigation } from '@react-navigation/native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type StakeRootState,
+    selectHasAnyDeviceAccountsWithStaking,
+} from '@suite-common/wallet-core';
+import {
     AccountsListItemBase,
     type NativeAccountsRootState,
     selectHasDeviceAnyFailedAccountForNetworkSymbol,
 } from '@suite-native/accounts';
 import { Icon } from '@suite-native/icons';
 import {
+    AccountDetailStackRoutes,
     AccountsStackRoutes,
     type AppTabsParamList,
     AppTabsRoutes,
@@ -18,10 +23,6 @@ import {
     RootStackRoutes,
     type TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
-import {
-    type NativeStakingRootState,
-    selectHasAnyDeviceAccountsWithStaking,
-} from '@suite-native/staking';
 import { type TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
 
 import { selectSingleDeviceAccountKeyForNetworkSymbol } from '../assetsSelectors';
@@ -50,19 +51,26 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     const hasAnyTokens = useSelector((state: TokensRootState) =>
         selectHasDeviceAnyTokensForNetwork(state, cryptoCurrencySymbol),
     );
-    const hasAnyAccountsWithStaking = useSelector((state: NativeStakingRootState) =>
+    const hasAnyAccountsWithStaking = useSelector((state: StakeRootState) =>
         selectHasAnyDeviceAccountsWithStaking(state, cryptoCurrencySymbol),
     );
     const hasAnyFailedAccount = useSelector((state: NativeAccountsRootState) =>
         selectHasDeviceAnyFailedAccountForNetworkSymbol(state, cryptoCurrencySymbol),
     );
 
+    const secondaryValue = hasAnyFailedAccount ? undefined : (
+        <CryptoAmount symbol={cryptoCurrencySymbol} />
+    );
+
     const handleAssetPress = useCallback(() => {
         // A single tokenless account opens its detail directly; anything else opens the list.
         if (singleAccountKey && !hasAnyTokens && !hasAnyAccountsWithStaking) {
-            navigation.navigate(RootStackRoutes.AccountDetail, {
-                accountKey: singleAccountKey,
-                closeActionType: 'back',
+            navigation.navigate(RootStackRoutes.AccountDetailStack, {
+                screen: AccountDetailStackRoutes.AccountDetail,
+                params: {
+                    accountKey: singleAccountKey,
+                    closeActionType: 'back',
+                },
             });
 
             return;
@@ -93,9 +101,7 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
                     <FiatAmount symbol={cryptoCurrencySymbol} />
                 )
             }
-            secondaryValue={
-                hasAnyFailedAccount ? undefined : <CryptoAmount symbol={cryptoCurrencySymbol} />
-            }
+            secondaryValue={secondaryValue}
         />
     );
 });

@@ -1,19 +1,15 @@
-import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
+import { supportedCardanoNetworks } from '@trezor/network-cardano/constants';
+import {
+    type SuiteCommonNetworkModule,
+    createNetworkModule,
+} from '@trezor/network-module-suite-common-types';
 
 import { adaValidator } from './addressValidator/cardanoAddressValidator';
-import { getNetworkColor } from './networkColor';
-import {
-    type CardanoNetworkSymbol,
-    getSupportedNetworks,
-    isSupportedNetwork,
-} from './supportedNetworks';
+import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
-export type CardanoNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<CardanoNetworkSymbol>;
-
-export const createCardanoSuiteCommonNetworkModule =
-    (): CardanoNetworkSuiteCommonNetworkModule => ({
+export const createCardanoSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
+    createNetworkModule(supportedCardanoNetworks, {
         addressValidator: adaValidator,
-        getSupportedNetworks,
-        isSupportedNetwork,
-        getNetworkColor,
+        getNetworkConfig,
+        getAccountSyncInterval,
     });

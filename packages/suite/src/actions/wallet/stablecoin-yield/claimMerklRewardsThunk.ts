@@ -1,30 +1,39 @@
-import { asTypedDesktopAnalytics } from '@suite/analytics';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import {
+    type StablecoinYieldTxSimulationParams,
     buildClaimCalldata,
     buildClaimTransactionReview,
     buildUnsignedClaimTransaction,
-} from '@suite-common/earn-stablecoin/src/signing';
-import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
+    isUserCancelledSignErrorCode,
+} from '@suite-common/earn-stablecoin';
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
+import { type MessageSystemRootState } from '@suite-common/message-system';
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
 import {
-    STABLECOIN_YIELD_PREFIX,
+    type EthereumGetCurrentNonceThunkState,
+    type SynchronizeSentTransactionThunkDeps,
+    type SynchronizeSentTransactionThunkState,
+    type WalletSettingsRootState,
+    YIELD_PREFIX,
     type YieldEstimatedFeeLevel,
     estimateYieldFeeLevel,
+    getYieldClaimRewardsSnapshot,
     selectAddressDisplayType,
     selectIsMevProtectionEnabled,
-    stablecoinYieldActions,
     synchronizeSentTransactionThunk,
+    yieldActions,
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import {
     PUSH_TRANSACTION_FAILED_CAUSE,
@@ -60,12 +69,23 @@ type ClaimMerklRewardsParams = {
     rewards: ClaimMerklReward[];
 };
 
-export const claimMerklRewardsThunk = createThunk(
-    `${STABLECOIN_YIELD_PREFIX}/thunk/claimMerklRewards`,
-    async (
-        { account, flowKey, rewards }: ClaimMerklRewardsParams,
-        { dispatch, getState, extra },
-    ) => {
+type ClaimMerklRewardsThunkState = DeviceRootState &
+    EthereumGetCurrentNonceThunkState &
+    MessageSystemRootState &
+    SynchronizeSentTransactionThunkState &
+    WalletSettingsRootState;
+
+type ClaimMerklRewardsThunkDeps = SynchronizeSentTransactionThunkDeps & {
+    services: DesktopAnalyticsDep;
+};
+
+export const claimMerklRewardsThunk = createThunk<
+    { txid: string } | null | undefined,
+    ClaimMerklRewardsParams,
+    { state: ClaimMerklRewardsThunkState; extra: ClaimMerklRewardsThunkDeps }
+>(
+    `${YIELD_PREFIX}/thunk/claimMerklRewards`,
+    async ({ account, flowKey, rewards }, { dispatch, getState, extra }) => {
         const device = selectSelectedDevice(getState());
         const addressDisplayType = selectAddressDisplayType(getState());
 
@@ -90,7 +110,7 @@ export const claimMerklRewardsThunk = createThunk(
         }
 
         const reportSubmitError = (errorMessage = 'submit-failed') =>
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.yieldClaimEvent.name,
                 payload: {
                     type: 'error',
@@ -102,7 +122,7 @@ export const claimMerklRewardsThunk = createThunk(
             });
 
         dispatch(
-            stablecoinYieldActions.startSubmittingAction({
+            yieldActions.startSubmittingAction({
                 flowType: 'claim',
                 flowKey,
                 amount: '',
@@ -138,7 +158,7 @@ export const claimMerklRewardsThunk = createThunk(
             if (!estimatedFeeLevel.success) {
                 reportSubmitError(estimatedFeeLevel.error);
                 dispatch(
-                    stablecoinYieldActions.setError({
+                    yieldActions.setError({
                         flowType: 'claim',
                         flowKey,
                         error: 'TR_EARN_YIELD_ERROR_FEE_ESTIMATION',
@@ -167,29 +187,49 @@ export const claimMerklRewardsThunk = createThunk(
                 }),
             );
 
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            if (userAcceptedTxSimulation === undefined) {
+                return;
+            }
+
+            extra.services.analytics.report({
                 type: events.yieldClaimEvent.name,
                 payload: {
                     type: 'tx-simulation-modal',
-                    action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
+                    action: userAcceptedTxSimulation.value === false ? 'cancel' : 'continue',
                     networkSymbol: account.symbol,
                     rewardCount: rewards.length,
                 },
             });
 
-            if (userAcceptedTxSimulation?.value === false) {
+            if (userAcceptedTxSimulation.value === false) {
                 return;
             }
 
             const { formState, precomposedTransaction, availableRewards, transactionForSigning } =
                 buildClaimTransactionReview({
                     unsignedTransaction: unsignedClaimTx,
-                    selectedFee: userAcceptedTxSimulation?.selectedFee,
+                    selectedFee: userAcceptedTxSimulation.selectedFee,
                     rewards,
                 });
 
+            // The completion screen renders this snapshot instead of the live Merkl query: Merkl
+            // stops returning the rewards once it has processed the claim. It is built from the
+            // same frozen rewards the calldata was built from, so it cannot diverge from the
+            // signed transaction when Merkl data refreshes in the background.
             dispatch(
-                stablecoinYieldActions.storePrecomposedTransaction({
+                yieldActions.storeActionReviewData({
+                    flowType: 'claim',
+                    flowKey,
+                    rewards: getYieldClaimRewardsSnapshot({
+                        networkSymbol: account.symbol,
+                        rewards,
+                    }),
+                    unsignedTransaction: unsignedClaimTx,
+                }),
+            );
+
+            dispatch(
+                yieldActions.storePrecomposedTransaction({
                     precomposedTx: precomposedTransaction,
                     // Surface the resolved nonce (decimal) so the review modal shows it like Send.
                     precomposedForm: { ...formState, ethereumNonce: nonce },
@@ -215,13 +255,13 @@ export const claimMerklRewardsThunk = createThunk(
                     chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
                 });
 
-                userAcceptedTxSimulation?.resolve();
+                userAcceptedTxSimulation.resolve();
 
                 if (!signingResponse.success) {
                     dispatch(closeModal());
 
                     const { code } = signingResponse.error;
-                    if (code === 'Failure_ActionCancelled' || code === 'Method_Cancel') {
+                    if (isUserCancelledSignErrorCode(code)) {
                         return null;
                     }
 
@@ -229,7 +269,7 @@ export const claimMerklRewardsThunk = createThunk(
                 }
 
                 dispatch(
-                    stablecoinYieldActions.storeSignedTransaction({
+                    yieldActions.storeSignedTransaction({
                         serializedTx: {
                             tx: signingResponse.payload.serializedTx,
                             symbol: account.symbol,
@@ -246,13 +286,16 @@ export const claimMerklRewardsThunk = createThunk(
                 }
 
                 const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
+                const isMevProtectionFeatureEnabled =
+                    selectIsMevProtectionFeatureEnabled(getState());
+
                 const pushResponse = await TrezorConnect.pushTransaction({
                     tx: getMevProtectedTxData(
                         account.symbol,
                         signingResponse.payload.serializedTx,
-                        isMevProtectionEnabled,
+                        isMevProtectionEnabled && isMevProtectionFeatureEnabled,
                     ),
-                    coin: account.symbol,
+                    coin: asCoinSymbol(account.symbol),
                     identity: getAccountIdentity(account),
                 });
 
@@ -285,33 +328,35 @@ export const claimMerklRewardsThunk = createThunk(
                 );
 
                 dispatch(
-                    stablecoinYieldActions.setPendingTx({
+                    yieldActions.setPendingTx({
                         flowType: 'claim',
                         flowKey,
                         tx: {
                             type: 'claim',
                             txid: pushResponse.payload.txid,
                             amount: '',
+                            fee: precomposedTransaction.fee,
+                            submittedAt: Date.now(),
                         },
                     }),
                 );
 
                 return pushResponse.payload;
             } finally {
-                dispatch(stablecoinYieldActions.discardTransaction());
+                dispatch(yieldActions.discardTransaction());
             }
         } catch (error) {
             console.error(error);
             reportSubmitError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(
-                stablecoinYieldActions.setError({
+                yieldActions.setError({
                     flowType: 'claim',
                     flowKey,
                     error: getYieldErrorTranslationKey(error),
                 }),
             );
         } finally {
-            dispatch(stablecoinYieldActions.finishSubmittingAction({ flowType: 'claim', flowKey }));
+            dispatch(yieldActions.finishSubmittingAction({ flowType: 'claim', flowKey }));
         }
     },
 );

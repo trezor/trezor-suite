@@ -1,0 +1,556 @@
+// origin: https://github.com/trezor/connect/blob/develop/src/js/data/FirmwareInfo.js
+
+import type { Features } from '@trezor/connect-common/src/types/device';
+import type {
+    FirmwareChannel,
+    FirmwareReleaseConfigInfo,
+} from '@trezor/connect-common/src/types/firmware';
+import { firmwareAssets, firmwareReleaseConfigAssets } from '@trezor/connect-data';
+import type {
+    ConditionalRelease,
+    DeviceModelInternal,
+    FirmwareRelease,
+    IntermediaryReleaseConfig,
+    ReleasesConfig,
+} from '@trezor/device-utils';
+import {
+    FirmwareType,
+    getBootloaderVersionArray,
+    getFirmwareVersionArray,
+} from '@trezor/device-utils';
+import {
+    getIntegerInRangeFromString,
+    isNotNull,
+    removeTrailingSlashes,
+    typedObjectFromEntries,
+    versionUtils,
+} from '@trezor/utils';
+import type { VersionArray } from '@trezor/utils/src/versionUtils';
+
+import * as firmwareReleaseStore from './firmwareReleaseStore';
+import type { FirmwareReleaseState } from './firmwareReleaseStore';
+import * as localFirmwareStore from './localFirmwareStore';
+import * as settingsStore from './settingsStore';
+import { httpRequest } from '../utils/assets';
+import {
+    fetchFirmwareReleaseConfig,
+    getOnlineFirmwareBaseUrl,
+} from '../utils/firmwareReleaseConfigUtils';
+import {
+    buildIntermediaryFirmwareFileName,
+    buildLocalFirmwareFileName,
+    buildLocalReleaseName,
+    isFirmwareCacheUsedForSelectedSource,
+    isProductionFirmwareChannel,
+    isStrictFeatures,
+} from '../utils/firmwareUtils';
+
+// We use `bundledReleases` to know what are the binaries that are bundled so we do not need to download them if they are needed.
+const getBundledFirmwareVersion = (
+    deviceModel: DeviceModelInternal,
+    firmwareType: FirmwareType,
+): string | undefined => {
+    const bundledRelease = firmwareReleaseConfigAssets.releases[deviceModel]?.[firmwareType];
+    if (!bundledRelease) {
+        // Probably this is a new device model.
+        return;
+    }
+    // Extracts the version from the filename, 't2b1-2.6.3-bitcoinonly.json' -> '2.6.3'.
+    const bundledVersion = bundledRelease.releasePath.match(/(\d+\.\d+\.\d+)/);
+    if (!bundledVersion) {
+        throw new Error('Fimrware bundled version was not found.');
+    }
+
+    return bundledVersion[0];
+};
+
+const getReleaseFilename = (
+    model: DeviceModelInternal,
+    type: FirmwareType,
+    version: VersionArray,
+) => {
+    const fwModel = model.toLowerCase();
+    const fwVersion = version.join('.');
+    const fwType = type === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
+
+    return `${fwModel}-${fwVersion}-${fwType}`;
+};
+
+const getReleaseAssets = (model: DeviceModelInternal, type: FirmwareType) => {
+    const fwModel = model.toLowerCase();
+    const fwType = type === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
+
+    return firmwareAssets?.[fwModel]?.[fwType] ?? {};
+};
+
+/**
+ * Returns only the path where to find firmware release (at a base URL), based on the current settings.
+ * Example: 'firmware/t3t1/universal/t3t1-2.8.10-universal.json'
+ */
+const getOnlineReleasePath = (
+    model: DeviceModelInternal,
+    type: FirmwareType,
+    version: VersionArray,
+): string => {
+    const { MIDDLE_PATH } = getOnlineFirmwareBaseUrl(settingsStore.get('firmwareChannel'));
+    const fwModel = model.toLowerCase();
+    const fwType = type === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
+
+    return `${MIDDLE_PATH}/${fwModel}/${fwType}/${getReleaseFilename(model, type, version)}.json`;
+};
+
+export const getReleaseAsset = (
+    model: DeviceModelInternal,
+    version: VersionArray,
+    type: FirmwareType,
+) => getReleaseAssets(model, type)[getReleaseFilename(model, type, version)];
+
+export const getBundledRelease = (
+    deviceModel: DeviceModelInternal,
+    firmwareType: FirmwareType,
+): FirmwareRelease | undefined => {
+    const version = getBundledFirmwareVersion(deviceModel, firmwareType);
+    if (!version) {
+        // Probably it is a new device model
+        return;
+    }
+    const versionArray = versionUtils.tryParse(version);
+    if (!versionArray) {
+        throw new Error('There was error parsing bundled release.');
+    }
+
+    return getReleaseAsset(deviceModel, versionArray, firmwareType);
+};
+
+const getOnlineReleaseByPath = async (releasePath: string) => {
+    /*
+        Example final URLs for reference:
+        - production (default) https://data.trezor.io/firmware/t3t1/universal/t3t1-2.8.10-universal.json
+        - test-unsigned https://data.trezor.io/dev/firmware/releases/unsigned/t3t1/universal/t3t1-2.8.10-universal.json
+        - test-unsigned-stable https://data.trezor.io/dev/firmware/releases/unsigned-stable/t3t1/universal/t3t1-2.8.10-universal.json
+        - localhost-unsigned http://localhost:3000/firmware/unsigned/t3t1/universal/t3t1-2.8.10-universal.json
+     */
+    const { BASE_URL } = getOnlineFirmwareBaseUrl(settingsStore.get('firmwareChannel'));
+    const url = `${BASE_URL}/${releasePath}`;
+
+    const response = await httpRequest(url, 'json', {
+        signal: AbortSignal.timeout(10000),
+        skipLocalForceDownload: true,
+    });
+
+    return response as FirmwareRelease;
+};
+
+export const getOnlineReleaseByVersion = async (
+    deviceModel: DeviceModelInternal,
+    firmwareVersion: VersionArray,
+    firmwareType: FirmwareType,
+): Promise<FirmwareRelease | undefined> => {
+    const releasePath = getOnlineReleasePath(deviceModel, firmwareType, firmwareVersion);
+    const onlineRelease = await getOnlineReleaseByPath(releasePath);
+    if (!onlineRelease || !versionUtils.isEqual(onlineRelease.version, firmwareVersion)) {
+        return;
+    }
+
+    return onlineRelease;
+};
+
+// Gets a specific firmware release by version.
+// First it will check if the required released is part of the firmware release config, if so then use that.
+// The reason for that is that if the release is in the firmware release config it might be from remote so we nee to use that.
+// If not then it will attempt to find a matching version in the bundled releases to avoid a network request.
+// If no matching bundled release is found, it will fall back to fetching the release from the online source.
+export const getReleaseByVersion = async (
+    deviceModel: DeviceModelInternal,
+    firmwareVersion: VersionArray,
+    firmwareType: FirmwareType,
+): Promise<FirmwareRelease | undefined> => {
+    const firmwareChannel = settingsStore.get('firmwareChannel');
+
+    const releaseFromConfig = firmwareReleaseStore.getReleases(deviceModel, firmwareType)?.release;
+    if (releaseFromConfig && versionUtils.isEqual(firmwareVersion, releaseFromConfig.version)) {
+        return releaseFromConfig;
+    }
+
+    const releaseName = buildLocalReleaseName(firmwareType, deviceModel, firmwareVersion);
+
+    const { firmwareDir, firmwareList } = localFirmwareStore.get();
+    if (
+        isFirmwareCacheUsedForSelectedSource(firmwareChannel) &&
+        firmwareList.includes(releaseName)
+    ) {
+        const localReleasePath = `${firmwareDir}${releaseName}`;
+        const localReleaseBuffer = await httpRequest(localReleasePath, 'json');
+
+        return JSON.parse(localReleaseBuffer.toString());
+    }
+
+    // Bundled assets are production releases, so only use them on production-like channels.
+    // On other channels we must fetch the channel-appropriate release from remote.
+    const useBundledRelease = isProductionFirmwareChannel(firmwareChannel);
+
+    const release =
+        // if you're allowed to use bundled release, try to
+        (useBundledRelease && getReleaseAsset(deviceModel, firmwareVersion, firmwareType)) ||
+        // if you're not allowed OR it wasn't possible to get bundled release, fall back to online release
+        (await getOnlineReleaseByVersion(deviceModel, firmwareVersion, firmwareType).catch(
+            () => undefined,
+        ));
+
+    // Sanity check to make sure we provide the required release.
+    if (release && versionUtils.isEqual(release.version, firmwareVersion)) {
+        return release;
+    }
+
+    return undefined;
+};
+
+// We can build the local firmware release config only using local bundled releases JSON,
+// and we will need to use it if it is not possible to build the remote one.
+const createLocalFirmwareConfig = (releases: ReleasesConfig): ReleasesConfig => {
+    const releaseEntries = Object.entries(releases)
+        .map(([deviceModel, modelReleases]) => {
+            const modelKey = deviceModel as DeviceModelInternal;
+
+            const { 'bitcoin-only': btcOnly, universal } = modelReleases ?? {};
+
+            if (!btcOnly?.releasePath || !universal?.releasePath) return null;
+
+            const btcOnlyRelease = getBundledRelease(modelKey, FirmwareType.BitcoinOnly);
+            const universalRelease = getBundledRelease(modelKey, FirmwareType.Universal);
+
+            if (!btcOnlyRelease || !universalRelease) return null;
+
+            const newReleases = {
+                [FirmwareType.BitcoinOnly]: { ...btcOnly, release: btcOnlyRelease },
+                [FirmwareType.Universal]: { ...universal, release: universalRelease },
+            };
+
+            return [modelKey, newReleases] as const;
+        })
+        .filter(isNotNull);
+
+    return typedObjectFromEntries(releaseEntries);
+};
+
+const createRemoteFirmwareConfig = async (releases: ReleasesConfig): Promise<ReleasesConfig> => {
+    const releaseEntryPromises = Object.entries(releases).map(
+        async ([deviceModel, modelReleases]) => {
+            const modelKey = deviceModel as DeviceModelInternal;
+
+            const { 'bitcoin-only': btcOnly, universal } = modelReleases ?? {};
+
+            if (!btcOnly?.releasePath || !universal?.releasePath) return null;
+
+            const [bitcoinOnlyRelease, universalRelease] = await Promise.all([
+                getOnlineReleaseByPath(btcOnly.releasePath),
+                getOnlineReleaseByPath(universal.releasePath),
+            ]);
+
+            if (!universalRelease || !bitcoinOnlyRelease) return null;
+
+            const newReleases = {
+                [FirmwareType.BitcoinOnly]: { ...btcOnly, release: bitcoinOnlyRelease },
+                [FirmwareType.Universal]: { ...universal, release: universalRelease },
+            };
+
+            return [modelKey, newReleases] as const;
+        },
+    );
+
+    const validEntries = (await Promise.all(releaseEntryPromises)).filter(isNotNull);
+
+    return typedObjectFromEntries(validEntries);
+};
+
+export const getRemoteFirmwareConfig = async (
+    firmwareChannel: FirmwareChannel,
+): Promise<FirmwareReleaseState | null> => {
+    const remoteConfig = await fetchFirmwareReleaseConfig(firmwareChannel);
+
+    if (remoteConfig && remoteConfig.sequence > firmwareReleaseConfigAssets.sequence) {
+        try {
+            const remoteReleases = await createRemoteFirmwareConfig(remoteConfig.releases);
+
+            return {
+                releases: remoteReleases,
+                intermediaries: remoteConfig.intermediaries,
+            };
+        } catch {
+            // There was an error fetching the remote data for config, we ignore it and use local config.
+        }
+    }
+
+    return null;
+};
+
+export const getLocalFirmwareConfig = (): FirmwareReleaseState => ({
+    releases: createLocalFirmwareConfig(firmwareReleaseConfigAssets.releases),
+    intermediaries: firmwareReleaseConfigAssets.intermediaries,
+});
+
+export const getLanguage = (languageBinPath: string) => {
+    const { BASE_URL } = getOnlineFirmwareBaseUrl(settingsStore.get('firmwareChannel'));
+    const url = `${BASE_URL}/${languageBinPath}`;
+
+    return httpRequest(url, 'binary');
+};
+
+const isValidConditionalRelease = (release: FirmwareRelease): boolean =>
+    !!(release.version && release.min_firmware_version && release.min_bootloader_version);
+
+export const calculateShouldOfferRelease = (
+    { conditions: { rollout_probability } }: ConditionalRelease,
+    deviceId: string | null,
+): boolean => {
+    if (rollout_probability < 0 || rollout_probability > 100) {
+        throw new Error('Probability must be between 0 and 100.');
+    }
+
+    if (deviceId === null) {
+        // When deviceId is null, it means device is fresh so we always want to install latest FW,
+        // unless rolloutProbability is 0, in that case we should never offer it.
+        return rollout_probability > 0;
+    } else {
+        // If deviceId is provided, use the deterministic approach. `rolloutProbability` is a
+        // 0..100 percentage compared with `<`, so the bucket count must be 100 (values 0..99) -
+        // passing 101 here would bucket one extra value (100) that can never satisfy `< 100`,
+        // permanently excluding ~1% of devices from being offered a release at ANY rollout
+        // percentage including 100. See the sibling usage in
+        // suite-common/message-system/src/experimentUtils.ts for the same pattern done right.
+        return rollout_probability > getIntegerInRangeFromString(deviceId, 100);
+    }
+};
+
+export type SelectedFirmwareRelease = {
+    release: FirmwareRelease;
+    intermediary: IntermediaryReleaseConfig | undefined;
+    isRequired: boolean;
+    isNewer: boolean;
+};
+
+export const selectFirmwareRelease = (
+    features: Features,
+    latest: FirmwareRelease,
+    releases: FirmwareRelease[],
+    intermediaries: IntermediaryReleaseConfig[],
+): SelectedFirmwareRelease => {
+    const firmwareVersion = getFirmwareVersionArray({ features });
+    const bootloaderVersion = getBootloaderVersionArray({ features });
+    const sorted = releases.sort((a, b) => (versionUtils.isNewer(b.version, a.version) ? 1 : -1));
+
+    // firmware mode or bootloader mode with known firmware version
+    if (versionUtils.isVersionArray(firmwareVersion)) {
+        const isRequired = sorted.some(
+            r => versionUtils.isNewer(r.version, firmwareVersion) && r.required,
+        );
+
+        const supportsMinFw = (
+            current: VersionArray,
+            { min_firmware_version }: FirmwareRelease | IntermediaryReleaseConfig,
+        ) => versionUtils.isNewerOrEqual(current, min_firmware_version);
+
+        if (supportsMinFw(firmwareVersion, latest)) {
+            const isNewer = versionUtils.isNewer(latest.version, firmwareVersion);
+
+            return { release: latest, intermediary: undefined, isNewer, isRequired };
+        }
+
+        // Find the first intermediary release that requires a newer version than the current one.
+        const intermediary = intermediaries.find(r => !supportsMinFw(firmwareVersion, r));
+
+        if (intermediary) {
+            return { release: latest, intermediary, isNewer: true, isRequired };
+        }
+
+        // If the target isn't compatible, search for the best alternative.
+        // If an alternative is found, use it. Otherwise, we proceed with the original.
+        const compatible = sorted.find(r => supportsMinFw(firmwareVersion, r));
+        const release = compatible ?? latest;
+
+        return { release, intermediary: undefined, isNewer: true, isRequired };
+    }
+
+    // bootloader mode on older T1B1 devices which don't report firmware versions
+    if (features.bootloader_mode && versionUtils.isVersionArray(bootloaderVersion)) {
+        const isRequired = !features.firmware_present && sorted.some(item => item.required);
+
+        const supportsMinBl = (
+            current: VersionArray,
+            { min_bootloader_version }: FirmwareRelease | IntermediaryReleaseConfig,
+        ) => versionUtils.isNewerOrEqual(current, min_bootloader_version);
+
+        if (supportsMinBl(bootloaderVersion, latest)) {
+            const isNewer =
+                !!latest.bootloader_version &&
+                versionUtils.isNewer(latest.bootloader_version, bootloaderVersion);
+
+            return { release: latest, intermediary: undefined, isNewer, isRequired };
+        }
+
+        // Find the first intermediary release that requires a newer version than the current one.
+        const intermediary = intermediaries.find(r => !supportsMinBl(bootloaderVersion, r));
+
+        if (intermediary) {
+            return { release: latest, intermediary, isNewer: true, isRequired };
+        }
+
+        // If the target isn't compatible, search for the best alternative.
+        // If an alternative is found, use it. Otherwise, we proceed with the original.
+        const compatible = sorted.find(r => supportsMinBl(bootloaderVersion, r));
+        const release = compatible ?? latest;
+
+        return { release, intermediary: undefined, isNewer: true, isRequired };
+    }
+
+    throw new Error('Firmware version is not version array.');
+};
+
+export const getFirmwareReleaseConfigInfo = (
+    features: Features,
+    type: FirmwareType,
+): FirmwareReleaseConfigInfo | undefined => {
+    if (!isStrictFeatures(features)) {
+        throw new Error('Features of unexpected shape provided.');
+    }
+
+    const model = features.internal_model;
+
+    const deviceReleases = firmwareReleaseStore.getReleases(model, type);
+    if (!deviceReleases?.release) {
+        return;
+    }
+
+    const isBitcoinOnlyAvailable = !!firmwareReleaseStore.getReleases(
+        model,
+        FirmwareType.BitcoinOnly,
+    );
+
+    const { release: latestRelease, firmware_type: firmwareType } = deviceReleases;
+
+    const intermediaries = firmwareReleaseStore.getIntermediary(model) ?? [];
+    const releases = Object.values(getReleaseAssets(model, type));
+
+    const selected = selectFirmwareRelease(features, latestRelease, releases, intermediaries);
+
+    if (!isValidConditionalRelease(selected.release)) {
+        throw new Error(`Release object in unexpected shape.`);
+    }
+
+    const shouldBeOffered = calculateShouldOfferRelease(deviceReleases, features.device_id);
+
+    return {
+        firmwareType,
+        isBitcoinOnlyAvailable,
+        releaseConditions: { ...deviceReleases.conditions, shouldBeOffered },
+        translations: selected.release.translations,
+        ...selected,
+    };
+};
+
+export const getFirmwareStatus = (features: Features, releaseInfo?: FirmwareReleaseConfigInfo) => {
+    // indication that firmware is not installed at all. This information is set to false in bl mode. Otherwise it is null.
+    if (features.firmware_present === false) {
+        return 'none';
+    }
+    // for T1B1 in bootloader, what device reports as firmware version is in fact bootloader version, so we can
+    // not safely tell firmware version
+    if (features.major_version === 1 && features.bootloader_mode) {
+        return 'unknown';
+    }
+
+    // should never happen for official firmware, see getInfo
+    if (!releaseInfo) return 'custom';
+
+    if (releaseInfo.isRequired) return 'required';
+
+    if (releaseInfo.isNewer) return 'outdated';
+
+    return 'valid';
+};
+
+type GetFirmwareLocationParam = {
+    firmwareVersion: VersionArray;
+    remotePath: string;
+    deviceModel: DeviceModelInternal;
+    firmwareType: FirmwareType;
+    intermediaryVersion?: number;
+};
+
+type FirmwareLocationPathParams = {
+    baseUrl: string;
+    path: string;
+};
+
+/**
+ * Is this base URL the remote firmware host rather than a bundled or local location?
+ *
+ * Compares the parsed hostname: a substring match would also accept an unrelated host that merely
+ * contains the remote one (`https://example.com/data.trezor.io`, `https://data.trezor.io.example.com`).
+ * Bundled locations are a desktop filesystem directory or a web static path, neither of which is a
+ * parseable absolute URL, so they are never the remote.
+ */
+const isRemoteFirmwareBaseUrl = (baseUrl: string) => {
+    try {
+        return new URL(baseUrl).hostname === new URL(getOnlineFirmwareBaseUrl().BASE_URL).hostname;
+    } catch {
+        return false;
+    }
+};
+
+/**
+ * Get firmware location parameters (baseUrl and path) where the firmware binary can be downloaded.
+ * The function checks multiple locations in the following order:
+ * 1. Bundled firmware location (if the firmware version matches the bundled version).
+ * 2. Local firmware directory (if the firmware file exists locally).
+ * 3. Online firmware location (default fallback).
+ */
+export const getFirmwareLocation = ({
+    firmwareVersion,
+    remotePath,
+    deviceModel,
+    firmwareType,
+    intermediaryVersion,
+}: GetFirmwareLocationParam): FirmwareLocationPathParams => {
+    const firmwareName = intermediaryVersion
+        ? buildIntermediaryFirmwareFileName(deviceModel, intermediaryVersion)
+        : buildLocalFirmwareFileName(firmwareType, deviceModel, firmwareVersion);
+
+    const versionString = firmwareVersion.join('.');
+
+    const bundledBaseUrl = removeTrailingSlashes(settingsStore.get('binFilesBaseUrl'));
+    // Here we care just to know if the binaries are bundled, in order to use them locally instead of fetching them
+    // if they are in default remote we ignore it.
+    const isRealBundled = !isRemoteFirmwareBaseUrl(bundledBaseUrl);
+    const bundledVersion = getBundledFirmwareVersion(deviceModel, firmwareType);
+
+    const isIntermediary = bundledBaseUrl && intermediaryVersion;
+    const isMatchingBundledVersion =
+        bundledBaseUrl && isRealBundled && bundledVersion === versionString;
+
+    if (isIntermediary || isMatchingBundledVersion) {
+        return {
+            baseUrl: bundledBaseUrl,
+            path: `firmware/${deviceModel.toLowerCase()}/${firmwareName}`,
+        };
+    }
+
+    const firmwareChannel = settingsStore.get('firmwareChannel');
+    const { firmwareDir, firmwareList } = localFirmwareStore.get();
+    if (
+        isFirmwareCacheUsedForSelectedSource(firmwareChannel) &&
+        firmwareList.includes(firmwareName)
+    ) {
+        return {
+            baseUrl: firmwareDir,
+            path: firmwareName,
+        };
+    }
+
+    const { BASE_URL } = getOnlineFirmwareBaseUrl(firmwareChannel);
+
+    return {
+        baseUrl: BASE_URL,
+        path: remotePath,
+    };
+};

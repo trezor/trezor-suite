@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { TRON_FLOW_STEPS, type TronStakeStepId } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, StepList, type StepListItemState, Text } from '@trezor/components';
@@ -9,6 +10,7 @@ import { TronStakeSummaryCard } from './complete/TronStakeSummaryCard';
 import { TronFreezeStep } from './freeze/TronFreezeStep';
 import { useTronStakeFlow } from './hooks/useTronStakeFlow';
 import { TronVoteStep } from './vote/TronVoteStep';
+import { TronVoteStepTitle } from './vote/TronVoteStepTitle';
 
 interface TronStakeProps {
     account: Account;
@@ -37,9 +39,15 @@ export const TronStake = ({ account }: TronStakeProps) => {
                     {step === 'complete' ? (
                         <TronStakeComplete
                             account={account}
+                            flow="stake"
                             heading={<Translation id="TR_EARN_TRON_STAKE_COMPLETE" />}
                             description={
-                                <Translation id="TR_EARN_TRON_STAKE_COMPLETE_DESCRIPTION" />
+                                <Translation
+                                    id="TR_EARN_TRON_STAKE_COMPLETE_DESCRIPTION"
+                                    values={{
+                                        displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                                    }}
+                                />
                             }
                         >
                             <TronStakeSummaryCard />
@@ -73,7 +81,14 @@ export const TronStake = ({ account }: TronStakeProps) => {
                                                 />
                                             </Text>
 
-                                            <Translation id="TR_EARN_TRON_FREEZE_STEP_TITLE" />
+                                            <Translation
+                                                id="TR_EARN_TRON_FREEZE_STEP_TITLE"
+                                                values={{
+                                                    displaySymbol: getNetworkDisplaySymbol(
+                                                        account.symbol,
+                                                    ),
+                                                }}
+                                            />
                                         </Column>
                                     }
                                 >
@@ -82,23 +97,7 @@ export const TronStake = ({ account }: TronStakeProps) => {
 
                                 <StepList.Item
                                     state={getStepState('vote')}
-                                    title={
-                                        <Column gap={2} width="100%">
-                                            <Text
-                                                typographyStyle="body-xs"
-                                                intent="neutral"
-                                                priority="secondary"
-                                                case="uppercase"
-                                            >
-                                                <Translation
-                                                    id="TR_STEP_OF_TOTAL"
-                                                    values={{ index: 2, total: 2 }}
-                                                />
-                                            </Text>
-
-                                            <Translation id="TR_EARN_TRON_VOTE_STEP_TITLE" />
-                                        </Column>
-                                    }
+                                    title={<TronVoteStepTitle isActive={step === 'vote'} />}
                                 >
                                     {step === 'vote' && <TronVoteStep />}
                                 </StepList.Item>

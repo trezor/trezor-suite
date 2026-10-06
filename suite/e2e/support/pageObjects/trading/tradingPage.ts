@@ -1,9 +1,11 @@
 import { Locator, Page } from '@playwright/test';
+import type { ExchangeTrade } from 'invity-api';
 
 import { messages } from '@suite/intl';
 import type { TradingCountryCode } from '@suite-common/trading';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
+import { TradingApprovalModal } from './approvalModal';
 import { TradingAssetPicker } from './assetsModal';
 import { TradingConfirmationModal } from './confirmationModal';
 import { TradingTransactionsSection } from './transactionsSection';
@@ -14,9 +16,43 @@ import { TradingQuotesSection } from './quotesSection';
 import { TradingReceiveAccount } from './receiveAccount';
 import { TransactionDetailSidebar } from './transactionDetailSidebar';
 import { tradeEndpoint } from '../../../fixtures/trading';
-import { step } from '../../common';
+import { isWebProject, step, toCompactAmount } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
+import { type PlaywrightTarget } from '../../testExtends/suiteTestOptions';
 import { BuyAsset, SellAsset } from '../../types';
+
+const LIVE_TRADE_RESPONSE_TIMEOUT = 90_000;
+
+type FillBuyFormParams = {
+    amount: string;
+    wantCrypto?: boolean;
+    fiatCurrencyCode?: BaseCurrencyCode;
+    country?: TradingCountryCode;
+    countrySubdivision?: string;
+    selectReceiveAddress?: () => Promise<void>;
+};
+
+type FillSellFormParams = {
+    cryptoAmount: string;
+    networkSymbolOrTokenId?: string;
+    cryptoCurrency?: string;
+    fiatCurrencyCode?: BaseCurrencyCode;
+    country?: TradingCountryCode;
+};
+
+type FillSwapFormParams = {
+    amount: string;
+    sellAsset: SellAsset;
+    buyAsset: BuyAsset;
+    selectReceiveAddress?: () => Promise<void>;
+};
+
+type VerifySwapToastParams = {
+    sendAccount: string;
+    receiveAccount: string;
+    sendAmount: string;
+    receiveAmount: string;
+};
 
 export class TradingPage {
     readonly fees: FeeSection;
@@ -24,6 +60,7 @@ export class TradingPage {
     readonly receiveAccount: TradingReceiveAccount;
     readonly quotes: TradingQuotesSection;
     readonly confirmation: TradingConfirmationModal;
+    readonly approvalModal: TradingApprovalModal;
     readonly inputs: TradingFormInputs;
     readonly transactionDetailSidebar: TransactionDetailSidebar;
 
@@ -35,12 +72,17 @@ export class TradingPage {
     readonly sellBestOfferButton: Locator;
     readonly swapBestOfferButton: Locator;
     readonly kycWarning: Locator;
-    readonly proceedToPayButton: Locator;
+    readonly approveSpendingButton: Locator;
+    readonly pendingApprovalTransactionLabel: Locator;
+    readonly pendingApprovalTransactionIdLabel: Locator;
+    readonly pendingApprovalTransactionId: Locator;
+    readonly swapButton: Locator;
     readonly backToAccountButton = (type: 'Buy' | 'Sell' | 'Swap') =>
-        this.page.getByRole('button', { name: `Make another ${type}` });
+        this.page.getByRole('button', { name: `Start new ${type.toLowerCase()}` });
 
     // Send fields and buttons
     readonly sendAddressInput: Locator;
+    readonly sendAddressHint: Locator;
     readonly sendAmountInput: Locator;
     readonly sendButton: Locator;
     readonly sendBalance: Locator;
@@ -49,8 +91,11 @@ export class TradingPage {
     // Transactions
     readonly backButton: Locator;
     readonly transactionDetailStatus: Locator;
+    readonly transactionDetailStatusLink: Locator;
     readonly transactionDetailHeader: Locator;
     readonly transactionDetail: Locator;
+    readonly transactionDetailTxid: Locator;
+    readonly transactionDetailModalTxid: Locator;
     readonly transactions: TradingTransactionsSection;
 
     // Swap toast notifications
@@ -61,12 +106,14 @@ export class TradingPage {
     constructor(
         private page: Page,
         devicePrompt: DevicePrompt,
+        private target: PlaywrightTarget,
     ) {
         this.fees = new FeeSection(page);
         this.assetPicker = new TradingAssetPicker(page);
         this.receiveAccount = new TradingReceiveAccount(page);
         this.quotes = new TradingQuotesSection(page);
         this.confirmation = new TradingConfirmationModal(page, devicePrompt);
+        this.approvalModal = new TradingApprovalModal(page);
         this.inputs = new TradingFormInputs(page);
         this.transactionDetailSidebar = new TransactionDetailSidebar(page);
 
@@ -77,10 +124,19 @@ export class TradingPage {
         this.sellBestOfferButton = this.page.getByTestId('@trading/form/sell-button');
         this.swapBestOfferButton = this.page.getByTestId('@trading/form/exchange-button');
         this.kycWarning = this.page.getByTestId('@trading/form/kyc-warning');
-        this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
+        this.approveSpendingButton = this.page.getByTestId('@trading/form/approve-button');
+        this.pendingApprovalTransactionLabel = this.page.getByTestId('@pending-transaction/title');
+        this.pendingApprovalTransactionIdLabel = this.page.getByTestId(
+            '@pending-transaction/txid/label',
+        );
+        this.pendingApprovalTransactionId = this.page.getByTestId(
+            '@pending-transaction/txid/value',
+        );
+        this.swapButton = this.page.getByTestId('@trading/form/swap-button');
 
         // Swap
         this.sendAddressInput = this.page.getByTestId('outputs.0.address');
+        this.sendAddressHint = this.page.getByTestId('outputs.0.address/bottom-text');
         this.sendAmountInput = this.page.getByTestId('outputs.0.amount');
         this.sendButton = this.page.getByTestId('@send/review-button');
         this.sendBalance = this.page.getByTestId('outputs.0.token');
@@ -88,8 +144,13 @@ export class TradingPage {
 
         this.backButton = this.page.getByTestId('@account-subpage/back');
         this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
+        this.transactionDetailStatusLink = this.page.getByTestId(
+            '@trading/transaction/detail/status-link',
+        );
         this.transactionDetailHeader = this.page.getByTestId('@trading/transaction/detail/header');
         this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
+        this.transactionDetailTxid = this.page.getByTestId('@trading/transaction/detail/txid');
+        this.transactionDetailModalTxid = this.page.getByTestId('@tx-detail/txid-value');
         this.transactions = new TradingTransactionsSection(page);
 
         // Swap toast notifications
@@ -115,7 +176,7 @@ export class TradingPage {
      * await tradingPage.fillBuyForm({
      *     amount: '1000',
      *     selectReceiveAddress: async () => {
-     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
+     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount({ symbol: 'btc', atIndex: 0 });
      *     }
      * });
      *
@@ -136,21 +197,14 @@ export class TradingPage {
         country = 'CZ',
         countrySubdivision,
         selectReceiveAddress,
-    }: {
-        amount: string;
-        wantCrypto?: boolean;
-        fiatCurrencyCode?: BaseCurrencyCode;
-        country?: TradingCountryCode;
-        countrySubdivision?: string;
-        selectReceiveAddress?: () => Promise<void>;
-    }) {
+    }: FillBuyFormParams) {
+        // The form resets to its defaults once buyInfo lands, roughly 2s after it becomes interactive
+        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.buy.buyInfo', {
+            timeout: 30_000,
+        });
+
         const inputField = wantCrypto ? this.inputs.cryptoAmount : this.inputs.fiatAmount;
         await expect(inputField).toHaveValue('');
-        if (wantCrypto) {
-            // The desired value is already set due to sideeffect of mocked response,
-            // We clear it so we can intercept and verify request payload that is triggered by filling value.
-            await inputField.fill('');
-        }
 
         await this.inputs.selectCountryOfResidence(country);
         if (countrySubdivision) {
@@ -209,39 +263,23 @@ export class TradingPage {
         networkSymbolOrTokenId = 'btc',
         fiatCurrencyCode = 'eur',
         country = 'CZ',
-    }: {
-        cryptoAmount: string;
-        networkSymbolOrTokenId?: string;
-        cryptoCurrency?: string;
-        fiatCurrencyCode?: BaseCurrencyCode;
-        country?: TradingCountryCode;
-    }) {
+    }: FillSellFormParams) {
+        // The form resets to its defaults once sellInfo lands, roughly 2s after it becomes interactive
+        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.sell.sellInfo', {
+            timeout: 30_000,
+        });
         await this.inputs.selectCountryOfResidence(country);
         await this.inputs.selectFiatCurrency(fiatCurrencyCode);
         const isFiatRateLoadingFlag = `wallet.fiat.current.${networkSymbolOrTokenId}-${fiatCurrencyCode}.isLoading`;
-        await this.page.expectReduxObjectToEqual(isFiatRateLoadingFlag, false);
+        await this.page.expectReduxObjectToEqual(isFiatRateLoadingFlag, false, {
+            timeout: 30_000,
+        });
         await this.inputs.cryptoAmount.fill(cryptoAmount);
         await expect(
             this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
             'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
         ).toBeHidden();
         await this.quotes.waitForSync();
-    }
-
-    @step()
-    async fillSellFormMinimumQuoteError(
-        amount: string = '0.00000001',
-        country: TradingCountryCode = 'CZ',
-    ) {
-        await this.inputs.selectCountryOfResidence(country);
-        await this.inputs.cryptoAmount.fill(amount);
-        await this.page.waitForRequest(tradeEndpoint.sellQuotes);
-        await expect(
-            this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
-            'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
-        ).toBeHidden();
-
-        await expect(this.quotes.loadingSpinner).toBeHidden({ timeout: 30000 });
     }
 
     /**
@@ -275,7 +313,7 @@ export class TradingPage {
      *         assetCryptoId: getCryptoId('btc')
      *     },
      *     selectReceiveAddress: async () => {
-     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
+     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount({ symbol: 'btc', atIndex: 0 });
      *     }
      * });
      *
@@ -296,28 +334,18 @@ export class TradingPage {
      *         assetCryptoId: usdcMint as CryptoId
      *     },
      *     selectReceiveAddress: async () => {
-     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount(0);
+     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount({ symbol: 'sol', atIndex: 0 });
      *     }
      * });
      *
      */
     @step()
-    async fillSwapForm({
-        sellAsset,
-        buyAsset,
-        selectReceiveAddress,
-        amount,
-    }: {
-        amount: string;
-        sellAsset: SellAsset;
-        buyAsset: BuyAsset;
-        selectReceiveAddress?: () => Promise<void>;
-    }) {
+    async fillSwapForm({ sellAsset, buyAsset, selectReceiveAddress, amount }: FillSwapFormParams) {
         await this.assetPicker.selectSellAsset(sellAsset);
         await this.assetPicker.selectBuyAsset(buyAsset);
 
         // We should not fill in amount until account change takes effect = correct ticker is displayed
-        await expect(this.inputs.swapAmountCurrencyTicker).toHaveText(
+        await expect(this.inputs.youPayAssetSymbol).toHaveText(
             sellAsset.tokenSymbol ?? sellAsset.networkSymbol ?? '',
             { ignoreCase: true },
         );
@@ -327,8 +355,12 @@ export class TradingPage {
         }
 
         const quotesResponsePromise = this.page.waitForResponse(tradeEndpoint.swapQuotes);
-        await expect(this.quotes.bestOfferAmount).toHaveText(/0 \w+/);
+        await expect(this.inputs.receiveAmount).toHaveText('0.0');
         await this.inputs.cryptoAmount.fill(amount);
+        await expect(
+            this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
+            'Insufficient funds in the account to run swap flow test. Please contact the "tech_qa" Slack group immediately.',
+        ).toBeHidden();
         await quotesResponsePromise;
         await this.quotes.waitForSync();
     }
@@ -337,7 +369,7 @@ export class TradingPage {
      * @param params.sendAccount - The account label the swap is sent from (e.g., 'Solana #1')
      * @param params.receiveAccount - The account label the swap is received to (e.g., 'Bitcoin #1')
      * @param params.sendAmount - The expected send amount (e.g., '0.001')
-     * @param params.receiveAmount - The expected receive amount (localized, e.g., '0.00002')
+     * @param params.receiveAmount - The expected receive amount exactly as the provider returned it (e.g., '0.07357510')
      */
     @step()
     async verifySwapToast({
@@ -345,20 +377,33 @@ export class TradingPage {
         receiveAccount,
         sendAmount,
         receiveAmount,
-    }: {
-        sendAccount: string;
-        receiveAccount: string;
-        sendAmount: string;
-        receiveAmount: string;
-    }) {
+    }: VerifySwapToastParams) {
         await expect(this.swapToastMessage).toHaveTranslation('TOAST_TX_EXCHANGE_BROADCASTED', {
             values: {
                 sendAccount,
                 receiveAccount,
             },
         });
-        await expect(this.swapToastSendAmount).toHaveText(sendAmount);
-        await expect(this.swapToastReceiveAmount).toHaveText(receiveAmount);
+        // The toast shows compact amounts, so the exact values the callers pass are reduced here
+        // rather than in each of them.
+        await expect(this.swapToastSendAmount).toHaveText(toCompactAmount(sendAmount));
+        await expect(this.swapToastReceiveAmount).toHaveText(toCompactAmount(receiveAmount));
+    }
+
+    // temporary workaround which should be replaced with soon to be merged fixture tradingResponses
+    @step()
+    async waitForLiveTradeAmounts() {
+        const response = await this.page.waitForResponse(tradeEndpoint.swapTrade, {
+            timeout: LIVE_TRADE_RESPONSE_TIMEOUT,
+        });
+        const { sendStringAmount, receiveStringAmount } = (await response.json()) as ExchangeTrade;
+        if (!sendStringAmount || !receiveStringAmount) {
+            throw new Error(
+                'Live trade response is missing sendStringAmount or receiveStringAmount',
+            );
+        }
+
+        return { sendStringAmount, receiveStringAmount };
     }
 
     @step()
@@ -372,27 +417,32 @@ export class TradingPage {
 
     @step()
     async waitForRedirectCompletion() {
-        const tradeHeading = this.page.getByRole('heading', { name: 'Trade' });
+        if (isWebProject(this.target)) {
+            const tradeHeading = this.page.getByRole('heading', { name: 'Trade' });
 
-        await expect(tradeHeading).toBeHidden();
-        await expect(tradeHeading).toBeVisible({ timeout: 30_000 });
+            await expect(tradeHeading).toBeHidden({ timeout: 30_000 });
+            await expect(tradeHeading).toBeVisible({ timeout: 30_000 });
+        }
+
+        // The confirmation panel is completely populated after the redirect
+        await expect(this.confirmation.provider).not.toBeEmpty({ timeout: 30_000 });
     }
 
     @step()
     async verifyBuyFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.assetPicker.displaySymbol).toHaveText(displaySymbol);
-        await expect.soft(this.page.getByText('You buy')).toBeVisible();
+        await expect.soft(this.buyBestOfferButton).toBeVisible();
+        await expect.soft(this.inputs.youGetAssetSymbol).toHaveText(displaySymbol);
     }
 
     @step()
     async verifySellFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.assetPicker.displaySymbol).toHaveText(displaySymbol);
-        await expect.soft(this.page.getByText('You sell')).toBeVisible();
+        await expect.soft(this.sellBestOfferButton).toBeVisible();
+        await expect.soft(this.inputs.youPayAssetSymbol).toHaveText(displaySymbol);
     }
 
     @step()
     async verifySwapFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.assetPicker.displaySymbol).toHaveText(displaySymbol);
-        await expect.soft(this.page.getByText('Swap amount')).toBeVisible();
+        await expect.soft(this.swapBestOfferButton).toBeVisible();
+        await expect.soft(this.inputs.youPayAssetSymbol).toHaveText(displaySymbol);
     }
 }

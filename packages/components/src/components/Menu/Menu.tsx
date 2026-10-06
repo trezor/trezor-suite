@@ -32,6 +32,7 @@ export const allowedMenuFrameProps = [
     'width',
     'minWidth',
     'maxWidth',
+    'maxHeight',
 ] as const satisfies FramePropsKeys[];
 type AllowedMenuFrameProps = Pick<FrameProps, (typeof allowedMenuFrameProps)[number]>;
 
@@ -47,7 +48,7 @@ const Container = styled.div<TransientProps<AllowedMenuFrameProps>>`
     z-index: ${zIndices.modal};
     animation: ${DROPDOWN_MENU} 0.15s ease-in-out;
     list-style-type: none;
-    overflow: hidden;
+    overflow: ${({ $maxHeight }) => ($maxHeight === undefined ? 'hidden' : 'hidden auto')};
 
     /* when theme changes from light to dark */
     transition: background 0.3s;
@@ -196,6 +197,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
 
         return (
             <Container
+                data-component="Menu"
                 tabIndex={content ? 0 : 1} // do not affect tab order when there is no content
                 onClick={e => e.stopPropagation()} // prevent closing the menu when clicking on the menu itself or within the menu
                 {...frameProps}

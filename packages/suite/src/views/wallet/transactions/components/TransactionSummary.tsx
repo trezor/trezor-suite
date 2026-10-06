@@ -2,6 +2,8 @@ import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { Button, Card, Column, Row } from '@trezor/components';
@@ -9,9 +11,11 @@ import { RepeatIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { updateGraphData } from 'src/actions/wallet/graphActions';
-import { GraphRangeSelector, HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { updateGraphDataThunk } from 'src/actions/wallet/graphActions';
+import { GraphRangeSelector, HiddenPlaceholder } from 'src/components/suite';
+import { TransactionsGraphLoader } from 'src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
+import { useSelector } from 'src/hooks/suite';
+import { selectGraph, selectGraphSelectedRange } from 'src/reducers/wallet/graphReducer';
 import { type Account } from 'src/types/wallet';
 import {
     aggregateBalanceHistory,
@@ -39,11 +43,11 @@ interface TransactionSummaryProps {
 }
 
 export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
-    const selectedRange = useSelector(state => state.wallet.graph.selectedRange);
-    const graph = useSelector(state => state.wallet.graph);
+    const selectedRange = useSelector(selectGraphSelectedRange);
+    const graph = useSelector(selectGraph);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const intervalGraphData = getGraphDataForInterval({ account, graph });
     const isGraphDataLoaded = intervalGraphData.length > 0;
@@ -71,25 +75,24 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     // Interval shown in InfoCard below the graph
     // For 'all' range pick first and last datapoint's timestamps
     // For other intervals do same date calculation as in calcTicks func
-    const dataInterval: [number, number] =
+    const dataInterval: [number | undefined, number | undefined] =
         selectedRange.label === 'all'
             ? [
-                  intervalGraphData[0]?.data[0]?.time ?? 0,
-                  intervalGraphData[0]?.data[(intervalGraphData[0]?.data.length ?? 1) - 1]?.time ??
-                      0,
+                  intervalGraphData[0]?.data[0]?.time,
+                  intervalGraphData[0]?.data[(intervalGraphData[0]?.data.length ?? 1) - 1]?.time,
               ]
             : [getUnixTime(selectedRange.startDate), getUnixTime(selectedRange.endDate)];
 
-    const onRefresh = (abortController?: AbortController) =>
+    const onRefresh = (abortSignal?: AbortSignal) =>
         dispatch(
-            updateGraphData({
+            updateGraphDataThunk({
                 accounts: [account],
-                abortSignal: abortController?.signal,
+                abortSignal,
             }),
         ).unwrap();
     const onSelectedRange = () =>
         dispatch(
-            updateGraphData({
+            updateGraphDataThunk({
                 accounts: [account],
             }),
         );
@@ -123,7 +126,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                     <Card overflow="visible" paddingType="none">
                         <Column alignItems="stretch" padding={24} gap={16}>
                             <Row height={320} overflow="visible" alignItems="stretch">
-                                <TransactionsGraph
+                                <TransactionsGraphLoader
                                     variant="one-asset"
                                     xTicks={xTicks}
                                     account={account}

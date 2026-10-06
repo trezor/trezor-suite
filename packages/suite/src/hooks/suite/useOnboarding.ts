@@ -1,34 +1,39 @@
 import { useMemo } from 'react';
 
 import { type OnboardingAnalytics } from '@suite/analytics';
+import { selectModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type BackupType } from '@suite-common/suite-types';
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_REQUESTS } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { type BackupMedium } from 'src/reducers/onboarding/onboardingReducer';
-import { type AnyPath, type AnyStepId } from 'src/types/onboarding';
+import { type GoToSuiteOptions } from 'src/actions/onboarding/onboardingActions';
+import { useSelector } from 'src/hooks/suite';
+import { selectOnboarding } from 'src/selectors/onboarding/onboardingSelectors';
+import { type AnyPath, type AnyStepId, type BackupMedium } from 'src/types/onboarding';
 
 import { parseStepId } from '../../utils/onboarding/steps';
 
 export const useOnboarding = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
-    const onboarding = useSelector(state => state.onboarding);
-    const modal = useSelector(state => state.modal);
+    const onboarding = useSelector(selectOnboarding);
+    const modal = useSelector(selectModal);
 
     const showPinMatrix =
-        modal.context === '@modal/context-device' && modal.windowType === UI_REQUEST.REQUEST_PIN;
+        modal.context === '@modal/context-device' && modal.windowType === UI_REQUESTS.REQUEST_PIN;
 
     const actions = useMemo(
         () => ({
             goToStep: (stepId: AnyStepId) => dispatch(onboardingActions.goToStep(stepId)),
-            goToNextStep: (stepId?: AnyStepId) => dispatch(onboardingActions.goToNextStep(stepId)),
-            goToPreviousStep: () => dispatch(onboardingActions.goToPreviousStep()),
+            goToNextStep: (stepId?: AnyStepId) =>
+                dispatch(onboardingActions.goToNextStepThunk(stepId)),
+            goToPreviousStep: () => dispatch(onboardingActions.goToPreviousStepThunk()),
             resetOnboarding: () => dispatch(onboardingActions.resetOnboarding()),
             enableOnboardingReducer: (enabled: boolean) =>
                 dispatch(onboardingActions.enableOnboardingReducer(enabled)),
-            rerun: () => dispatch(onboardingActions.recoveryRerun()),
+            rerun: () => dispatch(onboardingActions.rerunRecoveryThunk()),
             updateAnalytics: (payload: Partial<OnboardingAnalytics>) =>
                 dispatch(onboardingActions.updateAnalytics(payload)),
             addPath: (payload: AnyPath) => dispatch(onboardingActions.addPath(payload)),
@@ -36,9 +41,10 @@ export const useOnboarding = () => {
                 dispatch(onboardingActions.updateBackupType(payload)),
             updateBackupMedium: (payload: BackupMedium) =>
                 dispatch(onboardingActions.updateBackupMedium(payload)),
-            goToSuite: () => dispatch(onboardingActions.goToSuite()),
+            goToSuite: (options?: GoToSuiteOptions) =>
+                dispatch(onboardingActions.goToSuiteThunk(options)),
             resolveNextAfterSkipped: (requestedStepId: AnyStepId) =>
-                dispatch(onboardingActions.resolveNextAfterSkipped(requestedStepId)),
+                dispatch(onboardingActions.resolveNextAfterSkippedThunk(requestedStepId)),
         }),
         [dispatch],
     );

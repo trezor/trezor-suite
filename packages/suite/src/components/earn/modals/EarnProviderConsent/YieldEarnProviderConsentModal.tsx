@@ -1,4 +1,4 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
@@ -12,6 +12,7 @@ import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-commo
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { MORPHO_DISCLAIMER_URL, TREZOR_SUITE_TOS_URL } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';
@@ -20,7 +21,6 @@ import { EarnProviderConsentModalLayout } from './components/EarnProviderConsent
 import { YieldProviderConsentBanners } from './components/YieldProviderConsentBanners';
 import { useEarnProviderConsentActions } from './hooks/useEarnProviderConsentActions';
 import { getEarnProviderName } from '../../utils/getEarnProviderName';
-import { VotingDelegations } from '../shared/VotingDelegations/VotingDelegations';
 
 interface YieldEarnProviderConsentModalProps {
     account: Account;
@@ -35,7 +35,7 @@ export const YieldEarnProviderConsentModal = ({
     provider,
     yieldContext,
 }: YieldEarnProviderConsentModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const tokenContractAddress = yieldContext?.tokenContractAddress;
     const normalizedTokenContractAddress = tokenContractAddress
@@ -60,12 +60,15 @@ export const YieldEarnProviderConsentModal = ({
     const { proceedToEarnFlow, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.Yield,
         onCancel,
+        provider,
         account,
         networkSymbol: account.symbol,
         yieldContext,
     });
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
-    const depositSymbol = tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol;
+    const depositSymbol = isWrappedNativeToken(account.symbol, normalizedTokenContractAddress)
+        ? displaySymbol
+        : (tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol);
     const providerName = getEarnProviderName(provider);
 
     const handleOnConfirm = () => {
@@ -123,9 +126,6 @@ export const YieldEarnProviderConsentModal = ({
             }
             onConfirm={handleOnConfirm}
             onCancel={handleOnCancel}
-            networkType={account.networkType}
-        >
-            <VotingDelegations account={account} />
-        </EarnProviderConsentModalLayout>
+        />
     );
 };

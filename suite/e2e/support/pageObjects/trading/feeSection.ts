@@ -1,12 +1,17 @@
 import { Locator, Page } from '@playwright/test';
 
-import { localizeNumber } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
 export type FeeTypes = 'low' | 'economy' | 'normal' | 'high';
+
+type CalculateEthereumMaxFeeParams = {
+    gasLimit: string;
+    maxFeePerGas: string;
+    numberOfDecimals?: number;
+};
 
 export class FeeSection {
     readonly switchModeButton = (feeMode: 'standard' | 'custom') =>
@@ -15,9 +20,10 @@ export class FeeSection {
     readonly valueOnCard = (feeType: FeeTypes) =>
         this.page.getByTestId(`@fee-card/${feeType}-fiat-amount`);
     readonly rateOnCard = (feeType: FeeTypes) => this.page.getByTestId(`@fee-card/${feeType}-rate`);
+    readonly rateValueOnCard = (feeType: FeeTypes) =>
+        this.rateOnCard(feeType).getByTestId('@fee-rate/value');
     readonly collapsibleFeesToggle: Locator;
     readonly collapsibleFees: Locator;
-    readonly maxFeeLoading: Locator;
     readonly customInput: Locator;
     readonly maxFee: Locator;
     readonly maxFeeWithSymbol: Locator;
@@ -29,11 +35,13 @@ export class FeeSection {
     readonly ethereumMaxPriorityFeePerGas: Locator;
     readonly networkReserveBanner: Locator;
     readonly maximumFeeAmountToBeCalculated: Locator;
+    readonly networkFeeRow: Locator;
+    readonly networkFeeModalConfirmButton: Locator;
+    readonly networkFeeModalCancelButton: Locator;
 
     constructor(private readonly page: Page) {
         this.collapsibleFeesToggle = this.page.getByTestId('@wallet/fees/collapsible-fees-toggle');
         this.collapsibleFees = this.page.getByTestId('@wallet/fees/collapsible-fees');
-        this.maxFeeLoading = this.page.getByTestId('@trading/quote/maximum-fee-amount-loading');
         this.customInput = this.page.getByTestId('feePerUnit');
         this.maxFee = this.page.getByTestId('@trading/quote/maximum-fee-amount');
         this.maxFeeWithSymbol = this.page.getByTestId(
@@ -49,6 +57,13 @@ export class FeeSection {
         this.maximumFeeAmountToBeCalculated = this.page.getByTestId(
             '@trading/quote/maximum-fee-amount-to-be-calculated',
         );
+        this.networkFeeRow = this.page.getByTestId('@trading/offer/info/network-fee');
+        this.networkFeeModalConfirmButton = this.page.getByTestId(
+            '@trading/network-fee-modal/confirm',
+        );
+        this.networkFeeModalCancelButton = this.page.getByTestId(
+            '@trading/network-fee-modal/cancel',
+        );
     }
 
     @step()
@@ -59,8 +74,7 @@ export class FeeSection {
             return;
         }
 
-        // Wait for maximum fee to be calculated
-        await this.maxFeeLoading.waitFor({ state: 'hidden', timeout: 5000 });
+        await expect(this.maximumFeeAmountToBeCalculated).toBeHidden();
 
         const isDisabled = await this.collapsibleFeesToggle.getAttribute('aria-disabled');
 
@@ -80,11 +94,7 @@ export class FeeSection {
     @step()
     async getSolanaFee() {
         await expect(this.maxFee).toBeVisible();
-        const feeWithSymbol = await this.maxFee.textContent();
-        if (!feeWithSymbol) {
-            throw new Error('Fee amount is undefined or null');
-        }
-
+        const feeWithSymbol = await this.maxFee.innerText();
         const feeParts = feeWithSymbol.split(' ');
         const feeValue = feeParts[0];
         if (!feeValue || isNaN(parseFloat(feeValue))) {
@@ -116,39 +126,28 @@ export class FeeSection {
 
     @step()
     async getBitcoinFeeRate(type: FeeTypes | 'custom') {
-        let feeRateText: string | null;
-        const nonBreakingSpace = '\u00A0';
-        const suffixForDustPreventionFee = `${nonBreakingSpace}sat/vB`;
-        const suffixForCustomFee = `.00${nonBreakingSpace}sat/vB`;
+        let feeRate: string;
 
         if (type !== 'custom') {
             await this.expectBitcoinFeeCalculated();
-            feeRateText = await this.rateOnCard(type).textContent();
+            feeRate = await this.rateValueOnCard(type).innerText();
         } else {
-            feeRateText = (await this.customInput.inputValue()) + suffixForCustomFee;
+            feeRate = new BigNumber(await this.customInput.inputValue()).toFixed(2);
         }
 
         const isDustPreventionRateApplied = await this.dustPreventionNotice.isVisible();
         if (isDustPreventionRateApplied) {
-            feeRateText = (await this.getDustPreventionFeeRate()) + suffixForDustPreventionFee;
+            feeRate = await this.getDustPreventionFeeRate();
         }
 
-        if (!feeRateText) {
-            throw new Error('Fee amount is undefined or null');
-        }
-
-        return feeRateText;
+        return feeRate;
     }
 
     calculateEthereumMaxFee({
         gasLimit,
         maxFeePerGas,
         numberOfDecimals = 14,
-    }: {
-        gasLimit: string;
-        maxFeePerGas: string;
-        numberOfDecimals?: number;
-    }) {
+    }: CalculateEthereumMaxFeeParams) {
         const ratioToEthereum = 1e9;
         const maxFeeInEthereum =
             (parseFloat(gasLimit) * parseFloat(maxFeePerGas)) / ratioToEthereum;
@@ -168,11 +167,7 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
 
     @step()
     async getDustPreventionFeeRate() {
-        const dustPreventionText = await this.dustPreventionNotice.textContent();
-        if (!dustPreventionText) {
-            throw new Error('Dust prevention text is undefined or null');
-        }
-
+        const dustPreventionText = await this.dustPreventionNotice.innerText();
         const regex = /has been adjusted to (?<value>\d+\.\d+) sat\/vB/;
         const match = dustPreventionText.match(regex);
 
@@ -195,12 +190,51 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
     }
 
     @step()
+    async openNetworkFeeModal() {
+        await this.networkFeeRow.click();
+        await expect(this.networkFeeModalConfirmButton).toBeVisible();
+    }
+
+    @step()
+    async confirmNetworkFeeModal() {
+        await expect(this.networkFeeModalConfirmButton).toBeEnabled();
+        await this.networkFeeModalConfirmButton.click();
+        await expect(this.networkFeeModalConfirmButton).toBeHidden();
+    }
+
+    @step()
+    async closeNetworkFeeModal() {
+        await this.networkFeeModalCancelButton.click();
+        await expect(this.networkFeeModalConfirmButton).toBeHidden();
+    }
+
+    @step()
     async setEthereumCustomFees(input: {
         gasLimit: string;
         maxFeePerGas: string;
         maxPriorityFeePerGas: string;
     }) {
         await this.switchToCustom();
+        await this.fillEthereumCustomFees(input);
+    }
+
+    @step()
+    async setEthereumCustomFeesInNetworkFeeModal(input: {
+        gasLimit: string;
+        maxFeePerGas: string;
+        maxPriorityFeePerGas: string;
+    }) {
+        await this.openNetworkFeeModal();
+        await this.switchModeButton('custom').click();
+        await this.fillEthereumCustomFees(input);
+        await this.confirmNetworkFeeModal();
+    }
+
+    private async fillEthereumCustomFees(input: {
+        gasLimit: string;
+        maxFeePerGas: string;
+        maxPriorityFeePerGas: string;
+    }) {
         await this.ethereumFeeLimit.fill(input.gasLimit);
         await this.ethereumMaxFeePerGas.fill(input.maxFeePerGas);
         await this.ethereumMaxPriorityFeePerGas.fill(input.maxPriorityFeePerGas);
@@ -208,11 +242,7 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
 
     @step()
     async getNetworkReserveAmount() {
-        const bannerText = await this.networkReserveBanner.textContent();
-        if (!bannerText) {
-            throw new Error('Network reserve banner text is undefined or null');
-        }
-
+        const bannerText = await this.networkReserveBanner.innerText();
         const regex = /(\d+(?:\.\d+)?)(?=\s*SOL)/;
         const match = bannerText.match(regex);
 
@@ -226,6 +256,24 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
     @step()
     async getStandardFeeWorkaround() {
         await this.switchToCustom();
+        const fees = await this.readEthereumCustomFees();
+        await this.switchToStandard();
+
+        return fees;
+    }
+
+    @step()
+    async getStandardFeeWorkaroundInNetworkFeeModal() {
+        await this.openNetworkFeeModal();
+        await this.switchModeButton('custom').click();
+        const fees = await this.readEthereumCustomFees();
+        await this.switchModeButton('standard').click();
+        await this.closeNetworkFeeModal();
+
+        return fees;
+    }
+
+    private async readEthereumCustomFees() {
         const gasLimit = (await this.ethereumFeeLimit.inputValue()).replace(/,/g, '');
         const maxFeePerGas = await this.ethereumMaxFeePerGas.inputValue();
         const maxFeePerGasRounded = new BigNumber(maxFeePerGas)
@@ -235,7 +283,6 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
         const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas)
             .decimalPlaces(4, BigNumber.ROUND_UP)
             .toFixed(4);
-        await this.switchToStandard();
 
         return {
             gasLimit,

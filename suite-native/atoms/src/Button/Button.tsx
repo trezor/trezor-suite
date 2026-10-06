@@ -49,6 +49,7 @@ export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressO
     isFullWidth?: boolean;
     iconLeft?: IconName;
     iconRight?: IconName;
+    shouldWrapChildrenInText?: boolean;
 } & ButtonColorProps &
     TestProps;
 
@@ -135,6 +136,7 @@ export const Button = ({
     size = 'large',
     style,
     testID,
+    shouldWrapChildrenInText = true,
     ...pressableProps
 }: ButtonProps) => {
     const [isPressed, setIsPressed] = useState(false);
@@ -192,18 +194,23 @@ export const Button = ({
                         iconSize={size}
                     />
                 )}
-                <Text
-                    color={contentColor}
-                    numberOfLines={1}
-                    style={applyStyle(buttonTextStyle, {
-                        buttonSize: size,
-                    })}
-                    testID={testID ? `${testID}/text` : undefined}
-                    textAlign="center"
-                    variant={buttonToTextSizeMap[size]}
-                >
-                    {children}
-                </Text>
+
+                {shouldWrapChildrenInText ? (
+                    <Text
+                        color={contentColor}
+                        numberOfLines={1}
+                        style={applyStyle(buttonTextStyle, {
+                            buttonSize: size,
+                        })}
+                        testID={testID ? `${testID}/text` : undefined}
+                        textAlign="center"
+                        variant={buttonToTextSizeMap[size]}
+                    >
+                        {children}
+                    </Text>
+                ) : (
+                    children
+                )}
                 {!isLoading && !!iconRight && (
                     <ButtonAccessoryView
                         element={iconRight}

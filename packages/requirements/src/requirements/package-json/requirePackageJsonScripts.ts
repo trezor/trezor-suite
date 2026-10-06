@@ -1,6 +1,4 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-
+import { type PackageJson, readPackageJson } from '@trezor/node-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
 import { walkDirectory } from '../../fileSystem';
@@ -51,7 +49,7 @@ const REQUIRED_SCRIPTS: Record<string, RequiredScriptConfig> = {
     'type-check': {
         command: /^yarn g:tsc --build.*$/,
         ignoredPackages: [
-            '@trezor/suite-desktop',
+            '@suite/desktop-app',
             'connect-example-electron-main',
             'connect-mobile-example',
             'connect-example-node',
@@ -61,10 +59,6 @@ const REQUIRED_SCRIPTS: Record<string, RequiredScriptConfig> = {
         ignoredPackages: ['@trezor/suite-e2e'],
         isRequired: hasUnitTestFile,
     },
-};
-
-type PackageJson = {
-    readonly scripts?: Record<string, string | undefined>;
 };
 
 const matchesScriptCommand = (
@@ -95,12 +89,10 @@ export const requirePackageJsonScripts: Requirement<'workspace'> = {
     name: 'package-json-scripts',
     scope: 'workspace',
     verify: context => {
-        const packageJsonPath = join(context.workspaceDir, PACKAGE_JSON_FILE);
-
         let parsed: PackageJson;
 
         try {
-            parsed = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as PackageJson;
+            parsed = readPackageJson<PackageJson>(context.workspaceDir);
         } catch {
             return Promise.resolve([
                 `${context.workspaceName}: ${PACKAGE_JSON_FILE} is missing or contains invalid JSON.`,

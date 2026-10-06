@@ -1,25 +1,26 @@
 import { useEffect } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
     fetchAllTransactionsForAccountThunk,
     hasPendingStakeTypeTransaction,
+    isCardanoStakedWithEverstake,
     selectAccountIsStakingActive,
     selectCardanoPoolsInfo,
     selectHasRunningDiscovery,
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { getStakingDataForNetwork, isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
-import { Column, Flex, Grid } from '@trezor/components';
+import { Column, Flex } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { CardanoNewProviderCard } from './CardanoNewProviderCard';
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { ApyCard } from '../StakingDashboard/components/ApyCard';
-import { ClaimCard } from '../StakingDashboard/components/ClaimCard';
 import { DebugOnlyCardanoStakingCard } from '../StakingDashboard/components/DebugOnlyCardanoStakingCard';
 import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarning';
 import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard/EmptyStakingCard';
@@ -35,10 +36,9 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
     const { account } = selectedAccount;
     const accountKey = account?.key ?? '';
 
-    const { isBelowLaptop } = useLayoutSize();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         if (accountKey) {
@@ -50,8 +50,6 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
             );
         }
     }, [accountKey, dispatch]);
-
-    const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
 
     const apy = useSelector(state => selectPoolStatsApy(state, { account }));
 
@@ -75,20 +73,15 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
 
                                 <CardanoNewProviderCard account={account} />
 
-                                <Grid columns={isBelowLaptop || !canClaim ? 1 : 2} gap={12}>
-                                    <ClaimCard />
-                                    <Flex direction={canClaim ? 'column' : 'row'} gap={12}>
-                                        <ApyCard apy={isStakedWithEverstake ? apy : undefined} />
-                                        <PayoutCardFrequencyRewards
-                                            rewardFrequency={CARDANO_EPOCH_DAYS}
-                                        />
-                                    </Flex>
-                                </Grid>
+                                <Flex gap={12}>
+                                    <ApyCard apy={isStakedWithEverstake ? apy : undefined} />
+                                    <PayoutCardFrequencyRewards
+                                        rewardFrequency={CARDANO_EPOCH_DAYS}
+                                    />
+                                </Flex>
                                 <StakingCard
                                     account={account}
                                     isValidatorsQueueLoading={undefined}
-                                    daysToAddToPool={CARDANO_EPOCH_DAYS}
-                                    daysToUnstake={CARDANO_EPOCH_DAYS}
                                 />
                                 <DebugOnlyCardanoStakingCard account={account} />
                             </Column>

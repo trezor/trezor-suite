@@ -7,7 +7,7 @@ import { ScreenHeader as ScreenHeaderComponent } from '../../components/ScreenHe
 
 const ScreenHeaderCustomContent = () => (
     <HStack alignItems="center">
-        <TokenIcon symbol="btc" size="small" />
+        <TokenIcon tokenSymbol="btc" networkSymbol="btc" size="small" />
         <Text variant="body-md-strong" adjustsFontSizeToFit numberOfLines={1}>
             Bitcoin #1
         </Text>

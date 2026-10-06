@@ -1,0 +1,14 @@
+diff --git a/android/src/main/java/expo/modules/updates/UpdatesPackage.kt b/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
+--- a/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
++++ b/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
+@@ -103,7 +103,9 @@ class UpdatesPackage : Package {
+     val handler = object : ApplicationLifecycleListener {
+       override fun onCreate(application: Application) {
+         super.onCreate(application)
+-        if (isRunningAndroidTest()) {
++        // The dev client initializes updates separately, so preloading here would hang when
++        // Detox starts an Android test.
++        if (isRunningAndroidTest() && !BuildConfig.USE_DEV_CLIENT) {
+           // Preload updates to prevent Detox ANR
+           UpdatesController.initialize(context)
+           UpdatesController.instance.launchAssetFile

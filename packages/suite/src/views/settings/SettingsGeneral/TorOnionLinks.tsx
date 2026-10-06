@@ -1,19 +1,21 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectTorOnionLinks, suiteSettingsActions } from '@suite/settings';
+import { selectIsTorEnabled, selectIsTorEnabling } from '@suite/tor';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-
+import { useSelector } from 'src/hooks/suite';
 /* keep torOnionLinks value as it is but hide this section when tor is off.
    when tor is off this value has no effect anyway (handled by ExternalLink hook) */
 export const TorOnionLinks = () => {
     const torOnionLinks = useSelector(selectTorOnionLinks);
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
+    const isTorEnabling = useSelector(selectIsTorEnabling);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const handleChange = () => {
         dispatch(suiteSettingsActions.setOnionLinks(!torOnionLinks));
         analytics.report({
@@ -23,6 +25,10 @@ export const TorOnionLinks = () => {
             },
         });
     };
+
+    if (!isTorEnabled && !isTorEnabling) {
+        return null;
+    }
 
     return (
         <Anchor anchorId={SettingsAnchor.TorOnionLinks}>

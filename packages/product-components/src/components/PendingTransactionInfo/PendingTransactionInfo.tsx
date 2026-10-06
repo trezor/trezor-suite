@@ -42,6 +42,7 @@ export const PendingTransactionInfo = ({
 
                 <Row gap={4} flexWrap="wrap" alignItems="center">
                     <Paragraph
+                        data-testid="@pending-transaction/txid/label"
                         typographyStyle="body-md"
                         intent="neutral"
                         priority="secondary"

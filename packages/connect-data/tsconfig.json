@@ -5,5 +5,5 @@
         "types": ["node", "chrome", "jest"]
     },
     "include": [".", "./files/**/*.json"],
-    "references": []
+    "references": [{ "path": "../requirements" }]
 }

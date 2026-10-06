@@ -2,6 +2,7 @@ import { type FieldValues } from 'react-hook-form';
 
 import type { DBSchema } from 'idb';
 
+import { type DesktopBluetoothDevice } from '@suite/bluetooth';
 import { type CoinjoinAccount, type CoinjoinDebugSettings } from '@suite/coinjoin';
 import { type DebugState } from '@suite/debug';
 import type { FlagsState } from '@suite/flags';
@@ -30,6 +31,7 @@ import { type PhishingState } from '@suite-common/wallet-core';
 import type {
     AccountKey,
     BackendSettings,
+    EarnOpportunityKey,
     FormState,
     RatesByTimestamps,
     WalletSettings,
@@ -41,7 +43,6 @@ import type { BioAuthState } from 'src/reducers/bioAuth';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { Account, WalletAccountTransaction } from 'src/types/wallet';
 
-import { type DesktopBluetoothDevice } from '../actions/bluetooth/DesktopBluetoothDevice';
 import { type GraphData } from '../types/wallet/graph';
 
 export interface DBWalletAccountTransaction {
@@ -89,6 +90,10 @@ export interface SuiteDBSchema extends DBSchema {
     sendFormDrafts: {
         key: AccountKey;
         value: FormState;
+    };
+    earnOnboarding: {
+        key: AccountKey;
+        value: EarnOpportunityKey[];
     };
     receive: {
         key: AccountKey;
@@ -141,6 +146,10 @@ export interface SuiteDBSchema extends DBSchema {
     tokenManagement: {
         key: string;
         value: SimpleTokenStructure;
+    };
+    stellarContractTokens: {
+        key: string; // accountKey
+        value: string[]; // Soroban contract ids the user added
     };
     coinjoinAccounts: {
         key: string; // accountKey

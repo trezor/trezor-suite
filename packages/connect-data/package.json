@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-data",
-    "version": "10.0.0-beta.1",
+    "version": "10.0.1",
     "type": "module",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-data",
@@ -17,6 +17,7 @@
     },
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Data used by trezor-connect library.",
+    "sideEffects": false,
     "main": "./src/index.ts",
     "files": [
         "lib/",
@@ -48,7 +49,8 @@
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "@types/chrome": "^0.1.40",
+        "@trezor/requirements": "workspace:*",
+        "@types/chrome": "^0.2.2",
         "@types/jest": "30.0.0",
         "@types/node": "22.13.10"
     }

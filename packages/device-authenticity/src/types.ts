@@ -3,6 +3,8 @@ import { type MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { DeviceAuthenticityBlacklistConfig } from './config/deviceAuthenticityBlacklistConfigTypes';
 import type { DeviceAuthenticityConfig } from './config/deviceAuthenticityConfigTypes';
 
+export type ProofType = 'optiga' | 'tropic' | 'mcu';
+
 export type VerifySignature = (
     rawKey: Buffer,
     data: Uint8Array,
@@ -15,6 +17,7 @@ export type PrepareDeviceAuthenticityDataParams = {
 };
 
 export type VerifyAuthenticityProofParams = {
+    proofType: ProofType;
     certificates: string[];
     signature: string;
     signedData: Uint8Array;

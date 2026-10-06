@@ -1,15 +1,21 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
-import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
+import {
+    selectAreFeesLoading,
+    selectHasRunningDiscovery,
+    selectVotingDelegationOption,
+    validateCardanoDrep,
+} from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 
@@ -18,7 +24,6 @@ type StakeButtonProps = {
 };
 
 export const StakeButton = ({ flow }: StakeButtonProps) => {
-    const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
     const {
         account,
@@ -27,25 +32,42 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         handleSubmit,
         formState: { errors, isSubmitting },
         isComposing,
+        isLoading: isSigning,
+        composedLevels,
+        selectedFee,
         watch,
         currency,
         isStakingDisabled: isCardanoStakingDisabled,
     } = useStakeFormContext();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(network.symbol);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, network.symbol));
+    const selectedVotingDelegation = useSelector(state =>
+        selectVotingDelegationOption(state, account.key),
+    );
 
     const isDeviceConnected = device?.connected && device?.available;
 
     const isCardano = account.networkType === 'cardano';
 
+    const isDrepValid =
+        selectedVotingDelegation.type !== 'another_drep' ||
+        validateCardanoDrep(selectedVotingDelegation.drepId);
+
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
     // there is no input for cardano. Form validation should always pass
-    const isFormInputsValid = !isCardano ? formIsValid && hasValues : !isCardanoStakingDisabled;
-    const isDisabled = !isFormInputsValid || isSubmitting || (isDeviceConnected && isLocked());
+    const isFormInputsValid = !isCardano
+        ? formIsValid && hasValues
+        : !isCardanoStakingDisabled &&
+          isDrepValid &&
+          composedLevels?.[selectedFee]?.type === 'final';
+    // Cardano signs straight from onSubmit without handleSubmit, so isSubmitting stays false, and
+    // the device lock is taken only after the transaction plan is composed.
+    const isDisabled =
+        !isFormInputsValid || isSubmitting || isSigning || (isDeviceConnected && isLocked());
 
     const onStakeClick = () => {
         if (!isDeviceConnected) {
@@ -71,11 +93,15 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
                 step: 'stake-form-modal',
                 currency,
                 networkSymbol: account.symbol,
+                ...(flow === EarnFlow.UpdateProvider && isCardano
+                    ? { votingDelegation: selectedVotingDelegation.type }
+                    : {}),
             },
         });
     };
 
-    const isLoading = isComposing || isSubmitting || isDiscoveryRunning || areFeesLoading;
+    const isLoading =
+        isComposing || isSubmitting || isSigning || isDiscoveryRunning || areFeesLoading;
 
     return (
         <Tooltip content={stakingMessageContent}>

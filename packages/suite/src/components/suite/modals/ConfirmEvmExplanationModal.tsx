@@ -1,12 +1,15 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { closeModal } from '@suite/modal';
-import { networks } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { SUITE } from 'src/actions/suite/constants';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { confirmEvmExplanationModal } from 'src/actions/suite/suiteActions';
+import { useSelector } from 'src/hooks/suite';
+import { selectConfirmExplanationModalClosed } from 'src/selectors/suite/suiteSelectors';
 
 export interface ConfirmNetworkExplanationModalProps {
     account: Account | undefined;
@@ -17,27 +20,21 @@ export const ConfirmEvmExplanationModal = ({
     account,
     route,
 }: ConfirmNetworkExplanationModalProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const close = () => {
         dispatch(closeModal());
         if (!account?.symbol) {
             return;
         }
-        dispatch({
-            type: SUITE.EVM_CONFIRM_EXPLANATION_MODAL,
-            symbol: account?.symbol,
-            route,
-        });
+        dispatch(confirmEvmExplanationModal({ symbol: account.symbol, route }));
     };
-    const confirmExplanationModalClosed = useSelector(
-        state => state.suite.evmSettings.confirmExplanationModalClosed,
-    );
+    const confirmExplanationModalClosed = useSelector(selectConfirmExplanationModalClosed);
 
     if (!account) {
         return null;
     }
 
-    const network = networks[account.symbol];
+    const network = getNetwork(account.symbol);
     const isVisible =
         account.empty &&
         network.networkType === 'ethereum' &&

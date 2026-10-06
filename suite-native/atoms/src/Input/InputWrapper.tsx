@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { isTranslationKey, useTranslate } from '@suite-native/intl';
 
 import { Box } from '../Box';
 import { Hint } from '../Hint';
@@ -10,31 +10,20 @@ import { Text } from '../Text';
 
 export type InputWrapperProps = {
     children: ReactNode;
-    label?: string;
+    label?: ReactNode;
     hint?: string;
     error?: string;
 };
 
-const labelStyle = prepareNativeStyle(utils => ({
-    marginTop: utils.spacings.sp8,
-}));
-
-// Temperorary translation of the error messages used in the native app.
-// Should be later replaced by an implementation of a localization module.
-const errorToMessageMap: Record<string, string> = {
-    TR_REQUIRED_FIELD: 'Field is mandatory',
-    TR_EXCEEDS_MAX: 'Number of characters exceeded',
-};
-
 export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps) => {
-    const { applyStyle } = useNativeStyles();
+    const { translate } = useTranslate();
 
-    const errorMessage = (error && errorToMessageMap[error]) ?? error;
+    const errorMessage = isTranslationKey(error) ? translate(error) : error;
 
     return (
         <VStack flex={1} spacing="sp6">
             {!!label && (
-                <Text variant="body-md" color="contentPrimary" style={applyStyle(labelStyle)}>
+                <Text variant="body-md" color="contentPrimary">
                     {label}
                 </Text>
             )}

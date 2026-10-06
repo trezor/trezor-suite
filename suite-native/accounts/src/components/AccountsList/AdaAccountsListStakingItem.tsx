@@ -1,18 +1,18 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type AccountsRootState } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
-import { RoundedIcon, Text } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
 import {
-    type NativeStakingRootState,
+    type StakeRootState,
     selectIsCardanoStakedOutsideEverstake,
     selectIsCardanoStakedWithFiveBinaries,
-} from '@suite-native/staking';
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
+import { IconCircle } from '@suite-native/atoms';
+import { Icon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
+import { ZeroApyBadge } from './ZeroApyBadge';
 
 type AdaAccountsListStakingItemProps = {
     account: Account;
@@ -22,47 +22,44 @@ type AdaAccountsListStakingItemProps = {
     hasBackground?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
+    badges?: React.ReactNode;
 };
 
 export const AdaAccountsListStakingItem = ({
     account,
     stakingCryptoBalance,
     isLast,
+    badges,
     ...props
 }: AdaAccountsListStakingItemProps) => {
-    const isStakedOutsideEverstake = useSelector((state: NativeStakingRootState) =>
+    const isStakedOutsideEverstake = useSelector((state: StakeRootState) =>
         selectIsCardanoStakedOutsideEverstake(state, account.key),
     );
-    const isStakedWithFiveBinaries = useSelector((state: AccountsRootState) =>
+    const isStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
         selectIsCardanoStakedWithFiveBinaries(state, account.key),
     );
 
-    const icon = useMemo(
-        () =>
-            isStakedOutsideEverstake ? (
-                <Icon name="warning" color="contentWarning" />
-            ) : (
-                <Icon name="check" color="contentBrand" />
-            ),
-        [isStakedOutsideEverstake],
-    );
+    const mainValue = useMemo(() => {
+        if (isStakedWithFiveBinaries) {
+            return <ZeroApyBadge />;
+        }
+        if (isStakedOutsideEverstake) {
+            return <Icon name="warning" color="contentWarning" />;
+        }
+
+        return <Icon name="check" color="contentBrand" />;
+    }, [isStakedOutsideEverstake, isStakedWithFiveBinaries]);
 
     return (
         <AccountsListItemBase
             {...props}
             isLast={isLast}
             showDivider={!isLast}
-            icon={<RoundedIcon name="piggyBankFilled" intent="neutral" size={32} />}
+            icon={<IconCircle name="piggyBankFilled" intent="neutral" size={32} />}
             title={<Translation id="accountList.staking" />}
-            secondaryTitle={
-                isStakedWithFiveBinaries && (
-                    <Text variant="body-sm" color="contentWarning">
-                        <Translation id="accountList.rewardsReduced" />
-                    </Text>
-                )
-            }
-            mainValue={icon}
+            mainValue={mainValue}
             secondaryValue={undefined}
+            badges={badges}
         />
     );
 };

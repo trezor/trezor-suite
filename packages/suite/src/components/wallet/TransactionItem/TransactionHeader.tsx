@@ -1,16 +1,23 @@
-import { Translation, useTranslation } from '@suite/intl';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
+import {
+    isCardanoStakingTx,
+    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
+} from '@suite-common/wallet-core';
 import { type StakeType } from '@suite-common/wallet-types';
 import {
     getNativeWrapTxKind,
     getTxHeaderSymbol,
-    isCardanoStakingTx,
-    isSupportedEthStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
+    hasValueMovement,
 } from '@suite-common/wallet-utils';
 import { type AccountTransaction } from '@trezor/connect';
+import {
+    type StellarOperationLabel,
+    getStellarOperationLabel,
+} from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
@@ -80,6 +87,22 @@ const getTransactionMessageId = ({ transaction, isPending }: GetTransactionMessa
     }
 };
 
+const STELLAR_OPERATION_MESSAGES: Record<StellarOperationLabel, TranslationKey> = {
+    accountMerge: 'TR_STELLAR_TX_ACCOUNT_MERGE',
+    claimableBalanceClaimed: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CLAIMED',
+    claimableBalanceCreated: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CREATED',
+    claimableBalanceOffered: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_OFFERED',
+    dataEntry: 'TR_STELLAR_TX_DATA_ENTRY',
+    footprint: 'TR_STELLAR_TX_FOOTPRINT',
+    liquidityPool: 'TR_STELLAR_TX_LIQUIDITY_POOL',
+    offer: 'TR_STELLAR_TX_OFFER',
+    sequenceBumped: 'TR_STELLAR_TX_SEQUENCE_BUMPED',
+    setOptions: 'TR_STELLAR_TX_SET_OPTIONS',
+    sponsorship: 'TR_STELLAR_TX_SPONSORSHIP',
+    trustlineFlags: 'TR_STELLAR_TX_TRUSTLINE_FLAGS',
+    trustlineUpdated: 'TR_STELLAR_TX_TRUSTLINE_UPDATED',
+};
+
 const getSolTransactionStakeTypeName = (stakeType: StakeType) => {
     switch (stakeType) {
         case 'stake':
@@ -130,6 +153,10 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
         return <Translation id="TR_UNCONFIRMED_TX_LONG" />;
     }
 
+    if (transaction.type === 'failed') {
+        return <Translation id="TR_FAILED_TRANSACTION" />;
+    }
+
     // WETH wrap/unwrap are shown as their own labels instead of the generic contract-call name
     // ("deposit"/"withdraw") that the indexer parses. The wrapped-token amount isn't obvious from
     // the transaction row, so it's spelled out while the native side stays a bare symbol
@@ -149,7 +176,6 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
 
     if (
         transaction?.ethereumSpecific?.parsedData?.name &&
-        transaction.type !== 'failed' &&
         // Exclude Transfer txs, the default messages are more descriptive
         transaction.ethereumSpecific.parsedData.name !== 'Transfer'
     ) {
@@ -161,6 +187,12 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
                 )}
             </>
         );
+    }
+
+    // `transfer` is left to the token-transfer wording below.
+    const stellarFunctionName = transaction.stellarSpecific?.contractCall?.functionName;
+    if (stellarFunctionName && stellarFunctionName !== 'transfer') {
+        return <>{stellarFunctionName}</>;
     }
 
     const tronTransactionMessageId = getTronTransactionMessageId(transaction);
@@ -207,6 +239,15 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
                 )}
             </>
         );
+    }
+
+    // With nothing moved the generic wording misleads ("Sent 0 XLM to self"), so name the operation.
+    const stellarOperationLabel =
+        transaction.stellarSpecific && !hasValueMovement(transaction)
+            ? getStellarOperationLabel(transaction.stellarSpecific)
+            : undefined;
+    if (stellarOperationLabel) {
+        return <Translation id={STELLAR_OPERATION_MESSAGES[stellarOperationLabel]} />;
     }
 
     // Stellar trustline addition/removal
@@ -258,10 +299,11 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
 
     const isMultiTokenTransaction = transaction.tokens.length > 1;
     const transactionSymbol = getTxHeaderSymbol(transaction);
+    // token symbols carry their own casing (trSHUSDTp), only network symbols are stored lowercase
     const symbol =
         transactionSymbol && isNetworkSymbol(transactionSymbol)
             ? getNetworkDisplaySymbol(transactionSymbol)
-            : transactionSymbol?.toUpperCase();
+            : transactionSymbol;
 
     return (
         <BlurUrls

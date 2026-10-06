@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Text } from '@suite-native/atoms';
 import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
@@ -12,7 +13,7 @@ describe('ExchangeApprovalLimitCard', () => {
     const renderExchangeApprovalLimitCard = async (
         props: Partial<ExchangeApprovalLimitCardProps>,
     ) => {
-        const res = renderWithBasicProvider(
+        const res = await renderWithBasicProvider(
             <ExchangeApprovalLimitCard
                 title={<Text>Test limit</Text>}
                 description="Test description"
@@ -39,14 +40,16 @@ describe('ExchangeApprovalLimitCard', () => {
     });
 
     it('should render crypto icon when symbol is provided', async () => {
-        const { getByLabelText } = await renderExchangeApprovalLimitCard({ symbol: 'btc' });
+        const { getByLabelText } = await renderExchangeApprovalLimitCard({
+            symbol: asNetworkSymbol('btc'),
+        });
 
         expect(getByLabelText('btc')).toBeTruthy();
     });
 
     it('should render crypto icon with contract address when provided', async () => {
         const { getByLabelText } = await renderExchangeApprovalLimitCard({
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             contractAddress: '0x123456789',
         });
 
@@ -56,14 +59,14 @@ describe('ExchangeApprovalLimitCard', () => {
     it('should call onChange when card is pressed', async () => {
         const { getByText } = await renderExchangeApprovalLimitCard({});
 
-        fireEvent.press(getByText('Test limit'));
+        await fireEvent.press(getByText('Test limit'));
         expect(mockOnChange).toHaveBeenCalledTimes(1);
     });
 
     it('should call onChange when description is pressed', async () => {
         const { getByText } = await renderExchangeApprovalLimitCard({});
 
-        fireEvent.press(getByText('Test description'));
+        await fireEvent.press(getByText('Test description'));
         expect(mockOnChange).toHaveBeenCalledTimes(1);
     });
 

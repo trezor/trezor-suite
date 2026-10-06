@@ -17,10 +17,10 @@ export const getFormattedFingerprint = (fingerprint: string) =>
 
 // naming is based on fw version and chip, not model
 enum FirmwareFormat {
-    'T1' = 1,
-    'T1_EMBEDDED_V2',
-    'T1_V2',
-    'T2',
+    T1 = 1,
+    T1_EMBEDDED_V2,
+    T1_V2,
+    T2,
 }
 
 const FORMAT_MAP: { [format in FirmwareFormat]: DeviceModelInternal[] } = {

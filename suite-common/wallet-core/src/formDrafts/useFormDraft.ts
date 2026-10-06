@@ -1,7 +1,9 @@
 import { useCallback } from 'react';
 import type { FieldValues } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 
@@ -12,7 +14,7 @@ export const useFormDraft = <T extends FieldValues>(
     keyPrefix: FormDraftKeyPrefix,
     key: string = '',
 ) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const formDraftKey = getFormDraftKey(keyPrefix, key);
 

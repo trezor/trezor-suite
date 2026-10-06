@@ -7,12 +7,12 @@ import {
 import { type GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
 import { type SuiteSyncUncontrolledErrorHandlerDep } from '../suiteSyncUncontrolledErrorHandler';
 
-export type CreateEnsureWalletSuiteSyncOnUncontrolledDeps = EnsureWalletSuiteSyncOnDep &
+export type EnsureWalletSuiteSyncOnUncontrolledDeps = EnsureWalletSuiteSyncOnDep &
     SuiteSyncUncontrolledErrorHandlerDep &
     GetDeviceForStaticSessionIdDep;
 
 export const createEnsureWalletSuiteSyncOnUncontrolled =
-    (deps: CreateEnsureWalletSuiteSyncOnUncontrolledDeps): EnsureWalletSuiteSyncOnUncontrolled =>
+    (deps: EnsureWalletSuiteSyncOnUncontrolledDeps): EnsureWalletSuiteSyncOnUncontrolled =>
     async params => {
         const result = await deps.ensureWalletSuiteSyncOn(params);
 

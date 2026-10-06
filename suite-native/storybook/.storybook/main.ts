@@ -63,7 +63,9 @@ const main: StorybookConfig = {
                 {
                     // Vite ignores @trezor/connect's "react-native" package.json field and
                     // resolves to workers.browser.ts, which Vite's worker plugin can't bundle.
-                    // Redirect to workers.native.ts, matching Metro's resolution in the real app.
+                    // Redirect to a stub that exports all workers as undefined — the real
+                    // workers.native.ts pulls in ElectrumWorker → tcp.ts → net.Socket,
+                    // that breaks the build and is unused in Storybook anyway.
                     name: 'redirect-connect-workers-to-native',
                     enforce: 'pre',
                     resolveId(source) {
@@ -71,7 +73,7 @@ const main: StorybookConfig = {
                             source.endsWith('/workers/workers') ||
                             source === '../workers/workers'
                         ) {
-                            return require.resolve('@trezor/connect/src/workers/workers.native.ts');
+                            return require.resolve('./mocks/workers.ts');
                         }
 
                         return null;

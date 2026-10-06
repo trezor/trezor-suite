@@ -47,7 +47,8 @@ jest.mock('./ExchangeUsdcPresetButton', () => ({
 }));
 
 describe('ExchangeFormQuoteDebugView', () => {
-    const renderDebugView = () => renderWithBasicProvider(<ExchangeFormQuoteDebugView />);
+    const renderDebugView = async () =>
+        await renderWithBasicProvider(<ExchangeFormQuoteDebugView />);
 
     beforeEach(() => {
         mockQuote = undefined;
@@ -55,7 +56,7 @@ describe('ExchangeFormQuoteDebugView', () => {
         mockDebugMode = false;
     });
 
-    it('should render nothing when debug mode is disabled', () => {
+    it('should render nothing when debug mode is disabled', async () => {
         mockDebugMode = false;
         mockQuote = {
             send: 'ethereum' as CryptoId,
@@ -64,32 +65,32 @@ describe('ExchangeFormQuoteDebugView', () => {
             isDex: false,
         };
 
-        const { toJSON } = renderDebugView();
+        const { toJSON } = await renderDebugView();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render approval status "none" when no quote is selected', () => {
+    it('should render approval status "none" when no quote is selected', async () => {
         mockDebugMode = true;
         mockQuote = undefined;
 
-        renderDebugView();
+        await renderDebugView();
 
         expect(screen.getByText('Approval status')).toBeOnTheScreen();
         expect(screen.getByText('none')).toBeOnTheScreen();
     });
 
-    it('should render "not defined" for pre-approved amount when no quote is selected', () => {
+    it('should render "not defined" for pre-approved amount when no quote is selected', async () => {
         mockDebugMode = true;
         mockQuote = undefined;
 
-        renderDebugView();
+        await renderDebugView();
 
         expect(screen.getByText('Pre-approved')).toBeOnTheScreen();
         expect(screen.getByText('not defined')).toBeOnTheScreen();
     });
 
-    it('should render approval status "not_needed" for a non-DEX quote', () => {
+    it('should render approval status "not_needed" for a non-DEX quote', async () => {
         mockDebugMode = true;
         mockQuote = {
             send: USDC_CRYPTO_ID,
@@ -98,12 +99,12 @@ describe('ExchangeFormQuoteDebugView', () => {
             isDex: false,
         };
 
-        renderDebugView();
+        await renderDebugView();
 
         expect(screen.getByText('not_needed')).toBeOnTheScreen();
     });
 
-    it('should render approval status "needs_approval" for a DEX quote without pre-approval', () => {
+    it('should render approval status "needs_approval" for a DEX quote without pre-approval', async () => {
         mockDebugMode = true;
         mockQuote = {
             send: USDC_CRYPTO_ID,
@@ -112,12 +113,12 @@ describe('ExchangeFormQuoteDebugView', () => {
             isDex: true,
         };
 
-        renderDebugView();
+        await renderDebugView();
 
         expect(screen.getByText('needs_approval')).toBeOnTheScreen();
     });
 
-    it('should display "unlimited" for pre-approved amount when preapprovedStringAmount is max uint256', () => {
+    it('should display "unlimited" for pre-approved amount when preapprovedStringAmount is max uint256', async () => {
         mockDebugMode = true;
         mockSendAccount = {
             tokens: [
@@ -135,13 +136,13 @@ describe('ExchangeFormQuoteDebugView', () => {
             preapprovedStringAmount: UINT256_MAX,
         };
 
-        renderDebugView();
+        await renderDebugView();
 
         expect(screen.getByText('Pre-approved')).toBeOnTheScreen();
         expect(screen.getByText('unlimited')).toBeOnTheScreen();
     });
 
-    it('should display the specific amount for pre-approved amount when preapprovedStringAmount is not max uint256', () => {
+    it('should display the specific amount for pre-approved amount when preapprovedStringAmount is not max uint256', async () => {
         mockDebugMode = true;
         const specificAmount = '1000000000000000000';
         mockQuote = {
@@ -152,7 +153,7 @@ describe('ExchangeFormQuoteDebugView', () => {
             preapprovedStringAmount: specificAmount,
         };
 
-        renderDebugView();
+        await renderDebugView();
 
         expect(screen.getByText('Pre-approved')).toBeOnTheScreen();
         expect(screen.getByText(specificAmount)).toBeOnTheScreen();

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
     type NetworkSymbol,
     getNetworkByYieldXyzId,
@@ -19,8 +20,8 @@ import {
     compareEarnByNetwork,
     compareEarnByNetworkTokenOrder,
     getApyPercent,
-    isWrappedNativeToken,
 } from '@suite-common/wallet-utils';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -35,15 +36,17 @@ const hasTokenSymbol = (
     accountToken: NonNullable<Account['tokens']>[number],
 ): accountToken is TokenInfoBranded => accountToken.symbol !== undefined;
 
+type GetMatchedAccountTokenParams = {
+    account: Account;
+    networkSymbol: NetworkSymbol;
+    token?: Pick<TokenDtoV2, 'address' | 'symbol' | 'decimals'>;
+};
+
 const getMatchedAccountToken = ({
     account,
     networkSymbol,
     token,
-}: {
-    account: Account;
-    networkSymbol: NetworkSymbol;
-    token?: Pick<TokenDtoV2, 'address' | 'symbol' | 'decimals'>;
-}): TokenInfoBranded | undefined => {
+}: GetMatchedAccountTokenParams): TokenInfoBranded | undefined => {
     if (!account.tokens?.length || !token) {
         return undefined;
     }
@@ -63,15 +66,17 @@ const getMatchedAccountToken = ({
     );
 };
 
+type GetYieldOpportunityDataParams = {
+    account: Account;
+    networkSymbol: NetworkSymbol;
+    vault: YieldDtoV2;
+};
+
 export const getYieldOpportunityData = ({
     account,
     networkSymbol,
     vault,
-}: {
-    account: Account;
-    networkSymbol: NetworkSymbol;
-    vault: YieldDtoV2;
-}): YieldOpportunityData => {
+}: GetYieldOpportunityDataParams): YieldOpportunityData => {
     const matchedInputToken = getMatchedAccountToken({
         account,
         networkSymbol,
@@ -116,6 +121,8 @@ export const getYieldOpportunityData = ({
         depositedContractAddress: isWrappedNativeVault
             ? null
             : (matchedInputToken?.contract ?? vault.token.address ?? null),
+        // Stated decimals of the deposited token, so a stablecoin amount reads money-like.
+        depositedDecimals: matchedInputToken?.decimals ?? vault.token.decimals,
     };
 };
 
@@ -138,6 +145,8 @@ export const useYieldTableData = ({
     visibleAccounts,
     visibleAccountSymbols,
 }: UseYieldTableDataProps) => {
+    const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
+
     const yieldAccountOpportunities = useMemo<YieldAccountOpportunity[]>(() => {
         const allOpportunities = availableVaults.flatMap(vault => {
             const network = getNetworkByYieldXyzId(vault.network);
@@ -189,17 +198,22 @@ export const useYieldTableData = ({
         return [
             ...activeOpportunities
                 .toSorted(compareEarnByAmountDesc(opportunity => opportunity.depositedAmount))
-                .toSorted(compareEarnByNetwork(opportunity => opportunity.account?.symbol)),
+                .toSorted(
+                    compareEarnByNetwork(
+                        opportunity => opportunity.account?.symbol,
+                        allNetworkSymbols,
+                    ),
+                ),
             ...depositableOpportunities
                 .toSorted(
                     compareEarnByAmountDesc(opportunity => opportunity.additionalDepositAmount),
                 )
-                .toSorted(compareEarnByNetworkTokenOrder(toNetworkTokenSortKey)),
+                .toSorted(compareEarnByNetworkTokenOrder(toNetworkTokenSortKey, allNetworkSymbols)),
             ...noBalanceOpportunities.toSorted(
-                compareEarnByNetworkTokenOrder(toNetworkTokenSortKey),
+                compareEarnByNetworkTokenOrder(toNetworkTokenSortKey, allNetworkSymbols),
             ),
         ];
-    }, [availableVaults, visibleAccounts, visibleAccountSymbols]);
+    }, [availableVaults, allNetworkSymbols, visibleAccountSymbols, visibleAccounts]);
 
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const yieldInactiveVaultOpportunities = useMemo<YieldInactiveVaultOpportunity[]>(() => {

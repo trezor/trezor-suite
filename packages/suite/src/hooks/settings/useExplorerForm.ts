@@ -2,27 +2,29 @@ import { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
-import { explorerActions, selectNetworkExplorers } from '@suite-common/wallet-core';
-import { isUrl } from '@trezor/utils';
+import { selectNetworkExplorers, setNetworkExplorerThunk } from '@suite-common/wallet-core';
+import { deepEqual, isUrl } from '@trezor/utils';
 
-import { useDispatch, useSelector } from '../suite';
+import { useSelector } from 'src/hooks/suite';
 
 const useExplorerInput = (currentValues: Explorer) => {
     const {
         register,
-        formState: { errors },
+        formState: { isDirty, errors },
         trigger,
         control,
-        setValue,
+        reset,
     } = useForm<Explorer>({
         mode: 'onChange',
         defaultValues: currentValues,
     });
 
-    const [base, tx, address, token, nft, queryString] = useWatch({
+    const [base, tx, address, token, nft, contract, queryString] = useWatch({
         control,
-        name: ['base', 'tx', 'address', 'token', 'nft', 'queryString'],
+        name: ['base', 'tx', 'address', 'token', 'nft', 'contract', 'queryString'],
     });
 
     const { translationString } = useTranslation();
@@ -59,6 +61,10 @@ const useExplorerInput = (currentValues: Explorer) => {
         validate: validateSuffix,
     });
 
+    const { ref: contractInputRef, ...contractInputField } = register('contract', {
+        validate: validateSuffix,
+    });
+
     const { ref: queryStringInputRef, ...queryStringInputField } = register('queryString');
 
     return {
@@ -67,7 +73,8 @@ const useExplorerInput = (currentValues: Explorer) => {
 
         trigger,
         register,
-        setValue,
+        reset,
+        isDirty,
         errors,
 
         fields: {
@@ -101,6 +108,12 @@ const useExplorerInput = (currentValues: Explorer) => {
                 field: nftInputField,
                 error: errors.nft?.message,
             },
+            contract: {
+                ref: contractInputRef,
+                value: contract,
+                field: contractInputField,
+                error: errors.contract?.message,
+            },
             queryString: {
                 ref: queryStringInputRef,
                 value: queryString,
@@ -112,12 +125,12 @@ const useExplorerInput = (currentValues: Explorer) => {
 };
 
 export const useExplorerForm = (symbol: NetworkSymbol) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const explorerConfig = useSelector(state => selectNetworkExplorers(state, symbol));
 
     const input = useExplorerInput(explorerConfig.custom ?? explorerConfig.default);
-    const { base, tx, address, token, nft, queryString } = input.fields;
+    const { base, tx, address, token, nft, contract, queryString } = input.fields;
 
     const explorer: Explorer = useMemo(
         () => ({
@@ -126,23 +139,20 @@ export const useExplorerForm = (symbol: NetworkSymbol) => {
             address: address.value,
             token: token.value,
             nft: nft.value,
+            contract: contract.value,
             queryString: queryString.value,
         }),
-        [base, tx, address, token, nft, queryString],
+        [base, tx, address, token, nft, contract, queryString],
     );
 
     const save = () => {
-        dispatch(explorerActions.setExplorer({ symbol, explorer }));
+        if (input.isDirty) {
+            dispatch(setNetworkExplorerThunk({ symbol, explorer }));
+        }
     };
 
     const setDefaultValues = () => {
-        input.setValue('base', explorerConfig.default.base);
-        input.setValue('tx', explorerConfig.default.tx);
-        input.setValue('address', explorerConfig.default.address);
-        input.setValue('token', explorerConfig.default.token);
-        input.setValue('nft', explorerConfig.default.nft);
-        input.setValue('queryString', explorerConfig.default.queryString);
-
+        input.reset(explorerConfig.default, { keepDefaultValues: true });
         input.trigger();
     };
 
@@ -152,12 +162,13 @@ export const useExplorerForm = (symbol: NetworkSymbol) => {
         !input.fields.address.error &&
         !input.fields.token.error &&
         !input.fields.nft.error &&
+        !input.fields.contract.error &&
         !input.fields.queryString.error;
 
     return {
         save,
         setDefaultValues,
-        usesDefaultExplorer: explorerConfig.custom === undefined,
+        usesDefaultExplorer: deepEqual(explorer, explorerConfig.default),
         explorerConfig,
         input,
         isValid,

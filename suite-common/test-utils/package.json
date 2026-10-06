@@ -4,7 +4,8 @@
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": [
-        "globalOverrides/index.ts"
+        "globalOverrides/index.ts",
+        "fakeIndexedDb/index.ts"
     ],
     "main": "src/index",
     "exports": {
@@ -15,6 +16,10 @@
         "./globalOverrides": {
             "types": "./libDev/globalOverrides/index.d.ts",
             "default": "./globalOverrides/index.ts"
+        },
+        "./fakeIndexedDb": {
+            "types": "./libDev/fakeIndexedDb/index.d.ts",
+            "default": "./fakeIndexedDb/index.ts"
         }
     },
     "scripts": {
@@ -24,22 +29,17 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
-        "@suite-common/address": "workspace:*",
-        "@suite-common/analytics": "workspace:*",
-        "@suite-common/bip329-types": "workspace:*",
-        "@suite-common/networks": "workspace:*",
-        "@suite-common/platform-encryption": "workspace:*",
+        "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/legacy-network-config": "workspace:*",
+        "@suite-common/react-query": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
-        "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@testing-library/dom": "^10.4.1",
         "@testing-library/react": "^16.3.2",
-        "@trezor/analytics-uploader": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "core-js": "^3.49.0",
         "fake-indexeddb": "^6.2.5",

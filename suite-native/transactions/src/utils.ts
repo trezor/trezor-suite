@@ -1,13 +1,14 @@
 import { A, F, pipe } from '@mobily/ts-belt';
 
 import { type SignValue } from '@suite-common/suite-types';
-import { type Target as ProcessedTarget, createSimpleTargetId } from '@suite-common/wallet-core';
-import { type TransactionType, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
-    getTxStakeNameByDataHex,
+    type Target as ProcessedTarget,
+    createSimpleTargetId,
     getTxStakeType,
     getUnstakeAmountByEthereumDataHex,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/wallet-core';
+import { type TransactionType, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { getTxStakeNameByDataHex } from '@suite-common/wallet-utils';
 import { type EnhancedVinVout, type Target } from '@trezor/blockchain-link-types';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
@@ -31,14 +32,12 @@ export const mapTransactionInputsOutputsToAddresses = ({
                     (target.isAccountOwned || target.isAccountTarget)) ??
                 false;
 
-            return target.addresses?.map(
-                (address): VinVoutAddress => ({
-                    address,
-                    isChangeAddress,
-                    outputIndex: target.n,
-                    txTargetId: createSimpleTargetId(target),
-                }),
-            );
+            return target.addresses?.map((address): VinVoutAddress => ({
+                address,
+                isChangeAddress,
+                outputIndex: target.n,
+                txTargetId: createSimpleTargetId(target),
+            }));
         }),
         A.filter(isNotNullOrUndefined),
         A.concatMany,
@@ -101,3 +100,20 @@ export const getUnstakeTxAmount = (tx: WalletAccountTransaction) => {
 
     return getUnstakeAmountByEthereumDataHex(tx.ethereumSpecific?.data) ?? undefined;
 };
+
+type GetNextRequestedTransactionCountParams = {
+    requestedCount: number;
+    visibleCount: number;
+    pageSize: number;
+};
+
+/**
+ * Load more must add a full visible page even while earlier requests are still filling the list.
+ * Preserve the outstanding target, but start from the visible count when cached transfers or
+ * the last fetched account page have already exceeded it.
+ */
+export const getNextRequestedTransactionCount = ({
+    requestedCount,
+    visibleCount,
+    pageSize,
+}: GetNextRequestedTransactionCountParams) => Math.max(requestedCount, visibleCount) + pageSize;

@@ -1,6 +1,5 @@
-import type { Logger, TypedEmitter } from '@trezor/utils';
-
-export type { Logger } from '@trezor/utils';
+import type { Logger } from '@trezor/logger';
+import type { TypedEmitter } from '@trezor/utils';
 
 export interface TrezorBluetoothSettings {
     url: string;
@@ -8,6 +7,7 @@ export interface TrezorBluetoothSettings {
     timeout?: number;
     writeWithResponse?: boolean;
     writeWithDelay?: boolean;
+    headers?: Record<string, string>;
 }
 
 export type BluetoothInfo = {
@@ -93,12 +93,14 @@ export interface BluetoothIpcState {
     knownDevices: BluetoothDevice[];
 }
 
+export type ScanOwner = 'ui' | 'background';
+
 export type BluetoothIpcApi = {
     init(state?: BluetoothIpcState): Promise<IpcResponse>;
     getInfo(): Promise<IpcResponse<BluetoothInfo>>;
     dispose(): Promise<IpcResponse>;
-    startScan(): Promise<IpcResponse>;
-    stopScan(): Promise<IpcResponse>;
+    startScan(owner: ScanOwner): Promise<IpcResponse>;
+    stopScan(owner: ScanOwner): Promise<IpcResponse>;
     connectDevice(id: string): Promise<IpcResponse>;
     disconnectDevice(id: string): Promise<IpcResponse>;
     /**

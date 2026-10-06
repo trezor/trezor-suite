@@ -5,6 +5,7 @@
         { "path": "../connect" },
         { "path": "../transport" },
         { "path": "../transport-bluetooth" },
-        { "path": "../transport-common" }
+        { "path": "../transport-common" },
+        { "path": "../requirements" }
     ]
 }

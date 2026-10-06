@@ -10,7 +10,6 @@ import {
     tradeFinalStatuses,
 } from '@suite-common/trading';
 import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
-import type { Translate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 
 type UndefinedTradeOperation = {
@@ -180,21 +179,6 @@ export const getTradeStatusStep = (trade: TradingTransaction | undefined) => {
 };
 
 export type TradeStatusStep = ReturnType<typeof getTradeStatusStep>;
-
-export const getTradeTitle = (trade: TradingTransaction, translate: Translate) => {
-    const { tradeType } = trade;
-    switch (tradeType) {
-        case 'buy':
-            return translate('moduleTrading.tradeHistory.detail.buy');
-        case 'exchange':
-            return translate('moduleTrading.tradeHistory.detail.exchange');
-        case 'sell':
-            return translate('moduleTrading.tradeHistory.detail.sell');
-
-        default:
-            return exhaustive(tradeType);
-    }
-};
 
 export const getFormDraftKeyPrefixFromTradingType = (tradingType: TradingType) =>
     `trading-${tradingType}` as const satisfies FormDraftKeyPrefix;

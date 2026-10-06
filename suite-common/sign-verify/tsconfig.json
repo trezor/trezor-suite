@@ -1,0 +1,24 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../analytics" },
+        { "path": "../device" },
+        { "path": "../redux-utils" },
+        { "path": "../suite-types" },
+        { "path": "../test-utils" },
+        { "path": "../toast-notifications" },
+        { "path": "../wallet-config" },
+        { "path": "../wallet-core" },
+        { "path": "../wallet-types" },
+        { "path": "../wallet-utils" },
+        {
+            "path": "../../packages/analytics-uploader"
+        },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
+        { "path": "../../packages/type-utils" }
+    ]
+}

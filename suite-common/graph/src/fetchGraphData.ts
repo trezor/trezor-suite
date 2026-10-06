@@ -1,7 +1,6 @@
-import { type useDispatch } from 'react-redux';
-
 import { A } from '@mobily/ts-belt';
 
+import { type Dispatch } from '@suite-common/redux-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { getAccountMovementEvents } from './graphBalanceEvents';
@@ -52,7 +51,7 @@ export type FetchGraphDataParams = {
     eventsAccount?: AccountItem;
     isElectrumBackend: boolean;
     forceRefetch?: boolean;
-    dispatch: ReturnType<typeof useDispatch>;
+    dispatch: Dispatch;
 };
 
 export type GraphData = {

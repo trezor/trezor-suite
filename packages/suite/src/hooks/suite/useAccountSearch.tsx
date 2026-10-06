@@ -1,8 +1,10 @@
 import { createContext, useContext, useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import {
     accountSearchActions,
     selectAccountSearch,
@@ -25,7 +27,7 @@ const AccountSearchContext = createContext<AccountSearchContextType>({
 });
 
 export function useReduxAccountSearchActions() {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     return useMemo(
         () => ({
@@ -40,7 +42,9 @@ export function useReduxAccountSearchActions() {
     );
 }
 
-export const ReduxAccountSearchProvider = ({ children }: { children: React.ReactNode }) => {
+type ReduxAccountSearchProviderProps = { children: React.ReactNode };
+
+export const ReduxAccountSearchProvider = ({ children }: ReduxAccountSearchProviderProps) => {
     const filters = useSelector(state => selectAccountSearch(state));
     const actions = useReduxAccountSearchActions();
 

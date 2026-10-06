@@ -1,18 +1,16 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import {
-    type TradingType,
-    getReceiveAccountPreselection,
-    tradingBuyActions,
-    tradingExchangeActions,
-} from '@suite-common/trading';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { type TradingType, getReceiveAccountPreselection } from '@suite-common/trading';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import {
     type CombinedSelectorsRootState,
     selectVisibleDeviceAccountsByNetworkSymbolSorted,
+    tradingActions,
 } from '@suite-native/trading-state';
 import {
     type ReceiveAccount,
@@ -39,7 +37,7 @@ export const useReceiveAccountPreselectionEffect = ({
     selectReceiveAccount,
     selectSendAccount,
 }: UseReceiveAccountPreselectionEffectProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const receiveAssetNetworkSymbol = getSymbolFromTradeableAsset(receiveAsset);
 
@@ -68,16 +66,7 @@ export const useReceiveAccountPreselectionEffect = ({
 
         const { accountKey, address } = preselectedAccount;
 
-        if (tradingType === 'buy') {
-            dispatch(tradingBuyActions.setTradingAccountKey(accountKey));
-            dispatch(tradingBuyActions.setReceiveAccountKey(accountKey));
-            dispatch(tradingBuyActions.setReceiveAddress(address));
-
-            return;
-        }
-
-        dispatch(tradingExchangeActions.setReceiveAccountKey(accountKey));
-        dispatch(tradingExchangeActions.setReceiveAddress(address));
+        dispatch(tradingActions.setReceiveAccount({ tradingType, accountKey, address }));
     }, [
         accounts,
         dispatch,

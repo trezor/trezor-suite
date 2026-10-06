@@ -1,16 +1,18 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { RepeatIcon, WarningIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
-import { useDiscovery, useDispatch } from 'src/hooks/suite';
+import { useDiscovery } from 'src/hooks/suite';
 
 /**
  * Handler for discovery "hard" error (other than bundle-error)
  * see: @wallet-actions/selectedAccountActions
  */
 export const DiscoveryFailed = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { discovery } = useDiscovery();
     const description = discovery?.status === 'failed' ? discovery.error : undefined;
 

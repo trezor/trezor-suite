@@ -1,15 +1,15 @@
-import Svg, { Defs, Path, Use } from 'react-native-svg';
+import Svg, { Defs, Path, type SvgProps, Use } from 'react-native-svg';
 
 import { useNativeStyles } from '@trezor/styles-native';
 
-export const WarningShapeSvg = () => {
+export const WarningShapeSvg = (props: SvgProps) => {
     const { utils } = useNativeStyles();
     const borderColor = utils.colors.illustrationFillWarning;
     const underlayColor = utils.colors.surfaceFillRaised;
     const backgroundColor = utils.colors.elementFillWarningSofter;
 
     return (
-        <Svg width={112} height={112} fill="none">
+        <Svg width={112} height={112} viewBox="0 0 112 112" fill="none" {...props}>
             <Path
                 d="M103.916 104C110.125 104 113.967 97.2358 110.788 91.9032L62.8665 11.5262C59.7635 6.32172 52.2259 6.32202 49.1233 11.5268L1.21057 91.9038C-1.96816 97.2363 1.87422 104 8.08231 104H103.916Z"
                 fill={borderColor}

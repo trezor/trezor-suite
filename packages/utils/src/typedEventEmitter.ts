@@ -16,7 +16,7 @@ type EventKey<T extends EventMap> = string & keyof T;
 type IsUnion<T, U extends T = T> = T extends unknown ? ([U] extends [T] ? 0 : 1) : 2;
 
 // NOTE: case 1. looks like case 4. but works differently. the order matters
-type EventReceiver<T> =
+export type EventReceiver<T> =
     IsUnion<T> extends 1
         ? (event: T) => void // 1. use union payload
         : T extends (...args: any[]) => any

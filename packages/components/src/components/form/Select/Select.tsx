@@ -28,7 +28,7 @@ import {
     SingleValue,
     ValueContainer,
 } from './customComponents';
-import { type Option as OptionType } from './types';
+import { type CustomSelectProps, type Option as OptionType } from './types';
 import { createSharedMenuStyles } from './utils';
 import { type FrameProps } from '../../../utils/frameProps';
 
@@ -46,7 +46,8 @@ export type SelectRef = {
 
 export type SelectProps = AllowedFrameProps &
     Omit<FormCellProps, 'children'> &
-    Omit<ReactSelectProps<OptionType>, 'onChange' | 'menuIsOpen' | 'styles'> & {
+    Omit<ReactSelectProps<OptionType>, 'onChange' | 'menuIsOpen' | 'styles'> &
+    CustomSelectProps & {
         label?: ReactNode;
         size?: InputSize;
         minValueWidth?: number;
@@ -72,6 +73,7 @@ export const Select = ({
     isLoading = false,
     openMenuOnFocus = true,
     menuPortalZIndex,
+    menuAlign,
     components,
     'data-testid': dataTest,
     ...rest
@@ -94,8 +96,8 @@ export const Select = ({
     );
 
     const menuStyles = useMemo(
-        () => createSharedMenuStyles<OptionType>(menuPortalZIndex),
-        [menuPortalZIndex],
+        () => createSharedMenuStyles<OptionType>({ menuPortalZIndex, menuAlign }),
+        [menuPortalZIndex, menuAlign],
     );
 
     const closeMenuOnScroll = (e: Event) => {
@@ -154,7 +156,7 @@ export const Select = ({
     );
 
     return (
-        <FormCell {...formCellProps}>
+        <FormCell {...formCellProps} data-component="Select">
             <ReactSelect
                 ref={selectRef}
                 openMenuOnFocus={openMenuOnFocus}

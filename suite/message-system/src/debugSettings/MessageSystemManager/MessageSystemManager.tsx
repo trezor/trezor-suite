@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     messageSystemActions,
     selectAllManuallyAddedMessageIds,
     selectAllValidMessages,
 } from '@suite-common/message-system';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Action } from '@suite-common/suite-types';
 import { Banner, Button, Column, Divider, Modal, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
@@ -28,7 +30,7 @@ type MessageSystemManagerProps = {
 export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemManagerProps) => {
     const allValidMessages = useSelector(selectAllValidMessages);
     const allManuallyAddedMessageIds = useSelector(selectAllManuallyAddedMessageIds);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const [showActive, setIsActive] = useState<boolean>(true);
     const [selectedCategory, setSelectedCategory] = useState<CategoryFilterOption>('all');

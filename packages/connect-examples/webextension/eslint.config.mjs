@@ -1,21 +1,14 @@
-import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/eslint';
+import { allowDevDependenciesIn, eslint } from '@trezor/eslint';
 
 export default [
     ...eslint,
     {
         rules: {
             'no-console': 'off',
-
-            'import/no-extraneous-dependencies': [
-                'error',
-                {
-                    devDependencies: [
-                        ...globalNoExtraneousDependenciesDevDependencies,
-                        '**/src/**', // Examples are just for development
-                        '**/webpack.config.js',
-                    ],
-                },
-            ],
         },
     },
+    allowDevDependenciesIn([
+        '**/src/**', // Examples are just for development
+        '**/webpack.config.js',
+    ]),
 ];

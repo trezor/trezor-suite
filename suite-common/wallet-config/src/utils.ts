@@ -1,7 +1,8 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
 import { exhaustive } from '@trezor/type-utils';
+import { typedObjectValues } from '@trezor/utils';
 
-import { networks } from './networksConfig';
+import { networks } from './legacyNetworks';
 import {
     type AccountType,
     type Network,
@@ -9,19 +10,48 @@ import {
     type NetworkSymbol,
     type NetworkSymbolExtended,
     type NetworkType,
-} from './types';
+} from './networkTypes';
 
 export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
 
 /**
  * array from `networks` as a `Network[]` type instead of inferred type
  */
-export const networksCollection: Network[] = Object.values(networks);
+// The legacy configs carry literal symbols; `Network` takes the branded one. Same objects,
+// only the symbol's type differs, so this stays a cast rather than rebuilding the array.
+export const networksCollection = typedObjectValues(networks) as unknown as Network[];
 
 /**
  * array of network symbols
  */
-export const networkSymbolCollection = networksCollection.map(n => n.symbol);
+const networkSymbolCollection = networksCollection.map(n => n.symbol);
+
+/**
+ * @deprecated TODO: Replace with a networks store selector or inject via
+ * deps.getSupportedNetworks() when network configurations are modularized.
+ */
+export const getSupportedNetworks = (): NetworkSymbol[] => networkSymbolCollection;
+
+/**
+ * @deprecated TODO: Replace with a networks store selector or inject via
+ * deps.getNetworks() when network configurations are modularized.
+ */
+export const getNetworks = () => networks;
+
+/**
+ * Preserve the inferred fields for a specific symbol (for example, Ethereum's chainId),
+ * while keeping the common Network API available to existing callers.
+ *
+ * @deprecated TODO: Replace with a networks store selector or inject via
+ * deps.getNetwork() when network configurations are modularized.
+ */
+// Accepts both a branded NetworkSymbol and a plain literal: the symbol is open, while the legacy
+// config is still keyed by literals, and a literal caller keeps that config's precise type.
+export const getNetwork = <TSymbol extends string>(
+    symbol: TSymbol,
+): Network & (typeof networks)[TSymbol & keyof typeof networks] =>
+    networks[symbol as keyof typeof networks] as Network &
+        (typeof networks)[TSymbol & keyof typeof networks];
 
 interface GetMainnetsProps {
     debug?: boolean;
@@ -79,14 +109,15 @@ export const filterNetworksByName = (someNetworks: Network[], searchQuery: strin
 };
 
 export const isBlockbookBasedNetwork = (symbol: NetworkSymbol) =>
-    networks[symbol]?.backendOptions.some(option => option.type === 'blockbook');
+    getNetwork(symbol)?.backendOptions.some(option => option.type === 'blockbook');
 
 export const isNetworkUsingExternalBackend = (symbol: NetworkSymbol) =>
-    !!networks[symbol]?.backendOptions.some(
+    !!getNetwork(symbol)?.backendOptions.some(
         option => 'isExternalBackend' in option && option.isExternalBackend,
     );
 
-export const getNetworkType = (symbol: NetworkSymbol): NetworkType => networks[symbol]?.networkType;
+export const getNetworkType = (symbol: NetworkSymbol): NetworkType =>
+    getNetwork(symbol)?.networkType;
 
 export const isAccountBasedNetwork = (symbol: NetworkSymbol) => {
     const networkType = getNetworkType(symbol);
@@ -109,20 +140,13 @@ export const isAccountBasedNetwork = (symbol: NetworkSymbol) => {
 
 // Takes into account just network features, not features for specific accountTypes.
 export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
-    networks[symbol]?.features;
+    getNetwork(symbol)?.features;
 
 export const getCoingeckoId = (symbol: NetworkSymbol): string | undefined =>
-    networks[symbol].coingeckoId;
+    getNetwork(symbol).coingeckoId;
 
 export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is NetworkSymbol =>
-    Object.hasOwn(networks, symbol);
-
-/**
- * Get network object by symbol as a generic `Network` type.
- * If you need the exact inferred type, use `networks[symbol]` directly.
- * @param symbol
- */
-export const getNetwork = (symbol: NetworkSymbol): Network => networks[symbol];
+    Object.hasOwn(getNetworks(), symbol);
 
 /**
  * Use instead of getNetwork, if there is not a guarantee that the symbol is a valid network symbol.
@@ -137,6 +161,15 @@ export const isAccountOfNetwork = (
 ): accountType is AccountType =>
     Object.prototype.hasOwnProperty.call(network.accountTypes, accountType) ||
     accountType === 'normal';
+
+// Account types with an index-less path template (root path) have exactly one account.
+export const isSingleAccountType = (network: Network, accountType: string) => {
+    const bip43Path = isAccountOfNetwork(network, accountType)
+        ? network.accountTypes[accountType]?.bip43Path
+        : undefined;
+
+    return !(bip43Path ?? network.bip43Path).includes('i');
+};
 
 export const getNetworkByCoingeckoId = (coingeckoId: string): Network | undefined =>
     networksCollection.find(n => n.coingeckoId === coingeckoId);
@@ -168,6 +201,23 @@ export const getNetworkDisplaySymbolName = (symbol: NetworkSymbol): string => {
     const network = getNetwork(symbol);
 
     return network.displaySymbolName || network.name;
+};
+
+interface GetAssetNameProps {
+    symbol: NetworkSymbol;
+    tokenName?: string;
+    tokenSymbol?: string;
+}
+
+export const getAssetName = ({ symbol, tokenName, tokenSymbol }: GetAssetNameProps): string => {
+    if (tokenName !== undefined || tokenSymbol !== undefined) {
+        return tokenName ?? tokenSymbol ?? '';
+    }
+
+    // `arb`'s coin is Ethereum's ETH, so the asset is named after the issuing network.
+    const issuingNetwork = getNetworkOptional(getNetworkDisplaySymbol(symbol).toLowerCase());
+
+    return issuingNetwork?.name ?? getNetworkDisplaySymbolName(symbol);
 };
 
 export const getNetworkDecimals = (symbol: NetworkSymbolExtended): number | undefined => {

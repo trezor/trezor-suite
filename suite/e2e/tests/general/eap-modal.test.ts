@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -13,6 +13,7 @@ test(
             testCase: 'Verify that a user can join the early access program.',
             category: TestCategory.Settings,
             priority: TestPriority.Critical,
+            stream: TestStream.Growth,
         }),
     },
     async ({ settingsPage, analyticsSection }) => {

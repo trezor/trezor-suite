@@ -4,12 +4,15 @@ import {
     createSuiteSyncAddressId,
     createSuiteSyncOutputId,
 } from '@suite-common/suite-sync-storage';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 
 import {
     fromSuiteSyncToSearchAccountLabels,
     fromSuiteSyncToSearchOutputLabels,
 } from './fromSuiteSyncToSearchAccountLabels';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const outputLabelsFixture: SuiteSyncOutput[] = [
     {
@@ -18,7 +21,7 @@ const outputLabelsFixture: SuiteSyncOutput[] = [
         txTargetId: '0',
         label: 'Label A',
         accountDescriptor: asAccountDescriptor('xpub...'),
-        networkSymbol: 'btc',
+        networkSymbol: btcSymbol,
     },
     {
         id: createSuiteSyncOutputId('txid1', '1'),
@@ -26,7 +29,7 @@ const outputLabelsFixture: SuiteSyncOutput[] = [
         txTargetId: '1',
         label: 'Label B',
         accountDescriptor: asAccountDescriptor('xpub...'),
-        networkSymbol: 'btc',
+        networkSymbol: btcSymbol,
     },
     {
         id: createSuiteSyncOutputId('txid2', '0'),
@@ -34,24 +37,24 @@ const outputLabelsFixture: SuiteSyncOutput[] = [
         txTargetId: '0',
         label: null,
         accountDescriptor: asAccountDescriptor('xpub...'),
-        networkSymbol: 'btc',
+        networkSymbol: btcSymbol,
     },
 ];
 
 const addressLabelsFixture: SuiteSyncAddress[] = [
     {
-        id: createSuiteSyncAddressId('tb1qaddress1', 'btc'),
+        id: createSuiteSyncAddressId('tb1qaddress1', btcSymbol),
         address: 'tb1qaddress1',
         label: 'Address label 1',
         accountDescriptor: asAccountDescriptor('xpub...'),
-        networkSymbol: 'btc',
+        networkSymbol: btcSymbol,
     },
     {
-        id: createSuiteSyncAddressId('tb1qaddress2', 'btc'),
+        id: createSuiteSyncAddressId('tb1qaddress2', btcSymbol),
         address: 'tb1qaddress2',
         label: null,
         accountDescriptor: asAccountDescriptor('xpub...'),
-        networkSymbol: 'btc',
+        networkSymbol: btcSymbol,
     },
 ];
 

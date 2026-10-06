@@ -1,9 +1,14 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { TestStream } from '@trezor/e2e-utils';
+
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 import { MetadataProvider } from '../../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
-test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+const btcSymbol = asNetworkSymbol('btc');
+
+test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_all' },
         ignoreToastErrors: [
@@ -20,6 +25,7 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
         {
             annotation: createTestAnnotation({
                 testCase: 'Suite labeling handles malformed token error from Dropbox',
+                stream: TestStream.Wallet,
             }),
         },
         async ({ page, onboardingPage, settingsPage, metadataPage, walletPage, metadataMock }) => {
@@ -30,7 +36,7 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             );
 
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+            await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
 
             await settingsPage.navigateTo('application');
 
@@ -75,6 +81,7 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
         {
             annotation: createTestAnnotation({
                 testCase: 'Suite labeling handles GET retries from Dropbox',
+                stream: TestStream.Wallet,
             }),
         },
         async ({ page, onboardingPage, settingsPage, metadataPage, walletPage, metadataMock }) => {
@@ -85,7 +92,7 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             );
 
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+            await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
 
             await settingsPage.navigateTo('application');
 
@@ -141,6 +148,7 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
         {
             annotation: createTestAnnotation({
                 testCase: 'Suite labeling handles incomplete data from Dropbox',
+                stream: TestStream.Wallet,
             }),
         },
         async ({ page, onboardingPage, settingsPage, metadataPage, walletPage, metadataMock }) => {
@@ -157,7 +165,7 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             );
 
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+            await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
 
             await settingsPage.navigateTo('application');
 

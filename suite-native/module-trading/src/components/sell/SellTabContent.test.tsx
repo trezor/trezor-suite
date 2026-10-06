@@ -1,3 +1,7 @@
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { act, screen, userEvent } from '@suite-native/test-utils-store';
 
@@ -5,6 +9,15 @@ import { SellTabContent } from './SellTabContent';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 let mockUseSellData: jest.Mock;
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
+    analytics: mockNativeAnalytics(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
+};
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useRoute: () => ({ params: {} }),
+}));
 
 jest.mock('../../hooks/sell/useSellData', () => ({
     useSellData: (...params: unknown[]) => mockUseSellData(...params),
@@ -27,8 +40,8 @@ describe('SellTabContent', () => {
         }));
     });
 
-    const renderSellTabContent = () =>
-        renderWithTradingProvider(<SellTabContent />, { tradeType: 'sell' });
+    const renderSellTabContent = async () =>
+        await renderWithTradingProvider(<SellTabContent />, { services, tradeType: 'sell' });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);
@@ -46,68 +59,64 @@ describe('SellTabContent', () => {
         ).toBeOnTheScreen();
     };
 
-    it('should render Sell skeleton when isLoading is true', () => {
+    it('should render Sell skeleton when isLoading is true', async () => {
         mockUseSellData.mockReturnValue({
             isLoading: true,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        renderSellTabContent();
+        await renderSellTabContent();
 
         expectSkeleton();
     });
 
-    it('should render Sell skeleton when lastLoadedTimestamp is 0', () => {
+    it('should render Sell skeleton when lastLoadedTimestamp is 0', async () => {
         mockUseSellData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 0,
             isFullyLoaded: false,
         });
 
-        renderSellTabContent();
+        await renderSellTabContent();
 
         expectSkeleton();
     });
 
-    it('should render Sell form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', () => {
+    it('should render Sell form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', async () => {
         mockUseSellData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: true,
         });
 
-        renderSellTabContent();
+        await renderSellTabContent();
 
         expectSellForm();
     });
 
-    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', () => {
+    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', async () => {
         mockUseSellData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        renderSellTabContent();
+        await renderSellTabContent();
 
         expectServerOffline();
     });
 
     it('should reload data when server error info is displayed and user presses "Try again" button', async () => {
-        mockUseSellData
-            .mockReturnValueOnce({
-                isLoading: false,
-                lastLoadedTimestamp: 1,
-                isFullyLoaded: false,
-            })
-            .mockReturnValue({
-                isLoading: false,
-                lastLoadedTimestamp: 1,
-                isFullyLoaded: true,
-            });
+        const refetch = jest.fn();
+        mockUseSellData.mockReturnValue({
+            isLoading: false,
+            lastLoadedTimestamp: 1,
+            isFullyLoaded: false,
+            refetch,
+        });
 
-        const { getByText } = renderSellTabContent();
+        const { getByText } = await renderSellTabContent();
 
         const reloadButton = getByText(getTranslation('tradingAtoms.error.serverOfflineRetry'));
 
@@ -115,9 +124,6 @@ describe('SellTabContent', () => {
             await userEvent.press(reloadButton);
         });
 
-        expectSellForm();
-        expect(mockUseSellData).toHaveBeenCalledTimes(2);
-        expect(mockUseSellData).toHaveBeenCalledWith(0);
-        expect(mockUseSellData).toHaveBeenCalledWith(1);
+        expect(refetch).toHaveBeenCalledTimes(1);
     });
 });

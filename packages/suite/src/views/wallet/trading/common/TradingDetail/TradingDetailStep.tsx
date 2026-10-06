@@ -1,4 +1,4 @@
-import { Row, Spinner, StepList, type StepListItemState, Text } from '@trezor/components';
+import { Row, StepList, type StepListItemState, Text } from '@trezor/components';
 
 type TradingDetailStepProps = {
     state: StepListItemState;
@@ -18,12 +18,12 @@ export const TradingDetailStep = ({
     return (
         <StepList.Item
             state={state}
+            isLoading={isActive}
             title={
                 <Row justifyContent="space-between" gap={12}>
                     <Text data-testid={isActive ? '@trading/transaction/detail/status' : undefined}>
                         {title}
                     </Text>
-                    {isActive && <Spinner size={20} />}
                     {doneContent && state === 'done' && doneContent}
                 </Row>
             }

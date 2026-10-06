@@ -15597,7 +15597,6 @@
                         "dashboardAssetsGridMode": true,
                         "showTEXDashboardPromoBanner": true,
                         "showTS7DashboardPromoBanner": true,
-                        "showStablecoinYieldDashboardPromoBanner": true,
                         "showSettingsDesktopAppPromoBanner": true,
                         "activateAssetsBannerClosed": false,
                         "stakeEthBannerClosed": false,

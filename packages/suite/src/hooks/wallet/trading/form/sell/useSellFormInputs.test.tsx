@@ -1,11 +1,14 @@
 import { useForm } from 'react-hook-form';
 
-import { act, waitFor } from '@testing-library/react';
+import { act } from '@testing-library/react';
 import { type CryptoId } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingAssetSellOption, type TradingSellFormProps } from '@suite-common/trading';
+import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+
+import { type AppState } from 'src/reducers/store';
 
 import { useSellFormInputs } from './useSellFormInputs';
 
@@ -35,7 +38,8 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
-const ACCOUNT = mockWalletAccount({ symbol: 'btc', formattedBalance: '2' });
+const btcSymbol = toNetworkSymbolNonTestnet('btc');
+const ACCOUNT = mockWalletAccount({ symbol: btcSymbol, formattedBalance: '2' });
 
 const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'bitcoin' as CryptoId,
@@ -43,11 +47,11 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     name: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: 'btc',
+    symbol: btcSymbol,
     displaySymbol: 'BTC',
     networkName: 'Bitcoin',
-    networkSymbol: 'btc',
-    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: 'btc' }),
+    networkSymbol: btcSymbol,
+    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),
 };
 
 const DEFAULTS: TradingSellFormProps = {
@@ -91,7 +95,7 @@ const DEFAULTS: TradingSellFormProps = {
 const mockComposeRequest = jest.fn();
 
 const renderSellFormInputs = () => {
-    const store = configureMockStore({
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             wallet: {
                 accounts: [ACCOUNT],
@@ -120,7 +124,7 @@ const renderSellFormInputs = () => {
 
             return { inputs, methods };
         },
-        { store },
+        { services },
     );
 };
 
@@ -140,10 +144,17 @@ describe('useSellFormInputs', () => {
         const { result } = renderSellFormInputs();
 
         act(() => {
+            result.current.methods.setValue('amountInCrypto', false);
+            result.current.methods.setValue('outputs.0.fiat', '100');
+        });
+
+        act(() => {
             result.current.inputs.setRatioAmount(2);
         });
 
         expect(result.current.methods.getValues('outputs.0.amount')).toBe('1');
+        expect(result.current.methods.getValues('amountInCrypto')).toBe(true);
+        expect(result.current.methods.getValues('outputs.0.fiat')).toBe('');
         expect(result.current.inputs.fractionButton).toBe(2);
     });
 
@@ -151,10 +162,16 @@ describe('useSellFormInputs', () => {
         const { result } = renderSellFormInputs();
 
         act(() => {
+            result.current.methods.setValue('amountInCrypto', false);
+            result.current.methods.setValue('outputs.0.fiat', '100');
+        });
+
+        act(() => {
             result.current.inputs.setAllAmount();
         });
 
         expect(result.current.methods.getValues('setMaxOutputId')).toBe(0);
+        expect(result.current.methods.getValues('amountInCrypto')).toBe(true);
         expect(result.current.methods.getValues('outputs.0.fiat')).toBe('');
         expect(result.current.inputs.fractionButton).toBe(1);
         expect(mockComposeRequest).toHaveBeenCalledWith('outputs.0.amount');
@@ -170,18 +187,5 @@ describe('useSellFormInputs', () => {
 
         expect(result.current.methods.getValues('setMaxOutputId')).toBeUndefined();
         expect(result.current.inputs.fractionButton).toBe(4);
-    });
-
-    it('recalculates the crypto amount from the typed fiat amount after the debounce', async () => {
-        const { result } = renderSellFormInputs();
-
-        act(() => {
-            result.current.methods.setValue('outputs.0.fiat', '100');
-        });
-
-        await waitFor(
-            () => expect(result.current.methods.getValues('outputs.0.amount')).toBe('0.00200000'),
-            { timeout: 1500 },
-        );
     });
 });

@@ -17,10 +17,6 @@ export const validateIpcMessage = ({
     platformProvider = () => process.platform,
     pathProvider = path,
 }: ValidateIpcMessageParams) => {
-    if (ipcEvent?.senderFrame?.isDestroyed()) {
-        throw new Error('ipcEvent.senderFrame is destroyed');
-    }
-
     if (ipcEvent?.senderFrame && 'url' in ipcEvent.senderFrame) {
         // Example of `ipcEvent.senderFrame.url` is:
         //      'file:///tmp/.mount_Trezorztdoqo/resources/app.asar/build/index.html'

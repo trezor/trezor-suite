@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type DeviceRootState,
     selectDeviceButtonRequestsCodes,
     selectIsDeviceConnectedAndAuthorized,
 } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type FormDraftRootState,
@@ -74,7 +76,7 @@ export const useStellarFeeScreen = ({
     thunkAction,
     onSuccess,
 }: UseStellarFeeScreenParams) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<StellarFeeNavigationProps>();
     const { showAlert } = useAlert();
     const { translate } = useTranslate();

@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { type CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { useExchangeFiatDeviation } from './useExchangeFiatDeviation';
@@ -14,6 +15,7 @@ const mockedUseTradingFiatValues = jest.mocked(useTradingFiatValues);
 
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
 const ETHEREUM_CRYPTO_ID = 'ethereum' as CryptoId;
+const btcSymbol = asNetworkSymbol('btc');
 
 const defaultProps = {
     sendCryptoId: BITCOIN_CRYPTO_ID,
@@ -28,7 +30,7 @@ const createTradingFiatValuesResult = (fiatValue: string | null): TradingFiatRat
     fiatRate: undefined,
     accountBalance: '1',
     formattedBalance: '1',
-    symbol: 'btc',
+    symbol: btcSymbol,
     networkDecimals: 8,
     tokenAddress: undefined,
     fiatRatesUpdater: () => Promise.resolve(null),

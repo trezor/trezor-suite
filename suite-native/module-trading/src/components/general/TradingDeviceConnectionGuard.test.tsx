@@ -1,10 +1,16 @@
 import { Text } from 'react-native';
 
+import { type Store } from '@reduxjs/toolkit';
+
+import { type DeviceRootState } from '@suite-common/device';
 import { getTranslation } from '@suite-native/intl';
-import { type TestStore, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { TradingDeviceConnectionGuard } from './TradingDeviceConnectionGuard';
 import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & DeviceRootState;
 
 const mockNavigation = {
     popToTop: jest.fn(),
@@ -25,14 +31,14 @@ jest.mock('@suite-common/device', () => ({
 }));
 
 describe('TradingDeviceConnectionGuard', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
-    const renderTradingDeviceConnectionGuard = () =>
-        renderWithStoreProvider(
+    const renderTradingDeviceConnectionGuard = async () =>
+        await renderWithStoreProvider(
             <TradingDeviceConnectionGuard>
                 <Text>CHILDREN</Text>
             </TradingDeviceConnectionGuard>,
-            { store },
+            { services: { store } },
         );
 
     beforeEach(() => {
@@ -41,9 +47,9 @@ describe('TradingDeviceConnectionGuard', () => {
         store = createTradingTestStore();
     });
 
-    it('should display connect trezor info when no device is connected', () => {
+    it('should display connect trezor info when no device is connected', async () => {
         mockSelectIsDeviceConnected = false;
-        const { getByText, queryByText } = renderTradingDeviceConnectionGuard();
+        const { getByText, queryByText } = await renderTradingDeviceConnectionGuard();
 
         expect(
             getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
@@ -51,9 +57,9 @@ describe('TradingDeviceConnectionGuard', () => {
         expect(queryByText('CHILDREN')).not.toBeOnTheScreen();
     });
 
-    it('should display children when device is connected', () => {
+    it('should display children when device is connected', async () => {
         mockSelectIsDeviceConnected = true;
-        const { getByText, queryByText } = renderTradingDeviceConnectionGuard();
+        const { getByText, queryByText } = await renderTradingDeviceConnectionGuard();
 
         expect(
             queryByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),

@@ -85,16 +85,10 @@ Result with only one public key
         childNum: number,             // BIP32 serialization format
         fingerprint: number,          // BIP32 serialization format
         depth: number,                // BIP32 serialization format
-        displayablePublicKey: string, // canonical user-facing form (= xpub)
+        displayablePublicKey: string, // canonical user-facing form (= publicKey)
     }
 }
 ```
-
-> **`displayablePublicKey` vs. firmware display.** With `showOnTrezor: true` the
-> device shows the raw compressed `publicKey` (33-byte hex). This field is the
-> `xpub` instead, because that's the more useful identifier in host-side UIs
-> (Trezor Suite displays the xpub in its address-confirmation modal). Both are
-> correct representations of the same secp256k1 point at the requested path.
 
 [Read more about BIP32 serialization format](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#Serialization_format)
 

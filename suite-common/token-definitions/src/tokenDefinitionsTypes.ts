@@ -1,9 +1,22 @@
+import { type Getter } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Rate } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import type { PartialRecord } from '@trezor/type-utils';
 
 export type SimpleTokenStructure = string[];
+
+/**
+ * Every token CoinGecko lists on a supported platform, ranked by market cap in USD. A token
+ * without a market cap is kept with a market cap of 0 and sorts last. Published as one file next
+ * to the per-platform definitions.
+ */
+export type RankedTokenStructure = {
+    assetPlatformId: string;
+    address: string;
+    symbol: string;
+    name: string;
+    marketCap: number;
+}[];
 
 export interface AdvancedTokenStructure {
     [contractAddress: string]: {
@@ -14,7 +27,7 @@ export interface AdvancedTokenStructure {
     };
 }
 
-export type TokenStructure = SimpleTokenStructure | AdvancedTokenStructure;
+export type TokenStructure = SimpleTokenStructure | RankedTokenStructure | AdvancedTokenStructure;
 
 export enum TokenStructureType {
     SIMPLE = 'simple',
@@ -35,6 +48,10 @@ export type TokenDefinitionsState = PartialRecord<NetworkSymbol, TokenDefinition
 
 export type TokenDefinitionsRootState = { tokenDefinitions: TokenDefinitionsState };
 
+export type GetTokenDefinitionsEnabledNetworksDep = {
+    getTokenDefinitionsEnabledNetworks: Getter<[], NetworkSymbol[]>;
+};
+
 export type TokenDefinition = {
     error: boolean;
     data?: SimpleTokenStructure;
@@ -50,4 +67,4 @@ export type TokenDefinitions = {
 
 export type TokenManagementStorage = { key: string; value: SimpleTokenStructure };
 
-export type EnhancedTokenInfo = TokenInfo & { fiatRate?: Rate };
+export type { TokenInfo };

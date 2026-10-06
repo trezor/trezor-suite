@@ -4,13 +4,15 @@ import { isDesktop } from '@trezor/env-utils';
 
 import type { PrerequisiteType } from 'src/types/suite';
 
+type GetWarningMessageParams = {
+    deviceStatus: ConnectedDeviceStatus | null;
+    showWarning: boolean;
+};
+
 const getWarningMessage = ({
     deviceStatus,
     showWarning,
-}: {
-    deviceStatus: ConnectedDeviceStatus | null;
-    showWarning: boolean;
-}): {
+}: GetWarningMessageParams): {
     heading: TranslationKey;
     description?: TranslationKey;
 } => {

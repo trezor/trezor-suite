@@ -1,15 +1,28 @@
-import { renderHook } from '@testing-library/react';
-
+import { mockNetworksState } from '@suite-common/networks/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+
+import { type AppState } from 'src/reducers/store';
 
 import { useYieldAccountsVisibility } from './useYieldAccountsVisibility';
 import { type YieldAccountOpportunity } from '../types';
+
+const createTestServices = () =>
+    createTestCompositionRoot<void, AppState>({
+        preloadedState: {
+            networks: mockNetworksState([asNetworkSymbol('eth'), asNetworkSymbol('base')]),
+        },
+    }).services;
+
+const ethSymbol = asNetworkSymbol('eth');
+const baseSymbol = asNetworkSymbol('base');
 
 const createMockAccount = (overrides: Partial<Account>): Account =>
     ({
         key: 'default-key',
         index: 0,
-        symbol: 'eth',
+        symbol: ethSymbol,
         networkType: 'ethereum',
         accountType: 'normal',
         formattedBalance: '0',
@@ -60,8 +73,9 @@ describe('useYieldAccountsVisibility', () => {
                 createMockOpportunity(eth0, 'vault-a'),
             ];
 
-            const { result } = renderHook(() =>
-                useYieldAccountsVisibility({ yieldAccountOpportunities }),
+            const { result } = renderHookWithStoreProvider(
+                () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
+                { services: createTestServices() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
@@ -88,8 +102,9 @@ describe('useYieldAccountsVisibility', () => {
                 createMockOpportunity(eth0, 'vault-b'),
             ];
 
-            const { result } = renderHook(() =>
-                useYieldAccountsVisibility({ yieldAccountOpportunities }),
+            const { result } = renderHookWithStoreProvider(
+                () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
+                { services: createTestServices() },
             );
 
             const fallbackKeys = result.current.displayedYieldAccountOpportunities.map(
@@ -129,8 +144,9 @@ describe('useYieldAccountsVisibility', () => {
                 },
             ];
 
-            const { result } = renderHook(() =>
-                useYieldAccountsVisibility({ yieldAccountOpportunities }),
+            const { result } = renderHookWithStoreProvider(
+                () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
+                { services: createTestServices() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
@@ -142,14 +158,14 @@ describe('useYieldAccountsVisibility', () => {
         it('should prefer normal accountType over ledger when balances are equal but non-zero', () => {
             const baseLedger0 = createMockAccount({
                 key: 'base-ledger-0' as Account['key'],
-                symbol: 'base',
+                symbol: baseSymbol,
                 networkType: 'ethereum',
                 accountType: 'ledger',
                 index: 0,
             });
             const baseNormal3 = createMockAccount({
                 key: 'base-normal-3' as Account['key'],
-                symbol: 'base',
+                symbol: baseSymbol,
                 networkType: 'ethereum',
                 accountType: 'normal',
                 index: 3,
@@ -167,8 +183,9 @@ describe('useYieldAccountsVisibility', () => {
                 },
             ];
 
-            const { result } = renderHook(() =>
-                useYieldAccountsVisibility({ yieldAccountOpportunities }),
+            const { result } = renderHookWithStoreProvider(
+                () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
+                { services: createTestServices() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
@@ -180,14 +197,14 @@ describe('useYieldAccountsVisibility', () => {
         it('should prefer normal accountType over ledger even when index is higher', () => {
             const baseLedger0 = createMockAccount({
                 key: 'base-ledger-0' as Account['key'],
-                symbol: 'base',
+                symbol: baseSymbol,
                 networkType: 'ethereum',
                 accountType: 'ledger',
                 index: 0,
             });
             const baseNormal5 = createMockAccount({
                 key: 'base-normal-5' as Account['key'],
-                symbol: 'base',
+                symbol: baseSymbol,
                 networkType: 'ethereum',
                 accountType: 'normal',
                 index: 5,
@@ -198,8 +215,9 @@ describe('useYieldAccountsVisibility', () => {
                 createMockOpportunity(baseNormal5, 'vault-a'),
             ];
 
-            const { result } = renderHook(() =>
-                useYieldAccountsVisibility({ yieldAccountOpportunities }),
+            const { result } = renderHookWithStoreProvider(
+                () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
+                { services: createTestServices() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
@@ -223,8 +241,9 @@ describe('useYieldAccountsVisibility', () => {
                 createMockOpportunity(eth0, 'vault-a'),
             ];
 
-            const { result } = renderHook(() =>
-                useYieldAccountsVisibility({ yieldAccountOpportunities }),
+            const { result } = renderHookWithStoreProvider(
+                () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
+                { services: createTestServices() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);

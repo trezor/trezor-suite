@@ -1,8 +1,7 @@
 import { useCallback, useRef } from 'react';
 
-import { yup } from '@suite-common/validators';
 import { Button, type InputType, VStack } from '@suite-native/atoms';
-import { Form, TextInputField, useForm } from '@suite-native/forms';
+import { Form, TextInputField, useForm, yup } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
 import { useSyncLabelForm } from './useSyncLabelForm';

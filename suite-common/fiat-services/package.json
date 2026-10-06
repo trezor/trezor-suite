@@ -17,6 +17,7 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0"

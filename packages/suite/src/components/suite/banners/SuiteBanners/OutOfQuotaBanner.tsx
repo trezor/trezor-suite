@@ -1,6 +1,8 @@
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     noQuotaLeftWarningDismissed,
     selectShouldDisplayOutOfQuotaAlert,
@@ -9,10 +11,10 @@ import { Banner, Button, IconButton } from '@trezor/components';
 import { InfoIcon, XIcon } from '@trezor/icons';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const OutOfQuotaBanner = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const href = useExternalLink(TREZOR_SUPPORT_URL);
     const device = useSelector(selectSelectedDevice);
@@ -31,6 +33,7 @@ export const OutOfQuotaBanner = () => {
         <Banner
             intent="info"
             icon={InfoIcon}
+            data-testid="@notification/suite-sync-out-of-quota"
             description={<Translation id="TR_SUITE_SYNC_OUT_OF_QUOTA_BANNER_DESCRIPTION" />}
             rightContent={
                 <>
@@ -41,6 +44,7 @@ export const OutOfQuotaBanner = () => {
                         icon={XIcon}
                         intent="info"
                         priority="secondary"
+                        data-testid="@notification/suite-sync-out-of-quota/dismiss"
                         onClick={handleDismiss}
                         tooltip={{ content: <Translation id="TR_DISMISS" /> }}
                     />

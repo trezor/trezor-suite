@@ -34,8 +34,8 @@ const defaultMessageSystem = {
 };
 
 describe('TradingLocationOnboardingScreen', () => {
-    const renderTradingLocationScreen = () =>
-        renderWithStoreProvider(<TradingLocationScreen />, {
+    const renderTradingLocationScreen = async () =>
+        await renderWithStoreProvider(<TradingLocationScreen />, {
             preloadedState: {
                 messageSystem: defaultMessageSystem,
                 wallet: {
@@ -51,12 +51,12 @@ describe('TradingLocationOnboardingScreen', () => {
         jest.clearAllMocks();
     });
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('should render all components', () => {
-        const { getByText, getByLabelText } = renderTradingLocationScreen();
+    it('should render all components', async () => {
+        const { getByText, getByLabelText } = await renderTradingLocationScreen();
 
         expect(
             getByText(getTranslation('tradingResidence.locationSettings.title')),
@@ -72,7 +72,7 @@ describe('TradingLocationOnboardingScreen', () => {
     });
 
     it('should log analytics event on country change', async () => {
-        const { getByText } = renderTradingLocationScreen();
+        const { getByText } = await renderTradingLocationScreen();
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText('Argentina'));
@@ -88,7 +88,7 @@ describe('TradingLocationOnboardingScreen', () => {
     });
 
     it('should use exitOnboardingFlow on button press', async () => {
-        const { getByText } = renderTradingLocationScreen();
+        const { getByText } = await renderTradingLocationScreen();
         await userEvent.press(getByText('Not now'));
 
         expect(mockExitOnboardingFlow).toHaveBeenCalledTimes(1);

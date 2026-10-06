@@ -1,4 +1,4 @@
-import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
+import { differenceInMonths, fromUnixTime, getUnixTime, isWithinInterval } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { resetTime } from '@suite-common/suite-utils';
@@ -12,11 +12,11 @@ import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, arrayToDictionary } from '@trezor/utils';
 
-import { type AppState } from 'src/reducers/store';
 import { type GraphState } from 'src/reducers/wallet/graphReducer';
 import {
+    type AccountHistoryWithBalance,
     type CommonAggregatedHistory,
     type GraphData,
     type GraphRange,
@@ -65,13 +65,6 @@ export const accountGraphDataFilterFn = (d: GraphData, account: Account) =>
     d.account.deviceState === account.deviceState;
 
 /**
- * Extract only accounts for which we don't have any data for given interval
- */
-export function getPristineAccounts(graph: AppState['wallet']['graph'], accounts: Account[]) {
-    return accounts.filter(account => !graph.data.find(d => accountGraphDataFilterFn(d, account)));
-}
-
-/**
  * Does given network has backend type with support for retrieving transactions history, e.g. for showing graph?
  */
 export function isNetworkWithGraphFeature(symbol: NetworkSymbol, backendType?: BackendType) {
@@ -112,6 +105,15 @@ export const enhanceBlockchainAccountHistory = (
     });
 
     return enhancedResponse;
+};
+
+export const mergeAccountBalanceHistory = (
+    cached: AccountHistoryWithBalance[],
+    fresh: AccountHistoryWithBalance[],
+) => {
+    const pointsByTime = arrayToDictionary([...cached, ...fresh], point => point.time);
+
+    return Object.values(pointsByTime).sort((a, b) => a.time - b.time);
 };
 
 /**
@@ -215,8 +217,11 @@ export const calcXDomain = (
     data: { time: number }[],
     range: GraphRange,
 ): [number, number] => {
-    const start = ticks[0] ?? 0;
-    const lastTick = ticks[ticks.length - 1] ?? 0;
+    // falling back to the unix epoch would render an axis around 1970,
+    // so when there are no ticks yet we center the interval around now instead
+    const now = getUnixTime(new Date());
+    const start = ticks[0] ?? now;
+    const lastTick = ticks[ticks.length - 1] ?? now;
     const lastData = data[data.length - 1];
     // if the last data point is after last tick/label use datapoint's timestamp to mark the end of the interval
     const end = lastData && lastTick < lastData.time ? lastData.time : lastTick;

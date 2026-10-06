@@ -1,15 +1,15 @@
 import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
 import { Button, Input, Modal } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite';
-
 export const WalletConnectButton = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const [connectionUrl, setConnectionUrl] = useState('');
     const [modalOpened, setModalOpened] = useState(false);
     const [isLoading, setLoading] = useState(false);

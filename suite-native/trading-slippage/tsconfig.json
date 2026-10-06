@@ -2,10 +2,10 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../suite-common/trading" },
         {
-            "path": "../../suite-common/validators"
+            "path": "../../suite-common/dependency-injection"
         },
+        { "path": "../../suite-common/trading" },
         { "path": "../atoms" },
         { "path": "../forms" },
         { "path": "../helpers" },
@@ -20,7 +20,7 @@
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         {
-            "path": "../../suite-common/test-utils"
+            "path": "../../suite-common/redux-utils"
         },
         {
             "path": "../../suite-common/wallet-core"

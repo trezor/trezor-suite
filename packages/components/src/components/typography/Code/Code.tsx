@@ -15,4 +15,6 @@ const StyledCode = styled.code`
     border-radius: 4px;
 `;
 
-export const Code = ({ children }: { children: ReactNode }) => <StyledCode>{children}</StyledCode>;
+export const Code = ({ children }: { children: ReactNode }) => (
+    <StyledCode data-component="Code">{children}</StyledCode>
+);

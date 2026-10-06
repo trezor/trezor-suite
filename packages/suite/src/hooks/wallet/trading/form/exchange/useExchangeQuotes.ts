@@ -1,13 +1,15 @@
 import { useEffect, useRef } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { selectAddressValidatorDep } from '@suite-common/address';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectAddressValidator } from '@suite-common/networks';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_CEX,
     TRADING_EXCHANGE_FORM_DEX,
+    TRADING_FORM_AMOUNT_INPUT_SOURCE,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
@@ -21,9 +23,14 @@ import {
 } from '@suite-common/trading';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { useDidUpdate } from '@trezor/react-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { isExchangeQuotesFetchAllowed } from 'src/utils/wallet/trading/exchangeQuotesRequestUtils';
+import { useSelector } from 'src/hooks/suite';
+import {
+    getExchangeActiveAmount,
+    getExchangeActiveAmountField,
+    isExchangeQuotesFetchAllowed,
+} from 'src/utils/wallet/trading/exchangeQuotesRequestUtils';
 
 import { useTradingQuoteRequest } from '../common/useTradingQuoteRequest';
 
@@ -37,7 +44,7 @@ type UseExchangeQuotesProps = {
     composeRequestCallback: () => void;
 };
 
-const EXCHANGE_IMMEDIATE_FIELDS = [TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT] as const;
+const EXCHANGE_IMMEDIATE_FIELDS = [] as const;
 
 const EXCHANGE_DEBOUNCED_FIELDS = [TRADING_FORM_OUTPUT_AMOUNT] as const;
 
@@ -50,10 +57,10 @@ export const useExchangeQuotes = ({
     receiveAccountSymbol,
     composeRequestCallback,
 }: UseExchangeQuotesProps) => {
-    const dispatch = useDispatch();
-    const { addressValidator, analytics } = useServices(
-        selectAddressValidatorDep,
-        selectDesktopAnalyticsDep,
+    const { addressValidator, analytics, dispatch } = useServices(
+        injectAddressValidator,
+        injectDesktopAnalytics,
+        injectDispatch,
     );
 
     const dexQuotes = useSelector(selectTradingExchangeDexQuotes);
@@ -63,6 +70,11 @@ export const useExchangeQuotes = ({
     const receiveCryptoSelect = useWatch({
         control: methods.control,
         name: TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+    });
+
+    const sendCryptoSelect = useWatch({
+        control: methods.control,
+        name: TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     });
 
     const receiveIdentityKey = JSON.stringify({
@@ -75,6 +87,8 @@ export const useExchangeQuotes = ({
         methods,
         immediateFields: EXCHANGE_IMMEDIATE_FIELDS,
         debouncedFields: EXCHANGE_DEBOUNCED_FIELDS,
+        getActiveAmountField: getExchangeActiveAmountField,
+        getActiveAmount: getExchangeActiveAmount,
         isFetchAllowed: values => !!network && isExchangeQuotesFetchAllowed(values),
         requestQuotes: values =>
             dispatch(
@@ -86,17 +100,22 @@ export const useExchangeQuotes = ({
                 }),
             ),
         stopScheduler: () => dispatch(tradingActions.stopRefetchQuotes()),
-        onResolved: quotes => {
+        onResolved: (quotes, values) => {
             analytics.report({
                 type: events.tradeReceivedQuotesEvent.name,
                 payload: {
                     type: 'exchange',
                     count: quotes.length,
+                    input: values[TRADING_FORM_AMOUNT_INPUT_SOURCE],
                 },
             });
         },
         isRequestContextAvailable: !!network,
     });
+
+    useDidUpdate(() => {
+        refreshQuotes();
+    }, [sendCryptoSelect?.accountKey, sendCryptoSelect?.id, refreshQuotes]);
 
     const previousReceiveIdentityKey = useRef(receiveIdentityKey);
     useEffect(() => {

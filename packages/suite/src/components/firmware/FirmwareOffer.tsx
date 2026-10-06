@@ -1,6 +1,7 @@
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { getSuiteFirmwareTypeString, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
+import { selectUseDevkit } from '@suite-common/firmware';
 import {
     getChangelogUrl,
     getFwUpdateVersion,
@@ -20,7 +21,7 @@ type FirmwareOfferProps = {
 };
 
 export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: FirmwareOfferProps) => {
-    const useDevkit = useSelector(state => state.firmware.useDevkit);
+    const useDevkit = useSelector(selectUseDevkit);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { originalDevice } = useFirmwareDesktopUpdate();
     const { translationString } = useTranslation();
@@ -48,7 +49,7 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                 <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                     <Translation id="TR_ONBOARDING_CURRENT_VERSION" />
                 </Text>
-                <Text typographyStyle="body-sm">
+                <Text typographyStyle="body-sm" data-testid="@firmware/offer-version/current">
                     {currentFirmwareType ? translationString(currentFirmwareType) : ''}
                     {currentVersion ? ` ${currentVersion}` : ''}
                 </Text>
@@ -85,7 +86,11 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                 <Tooltip
                     hasIcon
                     content={
-                        <Column padding={4} gap={4}>
+                        <Column
+                            padding={4}
+                            gap={4}
+                            data-testid="@firmware/offer-version/new/tooltip"
+                        >
                             {parsedChangelog && (
                                 <Row justifyContent="space-between">
                                     <Text typographyStyle="body-sm-strong" intent="neutral">

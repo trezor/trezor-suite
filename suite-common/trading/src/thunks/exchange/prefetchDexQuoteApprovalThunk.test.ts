@@ -1,10 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import type { Account } from '@suite-common/wallet-types';
 import { type AccountAddresses } from '@trezor/connect';
 
+import { type PrefetchDexQuoteApprovalThunkState } from './prefetchDexQuoteApprovalThunk';
 import { prefetchDexQuoteApprovalThunk } from './prefetchDexQuoteApprovalThunk';
 import { accountBtc, accountEth } from '../../__fixtures__/utils';
 import { initialState } from '../../reducers/tradingCommonReducer';
@@ -14,7 +16,9 @@ import { getUnusedAddressFromAccount } from '../../utils';
 
 jest.mock('../../tradeApi');
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 const getExchangeTrade = (quoteId: string): ExchangeTrade =>
     ({
@@ -30,8 +34,7 @@ const getExchangeTrade = (quoteId: string): ExchangeTrade =>
     }) as ExchangeTrade;
 
 const getStore = (quotes: ExchangeTrade[]) =>
-    configureMockStore({
-        extra: {},
+    createTestCompositionRoot<void, PrefetchDexQuoteApprovalThunkState>({
         reducer: combineReducers({
             wallet: combineReducers({
                 trading: tradingReducer,
@@ -48,7 +51,7 @@ const getStore = (quotes: ExchangeTrade[]) =>
                 },
             },
         },
-    });
+    }).services.store;
 
 describe('prefetchDexQuoteApprovalThunk', () => {
     afterEach(() => {
@@ -226,9 +229,10 @@ describe('prefetchDexQuoteApprovalThunk', () => {
 
         let resolveA: (() => void) | undefined;
         let resolveB: (() => void) | undefined;
+        type TradeParams = { trade: ExchangeTrade };
 
         jest.spyOn(tradeApi, 'doExchangeTrade').mockImplementation(
-            ({ trade }: { trade: ExchangeTrade }) =>
+            ({ trade }: TradeParams) =>
                 new Promise(resolve => {
                     const done = () => resolve({ quoteId: trade.quoteId } as ExchangeTrade);
                     if (trade.quoteId === quoteA.quoteId) {

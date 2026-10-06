@@ -1,33 +1,41 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTradeSigned } from 'invity-api';
 
+import { deviceInitialState } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, { type Address, type PROTO } from '@trezor/connect';
 import { validatePath } from '@trezor/connect-common';
 
-import { createPaymentRequestsThunk } from './createPaymentRequestsThunk';
-import { getNonce } from './getNonce';
-import { getPurchaseAddress } from './getPurchaseAddress';
-import { getRefundAddress } from './getRefundAddress';
+import {
+    type CreatePaymentRequestsThunkState,
+    createPaymentRequestsThunk,
+} from './createPaymentRequestsThunk';
+import { getNonceThunk } from './getNonce';
+import { getPurchaseAddressThunk } from './getPurchaseAddress';
+import { getRefundAddressThunk } from './getRefundAddress';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import { tradeApi } from '../../tradeApi';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 // Mock internal thunks - this is the key change from the previous approach
 jest.mock('./getNonce', () => ({
-    getNonce: jest.fn(),
+    getNonceThunk: jest.fn(),
 }));
 
 jest.mock('./getRefundAddress', () => ({
-    getRefundAddress: jest.fn(),
+    getRefundAddressThunk: jest.fn(),
 }));
 
 jest.mock('./getPurchaseAddress', () => ({
-    getPurchaseAddress: jest.fn(),
+    getPurchaseAddressThunk: jest.fn(),
 }));
 
 jest.mock('../../utils/signature/signatureUtils', () => {
@@ -176,14 +184,14 @@ describe('createPaymentRequestsThunk', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        (getNonce as unknown as jest.Mock).mockImplementation(
-            createThunk(getNonce.typePrefix, (_, { fulfillWithValue }) =>
+        (getNonceThunk as unknown as jest.Mock).mockImplementation(
+            createThunk(getNonceThunk.typePrefix, (_, { fulfillWithValue }) =>
                 fulfillWithValue(mockNonce),
             ),
         );
 
-        (getRefundAddress as unknown as jest.Mock).mockImplementation(
-            createThunk(getRefundAddress.typePrefix, (_, { fulfillWithValue }) =>
+        (getRefundAddressThunk as unknown as jest.Mock).mockImplementation(
+            createThunk(getRefundAddressThunk.typePrefix, (_, { fulfillWithValue }) =>
                 fulfillWithValue({
                     mac: mockMac,
                     path: "m/44'/0'/0'",
@@ -191,8 +199,8 @@ describe('createPaymentRequestsThunk', () => {
             ),
         );
 
-        (getPurchaseAddress as unknown as jest.Mock).mockImplementation(
-            createThunk(getPurchaseAddress.typePrefix, (_, { fulfillWithValue }) =>
+        (getPurchaseAddressThunk as unknown as jest.Mock).mockImplementation(
+            createThunk(getPurchaseAddressThunk.typePrefix, (_, { fulfillWithValue }) =>
                 fulfillWithValue({
                     mac: mockMac,
                     path: "m/84'/2'/0'",
@@ -207,12 +215,13 @@ describe('createPaymentRequestsThunk', () => {
     });
 
     const createMockStore = (preloadedState = {}) =>
-        configureMockStore({
-            extra: extraDependenciesCommonMock,
+        createTestCompositionRoot<void, CreatePaymentRequestsThunkState>({
             reducer: combineReducers({
+                device: () => deviceInitialState,
                 wallet: combineReducers({
-                    trading: tradingReducer,
                     accounts: () => [mockAccount],
+                    settings: () => initialWalletSettingsState,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {
@@ -231,7 +240,7 @@ describe('createPaymentRequestsThunk', () => {
                     },
                 },
             },
-        });
+        }).services.store;
 
     describe('exchange flow', () => {
         const mockExchangeQuote = {
@@ -465,6 +474,70 @@ describe('createPaymentRequestsThunk', () => {
             // Verify success
             expect(result.type).toBe(createPaymentRequestsThunk.fulfilled.type);
             expect(result.payload).toEqual([mockSellPaymentRequest]);
+        });
+
+        it('signs the whole-balance amount in the memo text', async () => {
+            tradeApi.getSignedTrade = jest.fn().mockResolvedValue(mockSignedSellTrade);
+
+            const store = createMockStore({
+                sell: {
+                    selectedQuote: mockSellQuote,
+                    sellInfo: mockSellProviders,
+                },
+                info: mockInfoCoins,
+            });
+
+            const result = await store.dispatch(
+                createPaymentRequestsThunk({
+                    type: 'sell',
+                    account: mockAccount,
+                    composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: '0.00099',
+                }),
+            );
+
+            expect(result.type).toBe(createPaymentRequestsThunk.fulfilled.type);
+            expect(tradeApi.getSignedTrade).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'sell',
+                    memoText: 'Selling 0.00099 BTC for 50 USD',
+                }),
+            );
+            expect(result.payload).toEqual([
+                expect.objectContaining({
+                    memos: [
+                        { text_memo: { text: 'Selling 0.00099 BTC for 50 USD' } },
+                        expect.anything(),
+                    ],
+                }),
+            ]);
+        });
+
+        it('rejects when the sold asset has no display symbol', async () => {
+            tradeApi.getSignedTrade = jest.fn();
+
+            const store = createMockStore({
+                sell: {
+                    selectedQuote: mockSellQuote,
+                    sellInfo: mockSellProviders,
+                },
+            });
+
+            const result = await store.dispatch(
+                createPaymentRequestsThunk({
+                    type: 'sell',
+                    account: mockAccount,
+                    composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: mockSellQuote.cryptoStringAmount,
+                }),
+            );
+
+            expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
+            expect(result.payload).toEqual({
+                type: 'sign-tx-error',
+                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+            });
+            expect(tradeApi.getSignedTrade).not.toHaveBeenCalled();
         });
 
         it('should reject when sell quote is missing paymentId', async () => {

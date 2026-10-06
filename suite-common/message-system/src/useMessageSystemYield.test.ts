@@ -1,16 +1,15 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import {
-    configureMockStore,
-    extraDependenciesCommonMock,
-    renderHookWithStoreProvider,
-} from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
-import { type MessageSystemState } from './messageSystemTypes';
+import { type MessageSystemRootState, type MessageSystemState } from './messageSystemTypes';
 import { useMessageSystemYield } from './useMessageSystemYield';
 
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 const VAULT_CONTRACT_ADDRESS = '0xAbCdEf0123456789abcdef0123456789ABCDEF01';
 
@@ -59,16 +58,15 @@ const stateWithDisabledFeatures = {
     },
 } as unknown as MessageSystemState;
 
-const createStore = (state: MessageSystemState = stateWithDisabledFeatures) =>
-    configureMockStore({
-        extra: {},
+const createTestServices = (state: MessageSystemState = stateWithDisabledFeatures) =>
+    createTestCompositionRoot<void, MessageSystemRootState>({
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: { messageSystem: state } as { messageSystem: MessageSystemState },
-    });
+    }).services;
 
 const renderHook = (props: Parameters<typeof useMessageSystemYield>[0]) =>
     renderHookWithStoreProvider(() => useMessageSystemYield(props), {
-        store: createStore(),
+        services: createTestServices(),
     });
 
 describe('useMessageSystemYield', () => {
@@ -110,10 +108,10 @@ describe('useMessageSystemYield', () => {
     });
 
     it('returns not disabled when no feature messages are configured', () => {
-        const store = createStore(messageSystemInitialState);
+        const services = createTestServices(messageSystemInitialState);
         const { result } = renderHookWithStoreProvider(
             () => useMessageSystemYield({ type: 'deposit', locale: 'en' }),
-            { store },
+            { services },
         );
 
         expect(result.current).toMatchObject({

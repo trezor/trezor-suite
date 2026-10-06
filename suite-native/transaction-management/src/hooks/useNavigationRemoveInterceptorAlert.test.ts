@@ -26,13 +26,13 @@ const mockedUseNavigationRemoveActionInterceptor = jest.mocked(
     useNavigationRemoveActionInterceptor,
 );
 
-const renderUseNavigationRemoveInterceptorAlert = ({
+const renderUseNavigationRemoveInterceptorAlert = async ({
     onRemoveConfirmed = jest.fn(),
     onStayConfirmed,
     shouldPrevent,
     alertOptions,
 }: RenderUseNavigationRemoveInterceptorAlertOptions = {}) =>
-    renderHookWithBasicProvider(() =>
+    await renderHookWithBasicProvider(() =>
         useNavigationRemoveInterceptorAlert({
             onRemoveConfirmed,
             onStayConfirmed,
@@ -49,14 +49,14 @@ describe('useNavigationRemoveInterceptorAlert', () => {
         jest.clearAllMocks();
     });
 
-    it('should show stay on screen alert on prevented remove action', () => {
+    it('should show stay on screen alert on prevented remove action', async () => {
         const onRemoveConfirmed = jest.fn();
         const onStayConfirmed = jest.fn();
         const alertOptions = {
             title: 'Leave this screen?',
         };
 
-        renderUseNavigationRemoveInterceptorAlert({
+        await renderUseNavigationRemoveInterceptorAlert({
             onRemoveConfirmed,
             onStayConfirmed,
             alertOptions,
@@ -72,16 +72,16 @@ describe('useNavigationRemoveInterceptorAlert', () => {
         });
     });
 
-    it('should hide stay on screen alert on allowed remove action', () => {
-        renderUseNavigationRemoveInterceptorAlert();
+    it('should hide stay on screen alert on allowed remove action', async () => {
+        await renderUseNavigationRemoveInterceptorAlert();
 
         getPreventNavigationRemoveProps()?.onAllowedAction?.({ type: 'PUSH' });
 
         expect(mockHideStayOnScreenAlert).toHaveBeenCalledTimes(1);
     });
 
-    it('should pass shouldPrevent to useNavigationRemoveActionInterceptor', () => {
-        renderUseNavigationRemoveInterceptorAlert({ shouldPrevent: false });
+    it('should pass shouldPrevent to useNavigationRemoveActionInterceptor', async () => {
+        await renderUseNavigationRemoveInterceptorAlert({ shouldPrevent: false });
 
         expect(mockedUseNavigationRemoveActionInterceptor).toHaveBeenCalledWith(
             expect.objectContaining({

@@ -1,14 +1,18 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
 import { act } from '@testing-library/react';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
+
+import { type AppState } from 'src/reducers/store';
 
 import { useGapLimitForm } from './useGapLimitForm';
 
-const SYMBOL = 'btc';
+const SYMBOL = asNetworkSymbol('btc');
 
 const renderGapLimitForm = (savedGapLimit?: number) => {
-    const store = configureMockStore({
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             wallet: {
                 blockchain: {
@@ -17,28 +21,30 @@ const renderGapLimitForm = (savedGapLimit?: number) => {
             },
         },
     });
-    const { result } = renderHookWithStoreProvider(() => useGapLimitForm(SYMBOL), { store });
+    const { result } = renderHookWithStoreProvider(() => useGapLimitForm(SYMBOL), { services });
 
-    return { store, result };
+    const { getActions } = services.store;
+
+    return { getActions, result };
 };
 
-const gapLimitActions = (store: ReturnType<typeof renderGapLimitForm>['store']) =>
-    store.getActions().filter(action => action.type === blockchainActions.setBackendGapLimit.type);
+const gapLimitActions = (actions: UnknownAction[]) =>
+    actions.filter(action => action.type === blockchainActions.setBackendGapLimit.type);
 
 describe('useGapLimitForm', () => {
     it('persists a valid gap limit', () => {
-        const { store, result } = renderGapLimitForm();
+        const { getActions, result } = renderGapLimitForm();
 
         act(() => result.current.setValue('30'));
         act(() => result.current.save());
 
-        expect(gapLimitActions(store)).toEqual([
+        expect(gapLimitActions(getActions())).toEqual([
             blockchainActions.setBackendGapLimit({ symbol: SYMBOL, gapLimit: 30 }),
         ]);
     });
 
     it('does not persist a gap limit below the minimum despite the button click', () => {
-        const { store, result } = renderGapLimitForm();
+        const { getActions, result } = renderGapLimitForm();
 
         act(() => result.current.setValue('5'));
 
@@ -46,11 +52,11 @@ describe('useGapLimitForm', () => {
 
         act(() => result.current.save());
 
-        expect(gapLimitActions(store)).toEqual([]);
+        expect(gapLimitActions(getActions())).toEqual([]);
     });
 
     it('does not persist an empty or non-positive gap limit', () => {
-        const { store, result } = renderGapLimitForm();
+        const { getActions, result } = renderGapLimitForm();
 
         act(() => result.current.setValue(''));
         act(() => result.current.save());
@@ -58,6 +64,6 @@ describe('useGapLimitForm', () => {
         act(() => result.current.setValue('0'));
         act(() => result.current.save());
 
-        expect(gapLimitActions(store)).toEqual([]);
+        expect(gapLimitActions(getActions())).toEqual([]);
     });
 });

@@ -1,0 +1,270 @@
+import { type DecryptionError, type EncryptionError } from '@suite-common/platform-encryption';
+import { type Result } from '@trezor/type-utils';
+
+import {
+    type BioAuthSettings,
+    type BootstrapTorEvent,
+    type BridgeSettings,
+    type ConnectPopupCall,
+    type ConnectPopupCancel,
+    type ConnectPopupResponse,
+    type HandshakeClient,
+    type HandshakeElectron,
+    type HandshakeEvent,
+    type HandshakeInit,
+    type HandshakeTorModule,
+    type InvokeResult,
+    type LoggerConfig,
+    type Status,
+    type SuiteThemeVariant,
+    type TorSettings,
+    type TorStatusEvent,
+    type TraySettings,
+    type UpdateInfo,
+    type UpdateProgress,
+} from './messages';
+import { type InvokeMethod, type ListenerMethod, type SendMethod } from './methods';
+
+// Event messages from renderer to main process
+// Sent by DesktopApi.[method] via ipcRenderer.send (see ./main)
+// Handled by ipcMain.on (see suite/desktop-app/src/modules/*)
+export interface MainChannels {
+    'app/restart': void;
+    'app/focus': void;
+    'app/hide': void;
+    'app/auto-start': boolean;
+    'store/clear': void;
+    'theme/change': SuiteThemeVariant;
+    'tor/get-status': void;
+    'update/allow-prerelease': boolean;
+    'update/set-automatic-update-enabled': boolean;
+    'update/set-auto-install-on-app-quit': void;
+    'update/cancel': void;
+    'update/check': { isManual: boolean };
+    'update/download': void;
+    'update/install': void;
+    'logger/config': LoggerConfig;
+    'debug/set-mode': boolean;
+}
+
+// Event messages from main to renderer process
+// Sent by mainWindow.webContents.send (see suite/desktop-app/src/modules/*)
+// Handled by DesktopApi.on/once (see ./main)
+export interface RendererChannels {
+    // oauth
+    'oauth/response':
+        | {
+              key: 'trezor-oauth';
+              search: string;
+          }
+        | {
+              key: 'trezor-oauth';
+              hash: string;
+          };
+
+    // Update events
+    'update/checking': void;
+    'update/available': UpdateInfo;
+    'update/not-available': UpdateInfo;
+    'update/error': void;
+    'update/downloading': UpdateProgress;
+    'update/downloaded': UpdateInfo;
+    'update/allow-prerelease': boolean;
+    'update/set-automatic-update-enabled': boolean;
+    'update/set-auto-install-on-app-quit': void;
+
+    // tor
+    'tor/status': TorStatusEvent;
+    'tor/bootstrap': BootstrapTorEvent;
+    'tor/settings': TorSettings;
+
+    // custom protocol
+    'protocol/open': string;
+
+    // bridge
+    'bridge/status': Status;
+    'bridge/settings': BridgeSettings;
+
+    'tray/settings': TraySettings;
+
+    'handshake/event': HandshakeEvent;
+
+    // theme
+    'theme/system-change': 'dark' | 'light';
+
+    // connect
+    'connect-popup/call': ConnectPopupCall;
+    'connect-popup/cancel': ConnectPopupCancel;
+
+    'app/auto-start/popup-request': void;
+
+    'power-monitor/suspend': void;
+
+    'find:show': void;
+
+    // application menu (Help) → open the in-app guide on a specific view
+    'guide/open': void;
+    'guide/open-support-feedback': void;
+    'guide/open-shortcuts': void;
+
+    'bio-auth/validation-status-changed': boolean;
+    'bio-auth/bio-auth-availability-changed': boolean;
+    'bio-auth/settings-changed': BioAuthSettings;
+}
+
+// Invocation from renderer process
+// Sent by DesktopApi.[method] via ipcRenderer.invoke (./main)
+// Handled by ipcMain.handle (see suite/desktop-app/src/modules/*)
+export interface InvokeChannels {
+    'handshake/client': () => HandshakeInit;
+    'handshake/load-modules': (payload: HandshakeClient) => InvokeResult<HandshakeElectron>;
+    'handshake/load-tor-module': () => HandshakeTorModule;
+    'metadata/read': (options: { file: string }) => InvokeResult<string>;
+    'metadata/write': (options: { file: string; content: string }) => InvokeResult;
+    'metadata/get-files': () => InvokeResult<string[]>;
+    'metadata/rename-file': (options: { file: string; to: string }) => InvokeResult;
+    'server/request-address': (route: string) => string | undefined;
+    'tor/toggle': (shouldEnableTor: boolean) => InvokeResult;
+    'tor/change-settings': (payload: TorSettings) => InvokeResult;
+    'tor/get-settings': () => InvokeResult<TorSettings>;
+    'bridge/toggle': () => InvokeResult;
+    'bridge/get-status': () => InvokeResult<Status>;
+    'bridge/change-settings': (payload: Partial<BridgeSettings>) => InvokeResult;
+    'bridge/get-settings': () => InvokeResult<BridgeSettings>;
+    'user-data/clear': () => InvokeResult;
+    'user-data/open': (directory?: string) => InvokeResult;
+    'udev/install': () => InvokeResult;
+    'app/auto-start/is-enabled': () => InvokeResult<boolean>;
+    'app/auto-start/popup-ack': () => void;
+    'app/auto-start/popup-response': (
+        response: 'background-always' | 'background-now' | 'quit-always' | 'quit-now',
+    ) => void;
+    'app/is-visible': () => boolean;
+    'app/is-fullscreen': () => boolean;
+    'tray/change-settings': (payload: TraySettings) => InvokeResult;
+    'tray/get-settings': () => InvokeResult<TraySettings>;
+    'connect-popup/enabled': () => boolean;
+    'connect-popup/set-enabled': (enabled: boolean) => void;
+    'connect-popup/ready': () => void;
+    'connect-popup/response': (response: ConnectPopupResponse) => void;
+    'system/open-settings': (settings: 'bluetooth' | 'bluetooth-permissions') => InvokeResult;
+    'bio-auth/set-bio-auth-settings': (settings: BioAuthSettings) => void;
+    'bio-auth/get-bio-auth-settings': () => BioAuthSettings;
+    'bio-auth/is-bio-auth-available': () => boolean;
+    'bio-auth/validate-bio-auth': ({ message }: { message: string }) =>
+        | {
+              success: true;
+          }
+        | {
+              success: false;
+              message: string;
+          };
+    'bio-auth/get-validation-status': () => boolean;
+    'safe-storage/decrypt': (params: { value: string }) => Result<string, DecryptionError>;
+    'safe-storage/encrypt': (params: { value: string }) => Result<string, EncryptionError>;
+
+    // MCP server
+    'mcp/get-settings': () => {
+        enabled: boolean;
+        port: number;
+        running: boolean;
+        url: string | null;
+        token: string | null;
+    };
+    'mcp/set-enabled': (enabled: boolean) => void;
+    'mcp/regenerate-token': () => { token: string };
+
+    // Browser Window
+    'browser-window/reload': () => void;
+}
+
+type DesktopApiListener = ListenerMethod<RendererChannels>;
+
+type DesktopApiSend<K extends keyof MainChannels> = SendMethod<{ 0: MainChannels[K] }>;
+
+type DesktopApiInvoke<K extends keyof InvokeChannels> = InvokeMethod<{ 0: InvokeChannels[K] }>;
+
+/** @serviceContract */
+export type DesktopApi = {
+    available: boolean;
+    on: DesktopApiListener;
+    once: DesktopApiListener;
+    removeAllListeners: (channel: keyof RendererChannels) => void;
+    // App
+    appRestart: DesktopApiSend<'app/restart'>;
+    appFocus: DesktopApiSend<'app/focus'>;
+    appHide: DesktopApiSend<'app/hide'>;
+    appAutoStart: DesktopApiSend<'app/auto-start'>;
+    getAppAutoStartIsEnabled: DesktopApiInvoke<'app/auto-start/is-enabled'>;
+    appAutoStartPopupAck: DesktopApiInvoke<'app/auto-start/popup-ack'>;
+    appAutoStartPopupResponse: DesktopApiInvoke<'app/auto-start/popup-response'>;
+    appIsVisible: DesktopApiInvoke<'app/is-visible'>;
+    appIsFullScreen: DesktopApiInvoke<'app/is-fullscreen'>;
+    // Auto-updater
+    checkForUpdates: DesktopApiSend<'update/check'>;
+    downloadUpdate: DesktopApiSend<'update/download'>;
+    installUpdate: DesktopApiSend<'update/install'>;
+    cancelUpdate: DesktopApiSend<'update/cancel'>;
+    allowPrerelease: DesktopApiSend<'update/allow-prerelease'>;
+    setAutomaticUpdateEnabled: DesktopApiSend<'update/set-automatic-update-enabled'>;
+    setAutoInstallOnAppQuit: DesktopApiSend<'update/set-auto-install-on-app-quit'>;
+    // Theme
+    themeChange: DesktopApiSend<'theme/change'>;
+    // Handshake
+    handshake: DesktopApiInvoke<'handshake/client'>;
+    loadModules: DesktopApiInvoke<'handshake/load-modules'>;
+    loadTorModule: DesktopApiInvoke<'handshake/load-tor-module'>;
+    // Metadata
+    metadataWrite: DesktopApiInvoke<'metadata/write'>;
+    metadataRead: DesktopApiInvoke<'metadata/read'>;
+    metadataGetFiles: DesktopApiInvoke<'metadata/get-files'>;
+    metadataRenameFile: DesktopApiInvoke<'metadata/rename-file'>;
+
+    // HttpReceiver
+    getHttpReceiverAddress: DesktopApiInvoke<'server/request-address'>;
+    // Tor
+    getTorStatus: DesktopApiSend<'tor/get-status'>;
+    toggleTor: DesktopApiInvoke<'tor/toggle'>;
+    changeTorSettings: DesktopApiInvoke<'tor/change-settings'>;
+    getTorSettings: DesktopApiInvoke<'tor/get-settings'>;
+    // Store
+    clearStore: DesktopApiSend<'store/clear'>;
+    clearUserData: DesktopApiInvoke<'user-data/clear'>;
+    openUserDataDirectory: DesktopApiInvoke<'user-data/open'>;
+    // Logger
+    configLogger: DesktopApiSend<'logger/config'>;
+    // Debug
+    setDebugMode: DesktopApiSend<'debug/set-mode'>;
+    // Bridge
+    getBridgeStatus: DesktopApiInvoke<'bridge/get-status'>;
+    toggleBridge: DesktopApiInvoke<'bridge/toggle'>;
+    changeBridgeSettings: DesktopApiInvoke<'bridge/change-settings'>;
+    getBridgeSettings: DesktopApiInvoke<'bridge/get-settings'>;
+    // Tray
+    changeTraySettings: DesktopApiInvoke<'tray/change-settings'>;
+    getTraySettings: DesktopApiInvoke<'tray/get-settings'>;
+    // Connect popup
+    connectPopupEnabled: DesktopApiInvoke<'connect-popup/enabled'>;
+    connectPopupSetEnabled: DesktopApiInvoke<'connect-popup/set-enabled'>;
+    connectPopupReady: DesktopApiInvoke<'connect-popup/ready'>;
+    connectPopupResponse: DesktopApiInvoke<'connect-popup/response'>;
+    //system
+    openSystemSettings: DesktopApiInvoke<'system/open-settings'>;
+    // bioAuth
+    setBioAuthSettings: DesktopApiInvoke<'bio-auth/set-bio-auth-settings'>;
+    getBioAuthSettings: DesktopApiInvoke<'bio-auth/get-bio-auth-settings'>;
+    isBioAuthAvailable: DesktopApiInvoke<'bio-auth/is-bio-auth-available'>;
+    validateBioAuth: DesktopApiInvoke<'bio-auth/validate-bio-auth'>;
+    getBioAuthStatus: DesktopApiInvoke<'bio-auth/get-validation-status'>;
+    // safeStorage
+    safeStoreEncrypt: DesktopApiInvoke<'safe-storage/encrypt'>;
+    safeStoreDecrypt: DesktopApiInvoke<'safe-storage/decrypt'>;
+
+    // MCP server
+    mcpGetSettings: DesktopApiInvoke<'mcp/get-settings'>;
+    mcpSetEnabled: DesktopApiInvoke<'mcp/set-enabled'>;
+    mcpRegenerateToken: DesktopApiInvoke<'mcp/regenerate-token'>;
+
+    // Browser Window
+    reloadBrowserWindow: DesktopApiInvoke<'browser-window/reload'>;
+};

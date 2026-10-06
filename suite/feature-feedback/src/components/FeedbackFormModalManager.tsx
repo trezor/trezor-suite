@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
     type FeedbackFeatureName,
@@ -7,13 +7,15 @@ import {
     translatedFeedbackFeatures,
 } from '@suite/experimental';
 import { Translation, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type FeatureFeedbackRootState,
     type Rating,
     buildUserFeedbackData,
     selectPendingFeedbackFeature,
-    sendFeedbackAction,
+    sendFeedbackThunk,
 } from '@suite-common/feedback';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { SmileyIcon } from '@trezor/icons';
 import { SidebarBanner } from '@trezor/product-components';
 
@@ -28,7 +30,7 @@ export const selectShouldShowFeedbackSidebarBanner = (state: FeedbackSidebarBann
 export const FeedbackFormManager = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const { translationString } = useTranslation();
     const pendingFeature = useSelector((state: FeedbackSidebarBannerRootState) =>
@@ -47,7 +49,7 @@ export const FeedbackFormManager = () => {
         const userData = buildUserFeedbackData();
 
         dispatch(
-            sendFeedbackAction({
+            sendFeedbackThunk({
                 type: 'SUGGESTION',
                 payload: {
                     category: (experimentalFeedbackFeatureSet as ReadonlySet<string>).has(

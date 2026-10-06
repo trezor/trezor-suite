@@ -4,9 +4,12 @@ import {
     createSuiteSyncAddressId,
     createSuiteSyncOutputId,
 } from '@suite-common/suite-sync-storage';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
 
 import { suiteSyncToBip329 } from './suiteSyncToBip329';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 describe(suiteSyncToBip329.name, () => {
     it('transforms suite sync labels to bip329 labels', () => {
@@ -20,7 +23,7 @@ describe(suiteSyncToBip329.name, () => {
                 txTargetId: asTxTargetId('0'),
                 label: 'this is expending transaction output or just tx',
                 accountDescriptor: asAccountDescriptor('xpub...'),
-                networkSymbol: 'btc',
+                networkSymbol: btcSymbol,
             },
             {
                 id: createSuiteSyncOutputId(
@@ -31,16 +34,19 @@ describe(suiteSyncToBip329.name, () => {
                 txTargetId: asTxTargetId('0'),
                 label: 'this is receive tx label',
                 accountDescriptor: asAccountDescriptor('xpub...'),
-                networkSymbol: 'btc',
+                networkSymbol: btcSymbol,
             },
         ];
         const addressLabels: SuiteSyncAddress[] = [
             {
-                id: createSuiteSyncAddressId('bc1qq46pg2kafgjvsh7me3puv0jujdl77a5829xlrs', 'btc'),
+                id: createSuiteSyncAddressId(
+                    'bc1qq46pg2kafgjvsh7me3puv0jujdl77a5829xlrs',
+                    btcSymbol,
+                ),
                 address: 'bc1qq46pg2kafgjvsh7me3puv0jujdl77a5829xlrs',
                 label: 'This address is labeled',
                 accountDescriptor: asAccountDescriptor('xpub...'),
-                networkSymbol: 'btc',
+                networkSymbol: btcSymbol,
             },
         ];
 

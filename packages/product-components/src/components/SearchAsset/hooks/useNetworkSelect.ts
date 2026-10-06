@@ -1,32 +1,44 @@
 import { useMemo } from 'react';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { isNotNull } from '@trezor/utils';
+import type { NetworkSymbol } from '@trezor/network-module-types';
 
-export interface SearchAssetSelectConfig {
-    networks: NetworkSymbol[];
+import { useNetworkDisplaySelector } from '../../../network-display/NetworkDisplayProvider';
+import { selectNetworkOptions } from '../../../network-display/networkDisplaySelectors';
+import { getNetworkIcons } from '../../../utils/getNetworkIcons';
+
+export type SearchAssetSelectConfig = {
+    networks?: readonly NetworkSymbol[];
+    isToken?: boolean;
     selectedNetwork: NetworkSymbol | undefined;
     onChange: (network?: NetworkSymbol) => void;
     includeAllOption?: boolean;
     allLabel?: string;
-}
+};
 
-export const useNetworkSelect = (config?: SearchAssetSelectConfig) => {
-    const { networks = [], includeAllOption, allLabel, selectedNetwork } = config ?? {};
+export const useNetworkSelect = (config: SearchAssetSelectConfig) => {
+    const { isToken, includeAllOption, allLabel, selectedNetwork } = config;
+    const networks = useNetworkDisplaySelector(state =>
+        selectNetworkOptions(state, config.networks),
+    );
 
     const allOptions = useMemo(() => {
-        const networkOptions = networks
-            .map(symbol => {
-                const network = getNetwork(symbol);
-
-                return network ? { label: network.name, value: network.symbol } : null;
-            })
-            .filter(isNotNull);
+        const networkOptions = getNetworkIcons({
+            networks,
+            iconSize: 20,
+            isToken,
+        }).map(({ symbol, name, icon }) => ({
+            label: name,
+            value: symbol,
+            icon,
+        }));
 
         return includeAllOption
-            ? [{ label: allLabel ?? 'All networks', value: undefined }, ...networkOptions]
+            ? [
+                  { label: allLabel ?? 'All networks', value: undefined, icon: undefined },
+                  ...networkOptions,
+              ]
             : networkOptions;
-    }, [networks, includeAllOption, allLabel]);
+    }, [networks, isToken, includeAllOption, allLabel]);
 
     const selectedOption = useMemo(
         () => allOptions.find(option => option.value === selectedNetwork),

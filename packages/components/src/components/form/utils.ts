@@ -7,6 +7,7 @@ import { commonFocusStyles } from '../../utils/utils';
 
 const heightMap: Record<InputSize, number> = {
     small: 36,
+    medium: 44,
     large: 56,
 };
 
@@ -14,6 +15,7 @@ export const mapSizeToHeight = (size: InputSize): number => heightMap[size];
 
 const paddingTopMap: Record<InputSize, SpacingValue> = {
     small: 16,
+    medium: 16,
     large: 20,
 };
 
@@ -21,6 +23,7 @@ export const mapSizeToPaddingTop = (size: InputSize): SpacingValue => paddingTop
 
 const typographyStyleMap: Record<InputSize, TypographyStyle> = {
     small: 'body-sm',
+    medium: 'body-sm',
     large: 'body-md',
 };
 

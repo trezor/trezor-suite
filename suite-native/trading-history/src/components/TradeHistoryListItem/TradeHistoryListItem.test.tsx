@@ -18,15 +18,16 @@ jest.mock('@suite-native/trading-atoms', () => {
 });
 
 describe('TradeHistoryListItem', () => {
-    const renderTradeHistoryListItem = (transaction: TradingTransaction) =>
-        renderWithTradingHistoryProvider(
+    const renderTradeHistoryListItem = async (transaction: TradingTransaction) =>
+        await renderWithTradingHistoryProvider(
             <TradeHistoryListItem transaction={transaction} onPress={jest.fn()} />,
         );
 
-    it('should render a buy trade with fiat and crypto icons', () => {
+    it('should render a buy trade with fiat and crypto icons', async () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
-        const { getByLabelText, getByText, queryByText } = renderTradeHistoryListItem(buyTrade);
+        const { getByLabelText, getByText, queryByText } =
+            await renderTradeHistoryListItem(buyTrade);
 
         expect(getByLabelText('flag-US')).toBeTruthy();
         expect(getByLabelText('ethereum')).toBeTruthy();
@@ -36,40 +37,40 @@ describe('TradeHistoryListItem', () => {
         expect(queryByText(/d3ef3451/)).toBeNull();
     });
 
-    it('should render exchange and sell trade directions', () => {
+    it('should render exchange and sell trade directions', async () => {
         const exchangeTrade = getExchangeTrade({ status: 'SUCCESS' });
         const sellTrade = getSellTrade({ status: 'ERROR' });
 
-        const exchangeResult = renderTradeHistoryListItem(exchangeTrade);
+        const exchangeResult = await renderTradeHistoryListItem(exchangeTrade);
 
         expect(exchangeResult.getByText('10.1232 JTO')).toBeTruthy();
         expect(exchangeResult.getByText('0.462586 SOL')).toBeTruthy();
-        exchangeResult.unmount();
+        await exchangeResult.unmount();
 
-        const sellResult = renderTradeHistoryListItem(sellTrade);
+        const sellResult = await renderTradeHistoryListItem(sellTrade);
 
         expect(sellResult.getByText('1.22 BTC')).toBeTruthy();
         expect(sellResult.getByText('$100.00')).toBeTruthy();
         expect(sellResult.getByLabelText('flag-US')).toBeTruthy();
     });
 
-    it('should render date and accessible status', () => {
+    it('should render date and accessible status', async () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
-        const { getByLabelText, getByText } = renderTradeHistoryListItem(buyTrade);
+        const { getByLabelText, getByText } = await renderTradeHistoryListItem(buyTrade);
 
         expect(getByText(/0[45]\/10\/2025,.*21/)).toBeTruthy();
         expect(getByLabelText('Trade in progress')).toBeTruthy();
     });
 
-    it('should call onPress when pressed', () => {
+    it('should call onPress when pressed', async () => {
         const onPress = jest.fn();
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-        const { getByText } = renderWithTradingHistoryProvider(
+        const { getByText } = await renderWithTradingHistoryProvider(
             <TradeHistoryListItem transaction={buyTrade} onPress={onPress} />,
         );
 
-        fireEvent.press(getByText('$1,234.00'));
+        await fireEvent.press(getByText('$1,234.00'));
 
         expect(onPress).toHaveBeenCalledTimes(1);
     });

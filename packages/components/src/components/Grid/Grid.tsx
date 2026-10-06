@@ -70,6 +70,7 @@ export const Grid = ({
 
     return (
         <Container
+            data-component="Grid"
             $columns={columns}
             $rowGap={rowGap}
             $columnGap={columnGap}

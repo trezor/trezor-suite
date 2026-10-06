@@ -33,11 +33,11 @@ describe('useNavigationRemoveActionInterceptor', () => {
         jest.clearAllMocks();
     });
 
-    it('calls onInterceptedAction when action type is included in actionTypes', () => {
+    it('calls onInterceptedAction when action type is included in actionTypes', async () => {
         const onInterceptedAction = jest.fn();
         const action: NavigationAction = { type: 'GO_BACK' };
 
-        renderHookWithBasicProvider(() =>
+        await renderHookWithBasicProvider(() =>
             useNavigationRemoveActionInterceptor({
                 interceptedActionTypes: ['GO_BACK'],
                 onInterceptedAction,
@@ -49,12 +49,12 @@ describe('useNavigationRemoveActionInterceptor', () => {
         expect(mockDispatch).not.toHaveBeenCalled();
     });
 
-    it('does not call onInterceptedAction when action type is not included in actionTypes', () => {
+    it('does not call onInterceptedAction when action type is not included in actionTypes', async () => {
         const onInterceptedAction = jest.fn();
         const onAllowedAction = jest.fn();
         const action: NavigationAction = { type: 'POP' };
 
-        renderHookWithBasicProvider(() =>
+        await renderHookWithBasicProvider(() =>
             useNavigationRemoveActionInterceptor({
                 interceptedActionTypes: ['GO_BACK'],
                 onInterceptedAction,

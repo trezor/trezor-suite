@@ -1,49 +1,67 @@
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { selectSelectedDevice } from '@suite-common/device';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
-import { composeSolanaStakingTransaction, prepareSolanaStakeTxData } from '@suite-common/staking';
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
+
+import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectAddressDisplayType } from '@suite-common/wallet-core';
+import {
+    type BlockchainRootState,
+    type WalletSettingsRootState,
+    applySolanaStakingSignature,
+    composeSolanaStakingTransaction,
+    getSolanaStakingUserAgent,
+    isSupportedSolStakingNetworkSymbol,
+    prepareSolanaStakeTxData,
+    selectAddressDisplayType,
+    selectBlockchainUrlBySymbol,
+} from '@suite-common/wallet-core';
 import {
     AddressDisplayOptions,
     type ComposeActionContext,
     type PrecomposedTransactionFinal,
     type StakeFormState,
 } from '@suite-common/wallet-types';
-import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
-import { getSuiteVersion } from '@trezor/env-utils';
-import solana from '@trezor/network-solana/runtime';
 
-import { type Dispatch, type GetState } from 'src/types/suite';
+type ComposeTransactionThunkState = BlockchainRootState & SelectedAccountRootState;
 
-const getSolanaUserAgent = () => `Trezor Suite ${getSuiteVersion()}`;
-
-export const composeTransaction =
+export const composeTransactionThunk =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
-    async (_: Dispatch, getState: GetState) => {
-        const { selectedAccount, blockchain } = getState().wallet;
+    async (_: Dispatch<UnknownAction>, getState: () => ComposeTransactionThunkState) => {
+        const selectedAccount = selectFullSelectedAccount(getState());
 
         if (selectedAccount.status !== 'loaded') return;
 
         const { account } = selectedAccount;
         if (account.networkType !== 'solana') return;
 
-        const blockchainUrl = blockchain[account.symbol]?.url;
+        const blockchainUrl = selectBlockchainUrlBySymbol(getState(), account.symbol);
         if (!blockchainUrl) return;
 
         return await composeSolanaStakingTransaction({
             formValues,
             composeContext: formState,
             blockchainUrl,
-            userAgent: getSolanaUserAgent(),
+            userAgent: getSolanaStakingUserAgent(),
         });
     };
 
-export const signTransaction =
+type SignTransactionThunkState = BlockchainRootState &
+    DeviceRootState &
+    SelectedAccountRootState &
+    WalletSettingsRootState;
+
+type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
+
+export const signTransactionThunk =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
-    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
-        const { selectedAccount, blockchain } = getState().wallet;
+    async (
+        dispatch: Dispatch<UnknownAction>,
+        getState: () => SignTransactionThunkState,
+        extra: SignTransactionThunkDeps,
+    ) => {
+        const selectedAccount = selectFullSelectedAccount(getState());
 
         const device = selectSelectedDevice(getState());
         if (selectedAccount.status !== 'loaded' || !device || transactionInfo?.type !== 'final') {
@@ -58,7 +76,7 @@ export const signTransaction =
             return;
         }
 
-        const blockchainUrl = blockchain[account.symbol]?.url;
+        const blockchainUrl = selectBlockchainUrlBySymbol(getState(), account.symbol);
         if (!blockchainUrl) {
             dispatch(
                 notificationsActions.addToast({
@@ -78,7 +96,7 @@ export const signTransaction =
             amount: formValues.outputs[0]?.amount ?? '0',
             stakeType: formValues.stakeType,
             blockchainUrl,
-            userAgent: getSolanaUserAgent(),
+            userAgent: getSolanaStakingUserAgent(),
             estimatedFee: {
                 feePerTx: transactionInfo.fee,
                 feeLimit: transactionInfo.feeLimit,
@@ -121,7 +139,7 @@ export const signTransaction =
         });
 
         if (!signedTx.success) {
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.transactionCancelEvent.name,
                 payload: {
                     txType: 'stake',
@@ -146,9 +164,9 @@ export const signTransaction =
             return signedTx;
         }
 
-        const { address } = await solana();
-
-        txData.txShim.addSignature(address(account.descriptor), signedTx.payload.signature);
-
-        return txData.txShim.serialize();
+        return applySolanaStakingSignature({
+            txShim: txData.txShim,
+            descriptor: account.descriptor,
+            signature: signedTx.payload.signature,
+        });
     };

@@ -1,9 +1,9 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Guide without device', { tag: ['@webOnly', '@noDevice'] }, () => {
+test.describe('Guide without device', { tag: ['@webOnly', '@noDevice', '@optional'] }, () => {
     test.use({ startEmulator: false });
 
     test(
@@ -13,6 +13,7 @@ test.describe('Guide without device', { tag: ['@webOnly', '@noDevice'] }, () => 
                 testCase: 'Verifies that a user can open and close the guide.',
                 category: TestCategory.SuiteGuide,
                 priority: TestPriority.Low,
+                stream: TestStream.Growth,
             }),
         },
         async ({ page, guidePanel, settingsPage, analyticsSection }) => {
@@ -55,7 +56,7 @@ test.describe('Guide without device', { tag: ['@webOnly', '@noDevice'] }, () => 
     );
 });
 
-test.describe('Guide with device', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Guide with device', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test(
         'onboarding with device',
         {
@@ -64,6 +65,7 @@ test.describe('Guide with device', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'Verifies that a user can open and close the guide with device connected.',
                 category: TestCategory.SuiteGuide,
                 priority: TestPriority.Low,
+                stream: TestStream.Growth,
             }),
         },
         async ({ page, analyticsSection, onboardingPage, guidePanel }) => {

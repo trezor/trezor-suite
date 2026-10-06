@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "noImplicitAny": false,
+        "outDir": "./libDev"
+    },
+    "include": ["./src"],
+    "references": [
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        { "path": "../../packages/eslint" }
+    ]
+}

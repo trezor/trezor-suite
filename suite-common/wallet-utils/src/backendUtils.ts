@@ -1,13 +1,14 @@
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import {
     type BackendType,
     type NetworkSymbol,
     TREZOR_CONNECT_BACKENDS,
     getNetworkType,
-    networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import type {
     Account,
     BackendSettings,
+    Blockchain,
     BlockchainNetworks,
     CustomBackend,
 } from '@suite-common/wallet-types';
@@ -41,10 +42,16 @@ export const getBackendFromSettings = (
 const isBackend = (backend: Partial<CustomBackend>): backend is CustomBackend =>
     !!(backend.type && backend.urls?.length);
 
-export const getCustomBackends = (blockchains: BlockchainNetworks): CustomBackend[] =>
-    networkSymbolCollection
-        .map(symbol => ({ symbol, blockchain: blockchains[symbol] }))
-        .filter(({ blockchain }) => !!blockchain)
+export const getCustomBackends = (
+    blockchains: BlockchainNetworks,
+    supportedNetworks: readonly NetworkSymbol[],
+): CustomBackend[] =>
+    supportedNetworks
+        .map(symbol => ({ symbol, blockchain: blockchains[symbol as LegacyNetworkSymbol] }))
+        .filter(
+            (entry): entry is { symbol: NetworkSymbol; blockchain: Blockchain } =>
+                !!entry.blockchain,
+        )
         .map(({ symbol, blockchain: { backends } }) => ({
             symbol,
             type: backends.selected,

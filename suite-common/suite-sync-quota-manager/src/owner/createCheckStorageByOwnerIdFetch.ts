@@ -25,6 +25,8 @@ export type CheckStorageByOwnerIdResult = Result<
     QuotaManagerFetchCommunicationError
 >;
 
+type CheckStorageByOwnerIdFetchDeps = QuotaManagerFetchDep;
+
 export type CheckStorageByOwnerIdFetch = (
     params: CheckStorageByOwnerIdParams,
 ) => Promise<CheckStorageByOwnerIdResult>;
@@ -32,8 +34,6 @@ export type CheckStorageByOwnerIdFetch = (
 export type CheckStorageByOwnerIdFetchDep = {
     checkStorageByOwnerIdFetch: CheckStorageByOwnerIdFetch;
 };
-
-type CheckStorageByOwnerIdFetchDeps = QuotaManagerFetchDep;
 
 /**
  * Ask quota manager for storage allowance by owner ID.

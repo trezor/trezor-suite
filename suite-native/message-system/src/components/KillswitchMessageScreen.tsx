@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import {
@@ -7,7 +7,8 @@ import {
     resolveMessageContent,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
-import { selectReloadAppDep } from '@suite-common/suite-types';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { injectReloadApp } from '@suite-common/suite-types';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -41,11 +42,10 @@ const buttonsWrapperStyle = prepareNativeStyle(_ => ({
 }));
 
 export const KillswitchMessageScreen = () => {
-    const dispatch = useDispatch();
     const language = useSelector(selectSupportedLanguageLocale);
     const openLink = useOpenLink();
     const { applyStyle } = useNativeStyles();
-    const { reloadApp } = useServices(selectReloadAppDep);
+    const { reloadApp, dispatch } = useServices(injectReloadApp, injectDispatch);
 
     const activeKillswitchMessage = useSelector(selectActiveKillswitchMessage);
 

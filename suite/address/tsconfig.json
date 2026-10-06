@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
@@ -22,12 +25,17 @@
             "path": "../../suite-common/toast-notifications"
         },
         {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         {
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../account" },
+        { "path": "../intl" },
+        { "path": "../labeling" },
         { "path": "../metadata" },
         { "path": "../modal" },
         { "path": "../../packages/components" },

@@ -1,4 +1,5 @@
 import { waitForVisible } from '../support/utils';
+
 class OnOnboardingActions {
     async finishOnboarding() {
         const testId = '@onboarding/Welcome/nextBtn';

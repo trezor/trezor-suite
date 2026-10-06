@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Keyboard } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { yup } from '@suite-common/validators';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type BackendType,
     type Network,
@@ -16,12 +16,11 @@ import {
 import {
     type BlockchainRootState,
     blockchainActions,
-    reconnectBlockchainThunk,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { type SelectItemType } from '@suite-native/atoms';
-import { useForm, useWatch } from '@suite-native/forms';
+import { useForm, useWatch, yup } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import TrezorConnect, { BLOCKCHAIN, type BlockchainError } from '@trezor/connect';
 
@@ -31,9 +30,8 @@ type FormValues = {
 };
 
 export const useNetworkBackendForm = ({ symbol, backendOptions }: Network) => {
-    const dispatch = useDispatch();
     const { translate } = useTranslate();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
     const {
         connected,
@@ -119,7 +117,6 @@ export const useNetworkBackendForm = ({ symbol, backendOptions }: Network) => {
                 urls: serverType !== 'default' ? [serverAddress] : [],
             }),
         );
-        dispatch(reconnectBlockchainThunk({ symbol }));
         analytics.report({
             type: events.settingsChangeCoinBackendEvent.name,
             payload: { symbol, type: serverType },

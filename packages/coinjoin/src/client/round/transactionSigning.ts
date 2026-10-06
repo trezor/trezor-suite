@@ -18,6 +18,7 @@ import {
     getAffiliateRequest,
     getRoundEvents,
     getRoundParams,
+    getSigningSendDeadline,
     scheduleDelay,
 } from '../../utils/roundUtils';
 import type { Account } from '../Account';
@@ -145,7 +146,12 @@ const sendTxSignature = async (
     const roundSigningDelay = round.roundParameters.DelayTransactionSigning ? TX_SIGNING_DELAY : 0;
     const minimumDelay = roundSigningDelay - resolvedTime;
     const maximumDelay = minimumDelay + TX_SIGNING_DELAY;
-    const delay = scheduleDelay(round.phaseDeadline - Date.now(), minimumDelay, maximumDelay);
+    // Size the randomized privacy spread against a poll-lag-safe deadline (see getSigningSendDeadline)
+    // so a witness is never delayed past the coordinator's real phase end. The request below keeps
+    // the optimistic `phaseDeadline` as its hard cancellation deadline.
+    const sendDeadline = getSigningSendDeadline(round);
+    const remainingTime = sendDeadline - Date.now();
+    const delay = scheduleDelay(remainingTime, minimumDelay, maximumDelay);
 
     logger.info(
         `Sending signature of ~~${input.outpoint}~~ with delay ${delay}ms. Round signing delay: ${round.roundParameters.DelayTransactionSigning}`,

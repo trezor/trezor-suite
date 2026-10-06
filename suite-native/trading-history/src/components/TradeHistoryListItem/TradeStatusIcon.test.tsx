@@ -1,3 +1,5 @@
+import { getTranslation } from '@suite-native/intl';
+
 import { TradeStatusIcon, getTradeStatusIconConfig } from './TradeStatusIcon';
 import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
 
@@ -36,24 +38,26 @@ describe('TradeStatusIcon', () => {
         });
     });
 
-    it('renders no icon for an undefined status', () => {
+    it('renders no icon for an undefined status', async () => {
         expect(getTradeStatusIconConfig(undefined)).toBeUndefined();
 
-        const { toJSON } = renderWithTradingHistoryProvider(<TradeStatusIcon status={undefined} />);
+        const { toJSON } = await renderWithTradingHistoryProvider(
+            <TradeStatusIcon status={undefined} />,
+        );
 
         expect(toJSON()).toBeNull();
     });
 
     it.each([
-        ['SUCCESS', 'Successful trade'],
-        ['ERROR', 'Failed trade'],
-        ['CANCELLED', 'Trade requires attention'],
-        ['SUBMITTED', 'Trade in progress'],
-    ] as const)('provides an accessible label for %s', (status, label) => {
-        const { getByLabelText } = renderWithTradingHistoryProvider(
+        ['SUCCESS', 'moduleTrading.tradeHistory.statusIcon.success'],
+        ['ERROR', 'moduleTrading.tradeHistory.statusIcon.error'],
+        ['CANCELLED', 'moduleTrading.tradeHistory.statusIcon.warning'],
+        ['SUBMITTED', 'moduleTrading.tradeHistory.statusIcon.pending'],
+    ] as const)('provides an accessible label for %s', async (status, labelId) => {
+        const { getByLabelText } = await renderWithTradingHistoryProvider(
             <TradeStatusIcon status={status} />,
         );
 
-        expect(getByLabelText(label)).toBeTruthy();
+        expect(getByLabelText(getTranslation(labelId))).toBeTruthy();
     });
 });

@@ -9,6 +9,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { convertTokenValueToDecimal } from '../utils';
 
@@ -47,10 +48,10 @@ export const useFiatFromCryptoValue = ({
         const decimalValue = convertTokenValueToDecimal(cryptoValue, tokenDecimals);
 
         // Zero balance always yields zero fiat regardless of rate — rate: 1 is a dummy (0 × n = 0).
-        if (decimalValue.isZero()) return toFiatCurrency({ amount: '0', rate: 1 });
+        if (new BigNumber(decimalValue).isZero()) return toFiatCurrency({ amount: '0', rate: 1 });
         if (!rate || currentRate?.error) return null;
 
-        return toFiatCurrency({ amount: decimalValue.toString(), rate });
+        return toFiatCurrency({ amount: decimalValue, rate });
     }
 
     if (!rate || currentRate?.error) return null;

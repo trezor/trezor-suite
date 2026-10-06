@@ -48,4 +48,8 @@ export interface ComposeActionContext {
     excludedUtxos?: ExcludedUtxos;
     prison?: Record<string, unknown>;
     feeEstimationRecipient?: string;
+    // Treat the recipient as an account that does not exist yet, without asking the backend.
+    // Set by flows that always pay a freshly created address, such as a trading partner's
+    // per-trade deposit address.
+    assumeNewAccount?: boolean;
 }

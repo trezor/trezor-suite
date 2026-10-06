@@ -1,5 +1,7 @@
 import { type PhishingRootState } from './phishingReducerTypes';
 
+export const selectPhishing = (state: PhishingRootState) => state.wallet.phishing;
+
 export const selectDustPhishingThreshold = (state: PhishingRootState) =>
     state.wallet.phishing.dustPhishing.dustThreshold;
 

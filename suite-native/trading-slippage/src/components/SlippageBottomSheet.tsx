@@ -1,9 +1,12 @@
-import { useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useCallback, useEffect, useEffectEvent } from 'react';
+import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     SLIPPAGE_PRESETS,
     type SlippageFormValues,
+    selectTradingExchangeSelectedQuoteSwapSlippage,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import {
@@ -28,29 +31,47 @@ import { useSlippageForm } from '../hooks/useSlippageForm';
 
 type SlippageBottomSheetProps = {
     isVisible: boolean;
+    receiveAmount: string;
     onClose: () => void;
+    onSlippageConfirmed: () => Promise<void>;
 };
 
-export const SlippageBottomSheet = ({ isVisible, onClose }: SlippageBottomSheetProps) => {
-    const dispatch = useDispatch();
+export const SlippageBottomSheet = ({
+    isVisible,
+    receiveAmount,
+    onClose,
+    onSlippageConfirmed,
+}: SlippageBottomSheetProps) => {
+    const { dispatch } = useServices(injectDispatch);
     const { translate } = useTranslate();
-    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const { handleSubmit, isValid, handlePresetPress, form } = useSlippageForm();
     const openLink = useOpenLink();
+
+    const currentSlippage = useSelector(selectTradingExchangeSelectedQuoteSwapSlippage);
+    const { handleSubmit, isSubmitting, isValid, handlePresetPress, form } =
+        useSlippageForm(currentSlippage);
+
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
+    const { reset } = form;
+    const resetForm = useEffectEvent(() => {
+        reset({ slippage: currentSlippage });
+    });
 
     useEffect(() => {
         if (isVisible) {
+            resetForm();
             openModal();
         }
     }, [isVisible, openModal]);
 
     const handleConfirm = useCallback(
-        ({ slippage }: SlippageFormValues) => {
+        async ({ slippage }: SlippageFormValues) => {
             dispatch(tradingExchangeActions.setSelectedQuoteSwapSlippage(String(slippage)));
+            await onSlippageConfirmed();
             closeModal();
             onClose();
         },
-        [dispatch, closeModal, onClose],
+        [closeModal, dispatch, onClose, onSlippageConfirmed],
     );
 
     const handleCancel = useCallback(() => {
@@ -66,7 +87,7 @@ export const SlippageBottomSheet = ({ isVisible, onClose }: SlippageBottomSheetP
             isCloseDisplayed
         >
             <Form form={form}>
-                <VStack spacing="sp24" paddingBottom="sp24">
+                <VStack spacing="sp24">
                     <Text>
                         <Translation id="moduleTrading.slippage.description" />
                     </Text>
@@ -94,7 +115,7 @@ export const SlippageBottomSheet = ({ isVisible, onClose }: SlippageBottomSheetP
                             ))}
                         </HStack>
                     </VStack>
-                    <SlippageSummary />
+                    <SlippageSummary receiveAmount={receiveAmount} />
                     <Box alignSelf="flex-start">
                         <TextButton
                             onPress={() => openLink(TREZOR_TRADING_DEX_SLIPPAGE_URL)}
@@ -110,6 +131,7 @@ export const SlippageBottomSheet = ({ isVisible, onClose }: SlippageBottomSheetP
                             intent="brand"
                             priority="primary"
                             isFullWidth
+                            isLoading={isSubmitting}
                             isDisabled={!isValid}
                             onPress={handleSubmit(handleConfirm)}
                         >

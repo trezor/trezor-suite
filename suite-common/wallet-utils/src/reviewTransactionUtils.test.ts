@@ -1,9 +1,12 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type FormState,
     type FormStateTrading,
+    type FormStateTradingSell,
+    type GeneralPrecomposedTransaction,
     type GeneralPrecomposedTransactionFinal,
     type StakeFormState,
 } from '@suite-common/wallet-types';
@@ -14,7 +17,12 @@ import { buildApprovalTransactionData } from './ethUtils';
 import {
     constructTransactionReviewOutputs,
     isClearSignedEvmTradingSwapTransaction,
+    isClearSignedWrappedNativeTransaction,
+    isDeviceReviewOnlyTransaction,
 } from './reviewTransactionUtils';
+
+const ethSymbol = asNetworkSymbol('eth');
+const bscSymbol = asNetworkSymbol('bsc');
 
 const buildPrecomposedTx = (to: string | undefined): GeneralPrecomposedTransactionFinal =>
     ({
@@ -44,6 +52,15 @@ const ERC20_REVOKE_DATA = buildApprovalTransactionData({
     spender: ERC20_APPROVE_SPENDER,
 });
 
+// Canonical WETH (Wrapped Ether) — clear-signed wrap/unwrap (deposit/withdraw) on mainnet
+const WETH_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+const WETH_DEPOSIT_DATA = '0xd0e30db0'; // deposit() — wrap
+const WETH_WITHDRAW_DATA = `0x2e1a7d4d${'00'.repeat(32)}`; // withdraw(uint256) — unwrap
+const TRON_REPRESENTATIVE_A = 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9';
+const TRON_REPRESENTATIVE_B = 'TKWJhMU8NAviZ9TN5hroaFQPZ83FNctzz4';
+// WBNB on BSC — a wrapped native the firmware does NOT clear-sign
+const WBNB_BSC = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
+
 const buildTrading = (overrides: Partial<FormStateTrading> = {}): FormStateTrading => ({
     activeSection: 'exchange',
     isSlip24Active: false,
@@ -51,16 +68,33 @@ const buildTrading = (overrides: Partial<FormStateTrading> = {}): FormStateTradi
     send: {
         cryptoId: undefined,
         accountKey: 'eth-account' as Account['key'],
-        symbol: 'eth',
+        symbol: ethSymbol,
         amount: '1',
     },
     receive: {
         cryptoId: undefined,
         accountKey: 'eth-account' as Account['key'],
-        symbol: 'eth',
+        symbol: ethSymbol,
         amount: '0.97',
     },
     receiveAddress: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
+    ...overrides,
+});
+
+const buildSellTrading = (overrides: Partial<FormStateTradingSell> = {}): FormStateTradingSell => ({
+    activeSection: 'sell',
+    isSlip24Active: true,
+    recipientName: 'Banxa',
+    send: {
+        cryptoId: undefined,
+        accountKey: 'eth-account' as Account['key'],
+        symbol: ethSymbol,
+        amount: '1',
+    },
+    receive: {
+        amount: '2500',
+        fiatCurrency: 'USD',
+    },
     ...overrides,
 });
 
@@ -79,28 +113,30 @@ const buildFormState = (overrides: Partial<FormState> = {}): FormState => ({
 
 const buildEthereumAccount = (overrides: Partial<Account> = {}): Account =>
     mockWalletAccount({
-        symbol: 'eth',
+        symbol: ethSymbol,
         accountType: 'normal',
         ...overrides,
     });
 
-// >= 2.12.1: clear-signing-capable (clear signing is version-gated per selector).
+// Clear signing is version-gated per selector: swaps from 2.12.1, WETH wrap/unwrap from 2.12.4.
+// Use the highest threshold so every clear-signed flow is covered by one fixture.
 const buildUpdatedDevice = () =>
     mockSuiteDevice(undefined, {
         major_version: 2,
         minor_version: 12,
-        patch_version: 2,
+        patch_version: 4,
     });
+type BuildPrecomposedTransactionParams = {
+    isTokenKnown?: boolean;
+    to: string;
+    token?: TokenInfo;
+};
 
 const buildPrecomposedTransaction = ({
     isTokenKnown = true,
     to,
     token,
-}: {
-    isTokenKnown?: boolean;
-    to: string;
-    token?: TokenInfo;
-}): GeneralPrecomposedTransactionFinal =>
+}: BuildPrecomposedTransactionParams): GeneralPrecomposedTransactionFinal =>
     ({
         outputs: [{ address: to, amount: '1000000' }],
         fee: '21000',
@@ -110,6 +146,15 @@ const buildPrecomposedTransaction = ({
         useNativeRbf: false,
         isTokenKnown,
     }) as unknown as GeneralPrecomposedTransactionFinal;
+
+const wethToken: TokenInfo = {
+    balance: '1000000',
+    contract: WETH_MAINNET.toLowerCase(),
+    decimals: 18,
+    name: 'Wrapped Ether',
+    standard: 'ERC20',
+    symbol: 'WETH',
+};
 
 const usdcToken: TokenInfo = {
     balance: '1000000',
@@ -178,9 +223,144 @@ describe('isClearSignedEvmTradingSwapTransaction', () => {
     });
 });
 
+describe('isClearSignedWrappedNativeTransaction', () => {
+    const account = buildEthereumAccount();
+    const device = buildUpdatedDevice();
+
+    it.each([
+        { op: 'wrap', transactionData: WETH_DEPOSIT_DATA },
+        { op: 'unwrap', transactionData: WETH_WITHDRAW_DATA },
+    ])('returns true for a canonical WETH $op', ({ transactionData }) => {
+        const result = isClearSignedWrappedNativeTransaction({
+            account,
+            device,
+            precomposedTx: buildPrecomposedTransaction({ to: WETH_MAINNET }),
+            transactionData,
+        });
+
+        expect(result).toBe(true);
+    });
+
+    it('returns false for a wrapped native the firmware does not clear-sign (WBNB on BSC)', () => {
+        const result = isClearSignedWrappedNativeTransaction({
+            account: buildEthereumAccount({ symbol: bscSymbol }),
+            device,
+            precomposedTx: buildPrecomposedTransaction({ to: WBNB_BSC }),
+            transactionData: WETH_DEPOSIT_DATA,
+        });
+
+        expect(result).toBe(false);
+    });
+
+    it('returns false when the device cannot clear-sign', () => {
+        const result = isClearSignedWrappedNativeTransaction({
+            account,
+            device: mockSuiteDevice(
+                { unavailableCapabilities: { evmClearSigning: 'no-support' } },
+                { major_version: 2, minor_version: 8, patch_version: 0 },
+            ),
+            precomposedTx: buildPrecomposedTransaction({ to: WETH_MAINNET }),
+            transactionData: WETH_DEPOSIT_DATA,
+        });
+
+        expect(result).toBe(false);
+    });
+
+    it.each([
+        { version: '2.12.1', firmware: { major_version: 2, minor_version: 12, patch_version: 1 } },
+        { version: '2.12.3', firmware: { major_version: 2, minor_version: 12, patch_version: 3 } },
+    ])(
+        'returns false on fw $version, which advertises clear signing but blind-signs WETH',
+        ({ firmware }) => {
+            const result = isClearSignedWrappedNativeTransaction({
+                // No unavailableCapabilities: evmClearSigning is genuinely available from 2.12.1,
+                // yet the WETH definition only ships in 2.12.4.
+                account,
+                device: mockSuiteDevice(undefined, firmware),
+                precomposedTx: buildPrecomposedTransaction({ to: WETH_MAINNET }),
+                transactionData: WETH_DEPOSIT_DATA,
+            });
+
+            expect(result).toBe(false);
+        },
+    );
+
+    it('returns false for an unrelated contract call to the WETH address', () => {
+        const result = isClearSignedWrappedNativeTransaction({
+            account,
+            device,
+            precomposedTx: buildPrecomposedTransaction({ to: WETH_MAINNET }),
+            transactionData: ERC20_TRANSFER_DATA,
+        });
+
+        expect(result).toBe(false);
+    });
+});
+
 describe('constructTransactionReviewOutputs', () => {
     const account = buildEthereumAccount();
     const device = buildUpdatedDevice();
+
+    it.each(['btc', 'eth'] as const)(
+        'renders traded assets before provider for a SLIP-24 sell on %s',
+        symbol => {
+            const sellAccount = mockWalletAccount({ symbol: asNetworkSymbol(symbol) });
+            const trading = buildSellTrading();
+            trading.send.symbol = sellAccount.symbol;
+            const outputs = constructTransactionReviewOutputs({
+                account: sellAccount,
+                device,
+                decreaseOutputId: undefined,
+                precomposedForm: buildFormState({ trading }),
+                precomposedTx: buildPrecomposedTransaction({ to: '0x1234' }),
+            });
+
+            expect(outputs).toEqual([
+                {
+                    type: 'traded_assets',
+                    value: '',
+                    value2: '',
+                    send: trading.send,
+                    receive: trading.receive,
+                    receiveAddress: undefined,
+                },
+                { type: 'recipient_name', value: 'Banxa' },
+            ]);
+        },
+    );
+
+    it('keeps provider before traded assets for a SLIP-24 exchange', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({
+                trading: buildTrading({ isSlip24Active: true }),
+            }),
+            precomposedTx: buildPrecomposedTransaction({ to: '0x1234' }),
+        });
+
+        expect(outputs.map(output => output.type)).toEqual(['recipient_name', 'traded_assets']);
+    });
+
+    it('renders regular transaction outputs for a sell without SLIP-24', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({
+                trading: buildSellTrading({ isSlip24Active: false }),
+            }),
+            precomposedTx: buildPrecomposedTransaction({ to: '0x1234' }),
+        });
+
+        expect(outputs).not.toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'recipient_name' }),
+                expect.objectContaining({ type: 'traded_assets' }),
+            ]),
+        );
+    });
 
     it('renders swap-specific outputs only for clear-signed exchange swap', () => {
         const outputs = constructTransactionReviewOutputs({
@@ -382,4 +562,146 @@ describe('constructTransactionReviewOutputs', () => {
             );
         },
     );
+
+    it.each([
+        { op: 'wrap', transactionData: WETH_DEPOSIT_DATA },
+        { op: 'unwrap', transactionData: WETH_WITHDRAW_DATA },
+    ])('mirrors the four device screens for a clear-signed WETH $op', ({ transactionData, op }) => {
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData }),
+            precomposedTx: buildPrecomposedTransaction({
+                to: WETH_MAINNET,
+                // An unwrap review carries the WETH token; the amount row must still be
+                // native, matching the device's AmountFormatter.
+                token: op === 'unwrap' ? wethToken : undefined,
+            }),
+        });
+
+        // `confirm_ethereum_clear_signing` walks provider → intent → amount → summary. The
+        // summary is the review's own total row, so three outputs precede it.
+        expect(outputs).toEqual([
+            { type: 'recipient_name', value: 'WETH' },
+            { type: 'contract_intent', value: '' },
+            { type: 'amount', value: '1000000' },
+        ]);
+        // No token on the amount row: wrapping is 1:1 and the device prints ETH both ways.
+        expect(outputs[2]).not.toHaveProperty('token');
+    });
+
+    it('renders the blind-signing rows for a WETH wrap on firmware without clear signing', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device: mockSuiteDevice(
+                { unavailableCapabilities: { evmClearSigning: 'update-required' } },
+                { major_version: 2, minor_version: 8, patch_version: 0 },
+            ),
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData: WETH_DEPOSIT_DATA }),
+            precomposedTx: buildPrecomposedTransaction({ to: WETH_MAINNET }),
+        });
+
+        expect(outputs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'data', value: WETH_DEPOSIT_DATA }),
+                expect.objectContaining({ type: 'contract', value: WETH_MAINNET }),
+            ]),
+        );
+        expect(outputs).not.toEqual(
+            expect.arrayContaining([expect.objectContaining({ type: 'contract_intent' })]),
+        );
+    });
+
+    it('treats plain 0x calldata as a regular transfer', () => {
+        const recipient = '0x000000000000000000000000000000000000abcd';
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData: '0x' }),
+            precomposedTx: buildPrecomposedTransaction({ to: recipient }),
+        });
+
+        expect(outputs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'address', value: recipient }),
+            ]),
+        );
+        expect(outputs).not.toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'contract', value: recipient }),
+            ]),
+        );
+        expect(outputs).not.toEqual(
+            expect.arrayContaining([expect.objectContaining({ type: 'data', value: '0x' })]),
+        );
+    });
+
+    it('keeps the raw data row for a wrapped native the firmware does not clear-sign (WBNB on BSC)', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account: buildEthereumAccount({ symbol: bscSymbol }),
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData: WETH_DEPOSIT_DATA }),
+            precomposedTx: buildPrecomposedTransaction({ to: WBNB_BSC }),
+        });
+
+        expect(outputs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'data', value: WETH_DEPOSIT_DATA }),
+            ]),
+        );
+    });
+
+    it('renders one tron-vote line per representative with its own vote count', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account: mockWalletAccount({ symbol: asNetworkSymbol('trx') }),
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({
+                tronStaking: {
+                    kind: 'vote',
+                    votes: '46',
+                    allocations: [
+                        { address: TRON_REPRESENTATIVE_A, votes: '16' },
+                        { address: TRON_REPRESENTATIVE_B, votes: '30' },
+                    ],
+                },
+            }),
+            precomposedTx: buildPrecomposedTransaction({ to: TRON_REPRESENTATIVE_A }),
+        });
+
+        expect(outputs).toEqual([
+            { type: 'tron-vote', value: TRON_REPRESENTATIVE_A, value2: '16' },
+            { type: 'tron-vote', value: TRON_REPRESENTATIVE_B, value2: '30' },
+        ]);
+    });
+});
+
+describe('isDeviceReviewOnlyTransaction', () => {
+    const buildTx = (overrides: Record<string, unknown> = {}): GeneralPrecomposedTransaction =>
+        ({
+            type: 'final',
+            totalSpent: '1000000000',
+            fee: '5000',
+            ...overrides,
+        }) as unknown as GeneralPrecomposedTransaction;
+
+    it('returns false when there is no transaction', () => {
+        expect(isDeviceReviewOnlyTransaction(undefined)).toBe(false);
+    });
+
+    it('returns false for a transaction without the flag', () => {
+        expect(isDeviceReviewOnlyTransaction(buildTx())).toBe(false);
+    });
+
+    it('returns false for a transaction Suite can review step by step', () => {
+        expect(isDeviceReviewOnlyTransaction(buildTx({ isDeviceReviewOnly: false }))).toBe(false);
+    });
+
+    it('returns true for a transaction reviewed on the device only', () => {
+        expect(isDeviceReviewOnlyTransaction(buildTx({ isDeviceReviewOnly: true }))).toBe(true);
+    });
 });

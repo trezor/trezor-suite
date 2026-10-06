@@ -10,7 +10,11 @@ describe(createChangeRelayUrl.name, () => {
         const actions: UnknownAction[] = [];
 
         const deps: ChangeRelayUrlDeps = {
-            dispatch: (action: any) => actions.push(action),
+            dispatch: action => {
+                actions.push(action);
+
+                return action;
+            },
             getIsTorEnabled: mock(() => true),
             reconnectAllRelays: mock(() => Promise.resolve()),
         };
@@ -31,7 +35,11 @@ describe(createChangeRelayUrl.name, () => {
         const actions: UnknownAction[] = [];
 
         const deps: ChangeRelayUrlDeps = {
-            dispatch: (action: any) => actions.push(action),
+            dispatch: action => {
+                actions.push(action);
+
+                return action;
+            },
             getIsTorEnabled: mock(() => false),
             reconnectAllRelays: mock(() => Promise.resolve()),
         };

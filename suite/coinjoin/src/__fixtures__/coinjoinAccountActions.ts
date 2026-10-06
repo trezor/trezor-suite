@@ -1,5 +1,6 @@
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -59,7 +60,7 @@ const ACCOUNT_KEY_12345 = mockAccountKey({ descriptor: '12345' });
 const ACCOUNT: Partial<Account> = {
     accountType: 'coinjoin',
     backendType: 'coinjoin',
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     deviceState: '1stTestnetAddress@device_id:0',
     key: ACCOUNT_KEY_12345,
 };
@@ -186,10 +187,10 @@ export const createCoinjoinAccount: CreateCoinjoinAccountFixture[] = [
                 accountsActions.createAccount.type,
                 COINJOIN.ACCOUNT_DISCOVERY_RESET,
                 COINJOIN.ACCOUNT_PRELOADING,
-                goto.pending.type,
+                gotoThunk.pending.type,
                 accountsActions.startCoinjoinAccountSync.type,
                 COINJOIN.ACCOUNT_DISCOVERY_PROGRESS,
-                goto.fulfilled.type,
+                gotoThunk.fulfilled.type,
                 COINJOIN.ACCOUNT_SET_LIQUIDITY_CLUE,
                 accountsActions.updateAccount.type,
                 accountsActions.endCoinjoinAccountSync.type,
@@ -203,7 +204,7 @@ export const startCoinjoinSession: StartCoinjoinSessionFixture[] = [
         description: 'client not found',
         params: {
             ...ACCOUNT,
-            symbol: 'ltc', // only btc is supported in tests
+            symbol: asNetworkSymbol('ltc'), // only btc is supported in tests
         },
         result: {
             actions: [],
@@ -256,7 +257,7 @@ export const startCoinjoinSession: StartCoinjoinSessionFixture[] = [
                 COINJOIN.SESSION_STARTING,
                 COINJOIN.ACCOUNT_AUTHORIZE,
                 COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS,
-                goto.pending.type,
+                gotoThunk.pending.type,
                 COINJOIN.SESSION_STARTING,
             ],
         },

@@ -1,12 +1,14 @@
 import styled from 'styled-components';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
-import { selectCardanoPoolsInfo } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { EVERSTAKE_POOL_NAMES } from '@suite-common/wallet-config';
 import {
+    getCardanoAccountPoolId,
     isCardanoStakedWithEverstake,
     isCardanoStakedWithFiveBinaries,
-} from '@suite-common/wallet-utils';
+    selectCardanoPoolsInfo,
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, Icon, InfoItem, Paragraph, Row } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
@@ -26,6 +28,8 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
     const isStakedWithEverstake = isCardanoStakedWithEverstake(account, cardanoStakingPools);
     const isStakedWithFiveBinaries = isCardanoStakedWithFiveBinaries(account);
+    const poolId = getCardanoAccountPoolId(account);
+    const poolName = poolId ? EVERSTAKE_POOL_NAMES[poolId] : undefined;
 
     if (!isDebugModeActive || account.networkType !== 'cardano') return null;
 
@@ -68,6 +72,19 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
                             </Paragraph>
                         </ParagraphWrapper>
                     </InfoItem>
+
+                    {poolName && (
+                        <InfoItem
+                            label="Pool name"
+                            direction="row"
+                            labelWidth={90}
+                            verticalAlignment="start"
+                        >
+                            <ParagraphWrapper>
+                                <Paragraph typographyStyle="body-xs">{poolName}</Paragraph>
+                            </ParagraphWrapper>
+                        </InfoItem>
+                    )}
 
                     <InfoItem
                         label="Stake address"

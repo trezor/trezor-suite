@@ -6,19 +6,19 @@ import {
 } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type PROTO } from '@trezor/connect';
 import { getSlip44ByPath, validatePath } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
 
-import { getNonce } from './getNonce';
-import { getPaymentRequestOutputs } from './getPaymentRequestOutputs';
-import { getPurchaseAddress } from './getPurchaseAddress';
-import { getRefundAddress } from './getRefundAddress';
+import { type GetNonceThunkState, getNonceThunk } from './getNonce';
+import { getPaymentRequestOutputsThunk } from './getPaymentRequestOutputs';
+import { type GetPurchaseAddressThunkState, getPurchaseAddressThunk } from './getPurchaseAddress';
+import { type GetRefundAddressThunkState, getRefundAddressThunk } from './getRefundAddress';
 import { TRADING_THUNK_PREFIX } from '../../constants';
+import { type TradingRootState } from '../../reducers/tradingCommonReducer';
 import {
-    selectTradingCoinInfoByCryptoId,
     selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeProviders,
     selectTradingExchangeReceiveAccountKey,
@@ -44,11 +44,18 @@ type CreateSignatureThunkProps = {
     destinationTag?: string;
 };
 
+export type CreatePaymentRequestsThunkState = AccountsRootState &
+    GetNonceThunkState &
+    GetPurchaseAddressThunkState &
+    GetRefundAddressThunkState &
+    TradingRootState;
+
 export const createPaymentRequestsThunk = createThunk<
     PROTO.PaymentRequest[],
     CreateSignatureThunkProps,
     {
         rejectValue: TradingSendRejectedProps;
+        state: CreatePaymentRequestsThunkState;
     }
 >(
     `${TRADING_THUNK_PREFIX}/createPaymentRequests`,
@@ -57,9 +64,9 @@ export const createPaymentRequestsThunk = createThunk<
         { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
         const { mac: macRefund, path: pathRefund } = await dispatch(
-            getRefundAddress({ account }),
+            getRefundAddressThunk({ account }),
         ).unwrap();
-        const nonce = await dispatch(getNonce()).unwrap();
+        const nonce = await dispatch(getNonceThunk()).unwrap();
 
         if (!('outputs' in composedLevels)) {
             return rejectWithValue({
@@ -100,11 +107,11 @@ export const createPaymentRequestsThunk = createThunk<
                 }
 
                 const { mac: macPurchase, path: pathPurchase } = await dispatch(
-                    getPurchaseAddress({ account: receiveAccount, address: receiveAddress }),
+                    getPurchaseAddressThunk({ account: receiveAccount, address: receiveAddress }),
                 ).unwrap();
 
                 const outputs = await dispatch(
-                    getPaymentRequestOutputs({
+                    getPaymentRequestOutputsThunk({
                         network: sendNetwork,
                         composedLevels,
                         destinationTag,
@@ -196,16 +203,25 @@ export const createPaymentRequestsThunk = createThunk<
                     });
                 }
 
-                const cryptoSymbol = selectTradingCoinInfoByCryptoId(
+                const sendDisplaySymbol = selectTradingCoinSymbolByCryptoId(
                     getState(),
                     quote.cryptoCurrency,
                 );
 
-                // TODO: slip24 - will be changed soon
-                const memoText = `Selling ${quote.cryptoStringAmount} ${cryptoSymbol?.symbol} for ${quote.fiatStringAmount} ${quote.fiatCurrency}`;
+                if (!sendDisplaySymbol) {
+                    return rejectWithValue({
+                        type: 'sign-tx-error',
+                        error: {
+                            id: 'TR_PAYMENT_REQUESTS_ERROR',
+                        },
+                    });
+                }
+
+                const memoAmount = formattedMaxAmount ?? quote.cryptoStringAmount;
+                const memoText = `Selling ${memoAmount} ${sendDisplaySymbol} for ${quote.fiatStringAmount} ${quote.fiatCurrency}`;
 
                 const outputs = await dispatch(
-                    getPaymentRequestOutputs({
+                    getPaymentRequestOutputsThunk({
                         network: sendNetwork,
                         composedLevels,
                         destinationTag,

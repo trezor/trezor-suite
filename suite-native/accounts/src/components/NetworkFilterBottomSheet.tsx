@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
+import { type NetworksRootState } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     BottomSheetModal,
@@ -36,7 +37,7 @@ export const NetworkFilterBottomSheet = forwardRef(
         const selectedNetworksRef = useRef(selectedNetworks);
         selectedNetworksRef.current = selectedNetworks;
 
-        const options = useSelector((state: NativeAccountsRootState) =>
+        const options = useSelector((state: NativeAccountsRootState & NetworksRootState) =>
             selectNetworkFilterOptions(state, isSendFlow),
         );
 
@@ -73,7 +74,9 @@ export const NetworkFilterBottomSheet = forwardRef(
         return (
             <BottomSheetModal
                 ref={ref}
-                title={translate('moduleAccountManagement.accountsScreen.networkFilter.title')}
+                title={translate(
+                    'moduleAccountManagement.accountsScreen.networkFilter.showAccountsOnTitle',
+                )}
                 isCloseDisplayed
                 onDismiss={handleDismiss}
                 footer={
@@ -92,7 +95,7 @@ export const NetworkFilterBottomSheet = forwardRef(
                         <PressableOpacity key={symbol} onPress={() => handleSelectNetwork(symbol)}>
                             <Card noShadow>
                                 <HStack alignItems="center" spacing="sp16">
-                                    <TokenIcon symbol={symbol} />
+                                    <TokenIcon tokenSymbol={symbol} networkSymbol={symbol} />
                                     <VStack flex={1} spacing={0}>
                                         <Text variant="body-md-strong">
                                             {getNetwork(symbol).name}

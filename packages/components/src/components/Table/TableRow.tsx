@@ -56,12 +56,12 @@ export const Row = styled.tr<{
         `}
 
         ${({ onClick }) =>
-        onClick &&
-        css`
-            &:hover {
-                cursor: pointer;
-            }
-        `}
+            onClick &&
+            css`
+                &:hover {
+                    cursor: pointer;
+                }
+            `}
 `;
 
 export interface TableRowProps {
@@ -105,6 +105,7 @@ export const TableRow = ({
             onClick={onClick}
             onMouseEnter={() => onHover?.(true)}
             onMouseLeave={() => onHover?.(false)}
+            data-component="TableRow"
             data-testid={dataTestId}
         >
             {children}

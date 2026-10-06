@@ -1,7 +1,7 @@
 import { type Dispatch, useCallback } from 'react';
 
+import { useBottomSheetControls } from '@suite-native/atoms';
 import { type FieldPathValue, type Path, type UseFormReturn, useWatch } from '@suite-native/forms';
-import { useBottomSheetControls } from '@suite-native/trading-atoms';
 import {
     type BuyFormValues,
     type ExchangeFormValues,

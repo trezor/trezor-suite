@@ -13,6 +13,6 @@ export type ReconnectAllRelaysDep = {
     reconnectAllRelays: ReconnectAllRelays;
 };
 
-export const selectReconnectAllRelaysDep = (services: any): ReconnectAllRelaysDep => ({
+export const injectReconnectAllRelays = (services: any): ReconnectAllRelaysDep => ({
     reconnectAllRelays: services.suiteSync.reconnectAllRelays,
 });

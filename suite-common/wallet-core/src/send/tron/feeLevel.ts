@@ -1,9 +1,17 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { type EstimateFeeLevel } from './types';
 
 type ContractCallFeeResult = EstimateFeeLevel | { error: string };
+type EstimateContractCallFeeLevelParams = {
+    symbol: NetworkSymbol;
+    identity: string | undefined;
+    from: string;
+    to: string;
+    data: string;
+};
 
 export const estimateContractCallFeeLevel = async ({
     symbol,
@@ -11,15 +19,9 @@ export const estimateContractCallFeeLevel = async ({
     from,
     to,
     data,
-}: {
-    symbol: NetworkSymbol;
-    identity: string | undefined;
-    from: string;
-    to: string;
-    data: string;
-}): Promise<ContractCallFeeResult> => {
+}: EstimateContractCallFeeLevelParams): Promise<ContractCallFeeResult> => {
     const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-        coin: symbol,
+        coin: asCoinSymbol(symbol),
         identity,
         request: {
             blocks: [1],

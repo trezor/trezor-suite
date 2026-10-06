@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Column, IconCircle, useMediaQuery } from '@trezor/components';
 import { CommandIcon, LifebuoyIcon } from '@trezor/icons';
 
@@ -15,15 +16,15 @@ import {
     GuideSectionHeadline,
     GuideViewWrapper,
 } from 'src/components/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectGuideIndexNode } from 'src/selectors/suite/guideSelectors';
 
 import { GuideItem } from './GuideItem';
 
 export const Guide = () => {
     const [searchActive, setSearchActive] = useState(false);
-    const indexNode = useSelector(state => state.guide.indexNode);
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const indexNode = useSelector(selectGuideIndexNode);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const handleFeedbackButtonClick = () => {
         dispatch(setView('SUPPORT_FEEDBACK_SELECTION'));
         analytics.report({
@@ -61,7 +62,7 @@ export const Guide = () => {
                                             />
                                         }
                                     >
-                                        <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
+                                        <Translation id="TR_GUIDE_HELP_AND_FEEDBACK" />
                                     </GuideItem>
                                 </Column>
                             </Box>

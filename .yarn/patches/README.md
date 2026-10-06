@@ -18,16 +18,18 @@ Either revert the original patch commit, or simply install a newer version `yarn
 
 ---
 
-## expo-modules-core
+## @solana/rpc
 
-Native-only, but does not break any CI.
-
-Gets rid of `The global process.env.EXPO_OS is not defined. This should be inlined by babel-preset-expo during transformation.`
-warning while running unit tests. Probably caused by an issue reported [here](https://github.com/expo/expo/issues/26513) or [here](https://github.com/expo/expo/issues/25452).
+Reads the abort reason from the registered signal because `abortcontroller-polyfill` dispatches
+abort events with a null target on React Native. Introduced for
+[#30691](https://github.com/trezor/trezor-suite/issues/30691). Upstream fix:
+[anza-xyz/kit#1994](https://github.com/anza-xyz/kit/pull/1994). Remove after upgrading
+`@solana/rpc` to a release containing the upstream fix.
 
 ## expo-updates
 
-Undocumented reason, introduced in [#25924](https://github.com/trezor/trezor-suite/pull/25924)
+Prevents the Expo dev client from hanging when Detox starts an Android test. Introduced in
+[#25924](https://github.com/trezor/trezor-suite/pull/25924).
 
 ## nextra
 

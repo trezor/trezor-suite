@@ -8,13 +8,14 @@ import { estimateFee } from './handlers/estimateFee';
 import { getAccountInfo } from './handlers/getAccountInfo';
 import { getBlock } from './handlers/getBlock';
 import { getBlockHash } from './handlers/getBlockHash';
+import { getEvmChainId } from './handlers/getEvmChainId';
 import { getInfo } from './handlers/getInfo';
 import { getTransaction } from './handlers/getTransaction';
 import { pushTransaction } from './handlers/pushTransaction';
 import { rpcCall } from './handlers/rpcCall';
 import { cleanupSubscriptions, subscribe, unsubscribe } from './handlers/subscribe';
-import { validateRpcUrl } from './handlers/validateRpcUrl';
 import type { Request } from './types';
+import { getChainId } from './utils/client';
 import { getTransportType } from './utils/transportType';
 
 const onRequest = (request: Request<MessageTypes.Message>) => {
@@ -39,8 +40,8 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
             return unsubscribe(request);
         case MESSAGES.RPC_CALL:
             return rpcCall(request);
-        case MESSAGES.VALIDATE_EVM_RPC:
-            return validateRpcUrl(request);
+        case MESSAGES.GET_EVM_CHAIN_ID:
+            return getEvmChainId(request);
         default:
             throw new CustomError('worker_unknown_request', `+${request.type}`);
     }
@@ -68,7 +69,8 @@ export class EvmRpcWorker extends BaseWorker<PublicClient> {
             transport: transportType(url),
         });
 
-        await client.getChainId();
+        // Doubles as the connectivity probe, and primes the cache the handlers read from.
+        await getChainId(client);
 
         this.post({ id: -1, type: RESPONSES.CONNECTED });
 

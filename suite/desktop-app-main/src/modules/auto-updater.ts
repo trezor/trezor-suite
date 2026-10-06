@@ -1,0 +1,381 @@
+import { captureMessage } from '@sentry/electron/main';
+import {
+    CancellationToken,
+    type ProgressInfo,
+    type UpdateDownloadedEvent,
+    type UpdateInfo,
+    autoUpdater,
+} from 'electron-updater';
+import { unlinkSync } from 'fs';
+
+import { type HandshakeElectron } from '@suite/desktop-app-api';
+import { isDevEnv, isFeatureFlagEnabled } from '@suite-common/suite-utils';
+import { bytesToHumanReadable, serializeError } from '@trezor/utils';
+
+import { type ModuleInit, mainThreadEmitter } from './module';
+import { ipcMain } from '../ipcMain';
+import type { ILogger } from '../libs/logger';
+import { parseCustomFeedURL } from '../libs/parseCustomFeedURL';
+import { getSwitchValue, hasSwitch } from '../libs/process-switches';
+import { getSignatureFile, verifySignature } from '../libs/update-checker';
+import { b2t } from '../libs/utils';
+import { app } from '../typed-electron';
+
+export const SERVICE_NAME = 'auto-updater';
+
+const defaultFeedURLs = {
+    // This should correspond with the publish.url value in electron-builder-config.js file.
+    latest: 'https://data.trezor.io/suite/releases/desktop/latest',
+    preRelease: 'https://data.trezor.io/suite/releases/desktop/canary',
+};
+
+// Runtime flags
+const enableUpdater = hasSwitch('enable-updater');
+const disableUpdater = hasSwitch('disable-updater');
+const preReleaseFlag = hasSwitch('pre-release');
+const customFeedURL = getSwitchValue('updater-url');
+
+type GetFeedURLParams = {
+    allowPrerelease?: boolean;
+    logger: ILogger;
+};
+
+const getFeedURL = ({ allowPrerelease = false, logger }: GetFeedURLParams) => {
+    const defaultFeedURL = defaultFeedURLs[allowPrerelease ? 'preRelease' : 'latest'];
+    const warn = (message: string) => logger.warn(SERVICE_NAME, message);
+
+    return parseCustomFeedURL({ customFeedURL, defaultFeedURL, warn });
+};
+
+export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
+    if (!isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && !enableUpdater) {
+        logger.info(SERVICE_NAME, 'Disabled via feature flag');
+
+        return;
+    }
+
+    if (isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && disableUpdater) {
+        logger.info(SERVICE_NAME, 'Disabled via command line parameter');
+
+        return;
+    }
+
+    if (process.env.SNAP_NAME || process.env.FLATPAK_ID) {
+        logger.info(SERVICE_NAME, 'Disabled - native store');
+
+        return;
+    }
+
+    // If APPIMAGE is not set on Linux, the auto updater can't handle that
+    if (
+        process.platform === 'linux' &&
+        process.env.APPIMAGE === undefined &&
+        !isDevEnv &&
+        !process.env.PLAYWRIGHT_RUN
+    ) {
+        logger.warn(SERVICE_NAME, 'APPIMAGE is not defined, skipping auto updater');
+
+        return;
+    }
+
+    let isManualCheck = false;
+    let updateCancellationToken: CancellationToken;
+
+    // Prevent downloading an update unless user explicitly asks for it.
+    autoUpdater.autoDownload = false;
+    // You may turn this on for dev purposes, see docs/releases/desktop_updates.md
+    autoUpdater.forceDevUpdateConfig = false;
+
+    // electron-updater always checks if user is within stagingPercentage rollout, but it offers
+    // possibility to override the default behavior. This wraps the original function, bypassing it if `isManualCheck`
+    const isUserWithinRolloutDefaultMethod = autoUpdater.isUserWithinRollout;
+    autoUpdater.isUserWithinRollout = async updateInfo =>
+        isManualCheck
+            ? // do not force if it is set to exactly 0, so we can completely stop distributing a release in case of trouble
+              updateInfo.stagingPercentage !== 0
+            : await isUserWithinRolloutDefaultMethod(updateInfo);
+
+    const updateSettings = store.getUpdateSettings();
+    let allowPrerelease = preReleaseFlag || updateSettings.allowPrerelease;
+    let { isAutomaticUpdateEnabled } = updateSettings;
+    let feedURL = getFeedURL({ allowPrerelease, logger });
+
+    autoUpdater.logger = null;
+
+    if (process.platform === 'linux') {
+        autoUpdater.disableDifferentialDownload = true;
+    }
+
+    autoUpdater.setFeedURL(feedURL);
+    logger.warn(SERVICE_NAME, [`Feed url: ${feedURL}`]);
+
+    logger.info(SERVICE_NAME, `Is looking for pre-releases? (${b2t(allowPrerelease)})`);
+
+    autoUpdater.on('checking-for-update', () => {
+        logger.info(SERVICE_NAME, 'Checking for update');
+        mainWindowProxy.getInstance()?.webContents.send('update/checking');
+    });
+
+    const startDownload = async () => {
+        logger.info(SERVICE_NAME, 'Download requested');
+
+        mainWindowProxy.getInstance()?.webContents.send('update/downloading', {
+            percent: 0,
+            bytesPerSecond: 0,
+            total: 0,
+            transferred: 0,
+        });
+
+        updateCancellationToken = new CancellationToken();
+
+        try {
+            await autoUpdater.downloadUpdate(updateCancellationToken);
+            logger.info(SERVICE_NAME, 'Update downloaded');
+        } catch {
+            logger.info(SERVICE_NAME, 'Update cancelled');
+        }
+    };
+
+    autoUpdater.on('update-available', ({ version, releaseDate, releaseNotes }: UpdateInfo) => {
+        logger.warn(SERVICE_NAME, [
+            'Update is available:',
+            `- Update version: ${version}`,
+            `- Changelog: ${releaseNotes ? 'available' : 'unavailable'}`,
+            `- Release date: ${releaseDate}`,
+            `- Manual check: ${b2t(isManualCheck)}`,
+        ]);
+
+        mainWindowProxy.getInstance()?.webContents.send('update/available', {
+            version,
+            releaseDate,
+            isManualCheck,
+            // 'prerelease' is only available on github, this is used for analytics and to display -beta suffix for version number in FE.
+            // It means that EAP users will always see YY.MM.V-beta version number in update modal.
+            prerelease: allowPrerelease,
+            changelog: releaseNotes?.toString(),
+        });
+
+        // Reset manual check flag
+        isManualCheck = false;
+
+        if (isAutomaticUpdateEnabled) {
+            startDownload();
+        }
+    });
+
+    autoUpdater.on('update-not-available', ({ version, releaseDate }: UpdateInfo) => {
+        logger.info(SERVICE_NAME, [
+            'No new update is available:',
+            `- Last version: ${version}`,
+            `- Last release date: ${releaseDate}`,
+            `- Manual check: ${b2t(isManualCheck)}`,
+        ]);
+
+        mainWindowProxy.getInstance()?.webContents.send('update/not-available', {
+            version,
+            releaseDate,
+            isManualCheck,
+        });
+
+        // Reset manual check flag
+        isManualCheck = false;
+    });
+
+    autoUpdater.on('error', (err: Error) => {
+        captureMessage(serializeError(err));
+        logger.error(SERVICE_NAME, `An error happened: ${err.toString()}`);
+        mainWindowProxy.getInstance()?.webContents.send('update/error');
+    });
+
+    autoUpdater.on('download-progress', (progressObj: ProgressInfo) => {
+        logger.debug(
+            SERVICE_NAME,
+            `Downloading ${progressObj.percent}% (${bytesToHumanReadable(
+                progressObj.transferred,
+            )}/${bytesToHumanReadable(progressObj.total)})`,
+        );
+        mainWindowProxy.getInstance()?.webContents.send('update/downloading', progressObj);
+    });
+
+    autoUpdater.on('update-downloaded', async (info: UpdateDownloadedEvent) => {
+        const { version, releaseDate, downloadedFile, releaseNotes } = info;
+
+        // Need to make the event handler async before setting `autoInstallOnAppQuit = false` here, because the Node.js
+        // EventEmitter is synchronous, and it would cause a macOS specific bug during app update, see upstream code:
+        // https://github.com/electron-userland/electron-builder/blob/a5121de49582eaa8870d4c05e6ae55eff160a592/packages/electron-updater/src/MacUpdater.ts#L253-L255
+        // autoInstallOnAppQuit is considered a permanent setting, not something that can toggle on/off during the process.
+        // → we need to make sure the MacUpdater code finishes with previous `autoInstallOnAppQuit` value.
+        await Promise.resolve();
+
+        // Disable installation of the downloaded file before our own verification is complete, it's quite hacky but
+        // electron-updater doesn't have an interface to delay the installation with an arbitrary async function.
+        // TODO refactor https://github.com/electron-userland/electron-builder/issues/10010
+        const previousAutoInstallOnAppQuit = autoUpdater.autoInstallOnAppQuit;
+        autoUpdater.autoInstallOnAppQuit = false;
+
+        logger.info(SERVICE_NAME, [
+            'Update downloaded:',
+            `- Last version: ${version}`,
+            `- Last release date: ${releaseDate}`,
+            `- Downloaded file: ${downloadedFile}`,
+            `- Release notes: ${releaseNotes}`,
+        ]);
+
+        mainWindowProxy.getInstance()?.webContents.send('update/downloading', { verifying: true });
+
+        const abortUpdate = () => {
+            autoUpdater.autoInstallOnAppQuit = false;
+            unlinkSync(downloadedFile);
+            logger.info(SERVICE_NAME, `Unlink downloaded file ${downloadedFile}`);
+            mainWindowProxy.getInstance()?.webContents.send('update/error');
+        };
+
+        try {
+            // Find the right signature for the downloaded file
+            const signatureFile = await getSignatureFile({ downloadedFile, feedURL });
+            // If fetching of signature file has failed, abort the update, but do not log it as an error
+            if (signatureFile === null) {
+                abortUpdate();
+
+                return;
+            }
+
+            // check downloaded file
+            await verifySignature({
+                downloadedFile,
+                signatureFile,
+            });
+
+            logger.info(SERVICE_NAME, 'Signature of update file is valid');
+            autoUpdater.autoInstallOnAppQuit = previousAutoInstallOnAppQuit;
+
+            mainWindowProxy.getInstance()?.webContents.send('update/downloaded', {
+                version,
+                releaseDate,
+                downloadedFile,
+            });
+        } catch (err) {
+            captureMessage(serializeError(err));
+            abortUpdate();
+            logger.error(SERVICE_NAME, `Signature check of update file failed: ${err.message}`);
+        }
+
+        logger.info(
+            SERVICE_NAME,
+            `Is configured to auto update after app quit? ${autoUpdater.autoInstallOnAppQuit}`,
+        );
+    });
+
+    ipcMain.on('update/check', (_, { isManual }) => {
+        if (isManual === true) {
+            isManualCheck = true;
+        }
+
+        logger.info(SERVICE_NAME, `Update checking request (manual: ${b2t(isManualCheck)})`);
+        autoUpdater.checkForUpdates();
+    });
+
+    ipcMain.on('update/download', () => {
+        startDownload();
+    });
+
+    ipcMain.on('update/set-auto-install-on-app-quit', () => {
+        // If the update is triggered manually by the button in the app, we want to force update,
+        // because it may have been disabled by the user switch the automatic update off. But because the user deliberately
+        // clicked the "Update on quit" button, we want to install it.
+        autoUpdater.autoInstallOnAppQuit = true;
+    });
+
+    ipcMain.on('update/install', () => {
+        logger.info(SERVICE_NAME, 'Restart and update request');
+
+        setImmediate(() => {
+            // Removing listeners & closing window (https://github.com/electron-userland/electron-builder/issues/1604)
+            app.removeAllListeners('window-all-closed');
+            mainThreadEmitter.emit('app/fully-quit');
+            mainWindowProxy.getInstance()?.removeAllListeners('close');
+            mainWindowProxy.getInstance()?.close();
+
+            // Silent installation on Windows to match on "Update on quit" and macOS behavior
+            autoUpdater.quitAndInstall(true, true);
+        });
+    });
+
+    ipcMain.on('update/cancel', () => {
+        logger.info(
+            SERVICE_NAME,
+            `Cancel update request (in progress: ${b2t(!!updateCancellationToken)})`,
+        );
+        if (updateCancellationToken) {
+            updateCancellationToken.cancel();
+        }
+    });
+
+    ipcMain.on('update/allow-prerelease', (_, value = true) => {
+        logger.info(SERVICE_NAME, `${value ? 'allow' : 'disable'} prerelease!`);
+        mainWindowProxy.getInstance()?.webContents.send('update/allow-prerelease', value);
+        const settings = store.getUpdateSettings();
+        store.setUpdateSettings({ ...settings, allowPrerelease: value });
+        allowPrerelease = value;
+
+        feedURL = getFeedURL({ allowPrerelease, logger });
+        autoUpdater.setFeedURL(feedURL);
+        logger.info(SERVICE_NAME, `New feed url: ${feedURL}`);
+    });
+
+    ipcMain.on('update/set-automatic-update-enabled', (_, value = true) => {
+        logger.info(SERVICE_NAME, `set-automatic-update-enabled: ${value ? 'true' : 'false'}`);
+
+        mainWindowProxy
+            .getInstance()
+            ?.webContents.send('update/set-automatic-update-enabled', value);
+        const settings = store.getUpdateSettings();
+        store.setUpdateSettings({ ...settings, isAutomaticUpdateEnabled: value });
+        isAutomaticUpdateEnabled = value;
+
+        if (isAutomaticUpdateEnabled) {
+            autoUpdater.checkForUpdates();
+        }
+
+        if (!isAutomaticUpdateEnabled) {
+            // In case
+            //      1) the auto-update was enabled
+            //      2) update is probably already downloaded
+            //      3) user wants to disable auto-update and PREVENT the downloaded update from installing
+            //
+            // We have to disable auto update so it won't get installed.
+            autoUpdater.autoInstallOnAppQuit = false;
+        }
+    });
+
+    // Enable feature on FE once it's ready
+    const onLoad = (): HandshakeElectron['desktopUpdate'] => {
+        // if there is savedCurrentVersion in store (it doesn't have to be there as it was added in later versions)
+        // and if it does not match current application version it means that application got updated and the new version
+        // is run for the first time.
+        const settings = store.getUpdateSettings();
+        const { savedCurrentVersion } = settings;
+        const currentVersion = app.getVersion();
+        logger.debug(
+            SERVICE_NAME,
+            `Version of application before this launch: ${savedCurrentVersion}, current app version: ${currentVersion}`,
+        );
+
+        // save current app version so that after app is relaunched we can show info about transition to the new version
+        store.setUpdateSettings({
+            ...updateSettings,
+            savedCurrentVersion: currentVersion,
+        });
+
+        return {
+            allowPrerelease,
+            isAutomaticUpdateEnabled,
+            firstRun:
+                savedCurrentVersion && savedCurrentVersion !== currentVersion
+                    ? currentVersion
+                    : undefined,
+        };
+    };
+
+    return { onLoad };
+};

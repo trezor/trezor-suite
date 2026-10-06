@@ -4,8 +4,6 @@ import '@exodus/patch-broken-hermes-typed-arrays';
 import { install as installQuickCryptoPolyfills } from 'react-native-quick-crypto';
 
 import { installPolyfills as installReactNativePolyfills } from '@evolu/react-native/polyfills';
-import { CustomEvent } from '@whatwg-node/events'; // to work with @solana/kit
-import { Event, EventTarget } from 'event-target-shim'; // to work with @solana/kit
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'; // to work with @solana/kit
 // Shimming Set prototype methods
 import difference from 'set.prototype.difference';
@@ -15,11 +13,6 @@ import isSubsetOf from 'set.prototype.issubsetof';
 import isSupersetOf from 'set.prototype.issupersetof';
 import symmetricDifference from 'set.prototype.symmetricdifference';
 import union from 'set.prototype.union';
-
-// Event, EventTarget and CustomEvent are needed for @solana/kit to work
-globalThis.Event = Event;
-globalThis.EventTarget = EventTarget;
-globalThis.CustomEvent = CustomEvent;
 
 // polyfill for `abortcontroller-polyfill`, which throws DOMException at occasions, and it'd crash the app
 if (typeof DOMException === 'undefined') {

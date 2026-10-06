@@ -2,10 +2,10 @@ import { type MouseEventHandler } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { acquireDevice } from '@suite-common/wallet-core';
+import { useServices } from '@suite-common/dependency-injection';
+import { acquireDeviceThunk } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 type AcquireButtonProps = {
     onClick?: MouseEventHandler;
@@ -13,13 +13,13 @@ type AcquireButtonProps = {
 
 export const AcquireDeviceButton = ({ onClick }: AcquireButtonProps) => {
     const { isLocked } = useDevice();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const isDeviceLocked = isLocked();
 
     const handleClick: MouseEventHandler = e => {
         onClick?.(e);
-        dispatch(acquireDevice({}));
+        dispatch(acquireDeviceThunk({}));
     };
 
     return (

@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-import { goto, selectRouterParams } from '@suite/router';
-import { yup } from '@suite-common/validators';
+import { yup } from '@suite/forms';
+import { gotoThunk, selectRouterParams } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account, type GlobalSendReceiveType } from '@suite-common/wallet-types';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { type Route } from 'src/types/suite';
 
 import { useGoToWithAnalytics } from '../../useGoToWithAnalytics';
@@ -39,7 +41,7 @@ export const getDashboardParamModal = (param: unknown): GlobalSendReceiveType =>
 };
 
 export function useGlobalSendReceiveModal() {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const goToWithAnalytics = useGoToWithAnalytics();
     const routerParams = useSelector(selectRouterParams);
     const [activeModal, setActiveModal] = useState<GlobalSendReceiveType>(null);
@@ -50,7 +52,7 @@ export function useGlobalSendReceiveModal() {
 
     const openModal = (modal: NonNullable<GlobalSendReceiveType>) => {
         setActiveModal(modal);
-        dispatch(goto({ routeName: 'suite-index', params: { modal } }));
+        dispatch(gotoThunk({ routeName: 'suite-index', params: { modal } }));
     };
 
     const closeModal = (routeName?: Route['name'], account?: Account) => {
@@ -66,7 +68,7 @@ export function useGlobalSendReceiveModal() {
                 },
             });
         } else {
-            dispatch(goto({ routeName: 'suite-index' }));
+            dispatch(gotoThunk({ routeName: 'suite-index' }));
         }
     };
 

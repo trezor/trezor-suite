@@ -5,6 +5,11 @@
         "src",
         "stylelint-config-standard",
         "postcss-styled-syntax",
-        "typescript-styled-plugin"
+        "typescript-styled-plugin",
+        "babel-loader",
+        "babel-plugin-styled-components",
+        "buffer",
+        "lodash-es",
+        "raw-loader"
     ]
 }

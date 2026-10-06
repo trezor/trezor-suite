@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { selectConnectingDevices } from '@suite/bluetooth';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceOrUiLocked } from '@suite/locks';
 import { selectKnownDeviceByDeviceId } from '@suite-common/bluetooth/src/bluetoothSelectors';
@@ -7,7 +8,6 @@ import { selectDevices } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { CheckIcon } from '@trezor/icons';
 
-import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { useSelector } from 'src/hooks/suite';
 
 import { DeviceConnectionText } from './DeviceConnectionText';

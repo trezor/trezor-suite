@@ -82,25 +82,17 @@ describe(validateIpcMessage.name, () => {
     });
 
     it('errors for invalid senderFrame', () => {
-        const subject = () => {
-            validateIpcMessage({
-                ipcEvent: {} as ElectronIpcMainInvokeEvent,
-                dirnameProvider: appImageDirnameProvider,
-            });
+        const subjectWithEmptyEvent = () => {
+            validateIpcMessage({ ipcEvent: {} as any, dirnameProvider: appImageDirnameProvider });
+        };
+        const subjectWithEmptySenderFrame = () => {
+            const ipcEvent = createSenderFrame('http://localhost:8000/');
+            delete (ipcEvent.senderFrame as any).url;
+            validateIpcMessage({ ipcEvent, dirnameProvider: appImageDirnameProvider });
         };
 
-        expect(subject).toThrow('Invalid ipcEvent: {}');
-    });
-
-    it('errors when senderFrame has been destroyed', () => {
-        const subject = () => {
-            validateIpcMessage({
-                ipcEvent: createSenderFrame('http://localhost:8000/', true),
-                dirnameProvider: appImageDirnameProvider,
-            });
-        };
-
-        expect(subject).toThrow('ipcEvent.senderFrame is destroyed');
+        expect(subjectWithEmptyEvent).toThrow('Invalid ipcEvent: {}');
+        expect(subjectWithEmptySenderFrame).toThrow('Invalid ipcEvent: {"senderFrame":{}}');
     });
 
     it('errors when in production, you get different protocol to file:', () => {

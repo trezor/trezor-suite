@@ -57,6 +57,7 @@
             "inputs": [
                 "{projectRoot}/**/*",
                 "{workspaceRoot}/eslint.config.mjs",
+                "{workspaceRoot}/eslint-local-rules/**/*",
                 "{workspaceRoot}/packages/eslint/**/*",
                 {
                     "env": "ESLINT_RUN_EXPENSIVE_CHECKS"

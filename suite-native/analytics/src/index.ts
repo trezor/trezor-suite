@@ -20,6 +20,7 @@ export type {
     TradingSellAction,
     TradingSellStep,
 } from './definitions';
+export type { SendEnsResolutionDirection } from './events/sendEnsResolutionEvent';
 export type { TradingExchangeIssue } from './events/tradingExchangeIssueEvent';
 export type {
     DemoAccountQuestionnaireQuestion,
@@ -30,8 +31,7 @@ export { type DeviceSetupInfoLocation } from './events/deviceSetupInfoEvent';
 
 export type { AutoEjectModalValue } from './events/autoEjectModalEvent';
 export type { DemoAccountQuestionnaireLinkKey } from './events/demoAccountQuestionnaireLinksEvent';
-export { analytics, type NativeAnalyticsDep, selectNativeAnalyticsDep } from './createAnalytics';
-export { asTypedNativeAnalytics } from './asTypedNativeAnalytics';
+export { analytics, type NativeAnalyticsDep, injectNativeAnalytics } from './createAnalytics';
 export type { AnalyticsNativeEvents } from './analyticsEvents';
 
 export * as events from './events';

@@ -1,10 +1,10 @@
-import { SettingsAnchor, goto } from '@suite/router';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch } from 'src/hooks/suite';
-
 export const TriggerHighlight = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     return (
         <SectionItem data-testid="@settings/debug/github">
@@ -17,7 +17,10 @@ export const TriggerHighlight = () => {
                     intent="brand"
                     onClick={() =>
                         dispatch(
-                            goto({ routeName: 'settings-index', anchor: SettingsAnchor.Labeling }),
+                            gotoThunk({
+                                routeName: 'settings-index',
+                                anchor: SettingsAnchor.Labeling,
+                            }),
                         )
                     }
                 >

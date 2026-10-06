@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 
 import { connectPopupDeeplinkThunk, selectConnectPopupCall } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectPendingProposal, walletConnectPairThunk } from '@suite-common/walletconnect';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import {
@@ -38,7 +40,7 @@ const isWalletConnectUrl = (url: string): boolean =>
 // we already have some modals like biometrics or coin enabled which are waiting for device to be connected
 export const useConnectPopupNavigation = () => {
     const navigation = useNavigation<NavigationProp>();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const connectPopupCall = useSelector(selectConnectPopupCall);
     const walletConnectProposal = useSelector(selectPendingProposal);
     const lastProposalId = useRef<number | null>(null);

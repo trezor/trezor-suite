@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import {
     analyticsActions,
     selectCustomAnalyticsUrl,
@@ -8,18 +8,18 @@ import {
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Badge, Button, Column, Input, Switch } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const AnalyticsLogging = () => {
     const customAnalyticsUrl = useSelector(selectCustomAnalyticsUrl);
     const loggerEnabled = useSelector(selectLoggerEnabled);
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const [inputValue, setInputValue] = useState(customAnalyticsUrl ?? '');
 

@@ -7,5 +7,4 @@ description: Known issues and their solutions in the Trezor Suite monorepo. Use 
 
 - **Playwright failures**: Use `yarn --mode=skip-build` during installation
 - **Network timeouts**: Retry commands; common in restricted environments
-- **Build failures**: Run `yarn build:libs` after dependency changes
 - **Type errors**: Use the narrowest available TypeScript check; reserve broader checks for final validation

@@ -9,6 +9,7 @@ import type {
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import {
     SCHEDULE_ACTION_ABORTED_ERROR_MESSAGE,
     SCHEDULE_ACTION_DEADLINE_ERROR_MESSAGE,
@@ -43,7 +44,7 @@ const getConnectFiatRatesForTimestamp = async (
         return await scheduleAction(
             () =>
                 TrezorConnect.blockchainGetFiatRatesForTimestamps({
-                    coin: ticker.symbol,
+                    coin: asCoinSymbol(ticker.symbol),
                     token: ticker.tokenAddress,
                     timestamps,
                     currencies: [baseCurrencyCode],
@@ -86,7 +87,7 @@ export const fetchCurrentFiatRates = ({
                     const result = await scheduleAction(
                         () =>
                             TrezorConnect.blockchainGetCurrentFiatRates({
-                                coin: ticker.symbol,
+                                coin: asCoinSymbol(ticker.symbol),
                                 token: ticker.tokenAddress,
                                 currencies: [localCurrency],
                             }),

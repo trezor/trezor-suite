@@ -1,6 +1,6 @@
 import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
+import { getTronAvailableVotingPower } from '@suite-common/wallet-core';
 import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { getTronAvailableVotingPower } from '@suite-common/wallet-utils';
 import { Column, Row, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

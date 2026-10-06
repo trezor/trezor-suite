@@ -1,12 +1,7 @@
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { type NetworkType } from '@suite-common/wallet-config';
-import { selectVotingDelegationOption } from '@suite-common/wallet-core';
-import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Card, Checkbox, Column, Modal } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
 
 interface EarnProviderConsentModalLayoutProps {
     heading: ReactNode;
@@ -15,8 +10,8 @@ interface EarnProviderConsentModalLayoutProps {
     consentText: ReactNode;
     onConfirm: () => void;
     onCancel: () => void;
-    networkType: NetworkType;
     children?: ReactNode;
+    requiresAcknowledgement?: boolean;
 }
 
 export const EarnProviderConsentModalLayout = ({
@@ -26,20 +21,10 @@ export const EarnProviderConsentModalLayout = ({
     consentText,
     onConfirm,
     onCancel,
-    networkType,
     children,
+    requiresAcknowledgement = true,
 }: EarnProviderConsentModalLayoutProps) => {
     const [hasAgreed, setHasAgreed] = useState(false);
-    const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
-    const isCardanoNetworkType = networkType === 'cardano';
-
-    const isDrepValid = useMemo(() => {
-        if (!isCardanoNetworkType || selectedVotingDelegation.type !== 'another_drep') {
-            return true;
-        }
-
-        return validateCardanoDrep(selectedVotingDelegation.drepId);
-    }, [selectedVotingDelegation, isCardanoNetworkType]);
 
     return (
         <Modal
@@ -51,7 +36,7 @@ export const EarnProviderConsentModalLayout = ({
             bottomContent={
                 <>
                     <Modal.Button
-                        isDisabled={!hasAgreed || !isDrepValid}
+                        isDisabled={requiresAcknowledgement && !hasAgreed}
                         onClick={onConfirm}
                         data-testid="@modal/staking/confirm-button"
                     >
@@ -63,21 +48,27 @@ export const EarnProviderConsentModalLayout = ({
                 </>
             }
         >
-            <Column gap={12} margin={{ top: 8, bottom: 20 }}>
-                {banners}
-            </Column>
+            {!!banners && (
+                <Column gap={12} margin={{ top: 8, bottom: 20 }}>
+                    {banners}
+                </Column>
+            )}
             <Column gap={12}>
                 {children}
-                <Card>
-                    <Checkbox
-                        data-testid="@staking/provider-acknowledge-checkbox"
-                        verticalAlignment="center"
-                        onChange={() => setHasAgreed(!hasAgreed)}
-                        isChecked={hasAgreed}
-                    >
-                        {consentText}
-                    </Checkbox>
-                </Card>
+                {requiresAcknowledgement ? (
+                    <Card>
+                        <Checkbox
+                            data-testid="@staking/provider-acknowledge-checkbox"
+                            verticalAlignment="center"
+                            onChange={() => setHasAgreed(!hasAgreed)}
+                            isChecked={hasAgreed}
+                        >
+                            {consentText}
+                        </Checkbox>
+                    </Card>
+                ) : (
+                    !!consentText && <Card>{consentText}</Card>
+                )}
             </Column>
         </Modal>
     );

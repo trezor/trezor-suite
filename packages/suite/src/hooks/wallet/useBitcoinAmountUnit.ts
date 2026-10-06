@@ -1,17 +1,21 @@
-import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
-import { setBitcoinAmountUnits, toggleBitcoinAmountUnits } from '@suite-common/wallet-core';
+import {
+    selectBitcoinAmountUnit,
+    setBitcoinAmountUnits,
+    toggleBitcoinAmountUnitsThunk,
+} from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
-    const bitcoinAmountUnit = useSelector(state => state.wallet.settings.bitcoinAmountUnit);
-    const unavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
-    const dispatch = useDispatch();
+    const bitcoinAmountUnit = useSelector(selectBitcoinAmountUnit);
+    const { dispatch } = useServices(injectDispatch);
 
     const toggleBitcoinAmountUnitsAction = () => {
-        dispatch(toggleBitcoinAmountUnits());
+        dispatch(toggleBitcoinAmountUnitsThunk());
     };
 
     const setBitcoinAmountUnitsAction = (unit: PROTO.AmountUnit) => {
@@ -21,16 +25,13 @@ export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const areSatsDisplayed = bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
     const isBtcSatsAmountUnit = areSatsDisplayed && symbol === 'btc';
 
-    const areUnitsSupportedByDevice = !unavailableCapabilities?.amountUnit;
-
     const areUnitsSupportedByNetwork = getNetworkOptional(symbol)?.features.includes('amount-unit');
 
     return {
         bitcoinAmountUnit,
         areSatsDisplayed,
         isBtcSatsAmountUnit,
-        shouldSendInSats:
-            areSatsDisplayed && areUnitsSupportedByNetwork && areUnitsSupportedByDevice,
+        shouldSendInSats: areSatsDisplayed && areUnitsSupportedByNetwork,
         toggleBitcoinAmountUnits: toggleBitcoinAmountUnitsAction,
         setBitcoinAmountUnits: setBitcoinAmountUnitsAction,
         areUnitsSupportedByNetwork,

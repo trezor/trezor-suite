@@ -1,22 +1,26 @@
 import { useEffect, useMemo, useRef } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
-import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
+import {
+    getStakingDataForNetwork,
+    selectAccountClaimTransactions,
+} from '@suite-common/wallet-core';
+import { isPending } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
 import { ChecksIcon, InfoIcon, LightningIcon, SpinnerGapIcon } from '@trezor/icons';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 export const ClaimCard = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const selectedAccount = useSelector(selectSelectedAccount);
     const claimTxs = useSelector(state =>
         selectAccountClaimTransactions(state, selectedAccount?.key || null),
@@ -33,7 +37,6 @@ export const ClaimCard = () => {
 
     // Show success message when claim tx confirmation is complete.
     const prevIsClaimPending = useRef(false);
-    const dispatch = useDispatch();
 
     useEffect(() => {
         // Reset prevIsClaimPending when account changes
@@ -112,7 +115,7 @@ export const ClaimCard = () => {
                 </InfoItem>
                 <InfoItem label={<Translation id="TR_STAKE_TIME_TO_CLAIM" />} icon={LightningIcon}>
                     <Paragraph typographyStyle="headline-sm">
-                        <Translation id="TR_STAKE_INSTANT" />
+                        <Translation id="TR_EARN_INSTANTLY" />
                     </Paragraph>
                 </InfoItem>
 

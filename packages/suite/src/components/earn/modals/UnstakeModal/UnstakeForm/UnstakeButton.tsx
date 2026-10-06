@@ -1,25 +1,25 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
 import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 
 export const UnstakeButton = () => {
-    const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
     const { account, network, isComposing, formState, handleSubmit, watch, signTx, currency } =
         useWithdrawalFormContext();
     const { isUnstakingDisabled, unstakingMessageContent } = useMessageSystemStaking(
         network.symbol,
     );
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isSubmitting, errors } = formState;
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors

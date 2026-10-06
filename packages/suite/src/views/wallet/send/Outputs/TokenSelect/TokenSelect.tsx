@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
     type Explorer,
@@ -24,8 +26,9 @@ import { TokenIcon } from '@trezor/product-components';
 
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
+import { selectSendFormPrefill } from 'src/selectors/suite/suiteSelectors';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { SelectTokenAssetModal } from './SelectTokenAssetModal/SelectTokenAssetModal';
@@ -38,9 +41,9 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     const { account, setAmount, getValues, getDefaultValue, watch, setValue, setDraftSaveRequest } =
         useSendFormContext();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
-    const sendFormPrefill = useSelector(state => state.suite.prefillFields.sendForm);
+    const sendFormPrefill = useSelector(selectSendFormPrefill);
 
     const [isTokensModalActive, setIsTokensModalActive] = useState(false);
     const [prefillContractAddress, setPrefillContractAddress] = useState(sendFormPrefill);
@@ -144,6 +147,8 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                             }
                                             symbol={selectedToken?.symbol ?? account.symbol}
                                             contractAddress={selectedToken?.contract}
+                                            tokenDecimals={selectedToken?.decimals}
+                                            isCompact
                                             data-testid={tokenInputName}
                                         />
                                     </HiddenPlaceholder>{' '}

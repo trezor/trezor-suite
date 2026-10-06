@@ -26,7 +26,7 @@ test.describe.skip('MEV protection', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Settings,
                 priority: TestPriority.High,
-                stream: TestStream.Wallet,
+                stream: TestStream.Earn,
             }),
         },
         async () => {},

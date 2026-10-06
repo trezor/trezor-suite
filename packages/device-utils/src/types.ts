@@ -86,6 +86,10 @@ export type PartialDevice = {
 
 export type FirmwareSource = 'official' | 'unknown' | 'NA - bootloader';
 
+export type TranslationMetadata = {
+    status: 'production' | 'beta';
+};
+
 // Type `FirmwareRelease` is the original in releases.json probably we should get rid of it once this is replaced by the new FirmwareReleaseConfig
 export type FirmwareRelease = {
     required: boolean;
@@ -95,6 +99,7 @@ export type FirmwareRelease = {
     min_firmware_version: VersionArray;
     min_bootloader_version: VersionArray;
     translations: Record<string, string>;
+    translations_metadata?: Record<string, TranslationMetadata>;
     firmware_revision?: string;
     bootloader_hash?: string;
     fingerprint: string;
@@ -122,10 +127,12 @@ export interface IntermediaryReleaseConfig {
     version: number;
 }
 
+export type IntermediariesConfig = Record<DeviceModelInternal, IntermediaryReleaseConfig[]>;
+
 export interface FirmwareReleaseConfig {
     version: number;
     timestamp: string;
     sequence: number;
     releases: ReleasesConfig;
-    intermediaries: Record<DeviceModelInternal, IntermediaryReleaseConfig[]>;
+    intermediaries: IntermediariesConfig;
 }

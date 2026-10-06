@@ -1,7 +1,7 @@
-import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { type BlockchainEstimatedFeeLevel } from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
 import { BigNumber } from '@trezor/utils';
 
@@ -29,23 +29,19 @@ export const sortLevels = (levelA: FeeLevel, levelB: FeeLevel) =>
 type GetEip1559AvailabilityProps = {
     symbol: NetworkSymbol;
     feeLevel: FeeLevel;
-    device?: TrezorDevice;
 };
-const getEip1559Availability = ({ symbol, feeLevel, device }: GetEip1559AvailabilityProps) =>
-    getNetwork(symbol).features.includes('eip1559') &&
-    isEip1559(feeLevel) &&
-    !device?.unavailableCapabilities?.['eip1559'];
+const getEip1559Availability = ({ symbol, feeLevel }: GetEip1559AvailabilityProps) =>
+    getNetwork(symbol).features.includes('eip1559') && isEip1559(feeLevel);
 
-type GetNewFeeInfoProps = { network: Network; device?: TrezorDevice };
+type GetNewFeeInfoProps = { network: Network };
 export const getNewFeeInfo = async ({
     network,
-    device,
 }: GetNewFeeInfoProps): Promise<BlockchainEstimatedFeeLevel | undefined> => {
     const { symbol } = network;
 
     if (network.networkType === 'ethereum') {
         const result = await TrezorConnect.blockchainEstimateFee({
-            coin: symbol,
+            coin: asCoinSymbol(symbol),
             request: {
                 blocks: [2],
                 feeLevels: 'smart',
@@ -63,7 +59,6 @@ export const getNewFeeInfo = async ({
         const isEip1559ActivatedAndAvailable = getEip1559Availability({
             symbol,
             feeLevel: feeLevelBase,
-            device,
         });
 
         if (isEip1559ActivatedAndAvailable) return result.payload;
@@ -83,7 +78,7 @@ export const getNewFeeInfo = async ({
     }
 
     const result = await TrezorConnect.blockchainEstimateFee({
-        coin: symbol,
+        coin: asCoinSymbol(symbol),
         request: {
             feeLevels: 'smart',
         },

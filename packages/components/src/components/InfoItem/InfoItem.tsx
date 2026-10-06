@@ -81,7 +81,7 @@ export const InfoItem = ({
     const isRow = direction === 'row';
 
     return (
-        <Container data-testid={dataTestId} {...frameProps}>
+        <Container data-component="InfoItem" data-testid={dataTestId} {...frameProps}>
             <Flex
                 direction={direction}
                 alignItems={isRow ? mapVerticalAlignmentToAlignItems(verticalAlignment) : 'normal'}

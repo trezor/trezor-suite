@@ -1,9 +1,13 @@
+import { useState } from 'react';
+
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { Icon, Row, ShortcutBadge, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { Box, Icon, Row, ShortcutBadge, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
 
-import { useDiscovery, useDispatch } from 'src/hooks/suite';
+import { useDiscovery } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
@@ -20,7 +24,9 @@ type AddAccountButtonProps = {
 
 export const AddAccountButton = ({ device }: AddAccountButtonProps) => {
     const { isDiscoveryRunning } = useDiscovery();
-    const dispatch = useDispatch();
+    const [isHovered, setIsHovered] = useState(false);
+
+    const { dispatch } = useServices(injectDispatch);
 
     // TODO: add more cases when adding account is not possible
     const addAccountDisabled = isDiscoveryRunning || !device?.connected;
@@ -50,15 +56,17 @@ export const AddAccountButton = ({ device }: AddAccountButtonProps) => {
                 </Row>
             }
         >
-            <Icon
-                onClick={device ? handleOnClick : undefined}
-                as={PlusIcon}
-                size={16}
-                {...(addAccountDisabled
-                    ? { isDisabled: true }
-                    : { intent: 'neutral', priority: 'secondary' })}
-                data-testid={dataTestId}
-            />
+            <Box onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+                <Icon
+                    onClick={device ? handleOnClick : undefined}
+                    as={PlusIcon}
+                    size={16}
+                    isDisabled={addAccountDisabled}
+                    intent="neutral"
+                    priority={isHovered ? 'primary' : 'secondary'}
+                    data-testid={dataTestId}
+                />
+            </Box>
         </Tooltip>
     );
 

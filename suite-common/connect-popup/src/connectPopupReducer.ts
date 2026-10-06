@@ -1,6 +1,6 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { connectPopupActions } from './connectPopupActions';
 import { getPermissionDeferred } from './connectPopupPromiseManager';
@@ -38,9 +38,11 @@ const normalizeRememberedCoins = (app: AppRememberedPermission): AppRememberedPe
     allowedPermissions: canonicalizePermissionCoins(app.allowedPermissions),
 });
 
+export type ConnectPopupReducerDeps = ActionTypesDep<'storageLoad'>;
+
 export const prepareConnectPopupReducer = createReducerWithExtraDeps(
     connectPopupInitialState,
-    (builder, extra) => {
+    (builder, extra: ConnectPopupReducerDeps) => {
         builder
             .addCase(
                 extra.actionTypes.storageLoad,
@@ -133,6 +135,9 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                         ...state.activeCall,
                         state: 'select-account',
                         ...payload,
+                        // Clear the load state for a new selectAccount call. See #29662.
+                        loadingKey: undefined,
+                        loadEpoch: undefined,
                     };
                 }
             })

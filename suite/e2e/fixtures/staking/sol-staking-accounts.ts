@@ -197,6 +197,56 @@ const deactivatingDecoded: SolanaStakingAccountDecoded = {
     },
 };
 
+// Same as activeFirst, but delegated to a validator other than Everstake, which Suite treats
+// as staking outside of Trezor Suite
+const activeExternal: SolanaStakingAccount = {
+    account: {
+        data: [
+            'AgAAAIDVIgAAAAAAUmFf8A6VI0pKOVEke559+E+OI7KNM3QcnXkN+plt4fxSYV/wDpUjSko5USR7nn34T44jso0zdBydeQ36mW3h/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGO/Hu0HfWeX092jEMwoXglC580jc0r7/6cRyVxKKj2pAPkClQAAAABgAwAAAAAAAP//////////AAAAAAAA0D8sQwlYAAAAAAAAAAA=',
+            'base64',
+        ],
+        executable: false,
+        lamports: 2502282880,
+        owner: 'Stake11111111111111111111111111111111111111',
+        rentEpoch: '18446744073709551615',
+        space: 200,
+    },
+    pubkey: 'C5zDrSWvmmwTufcMABQsQr5B7NtyuYEGRHVLv7neMMev',
+};
+
+const activeExternalDecoded: SolanaStakingAccountDecoded = {
+    state: {
+        __kind: 'Stake',
+        fields: [
+            {
+                rentExemptReserve: '2282880',
+                authorized: {
+                    staker: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                    withdrawer: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                },
+                lockup: {
+                    unixTimestamp: '0',
+                    epoch: '0',
+                    custodian: '11111111111111111111111111111111',
+                },
+            },
+            {
+                delegation: {
+                    voterPubkey: '7iNPdvayv2qfNcp4NW4D7raYvsc2tF24bpnV8SfgUHUc',
+                    stake: '2500000000',
+                    activationEpoch: '864',
+                    deactivationEpoch: '18446744073709551615',
+                    warmupCooldownRate: 0.25,
+                },
+                creditsObserved: '1477002028',
+            },
+            {
+                bits: 0,
+            },
+        ],
+    },
+};
+
 class SolanaStakingAccountFixture {
     constructor(
         public payload: SolanaStakingAccount,
@@ -236,6 +286,10 @@ export const solStakingAccountDeactivating = new SolanaStakingAccountFixture(
     deactivating,
     deactivatingDecoded,
 );
+export const solStakingAccountExternal = new SolanaStakingAccountFixture(
+    activeExternal,
+    activeExternalDecoded,
+);
 
 export const totalReward = {
     url: '**/sol/rewards/8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe/total',
@@ -246,7 +300,7 @@ export const rewards: {
     url: string;
     response: { rewards: SolanaReward[]; totalCount: number };
 } = {
-    url: '**/sol/rewards/8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe**',
+    url: '**/sol/rewards/8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe?**',
     response: {
         rewards: [
             {

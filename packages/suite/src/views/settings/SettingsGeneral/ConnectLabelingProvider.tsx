@@ -2,16 +2,16 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { metadataLabelingActions } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Tooltip } from '@trezor/components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch } from 'src/hooks/suite';
-
 export const ConnectLabelingProvider = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
     const isDeviceConnected = device?.connected && device?.available;
-    const handleClick = () => dispatch(metadataLabelingActions.init(true));
+    const handleClick = () => dispatch(metadataLabelingActions.initThunk(true));
 
     return (
         <Anchor anchorId={SettingsAnchor.LabelingConnect}>

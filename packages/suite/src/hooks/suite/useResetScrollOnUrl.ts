@@ -1,14 +1,13 @@
-import { useLayoutEffect, useRef } from 'react';
+import { type RefObject, useLayoutEffect, useRef } from 'react';
 
 import { selectRoute, selectRouterUrl } from '@suite/router';
 
-import { useSelector } from './useSelector';
+import { useSelector } from 'src/hooks/suite';
 
-export const useResetScrollOnUrl = () => {
+export const useResetScrollOnUrl = (scrollRef: RefObject<HTMLDivElement | null>) => {
     const url = useSelector(selectRouterUrl);
     const route = useSelector(selectRoute);
 
-    const scrollRef = useRef<HTMLDivElement>(null);
     const lastNonForegroundUrl = useRef<string | null>(null);
 
     // Reset scroll position on url change.
@@ -26,7 +25,5 @@ export const useResetScrollOnUrl = () => {
 
         lastNonForegroundUrl.current = url;
         current.scrollTop = 0; // reset scroll position on url change
-    }, [url, route]);
-
-    return { scrollRef };
+    }, [scrollRef, url, route]);
 };

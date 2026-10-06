@@ -8,11 +8,14 @@ import {
     TxSimulationProvider,
     TxSimulationTitle,
 } from '@suite/tx-simulation/src/common';
-import { EvmInsufficientGasWarning, EvmTxSimulationDisclaimer } from '@suite/tx-simulation/src/evm';
+import { EvmInsufficientGasWarning } from '@suite/tx-simulation/src/evm';
 import { connectPopupActions } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TX_METHODS_WITH_FEES,
     areTxSimulationMethods,
+    getTxSimulationDisclaimerKey,
     isTxSimulationResultWithMethods,
     useTxSimulation,
 } from '@suite-common/tx-simulation';
@@ -23,8 +26,9 @@ import { ERRORS } from '@trezor/connect-common';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDispatch } from 'src/hooks/suite';
 
+import { TxSimulationDisclaimer } from '../common/components/TxSimulationDisclaimer';
+import { TxSimulationErrorBoundary } from '../common/components/TxSimulationErrorBoundary';
 import { TxSimulationHeader } from '../common/components/TxSimulationHeader';
 import { TxSimulationSuccessResult } from '../common/components/TxSimulationSuccessResult';
 import { useEvmTxSimulationFeesForm } from '../common/hooks/useEvmTxSimulationFeesForm';
@@ -38,8 +42,10 @@ export function ConnectPopupTxSimulationModalInner({
     action,
     account,
 }: ConnectPopupTxSimulationModalInnerProps) {
-    const dispatch = useDispatch();
-    const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
+    const { dispatch } = useServices(injectDispatch);
+    const [acceptedDisclaimerKey, setAcceptedDisclaimerKey] = useState<string | null>(null);
+    const [hasRenderFailure, setHasRenderFailure] = useState(false);
+    const [renderFailureAccepted, setRenderFailureAccepted] = useState(false);
 
     const {
         form,
@@ -72,13 +78,13 @@ export function ConnectPopupTxSimulationModalInner({
 
     const { txSimulationQuery, network, targetContract } = simulation;
 
-    if (
-        !areTxSimulationMethods(
-            ['ethereumSignTransaction', 'ethereumSignTypedData'] as const,
-            action,
-        )
-    ) {
-        return null;
+    // Acceptance is tracked by what was accepted, not by a bare flag: a refetch that starts warning
+    // about something else invalidates it and the user has to acknowledge the new reason.
+    const disclaimerKey = getTxSimulationDisclaimerKey(txSimulationQuery.data);
+    const disclaimerAccepted = disclaimerKey !== null && disclaimerKey === acceptedDisclaimerKey;
+
+    function acceptDisclaimer(isAccepted: boolean) {
+        setAcceptedDisclaimerKey(isAccepted ? disclaimerKey : null);
     }
 
     function confirm() {
@@ -114,7 +120,8 @@ export function ConnectPopupTxSimulationModalInner({
 
     const isConfirmDisabled = Boolean(
         txSimulationQuery.isLoading ||
-        (txSimulationQuery.data?.payload?.needsDisclaimer && !disclaimerAccepted),
+        (txSimulationQuery.data?.payload?.needsDisclaimer && !disclaimerAccepted) ||
+        (hasRenderFailure && !renderFailureAccepted),
     );
 
     return (
@@ -141,18 +148,23 @@ export function ConnectPopupTxSimulationModalInner({
                     <TxSimulationError error={txSimulationQuery.error?.message}>
                         <TxSimulationLoader isLoading={txSimulationQuery.isLoading}>
                             {txSimulationQuery.isSuccess && (
-                                <>
+                                <TxSimulationErrorBoundary
+                                    isAccepted={renderFailureAccepted}
+                                    onChange={setRenderFailureAccepted}
+                                    onError={setHasRenderFailure}
+                                    resetKey={txSimulationQuery.data}
+                                >
                                     <TxSimulationSuccessResult
                                         result={txSimulationQuery.data}
                                         network={network}
                                         targetContract={targetContract}
                                     />
-                                    <EvmTxSimulationDisclaimer
-                                        result={txSimulationQuery.data.payload}
+                                    <TxSimulationDisclaimer
+                                        result={txSimulationQuery.data}
                                         isAccepted={disclaimerAccepted}
-                                        onChange={setDisclaimerAccepted}
+                                        onChange={acceptDisclaimer}
                                     />
-                                </>
+                                </TxSimulationErrorBoundary>
                             )}
                         </TxSimulationLoader>
                     </TxSimulationError>
@@ -175,11 +187,13 @@ export function ConnectPopupTxSimulationModalInner({
                             </FormProvider>
                         )}
 
-                        <EvmInsufficientGasWarning
-                            composedLevel={currentComposedLevel}
-                            accountBalance={account.balance}
-                            networkSymbol={account.symbol}
-                        />
+                        {areTxSimulationMethods(TX_METHODS_WITH_FEES, action) && (
+                            <EvmInsufficientGasWarning
+                                composedLevel={currentComposedLevel}
+                                accountBalance={account.balance}
+                                networkSymbol={account.symbol}
+                            />
+                        )}
                     </Column>
                 </Column>
             </Modal.ModalBase>

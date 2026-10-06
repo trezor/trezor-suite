@@ -2,6 +2,8 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { asDeviceUniquePath } from '@trezor/connect-common';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
+export const DEVICE_MODULE_PREFIX = '@suite/device';
+
 // These hidden device constants are used in mobile app to hold all imported accounts.
 
 // Changing these strings will result in app crash as accounts are persisted.
@@ -10,6 +12,9 @@ export const PORTFOLIO_TRACKER_DEVICE_ID = 'hiddenDeviceWithImportedAccounts';
 export const PORTFOLIO_TRACKER_DEVICE_STATE = `state@${PORTFOLIO_TRACKER_DEVICE_ID}:1`;
 
 export const DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD = 40;
+
+export const PIN_MAX_LENGTH = 50;
+export const PASSPHRASE_MAX_LENGTH = 50;
 
 export const portfolioTrackerDevice: TrezorDevice = {
     type: 'acquired',

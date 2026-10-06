@@ -1,3 +1,5 @@
+export { coinSignMessageEvent } from './coinSignMessageEvent';
+export { coinVerifyMessageEvent } from './coinVerifyMessageEvent';
 export { connectPopupCallEvent } from './connectPopupCallEvent';
 export { connectPopupErrorEvent } from './connectPopupErrorEvent';
 export { connectPopupInitEvent } from './connectPopupInitEvent';
@@ -34,6 +36,11 @@ export {
     promoNoDeviceEshopCtaEvent,
     type NoDeviceEshopCtaOrigin,
 } from './promoNoDeviceEshopCtaEvent';
+export { promoDashboardBannerEvent } from './promoDashboardBannerEvent';
+export {
+    receiveEntryInteractionEvent,
+    type ReceiveEntryInteractionAction,
+} from './receiveEntryInteractionEvent';
 export { guideSupportChatOpenedEvent } from './guideSupportChatOpenedEvent';
 export { yieldEarnDashboardReadyEvent } from './yieldEarnDashboardReadyEvent';
 export { yieldInteractionEvent } from './yieldInteractionEvent';
@@ -41,3 +48,5 @@ export { yieldNavigateEvent } from './yieldNavigateEvent';
 export { yieldDepositEvent } from './yieldDepositEvent';
 export { yieldWithdrawEvent } from './yieldWithdrawEvent';
 export { yieldClaimEvent } from './yieldClaimEvent';
+export { yieldWrapEvent } from './yieldWrapEvent';
+export { yieldUnwrapEvent } from './yieldUnwrapEvent';

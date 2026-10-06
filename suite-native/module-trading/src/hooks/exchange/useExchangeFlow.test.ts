@@ -1,16 +1,24 @@
+import { type Store } from '@reduxjs/toolkit';
+
+import { type DeviceRootState } from '@suite-common/device';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { RootStackRoutes } from '@suite-native/navigation';
-import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { type UseExchangeFlowProps, useExchangeFlow } from './useExchangeFlow';
 import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & DeviceRootState;
 
 const mockNavigate = jest.fn();
 let mockConfirmTradeThunk: jest.Mock;
@@ -74,11 +82,11 @@ describe('useExchangeFlow', () => {
         });
     };
 
-    const renderUseExchangeFlow = ({
+    const renderUseExchangeFlow = async ({
         store,
         flowType,
     }: {
-        store: TestStore;
+        store: Store<State>;
         flowType?: UseExchangeFlowProps['flowType'];
     }) => {
         const reportMock = jest.fn();
@@ -88,10 +96,11 @@ describe('useExchangeFlow', () => {
 
         return {
             reportMock,
-            result: renderHookWithStoreProvider(() => useExchangeFlow({ flowType }), {
-                services,
-                store,
-            }).result,
+            result: (
+                await renderHookWithStoreProvider(() => useExchangeFlow({ flowType }), {
+                    services: { ...services, store },
+                })
+            ).result,
         };
     };
 
@@ -118,7 +127,7 @@ describe('useExchangeFlow', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const mockNextStep = jest.fn();
 
-            const { result } = renderUseExchangeFlow({ store });
+            const { result } = await renderUseExchangeFlow({ store });
 
             const mockTrade = {
                 exchange: 'test-exchange',
@@ -163,7 +172,7 @@ describe('useExchangeFlow', () => {
                 unwrap: () => Promise.resolve(false),
             }));
 
-            const { result } = renderUseExchangeFlow({ store });
+            const { result } = await renderUseExchangeFlow({ store });
 
             const confirmResult = await act(() =>
                 result.current.confirmTrade({
@@ -184,7 +193,7 @@ describe('useExchangeFlow', () => {
             const store = getInitializedStore();
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
 
-            const { result } = renderUseExchangeFlow({ store });
+            const { result } = await renderUseExchangeFlow({ store });
 
             const confirmResult = await act(() =>
                 result.current.confirmTrade({
@@ -206,7 +215,7 @@ describe('useExchangeFlow', () => {
 
             const tradingState = getInitializedTradingStateWithQuotes();
             tradingState.exchange.tradingAccountKey = mockAccountKey({
-                symbol: 'btc',
+                symbol: asNetworkSymbol('btc'),
                 descriptor: 'unknownAccount',
             });
             tradingState.exchange.receiveAccountKey = btc2Account.key;
@@ -221,7 +230,7 @@ describe('useExchangeFlow', () => {
                     },
                 },
             });
-            const { result } = renderUseExchangeFlow({ store });
+            const { result } = await renderUseExchangeFlow({ store });
 
             const confirmResult = await act(() =>
                 result.current.confirmTrade({
@@ -249,7 +258,7 @@ describe('useExchangeFlow', () => {
             const mockNextStep = jest.fn();
             const mockOnError = jest.fn();
 
-            const { result } = renderUseExchangeFlow({ store });
+            const { result } = await renderUseExchangeFlow({ store });
 
             const signResult = await act(() =>
                 result.current.signDataAndConfirm({
@@ -284,7 +293,7 @@ describe('useExchangeFlow', () => {
             const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementationOnce(() => {});
             const store = getInitializedStore();
 
-            const { result } = renderUseExchangeFlow({ store });
+            const { result } = await renderUseExchangeFlow({ store });
 
             const signResult = await act(() =>
                 result.current.signDataAndConfirm({
@@ -315,7 +324,7 @@ describe('useExchangeFlow', () => {
                 unwrap: () => Promise.reject(error),
             }));
 
-            const { result } = renderUseExchangeFlow({ store });
+            const { result } = await renderUseExchangeFlow({ store });
 
             const signResult = await act(() =>
                 result.current.signDataAndConfirm({
@@ -336,7 +345,7 @@ describe('useExchangeFlow', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const mockNextStep = jest.fn();
 
-            const { result, reportMock } = renderUseExchangeFlow({ store });
+            const { result, reportMock } = await renderUseExchangeFlow({ store });
 
             const mockTrade = {
                 exchange: 'test-exchange',
@@ -367,7 +376,7 @@ describe('useExchangeFlow', () => {
     });
 
     describe('navigation', () => {
-        it('should navigate to TradingConfirming with flowType approve when quoteStatus is APPROVAL_PENDING', () => {
+        it('should navigate to TradingConfirming with flowType approve when quoteStatus is APPROVAL_PENDING', async () => {
             const tradingState = getInitializedTradingStateWithQuotes();
             tradingState.exchange.tradingAccountKey = btc1Account.key;
             tradingState.exchange.receiveAccountKey = btc2Account.key;
@@ -386,14 +395,14 @@ describe('useExchangeFlow', () => {
                 },
             });
 
-            renderUseExchangeFlow({ store });
+            await renderUseExchangeFlow({ store });
 
             expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingConfirming, {
                 flowType: 'approve',
             });
         });
 
-        it('should navigate with flowType revoke when quoteStatus is APPROVAL_PENDING and flowType is revoke', () => {
+        it('should navigate with flowType revoke when quoteStatus is APPROVAL_PENDING and flowType is revoke', async () => {
             const tradingState = getInitializedTradingStateWithQuotes();
             tradingState.exchange.tradingAccountKey = btc1Account.key;
             tradingState.exchange.receiveAccountKey = btc2Account.key;
@@ -412,14 +421,14 @@ describe('useExchangeFlow', () => {
                 },
             });
 
-            renderUseExchangeFlow({ store, flowType: 'revoke' });
+            await renderUseExchangeFlow({ store, flowType: 'revoke' });
 
             expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingConfirming, {
                 flowType: 'revoke',
             });
         });
 
-        it('should navigate with flowType revoke-and-approve when quoteStatus is APPROVAL_PENDING and flowType is revoke-and-approve', () => {
+        it('should navigate with flowType revoke-and-approve when quoteStatus is APPROVAL_PENDING and flowType is revoke-and-approve', async () => {
             const tradingState = getInitializedTradingStateWithQuotes();
             tradingState.exchange.tradingAccountKey = btc1Account.key;
             tradingState.exchange.receiveAccountKey = btc2Account.key;
@@ -438,17 +447,17 @@ describe('useExchangeFlow', () => {
                 },
             });
 
-            renderUseExchangeFlow({ store, flowType: 'revoke-and-approve' });
+            await renderUseExchangeFlow({ store, flowType: 'revoke-and-approve' });
 
             expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingConfirming, {
                 flowType: 'revoke-and-approve',
             });
         });
 
-        it('should not navigate to TradingConfirming when quoteStatus is not APPROVAL_PENDING', () => {
+        it('should not navigate to TradingConfirming when quoteStatus is not APPROVAL_PENDING', async () => {
             const store = getInitializedStore();
 
-            renderUseExchangeFlow({ store });
+            await renderUseExchangeFlow({ store });
 
             expect(mockNavigate).not.toHaveBeenCalledWith(
                 RootStackRoutes.TradingConfirming,

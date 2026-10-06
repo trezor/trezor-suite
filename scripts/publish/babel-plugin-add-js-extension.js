@@ -26,6 +26,48 @@ const externalJsonImports = [];
  * - External CJS subpaths: some-package/subpath → some-package/subpath.js
  */
 const addEsmExtensionPlugin = ({ types }) => {
+    // Returns the specifier with its runtime extension, or null when it needs no change.
+    const withExtension = (src, filename) => {
+        // Handle @trezor package imports to lib
+        if (isTrezorLibImport(src)) {
+            const match = src.match(/^@trezor\/([^/]+)\/lib\/(.+)$/);
+            const [, packageName, subpath] = match;
+
+            // Find packages/ root from the current file's absolute path by locating the lib/ segment.
+            // e.g., /packages/connect/lib/device/thp/pairing.js → /packages/
+            const libIndex = filename.indexOf(`${path.sep}lib${path.sep}`);
+            const packageDir = filename.substring(0, libIndex);
+            const packagesRoot = path.dirname(packageDir);
+            // Check src/ instead of lib/ — src/ is always present in the repo regardless of
+            // build order, whereas lib/ may not exist yet in CI when this package is compiled.
+            const resolvedSrcPath = path.join(packagesRoot, packageName, 'src', subpath);
+
+            const isDirectory =
+                fs.existsSync(resolvedSrcPath) && fs.statSync(resolvedSrcPath).isDirectory();
+
+            // e.g., @trezor/protocol/lib/protocol-tpn -> @trezor/protocol/lib/protocol-tpn/index.js
+            // e.g., @trezor/protocol/lib/bigNumber -> @trezor/protocol/lib/bigNumber.js
+            return isDirectory ? src + '/index.js' : src + '.js';
+        }
+
+        // External CJS subpaths need .js for ESM
+        if (isExternalCjsSubpath(src)) {
+            return src + '.js';
+        }
+
+        if (isRelativeImport(src)) {
+            const currentFileDir = path.dirname(filename);
+            const resolvedPath = path.resolve(currentFileDir, src);
+
+            const isDirectory =
+                fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isDirectory();
+
+            return isDirectory ? src + '/index.js' : src + '.js';
+        }
+
+        return null;
+    };
+
     const modifyPath = (nodePath, state) => {
         const src = nodePath.node.source?.value;
         if (!src) return;
@@ -42,56 +84,17 @@ const addEsmExtensionPlugin = ({ types }) => {
             return;
         }
 
-        // Handle @trezor package imports to lib
-        if (isTrezorLibImport(src)) {
-            const match = src.match(/^@trezor\/([^/]+)\/lib\/(.+)$/);
-            const [, packageName, subpath] = match;
+        const next = withExtension(src, state.filename);
+        if (next) nodePath.node.source = types.stringLiteral(next);
+    };
 
-            // Find packages/ root from the current file's absolute path by locating the lib/ segment.
-            // e.g., /packages/connect/lib/device/thp/pairing.js → /packages/
-            const libIndex = state.filename.indexOf(`${path.sep}lib${path.sep}`);
-            const packageDir = state.filename.substring(0, libIndex);
-            const packagesRoot = path.dirname(packageDir);
-            // Check src/ instead of lib/ — src/ is always present in the repo regardless of
-            // build order, whereas lib/ may not exist yet in CI when this package is compiled.
-            const resolvedSrcPath = path.join(packagesRoot, packageName, 'src', subpath);
+    // Rewrites a specifier held directly in a string literal node, for the positions that do not
+    // have a `source` property: dynamic import(), new URL() and .d.ts inline import() types.
+    const modifyStringLiteral = (node, state) => {
+        if (!types.isStringLiteral(node)) return;
 
-            const isDirectory =
-                fs.existsSync(resolvedSrcPath) && fs.statSync(resolvedSrcPath).isDirectory();
-
-            // e.g., @trezor/protocol/lib/protocol-tpn -> @trezor/protocol/lib/protocol-tpn/index.js
-            // e.g., @trezor/protocol/lib/bigNumber -> @trezor/protocol/lib/bigNumber.js
-            if (isDirectory) {
-                nodePath.node.source = types.stringLiteral(src + '/index.js');
-            } else {
-                nodePath.node.source = types.stringLiteral(src + '.js');
-            }
-
-            return;
-        }
-
-        // External CJS subpaths need .js for ESM
-        if (isExternalCjsSubpath(src)) {
-            nodePath.node.source = types.stringLiteral(src + '.js');
-
-            return;
-        }
-
-        if (isRelativeImport(src)) {
-            const currentFileDir = path.dirname(state.filename);
-            const resolvedPath = path.resolve(currentFileDir, src);
-
-            const isDirectory =
-                fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isDirectory();
-
-            if (isDirectory) {
-                nodePath.node.source = types.stringLiteral(src + '/index.js');
-            } else {
-                nodePath.node.source = types.stringLiteral(src + '.js');
-            }
-
-            return;
-        }
+        const next = withExtension(node.value, state.filename);
+        if (next) node.value = next;
     };
 
     return {
@@ -105,6 +108,21 @@ const addEsmExtensionPlugin = ({ types }) => {
             },
             ExportNamedDeclaration(nodePath, state) {
                 modifyPath(nodePath, state);
+            },
+            // Dynamic import("@trezor/blockchain-link/lib/workers/solana") resolves to a directory
+            // without this, which Node ESM cannot import.
+            CallExpression(nodePath, state) {
+                if (!types.isImport(nodePath.node.callee)) return;
+                modifyStringLiteral(nodePath.node.arguments[0], state);
+            },
+            // Bundler worker idiom: new Worker(new URL('<specifier>', import.meta.url)).
+            NewExpression(nodePath, state) {
+                if (!types.isIdentifier(nodePath.node.callee, { name: 'URL' })) return;
+                modifyStringLiteral(nodePath.node.arguments[0], state);
+            },
+            // Inline import("...") types in .d.ts files.
+            TSImportType(nodePath, state) {
+                modifyStringLiteral(nodePath.node.argument, state);
             },
         },
     };

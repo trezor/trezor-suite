@@ -1,10 +1,5 @@
-import {
-    type AddressValidator,
-    isAddressDeprecated,
-    isBech32AddressUppercase,
-    isTaprootAddress,
-} from '@suite-common/address';
-import { formInputsMaxLength, yup } from '@suite-common/validators';
+import { isAddressDeprecated, isBech32AddressUppercase } from '@suite-common/address';
+import { type AddressValidator, type NamedAddressSupport } from '@suite-common/networks';
 import { type NetworkSymbol, getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { type FeeInfo, type Output } from '@suite-common/wallet-types';
@@ -13,7 +8,10 @@ import {
     isAmountWithinNetworkReserve,
     isDecimalsValid,
 } from '@suite-common/wallet-utils';
+import { yup } from '@suite-native/forms';
 import { type FeeLevelsMaxAmount } from '@suite-native/transaction-management';
+import { SOLANA_MEMO_MAX_BYTES } from '@trezor/network-solana/constants';
+import { STELLAR_TEXT_MEMO_MAX_BYTES } from '@trezor/network-stellar/constants';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 export type SendFormFormContext = {
@@ -23,13 +21,14 @@ export type SendFormFormContext = {
     networkFeeInfo?: FeeInfo;
     isValueInSats?: boolean;
     isTokenFlow?: boolean;
-    feeLevelsMaxAmount?: FeeLevelsMaxAmount;
+    maxSendAmountByFeeLevel?: FeeLevelsMaxAmount;
     decimals?: number;
     accountDescriptor?: string;
-    isTaprootAvailable?: boolean;
-    accountNativeAvailableBalance?: string;
+    nativeCurrencyAvailableBalance?: string;
     networkReserve?: string;
     rippleReserve?: string;
+    /** What the recipient network can do with names, owned by its network module. */
+    namedAddress?: NamedAddressSupport;
 };
 
 const isAmountDust = (amount: string, context?: SendFormFormContext) => {
@@ -56,56 +55,69 @@ const isAmountDust = (amount: string, context?: SendFormFormContext) => {
     return amountBigNumber.lt(dustThreshold);
 };
 
-const isAmountHigherThanBalance = (
-    amount: string,
-    isSendMaxEnabled: boolean,
-    context?: SendFormFormContext,
-) => {
-    if (!amount || !context) {
-        return false;
-    }
-
-    const { symbol, networkFeeInfo, availableBalance, feeLevelsMaxAmount, isTokenFlow } = context;
-
-    if (!symbol || !networkFeeInfo || !availableBalance) {
-        return false;
-    }
-
-    const amountBigNumber = new BigNumber(amount);
-    if (isTokenFlow) {
-        return amountBigNumber.gt(availableBalance);
-    }
-
-    const normalMaxAmount = feeLevelsMaxAmount?.normal;
-
-    // if send max is enabled, user is allowed submit form even if there is enough balance only for economy fee.
-    if (isSendMaxEnabled) {
-        const lowestLevelMaxAmount = feeLevelsMaxAmount?.economy ?? normalMaxAmount;
-        if (!lowestLevelMaxAmount) return true;
-
-        return amountBigNumber.gt(lowestLevelMaxAmount);
-    }
-
-    return !normalMaxAmount || amountBigNumber.gt(normalMaxAmount);
+type HasSufficientBalanceParams = {
+    amount: string;
+    isSendMaxSelected: boolean;
+    context?: SendFormFormContext;
 };
 
-const hasEnoughBalanceForFees = (context?: SendFormFormContext) => {
-    if (!context) {
-        return false;
+const hasSufficientBalance = ({
+    amount,
+    isSendMaxSelected,
+    context,
+}: HasSufficientBalanceParams): boolean => {
+    if (!amount || !context) {
+        return true;
     }
 
-    const { symbol, networkFeeInfo, accountNativeAvailableBalance, isTokenFlow } = context;
+    const { symbol, availableBalance, isTokenFlow, isValueInSats, maxSendAmountByFeeLevel } =
+        context;
+    const amountBigNumber = new BigNumber(amount);
+
+    if (isTokenFlow) {
+        return !availableBalance || amountBigNumber.lte(availableBalance);
+    }
+
+    const normalMaxSendAmount = maxSendAmountByFeeLevel?.normal;
+
+    // Send Max may proceed when only the economy fee leaves enough balance.
+    const feeAdjustedMaxSendAmount = isSendMaxSelected
+        ? (maxSendAmountByFeeLevel?.economy ?? normalMaxSendAmount)
+        : normalMaxSendAmount;
+
+    if (feeAdjustedMaxSendAmount) {
+        return amountBigNumber.lte(feeAdjustedMaxSendAmount);
+    }
+
+    // When fees are unavailable, validate only against the available balance. Fee UI handles the
+    // missing fee information, and review remains blocked until composition produces a final
+    // transaction.
+    if (!availableBalance || !symbol) return true;
+
+    const availableBalanceInFormUnits = isValueInSats
+        ? availableBalance
+        : formatNetworkAmount(availableBalance, symbol);
+
+    return amountBigNumber.lte(availableBalanceInFormUnits);
+};
+
+const hasSufficientNativeCurrencyForTokenFee = (context?: SendFormFormContext): boolean => {
+    if (!context) {
+        return true;
+    }
+
+    const { symbol, networkFeeInfo, nativeCurrencyAvailableBalance, isTokenFlow } = context;
 
     if (!isTokenFlow) {
         return true;
     }
-    if (!symbol || !networkFeeInfo || !accountNativeAvailableBalance) {
-        return false;
+    if (!symbol || !networkFeeInfo?.levels.length || !nativeCurrencyAvailableBalance) {
+        return true;
     }
 
-    const amountBigNumber = new BigNumber(accountNativeAvailableBalance);
+    const nativeCurrencyBalance = new BigNumber(nativeCurrencyAvailableBalance);
 
-    return amountBigNumber.gt(networkFeeInfo.minFee);
+    return nativeCurrencyBalance.gt(networkFeeInfo.minFee);
 };
 
 const outputSchema = yup.object({
@@ -119,20 +131,41 @@ const outputSchema = yup.object({
                 if (!value || !context) {
                     return false;
                 }
-                const { addressValidator, symbol, isTaprootAvailable } = context;
+                const { addressValidator, symbol, namedAddress } = context;
 
                 if (!addressValidator || !symbol) return false;
 
-                const isTaprootValid =
-                    isTaprootAvailable ||
-                    !isTaprootAddress({ addressValidator, address: value, symbol });
+                // A named input (e.g. ENS) is not an address, so the format check would always
+                // fail it. `is-name-resolved` gates it on the address it resolved to instead.
+                if (namedAddress?.isSupported && namedAddress.isNameLike(value)) {
+                    return true;
+                }
 
                 return (
                     addressValidator.isAddressValid(value, symbol) &&
                     !isAddressDeprecated({ addressValidator, address: value, symbol }) &&
-                    !isBech32AddressUppercase(value) && // bech32 addresses are valid as uppercase but are not accepted by Trezor
-                    isTaprootValid // bech32m/Taproot addresses are valid but may not be supported by older FW
+                    !isBech32AddressUppercase(value) // bech32 addresses are valid as uppercase but are not accepted by Trezor
                 );
+            },
+        )
+        .test(
+            'is-name-resolved',
+            'Could not resolve name. Check that the name is correct.',
+            function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
+                const { addressValidator, symbol, namedAddress } = context ?? {};
+
+                if (!value || !addressValidator || !symbol) return true;
+                if (!namedAddress?.isSupported) return true;
+                if (!namedAddress.isNameLike(value)) return true;
+
+                const { resolvedAddress } = this.parent as { resolvedAddress?: string };
+
+                // `undefined` means the resolution has not settled yet, so there is nothing to
+                // fail on. Submission is blocked meanwhile by the send screen, not here — erroring
+                // while a name is still resolving would flash on every keystroke.
+                if (resolvedAddress === undefined) return true;
+
+                return addressValidator.isAddressValid(resolvedAddress, symbol);
             },
         )
         .test(
@@ -171,10 +204,26 @@ const outputSchema = yup.object({
                 !isAmountDust(value, context),
         )
         .test(
+            'is-higher-than-balance',
+            'You don’t have enough balance to send this amount.',
+            function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
+                const isSendMaxSelected = isNotNullOrUndefined(
+                    this.from?.[1]?.value.setMaxOutputId,
+                );
+
+                return hasSufficientBalance({
+                    amount: value,
+                    isSendMaxSelected,
+                    context,
+                });
+            },
+        )
+        .test(
             'ripple-higher-than-reserve',
             'Amount is above the required unspendable reserve',
             function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                const { symbol, availableBalance, feeLevelsMaxAmount, rippleReserve } = context!;
+                const { symbol, availableBalance, maxSendAmountByFeeLevel, rippleReserve } =
+                    context!;
 
                 if (!availableBalance || !symbol || getNetworkType(symbol) !== 'ripple')
                     return true;
@@ -182,10 +231,10 @@ const outputSchema = yup.object({
                 const amountBigNumber = new BigNumber(value);
 
                 if (
-                    feeLevelsMaxAmount?.normal &&
+                    maxSendAmountByFeeLevel?.normal &&
                     amountBigNumber.gt(
                         formatNetworkAmount(
-                            // availableBalance = balance - reserve
+                            // The available balance already excludes the Ripple reserve.
                             availableBalance,
                             symbol,
                         ),
@@ -204,9 +253,8 @@ const outputSchema = yup.object({
         .test(
             'has-enough-balance-for-fees',
             `Insufficient balance to cover the transaction fees.`,
-            function (_, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                return hasEnoughBalanceForFees(context);
-            },
+            (_, { options: { context } }: yup.TestContext<SendFormFormContext>) =>
+                hasSufficientNativeCurrencyForTokenFee(context),
         )
         .test(
             'network-reserve',
@@ -219,39 +267,32 @@ const outputSchema = yup.object({
                     availableBalance,
                     networkReserve,
                     isTokenFlow,
-                    feeLevelsMaxAmount,
+                    maxSendAmountByFeeLevel,
                 } = context;
 
                 if (!symbol || !availableBalance || !networkReserve || isTokenFlow) return true;
 
-                const formattedBalance = formatNetworkAmount(availableBalance, symbol);
-                if (new BigNumber(value).gt(formattedBalance)) return true;
+                const availableBalanceInFormUnits = formatNetworkAmount(availableBalance, symbol);
+                if (new BigNumber(value).gt(availableBalanceInFormUnits)) return true;
 
-                const isSendMaxEnabled = isNotNullOrUndefined(this.from?.[1]?.value.setMaxOutputId);
-                const feeLevelMaxAmount = isSendMaxEnabled
-                    ? feeLevelsMaxAmount?.economy
-                    : feeLevelsMaxAmount?.normal;
+                const isSendMaxSelected = isNotNullOrUndefined(
+                    this.from?.[1]?.value.setMaxOutputId,
+                );
+                const maxSendAmount = isSendMaxSelected
+                    ? maxSendAmountByFeeLevel?.economy
+                    : maxSendAmountByFeeLevel?.normal;
 
-                if (!feeLevelMaxAmount) return true;
+                if (!maxSendAmount) return true;
 
-                const feeWithReserve = new BigNumber(formattedBalance)
-                    .minus(feeLevelMaxAmount)
+                const feeAndReserveAmount = new BigNumber(availableBalanceInFormUnits)
+                    .minus(maxSendAmount)
                     .toString();
 
                 return isAmountWithinNetworkReserve({
-                    reserve: feeWithReserve,
-                    balance: formattedBalance,
+                    reserve: feeAndReserveAmount,
+                    balance: availableBalanceInFormUnits,
                     amount: value,
                 });
-            },
-        )
-        .test(
-            'is-higher-than-balance',
-            'You don’t have enough balance to send this amount.',
-            function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                const isSendMaxEnabled = isNotNullOrUndefined(this.from?.[1]?.value.setMaxOutputId);
-
-                return !isAmountHigherThanBalance(value, isSendMaxEnabled, context);
             },
         )
         .test(
@@ -266,6 +307,9 @@ const outputSchema = yup.object({
     fiat: yup.string(),
     token: yup.string().required().nullable(),
     label: yup.string(),
+    // Onchain address a named input resolved to. Written by `useResolvedAddress`, read by the
+    // `is-name-resolved` test above and by composing/signing through the send form draft.
+    resolvedAddress: yup.string(),
 });
 
 export type OutputsFormValues = yup.InferType<typeof outputSchema>;
@@ -366,9 +410,9 @@ export const sendOutputsFormValidationSchema = yup.object({
                 const destinationTagMaxLength = (() => {
                     switch (networkType) {
                         case 'stellar':
-                            return formInputsMaxLength.stellarTextMemo;
+                            return STELLAR_TEXT_MEMO_MAX_BYTES;
                         case 'solana':
-                            return formInputsMaxLength.solanaMemo;
+                            return SOLANA_MEMO_MAX_BYTES;
                         default:
                             throw new Error(`Unsupported network type: ${networkType}`);
                     }

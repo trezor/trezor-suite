@@ -1,8 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { deviceInitialState, selectSelectedDevice } from '@suite-common/device';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { type OpenModalDep } from '@suite-common/suite-types';
+import { mockOpenModal } from '@suite-common/suite-types/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     confirmAddressOnDeviceThunk,
     prepareWalletSettingsReducer,
@@ -10,14 +13,45 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 
 import type { LogErrorThunkProps } from './logErrorThunk';
+import { type VerifyAddressThunkState } from './verifyAddressThunk';
 import { accounts } from '../../reducers/__fixtures__/account';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 
 import { tradingThunks } from './index';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
-const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const walletSettingsReducer = prepareWalletSettingsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadWalletSettings: mockReducer() },
+});
+const verifyAddressThunkDeps = {
+    actions: {
+        openModal: mockOpenModal(),
+    },
+};
+
+type VerifyAddressThunkTestDeps = WithServices<Record<never, never>> & { actions: OpenModalDep };
+
+const createMockStore = () =>
+    createTestCompositionRoot<VerifyAddressThunkTestDeps, VerifyAddressThunkState>({
+        extra: verifyAddressThunkDeps,
+        reducer: combineReducers({
+            device: () => deviceInitialState,
+            wallet: combineReducers({
+                accounts: () => accounts,
+                settings: walletSettingsReducer,
+                trading: tradingReducer,
+            }),
+        }),
+        preloadedState: {
+            wallet: {
+                trading: initialState,
+            },
+        },
+    }).services.store;
 
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
@@ -42,20 +76,7 @@ describe('verifyAddressThunk', () => {
     });
 
     it('should save verified address', async () => {
-        const store = configureMockStore({
-            extra: {},
-            reducer: combineReducers({
-                wallet: combineReducers({
-                    trading: tradingReducer,
-                    settings: walletSettingsReducer,
-                }),
-            }),
-            preloadedState: {
-                wallet: {
-                    trading: initialState,
-                },
-            },
-        });
+        const store = createMockStore();
 
         const account = accounts[0];
         if (!account) throw new Error('Missing test fixture');
@@ -92,20 +113,7 @@ describe('verifyAddressThunk', () => {
     });
 
     it('should not update verified address device not found', async () => {
-        const store = configureMockStore({
-            extra: {},
-            reducer: combineReducers({
-                wallet: combineReducers({
-                    trading: tradingReducer,
-                    settings: walletSettingsReducer,
-                }),
-            }),
-            preloadedState: {
-                wallet: {
-                    trading: initialState,
-                },
-            },
-        });
+        const store = createMockStore();
 
         const account = accounts[0];
         if (!account) throw new Error('Missing test fixture');
@@ -126,20 +134,7 @@ describe('verifyAddressThunk', () => {
     });
 
     it('should not update verified address when path or address are not defined', async () => {
-        const store = configureMockStore({
-            extra: {},
-            reducer: combineReducers({
-                wallet: combineReducers({
-                    trading: tradingReducer,
-                    settings: walletSettingsReducer,
-                }),
-            }),
-            preloadedState: {
-                wallet: {
-                    trading: initialState,
-                },
-            },
-        });
+        const store = createMockStore();
 
         const account = {
             ...accounts[0],
@@ -168,20 +163,7 @@ describe('verifyAddressThunk', () => {
     });
 
     it('should not update verified address, but trigger toast when device is not available', async () => {
-        const store = configureMockStore({
-            extra: extraDependenciesCommonMock,
-            reducer: combineReducers({
-                wallet: combineReducers({
-                    trading: tradingReducer,
-                    settings: walletSettingsReducer,
-                }),
-            }),
-            preloadedState: {
-                wallet: {
-                    trading: initialState,
-                },
-            },
-        });
+        const store = createMockStore();
 
         const account = accounts[0];
         if (!account) throw new Error('Missing test fixture');
@@ -201,12 +183,10 @@ describe('verifyAddressThunk', () => {
             }),
         );
 
-        const actionModal = store
-            .getActions()
-            .find(action => action.type === extraDependenciesCommonMock.actions.openModal.type);
+        const actionModal = store.getActions().find(action => action.type === mockOpenModal().type);
 
         expect(actionModal).toEqual({
-            type: extraDependenciesCommonMock.actions.openModal.type,
+            type: mockOpenModal().type,
             payload: {
                 type: 'unverified-address-proceed',
                 value: addressData?.address,
@@ -216,20 +196,7 @@ describe('verifyAddressThunk', () => {
     });
 
     it('should not update verified address, but trigger toast when device is not connected', async () => {
-        const store = configureMockStore({
-            extra: extraDependenciesCommonMock,
-            reducer: combineReducers({
-                wallet: combineReducers({
-                    trading: tradingReducer,
-                    settings: walletSettingsReducer,
-                }),
-            }),
-            preloadedState: {
-                wallet: {
-                    trading: initialState,
-                },
-            },
-        });
+        const store = createMockStore();
 
         const account = accounts[0];
         if (!account) throw new Error('Missing test fixture');
@@ -249,12 +216,10 @@ describe('verifyAddressThunk', () => {
             }),
         );
 
-        const actionModal = store
-            .getActions()
-            .find(action => action.type === extraDependenciesCommonMock.actions.openModal.type);
+        const actionModal = store.getActions().find(action => action.type === mockOpenModal().type);
 
         expect(actionModal).toEqual({
-            type: extraDependenciesCommonMock.actions.openModal.type,
+            type: mockOpenModal().type,
             payload: {
                 type: 'unverified-address-proceed',
                 value: addressData?.address,
@@ -264,20 +229,7 @@ describe('verifyAddressThunk', () => {
     });
 
     it('should not update verified address when a confirmation of address on device is not successful (no permission)', async () => {
-        const store = configureMockStore({
-            extra: {},
-            reducer: combineReducers({
-                wallet: combineReducers({
-                    trading: tradingReducer,
-                    settings: walletSettingsReducer,
-                }),
-            }),
-            preloadedState: {
-                wallet: {
-                    trading: initialState,
-                },
-            },
-        });
+        const store = createMockStore();
 
         const account = accounts[0];
         if (!account) throw new Error('Missing test fixture');
@@ -310,20 +262,7 @@ describe('verifyAddressThunk', () => {
     });
 
     it('should not update verified address when a confirmation of address on device is not successful', async () => {
-        const store = configureMockStore({
-            extra: {},
-            reducer: combineReducers({
-                wallet: combineReducers({
-                    trading: tradingReducer,
-                    settings: walletSettingsReducer,
-                }),
-            }),
-            preloadedState: {
-                wallet: {
-                    trading: initialState,
-                },
-            },
-        });
+        const store = createMockStore();
 
         const account = accounts[0];
         if (!account) throw new Error('Missing test fixture');
@@ -358,10 +297,13 @@ describe('verifyAddressThunk', () => {
             .getActions()
             .find(action => action.type === 'mockedLogErrorThunk');
 
-        expect(actionToast?.payload).toEqual({
-            tradingType: 'buy',
-            toastType: 'verify-address-error',
-            errorMessage: error,
+        expect(actionToast).toEqual({
+            type: 'mockedLogErrorThunk',
+            payload: {
+                tradingType: 'buy',
+                toastType: 'verify-address-error',
+                errorMessage: error,
+            },
         });
 
         expect(store.getState().wallet.trading.verifiedAddress).toEqual(undefined);

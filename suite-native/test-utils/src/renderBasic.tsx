@@ -13,7 +13,7 @@ import type { FormatterProviderConfig } from '@suite-common/formatters';
 
 import { BasicProviderForTests } from './BasicProviderForTests';
 
-export const renderWithBasicProvider = <Props,>(
+export const renderWithBasicProvider = async <Props,>(
     element: ReactElement<Props>,
     {
         formattersConfig,
@@ -24,8 +24,8 @@ export const renderWithBasicProvider = <Props,>(
         formattersConfig?: FormatterProviderConfig;
         services?: Record<string, unknown>;
     } = {},
-): RenderResult =>
-    render(element, {
+): Promise<RenderResult> =>
+    await render(element, {
         wrapper: ({ children }) => (
             <BasicProviderForTests formattersConfig={formattersConfig} services={services}>
                 {Wrapper ? <Wrapper>{children}</Wrapper> : children}
@@ -34,7 +34,7 @@ export const renderWithBasicProvider = <Props,>(
         ...options,
     });
 
-export const renderHookWithBasicProvider = <Result, Props>(
+export const renderHookWithBasicProvider = async <Result, Props>(
     callback: (props: Props) => Result,
     {
         formattersConfig,
@@ -45,8 +45,8 @@ export const renderHookWithBasicProvider = <Result, Props>(
         formattersConfig?: FormatterProviderConfig;
         services?: Record<string, unknown>;
     } = {},
-): RenderHookResult<Result, Props> =>
-    renderHook(callback, {
+): Promise<RenderHookResult<Result, Props>> =>
+    await renderHook(callback, {
         wrapper: ({ children }) => (
             <BasicProviderForTests formattersConfig={formattersConfig} services={services}>
                 {Wrapper ? <Wrapper>{children}</Wrapper> : children}

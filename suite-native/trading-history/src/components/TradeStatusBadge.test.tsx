@@ -7,8 +7,8 @@ import { TradeStatusBadge, getBadgeIconName, getBadgeVariant } from './TradeStat
 import { renderWithTradingHistoryProvider } from '../test-utils/tradingHistoryTestUtils';
 
 describe('TradeStatusBadge', () => {
-    it('should render nothing when status is undefined', () => {
-        const { toJSON } = renderWithTradingHistoryProvider(
+    it('should render nothing when status is undefined', async () => {
+        const { toJSON } = await renderWithTradingHistoryProvider(
             <TradeStatusBadge status={undefined} />,
         );
 
@@ -26,9 +26,9 @@ describe('TradeStatusBadge', () => {
         ['WAITING_FOR_USER', 'waitingForUser'],
     ] as const)(
         'should render badge with correct text for buy trade and status %s',
-        (status, statusKey) => {
+        async (status, statusKey) => {
             const buyTrade = getBuyTrade({ status });
-            const { getByAccessibilityHint } = renderWithTradingHistoryProvider(
+            const { getByAccessibilityHint } = await renderWithTradingHistoryProvider(
                 <TradeStatusBadge status={buyTrade.data.status} />,
             );
             const expectedText = new RegExp(
@@ -52,9 +52,9 @@ describe('TradeStatusBadge', () => {
         ['SIGN_DATA', 'signData'],
     ] as const)(
         'should render badge with correct text for exchange trade and status %s',
-        (status, statusKey) => {
+        async (status, statusKey) => {
             const exchangeTrade = getExchangeTrade({ status });
-            const { getByAccessibilityHint } = renderWithTradingHistoryProvider(
+            const { getByAccessibilityHint } = await renderWithTradingHistoryProvider(
                 <TradeStatusBadge status={exchangeTrade.data.status} />,
             );
             const expectedText = new RegExp(
@@ -76,9 +76,9 @@ describe('TradeStatusBadge', () => {
         ['SUBMITTED', 'submitted'],
     ] as const)(
         'should render badge with correct text for sell trade and status %s',
-        (status, statusKey) => {
+        async (status, statusKey) => {
             const sellTrade = getSellTrade({ status });
-            const { getByAccessibilityHint } = renderWithTradingHistoryProvider(
+            const { getByAccessibilityHint } = await renderWithTradingHistoryProvider(
                 <TradeStatusBadge status={sellTrade.data.status} />,
             );
             const expectedText = new RegExp(

@@ -1,16 +1,16 @@
 import { Translation } from '@suite/intl';
-import { SettingsAnchor, goto } from '@suite/router';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
-
-import { useDispatch } from 'src/hooks/suite';
 
 type SafetyChecksBannerProps = {
     onDismiss?: () => void;
 };
 
 export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     return (
         <Banner
@@ -22,7 +22,7 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
                     <Banner.Button
                         onClick={() =>
                             dispatch(
-                                goto({
+                                gotoThunk({
                                     routeName: 'settings-device',
                                     preserveParams: true,
                                     anchor: SettingsAnchor.SafetyChecks,

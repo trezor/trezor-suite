@@ -6,7 +6,7 @@ import {
     type SellFiatTrade,
 } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
@@ -19,7 +19,7 @@ import {
     addIdsToQuotes,
     cryptoIdToNetwork,
     cryptoIdToNetworkAndContractAddress,
-    cryptoIdToSymbol,
+    cryptoIdToNetworkSymbol,
     filterQuotesAccordingTags,
     getDefaultCountry,
     getDefaultCountrySubdivision,
@@ -27,6 +27,7 @@ import {
     getTradingQuotesByPaymentMethod,
     getTradingQuotesDedupedByProvider,
     getUnusedAddressFromAccount,
+    isCrossChainTrade,
     isCryptoIdForNativeToken,
     isFinalStatus,
     mapTestnetSymbol,
@@ -175,7 +176,7 @@ describe('getTradingQuotesDedupedByProvider', () => {
     });
 });
 
-describe('cryptoIdToSymbol', () => {
+describe('cryptoIdToNetworkSymbol', () => {
     it.each([
         ['bitcoin', 'btc'],
         ['ethereum', 'eth'],
@@ -183,7 +184,7 @@ describe('cryptoIdToSymbol', () => {
     ] as [CryptoId, NetworkSymbol][])(
         'should return correct symbol for %s',
         (cryptoId, expectedSymbol) => {
-            expect(cryptoIdToSymbol(cryptoId)).toBe(expectedSymbol);
+            expect(cryptoIdToNetworkSymbol(cryptoId)).toBe(expectedSymbol);
         },
     );
 });
@@ -224,11 +225,17 @@ describe('cryptoIdToNetwork', () => {
     );
 });
 
+describe('isCrossChainTrade', () => {
+    it('should return true when send and receive assets are on different networks', () => {
+        expect(isCrossChainTrade('ethereum' as CryptoId, 'bitcoin' as CryptoId)).toBe(true);
+    });
+});
+
 describe('toTokenCryptoId', () => {
     it('should return correct token cryptoId', () => {
-        expect(toTokenCryptoId('eth', '0x1234123412341234123412341234123412341234')).toBe(
-            'ethereum--0x1234123412341234123412341234123412341234',
-        );
+        expect(
+            toTokenCryptoId(asNetworkSymbol('eth'), '0x1234123412341234123412341234123412341234'),
+        ).toBe('ethereum--0x1234123412341234123412341234123412341234');
     });
 });
 
@@ -442,7 +449,6 @@ describe('getTradingFormState', () => {
                 providers,
                 isSlip24Active: true,
                 sendAccountKey,
-                receiveAccountKey,
             });
 
             expect(result).toEqual({
@@ -482,7 +488,6 @@ describe('getTradingFormState', () => {
                 providers,
                 isSlip24Active: true,
                 sendAccountKey,
-                receiveAccountKey,
             });
 
             expect(result).toEqual({

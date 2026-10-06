@@ -1,0 +1,19 @@
+{
+    "name": "@trezor/connect-install-smoke",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "type": "module",
+    "sideEffects": false,
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:install:local": "./test-connect-local.sh",
+        "test:install:npm": "./test-npm-install.sh",
+        "test:install:yarn": "./test-yarn-install.sh"
+    },
+    "devDependencies": {
+        "@trezor/eslint": "workspace:*"
+    }
+}

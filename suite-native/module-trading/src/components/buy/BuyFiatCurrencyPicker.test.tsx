@@ -1,22 +1,26 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { type useListDataFilter } from '@suite-common/trading';
+import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
-    type TestStore,
     act,
     fireEvent,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils-store';
-import { buyActions } from '@suite-native/trading-state';
+import { type TradingRootState, buyActions } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 
 import { BuyFiatCurrencyPicker } from './BuyFiatCurrencyPicker';
 import { useBuyForm } from '../../hooks/buy/useBuyForm';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState & WalletSettingsRootState;
 
 let mockUseListDataFilter: typeof useListDataFilter;
 const reportMock = jest.fn();
@@ -32,36 +36,32 @@ jest.mock('@suite-common/trading', () => ({
 
 describe('BuyFiatCurrencyPicker', () => {
     let form: BuyFormType;
-    let store: TestStore;
+    let store: Store<State>;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         mockUseListDataFilter = jest.requireActual('@suite-common/trading').useListDataFilter;
         reportMock.mockClear();
-        store = createTradingLightStore({ tradeType: 'buy' });
-        const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
-            services,
-            store,
+        store = createTradingTestStore({ tradeType: 'buy' });
+        const { result } = await renderHookWithStoreProvider(() => useBuyForm(), {
+            services: { ...services, store },
         });
         form = result.current;
     });
 
-    const renderFiatCurrencyPicker = () =>
-        renderWithStoreProvider(
+    const renderFiatCurrencyPicker = async () =>
+        await renderWithStoreProvider(
             <Form form={form}>
                 <BuyFiatCurrencyPicker />
             </Form>,
-            {
-                services,
-                store,
-            },
+            { services: { ...services, store } },
         );
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('should display selected currency', () => {
-        const { getByLabelText } = renderFiatCurrencyPicker();
+    it('should display selected currency', async () => {
+        const { getByLabelText } = await renderFiatCurrencyPicker();
 
         expect(
             getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')),
@@ -69,10 +69,12 @@ describe('BuyFiatCurrencyPicker', () => {
     });
 
     it('should allow to select currency', async () => {
-        const { getByText, getByLabelText } = renderFiatCurrencyPicker();
+        const { getByText, getByLabelText } = await renderFiatCurrencyPicker();
 
-        fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')));
-        fireEvent.press(getByText('USD'));
+        await fireEvent.press(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')),
+        );
+        await fireEvent.press(getByText('USD'));
 
         // wait for validators to run
         await act(() => Promise.resolve());
@@ -86,14 +88,16 @@ describe('BuyFiatCurrencyPicker', () => {
         form.setValue('fiatValue', '100');
         form.setValue('cryptoValue', '0.1');
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { getByText, getByLabelText } = renderFiatCurrencyPicker();
+        const { getByText, getByLabelText } = await renderFiatCurrencyPicker();
 
-        fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')));
-        fireEvent.press(getByText('USD'));
+        await fireEvent.press(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')),
+        );
+        await fireEvent.press(getByText('USD'));
         await act(() => Promise.resolve());
 
-        expect(form.getValues('fiatValue')).toBeUndefined();
-        expect(form.getValues('cryptoValue')).toBeUndefined();
+        expect(form.getValues('fiatValue')).toBe('100');
+        expect(form.getValues('cryptoValue')).toBe('0.1');
         expect(dispatchSpy).toHaveBeenCalledWith(buyActions.fiatCurrencyChanged());
         expect(reportMock).toHaveBeenCalledWith({
             type: events.tradingParameterChangedEvent.name,
@@ -104,14 +108,14 @@ describe('BuyFiatCurrencyPicker', () => {
         });
     });
 
-    it('should display empty component when filtered data is empty', () => {
+    it('should display empty component when filtered data is empty', async () => {
         mockUseListDataFilter = () => ({
             filteredData: [],
             setFilterValue: jest.fn(),
             filterValue: 'test-key',
         });
 
-        const { getByText } = renderFiatCurrencyPicker();
+        const { getByText } = await renderFiatCurrencyPicker();
 
         expect(
             getByText(getTranslation('moduleTrading.fiatCurrencySheet.emptyTitle')),

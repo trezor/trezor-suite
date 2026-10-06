@@ -1,11 +1,12 @@
 import { type Dispatch, type SetStateAction, useEffect } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { type Route, goto, selectRouteName } from '@suite/router';
+import { type Route, gotoThunk, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -30,7 +31,7 @@ import {
 } from '@trezor/icons';
 import { arrayPartition } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
 
 type SubTabConfig = {
@@ -113,14 +114,13 @@ export const TokensNavigation = ({
 }: TokensNavigationProps) => {
     const { account } = selectedAccount;
     const routeName = useSelector(selectRouteName);
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const tokenDefinitions = useSelector(state =>
         isNft
             ? selectNftDefinitions(state, selectedAccount.account.symbol)
             : selectCoinDefinitions(state, selectedAccount.account.symbol),
     );
     const isDebug = useSelector(selectIsDebugModeActive);
-    const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
     const tokens = getTokens({
@@ -143,7 +143,7 @@ export const TokensNavigation = ({
     };
 
     const goToRoute = (route: Route['name']) => () => {
-        dispatch(goto({ routeName: route, preserveParams: true }));
+        dispatch(gotoThunk({ routeName: route, preserveParams: true }));
     };
 
     useEffect(() => {

@@ -47,6 +47,31 @@ describe('App Settings - without device interactions [@noDevice]', () => {
         await detoxExpect(element(by.text('0 sat'))).toBeVisible();
     });
 
+    it('Localization settings persist after restarting the app', async () => {
+        const fiatInCZKRegex = /^.*CZK.*$/i;
+        await waitForVisible(by.text(/^.*\$.*$/i));
+        await detoxExpect(element(by.text('0 BTC'))).toBeVisible();
+
+        await onTabBar.navigateToSettings();
+        await onSettings.openSection('preferences');
+        await onSettings.changeLocalizationCurrency('czk');
+        await onSettings.changeBitcoinUnits(PROTO.AmountUnit.SATOSHI);
+        await onTabBar.tapBackButton();
+        await onTabBar.navigateToHome();
+
+        await waitForVisible(by.text(fiatInCZKRegex));
+        await detoxExpect(element(by.text('0 sat'))).toBeVisible();
+
+        await device.terminateApp();
+        // Rehydrate saved state without wiping storage or injecting the initial fixture again.
+        await openApp({ newInstance: true, wipeData: false });
+        await onHome.assertIsPortfolioGraphVisible();
+        await onHome.scrollScreenToBottom();
+
+        await waitForVisible(by.text(fiatInCZKRegex));
+        await detoxExpect(element(by.text('0 sat'))).toBeVisible();
+    });
+
     it('Localization - Language', async () => {
         await onTabBar.assertHomeTabBarItemTitle(EN_TRANSLATIONS['navigation.tabs.home']);
         await onTabBar.navigateToSettings();

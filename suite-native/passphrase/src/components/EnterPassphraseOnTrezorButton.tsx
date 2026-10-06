@@ -1,25 +1,27 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceInternalModel, selectSelectedDevice } from '@suite-common/device';
-import { submitPassphrase } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { submitPassphraseThunk } from '@suite-common/wallet-core';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
 import { selectPassphraseRequestId } from '@suite-native/device-authorization';
 import { deviceModelToIconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 export const EnterPassphraseOnTrezorButton = () => {
-    const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const deviceModel = useSelector(selectDeviceInternalModel);
     const requestId = useSelector(selectPassphraseRequestId);
 
     const handleSubmitOnDevice = () => {
         analytics.report({ type: events.passphraseEnterOnTrezorEvent.name });
         if (!device) return;
-        dispatch(submitPassphrase({ device, passphrase: '', passphraseOnDevice: true, requestId }));
+        dispatch(
+            submitPassphraseThunk({ device, passphrase: '', passphraseOnDevice: true, requestId }),
+        );
     };
 
     if (!deviceModel || !device) return null;

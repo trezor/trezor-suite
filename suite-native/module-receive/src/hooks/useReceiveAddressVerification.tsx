@@ -1,17 +1,17 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import type {
-    ReceiveStackParamList,
-    ReceiveStackRoutes,
+    ReceiveAddressVerificationStackParamList,
+    ReceiveAddressVerificationStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
@@ -20,15 +20,17 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { AddressVerificationResultType, verifyReceiveAddress } from '../addressVerification';
 
-type NavigationProp = StackNavigationProps<ReceiveStackParamList, ReceiveStackRoutes>;
+type NavigationProp = StackNavigationProps<
+    ReceiveAddressVerificationStackParamList,
+    ReceiveAddressVerificationStackRoutes.ContinueOnTrezor
+>;
 
 export const useReceiveAddressVerification = (
     accountKey: AccountKey,
     addressPath: string | undefined,
 ) => {
-    const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp>();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const { showToast } = useToast();
 
     const { showAlert } = useAlert();

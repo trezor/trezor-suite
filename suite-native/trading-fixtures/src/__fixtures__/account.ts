@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountDescriptor,
@@ -42,7 +43,7 @@ const buildAccount = <T extends Partial<Account>>(
 export const getBtcAccount = (overrides: Partial<Account> = {}) =>
     buildAccount(
         {
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             accountType: 'normal',
             accountLabel: 'BTC Account #1',
             descriptor: asAccountDescriptor('btc1normal'),
@@ -78,7 +79,7 @@ export const getBtcAccount = (overrides: Partial<Account> = {}) =>
 export const getEthAccount = (overrides: Partial<Account> = {}) =>
     buildAccount(
         {
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             deviceState: MOCK_DEVICE_STATIC_SESSION_ID,
             accountLabel: 'Ethereum #1',
             index: 0,
@@ -154,7 +155,7 @@ export const getEthAccount = (overrides: Partial<Account> = {}) =>
 export const getBaseAccount = (overrides: Partial<Account> = {}) =>
     buildAccount(
         {
-            symbol: 'base',
+            symbol: asNetworkSymbol('base'),
             deviceState: MOCK_DEVICE_STATIC_SESSION_ID,
             accountLabel: 'Base #1',
             index: 0,
@@ -199,7 +200,7 @@ export const getBaseAccount = (overrides: Partial<Account> = {}) =>
 export const getCardanoAccount = (overrides: Partial<Account> = {}) =>
     buildAccount(
         {
-            symbol: 'ada',
+            symbol: asNetworkSymbol('ada'),
             accountType: 'normal',
             accountLabel: 'Cardano Account #1',
             descriptor: asAccountDescriptor('ada1normal'),
@@ -221,7 +222,7 @@ export const getCardanoAccount = (overrides: Partial<Account> = {}) =>
 export const getSolAccount = (overrides: Partial<Account> = {}) =>
     buildAccount(
         {
-            symbol: 'sol',
+            symbol: asNetworkSymbol('sol'),
             deviceState: MOCK_DEVICE_STATIC_SESSION_ID,
             accountLabel: 'Solana #1',
             index: 0,

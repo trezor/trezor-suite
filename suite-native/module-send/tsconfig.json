@@ -10,11 +10,12 @@
         {
             "path": "../../suite-common/formatters"
         },
+        { "path": "../../suite-common/networks" },
         {
-            "path": "../../suite-common/suite-sync"
+            "path": "../../suite-common/redux-utils"
         },
         {
-            "path": "../../suite-common/suite-utils"
+            "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/token-definitions"
@@ -24,9 +25,6 @@
         },
         {
             "path": "../../suite-common/transfer-uri"
-        },
-        {
-            "path": "../../suite-common/validators"
         },
         {
             "path": "../../suite-common/wallet-config"
@@ -62,11 +60,24 @@
         { "path": "../send" },
         { "path": "../tokens" },
         { "path": "../transaction-management" },
+        { "path": "../transaction-review" },
         { "path": "../transactions" },
         {
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
+        {
+            "path": "../../networks/tron/network-tron"
+        },
         { "path": "../../packages/react-utils" },
         {
             "path": "../../packages/styles-native"

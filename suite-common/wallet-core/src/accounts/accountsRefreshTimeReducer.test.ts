@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -6,16 +7,18 @@ import {
     type AccountsRefreshTimeState,
     accountRefreshed,
     accountsRefreshTimeReducer,
-    selectAccountRefreshTime,
+    isAccountStaleSelector,
 } from './accountsRefreshTimeReducer';
 
+const btcSymbol = asNetworkSymbol('btc');
+
 const account = mockWalletAccount({
-    symbol: 'btc',
+    symbol: btcSymbol,
     deviceState: '1@2:3',
     descriptor: asAccountDescriptor('accA'),
 });
 const otherAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: btcSymbol,
     deviceState: '1@2:3',
     descriptor: asAccountDescriptor('accB'),
 });
@@ -38,10 +41,10 @@ describe('accountsRefreshTimeReducer', () => {
     });
 
     it('records the timestamp on createAccount and updateAccount', () => {
-        // createAccount payload is the account; the reducer only reads payload.key
+        // The reducer only reads the account key from the creation payload.
         const createdAccountAction: ReturnType<typeof accountsActions.createAccount> = {
             type: accountsActions.createAccount.type,
-            payload: account,
+            payload: { account, supportedNetworks: [account.symbol] },
         };
 
         const created = accountsRefreshTimeReducer({}, createdAccountAction);
@@ -63,9 +66,9 @@ describe('accountsRefreshTimeReducer', () => {
         expect(next[otherAccount.key]).toBe(NOW);
     });
 
-    it('selector reads the timestamp for an account', () => {
+    it('selector returns if an account is stale and needs refresh', () => {
         const wallet = { accountsRefreshTime: { [account.key]: NOW } };
-        expect(selectAccountRefreshTime({ wallet }, account.key)).toBe(NOW);
-        expect(selectAccountRefreshTime({ wallet }, otherAccount.key)).toBeUndefined();
+        expect(isAccountStaleSelector({ wallet }, account.key)).toBe(false);
+        expect(isAccountStaleSelector({ wallet }, otherAccount.key)).toBe(true);
     });
 });

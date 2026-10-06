@@ -8,7 +8,8 @@ import {
     selectLabelingDataForSelectedAccount,
 } from '@suite/metadata';
 import { openModal } from '@suite/modal';
-import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -30,7 +31,7 @@ import { ChangeIcon, ClockIcon, TagFilledIcon, TagIcon, XCircleIcon } from '@tre
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
 import { type WalletAccountTransaction } from 'src/types/wallet';
@@ -96,7 +97,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     );
     const { translationString } = useTranslation();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const addressLabel = useSelector(state =>
         selectAddressLabel(state, {
             address: utxo.address,

@@ -8,8 +8,7 @@ export const breakpoints = {
 export type Breakpoint = keyof typeof breakpoints;
 export type BreakpointValue = (typeof breakpoints)[Breakpoint];
 export type BreakpointFlagName =
-    | `isBelow${Capitalize<Breakpoint>}`
-    | `isAbove${Capitalize<Breakpoint>}`;
+    `isBelow${Capitalize<Breakpoint>}` | `isAbove${Capitalize<Breakpoint>}`;
 
 export type BreakpointFlags = {
     [K in BreakpointFlagName]: boolean;

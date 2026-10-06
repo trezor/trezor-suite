@@ -16,9 +16,7 @@ The dump is a JSON file with the following shape (v1):
         "<storeName>": [
             {
                 "key": "...",
-                "value": {
-                    /* ... */
-                }
+                "value": {/* ... */}
             }
         ]
     }

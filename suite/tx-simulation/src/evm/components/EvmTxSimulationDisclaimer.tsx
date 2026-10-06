@@ -1,5 +1,6 @@
 import {
     type TxSimulationEVMResult,
+    getEvmSimulationFailure,
     getSimulationErrorRiskLevel,
 } from '@suite-common/tx-simulation';
 
@@ -17,10 +18,12 @@ export function EvmTxSimulationDisclaimer({
     isAccepted,
     onChange,
 }: EvmTxSimulationDisclaimerProps) {
-    if (result.simulation?.status === 'Error') {
+    const simulationFailure = getEvmSimulationFailure(result);
+
+    if (simulationFailure) {
         return (
             <TxSimulationBanner
-                type={getSimulationErrorRiskLevel(result.simulation.error)}
+                type={getSimulationErrorRiskLevel(simulationFailure.error)}
                 title="TR_SIMULATION_ERROR"
                 isAccepted={isAccepted}
                 onChange={onChange}

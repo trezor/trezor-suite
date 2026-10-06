@@ -44,8 +44,8 @@ describe('useTradingAnalyticReportCallback', () => {
             };
         });
 
-        it('should return sell analytics callback', () => {
-            const { result } = renderHookWithStoreProvider(
+        it('should return sell analytics callback', async () => {
+            const { result } = await renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('sell'),
                 { preloadedState, services },
             );
@@ -81,8 +81,8 @@ describe('useTradingAnalyticReportCallback', () => {
             };
         });
 
-        it('should return exchange analytics callback', () => {
-            const { result } = renderHookWithStoreProvider(
+        it('should return exchange analytics callback', async () => {
+            const { result } = await renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('exchange'),
                 { preloadedState, services },
             );
@@ -110,8 +110,8 @@ describe('useTradingAnalyticReportCallback', () => {
             };
         });
 
-        it('should return null action (no analytics)', () => {
-            const { result } = renderHookWithStoreProvider(
+        it('should return null action (no analytics)', async () => {
+            const { result } = await renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback(undefined),
                 { preloadedState, services },
             );
@@ -129,8 +129,8 @@ describe('useTradingAnalyticReportCallback', () => {
             };
         });
 
-        it('should return null action (no analytics)', () => {
-            const { result } = renderHookWithStoreProvider(
+        it('should return null action (no analytics)', async () => {
+            const { result } = await renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('buy'),
                 { preloadedState, services },
             );

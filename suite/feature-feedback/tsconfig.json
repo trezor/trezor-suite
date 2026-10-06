@@ -3,7 +3,13 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": ["."],
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/feedback" },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
         { "path": "../experimental" },
         { "path": "../intl" },
         { "path": "../../packages/components" },

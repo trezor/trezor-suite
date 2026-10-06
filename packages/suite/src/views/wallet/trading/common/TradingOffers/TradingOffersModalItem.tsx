@@ -3,47 +3,53 @@ import { memo, useCallback } from 'react';
 import { type ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
-import { type TradingTradeType } from '@suite-common/trading';
-import { CardList, Column, Row, Skeleton, Text } from '@trezor/components';
-
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { Translation } from '@suite/intl';
 import {
-    getCryptoQuoteAmountProps,
-    getProvidersInfoProps,
-    isTradingExchangeContext,
-} from 'src/utils/wallet/trading/tradingTypingUtils';
+    type TradingTradeType,
+    selectTradingExchangeProviders,
+    selectTradingProvidersByTradeType,
+} from '@suite-common/trading';
+import { CardList, Column, Skeleton, Text } from '@trezor/components';
 
-import { useTradingOfferRate } from './useTradingOfferRate';
+import { useSelector } from 'src/hooks/suite';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
+
+import { TradingQuoteAmount } from '../TradingQuoteAmount';
+import { TradingRequestedAmountShortfallNote } from '../TradingRequestedAmountShortfallNote';
 import { TradingUtilsProvider } from '../TradingUtils/TradingUtilsProvider';
 import { TradingUtilsProviderKyc } from '../TradingUtils/TradingUtilsProviderKyc';
+import { useTradingQuoteAmounts } from '../hooks/useTradingQuoteAmounts';
+
+const ItemWrapper = styled.div`
+    display: grid;
+    grid-template-columns: 250px 1fr 1fr;
+    gap: 16px;
+    align-items: center;
+`;
 
 type TradingOffersModalItemProps = {
     quote: TradingTradeType;
     onSelect: (quote: TradingTradeType) => void;
 };
 
-const ProviderWrapper = styled.div`
-    display: grid;
-    grid-template-columns: minmax(10rem, auto) auto;
-    gap: 16px;
-    justify-content: center;
-`;
-
 const TradingOffersModalItemInner = ({ quote, onSelect }: TradingOffersModalItemProps) => {
     const context = useTradingFormContext();
-    const providers = getProvidersInfoProps(context);
+    const providers = useSelector(reduxState =>
+        selectTradingProvidersByTradeType(reduxState, context.type),
+    );
+    const exchangeProviders = useSelector(selectTradingExchangeProviders);
     const {
         form: {
             state: { isFormLoading },
         },
     } = context;
-    const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
-    const formattedRate = useTradingOfferRate(quote);
+    const cryptoAmountProps = useTradingQuoteAmounts(quote, context.type);
     const { exchange } = quote;
     const exchangeComparatorProps = isTradingExchangeContext(context)
         ? {
               isDex: (quote as ExchangeTrade).isDex,
-              providers: context.exchangeInfo?.providerInfos,
+              providers: exchangeProviders,
           }
         : undefined;
 
@@ -53,6 +59,23 @@ const TradingOffersModalItemInner = ({ quote, onSelect }: TradingOffersModalItem
 
     if (!cryptoAmountProps) return null;
 
+    const exchangeTypeLabel = exchangeComparatorProps ? (
+        <Text
+            typographyStyle="body-sm"
+            intent="neutral"
+            priority="secondary"
+            data-testid="@trading/offers/quote/exchange-type"
+        >
+            <Translation
+                id={
+                    exchangeComparatorProps.isDex
+                        ? 'TR_TRADING_DEX_TOOLTIP'
+                        : 'TR_TRADING_CEX_TOOLTIP'
+                }
+            />
+        </Text>
+    ) : undefined;
+
     return (
         <CardList.Item
             onClick={onSelectQuote}
@@ -60,27 +83,33 @@ const TradingOffersModalItemInner = ({ quote, onSelect }: TradingOffersModalItem
             data-testid-alt={`@trading/offers/quote-${exchange}`}
             isDisabled={isFormLoading}
         >
-            <Column gap={16} width="100%">
-                <Row justifyContent="space-between" alignItems="center" width="100%">
-                    <ProviderWrapper>
-                        <TradingUtilsProvider providers={providers} exchange={exchange} />
-                        {exchangeComparatorProps ? (
-                            <TradingUtilsProviderKyc
-                                exchange={exchange}
-                                providers={exchangeComparatorProps.providers}
-                                isForComparator
-                                isDex={exchangeComparatorProps.isDex}
-                            />
-                        ) : (
-                            <TradingUtilsProviderKyc isForComparator isBuySell />
-                        )}
-                    </ProviderWrapper>
-
-                    {isFormLoading && <Skeleton animate width={200} />}
-                    {!isFormLoading && formattedRate && (
-                        <Text typographyStyle="body-sm-strong">{formattedRate}</Text>
+            <Column width="100%">
+                <ItemWrapper>
+                    <TradingUtilsProvider
+                        providers={providers}
+                        exchange={exchange}
+                        subtitle={exchangeTypeLabel}
+                        iconMaxHeight={32}
+                    />
+                    {exchangeComparatorProps ? (
+                        <TradingUtilsProviderKyc
+                            exchange={exchange}
+                            providers={exchangeComparatorProps.providers}
+                            isForComparator
+                            isDex={exchangeComparatorProps.isDex}
+                        />
+                    ) : (
+                        <TradingUtilsProviderKyc isForComparator isBuySell />
                     )}
-                </Row>
+                    <Column justifyContent="flex-end">
+                        {isFormLoading ? (
+                            <Skeleton animate width={100} />
+                        ) : (
+                            <TradingQuoteAmount quote={quote} />
+                        )}
+                    </Column>
+                </ItemWrapper>
+                <TradingRequestedAmountShortfallNote quote={quote} />
             </Column>
         </CardList.Item>
     );

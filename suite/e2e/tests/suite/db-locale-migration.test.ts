@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { expect, test } from '../../support/fixtures';
@@ -6,28 +6,30 @@ import { Language, languageMap } from '../../support/pageObjects/settings/settin
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const migrateFromVersion = 'release/25.7/web';
-const migrateToVersion = 'develop/web';
 const suiteDevInstance = 'https://dev.suite.sldev.cz/suite-web';
+const developInstance = `${suiteDevInstance}/develop/web`;
+// Locally the tested build runs on localhost, a different origin than the old instance, so the migration would never happen
+const migrateTo = process.env.CI ? process.env.BASE_URL : developInstance;
 
 test.describe(
     'Database migration',
-    // This test is run only on web nightly builds, it works with web instances of 25.7 and develop branch
-    // On PR and release CI run it would provide no value and potentially false failures
     // Note: Trezor user env doesn't support legacy bridge versions on macOs, which is needed to connect the device to the old Suite version. Use linux or only run in CI.
-    { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] },
+    // Additionally, 25.10 does not support T3W1 yet
+    { tag: ['@webOnly', '@optional', '@T3T1', '@specificFirmware'] },
     () => {
         test.use({
             deviceSetup: { passphrase_protection: true, mnemonic: 'mnemonic_all' },
         });
 
         test(
-            `Db migration between: ${migrateFromVersion} => ${migrateToVersion}`,
+            `Db migration from ${migrateFromVersion} to current build`,
             {
                 annotation: createTestAnnotation({
                     testCase:
                         'Verify that a user can successfully migrate from old version to new version.',
                     category: TestCategory.General,
                     priority: TestPriority.Medium,
+                    stream: TestStream.Growth,
                 }),
             },
             async ({ onboardingPage, page }) => {
@@ -51,10 +53,10 @@ test.describe(
                         .click();
                 });
 
-                await test.step(`Navigate to new version ${migrateToVersion} and check locale status`, async () => {
+                await test.step('Navigate to current build and check locale status', async () => {
                     await TrezorUserEnvLink.stopBridge();
                     await TrezorUserEnvLink.startBridge();
-                    await page.goto(`${suiteDevInstance}/${migrateToVersion}`);
+                    await page.goto(migrateTo!);
                     await onboardingPage.disableNecessaryFirmwareChecks();
 
                     await page.locator('[data-testid="@suite/menu/settings"]').click();

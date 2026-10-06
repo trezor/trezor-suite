@@ -9,8 +9,12 @@ import {
 import { useReactNavigationDevTools } from '@rozenite/react-navigation-plugin';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { addSentryBreadcrumb, setSentryTag } from '@suite-native/sentry';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import {
+    addSentryBreadcrumb,
+    registerSentryNavigationContainer,
+    setSentryTag,
+} from '@suite-native/sentry';
 import { useNativeStyles } from '@trezor/styles-native';
 
 import { useReportSendFlowExitToAnalytics } from '../hooks/useReportSendFlowExitToAnalytics';
@@ -23,7 +27,7 @@ export const navigationContainerRef = createNavigationContainerRef<RootStackPara
 export const NavigationContainerWithAnalytics = ({ children }: { children: ReactNode }) => {
     const [isNavigationReady, setIsNavigationReady] = useState(false);
     const routeNameRef = useRef<string | undefined>(undefined);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const {
         utils: { colors, isDarkColor },
     } = useNativeStyles();
@@ -55,6 +59,7 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
     }, [colors, isDarkColor]);
 
     const handleNavigationReady = () => {
+        registerSentryNavigationContainer(navigationContainerRef);
         routeNameRef.current = navigationContainerRef.getCurrentRoute()?.name;
         if (!isNavigationReady) setIsNavigationReady(true);
     };

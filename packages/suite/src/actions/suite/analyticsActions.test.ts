@@ -1,35 +1,36 @@
-import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics-redux';
-import { configureMockStore } from '@suite-common/test-utils';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import {
+    type AnalyticsRootState,
+    type AnalyticsState,
+    analyticsActions,
+    analyticsInitialState,
+} from '@suite-common/analytics-redux';
+import { type WithServices } from '@suite-common/redux-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
-import { init } from 'src/actions/suite/analyticsActions';
-import { extraDependencies } from 'src/support/extraDependencies';
+import { initThunk } from 'src/actions/suite/analyticsActions';
 
-const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
-
-type AnalyticsState = ReturnType<typeof analyticsReducer>;
+const desktopAnalytics = mockDesktopAnalytics();
 
 type InitialState = {
     analytics: Partial<AnalyticsState>;
 };
 
-const getInitialState = (state?: InitialState) => ({
+const getInitialState = ({ analytics }: InitialState): AnalyticsRootState => ({
     analytics: {
-        ...analyticsReducer(undefined, { type: 'foo' } as any),
-        ...state?.analytics,
+        ...analyticsInitialState,
+        ...analytics,
     },
 });
 
-type State = ReturnType<typeof getInitialState>;
-const mockStore = (preloadedState: State) =>
-    configureMockStore({
-        reducer: (state = preloadedState, action) => ({
-            ...state,
-            analytics: analyticsReducer(state.analytics, action),
-        }),
+const mockStore = (preloadedState: AnalyticsRootState) =>
+    createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AnalyticsRootState>({
         preloadedState,
-    });
+        services: () => ({ analytics: desktopAnalytics }),
+    }).services.store;
 
-describe('analytics init thunks ', () => {
+describe('analytics initThunk', () => {
     beforeAll(() => {
         jest.spyOn(console, 'error').mockImplementation();
     });
@@ -37,7 +38,7 @@ describe('analytics init thunks ', () => {
         jest.clearAllMocks();
     });
 
-    it('analytics init with unconfirmed', () => {
+    it('analytics initThunk with unconfirmed', () => {
         const state = getInitialState({
             analytics: {
                 enabled: undefined,
@@ -47,7 +48,7 @@ describe('analytics init thunks ', () => {
         });
         const store = mockStore(state);
 
-        store.dispatch(init());
+        store.dispatch(initThunk());
         expect(store.getActions()).toMatchObject([
             {
                 type: analyticsActions.initAnalytics.type,
@@ -60,7 +61,7 @@ describe('analytics init thunks ', () => {
         ]);
     });
 
-    it('analytics init with confirmed', () => {
+    it('analytics initThunk with confirmed', () => {
         const state = getInitialState({
             analytics: {
                 enabled: undefined,
@@ -70,7 +71,7 @@ describe('analytics init thunks ', () => {
         });
         const store = mockStore(state);
 
-        store.dispatch(init());
+        store.dispatch(initThunk());
         expect(store.getActions()).toMatchObject([
             {
                 type: analyticsActions.initAnalytics.type,
@@ -83,7 +84,7 @@ describe('analytics init thunks ', () => {
         ]);
     });
 
-    it('analytics init with confirmed but not enabled', () => {
+    it('analytics initThunk with confirmed but not enabled', () => {
         const state = getInitialState({
             analytics: {
                 enabled: false,
@@ -93,7 +94,7 @@ describe('analytics init thunks ', () => {
         });
         const store = mockStore(state);
 
-        store.dispatch(init());
+        store.dispatch(initThunk());
         expect(store.getActions()).toMatchObject([
             {
                 type: analyticsActions.initAnalytics.type,

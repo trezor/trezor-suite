@@ -17,6 +17,7 @@
         "@suite-common/address": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/formatters": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/react-query": "workspace:*",
@@ -26,7 +27,6 @@
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/tx-simulation": "workspace:*",
-        "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -36,16 +36,20 @@
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/network-module-suite-common-types": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
-        "react-redux": "9.3.0"
+        "react-redux": "9.3.0",
+        "yup": "1.7.1"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
         "@testing-library/react": "^16.3.2",
-        "@types/invity-api": "^1.1.19"
+        "@types/invity-api": "^1.1.22",
+        "react-intl": "^8.1.3"
     }
 }

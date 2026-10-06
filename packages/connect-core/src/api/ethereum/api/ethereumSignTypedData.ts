@@ -1,0 +1,326 @@
+// origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignTypedData.js
+
+import {
+    EthereumNetworkInfo,
+    EthereumSignTypedData as EthereumSignTypedDataParams,
+    EthereumSignTypedHash as EthereumSignTypedHashParams,
+} from '@trezor/connect-common';
+import type { EthereumSignTypedDataTypes, PROTO, PermissionRequest } from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import { DeviceModelInternal } from '@trezor/device-utils';
+import { Assert, Type } from '@trezor/schema-utils';
+
+import type { MethodMessage } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { getEthereumNetwork } from '../../../data/coinInfo';
+import { getDefinitionsVersion } from '../../../utils/definitionsUtils';
+import { getNetworkLabel } from '../../../utils/ethereumUtils';
+import { messageToHex } from '../../../utils/formatUtils';
+import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
+import { getEthereumDefinitions } from '../ethereumDefinitions';
+import {
+    encodeData,
+    getFieldType,
+    parseArrayType,
+    transformTypedData,
+} from '../ethereumSignTypedData';
+
+// This type is not inferred, because it internally uses types that are generic
+type Params = (
+    | Omit<EthereumSignTypedDataParams<EthereumSignTypedDataTypes>, 'path'>
+    | Omit<EthereumSignTypedHashParams<EthereumSignTypedDataTypes>, 'path'>
+) & {
+    address_n: number[];
+    network?: EthereumNetworkInfo;
+};
+const Params = Type.Intersect([
+    Type.Union([
+        Type.Omit(EthereumSignTypedDataParams, Type.Literal('path')),
+        Type.Omit(EthereumSignTypedHashParams, Type.Literal('path')),
+    ]),
+    Type.Object({
+        address_n: Type.Array(Type.Number()),
+        network: Type.Optional(EthereumNetworkInfo),
+    }),
+]);
+
+export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignTypedData', Params> {
+    constructor(message: MethodMessage<'ethereumSignTypedData'>) {
+        const { payload } = message;
+
+        // validate incoming parameters
+        Assert(Type.Union([EthereumSignTypedDataParams, EthereumSignTypedHashParams]), payload);
+
+        const path = validatePath(payload.path, 3);
+        const network = getEthereumNetwork(path);
+
+        // T1B1 firmware cannot compute EIP-712 hashes on-device, so they must be
+        // supplied to the signing command. Historically callers had to pre-compute
+        // these themselves via @trezor/connect-plugin-ethereum. We now auto-compute
+        // any missing hash when the caller provides `data`, so the API works
+        // uniformly across device models. Caller-provided hashes still win for
+        // backwards compatibility (we only fill in what's missing).
+        // Gated on metamask_v4_compat === true: transformTypedData supports only v4,
+        // and pre-existing v3-style calls (where T2T1+ doesn't need hashes anyway)
+        // must keep working without an auto-compute throw.
+        // Domain-only payloads (primaryType === 'EIP712Domain') don't need
+        // message_hash — only run auto-compute when domain_separator_hash itself
+        // is missing, otherwise nothing to fill in.
+        const isDomainOnly = payload.data?.primaryType === 'EIP712Domain';
+        const needsAutoCompute = isDomainOnly
+            ? !payload.domain_separator_hash
+            : !payload.domain_separator_hash || !payload.message_hash;
+        const autoHashes =
+            needsAutoCompute && payload.data && payload.metamask_v4_compat === true
+                ? transformTypedData(payload.data, payload.metamask_v4_compat)
+                : undefined;
+
+        const effectiveDomainHash =
+            payload.domain_separator_hash ?? autoHashes?.domain_separator_hash;
+        const effectiveMessageHash =
+            payload.message_hash ??
+            (autoHashes?.message_hash ? autoHashes.message_hash : undefined);
+
+        const paramsBase = {
+            address_n: path,
+            metamask_v4_compat: payload.metamask_v4_compat,
+            data: payload.data,
+            network,
+            // Show hashes for Safe transactions by default unless specified otherwise
+            show_message_hash: payload.show_message_hash ?? payload.data.primaryType === 'SafeTx',
+        };
+
+        const params = !effectiveDomainHash
+            ? paramsBase
+            : {
+                  ...paramsBase,
+                  domain_separator_hash: messageToHex(effectiveDomainHash),
+                  ...(effectiveMessageHash
+                      ? { message_hash: messageToHex(effectiveMessageHash) }
+                      : {}),
+              };
+
+        if (payload.data.primaryType === 'EIP712Domain' && 'message_hash' in params) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'message_hash should be empty when data.primaryType=EIP712Domain',
+            );
+        }
+
+        if (
+            payload.data.primaryType !== 'EIP712Domain' &&
+            !('message_hash' in params) &&
+            'domain_separator_hash' in params
+        ) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'message_hash should only be empty when data.primaryType=EIP712Domain',
+            );
+        }
+
+        super(message, params);
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+        this.requiredFirmwareCoins = [network];
+    }
+
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
+    }
+
+    get info() {
+        return getNetworkLabel(
+            'Sign #NETWORK typed data',
+            getEthereumNetwork(this.params.address_n),
+        );
+    }
+
+    getButtonRequestData(code: string, name?: string) {
+        if (
+            (code === 'ButtonRequest_Other' &&
+                name &&
+                [
+                    'should_show_domain',
+                    'should_show_struct',
+                    'should_show_array',
+                    'confirm_typed_value',
+                    'confirm_message_hash',
+                    'confirm_empty_typed_message',
+                    'confirm_typed_data_final',
+                ].includes(name)) ||
+            code === 'ButtonRequest_SignTx'
+        ) {
+            return {
+                type: 'message' as const,
+                coin: this.params.network?.shortcut ?? 'ETH',
+                serializedPath: getSerializedPath(this.params.address_n),
+                message: JSON.stringify(this.params.data, null, 2),
+            };
+        }
+    }
+
+    private async getDefinitions() {
+        if (this.params.network) return;
+
+        return await getEthereumDefinitions({
+            slip44: getSlip44ByPath(this.params.address_n),
+            version: getDefinitionsVersion(this.getDevice()),
+        });
+    }
+
+    async run() {
+        const cmd = this.getDevice().getCommands();
+        const { address_n } = this.params;
+        const definitions = await this.getDefinitions();
+        if (this.getDevice().features.internal_model === DeviceModelInternal.T1B1) {
+            Assert(
+                Type.Object({
+                    domain_separator_hash: Type.String(),
+                    message_hash: Type.Optional(Type.String()),
+                }),
+                this.params,
+            );
+
+            const { domain_separator_hash, message_hash } = this.params;
+
+            // For T1B1 we use EthereumSignTypedHash
+            const response = await cmd.typedCall(
+                'EthereumSignTypedHash',
+                'EthereumTypedDataSignature',
+                {
+                    address_n,
+                    domain_separator_hash,
+                    message_hash,
+                    encoded_network: definitions?.encoded_network,
+                },
+            );
+
+            const { address, signature } = response.message;
+
+            return {
+                address,
+                signature: `0x${signature}`,
+            };
+        }
+
+        const { data, metamask_v4_compat } = this.params;
+        const { types, primaryType, domain, message } = data;
+
+        // For core devices, we use EthereumSignTypedData
+        let response = await cmd.typedCall(
+            'EthereumSignTypedData',
+            [
+                'EthereumTypedDataStructRequest',
+                'EthereumTypedDataValueRequest',
+                'EthereumTypedDataSignature',
+            ],
+            {
+                address_n,
+                primary_type: primaryType as string,
+                metamask_v4_compat,
+                definitions,
+                show_message_hash: this.params.show_message_hash
+                    ? this.params.message_hash
+                    : undefined,
+            },
+        );
+
+        // sending all the type data
+        while (response.type === 'EthereumTypedDataStructRequest') {
+            const { name: typeDefinitionName } = response.message;
+            const typeDefinition = types[typeDefinitionName];
+            if (typeDefinition === undefined) {
+                throw ERRORS.TypedError(
+                    'Runtime',
+                    `Type ${typeDefinitionName} was not defined in types object`,
+                );
+            }
+
+            const dataStruckAck: PROTO.EthereumTypedDataStructAck = {
+                members: typeDefinition.map(({ name, type: typeName }) => ({
+                    name,
+                    type: getFieldType(typeName, types),
+                })),
+            };
+            response = await cmd.typedCall(
+                'EthereumTypedDataStructAck',
+                [
+                    'EthereumTypedDataStructRequest',
+                    'EthereumTypedDataValueRequest',
+                    'EthereumTypedDataSignature',
+                ],
+                dataStruckAck,
+            );
+        }
+
+        // sending the whole message to be signed
+        while (response.type === 'EthereumTypedDataValueRequest') {
+            const { member_path } = response.message;
+
+            let memberData;
+            let memberTypeName: string;
+
+            const [rootIndex, ...nestedMemberPath] = member_path;
+            switch (rootIndex) {
+                case 0:
+                    memberData = domain;
+                    memberTypeName = 'EIP712Domain';
+                    break;
+                case 1:
+                    memberData = message;
+                    memberTypeName = primaryType as string;
+                    break;
+                default:
+                    throw ERRORS.TypedError('Runtime', 'Root index can only be 0 or 1');
+            }
+
+            // It can be asking for a nested structure (the member path being [X, Y, Z, ...])
+            for (const index of nestedMemberPath) {
+                if (Array.isArray(memberData)) {
+                    memberTypeName = parseArrayType(memberTypeName).entryTypeName;
+                    memberData = memberData[index];
+                } else if (typeof memberData === 'object' && memberData !== null) {
+                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                    const memberTypeArr: (typeof types)[string] = types[memberTypeName];
+                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                    const memberTypeDefinition: (typeof types)[string][number] =
+                        memberTypeArr[index];
+                    memberTypeName = memberTypeDefinition.type;
+                    memberData = memberData[memberTypeDefinition.name as keyof typeof memberData];
+                }
+                if (memberData === null || memberData === undefined) {
+                    // Cancel the request so the device isn't left hanging
+                    this.getDevice().getCurrentSession().cancelCall();
+                    throw ERRORS.TypedError(
+                        'Runtime',
+                        `Value from member path ${member_path} is missing in the data object`,
+                    );
+                }
+            }
+
+            let encodedData;
+            // If we were asked for a list, first sending its length and we will be receiving
+            // requests for individual elements later
+            if (Array.isArray(memberData)) {
+                // Sending the length as uint16
+                encodedData = encodeData('uint16', memberData.length);
+            } else {
+                encodedData = encodeData(memberTypeName, memberData);
+            }
+
+            response = await cmd.typedCall(
+                'EthereumTypedDataValueAck',
+                ['EthereumTypedDataValueRequest', 'EthereumTypedDataSignature'],
+                {
+                    value: encodedData,
+                },
+            );
+        }
+
+        const { address, signature } = response.message;
+
+        return {
+            address,
+            signature: `0x${signature}`,
+        };
+    }
+}

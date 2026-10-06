@@ -1,7 +1,9 @@
 import { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { injectDesktopApi } from '@suite/desktop-app-api';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { selectIsDebugModeActive } from './debugSelectors';
 import { debugActions } from './debugSlice';
@@ -12,7 +14,7 @@ const DEBUG_MODE_ACTIVATION_CLICK_COUNT = 5;
 // settings title 5×" activator and the keyboard shortcut.
 export const useToggleDebugMode = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const dispatch = useDispatch();
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
 
     return useCallback(() => {
         const shouldEnableDebugMode = !isDebugModeActive;
@@ -20,18 +22,17 @@ export const useToggleDebugMode = () => {
         dispatch(debugActions.setShowDebugMenu(shouldEnableDebugMode));
 
         if (desktopApi.available) {
+            desktopApi.setDebugMode(shouldEnableDebugMode);
             desktopApi.configLogger(
                 shouldEnableDebugMode
                     ? {
                           level: 'debug',
-                          options: {
-                              writeToDisk: true,
-                          },
+                          writeToDisk: true,
                       }
                     : {},
             );
         }
-    }, [dispatch, isDebugModeActive]);
+    }, [desktopApi, dispatch, isDebugModeActive]);
 };
 
 export const useDebugModeActivator = () => {

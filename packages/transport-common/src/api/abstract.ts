@@ -1,5 +1,5 @@
+import type { Logger } from '@trezor/logger';
 import { TypedEmitter, getSynchronize } from '@trezor/utils';
-import type { Logger } from '@trezor/utils';
 
 import { type TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';

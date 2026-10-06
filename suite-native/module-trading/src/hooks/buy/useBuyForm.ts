@@ -4,7 +4,11 @@ import { useSelector } from 'react-redux';
 
 import type { BuyCryptoPaymentMethod, BuyTrade } from 'invity-api';
 
-import { type TradingAmountLimitProps, selectTradingBuyQuotesRequest } from '@suite-common/trading';
+import {
+    type TradingAmountLimitProps,
+    cryptoIdToNetwork,
+    selectTradingBuyQuotesRequest,
+} from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
@@ -27,6 +31,7 @@ import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
 import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
 import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccountChangeEffect';
 import { useReceiveAccountPreselectionEffect } from '../general/form/useReceiveAccountPreselectionEffect';
+import { useTradeableAssetValidityEffect } from '../general/form/useTradeableAssetValidityEffect';
 
 const useBuyQuotesChangeEffect = ({ getValues, setValue }: BuyFormType) => {
     const quotes = useSelector(selectValidTradingBuyQuotesNative);
@@ -91,6 +96,10 @@ const useBuyQuoteChangeEffect = ({ control, getValues, setValue }: BuyFormType) 
     );
 
     useEffect(() => {
+        if (quote && quote.receiveCurrency !== asset?.cryptoId) {
+            return;
+        }
+
         const [amountInCrypto, fiatValue, cryptoValue] = getValues([
             'amountInCrypto',
             'fiatValue',
@@ -117,7 +126,7 @@ const useBuyQuoteChangeEffect = ({ control, getValues, setValue }: BuyFormType) 
                     : truncatedCryptoAmount;
             setValue('cryptoValue', value);
         }
-    }, [quote, isAmountInSats, symbol, getValues, setValue]);
+    }, [asset?.cryptoId, quote, isAmountInSats, symbol, getValues, setValue]);
 };
 
 const useValidations = (
@@ -145,7 +154,7 @@ const useValidations = (
 export const useBuyForm = (): BuyFormType => {
     const defaultValues = useSelector(selectBuyFormDefaultValues);
     const limits = useSelector(selectBuyAmountLimits);
-    const { context } = useContextForTradingForm(limits);
+    const { context, setContractAddress, setSendNetworkSymbol } = useContextForTradingForm(limits);
 
     const form = useForm<BuyFormValues>({
         defaultValues,
@@ -155,7 +164,13 @@ export const useBuyForm = (): BuyFormType => {
     const { control, setValue } = form;
     const asset = useWatch({ control, name: 'asset' });
 
+    useEffect(() => {
+        setContractAddress(asset?.contractAddress);
+        setSendNetworkSymbol(cryptoIdToNetwork(asset?.cryptoId)?.symbol);
+    }, [asset?.contractAddress, asset?.cryptoId, setContractAddress, setSendNetworkSymbol]);
+
     useReceiveAccountChangeEffect(setValue, selectBuySelectedReceiveAccount);
+    useTradeableAssetValidityEffect(setValue, asset?.cryptoId);
     useReceiveAccountPreselectionEffect({
         receiveAsset: asset,
         selectReceiveAccount: selectBuySelectedReceiveAccount,

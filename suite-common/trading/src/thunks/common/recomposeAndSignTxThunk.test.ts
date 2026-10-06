@@ -2,13 +2,20 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { type DeviceReducerState, prepareDeviceReducer } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    blockchainInitialState,
+    composeSendFormTransactionFeeLevelsThunk,
+    initialWalletSettingsState,
+} from '@suite-common/wallet-core';
 import { type Account, type FeesState } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 
+import { type RecomposeAndSignTxThunkState } from './recomposeAndSignTxThunk';
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingState, initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
@@ -17,15 +24,39 @@ import { tradingThunks } from './index';
 
 jest.mock('@suite-common/wallet-core', () => {
     const actualModule = jest.requireActual('@suite-common/wallet-core');
+    const actualCompose = actualModule.composeSendFormTransactionFeeLevelsThunk;
+    // RTK `isRejected(thunk)` detects async thunks via pending/fulfilled/rejected.
+    const mockedComposeSendFormTransactionFeeLevelsThunk = Object.assign(jest.fn(), {
+        typePrefix: actualCompose.typePrefix,
+        pending: actualCompose.pending,
+        fulfilled: actualCompose.fulfilled,
+        rejected: actualCompose.rejected,
+    });
 
     return {
         ...actualModule,
-        composeSendFormTransactionFeeLevelsThunk: jest.fn(),
+        composeSendFormTransactionFeeLevelsThunk: mockedComposeSendFormTransactionFeeLevelsThunk,
     };
 });
 
-const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const deviceReducer = prepareDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const trxSymbol = asNetworkSymbol('trx');
+const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
 const btcFeeData = {
     blockHeight: 890366,
     blockTime: 10,
@@ -56,7 +87,11 @@ const fees: FeesState = {
         status: 'loaded',
         data: btcFeeData,
     },
-    trx: {
+    [trxSymbol]: {
+        status: 'loaded',
+        data: btcFeeData,
+    },
+    [solSymbol]: {
         status: 'loaded',
         data: btcFeeData,
     },
@@ -118,12 +153,14 @@ describe('recomposeAndSignTxThunk', () => {
             } as TrezorDevice,
         };
 
-        const store = configureMockStore({
-            extra: {},
+        const { store } = createTestCompositionRoot<void, RecomposeAndSignTxThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
-                    trading: tradingReducer,
+                    accounts: () => [account],
+                    blockchain: () => blockchainInitialState,
                     fees: mockedSuiteReducer,
+                    settings: () => initialWalletSettingsState,
+                    trading: tradingReducer,
                 }),
                 device: deviceReducer,
             }),
@@ -145,7 +182,7 @@ describe('recomposeAndSignTxThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
         const tradingFormState = {
             activeSection: 'exchange' as const,
             isSlip24Active: false,
@@ -198,8 +235,8 @@ describe('recomposeAndSignTxThunk', () => {
             tradingThunks.recomposeAndSignTxThunk({
                 account: {
                     ...account,
-                    symbol: undefined as unknown,
-                } as Account,
+                    symbol: ethSymbol,
+                },
                 address: 'address',
                 amount: '0.1',
                 tradingFormState,
@@ -336,6 +373,84 @@ describe('recomposeAndSignTxThunk', () => {
             type: 'sign-tx-error',
             error: {
                 id: 'TR_TRADING_MISSING_FEE_LEVEL',
+            },
+        });
+
+        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
+    });
+
+    it('should surface the underlying error when compose is rejected with a message', async () => {
+        const { store, account, tradingFormState, mockSignAndPushSendFormTransaction } = getMocks();
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { rejectWithValue }) =>
+                    rejectWithValue({
+                        error: 'fee-levels-compose-failed',
+                        message: 'Method_InvalidParameter',
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account,
+                address: 'address',
+                amount: '0.1',
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('rejected');
+        expect(response.payload).toEqual({
+            type: 'sign-tx-error',
+            error: {
+                id: 'TR_TRADING_COMPOSE_FAILED',
+                values: { error: 'Method_InvalidParameter' },
+            },
+        });
+
+        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
+    });
+
+    it('should surface the underlying error when the custom limit recalculation is rejected', async () => {
+        const { store, account, tradingFormState, mockSignAndPushSendFormTransaction } = getMocks({
+            composedTransactionInfo: {
+                ...mockComposedTransactionInfo,
+                selectedFee: 'custom',
+            },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { rejectWithValue }) =>
+                    rejectWithValue({
+                        error: 'fee-levels-compose-failed',
+                        message: 'Method_InvalidParameter',
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account,
+                address: 'address',
+                amount: '0.1',
+                recalculateCustomLimit: true,
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('rejected');
+        expect(response.payload).toEqual({
+            type: 'sign-tx-error',
+            error: {
+                id: 'TR_TRADING_COMPOSE_FAILED',
+                values: { error: 'Method_InvalidParameter' },
             },
         });
 
@@ -522,6 +637,126 @@ describe('recomposeAndSignTxThunk', () => {
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
     });
 
+    it('should keep token in form output for Solana when transactionData is provided', async () => {
+        const { store, tradingFormState } = getMocks({
+            composedTransactionInfo: {
+                ...mockComposedTransactionInfo,
+                composed: {
+                    ...mockComposedTransactionInfo.composed,
+                    token: {
+                        contract: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                    } as TokenInfo,
+                },
+            },
+        });
+
+        const solanaAccount = {
+            ...accountBtc,
+            symbol: solSymbol,
+            networkType: 'solana',
+            descriptor: 'solanaAccountDescriptor',
+        } as Account;
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: {
+                txid: 'txid',
+            },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            outputs: [
+                                {
+                                    amount: '10000000',
+                                },
+                            ],
+                        },
+                    }),
+            ),
+        );
+
+        await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account: solanaAccount,
+                address: 'recipient',
+                amount: '1.25',
+                transactionData: 'abcd',
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(
+            (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mock.calls[0][0]
+                .formState.outputs[0].token,
+        ).toBe('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
+    });
+
+    it.each([
+        { signingResult: undefined, expectedType: 'sign-cancelled' },
+        {
+            signingResult: { success: false, error: { code: 'sign-transaction-timeout' } },
+            expectedType: 'sign-transaction-timeout',
+        },
+        {
+            signingResult: { success: false, error: { code: 'sign-transaction-failed' } },
+            expectedType: 'sign-tx-error',
+        },
+    ])(
+        'should reject as $expectedType when signing returns $signingResult',
+        async ({ signingResult, expectedType }) => {
+            const { store, account, tradingFormState } = getMocks();
+
+            const mockSignAndPushSendFormTransaction = jest
+                .fn()
+                .mockResolvedValueOnce(signingResult);
+
+            (
+                composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock
+            ).mockImplementationOnce(
+                createThunk(
+                    composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                    (_, { fulfillWithValue }) =>
+                        fulfillWithValue({
+                            normal: {
+                                type: 'final',
+                                outputs: [
+                                    {
+                                        amount: '10000000',
+                                    },
+                                ],
+                            },
+                        }),
+                ),
+            );
+
+            const response = await store.dispatch(
+                tradingThunks.recomposeAndSignTxThunk({
+                    account,
+                    address: 'address',
+                    amount: '0.1',
+                    tradingFormState,
+                    signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+                }),
+            );
+
+            expect(response.meta.requestStatus).toBe('rejected');
+            expect(response.payload).toEqual({
+                type: expectedType,
+                error: {
+                    id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
+                },
+            });
+            expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+        },
+    );
+
     it('should return successful recomposed and signed transaction using custom fees', async () => {
         const { store, account, tradingFormState } = getMocks({
             composedTransactionInfo: {
@@ -699,7 +934,6 @@ describe('recomposeAndSignTxThunk', () => {
                     feeLimit: '64285', // energy units
                     token: { contract: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t' } as TokenInfo,
                     fee: '6428500',
-                    outputs: [],
                 },
             },
         });
@@ -745,6 +979,59 @@ describe('recomposeAndSignTxThunk', () => {
         );
     });
 
+    it('should sign the recomposed native TRX fee, correcting an activation fee the real recipient does not need', async () => {
+        const { store, tradingFormState } = getMocks({
+            composedTransactionInfo: {
+                selectedFee: 'normal',
+                composed: {
+                    feePerByte: '1000',
+                    // Offers-page estimate against the cold stand-in recipient:
+                    // 0.1 create-account fee + 1 activation.
+                    fee: '1100000',
+                },
+            },
+        });
+
+        const account = { ...accountBtc, symbol: trxSymbol, networkType: 'tron' } as Account;
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: { txid: 'txid' },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            // Recompose against the real payin address, which turned out to be
+                            // activated already — bandwidth burn only.
+                            fee: '100000',
+                            outputs: [{ amount: '10000000' }],
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account,
+                address: 'address',
+                amount: '0.1',
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('fulfilled');
+        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+        expect(mockSignAndPushSendFormTransaction.mock.calls[0][0].precomposedTransaction.fee).toBe(
+            '100000',
+        );
+    });
+
     it('should keep the composed feeLimit for non-Tron networks', async () => {
         const { store, account, tradingFormState } = getMocks({
             composedTransactionInfo: {
@@ -755,7 +1042,6 @@ describe('recomposeAndSignTxThunk', () => {
                     feeLimit: '64285',
                     token: { contract: '0x123457' } as TokenInfo,
                     fee: '1000',
-                    outputs: [],
                 },
             },
         });
@@ -804,7 +1090,7 @@ describe('recomposeAndSignTxThunk', () => {
             },
             {
                 minor_version: 12,
-                patch_version: 1,
+                patch_version: 5,
             },
         );
 
@@ -842,6 +1128,7 @@ describe('recomposeAndSignTxThunk', () => {
                             type: 'final',
                             outputs: [
                                 {
+                                    address: 'address',
                                     amount: '10000000',
                                 },
                             ],
@@ -876,11 +1163,13 @@ describe('recomposeAndSignTxThunk', () => {
             composedLevels: {
                 outputs: [
                     {
+                        address: 'address',
                         amount: '10000000',
                     },
                 ],
                 type: 'final',
             },
+            destinationTag: undefined,
             formattedMaxAmount: '0.1',
             type: 'exchange',
         });
@@ -891,6 +1180,160 @@ describe('recomposeAndSignTxThunk', () => {
             paymentRequests: mockPaymentRequests,
         });
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('should use the payment output amount as formattedMaxAmount when send-max has extra outputs', async () => {
+        const { store, account, tradingFormState } = getMocks(
+            {
+                composedTransactionInfo: {
+                    ...mockComposedTransactionInfo,
+                },
+            },
+            {
+                minor_version: 12,
+                patch_version: 5,
+            },
+        );
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: {
+                txid: 'txid-with-payment-requests',
+            },
+        });
+
+        jest.mocked(tradingThunks.createPaymentRequestsThunk).mockImplementationOnce(
+            createThunk(
+                tradingThunks.createPaymentRequestsThunk.typePrefix,
+                (_, { fulfillWithValue }) => fulfillWithValue([]),
+            ),
+        );
+
+        const paymentAddress = 'address';
+        const composedOutputs = [
+            {
+                amount: '0',
+                script_type: 'PAYTOOPRETURN' as const,
+                op_return_data: 'deadbeef',
+            },
+            {
+                amount: '20000000',
+                address: paymentAddress,
+            },
+            {
+                amount: '1000',
+                address_n: [44, 0, 0, 1, 0],
+            },
+        ];
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            outputs: composedOutputs,
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account: {
+                    ...account,
+                    networkType: 'bitcoin' as const,
+                } as Account,
+                address: paymentAddress,
+                amount: '0.1',
+                setMaxOutputId: 0,
+                isSlip24Active: true,
+                tradingFormState: {
+                    ...tradingFormState,
+                    send: {
+                        amount: '0.1',
+                        symbol: account.symbol,
+                        cryptoId: undefined,
+                        accountKey: undefined,
+                    },
+                },
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('fulfilled');
+        expect(tradingThunks.createPaymentRequestsThunk).toHaveBeenCalledWith({
+            account,
+            composedLevels: {
+                outputs: composedOutputs,
+                type: 'final',
+            },
+            destinationTag: undefined,
+            formattedMaxAmount: '0.2',
+            type: 'exchange',
+        });
+    });
+
+    it('should not create payment requests for sell when firmware does not support SLIP24 sells', async () => {
+        const { store, account, tradingFormState } = getMocks(
+            {
+                composedTransactionInfo: {
+                    ...mockComposedTransactionInfo,
+                },
+            },
+            {
+                minor_version: 12,
+                patch_version: 5,
+            },
+        );
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: {
+                txid: 'txid-without-payment-requests',
+            },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            outputs: [
+                                {
+                                    amount: '10000000',
+                                },
+                            ],
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account: {
+                    ...account,
+                    networkType: 'bitcoin' as const,
+                } as Account,
+                address: 'address',
+                amount: '0.1',
+                isSlip24Active: true,
+                tradingFormState: { ...tradingFormState, activeSection: 'sell' as const },
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('fulfilled');
+        expect(tradingThunks.createPaymentRequestsThunk).not.toHaveBeenCalled();
+        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledWith({
+            formState: expect.any(Object),
+            precomposedTransaction: expect.any(Object),
+            selectedAccount: expect.any(Object),
+            paymentRequests: [],
+        });
     });
 
     it('should not create payment requests when SLIP24 is not active', async () => {

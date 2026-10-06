@@ -224,6 +224,7 @@ deviceConnectionMiddleware.startListening({
 
         if (
             selectIsFirmwareInstallationRunning(getState()) ||
+            // Exclude stacks using useDeviceConnectionGuard to prevent navigation glitches.
             checkIsActiveRouteAnyOf([
                 DeviceSettingsStackRoutes.DeviceNameStack,
                 DeviceSettingsStackRoutes.FirmwareUpdateStack,
@@ -233,6 +234,7 @@ deviceConnectionMiddleware.startListening({
                 DeviceSettingsStackRoutes.DevicePassphraseStack,
                 DeviceSettingsStackRoutes.DeviceAuthenticityStack,
                 DeviceSettingsStackRoutes.WipeDeviceStack,
+                RootStackRoutes.SignAndVerifyStack,
             ])
         ) {
             return;

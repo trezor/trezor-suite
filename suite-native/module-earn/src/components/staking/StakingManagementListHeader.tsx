@@ -1,0 +1,94 @@
+import { useSelector } from 'react-redux';
+
+import { Context } from '@suite-common/message-system';
+import {
+    type StakeRootState,
+    isSupportedAdaStakingNetworkSymbol,
+    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
+    isSupportedTronStakingNetworkSymbol,
+    selectAdaAccountHasStaked,
+} from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { isStakingSymbol, parseAccountKey } from '@suite-common/wallet-utils';
+import { Text, VStack } from '@suite-native/atoms';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { ContextMessage } from '@suite-native/message-system';
+
+import { CardanoDelegatedOutsideBanner } from './CardanoDelegatedOutsideBanner';
+import { CardanoStakingInfoBanner } from './CardanoStakingInfoBanner';
+import { InstantUnstakeConfirmationBanner } from './InstantUnstakeConfirmationBanner';
+import { SolExternalStakingBanner } from './SolExternalStakingBanner';
+import { SolStakingRewardsWarning } from './SolStakingRewardsWarning';
+import { StakingManagementPendingSection } from './StakingManagementPendingSection';
+import { StakingManagementStakedCard } from './StakingManagementStakedCard';
+import { TronResourcesCard } from './TronResourcesCard';
+import { TronStakingUnstakeCard } from './TronStakingUnstakeCard';
+import { TronStakingWithdrawBanner } from './TronStakingWithdrawBanner';
+
+type StakingManagementListHeaderProps = {
+    accountKey: AccountKey;
+};
+
+export const StakingManagementListHeader = ({ accountKey }: StakingManagementListHeaderProps) => {
+    const { networkSymbol } = parseAccountKey(accountKey);
+
+    const hasAdaStaked = useSelector((state: StakeRootState) =>
+        selectAdaAccountHasStaked(state, accountKey),
+    );
+
+    const isSolanaStaking = isSupportedSolStakingNetworkSymbol(networkSymbol);
+    const isCardanoStaking = isSupportedAdaStakingNetworkSymbol(networkSymbol);
+    const isTronStaking = isSupportedTronStakingNetworkSymbol(networkSymbol);
+
+    const isStakeSectionShown = !isCardanoStaking || hasAdaStaked;
+
+    const historyHeadingId: TxKeyPath = isSolanaStaking
+        ? 'earn.stakingManagementScreen.rewardsList.title'
+        : 'earn.stakingManagementScreen.stakingHistory';
+
+    return (
+        <VStack spacing="sp48" marginTop="sp32" paddingHorizontal="sp16">
+            {isSupportedEthStakingNetworkSymbol(networkSymbol) && (
+                <InstantUnstakeConfirmationBanner accountKey={accountKey} />
+            )}
+            {isStakingSymbol(networkSymbol) && (
+                <ContextMessage context={Context.getStaking(networkSymbol)} />
+            )}
+            {isTronStaking && <TronStakingWithdrawBanner accountKey={accountKey} />}
+            {isTronStaking ? (
+                <TronStakingUnstakeCard accountKey={accountKey} />
+            ) : (
+                <StakingManagementPendingSection accountKey={accountKey} />
+            )}
+            {isSolanaStaking && <SolStakingRewardsWarning accountKey={accountKey} />}
+            <VStack spacing="sp16">
+                {isCardanoStaking && <CardanoStakingInfoBanner accountKey={accountKey} />}
+                {isStakeSectionShown && (
+                    <>
+                        <Text variant="headline-sm">
+                            <Translation id="earn.stakingManagementScreen.yourStake" />
+                        </Text>
+                        <StakingManagementStakedCard
+                            accountKey={accountKey}
+                            networkSymbol={networkSymbol}
+                        />
+                        {isSolanaStaking && (
+                            <SolExternalStakingBanner
+                                accountKey={accountKey}
+                                networkSymbol={networkSymbol}
+                            />
+                        )}
+                        {isCardanoStaking && (
+                            <CardanoDelegatedOutsideBanner accountKey={accountKey} />
+                        )}
+                    </>
+                )}
+            </VStack>
+            {isTronStaking && <TronResourcesCard accountKey={accountKey} />}
+            <Text variant="headline-sm">
+                <Translation id={historyHeadingId} />
+            </Text>
+        </VStack>
+    );
+};

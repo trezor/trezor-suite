@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { type Route, goto } from '@suite/router';
+import { type Route, gotoThunk } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import {
@@ -11,7 +11,8 @@ import {
     resolveMessageContent,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
-import { selectReloadAppDep } from '@suite-common/suite-types';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { injectReloadApp } from '@suite-common/suite-types';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 
@@ -24,14 +25,14 @@ type CtaButtonProps = {
 };
 
 export const CtaButton = ({ ctaLabel, ctaLink, isExternalCta }: CtaButtonProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const externalLink = useExternalLink(ctaLink);
 
     const handleClick = () => {
         if (isExternalCta) {
             window.open(externalLink, '_blank');
         } else {
-            dispatch(goto({ routeName: ctaLink as Route['name'], preserveParams: true }));
+            dispatch(gotoThunk({ routeName: ctaLink as Route['name'], preserveParams: true }));
         }
     };
 
@@ -43,10 +44,9 @@ export const CtaButton = ({ ctaLabel, ctaLink, isExternalCta }: CtaButtonProps) 
 };
 
 export const KillswitchMessageScreen = () => {
-    const dispatch = useDispatch();
     const language = useSelector(selectLanguage);
     const activeKillswitchMessage = useSelector(selectActiveKillswitchMessage);
-    const { reloadApp } = useServices(selectReloadAppDep);
+    const { reloadApp, dispatch } = useServices(injectReloadApp, injectDispatch);
 
     // Destroy Connect instance, to prevent any device or backend interaction on the background
     // Connect won't init if there is an active killswitch (see appInitThunks), but message system can be updated anytime later.

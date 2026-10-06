@@ -1,10 +1,12 @@
 import { type ReactNode, useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { isFulfilled } from '@reduxjs/toolkit';
+import { isFulfilled, miniSerializeError } from '@reduxjs/toolkit';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingFulfillValue,
     type TradingRootStateWithDeviceAndAccounts,
@@ -29,8 +31,8 @@ import {
     selectSendSerializedTx,
 } from '@suite-common/wallet-core';
 import { type FeeLevelLabel, type TokenAddress } from '@suite-common/wallet-types';
-import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type TxKeyPath } from '@suite-native/intl';
+import { type SettingsSliceRootState } from '@suite-native/settings';
 import { type TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';
 import {
     type TradingRootState,
@@ -82,7 +84,7 @@ export const useTradingTransaction = ({
     processResponseData,
     triggerAnalyticsTradeConfirmation,
 }: UseTradingTransactionProps): UseTradingTransactionReturnProps => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const sendAccountKey = useSelector((state: TradingRootState) =>
         selectTradingAccountKeyByTradeType(state, tradeType),
@@ -139,9 +141,9 @@ export const useTradingTransaction = ({
     const isSlip24Active = useSelector(
         (
             state: MessageSystemRootState &
-                FeatureFlagsRootState &
+                SettingsSliceRootState &
                 TradingRootStateWithDeviceAndAccounts,
-        ) => selectIsTradingSlip24Enabled(state, sendAccount ?? undefined),
+        ) => selectIsTradingSlip24Enabled(state, sendAccount, tradeType),
     );
 
     const { composeTradingTransaction } = useComposeTradingTransaction({ tradeType });
@@ -169,10 +171,25 @@ export const useTradingTransaction = ({
             );
 
             if (isFulfilled(result)) {
-                return result.payload as TradingFulfillValue;
+                return result.payload;
             }
 
-            return result.error as TradingFulfillValue;
+            const error = result.payload ?? result.error;
+            const serializedError = miniSerializeError(error);
+
+            if (
+                typeof error === 'object' &&
+                error !== null &&
+                'error' in error &&
+                typeof error.error === 'string'
+            ) {
+                serializedError.code = error.error;
+            }
+
+            return {
+                success: false,
+                error: serializedError,
+            };
         },
         [dispatch, waitForTransactionSendConsent],
     );

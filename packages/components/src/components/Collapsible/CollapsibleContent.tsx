@@ -44,6 +44,7 @@ export const CollapsibleContent = ({
                             ease: isOpen ? motionEasing.exit : motionEasing.enter,
                         },
                     }}
+                    data-component="CollapsibleContent"
                     data-testid={dataTestId}
                     aria-expanded={isOpen}
                     id={contentId}

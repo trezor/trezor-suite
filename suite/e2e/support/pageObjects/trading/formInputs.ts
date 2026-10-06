@@ -8,25 +8,17 @@ import { calculatePercentageOfBalance, step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 import { PaymentMethods, PercentageOfBalanceParams } from '../../types';
 
-const paymentMethodNameMap: Record<string, PaymentMethods> = {
-    'Credit/Debit Card': 'creditCard',
-    'Bank Transfer': 'bankTransfer',
-    'Google Pay': 'googlePay',
-    'Apple Pay': 'applePay',
-    Paypal: 'paypal',
-    'Revolut Pay': 'revolutPay',
-};
-
 export class TradingFormInputs {
     readonly fiatAmount: Locator;
     readonly cryptoAmount: Locator;
     readonly currencySelect: Locator;
     readonly currencyOption = (currency: BaseCurrencyCode) =>
         this.page.getByTestId(`@trading/form/currency-picker/option/${currency}`);
-    readonly fiatCryptoSwitchButton: Locator;
     readonly fractionButtons: Locator;
-    readonly bottomText: Locator;
-    readonly fiatBottomText: Locator;
+    readonly youPayError: Locator;
+    readonly youPayAssetSymbol: Locator;
+    readonly youGetAssetSymbol: Locator;
+    readonly receiveAmount: Locator;
     readonly countrySelect: Locator;
     readonly countryValue: Locator;
     readonly countryOption = (countryCode: TradingCountryCode) =>
@@ -39,16 +31,20 @@ export class TradingFormInputs {
     readonly paymentMethodValue: Locator;
     readonly paymentMethodOption = (method: PaymentMethods) =>
         this.page.getByTestId(`@trading/form/payment-method-select/option/${method}`);
-    readonly swapAmountCurrencyTicker: Locator;
 
     constructor(private readonly page: Page) {
         this.fiatAmount = this.page.getByTestId('@trading/form/fiat-input');
         this.cryptoAmount = this.page.getByTestId('@trading/form/crypto-input');
         this.currencySelect = this.page.getByTestId('@trading/form/currency-picker/input');
-        this.fiatCryptoSwitchButton = this.page.getByTestId('@trading/form/switch-crypto-fiat');
         this.fractionButtons = this.page.getByTestId('@trading/form/fraction-buttons');
-        this.bottomText = this.page.getByTestId('@trading/form/crypto-input/bottom-text');
-        this.fiatBottomText = this.page.getByTestId('@trading/form/fiat-input/bottom-text');
+        this.youPayError = this.page.getByTestId('@trading/form/you-pay/error');
+        this.youPayAssetSymbol = this.page
+            .getByTestId('@trading/form/you-pay')
+            .getByTestId('@asset-picker/display-symbol');
+        this.youGetAssetSymbol = this.page
+            .getByTestId('@trading/form/you-get')
+            .getByTestId('@asset-picker/display-symbol');
+        this.receiveAmount = this.page.getByTestId('@trading/form/receive-amount');
         this.countrySelect = this.page.getByTestId('@trading/form/country-select');
         this.countryValue = this.page.getByTestId('@trading/form/country-select/value');
         this.countrySubdivisionSelect = this.page.getByTestId(
@@ -61,21 +57,16 @@ export class TradingFormInputs {
         this.paymentMethodValue = this.page.getByTestId(
             '@trading/form/payment-method-select/value',
         );
-        this.swapAmountCurrencyTicker = this.page.getByTestId(
-            '@trading/form/crypto-input/input-addon',
-        );
     }
 
     @step()
     async selectCountryOfResidence(countryCode: TradingCountryCode) {
-        const currentCountry = await this.countryValue.textContent();
-        if (currentCountry?.includes(countryCode)) {
+        const currentCountry = await this.countryValue.innerText();
+        if (currentCountry.includes(countryCode)) {
             return;
         }
         await this.countrySelect.click();
-        await expect(this.page.getByTestId('@modal/header')).toHaveTranslation(
-            'TR_TRADING_COUNTRY',
-        );
+        await expect(this.page.modalHeader).toHaveTranslation('TR_TRADING_COUNTRY');
         await this.countryOption(countryCode).click();
         await expect(this.countryValue).toContainText(countryCode);
     }
@@ -83,9 +74,7 @@ export class TradingFormInputs {
     @step()
     async selectCountrySubdivision(subdivisionCode: string) {
         await this.countrySubdivisionSelect.click();
-        await expect(this.page.getByTestId('@modal/header')).toHaveTranslation(
-            'TR_TRADING_COUNTRY_SUBDIVISION',
-        );
+        await expect(this.page.modalHeader).toHaveTranslation('TR_TRADING_COUNTRY_SUBDIVISION');
         await this.countrySubdivisionOption(subdivisionCode).click();
         const subdivision = getCountrySubdivisionByCode(subdivisionCode);
         if (!subdivision) {
@@ -97,43 +86,24 @@ export class TradingFormInputs {
     @step()
     async selectFiatCurrency(currencyCode: BaseCurrencyCode) {
         await expect(this.currencySelect).not.toBeEmpty();
-        const currentCurrency = (await this.currencySelect.inputValue())?.trim();
+        const currentCurrency = (await this.currencySelect.innerText()).trim();
         if (currentCurrency === currencyCode.toUpperCase()) {
             return;
         }
         await this.currencySelect.click();
-        await expect(this.page.getByTestId('@modal/header')).toHaveTranslation('TR_CURRENCY');
+        await expect(this.page.modalHeader).toHaveTranslation('TR_CURRENCY');
         await this.currencyOption(currencyCode).click();
-        await expect(this.currencySelect).toHaveValue(currencyCode.toUpperCase());
+        await expect(this.currencySelect).toHaveText(currencyCode.toUpperCase());
     }
 
+    // Selecting also clears the picked provider, so the best offer is recomputed for this method.
     @step()
     async selectPaymentMethod(method: PaymentMethods) {
-        const currentPaymentMethod = await this.paymentMethodSelect.getAttribute('value');
-        if (currentPaymentMethod?.includes(method)) {
-            return;
-        }
         await this.paymentMethodSelect.click();
-        await expect(this.page.getByTestId('@modal/header')).toHaveTranslation(
-            'TR_TRADING_PAYMENT_METHOD',
-        );
+        await expect(this.page.modalHeader).toHaveTranslation('TR_TRADING_PAYMENT_METHOD');
         await this.paymentMethodOption(method).click();
+        await expect(this.page.modal).toBeHidden();
     }
-
-    getSelectedPaymentMethod = async () => {
-        await expect(this.paymentMethodSelect).not.toBeEmpty();
-        const dropdownText = (await this.paymentMethodSelect.getAttribute('value'))?.trim();
-        if (!dropdownText) {
-            throw new Error('Payment method dropdown is empty');
-        }
-
-        const mapped = paymentMethodNameMap[dropdownText];
-        if (!mapped) {
-            throw new Error(`Unknown payment method "${dropdownText}"`);
-        }
-
-        return mapped;
-    };
 
     @step()
     async expectInputToBe(params: PercentageOfBalanceParams) {
@@ -143,7 +113,7 @@ export class TradingFormInputs {
 
     @step()
     async verifyFractionButtons(balance: string, decimals: number) {
-        for (const percentage of [10, 25, 50]) {
+        for (const percentage of [25, 50]) {
             await this.fractionButtons.getByRole('button', { name: `${percentage}%` }).click();
             const expectedValue = new BigNumber(balance)
                 .times(percentage / 100)
@@ -156,24 +126,10 @@ export class TradingFormInputs {
     @step()
     async verifyCryptoAmountExceedsBalance(amount: string) {
         await this.cryptoAmount.fill(amount);
-        await expect(this.bottomText).toHaveTranslation('AMOUNT_IS_NOT_ENOUGH', {
+        await expect(this.youPayError).toHaveTranslation('AMOUNT_IS_NOT_ENOUGH', {
             timeout: 15_000,
         });
         await this.cryptoAmount.clear();
-        await expect(this.bottomText).toBeHidden();
-    }
-
-    @step()
-    async verifyFiatAmountExceedsBalance(amount: string) {
-        await this.fiatCryptoSwitchButton.click();
-        await expect(this.fractionButtons).toBeHidden();
-        await this.fiatAmount.fill(amount);
-        await expect(this.fiatBottomText).toHaveTranslation('AMOUNT_IS_NOT_ENOUGH', {
-            timeout: 15_000,
-        });
-        await this.fiatAmount.clear();
-        await expect(this.fiatBottomText).toBeHidden();
-        await this.fiatCryptoSwitchButton.click();
-        await expect(this.fractionButtons).toBeVisible();
+        await expect(this.youPayError).toBeHidden();
     }
 }

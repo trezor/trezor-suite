@@ -21,10 +21,11 @@ const usdcAssetDiff = {
     in: [{ raw_value: '0xee6b280', value: '250' }],
     out: [],
 };
+type CreateSimulationResultParams = { simulationStatus?: 'Success' | 'Error' };
 
 const createSimulationResult = (
     assetsDiffs: unknown[],
-    { simulationStatus = 'Success' }: { simulationStatus?: 'Success' | 'Error' } = {},
+    { simulationStatus = 'Success' }: CreateSimulationResultParams = {},
 ): NetworkTxSimulationResult =>
     ({
         method: 'ethereumSignTransaction',

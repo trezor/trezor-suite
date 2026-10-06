@@ -1,3 +1,7 @@
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -15,6 +19,16 @@ import {
     createTradingPreloadedState,
 } from '../../../test-utils/tradingTestUtils';
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useRoute: () => ({ params: {} }),
+}));
+
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
+    analytics: mockNativeAnalytics(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
+};
+
 describe('ExchangeSendContent', () => {
     let form: ExchangeFormType;
     const preloadedState = createTradingPreloadedState({
@@ -24,35 +38,34 @@ describe('ExchangeSendContent', () => {
         },
     });
 
-    const renderForm = () =>
-        renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderForm = async () =>
+        await renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
+            services,
         });
 
-    const renderExchangeSendContent = () =>
-        renderWithStoreProvider(<ExchangeSendContent />, {
+    const renderExchangeSendContent = async () =>
+        await renderWithStoreProvider(<ExchangeSendContent />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
             preloadedState,
+            services,
         });
 
-    beforeEach(() => {
-        const { result } = renderForm();
+    beforeEach(async () => {
+        const { result } = await renderForm();
         form = result.current;
     });
 
-    it('should render all components', () => {
-        act(() => {
+    it('should render all components', async () => {
+        await act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('sendCryptoAmount', '100');
         });
-        const { getByText, getByLabelText } = renderExchangeSendContent();
+        const { getByText, getByLabelText } = await renderExchangeSendContent();
 
         expect(
             getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
         ).toHaveTextContent(/USDC/);
-        expect(getByLabelText(getTranslation('moduleTrading.networkName'))).toHaveTextContent(
-            'Ethereum',
-        );
         expect(
             getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
         ).toHaveDisplayValue('100');

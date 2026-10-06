@@ -1,4 +1,4 @@
-import { corsValidator, parseConnectSettings } from './connectSettings';
+import { corsValidator, parseConnectSettings, parseManifest } from './connectSettings';
 
 describe('data/connectSettings', () => {
     describe('parseConnectSettings enabledNetworks', () => {
@@ -18,6 +18,108 @@ describe('data/connectSettings', () => {
                 // @ts-expect-error intentionally malformed input
                 parseConnectSettings({ enabledNetworks: 'ada' }).enabledNetworks,
             ).toBeUndefined();
+        });
+    });
+
+    describe('parseManifest', () => {
+        const baseManifest = {
+            email: 'test@test.com',
+            appUrl: 'https://test.com',
+            appName: 'Test App',
+        };
+
+        it('returns undefined when manifest is undefined', () => {
+            expect(parseManifest(undefined)).toBeUndefined();
+        });
+
+        it('returns undefined when email is not a string', () => {
+            // @ts-expect-error intentionally malformed input
+            expect(parseManifest({ ...baseManifest, email: 123 })).toBeUndefined();
+        });
+
+        it('returns undefined when appUrl is not a string', () => {
+            // @ts-expect-error intentionally malformed input
+            expect(parseManifest({ ...baseManifest, appUrl: null })).toBeUndefined();
+        });
+
+        it('returns undefined when appName is not a string', () => {
+            // @ts-expect-error intentionally malformed input
+            expect(parseManifest({ ...baseManifest, appName: 42 })).toBeUndefined();
+        });
+
+        it('returns undefined when appIcon is not a string or undefined', () => {
+            // @ts-expect-error intentionally malformed input
+            expect(parseManifest({ ...baseManifest, appIcon: 123 })).toBeUndefined();
+        });
+
+        it('accepts appIcon as undefined', () => {
+            expect(parseManifest({ ...baseManifest, appIcon: undefined })).toEqual({
+                ...baseManifest,
+                appIcon: undefined,
+            });
+        });
+
+        it('accepts appIcon as a string', () => {
+            expect(parseManifest({ ...baseManifest, appIcon: 'icon.png' })).toEqual({
+                ...baseManifest,
+                appIcon: 'icon.png',
+            });
+        });
+
+        it('returns a valid manifest with all fields', () => {
+            expect(parseManifest(baseManifest)).toEqual({
+                email: 'test@test.com',
+                appUrl: 'https://test.com',
+                appName: 'Test App',
+                appIcon: undefined,
+            });
+        });
+
+        it('trims leading whitespace from appName', () => {
+            expect(parseManifest({ ...baseManifest, appName: '  Test App' })?.appName).toBe(
+                'Test App',
+            );
+        });
+
+        it('trims trailing whitespace from appName', () => {
+            expect(parseManifest({ ...baseManifest, appName: 'Test App  ' })?.appName).toBe(
+                'Test App',
+            );
+        });
+
+        it('collapses multiple spaces in the middle of appName', () => {
+            expect(parseManifest({ ...baseManifest, appName: 'Test   App' })?.appName).toBe(
+                'Test App',
+            );
+        });
+
+        it('handles combined leading, trailing, and multiple middle spaces in appName', () => {
+            expect(parseManifest({ ...baseManifest, appName: '  Test   App  ' })?.appName).toBe(
+                'Test App',
+            );
+        });
+
+        it('returns undefined when appName is an empty string', () => {
+            expect(parseManifest({ ...baseManifest, appName: '' })).toBeUndefined();
+        });
+
+        it('returns undefined when appName is only whitespace', () => {
+            expect(parseManifest({ ...baseManifest, appName: '   ' })).toBeUndefined();
+        });
+
+        it('strips control characters from appName', () => {
+            expect(parseManifest({ ...baseManifest, appName: 'Test\x00App\x1F' })?.appName).toBe(
+                'TestApp',
+            );
+        });
+
+        it('returns undefined when appName is only control characters', () => {
+            expect(parseManifest({ ...baseManifest, appName: '\x00\x1F\x7F' })).toBeUndefined();
+        });
+
+        it('accepts long appName without length limit', () => {
+            const longName = 'A'.repeat(200);
+            expect(parseManifest({ ...baseManifest, appName: longName })?.appName).toBe(longName);
         });
     });
 

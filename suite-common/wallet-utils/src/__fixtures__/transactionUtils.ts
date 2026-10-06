@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type TokenTransfer, type TransferType } from '@trezor/blockchain-link-types';
@@ -299,14 +300,14 @@ export const analyzeTransactions = [
 
 export const analyzeTransactionsPrepending = [
     {
-        description: 'pre-pending becomes confirmed (no confirmed)',
+        description: 'pre-pending becomes confirmed, upgraded in place (no confirmed)',
         fresh: [{ blockHeight: 1, blockHash: '1', txid: '1' }],
         known: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 2 }],
         blockHeight: 1,
         result: {
             newTransactions: [{ blockHeight: 1, blockHash: '1', txid: '1' }],
             add: [{ blockHeight: 1, blockHash: '1', txid: '1' }],
-            remove: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 2 }],
+            remove: [],
         },
     },
     {
@@ -357,7 +358,7 @@ export const analyzeTransactionsPrepending = [
         },
     },
     {
-        description: 'pre-pending becomes confirmed (has confirmed tx)',
+        description: 'pre-pending becomes confirmed, upgraded in place (has confirmed tx)',
         fresh: [
             { blockHeight: 3, blockHash: '3', txid: '3' },
             { blockHeight: 1, blockHash: '2', txid: '2' },
@@ -370,7 +371,21 @@ export const analyzeTransactionsPrepending = [
         result: {
             newTransactions: [{ blockHeight: 3, blockHash: '3', txid: '3' }],
             add: [{ blockHeight: 3, blockHash: '3', txid: '3' }],
-            remove: [{ blockHeight: undefined, blockHash: '3', txid: '3', deadline: 3 }],
+            remove: [],
+        },
+    },
+    {
+        description: 'pre-pending reaches mempool, upgraded in place without eviction',
+        fresh: [{ blockHeight: undefined, blockHash: '1', txid: '1' }],
+        known: [
+            { blockHeight: undefined, blockHash: '1', txid: '1', deadline: 2 },
+            { blockHeight: 1, blockHash: '2', txid: '2' },
+        ],
+        blockHeight: 1,
+        result: {
+            newTransactions: [],
+            add: [{ blockHeight: undefined, blockHash: '1', txid: '1' }],
+            remove: [],
         },
     },
     {
@@ -468,7 +483,7 @@ export const enhanceTransaction = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
         }),
         result: {
             amount: '123',
@@ -480,7 +495,7 @@ export const enhanceTransaction = [
             deviceState: '1stTestnetAddress@device_id:0',
             fee: '0.00002929',
             totalSpent: '123.00002929',
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             targets: [],
             tokens: [
                 {
@@ -560,7 +575,7 @@ export const enhanceTransaction = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
         }),
         result: {
             amount: '0.00006497',
@@ -572,7 +587,7 @@ export const enhanceTransaction = [
             deviceState: '1stTestnetAddress@device_id:0',
             fee: '0.00002929',
             totalSpent: '0.00009426',
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             targets: [
                 {
                     addresses: ['0x4f4f1488acb1ae1b46146ceff804f591dfe660ac'],
@@ -623,7 +638,7 @@ export const enhanceTransaction = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
         }),
         result: {
             amount: '0.00006497',
@@ -635,7 +650,7 @@ export const enhanceTransaction = [
             deviceState: '1stTestnetAddress@device_id:0',
             fee: '0.00002929',
             totalSpent: '0.00009426',
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             targets: [
                 {
                     addresses: ['0x4f4f1488acb1ae1b46146ceff804f591dfe660ac'],
@@ -799,6 +814,70 @@ export const getRbfParams = [
         account: { networkType: 'bitcoin' },
         tx: { type: 'recv' },
         result: undefined,
+    },
+    {
+        // A stranger's transfer out of the account is labelled 'sent' as well, but replacing it
+        // would re-sign at the stranger's nonce, so it must not be offered as replaceable.
+        description: 'ethereum tx signed by somebody else',
+        account: {
+            networkType: 'ethereum',
+            descriptor: '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b',
+        },
+        tx: {
+            type: 'sent',
+            txid: '0xabcd',
+            rbf: true,
+            blockHeight: -1,
+            ethereumSpecific: { nonce: 45, gasLimit: 21000, gasPrice: '1000000000' },
+            details: {
+                vin: [{ addresses: ['0x0F6666bC699aec39b846E898473e9CAec5a6b821'] }],
+                vout: [{ isAddress: true, addresses: ['0xdead'] }],
+            },
+        },
+        result: undefined,
+    },
+    {
+        description: 'ethereum tx signed by the account itself',
+        account: {
+            networkType: 'ethereum',
+            symbol: asNetworkSymbol('eth'),
+            descriptor: '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b',
+        },
+        tx: {
+            type: 'sent',
+            txid: '0xbeef',
+            rbf: true,
+            blockHeight: -1,
+            ethereumSpecific: { nonce: 45, gasLimit: 21000, gasPrice: '1000000000' },
+            details: {
+                // Lower-cased, as blockbook may report it — authorship must still match.
+                vin: [{ addresses: ['0x37567e60ab231b7d7f26b5b34fdd719098e4ee1b'] }],
+                vout: [
+                    {
+                        isAddress: true,
+                        addresses: ['0xfAEEEB8Fd7D41a6a8223DD36D347DBe56c13fe61'],
+                        value: '1000000000000000000',
+                    },
+                ],
+            },
+        },
+        result: {
+            type: 'ethereum',
+            txid: '0xbeef',
+            outputs: [
+                {
+                    type: 'payment',
+                    address: '0xfAEEEB8Fd7D41a6a8223DD36D347DBe56c13fe61',
+                    amount: '1000000000000000000',
+                    formattedAmount: '1',
+                },
+            ],
+            ethereumNonce: 45,
+            transactionData: '',
+            gasPrice: '1',
+            maxFeePerGas: '',
+            maxPriorityFeePerGas: '',
+        },
     },
     {
         description: 'invalid tx (rbf false)',
@@ -1080,7 +1159,7 @@ export const getAccountTransactions = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
         }),
         result: [
             {
@@ -1093,7 +1172,7 @@ export const getAccountTransactions = [
                 deviceState: '1stTestnetAddress@device_id:0',
                 fee: '0.00002929',
 
-                symbol: 'btc',
+                symbol: asNetworkSymbol('btc'),
                 targets: [
                     { addresses: ['36JkLACrdxARqXXffZk91V9W6SJvghKaVK'], amount: '0.00006497' },
                 ],
@@ -1111,7 +1190,7 @@ export const getAccountTransactions = [
                 deviceState: '1stTestnetAddress@device_id:0',
                 fee: '0.00000166',
 
-                symbol: 'btc',
+                symbol: asNetworkSymbol('btc'),
                 targets: [
                     { addresses: ['3Bvy87TmQhhSBqfiCBh8w5yPx6usiDM8SY'], amount: '0.00319488' },
                 ],
@@ -1127,13 +1206,13 @@ export const getAccountTransactions = [
         account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H'),
-            symbol: 'txrp',
+            symbol: asNetworkSymbol('txrp'),
         }),
         result: [
             {
                 descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
                 deviceState: '1stTestnetAddress@device_id:0',
-                symbol: 'txrp',
+                symbol: asNetworkSymbol('txrp'),
                 type: 'recv',
                 txid: 'A62FDA65E3B84FA2BED47086DB9458CFF8AF475196E327FC51DA0143BD998A9B',
                 blockTime: 621951942,
@@ -1153,7 +1232,7 @@ export const getAccountTransactions = [
             {
                 descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
                 deviceState: '1stTestnetAddress@device_id:0',
-                symbol: 'txrp',
+                symbol: asNetworkSymbol('txrp'),
                 type: 'recv',
                 txid: 'DFA960521E384047E56946F9A441FB717475D132E49737A347CA8B6C80AFC84B',
                 blockTime: 621951942,
@@ -1178,13 +1257,13 @@ export const getAccountTransactions = [
         account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'),
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
         }),
         result: [
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
                 deviceState: '1stTestnetAddress@device_id:0',
-                symbol: 'eth',
+                symbol: asNetworkSymbol('eth'),
                 type: 'recv',
                 txid: '0x63635c5ca1e21d13780d5a0a66cc16dfe0b49ffb9eff191f15b3da271b1ad1d3',
                 blockTime: 1495456394,
@@ -1207,7 +1286,7 @@ export const getAccountTransactions = [
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
                 deviceState: '1stTestnetAddress@device_id:0',
-                symbol: 'eth',
+                symbol: asNetworkSymbol('eth'),
                 type: 'sent',
                 txid: '0x5f3cba8a6dee792594dcce71c5aa39a872bce57cb33e0da8db02d9f2f865806c',
                 blockTime: 1494938897,
@@ -1234,7 +1313,7 @@ export const getAccountTransactions = [
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
                 deviceState: '1stTestnetAddress@device_id:0',
-                symbol: 'eth',
+                symbol: asNetworkSymbol('eth'),
                 type: 'sent',
                 txid: '0xfaae2e7927e97002f15300c6011ca792243cbd57d574db34ccb2a9c18c272b3e',
                 blockTime: 1493811343,
@@ -1266,7 +1345,7 @@ export const getAccountTransactions = [
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
                 deviceState: '1stTestnetAddress@device_id:0',
-                symbol: 'eth',
+                symbol: asNetworkSymbol('eth'),
                 type: 'recv',
                 txid: '0x0833ce97c3f4ce6c170c94aff0acfa1cbfd528bf0d3faa06676cad7daddd2e5c',
                 blockTime: 1493811263,
@@ -1289,7 +1368,7 @@ export const getAccountTransactions = [
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
                 deviceState: '1stTestnetAddress@device_id:0',
-                symbol: 'eth',
+                symbol: asNetworkSymbol('eth'),
                 type: 'recv',
                 txid: '0xcef7e6fbb7f61df35eb6dd5c26f75c15152f83298d060e4c6b6850a835e2d9cd',
                 blockTime: 1493721184,
@@ -1326,7 +1405,7 @@ export const getAccountTransactions = [
         account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('0xf69619a3dCAA63757A6BA0AF3628f5F6C42c50d2'),
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
         }),
         result: [],
     },
@@ -1343,7 +1422,7 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
         ),
         deviceState: '1stTestnetAddress@device_id:0',
         fee: '0.00002929',
-        symbol: 'btc',
+        symbol: asNetworkSymbol('btc'),
         targets: [],
         tokens: [
             {
@@ -1397,7 +1476,7 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
             'vpub5YoEd2jJofNDXriAXpt4fyX23uRhrViFG3721C1wRRKUvDS4P6St7tqFfDP4JZsRARVhaVcGvW5jerdWBVc1c3fgqZeAYt29QSTiafKdwck',
         ),
         deviceState: 'mvAmt1x3QTsSmJrR4tbPtMpYnLbi3gDEBu@912734FCB107274D3CC465EC:1',
-        symbol: 'test',
+        symbol: asNetworkSymbol('test'),
         type: 'recv',
         txid: '70ad253c25aa8a76ebcdb7fded56f2f57ec9b40967b7e79937b4f44445968c93',
         blockTime: 1665050077,
@@ -1450,3 +1529,95 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
         },
     },
 };
+
+export const getCardanoStakingAmount: {
+    description: string;
+    cardanoSpecific: NonNullable<WalletAccountTransaction['cardanoSpecific']>;
+    result: string;
+}[] = [
+    {
+        description: 'deregistration with rewards adds the refunded deposit to the rewards',
+        cardanoSpecific: {
+            subtype: 'stake_deregistration',
+            deposit: '2',
+            withdrawal: '0.140366',
+        },
+        result: '2.140366',
+    },
+    {
+        description: 'deregistration without rewards is just the refunded deposit',
+        cardanoSpecific: { subtype: 'stake_deregistration', deposit: '2' },
+        result: '2',
+    },
+    {
+        description: 'rewards withdrawal is the withdrawn amount',
+        cardanoSpecific: { subtype: 'withdrawal', withdrawal: '0.140366' },
+        result: '0.140366',
+    },
+    {
+        description: 'registration is the paid deposit',
+        cardanoSpecific: { subtype: 'stake_registration', deposit: '2' },
+        result: '2',
+    },
+    {
+        description: 'delegation moves nothing',
+        cardanoSpecific: { subtype: 'stake_delegation' },
+        result: '0',
+    },
+    {
+        description: 'governance delegation moves nothing',
+        cardanoSpecific: { subtype: 'governance_delegation' },
+        result: '0',
+    },
+];
+
+const mockCardanoStakingTx = (
+    cardanoSpecific: NonNullable<WalletAccountTransaction['cardanoSpecific']>,
+    fee: string,
+): WalletAccountTransaction => ({
+    symbol: asNetworkSymbol('ada'),
+    type: 'self',
+    txid: 'e0f3b5f2a3ee6d6e5b2b4a4b1a51b2ff2c1a4de0f2c9d7b7f8b1a2c3d4e5f6a7',
+    deviceState: '1stTestnetAddress@device_id:0',
+    descriptor: asAccountDescriptor(
+        'stake_test1uzrmpvz9pv4kv3fgs3wl6vfhkbz4jm5lmxr3q0k7z0t3fzgs6f9lm',
+    ),
+    amount: fee,
+    fee,
+    targets: [],
+    tokens: [],
+    internalTransfers: [],
+    details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
+    cardanoSpecific,
+});
+
+export const sumTransactionsCardanoStaking: {
+    description: string;
+    transactions: WalletAccountTransaction[];
+    result: string;
+}[] = [
+    {
+        description: 'a registration pays the deposit',
+        transactions: [
+            mockCardanoStakingTx({ subtype: 'stake_registration', deposit: '2000000' }, '179537'),
+        ],
+        result: '-2.179537',
+    },
+    {
+        description: 'a deregistration refunds the deposit',
+        transactions: [
+            mockCardanoStakingTx({ subtype: 'stake_deregistration', deposit: '2000000' }, '175489'),
+        ],
+        result: '1.824511',
+    },
+    {
+        description: 'a deregistration that withdrew rewards refunds the deposit and adds them',
+        transactions: [
+            mockCardanoStakingTx(
+                { subtype: 'stake_deregistration', deposit: '2000000', withdrawal: '140366' },
+                '175489',
+            ),
+        ],
+        result: '1.964877',
+    },
+];

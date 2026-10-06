@@ -1,24 +1,54 @@
 import { type TranslationKey } from '@suite/intl';
-import { configureMockStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
+import { type AnalyticsSharedEvents } from '@suite-common/analytics';
+import { asGetter } from '@suite-common/dependency-injection';
+import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
+import { type NetworksRootState } from '@suite-common/networks';
+import { mockGetAccountSyncInterval, mockNetworksState } from '@suite-common/networks/mocks';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
+    createTestCompositionRoot,
+    filterThunkActionTypes,
+    testMocks,
+} from '@suite-common/test-utils';
+import {
+    type NotificationsState,
     createNotificationsReducer,
     notificationsActions,
 } from '@suite-common/toast-notifications';
 import {
+    type TokenDefinitionsRootState,
+    tokenDefinitionsInitialState,
+} from '@suite-common/token-definitions';
+import { type TradingRootState } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
+import {
+    type AccountsRootState,
     type AccountsState,
+    type BlockchainRootState,
     type BlockchainState,
+    type FeesRootState,
+    type StellarContractTokensRootState,
+    type SyncAccountsWithBlockchainThunkDeps,
+    type TransactionsRootState,
     type TransactionsState,
+    type WalletSettingsRootState,
+    blockchainActions,
     feesReducer,
     initBlockchainThunk,
+    initialWalletSettingsState,
     onBlockMinedThunk,
     onBlockchainConnectThunk,
     onBlockchainDisconnectThunk,
     onBlockchainNotificationThunk,
     preloadFeeInfoThunk,
     setCustomBackendThunk,
+    stellarContractTokensInitialState,
 } from '@suite-common/wallet-core';
 import { type FeesState } from '@suite-common/wallet-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { PROTO } from '@trezor/connect';
+import { DEFAULT_ACCOUNT_SYNC_INTERVAL } from '@trezor/network-module-suite-common-types';
 import { typedObjectKeys } from '@trezor/utils';
 
 import {
@@ -31,6 +61,7 @@ import {
 import * as fixtures from './__fixtures__/blockchainActions';
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
+const btcSymbol = asNetworkSymbol('btc');
 
 const { reducer: notificationsReducer } = createNotificationsReducer<TranslationKey>();
 
@@ -41,10 +72,30 @@ interface Args {
     transactions?: TransactionsState['transactions'];
 }
 
+// These fixtures exercise several blockchain thunks plus notification and window-dependent behavior.
+type State = AccountsRootState &
+    BlockchainRootState &
+    DeviceRootState &
+    FeesRootState &
+    NetworksRootState &
+    StellarContractTokensRootState &
+    TokenDefinitionsRootState &
+    TradingRootState &
+    TransactionsRootState &
+    WalletSettingsRootState & {
+        notifications: NotificationsState<TranslationKey>;
+        suite: {
+            device: { state: { staticSessionId: string } };
+            settings: { debug: { showDebugMenu: boolean } };
+        };
+        window: { isVisible: boolean };
+    };
+
 const getInitialState = (
     { accounts, transactions, blockchain, fees }: Args = {},
     action: any = { type: 'initial' },
-) => ({
+): State => ({
+    networks: mockNetworksState(mockGetSupportedNetworks()),
     wallet: {
         accounts: accountsReducer(accounts, action),
         transactions: transactionsReducer(
@@ -65,12 +116,16 @@ const getInitialState = (
         },
         trading: tradingReducer(undefined, action),
         settings: {
+            ...initialWalletSettingsState,
             bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
         },
+        stellarContractTokens: stellarContractTokensInitialState,
     },
     notifications: notificationsReducer([], action),
+    tokenDefinitions: tokenDefinitionsInitialState,
     device: {
-        devices: [{ state: { staticSessionId: '1stTestnetAddress@device_id:0' } }], // device is needed for notification/event
+        ...deviceInitialState,
+        devices: [mockSuiteDevice({ state: { staticSessionId: '1stTestnetAddress@device_id:0' } })], // device is needed for notification/event
     },
     suite: {
         device: { state: { staticSessionId: '1stTestnetAddress@device_id:0' } }, // device is needed for notification/event
@@ -81,9 +136,8 @@ const getInitialState = (
     },
 });
 
-type State = ReturnType<typeof getInitialState>;
 const mockStore = (preloadedState: State) =>
-    configureMockStore<State>({
+    createTestCompositionRoot<SyncAccountsWithBlockchainThunkDeps, State>({
         reducer: (currentState = preloadedState, action) => {
             const state = currentState as State;
 
@@ -100,7 +154,13 @@ const mockStore = (preloadedState: State) =>
             };
         },
         preloadedState,
-    });
+        services: () => ({
+            analytics: mockAnalytics<AnalyticsSharedEvents>(),
+            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
+            getIsWindowVisible: asGetter(() => true),
+            getTradedAccountKeys: asGetter(() => []),
+        }),
+    }).services.store;
 
 describe('Blockchain Actions', () => {
     afterEach(() => {
@@ -133,21 +193,48 @@ describe('Blockchain Actions', () => {
 
     fixtures.onDisconnect.forEach(f => {
         it(`onDisconnect: ${f.description}`, async () => {
-            const store = mockStore(getInitialState(f.initialState as Args));
-            await store.dispatch(
-                onBlockchainDisconnectThunk({
-                    // @ts-expect-error partial params
-                    coin: { shortcut: f.symbol },
-                }),
-            );
-            const actions = filterThunkActionTypes(store.getActions());
-            expect(actions).toMatchObject(f.actions);
-            if (actions.length) {
-                // wait for reconnection timeout
-                const timeout = (actions[0]?.payload.time ?? 0) - new Date().getTime() + 500;
-                jest.setTimeout(10000);
-                await new Promise(resolve => setTimeout(resolve, timeout));
-                expect(TrezorConnect.blockchainUnsubscribeFiatRates).toHaveBeenCalledTimes(1);
+            // The repo defaults to legacy fake timers; the async advance needs the modern ones.
+            if (f.armsTimer) jest.useFakeTimers({ legacyFakeTimers: false });
+            const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+
+            try {
+                const store = mockStore(getInitialState(f.initialState as Args));
+                await store.dispatch(
+                    onBlockchainDisconnectThunk({
+                        // @ts-expect-error partial params
+                        coin: { shortcut: f.symbol },
+                        identity: f.identity,
+                    }),
+                );
+                const actions = filterThunkActionTypes(store.getActions());
+                expect(actions).toMatchObject(f.actions);
+
+                if (f.keepsTimer) {
+                    // The armed handle must be left alone — clearing it would kill the chain
+                    // while the state still holds the stale handle.
+                    expect(clearTimeoutSpy).not.toHaveBeenCalledWith(fixtures.MOCK_SYNC_TIMEOUT);
+                }
+                if (f.clearsTimer) {
+                    expect(clearTimeoutSpy).toHaveBeenCalledWith(fixtures.MOCK_SYNC_TIMEOUT);
+                }
+                if (f.armsTimer) {
+                    expect(blockchainActions.synced.match(actions[0])).toBe(true);
+                    if (blockchainActions.synced.match(actions[0])) {
+                        expect(actions[0].payload.timeout).toBeDefined();
+                    }
+                    // The armed timer must actually continue the chain, not just exist: firing
+                    // it has to run syncAccountsWithBlockchainThunk, which re-arms via a second
+                    // synced action.
+                    await jest.advanceTimersByTimeAsync(DEFAULT_ACCOUNT_SYNC_INTERVAL);
+                    const syncedActions = store
+                        .getActions()
+                        .filter(blockchainActions.synced.match)
+                        .filter(a => a.payload.symbol === f.symbol);
+                    expect(syncedActions.length).toBeGreaterThanOrEqual(2);
+                }
+            } finally {
+                clearTimeoutSpy.mockRestore();
+                if (f.armsTimer) jest.useRealTimers();
             }
         });
     });
@@ -212,7 +299,7 @@ describe('Blockchain Actions', () => {
     fixtures.customBackend.forEach(f => {
         it(`customBackend: ${f.description}`, async () => {
             const store = mockStore(getInitialState(f.initialState as any));
-            await store.dispatch(setCustomBackendThunk(f.symbol));
+            await store.dispatch(setCustomBackendThunk(asNetworkSymbol(f.symbol)));
             expect(TrezorConnect.blockchainSetCustomBackend).toHaveBeenCalledTimes(
                 f.blockchainSetCustomBackend,
             );
@@ -227,7 +314,7 @@ describe('Blockchain Actions', () => {
                     btc: { blockHeight: 109 },
                 },
                 fees: {
-                    btc: {
+                    [btcSymbol]: {
                         status: 'loaded',
                         data: {
                             minPriorityFee: 0,

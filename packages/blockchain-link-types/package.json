@@ -1,6 +1,6 @@
 {
     "name": "@trezor/blockchain-link-types",
-    "version": "10.0.0-beta.1",
+    "version": "10.0.1",
     "type": "module",
     "repository": {
         "type": "git",
@@ -36,12 +36,12 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@trezor/network-stellar": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
-        "socks-proxy-agent": "8.0.5"
-    },
-    "devDependencies": {
-        "@trezor/type-utils": "workspace:*"
+        "socks-proxy-agent": "8.0.5",
+        "zod": "4.6.5"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

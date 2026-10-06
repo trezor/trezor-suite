@@ -15,6 +15,7 @@
         "@noble/hashes": "^2.0.1",
         "@reduxjs/toolkit": "2.12.0",
         "@scure/base": "^2.0.0",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
@@ -30,6 +31,7 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite/analytics": "workspace:*",
+        "@suite/desktop-app-api": "workspace:*",
         "@suite/device": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/settings": "workspace:*",
@@ -39,17 +41,15 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/icons": "workspace:*",
-        "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "dropbox": "^10.34.0",
-        "immer": "11.1.8",
+        "dropbox": "^10.45.0",
+        "immer": "11.1.16",
         "react": "19.2.3",
         "react-redux": "9.3.0",
         "redux": "^5.0.1",
-        "redux-thunk": "^3.1.0",
         "styled-components": "^6.3.9",
-        "zod": "4.3.6"
+        "zod": "4.6.5"
     },
     "devDependencies": {
         "@trezor/requirements": "workspace:*"

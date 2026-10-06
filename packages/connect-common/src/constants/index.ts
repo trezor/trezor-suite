@@ -4,3 +4,4 @@ export * as NETWORK from './network';
 export * as FIRMWARE from './firmware';
 export * as PAGING from './paging';
 export { DEFAULT_SORTING_STRATEGY } from './utxo';
+export { WEBEXTENSION_SUITE_WEB_CHANNEL } from './webextensionChannel';

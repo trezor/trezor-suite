@@ -1,17 +1,18 @@
 import { useState } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { getTronVotedApr, useTronStakingStats } from '@suite-common/earn-staking-api';
-import { type Account } from '@suite-common/wallet-types';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
-    getTronAccountTotalStakingBalance,
     getTronAvailableVotingPower,
     getTronTotalVotingPower,
     getTronVotes,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
+import { getTronAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import {
     Button,
     Card,
@@ -25,9 +26,8 @@ import {
 import { WarningIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
-import { formatApr } from 'src/components/earn/staking/tron/voteUtils';
+import { formatApr } from 'src/components/earn/staking/tron/utils/voteUtils';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { TronVoteAllocationModal } from './TronVoteAllocationModal/TronVoteAllocationModal';
@@ -37,8 +37,7 @@ interface TronStakedCardProps {
 }
 
 export const TronStakedCard = ({ account }: TronStakedCardProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isVoteAllocationOpen, setIsVoteAllocationOpen] = useState(false);
     const { stats, maxApr } = useTronStakingStats();
 
@@ -74,7 +73,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName,
                 params: {
                     symbol: account.symbol,

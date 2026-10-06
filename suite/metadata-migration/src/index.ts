@@ -1,7 +1,7 @@
 export {
     createMetadataMigrationCompositionRoot,
     type MetadataMigrationDep,
-    selectMetadataMigrationDep,
+    injectMetadataMigration,
 } from './createMetadataMigrationCompositionRoot';
 export {
     LegacyLabelingMigration,

@@ -1,13 +1,15 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { hasSlip39Backup, isBackupComplete } from '@suite-common/backup';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
@@ -21,7 +23,7 @@ type CreateWalletBackupProps = {
 
 export const CreateWalletBackup = ({ isDeviceLocked }: CreateWalletBackupProps) => {
     const device = useSelector(selectSelectedDevice);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
 
     const features = device?.features;
@@ -35,7 +37,7 @@ export const CreateWalletBackup = ({ isDeviceLocked }: CreateWalletBackupProps) 
     const isActionDisabled = isDeviceLocked || !isBackupDone;
 
     const handleClick = () => {
-        dispatch(goto({ routeName: 'create-wallet-backup' }));
+        dispatch(gotoThunk({ routeName: 'create-wallet-backup' }));
     };
 
     return (

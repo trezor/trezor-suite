@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 
 import { selectIsConnectionModalOpen, setConnectionModal, setConnectionMode } from '@suite/device';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const useFirmwareUpgradeModal = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const device = useSelector(selectSelectedDevice);
     const isConnectionModalOpen = useSelector(selectIsConnectionModalOpen);
     const [isFirmwareModalOpen, setIsFirmwareModalOpen] = useState(false);
@@ -18,7 +20,7 @@ export const useFirmwareUpgradeModal = () => {
             setIsAwaitingConnectionForFwUpdate(false);
             if (device?.connected) {
                 setIsFirmwareModalOpen(false);
-                dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
+                dispatch(gotoThunk({ routeName: 'firmware-index', params: { cancelable: true } }));
             }
         }
     }, [isAwaitingConnectionForFwUpdate, isConnectionModalOpen, device?.connected, dispatch]);
@@ -42,7 +44,7 @@ export const useFirmwareUpgradeModal = () => {
         }
 
         setIsFirmwareModalOpen(false);
-        dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
+        dispatch(gotoThunk({ routeName: 'firmware-index', params: { cancelable: true } }));
     };
 
     return { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware };

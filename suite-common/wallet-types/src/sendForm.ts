@@ -16,9 +16,14 @@ export type FormOptions =
 
 export type UtxoSorting = 'newestFirst' | 'oldestFirst' | 'smallestFirst' | 'largestFirst';
 
+export type TronStakingVoteAllocation = {
+    address: string;
+    votes: string;
+};
+
 export type TronStakingFormState =
     | { kind: 'freeze' | 'unstake'; resource: 'bandwidth' | 'energy' }
-    | { kind: 'vote'; votes: string }
+    | { kind: 'vote'; votes: string; allocations: TronStakingVoteAllocation[] }
     | { kind: 'withdraw' }
     | { kind: 'claim' };
 
@@ -46,7 +51,7 @@ type FormStateTradingCommon = {
     isSlip24Active: boolean;
 };
 
-type FormStateTradingSell = {
+export type FormStateTradingSell = {
     activeSection: 'sell';
     receive: FormStateTradingFiatCurrency;
 } & FormStateTradingCommon;
@@ -58,9 +63,7 @@ export type FormStateTradingExchange = {
 } & FormStateTradingCommon;
 
 export type FormStateTrading =
-    | FormStateTradingSell
-    | FormStateTradingExchange
-    | FormStateTradingDefault;
+    FormStateTradingSell | FormStateTradingExchange | FormStateTradingDefault;
 
 export interface FormState {
     outputs: Output[]; // output arrays, each element is corresponding with single Output item
@@ -69,7 +72,6 @@ export interface FormState {
     feePerUnit: string; // bitcoin/ethereum/ripple custom fee field (satB/gasPrice/drops)
     maxPriorityFeePerGas?: string; // ethereum eip1559 only
     maxFeePerGas?: string; // ethereum eip1559 only
-    baseFeePerGas?: string; // ethereum eip1559 only
     feeLimit: string; // ethereum: gas limit; tron: fee_limit cap in SUN for TRC-20 transfers
     estimatedFeeLimit?: string; // ethereum: estimated gas limit; tron: estimated fee_limit cap in SUN for TRC-20 transfers
 
@@ -87,7 +89,7 @@ export interface FormState {
     bitcoinLocktimeDatetime?: string;
     ethereumNonce?: string; // TODO: ethereum RBF
     ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
-    transactionData?: string; // used for solana serialized txn from trading api, ethereum or tron txn hex data
+    transactionData?: string; // used for solana serialized txn from trading api, ethereum, tron txn hex data or bitcoin psbt hex data
     destinationTag?: string; // For Ripple, Stellar, Solana, and Tron
     tronStaking?: TronStakingFormState;
     rbfParams?: RbfTransactionParams;

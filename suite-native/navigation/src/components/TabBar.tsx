@@ -9,6 +9,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { AppTabsRoutes } from '../routes';
 import { type TabsOptions } from '../types';
 import { TabBarItem } from './TabBarItem';
+
 interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOptions;
 }
@@ -32,7 +33,7 @@ const tabBarStyle = prepareNativeStyle<{
 
 const TabBarLabelTxKeys = {
     [AppTabsRoutes.HomeStack]: 'navigation.tabs.home',
-    [AppTabsRoutes.AccountsStack]: 'navigation.tabs.accounts',
+    [AppTabsRoutes.AccountsStack]: 'navigation.tabs.accountsList',
     [AppTabsRoutes.TradeStack]: 'navigation.tabs.trade',
     [AppTabsRoutes.EarnStack]: 'navigation.tabs.earn',
     [AppTabsRoutes.Settings]: 'navigation.tabs.settings',

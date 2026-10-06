@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    playwright-web-flake.url = "github:pietdevries94/playwright-web-flake/1.60.0";
+    playwright-web-flake.url = "github:pietdevries94/playwright-web-flake/1.62.1";
     old-gcc-nixpkgs.url = "github:NixOS/nixpkgs/a78ed5cbdd5427c30ca02a47ce6cccc9b7d17de4"; # For GCC 10.2.0
   };
 
@@ -100,14 +100,6 @@
           export npm_config_build_from_source=true
         '';
 
-        welcomeMessage = ''
-          echo "welcome to the Trezor Suite development environment"
-          echo "- Node.js $(node --version)"
-          echo "- npm $(npm --version)"
-          echo "- Yarn $(yarn --version)"
-          echo "- Playwright $(playwright --version)"
-        '';
-
       in
       {
         devShells =
@@ -123,8 +115,7 @@
 
               shellHook = commonShellHook
                 + androidEnv.nixLdHook
-                + androidEnv.shellHook
-                + welcomeMessage;
+                + androidEnv.shellHook;
             };
           in
           {
@@ -132,7 +123,7 @@
               buildInputs = commonBuildInputs;
               NIX_PATCHELF_LIBRARY_PATH = "${pkgs.openssl.out}/lib:${pkgs.zlib}/lib:${pkgs.gcc.cc.lib}/lib";
               NIX_CC = "${pkgs.gcc}";
-              shellHook = commonShellHook + welcomeMessage;
+              shellHook = commonShellHook;
             };
 
             android = androidShell;

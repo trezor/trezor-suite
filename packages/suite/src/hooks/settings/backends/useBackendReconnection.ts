@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { reconnectBlockchainThunk } from '@suite-common/wallet-core';
-
-import { useDispatch } from 'src/hooks/suite';
 
 export const useBackendReconnection = (
     symbol: NetworkSymbol,
@@ -13,7 +13,7 @@ export const useBackendReconnection = (
     const [progress, setProgress] = useState(false);
     const [time, setTime] = useState<number>();
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         if (!resolveTime) return;

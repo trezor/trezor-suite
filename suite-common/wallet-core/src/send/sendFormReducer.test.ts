@@ -1,5 +1,5 @@
-import { type ExtraDependencies } from '@suite-common/redux-utils';
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountKey,
@@ -8,20 +8,19 @@ import {
 } from '@suite-common/wallet-types';
 
 import { sendFormActions } from './sendFormActions';
-import { initialState, prepareSendFormReducer } from './sendFormReducer';
+import { type SendFormReducerDeps, initialState, prepareSendFormReducer } from './sendFormReducer';
 import { type SerializedTx } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
 
-const extraDependencies: ExtraDependencies = {
-    ...extraDependenciesCommonMock,
+const extraDependencies: SendFormReducerDeps = {
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
     reducers: {
-        ...extraDependenciesCommonMock.reducers,
         storageLoadFormDrafts: (state, { payload }) => {
-            payload.sendFormDrafts.forEach(
-                ({ key, value }: { key: AccountKey; value: FormState }) => {
-                    state.drafts[key] = value;
-                },
-            );
+            type KeyValueParams = { key: AccountKey; value: FormState };
+
+            payload.sendFormDrafts.forEach(({ key, value }: KeyValueParams) => {
+                state.drafts[key] = value;
+            });
         },
     },
 };
@@ -32,6 +31,7 @@ const extraDependencies: ExtraDependencies = {
 const formStateMock = 'FormStateMock' as unknown as FormState;
 const precomposedTxMock = 'precomposedTx' as unknown as PrecomposedTransactionFinal;
 const formSignedTxMock = 'formSignedTx' as unknown as SerializedTx;
+const btcSymbol = asNetworkSymbol('btc');
 
 describe('sendFormReducer', () => {
     it('STORAGE.LOAD', () => {
@@ -102,13 +102,13 @@ describe('sendFormReducer', () => {
     it('SEND.REQUEST_PUSH_TRANSACTION - save', () => {
         const action = sendFormActions.storeSignedTransaction({
             serializedTx: {
-                symbol: 'btc',
+                symbol: btcSymbol,
                 tx: 'test',
             },
         });
 
         const state = prepareSendFormReducer(extraDependencies)(initialState, action);
-        expect(state.serializedTx).toEqual({ symbol: 'btc', tx: 'test' });
+        expect(state.serializedTx).toEqual({ symbol: btcSymbol, tx: 'test' });
     });
 
     it('SEND.REQUEST_PUSH_TRANSACTION - delete', () => {

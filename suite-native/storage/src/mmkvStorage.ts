@@ -55,15 +55,17 @@ const tryInitStorage = (encryptionKey: string) => {
     }
 };
 
+type MMKVStorageDeps = EnsureEncryptionKeyDep;
+
 type GetMMKVRaw = {
     getMMKV: () => Promise<MMKV>;
 };
+
 export type MMKVStorage = Storage & GetMMKVRaw;
+
 export type MMKVStorageDep = { mmkvStorage: MMKVStorage };
 
-type CreateMMKVStorageDeps = EnsureEncryptionKeyDep;
-
-export const createMMKVStorage = (deps: CreateMMKVStorageDeps): MMKVStorage => {
+export const createMMKVStorage = (deps: MMKVStorageDeps): MMKVStorage => {
     let mmkv: MMKV | null = null;
 
     const ensureMMKV = async () => {
@@ -71,7 +73,6 @@ export const createMMKVStorage = (deps: CreateMMKVStorageDeps): MMKVStorage => {
             return mmkv;
         }
 
-        // storage may be already initialized (for example in dev useEffect fire twice)
         const encryptionKey = await deps.ensureEncryptionKey();
 
         if (encryptionKey === null) {
@@ -79,7 +80,8 @@ export const createMMKVStorage = (deps: CreateMMKVStorageDeps): MMKVStorage => {
             throw new Error('Encryption key is unreadable!');
         }
 
-        mmkv = tryInitStorage(encryptionKey);
+        // Another caller may have initialized storage while we awaited the encryption key.
+        mmkv ??= tryInitStorage(encryptionKey);
 
         return mmkv;
     };

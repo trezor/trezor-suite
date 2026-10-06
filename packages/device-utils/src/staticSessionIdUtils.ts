@@ -15,7 +15,7 @@ import { type Branded } from '@trezor/type-utils';
 export type StaticSessionId = `${string}@${string}:${number}`;
 
 // First BIP44 testnet address (44'/1'/0'/0/0). See
-// `packages/connect/src/device/workflow/validateState.ts` where it is retrieved.
+// `packages/connect-core/src/device/workflow/validateState.ts` where it is retrieved.
 export type WalletDescriptor = string & Branded<'WalletDescriptor'>;
 
 export const asWalletDescriptor = (value: string) => value as WalletDescriptor;

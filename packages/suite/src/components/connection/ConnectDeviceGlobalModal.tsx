@@ -2,7 +2,8 @@ import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { selectIsManualPairingRequired, selectIsUnpairingDevice } from '@suite/bluetooth';
 import { Translation } from '@suite/intl';
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
@@ -26,10 +27,6 @@ import { isDesktop } from '@trezor/env-utils';
 import { BluetoothIcon, CableUsbCIcon, QuestionIcon } from '@trezor/icons';
 import { getLargeModelImagePath } from '@trezor/product-components';
 
-import {
-    selectIsManualPairingRequired,
-    selectIsUnpairingDevice,
-} from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { useSelector } from 'src/hooks/suite';
 
 import { BluetoothAdapterStatusModal } from './BluetoothAdapterStatusModal';
@@ -202,8 +199,10 @@ const ViaCableCard = ({ onClick }: ConnectionModeCardProps) => (
     </Card>
 );
 
-export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void }) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+type ConnectDeviceGlobalModalProps = { onCancel: () => void };
+
+export const ConnectDeviceGlobalModal = ({ onCancel }: ConnectDeviceGlobalModalProps) => {
+    const { analytics } = useServices(injectDesktopAnalytics);
     const [isModeSelected, setIsModeSelected] = useState(false);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const {

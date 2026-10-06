@@ -1,16 +1,17 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type DiscoveryRootState,
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 
 import {
@@ -25,8 +26,7 @@ export const useRedirectOnPassphraseCompletion = () => {
     const passphraseDiscoveryCompleted = useSelector(selectPassphraseDiscoveryCompleted);
     const hasPassphraseError = useSelector(selectHasPassphraseError);
     const hasVerificationCancelledError = useSelector(selectHasVerificationCancelledError);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const store = useStore();
     const navigateToInitialScreen = useNavigateToInitialScreen();
 

@@ -36,12 +36,13 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout project
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           submodules: "true"
+          lfs: true
 
       - name: Install node and yarn
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
@@ -70,7 +71,7 @@ jobs:
 
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
-        run: yarn prebuild --platform ios --clean
+        run: yarn prebuild --platform ios
 
       # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
       - name: Sign message system config
@@ -93,6 +94,10 @@ jobs:
 
       - name: Build a Detox test app
         working-directory: ./suite-native/app
+        # Composing the Hermes source map of the Cardano Serialization Lib asm.js file exceeds the
+        # default Node heap of the macOS runner.
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
         run: yarn exec detox build --configuration ios.sim.release
 
       - name: Store build artifact
@@ -101,6 +106,7 @@ jobs:
           name: ios-test-build
           path: |
             suite-native/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteDebug.app
+          retention-days: 7
 
   run_ios_e2e_tests:
     runs-on: macos-latest
@@ -111,12 +117,12 @@ jobs:
     needs: prepare_ios_test_app
     steps:
       - name: Checkout project
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           submodules: "true"
 
       - name: Install node and yarn
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
@@ -195,16 +201,9 @@ jobs:
           GITHUB_ACTION: true
           CURRENTS_PROJECT_ID: LjEjiV
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+          CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
           CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
-        run: yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --shard=${{ matrix.TEST_GROUP }} --totalShards=2 --headless
-
-      - name: "Store test artifacts"
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: ios-tests-${{ matrix.TEST_GROUP }}
-          path: suite-native/app/artifacts
-          retention-days: 14
+        run: yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --shard=${{ matrix.TEST_GROUP }} --totalShards=2 --headless --quarantine
 
   notify_scheduled_failure_to_slack:
     runs-on: ubuntu-latest
@@ -212,5 +211,20 @@ jobs:
     needs: run_ios_e2e_tests
     steps:
       - name: Notify scheduled job failure to Slack
+        env:
+          CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
+          CURRENTS_PROJECT_ID: LjEjiV
+          CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_MOBILE_E2E_WEBHOOK }}
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"Nightly iOS :ios: E2E tests failed :7952-pepeyikes: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} "}' "${{ secrets.SLACK_MOBILE_E2E_WEBHOOK }}"
+          CURRENTS_RUN_ID=$(curl -sf -H "Authorization: Bearer $CURRENTS_API_KEY" \
+            "https://api.currents.dev/v1/runs/find?projectId=$CURRENTS_PROJECT_ID&ciBuildId=$CURRENTS_CI_BUILD_ID" \
+            | jq -r '.data.runId // empty') || true
+          if [ -n "$CURRENTS_RUN_ID" ]; then
+            CURRENTS_RUN_URL="https://app.currents.dev/run/$CURRENTS_RUN_ID"
+          else
+            CURRENTS_RUN_URL="https://app.currents.dev/projects/$CURRENTS_PROJECT_ID/runs"
+          fi
+          jq -n --arg text "Nightly iOS :ios: E2E tests failed: <$GITHUB_RUN_URL|Github run> <$CURRENTS_RUN_URL|Currents run>" '{text: $text}' \
+            | curl -X POST -H 'Content-type: application/json' --data @- "$SLACK_WEBHOOK_URL"

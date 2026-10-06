@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 
-import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
+import { openXpubModal, showXpubThunk } from 'src/actions/wallet/publicKeyActions';
 
 import { ConfirmUnverifiedModal } from './ConfirmUnverifiedModal';
 
 export const ConfirmUnverifiedXpubModal = () => {
     const event = useCallback(() => openXpubModal(), []);
-    const verifyProcess = useCallback(() => showXpub(), []);
+    const verifyProcess = useCallback(() => showXpubThunk(), []);
 
     return (
         <ConfirmUnverifiedModal

@@ -1,10 +1,9 @@
 import { isCryptoIconSymbol, isNetworkIconSymbol } from '@suite-common/icons';
+import { getCoingeckoId, getNetworkOptional, isNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    getCoingeckoId,
-    getNetworkOptional,
-    isNetworkSymbol,
+    isSupportedEthereumNetwork,
     isWrappedNativeToken,
-} from '@suite-common/wallet-config';
+} from '@trezor/network-ethereum/constants';
 
 import { NativeTokenIcon } from './NativeTokenIcon';
 import { NonNativeTokenIcon } from './NonNativeTokenIcon';
@@ -25,7 +24,11 @@ export const TokenIcon = ({
     wrappedTokenIcon = 'token',
     'data-testid': dataTestId,
 }: TokenIconProps) => {
-    if (wrappedTokenIcon === 'network' && isWrappedNativeToken(symbol, contractAddress)) {
+    if (
+        wrappedTokenIcon === 'network' &&
+        isSupportedEthereumNetwork(symbol) &&
+        isWrappedNativeToken(symbol, contractAddress)
+    ) {
         contractAddress = null;
     }
 

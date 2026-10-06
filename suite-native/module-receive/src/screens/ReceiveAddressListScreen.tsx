@@ -106,12 +106,19 @@ export const ReceiveAddressListScreen = () => {
                 address={item}
                 symbol={networkSymbol}
                 deviceStaticSessionId={deviceStaticSessionId}
+                isFresh={item.path === currentFreshAddress?.path}
                 isFirst={index === 0}
                 isLast={index === addresses.length - 1}
                 onPress={navigateToAddressDetail}
             />
         ),
-        [addresses.length, deviceStaticSessionId, navigateToAddressDetail, networkSymbol],
+        [
+            addresses.length,
+            currentFreshAddress?.path,
+            deviceStaticSessionId,
+            navigateToAddressDetail,
+            networkSymbol,
+        ],
     );
 
     return (

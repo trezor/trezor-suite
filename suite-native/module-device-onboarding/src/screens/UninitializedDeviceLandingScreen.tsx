@@ -1,17 +1,18 @@
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
 import { useServices } from '@suite-common/dependency-injection';
 import {
-    deviceActions,
     selectHasDeviceFirmwareInstalled,
     selectSelectedDevice,
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/device';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, Text, TextButton, VStack } from '@suite-native/atoms';
 import { type SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -67,8 +68,7 @@ export const UninitializedDeviceLandingScreen = ({
     DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
     RootStackParamList
 >) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const deviceModel = params.deviceModel as SetupSupportingDeviceModel;
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const shouldOfferUpdateFirmware = useSelector(selectShouldOfferUpdateFirmware);
@@ -82,7 +82,7 @@ export const UninitializedDeviceLandingScreen = ({
         useNavigateToNextScreenAfterFirmwareInstallation();
 
     const handleConfirmButtonPress = () => {
-        dispatch(deviceActions.setManualDeviceCheckSuccess({ deviceId }));
+        dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
         if (hasDeviceFirmwareInstalled) {
             if (shouldOfferUpdateFirmware) {
                 navigation.replace(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);

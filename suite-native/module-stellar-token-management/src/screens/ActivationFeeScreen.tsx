@@ -4,7 +4,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { activateStellarTokenThunk } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Box, Button, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import { BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper } from '@suite-native/confirm-on-trezor';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -107,7 +107,11 @@ export const ActivationFeeScreen = () => {
                     />
                 }
             >
-                <Box flex={1} justifyContent="space-between">
+                <Box
+                    flex={1}
+                    justifyContent="space-between"
+                    pointerEvents={isSubmitting ? 'none' : 'auto'}
+                >
                     <VStack spacing="sp16">
                         <TokenInfoCard
                             tokenName={tokenName}
@@ -142,7 +146,7 @@ export const ActivationFeeScreen = () => {
 
                         {/* Insufficient Balance Warning */}
                         {insufficientBalanceInfo && (
-                            <InlineAlertBox
+                            <BannerInline
                                 intent="warning"
                                 title={
                                     <Translation

@@ -1,22 +1,24 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import { View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
-import {
-    type XpubFormContext,
-    type XpubFormValues,
-    xpubFormValidationSchema,
-} from '@suite-common/validators';
+import { injectAddressValidator } from '@suite-common/networks';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { SelectableNetworkItem } from '@suite-native/accounts';
 import { type Alert, useAlert } from '@suite-native/alerts';
-import { Button, Card, TextDivider, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import {
+    AnimatedBox,
+    Button,
+    Card,
+    TextDivider,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -34,6 +36,7 @@ import { DevXpub } from '../components/DevXpub';
 import { XpubHint } from '../components/XpubHint';
 import { XpubHintBottomSheet } from '../components/XpubHintBottomSheet';
 import { XpubImportSection, networkTypeToTitleTxKeyMap } from '../components/XpubImportSection';
+import { type XpubFormContext, type XpubFormValues, xpubFormValidationSchema } from '../xpubSchema';
 
 const FORM_BUTTON_FADE_IN_DURATION = 200;
 
@@ -70,7 +73,7 @@ export const XpubScanScreen = ({
     } = useBottomSheetModal();
 
     const { showAlert } = useAlert();
-    const { addressValidator } = useServices(selectAddressValidatorDep);
+    const { addressValidator } = useServices(injectAddressValidator);
 
     const { networkSymbol } = route.params;
     const networkType = getNetworkType(networkSymbol);
@@ -202,14 +205,14 @@ export const XpubScanScreen = ({
                             multiline
                         />
                         {isXpubFormFilled && (
-                            <Animated.View entering={FadeIn.duration(FORM_BUTTON_FADE_IN_DURATION)}>
+                            <AnimatedBox entering={FadeIn.duration(FORM_BUTTON_FADE_IN_DURATION)}>
                                 <Button
                                     testID="@accounts-import/sync-coins/xpub-submit"
                                     onPress={onXpubFormSubmit}
                                 >
                                     <Translation id="generic.buttons.confirm" />
                                 </Button>
-                            </Animated.View>
+                            </AnimatedBox>
                         )}
                     </VStack>
                 </Form>

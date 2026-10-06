@@ -64,6 +64,11 @@ As you can see, there is no line between `excluded` and `prerequisite` – that'
 
 Functions accepting multiple parameters tend to be less readable and more error-prone. This can be solved by wrapping the params (all of them, or just some, i.e. "config" params) in an object, thus effectively naming the parameters. A rule of thumb is to use wrapping for functions with more than two params, but it depends on the specific case.
 
+When a function destructures an object parameter, its object type must be declared separately as a
+named type. Never inline the object type in the function signature, regardless of how many properties
+it contains or whether the function is a local callback. Name the type `${FunctionName}Params`; for a
+React component, use `${ComponentName}Props`.
+
 🔴 Confusing function call with many arguments:
 
 ```tsx
@@ -83,17 +88,33 @@ logAnimalNames('Nancy', 'Rob', null, true);
 
 What is the correct order? Why do I have to specify `null` for an optional param? What does `true` mean here?
 
-🟢 Tidy function call with wrapped arguments:
+🔴 Wrapped arguments with an inline object type:
 
 ```tsx
-interface LogAnimalParams {
+const logAnimalNames = ({
+    cat,
+    dog,
+    guineaPig,
+    showHeading,
+}: {
     cat: string;
     dog: string;
     guineaPig?: string;
     showHeading?: boolean;
-}
+}) => undefined;
+```
 
-const logAnimalNames = ({ cat, dog, guineaPig, showHeading }: LogAnimalParams) => {
+🟢 Tidy function call with wrapped arguments:
+
+```tsx
+type LogAnimalNamesParams = {
+    cat: string;
+    dog: string;
+    guineaPig?: string;
+    showHeading?: boolean;
+};
+
+const logAnimalNames = ({ cat, dog, guineaPig, showHeading }: LogAnimalNamesParams) => {
     if (showHeading) {
         console.log('My Animals');
     }

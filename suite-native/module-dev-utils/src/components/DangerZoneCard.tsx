@@ -1,14 +1,12 @@
-import { useDispatch } from 'react-redux';
-
 import { useServices } from '@suite-common/dependency-injection';
-import { deviceActions } from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Card, Text, VStack } from '@suite-native/atoms';
-import { selectMMKVStorageDep } from '@suite-native/services';
+import { injectMMKVStorage } from '@suite-native/services';
 import { clearStorage } from '@suite-native/storage';
 
 export const DangerZoneCard = () => {
-    const dispatch = useDispatch();
-    const { getMMKVStorage } = useServices(selectMMKVStorageDep);
+    const { getMMKVStorage, dispatch } = useServices(injectMMKVStorage, injectDispatch);
 
     return (
         <Card>
@@ -31,7 +29,9 @@ export const DangerZoneCard = () => {
                     <Button
                         intent="critical"
                         priority="primary"
-                        onPress={() => dispatch(deviceActions.clearDevicePersistentData())}
+                        onPress={() =>
+                            dispatch(persistentDeviceDataActions.clearDevicePersistentData())
+                        }
                     >
                         Clear app&apos;s device persistent data
                     </Button>

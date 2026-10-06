@@ -36,15 +36,14 @@
         "@suite-native/tokens": "workspace:*",
         "@suite-native/trading-atoms": "workspace:*",
         "@suite-native/trading-consts": "workspace:*",
+        "@suite-native/trading-types": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react-native": "0.85.3"
+        "react-native": "0.86.0"
     },
     "devDependencies": {
-        "@suite-common/test-utils": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
-        "@suite-native/trading-types": "workspace:*",
-        "@types/invity-api": "^1.1.19"
+        "@types/invity-api": "^1.1.22"
     }
 }

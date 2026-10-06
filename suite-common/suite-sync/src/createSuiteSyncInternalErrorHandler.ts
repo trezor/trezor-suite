@@ -1,17 +1,23 @@
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { DeviceError, isTrezorDeviceWithState } from '@suite-common/device';
 import { type AllocateOwnerQuotaDep } from '@suite-common/suite-sync-quota-manager';
-import { type Errors, type SuiteSyncInternalErrorHandler } from '@suite-common/suite-sync-types';
+import {
+    type Errors,
+    type SuiteSyncInternalErrorHandler,
+    type SuiteSyncStorageRepositoryDep,
+} from '@suite-common/suite-sync-types';
 import { type TrezorDevice, asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 
+import { createStorageIdFromDeviceStaticSessionId } from './storage/createStorageIdFromDeviceStaticSessionId';
 import { type SuiteSyncUncontrolledErrorHandlerDep } from './suiteSyncUncontrolledErrorHandler';
 
 type GetSelectedDevice = () => TrezorDevice | undefined;
 
-export type CreateSuiteSyncInternalErrorHandlerDeps = AllocateOwnerQuotaDep &
+export type SuiteSyncInternalErrorHandlerDeps = AllocateOwnerQuotaDep &
     EnsureDelegatedIdentityKeyDep &
+    SuiteSyncStorageRepositoryDep &
     SuiteSyncUncontrolledErrorHandlerDep &
     // Todo: temporary, see: https://github.com/trezor/trezor-suite/issues/27049
     { getSelectedDevice: GetSelectedDevice };
@@ -24,7 +30,7 @@ export type CreateSuiteSyncInternalErrorHandlerDeps = AllocateOwnerQuotaDep &
  *              errors and propagate them upstream.
  */
 export const createSuiteSyncInternalErrorHandler =
-    (deps: CreateSuiteSyncInternalErrorHandlerDeps): SuiteSyncInternalErrorHandler =>
+    (deps: SuiteSyncInternalErrorHandlerDeps): SuiteSyncInternalErrorHandler =>
     async (error: Errors) => {
         const { type } = error;
 
@@ -64,7 +70,17 @@ export const createSuiteSyncInternalErrorHandler =
 
                 if (!result.success) {
                     deps.suiteSyncUncontrolledErrorHandler({ error: result.error, device });
+
+                    return;
                 }
+
+                const storageId = createStorageIdFromDeviceStaticSessionId(
+                    device.state.staticSessionId,
+                );
+                const storage = deps.suiteSyncStorageRepository.get(storageId);
+
+                // Retry the rejected label now that the relay has enough quota.
+                await storage?.forceResync();
 
                 return;
             }

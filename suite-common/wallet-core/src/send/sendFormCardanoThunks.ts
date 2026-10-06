@@ -24,12 +24,17 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
+import {
+    type WalletSettingsRootState,
+    selectAddressDisplayType,
+} from '../settings/walletSettingsReducer';
+
+type ComposeCardanoTransactionFeeLevelsThunkState = void;
 
 export const composeCardanoTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevelsCardano,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
+    { rejectValue: ComposeFeeLevelsError; state: ComposeCardanoTransactionFeeLevelsThunkState }
 >(
     `${SEND_MODULE_PREFIX}/composeCardanoTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
@@ -145,10 +150,15 @@ type SignCardanoTransactionThunkArguments = Omit<
     precomposedTransaction: PrecomposedTransactionFinalCardano;
 };
 
+type SignCardanoSendFormTransactionThunkState = WalletSettingsRootState;
+
 export const signCardanoSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignCardanoTransactionThunkArguments,
-    { rejectValue: SignTransactionError }
+    {
+        rejectValue: SignTransactionError;
+        state: SignCardanoSendFormTransactionThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/signCardanoSendFormTransactionThunk`,
     async (

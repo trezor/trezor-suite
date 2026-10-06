@@ -20,6 +20,7 @@ import {
     selectMessageSystemCurrentSequence,
     selectMessageSystemTimestamp,
 } from './messageSystemSelectors';
+import { type MessageSystemRootState } from './messageSystemTypes';
 import { jws as configJwsLocal } from '../files/config.v1';
 
 const messageSystemPolling = new PollingController();
@@ -70,7 +71,9 @@ const shouldFetchConfig = (isLocal: boolean, lastTimestamp: number) => {
     return now >= lastTimestamp + interval;
 };
 
-export const fetchConfigThunk = createThunk(
+type FetchConfigThunkState = MessageSystemRootState;
+
+export const fetchConfigThunk = createThunk<void, void, { state: FetchConfigThunkState }>(
     `${ACTION_PREFIX}/fetchConfig`,
     async (_, { dispatch, getState }) => {
         const timestamp = selectMessageSystemTimestamp(getState());
@@ -93,7 +96,7 @@ export const fetchConfigThunk = createThunk(
                     throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
                 }
 
-                const isAuthenticityValid = await verifyJws(configJws, JWS_SIGN_ALGORITHM);
+                const isAuthenticityValid = verifyJws(configJws, JWS_SIGN_ALGORITHM);
 
                 if (!isAuthenticityValid) {
                     throw Error('Config authenticity is invalid');
@@ -129,16 +132,17 @@ export const fetchConfigThunk = createThunk(
     },
 );
 
-export const initMessageSystemThunk = createThunk(
-    `${ACTION_PREFIX}/init`,
-    async (_, { dispatch }) => {
-        const run = async () => {
-            await dispatch(fetchConfigThunk()).unwrap();
-        };
-        const interval = isNative()
-            ? FETCH_CHECK_INTERVAL_IN_MS_MOBILE
-            : FETCH_CHECK_INTERVAL_IN_MS;
+type InitMessageSystemThunkState = FetchConfigThunkState;
 
-        await messageSystemPolling.restart(run, interval);
-    },
-);
+export const initMessageSystemThunk = createThunk<
+    void,
+    void,
+    { state: InitMessageSystemThunkState }
+>(`${ACTION_PREFIX}/init`, async (_, { dispatch }) => {
+    const run = async () => {
+        await dispatch(fetchConfigThunk()).unwrap();
+    };
+    const interval = isNative() ? FETCH_CHECK_INTERVAL_IN_MS_MOBILE : FETCH_CHECK_INTERVAL_IN_MS;
+
+    await messageSystemPolling.restart(run, interval);
+});

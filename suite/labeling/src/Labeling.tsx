@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
@@ -20,12 +20,10 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
-import {
-    type WithSuiteSyncAndDeviceState,
-    selectIsSuiteSyncEnabled,
-} from '@suite-common/suite-sync';
-import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
-import { type DiscoveryRootState, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { injectEnsureWalletSuiteSyncOn } from '@suite-common/suite-sync-types';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type StaticSessionId } from '@trezor/connect';
 import { EditableText, type EditableTextProps } from '@trezor/product-components';
 import { type Without } from '@trezor/type-utils';
@@ -41,11 +39,7 @@ export type LabelingProps = {
     onSubmit?: (value: string) => Promise<boolean>;
 } & Partial<EditableTextProps>;
 
-type LabelingState = WithSuiteSyncAndDeviceState &
-    MetadataRootState &
-    DesktopSuiteSyncRootState &
-    MessageSystemRootState &
-    DiscoveryRootState;
+type LabelingState = MetadataRootState & DesktopSuiteSyncRootState & MessageSystemRootState;
 
 export const Labeling = ({
     payload,
@@ -55,8 +49,10 @@ export const Labeling = ({
     onSubmit,
     ...rest
 }: LabelingProps) => {
-    const dispatch = useDispatch();
-    const { ensureWalletSuiteSyncOn } = useServices(selectEnsureWalletSuiteSyncOnDep);
+    const { ensureWalletSuiteSyncOn, dispatch } = useServices(
+        injectEnsureWalletSuiteSyncOn,
+        injectDispatch,
+    );
     const [showEnableSuiteSyncModal, setShowEnableSuiteSyncModal] = useState(false);
     const suiteSyncTurnOnEditResolveRef = useRef<((value: boolean) => void) | null>(null);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
@@ -116,7 +112,7 @@ export const Labeling = ({
                 }
             } else {
                 return await dispatch(
-                    metadataLabelingActions.init(
+                    metadataLabelingActions.initThunk(
                         // Provide force=true argument (user wants to enable metadata).
                         true,
                         // If this is wallet(device) label, provide unique identifier entityKey which equals to device.state.
@@ -170,7 +166,10 @@ export const Labeling = ({
                 return true;
             } else {
                 return await dispatch(
-                    metadataLabelingActions.addMetadata({ ...payload, value: value || undefined }),
+                    metadataLabelingActions.addMetadataThunk({
+                        ...payload,
+                        value: value || undefined,
+                    }),
                 );
             }
         },

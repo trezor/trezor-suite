@@ -25,7 +25,7 @@
             }
         },
         {
-            "files": ["packages/suite-data/files/translations/*.json"],
+            "files": ["suite/app-assets/files/translations/*.json"],
             "options": {
                 "tabWidth": 2
             }

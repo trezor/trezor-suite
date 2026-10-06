@@ -15,6 +15,7 @@ export {
 } from './owner/suiteSyncOwner';
 export type { CreateSuiteSyncOwner, CreateSuiteSyncOwnerDep } from './Owner';
 export { CreateSuiteSyncOwnerError } from './Owner';
+export { isSuiteSyncOwner } from './owner/isSuiteSyncOwner';
 export type {
     EntityListener,
     SuiteSyncTable,

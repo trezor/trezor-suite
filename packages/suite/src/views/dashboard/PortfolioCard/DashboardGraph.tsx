@@ -4,7 +4,9 @@ import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
@@ -12,9 +14,11 @@ import { Box, Button } from '@trezor/components';
 import { RepeatIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 
-import { updateGraphData } from 'src/actions/wallet/graphActions';
-import { HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { updateGraphDataThunk } from 'src/actions/wallet/graphActions';
+import { HiddenPlaceholder } from 'src/components/suite';
+import { TransactionsGraphLoader } from 'src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
+import { useSelector } from 'src/hooks/suite';
+import { selectGraph } from 'src/reducers/wallet/graphReducer';
 import { type Account } from 'src/types/wallet';
 import { type AggregatedDashboardHistory } from 'src/types/wallet/graph';
 import { getMinMaxValueFromData, prepareGraphDataAsync } from 'src/utils/wallet/graph';
@@ -48,10 +52,10 @@ type DashboardGraphProps = {
 };
 
 export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
-    const graph = useSelector(state => state.wallet.graph);
+    const graph = useSelector(selectGraph);
     const selectedDevice = useSelector(selectSelectedDevice);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const [data, setData] = useState<AggregatedDashboardHistory[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -64,7 +68,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
         accounts.every(a => failedAccounts.some(fa => fa.descriptor === a.descriptor));
 
     const onRefresh = useCallback(
-        () => dispatch(updateGraphData({ accounts })).unwrap(),
+        () => dispatch(updateGraphDataThunk({ accounts })).unwrap(),
         [accounts, dispatch],
     );
 
@@ -130,7 +134,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                     </ErrorMessage>
                 ) : (
                     <Box width="100%" height="100%">
-                        <TransactionsGraph
+                        <TransactionsGraphLoader
                             variant="all-assets"
                             onRefresh={onRefresh}
                             isLoading={graph.isLoading || isProcessing}

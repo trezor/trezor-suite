@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { Paragraph, StepList } from '@trezor/components';
+
 type AdditionalBackupStep = 'verify-ownership' | 'backup';
 
 type AdditionalBackupStepsProps = {

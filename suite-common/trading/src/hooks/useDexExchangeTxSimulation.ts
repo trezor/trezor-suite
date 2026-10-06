@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useTxSimulation } from '@suite-common/tx-simulation';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useSelector } from './useSelector';
 import { selectTradingExchangeSelectedQuote } from '../selectors/tradingSelectors';
 import { composeDexTxSimulationAction } from '../utils/exchange/composeDexTxSimulationAction';
 

@@ -1,4 +1,4 @@
-import { networks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type CoinSymbol,
     type EnabledNetwork,
@@ -31,9 +31,9 @@ export const PERMISSION_PREVIEW_LIMIT = 6;
  * recognised only by `@trezor/connect`).
  */
 export const getCoinLabel = (shortcut: string): string => {
-    const key = shortcut.toLowerCase() as keyof typeof networks;
+    const key = shortcut.toLowerCase() as NetworkSymbol;
 
-    return networks[key]?.name ?? shortcut.toUpperCase();
+    return getNetwork(key)?.name ?? shortcut.toUpperCase();
 };
 
 // Icon shown for each permission. These names exist in both the web icon set and
@@ -86,20 +86,39 @@ export const groupPermissionsByCoin = (permissions: PermissionRequest[]): Groupe
     return groups;
 };
 
+// Runtime guard narrowing the untrusted `permission` value against the imported grantable set,
+// mirroring `isCoinSymbol` for coins.
+const isGrantablePermission = (value: string): value is PermissionRequest['permission'] =>
+    (GRANTABLE_PERMISSIONS as readonly string[]).includes(value);
+
 // Sanitize the host-declared `requestedPermissions`: drop entries whose permission is not
 // grantable, `push_tx` on deeplinks, and unknown coins; lowercase each `coin` to its `CoinSymbol`.
+//
+// Untrusted input — nothing schema-validates it on either handshake, hence `unknown` and the shape
+// checks. Malformed input is dropped rather than thrown on, because this runs before
+// `initiateCall`: a throw there fails every later call from that app with an unactionable error.
+// Entries are never spread, so attacker-chosen keys cannot reach the consent UI or the grant.
 export const sanitizeRequestedPermissions = (
-    requested: PermissionRequest[] | undefined,
+    requested: unknown,
     isDeeplink: boolean,
 ): PermissionRequest[] =>
-    (requested ?? []).flatMap(({ permission, coin }) => {
-        if (!GRANTABLE_PERMISSIONS.includes(permission)) return [];
-        if (permission === 'push_tx' && isDeeplink) return [];
-        if (coin === undefined) return [{ permission }];
-        const symbol = coin.toLowerCase();
+    Array.isArray(requested)
+        ? requested.flatMap((entry): PermissionRequest[] => {
+              const { permission, coin } = (entry ?? {}) as {
+                  permission?: unknown;
+                  coin?: unknown;
+              };
+              if (typeof permission !== 'string' || !isGrantablePermission(permission)) return [];
+              if (permission === 'push_tx' && isDeeplink) return [];
+              // Only an absent coin means coin-less. A malformed one is dropped, not widened —
+              // a coin-less grant is device-wide, so widening would fail open.
+              if (coin === undefined) return [{ permission }];
+              if (typeof coin !== 'string') return [];
+              const symbol = coin.toLowerCase();
 
-        return isCoinSymbol(symbol) ? [{ permission, coin: symbol }] : [];
-    });
+              return isCoinSymbol(symbol) ? [{ permission, coin: symbol }] : [];
+          })
+        : [];
 
 // Lowercase each permission's `coin` to its `CoinSymbol`. Normalizes grants persisted before coins
 // were canonicalized at the source.

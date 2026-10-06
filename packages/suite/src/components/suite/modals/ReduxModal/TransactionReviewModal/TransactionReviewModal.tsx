@@ -1,12 +1,15 @@
 import { selectFullSelectedAccount } from '@suite/account';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     cancelSignSendFormTransactionThunk,
     selectPrecomposedSendForm,
-    selectStablecoinYieldTxReview,
+    selectSend,
     selectStake,
     selectStakePrecomposedForm,
     selectTronStakeTxReview,
+    selectYieldTxReview,
     sendFormActions,
     stakeActions,
 } from '@suite-common/wallet-core';
@@ -16,13 +19,13 @@ import {
     removeSendFormDraftThunk,
     signAndPushSendFormTransactionThunk,
 } from 'src/actions/wallet/send/sendFormThunks';
-import { cancelSignYieldTx } from 'src/actions/wallet/stablecoin-yield';
+import { cancelSignYieldTxThunk } from 'src/actions/wallet/stablecoin-yield';
 import {
-    cancelSignTx as cancelSignStakingTx,
-    signTransaction,
+    cancelSignTxThunk as cancelSignStakingTx,
+    signTransactionThunk,
 } from 'src/actions/wallet/stakeActions';
-import { cancelSignTronFreezeTx } from 'src/actions/wallet/tron-stake/cancelSignTronFreezeTx';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { cancelSignTronFreezeTxThunk } from 'src/actions/wallet/tron-stake/cancelSignTronFreezeTx';
+import { useSelector } from 'src/hooks/suite';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';
@@ -33,14 +36,14 @@ import { type TxInfoState } from './utils';
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop
 export const TransactionReviewModal = ({ type, decision }: TransactionReviewModalProps) => {
-    const send = useSelector(state => state.wallet.send);
+    const send = useSelector(selectSend);
     const stake = useSelector(selectStake);
-    const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
+    const yieldTxReview = useSelector(selectYieldTxReview);
     const tronStakeTxReview = useSelector(selectTronStakeTxReview);
     const sendPrecomposedForm = useSelector(selectPrecomposedSendForm);
     const stakePrecomposedForm = useSelector(selectStakePrecomposedForm);
     const selectedAccount = useSelector(selectFullSelectedAccount);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const getReviewSource = (): {
         txInfoState: TxInfoState;
@@ -51,14 +54,14 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
             return {
                 txInfoState: tronStakeTxReview,
                 precomposedForm: tronStakeTxReview.precomposedForm,
-                cancelSignTx: () => dispatch(cancelSignTronFreezeTx()),
+                cancelSignTx: () => dispatch(cancelSignTronFreezeTxThunk()),
             };
         }
         if (yieldTxReview.precomposedTx) {
             return {
                 txInfoState: yieldTxReview,
                 precomposedForm: yieldTxReview.precomposedForm,
-                cancelSignTx: () => dispatch(cancelSignYieldTx()),
+                cancelSignTx: () => dispatch(cancelSignYieldTxThunk()),
             };
         }
         if (send?.precomposedTx) {
@@ -94,7 +97,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
 
             if (result?.success) {
                 dispatch(removeSendFormDraftThunk());
-                dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
+                dispatch(gotoThunk({ routeName: 'wallet-index', preserveParams: true }));
             }
         } catch {
             // Error state is handled by signAndPushSendFormTransactionThunk.
@@ -104,7 +107,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     const handleStakeTx = async () => {
         dispatch(stakeActions.dispose());
         await dispatch(
-            signTransaction(
+            signTransactionThunk(
                 stake.precomposedForm!,
                 stake.precomposedTx as PrecomposedTransactionFinal,
             ),

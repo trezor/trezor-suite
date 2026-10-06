@@ -1,23 +1,25 @@
 import { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { getTorUrlIfAvailable } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { type Route, goto } from '@suite/router';
+import { type Route, gotoThunk } from '@suite/router';
 import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
-import { selectTorState } from '@suite/tor';
+import { selectIsTorEnabled } from '@suite/tor';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type ContextDomain,
     messageSystemActions,
     selectContextMessageContent,
 } from '@suite-common/message-system';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 
 import type { MessageSystemSuiteWithTorRootState } from './messageSystemRootState';
 
 type ContextMessageProps = {
-    context: ContextDomain;
+    context: ContextDomain | readonly ContextDomain[];
 };
 
 export const ContextMessage = ({ context }: ContextMessageProps) => {
@@ -25,9 +27,9 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
     const message = useSelector((state: MessageSystemSuiteWithTorRootState) =>
         selectContextMessageContent(state, context, language),
     );
-    const { isTorEnabled } = useSelector(selectTorState);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
     const torOnionLinks = useSelector(selectTorOnionLinks);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const dismissalConfig = useMemo(() => {
         if (!message?.dismissible) return undefined;
@@ -50,7 +52,11 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
             action === 'internal-link'
                 ? () =>
                       dispatch(
-                          goto({ routeName: link as Route['name'], anchor, preserveParams: true }),
+                          gotoThunk({
+                              routeName: link as Route['name'],
+                              anchor,
+                              preserveParams: true,
+                          }),
                       )
                 : () =>
                       window.open(

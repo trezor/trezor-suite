@@ -1,11 +1,11 @@
 # @trezor/theme
 
-This package contains theme for new Suite v2, currently used only in React Native app.
+This package contains the shared theme used by Suite web, desktop, and React Native apps.
 
-You can find Figma files for this theme here:
+You can find the current design foundations here:
 
-- [colors](https://www.figma.com/file/YIFzn2vuwktwV4GzZClrYx/%5Bs2.0%5D-Trezor-Colors?node-id=0%3A1)
-- [font, borders, shadows...](https://www.figma.com/file/Z6AGVUmKQzLNtDozFamW7f/s2-Mobile?node-id=37%3A757)
+- [Semantic colors](https://trezor-zero.pages.dev/design-system/semantic-colors/)
+- [Surface elevations](https://trezor-zero.pages.dev/design-system/surface-elevations/)
 
 # Fonts for React Native app
 
@@ -13,15 +13,9 @@ If you want to update fonts, place new fonts to `./fonts` folder in this package
 
 ## Colors
 
-To regenerate color schemas follow these steps:
+Semantic color tokens and their light and dark variants are defined in `./src/colors.ts`. Raw
+palette values are defined in `./src/palette.ts`.
 
-Colors can be found in file `./src/colors.ts`
-
-usage:
-`tsx
-    <Text color="newlyDefinedColorVariant" />
-    `
-
-### Older themes
-
-For older themes (v1, v1.5) you can check `@trezor/components` package.
+```tsx
+<Text color="contentPrimary" />
+```

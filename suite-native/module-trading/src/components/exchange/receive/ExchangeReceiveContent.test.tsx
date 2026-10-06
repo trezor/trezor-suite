@@ -1,3 +1,7 @@
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -5,7 +9,7 @@ import {
     renderHookWithStoreProvider,
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtures';
+import { btcAsset, mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { ExchangeReceiveContent } from './ExchangeReceiveContent';
@@ -14,6 +18,17 @@ import {
     createTradingFeatureFlags,
     createTradingPreloadedState,
 } from '../../../test-utils/tradingTestUtils';
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({ navigate: jest.fn(), setParams: jest.fn() }),
+    useRoute: () => ({ params: {} }),
+}));
+
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
+    analytics: mockNativeAnalytics(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
+};
 
 describe('ExchangeReceiveContent', () => {
     let form: ExchangeFormType;
@@ -33,35 +48,39 @@ describe('ExchangeReceiveContent', () => {
         },
     });
 
-    const renderForm = () =>
-        renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderForm = async () =>
+        await renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
+            services,
         });
 
-    const renderExchangeReceiveContent = () =>
-        renderWithStoreProvider(<ExchangeReceiveContent />, {
+    const renderExchangeReceiveContent = async () =>
+        await renderWithStoreProvider(<ExchangeReceiveContent />, {
             preloadedState,
+            services,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(() => {
-        const { result } = renderForm();
+    beforeEach(async () => {
+        const { result } = await renderForm();
         form = result.current;
     });
 
-    it('should render all components', () => {
-        act(() => {
+    it('should render all components', async () => {
+        await act(() => {
+            form.setValue('sendAsset', btcAsset);
             form.setValue('receiveAsset', usdcAsset);
-            form.setValue('quote', mercuryoFixedWorstQuote);
+            form.setValue('quote', {
+                ...mercuryoFixedWorstQuote,
+                send: btcAsset.cryptoId,
+                receive: usdcAsset.cryptoId,
+            });
         });
-        const { getByText, getByLabelText } = renderExchangeReceiveContent();
+        const { getByText, getByLabelText } = await renderExchangeReceiveContent();
 
         expect(
             getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
         ).toHaveTextContent(/USDC/);
-        expect(getByLabelText(getTranslation('moduleTrading.networkName'))).toHaveTextContent(
-            'Ethereum',
-        );
         expect(
             getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
         ).toHaveDisplayValue('0.00083554');

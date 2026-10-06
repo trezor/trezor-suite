@@ -1,6 +1,6 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import { type OutputTable, type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
 import { ok } from '@trezor/type-utils';
 
@@ -8,7 +8,7 @@ import { type WriteOutputLabelDeps, createWriteOutputLabel } from './createWrite
 import { createSuiteSyncStorageMock } from '../../../../mocks/mockCreateSuiteSyncStorage';
 
 const deviceStaticSessionId = '1@2:3' as const;
-const networkSymbol: NetworkSymbol = 'btc';
+const networkSymbol = asNetworkSymbol('btc');
 const accountDescriptor = asAccountDescriptor('accountDescriptor');
 
 describe(createWriteOutputLabel.name, () => {

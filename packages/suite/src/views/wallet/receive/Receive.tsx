@@ -1,31 +1,24 @@
+import { selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
-import { FreshAddress } from '@suite/receive';
+import { ReceiveContent } from '@suite/receive';
 import { selectIsCoinjoinReceiveWarningHidden } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectPendingAccountAddresses } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 
+import { FormattedCryptoAmount } from 'src/components/suite';
 import { ConfirmEvmExplanationModal } from 'src/components/suite/modals/ConfirmEvmExplanationModal';
-import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
+import { WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 
 import { CoinjoinReceiveWarning } from './components/CoinjoinReceiveWarning';
-import { UsedAddresses } from './components/UsedAddresses';
 
 export const Receive = () => {
-    const isCoinjoinReceiveWarningHidden = useSelector(selectIsCoinjoinReceiveWarningHidden);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
     const device = useSelector(selectSelectedDevice);
+    const isCoinjoinReceiveWarningHidden = useSelector(selectIsCoinjoinReceiveWarningHidden);
 
     const { account } = selectedAccount;
-
-    const pendingAddresses = useSelector(state =>
-        selectPendingAccountAddresses(state, account?.key ?? null),
-    );
-
     const { isLocked } = useDevice();
-
-    const isDeviceLocked = isLocked(true);
 
     if (account === undefined) {
         return null;
@@ -35,30 +28,17 @@ export const Receive = () => {
         return <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount} />;
     }
 
-    const disabled = false; // TODO: it should be disabled based on locks probably
     const showCexWarning = account.accountType === 'coinjoin' && !isCoinjoinReceiveWarningHidden;
-
-    const isDeviceConnected = device.connected && device.available;
 
     return (
         <WalletLayout title="TR_NAV_RECEIVE" isSubpage account={selectedAccount}>
-            {showCexWarning && <CoinjoinReceiveWarning />}
-            <Column gap={24}>
-                <WalletSubpageHeading title="TR_NAV_RECEIVE" />
-                <FreshAddress
+            <Column gap={24} alignItems="stretch">
+                {showCexWarning && <CoinjoinReceiveWarning />}
+                <ReceiveContent
                     account={account}
-                    disabled={disabled}
-                    locked={isDeviceLocked}
-                    pendingAddresses={pendingAddresses}
-                    isDeviceConnected={isDeviceConnected}
+                    locked={isLocked(true)}
+                    AmountComponent={FormattedCryptoAmount}
                 />
-                {account && (
-                    <UsedAddresses
-                        account={account}
-                        locked={isDeviceLocked}
-                        pendingAddresses={pendingAddresses}
-                    />
-                )}
             </Column>
 
             <ConfirmEvmExplanationModal account={account} route="wallet-receive" />

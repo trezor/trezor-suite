@@ -42,7 +42,7 @@ export const NotificationView = ({
     action: actionProp,
     icon,
     variant,
-    notification: { seen, id },
+    notification: { seen, id, type },
 }: NotificationViewProps) => {
     const { isBelowTablet } = useLayoutSize();
     const defaultIcon = icon ?? getNotificationIcon(variant);
@@ -55,7 +55,7 @@ export const NotificationView = ({
     const action = Array.isArray(actionProp) ? actionProp[0] : actionProp;
 
     return (
-        <Row gap={12}>
+        <Row gap={12} data-testid={`@activity/list/item/${type}`}>
             {defaultIcon &&
                 (typeof defaultIcon === 'function' ? (
                     <Icon size={20} as={defaultIcon} {...colorProps} />

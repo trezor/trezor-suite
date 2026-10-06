@@ -1,7 +1,10 @@
 import { type TokenDefinition } from '@suite-common/token-definitions';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { getAccountAnalyticsTokenSymbols } from './tokenUtils';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 const legitContract = '0x' + 'a'.repeat(40);
 const spamContract = '0x' + 'b'.repeat(40);
@@ -18,14 +21,18 @@ const ethDefinitions: TokenDefinition = {
 
 describe('getAccountAnalyticsTokenSymbols', () => {
     it('lists the native token first when the account holds a native balance', () => {
-        const account = mockWalletAccount({ symbol: 'eth', balance: '1000', tokens: [] });
+        const account = mockWalletAccount({
+            symbol: ethSymbol,
+            balance: '1000',
+            tokens: [],
+        });
 
         expect(getAccountAnalyticsTokenSymbols(account, ethDefinitions)).toEqual(['ETH']);
     });
 
     it('omits the native token when the native balance is zero', () => {
         const account = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             balance: '0',
             tokens: [mockAccountToken({ symbol: 'USDC', contract: legitContract, balance: '100' })],
         });
@@ -35,7 +42,7 @@ describe('getAccountAnalyticsTokenSymbols', () => {
 
     it('includes only legit tokens with balance, native first', () => {
         const account = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             balance: '1000',
             tokens: [
                 mockAccountToken({ symbol: 'USDC', contract: legitContract, balance: '100' }),
@@ -58,7 +65,7 @@ describe('getAccountAnalyticsTokenSymbols', () => {
             show: [],
         };
         const account = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             balance: '0',
             tokens: [
                 mockAccountToken({ symbol: 'USDC', contract: legitContract, balance: '100' }),
@@ -71,7 +78,7 @@ describe('getAccountAnalyticsTokenSymbols', () => {
 
     it('omits definition-dependent tokens until token definitions are loaded', () => {
         const account = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             balance: '1000',
             tokens: [mockAccountToken({ symbol: 'USDC', contract: legitContract, balance: '100' })],
         });

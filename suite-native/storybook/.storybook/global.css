@@ -1,0 +1,12 @@
+html,
+body,
+#storybook-root {
+    height: 100%;
+}
+
+/* React Native Web flex chain requires a flex container with defined height at the root.
+   Without this, flex: 1 in decorator Views collapses the entire chain to 0px. */
+#storybook-root {
+    display: flex;
+    flex-direction: column;
+}

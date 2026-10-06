@@ -136,7 +136,6 @@ const getPlugins = (): ExpoPlugins => {
                     minSdkVersion: 28,
                     // this fixes expo-updates build error
                     kotlinVersion: '2.1.20',
-                    ndkVersion: '27.0.12077973',
                     // react-native-quick-crypto (since v1) and expo-sqlite both bundle their
                     // own OpenSSL libcrypto.so, which collides during mergeDebugNativeLibs.
                     // pickFirst resolves the duplicate-.so packaging conflict.
@@ -146,6 +145,8 @@ const getPlugins = (): ExpoPlugins => {
                 },
                 ios: {
                     deploymentTarget: '16.4',
+                    // iOS 27 traps apps that don't adopt the UIScene lifecycle. No-op on SDK 58+.
+                    enableSceneSupport: true,
                 },
             },
         ],
@@ -157,6 +158,7 @@ const getPlugins = (): ExpoPlugins => {
             },
         ],
         './plugins/withGradleProperties.js',
+        './plugins/withAndroidNDKVersion.js',
         [
             '@config-plugins/detox',
             {
@@ -217,7 +219,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: '49',
+        runtimeVersion: '52',
         ...(buildType === 'production'
             ? {}
             : {
@@ -301,6 +303,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 NSFaceIDUsageDescription:
                     '$(PRODUCT_NAME) needs Face ID and Touch ID to keep sensitive data about your portfolio private.',
                 NSMicrophoneUsageDescription: 'This app does not require access to the microphone.',
+                NSPhotoLibraryAddUsageDescription:
+                    'Allow $(PRODUCT_NAME) to save QR code images to your photos.',
                 ITSAppUsesNonExemptEncryption: false,
                 NSAppTransportSecurity: {
                     NSAllowsArbitraryLoads: true,

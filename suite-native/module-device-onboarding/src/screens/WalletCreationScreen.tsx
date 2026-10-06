@@ -1,15 +1,17 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { getIsIgnoredEntropyCheckError } from '@suite-common/device';
 import {
     Feature,
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ContinueOnTrezorScreenContent, createAndBackupWalletThunk } from '@suite-native/device';
 import {
     type DeviceOnboardingStackParamList,
@@ -45,7 +47,7 @@ type RouteProps = RouteProp<
 export const WalletCreationScreen = () => {
     const route = useRoute<RouteProps>();
     const { walletBackupType } = route.params;
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProp>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const { showToast } = useToast();

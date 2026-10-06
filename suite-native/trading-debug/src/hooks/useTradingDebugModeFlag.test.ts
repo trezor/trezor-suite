@@ -4,11 +4,11 @@ import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { useTradingDebugModeFlag } from './useTradingDebugModeFlag';
 
 describe('useTradingDebugModeFlag', () => {
-    const renderUseDebugModeFlag = (preloadedState = {}) =>
-        renderHookWithStoreProvider(() => useTradingDebugModeFlag(), { preloadedState });
+    const renderUseDebugModeFlag = async (preloadedState = {}) =>
+        await renderHookWithStoreProvider(() => useTradingDebugModeFlag(), { preloadedState });
 
-    it.each([true, false])('should respect FF [%s]', ffValue => {
-        const { result } = renderUseDebugModeFlag({
+    it.each([true, false])('should respect FF [%s]', async ffValue => {
+        const { result } = await renderUseDebugModeFlag({
             featureFlags: {
                 ...featureFlagsInitialState,
                 isTradingDebugEnabled: ffValue,

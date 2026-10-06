@@ -1,6 +1,7 @@
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountFailureSpecific,
@@ -19,6 +20,7 @@ import { initialWalletSettingsState } from './settings/walletSettingsReducer';
 const STATIC_SESSION_ID: `${string}@${string}:${number}` =
     'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@ABC123:1';
 const DEVICE_PATH = 'device-path';
+const solSymbol = asNetworkSymbol('sol');
 
 const mockSolAccount = (
     account: Omit<Partial<Account>, 'failed' | 'error'>,
@@ -26,7 +28,7 @@ const mockSolAccount = (
 ) =>
     mockWalletAccount(
         {
-            symbol: 'sol',
+            symbol: solSymbol,
             deviceState: STATIC_SESSION_ID,
             ...account,
         },
@@ -53,8 +55,10 @@ const getState = ({
     accounts = [],
     device = mockDeviceWithPathAndState(),
     discovery,
-    enabledNetworks = ['sol'],
+    enabledNetworks = [solSymbol],
 }: GetStateOptions = {}): WalletCoreCompoundRootState => ({
+    networks: mockNetworksState([solSymbol]),
+    persistentDeviceData: { devices: [] },
     wallet: {
         accounts,
         settings: { ...initialWalletSettingsState, enabledNetworks },
@@ -64,7 +68,6 @@ const getState = ({
     device: {
         devices: [device],
         selectedDevice: device,
-        persistentDeviceData: [],
     },
 });
 
@@ -93,6 +96,12 @@ describe(selectDiscoveryAccountsParam.name, () => {
 
     it('continues discovery after the last used account when nothing failed', () => {
         expect(getSolKnown([mockSolAccount({ index: 0 })])).toEqual([{ type: 'normal', skip: 1 }]);
+    });
+
+    it('skips a used account of a single-account type', () => {
+        expect(getSolKnown([mockSolAccount({ accountType: 'root', index: 0 })])).toEqual([
+            { type: 'root' },
+        ]);
     });
 
     it('skips a completely discovered account type', () => {
@@ -158,6 +167,19 @@ describe(selectShouldRediscover.name, () => {
                 device,
             ),
         ).toBe(true);
+    });
+
+    it('returns false when the used account is the only one its type can have', () => {
+        const device = mockDeviceWithPathAndState();
+        expect(
+            selectShouldRediscover(
+                getState({
+                    device,
+                    accounts: [mockSolAccount({ accountType: 'root', index: 0, empty: false })],
+                }),
+                device,
+            ),
+        ).toBe(false);
     });
 
     it('returns false when the account chain is already fully discovered', () => {

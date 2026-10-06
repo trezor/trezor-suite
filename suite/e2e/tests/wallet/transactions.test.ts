@@ -1,7 +1,10 @@
 import { messages } from '@suite/intl';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { graphRangeOptions } from '../../support/pageObjects/dashboardPage';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const rangeData: { range: graphRangeOptions; label: string }[] = [
     { range: 'day', label: messages['TR_DATE_DAY_LONG'].defaultMessage },
@@ -16,37 +19,37 @@ test.describe('Account transactions overview', { tag: ['@T3W1', '@T3T1'] }, () =
 
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
     });
 
-    test('Check graph span and search a transaction by BTC address', async ({
-        walletPage,
-        dashboardPage,
-    }) => {
-        await test.step('Cycle thru all time range filters', async () => {
-            await walletPage.openAccount({ symbol: 'btc' });
-            for (const { range, label } of rangeData) {
-                await dashboardPage.graphRangeSelector(range).click();
-                const labelElement = walletPage.transactionSummaryTitle.getByText(label);
-                await expect(labelElement).toBeVisible();
-            }
-        });
+    test(
+        'Check graph span and search a transaction by BTC address',
+        { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+        async ({ walletPage, dashboardPage }) => {
+            await test.step('Cycle thru all time range filters', async () => {
+                await walletPage.openAccount({ symbol: asNetworkSymbol('btc') });
+                for (const { range, label } of rangeData) {
+                    await dashboardPage.graphRangeSelector(range).click();
+                    const labelElement = walletPage.transactionSummaryTitle.getByText(label);
+                    await expect(labelElement).toBeVisible();
+                }
+            });
 
-        const latestTransactionAddress = await test.step('Find the latest transaction', async () =>
-            (await walletPage.transactionAddress.first().textContent())
-                ?.replace(/\s/g, '')
-                .slice(-4));
+            const latestTransactionAddress =
+                await test.step('Find the latest transaction', async () => {
+                    const address = walletPage.transactionAddress.first();
+                    await expect(address).not.toBeEmpty();
 
-        if (!latestTransactionAddress) {
-            throw new Error('No latest transaction found');
-        }
+                    return (await address.innerText()).replace(/\s/g, '').slice(-4);
+                });
 
-        await test.step('Search for latest transaction by its address', async () => {
-            await walletPage.transactionSearch.fill(latestTransactionAddress);
-            await expect(walletPage.transactionItem.first()).toBeVisible();
-        });
+            await test.step('Search for latest transaction by its address', async () => {
+                await walletPage.transactionSearch.fill(latestTransactionAddress);
+                await expect(walletPage.transactionItem.first()).toBeVisible();
+            });
 
-        // go to a certain accounts page and verify you are on that page
-        // await walletPage.openAccount({ symbol: 'btc', type: 'legacy' });
-    });
+            // go to a certain accounts page and verify you are on that page
+            // await walletPage.openAccount({ symbol: 'btc', type: 'legacy' });
+        },
+    );
 });

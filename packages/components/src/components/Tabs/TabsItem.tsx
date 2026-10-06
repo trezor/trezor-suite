@@ -69,6 +69,7 @@ export const TabsItem = ({ id, onClick, 'data-testid': dataTestId, children }: T
             $size={size}
             ref={setTabRef?.(id)}
             onClick={onClick}
+            data-component="TabsItem"
             data-testid={dataTestId}
         >
             <Title>

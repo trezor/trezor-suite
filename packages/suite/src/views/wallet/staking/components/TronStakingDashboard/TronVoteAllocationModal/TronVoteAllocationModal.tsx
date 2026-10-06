@@ -1,14 +1,15 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
-import { type Account } from '@suite-common/wallet-types';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getTronAvailableVotingPower,
     getTronTotalVotingPower,
     getTronVotes,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import {
     Banner,
     Button,
@@ -24,7 +25,6 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { TronStakeInfoRow } from 'src/components/earn/staking/tron/TronStakeInfoRow';
-import { useDispatch } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { TronVoteAllocationRow } from './TronVoteAllocationRow';
@@ -35,14 +35,17 @@ interface TronVoteAllocationModalProps {
 }
 
 export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocationModalProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { stats } = useTronStakingStats();
 
     const { isVotingDisabled, votingMessageContent } = useMessageSystemStaking(account.symbol);
 
     const remainingVotes = getTronAvailableVotingPower(account);
     const totalVotes = getTronTotalVotingPower(account);
+    const assignedVotes = BigNumber.max(
+        new BigNumber(totalVotes).minus(remainingVotes),
+        0,
+    ).toFixed();
     const hasRemainingVotes = new BigNumber(remainingVotes).gt(0);
     const votes = getTronVotes(account);
     const hasVotes = votes.length > 0;
@@ -53,7 +56,7 @@ export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocation
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-tron-vote',
                 params: {
                     symbol: account.symbol,
@@ -83,10 +86,10 @@ export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocation
             <Column gap={16} alignItems="stretch">
                 <Card type="contrast" paddingType="none">
                     <TronStakeInfoRow
-                        label={<Translation id="TR_EARN_TRON_REMAINING_VOTES_LABEL" />}
+                        label={<Translation id="TR_EARN_TRON_ASSIGNED_VOTES_LABEL" />}
                     >
                         <Text typographyStyle="body-md-strong">
-                            {remainingVotes}/{totalVotes}
+                            {assignedVotes}/{totalVotes}
                         </Text>
                     </TronStakeInfoRow>
                 </Card>

@@ -2,17 +2,19 @@ import { type ChangeEvent, type ReactNode, useCallback, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { selectRouter } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import {
     type FeedbackCategory,
     type FeedbackType,
     type Rating,
     buildUserFeedbackData,
-    sendFeedbackAction,
+    sendFeedbackThunk,
 } from '@suite-common/feedback';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
 import { EmojiRatingSelector } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
@@ -24,7 +26,7 @@ import {
     GuideSectionHeadline,
     GuideViewWrapper,
 } from 'src/components/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const AnonymousDataList = styled.ul`
     margin-left: 20px;
@@ -50,9 +52,8 @@ type FeedbackProps = {
 
 export const Feedback = ({ type }: FeedbackProps) => {
     const { device } = useDevice();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
-    const router = useSelector(state => state.router);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const router = useSelector(selectRouter);
     const [description, setDescription] = useState('');
     const [rating, setRating] = useState<Rating | undefined>();
 
@@ -106,7 +107,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
 
         if (type === 'BUG') {
             dispatch(
-                sendFeedbackAction({
+                sendFeedbackThunk({
                     type: 'BUG',
                     payload: {
                         description,
@@ -119,7 +120,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
             );
         } else {
             dispatch(
-                sendFeedbackAction({
+                sendFeedbackThunk({
                     type: 'SUGGESTION',
                     payload: {
                         description,

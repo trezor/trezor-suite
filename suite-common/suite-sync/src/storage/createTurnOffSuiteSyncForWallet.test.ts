@@ -1,13 +1,11 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
-import { createMockDeps, mock } from '@suite-common/dependency-injection';
+import { createMockDeps } from '@suite-common/dependency-injection';
 import { type StaticSessionId } from '@trezor/connect';
 
 import { createSubscriptionStorageMock } from '../../mocks/mockCreateSubscriptionStorage';
 import { setSuiteSyncOwner } from '../suiteSyncSlice';
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
 import {
-    type CreateTurnOffSuiteSyncForWalletDeps,
+    type TurnOffSuiteSyncForWalletDeps,
     createTurnOffSuiteSyncForWallet,
 } from './createTurnOffSuiteSyncForWallet';
 
@@ -15,8 +13,8 @@ const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 
 describe(createTurnOffSuiteSyncForWallet.name, () => {
     it('disposes wallet storage, deletes repository entry, and clears owner from state', async () => {
-        const deps = createMockDeps<CreateTurnOffSuiteSyncForWalletDeps>({
-            dispatch: mock<Dispatch>(() => {}),
+        const deps = createMockDeps<TurnOffSuiteSyncForWalletDeps>({
+            dispatch: jest.fn(),
             subscriptionStorage: createSubscriptionStorageMock(),
             suiteSyncStorageRepository: {
                 get: null,

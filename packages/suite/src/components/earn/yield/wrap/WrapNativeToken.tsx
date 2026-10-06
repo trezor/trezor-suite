@@ -5,32 +5,43 @@ import { useMutation } from '@tanstack/react-query';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
+import { useFormatters } from '@suite-common/formatters';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import {
     type YieldFlowDisplayToken,
     type YieldFlowFormValues,
+    getWrapReserveStatus,
     getWrappableNativeBalance,
-    shouldRecommendWrapReserve,
+    getYieldNativeFeeStatus,
+    useEvmPendingTxStatus,
+    useFetchFees,
+    useYieldGasReserve,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { submitWrapNativeTokenThunk } from 'src/actions/wallet/wrapNativeTokenThunks';
-import { useDispatch } from 'src/hooks/suite';
+import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
+import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
+import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowTransferRow } from '../common/YieldFlowTransferRow';
 import { YieldWrapStep } from '../common/YieldWrapStep';
 import { useWrappedNativeDeviceGuard } from '../common/useWrappedNativeDeviceGuard';
-import { useWrappedNativePendingTx } from '../common/useWrappedNativePendingTx';
+import { useWrappedNativeFlowAnalytics } from '../common/useWrappedNativeFlowAnalytics';
+import { useYieldFiatInput } from '../hooks/useYieldFiatInput';
 
 type WrapNativeTokenProps = {
     account: Account;
     token: YieldFlowDisplayToken & { contractAddress: string };
+    /** Reported upward because the page header lives outside this subtree, in the layout. */
+    onFlowCompleteChange?: (isComplete: boolean) => void;
 };
 
 type BroadcastWrap = {
@@ -38,18 +49,41 @@ type BroadcastWrap = {
     amount: string;
 };
 
-export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
-    const dispatch = useDispatch();
+export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNativeTokenProps) => {
+    const { dispatch } = useServices(injectDispatch);
+    const { CryptoAmountFormatter } = useFormatters();
     const ensureDeviceReady = useWrappedNativeDeviceGuard();
+    const {
+        isDisabled,
+        content: disabledContent,
+        variant: disabledVariant,
+    } = useMessageSystemWrappedNative('wrap');
     const [broadcast, setBroadcast] = useState<BroadcastWrap | null>(null);
     const methods = useForm<YieldFlowFormValues>({
         mode: 'onChange',
         defaultValues: {
             amountInput: '',
+            fiatInput: '',
         },
     });
 
-    const pendingTxStatus = useWrappedNativePendingTx(account, broadcast?.txid ?? null, 'wrap');
+    const { status: pendingTxStatus } = useEvmPendingTxStatus(
+        account,
+        broadcast?.txid ?? null,
+        'wrap',
+    );
+    const isFlowComplete = !!broadcast && pendingTxStatus === 'confirmed';
+
+    useEffect(() => {
+        onFlowCompleteChange?.(isFlowComplete);
+    }, [isFlowComplete, onFlowCompleteChange]);
+
+    const { reportSubmit, reportMaxClick } = useWrappedNativeFlowAnalytics({
+        flowType: 'wrap',
+        status: pendingTxStatus,
+        txid: broadcast?.txid ?? null,
+        networkSymbol: account.symbol,
+    });
 
     const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
     const nativeToken: YieldFlowDisplayToken = {
@@ -58,15 +92,57 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
         decimals: token.decimals,
     };
 
-    // Max leaves the gas reserve aside, but the field shows the full balance and the user may wrap
-    // up to it; eating into the reserve only triggers a non-blocking recommendation.
-    const maxWrapAmount = getWrappableNativeBalance(account.formattedBalance);
+    const isRefetchDisabled = useIsFeeRefetchDisabled();
+    useFetchFees({ networkSymbol: account.symbol, isRefetchDisabled });
+
+    // The same reserve a wrapped-native vault deposit keeps aside: a wrap is the first step of
+    // that deposit, so the native coin left behind has to cover the same follow-up fees.
+    const gasReserve = useYieldGasReserve({
+        networkSymbol: account.symbol,
+        isWrappedNativeVault: true,
+        tokenContractAddress: token.contractAddress,
+    });
+
+    const formattedReserve = CryptoAmountFormatter.format(gasReserve.recommended, {
+        symbol: account.symbol,
+        isBalance: true,
+        withSymbol: false,
+    });
+
+    // The summary shows the full balance; Max keeps the recommended reserve aside. The user may
+    // still wrap up to the full balance, which only triggers a non-blocking recommendation; a
+    // balance that does not exceed the reserve blocks the wrap outright.
+    const maxWrapAmount = getWrappableNativeBalance(
+        account.formattedBalance,
+        gasReserve.recommended,
+    );
+
+    const isNativeFeeInsufficient =
+        getYieldNativeFeeStatus({
+            nativeBalance: account.formattedBalance,
+            reserve: gasReserve,
+            isWrapStep: true,
+            isWrappedNativeVault: true,
+        }) === 'insufficient';
+
+    const { fiatToggle, setMaxAmount } = useYieldFiatInput({
+        methods,
+        symbol: account.symbol,
+        decimals: token.decimals,
+    });
 
     const amountInput = useWatch({ control: methods.control, name: 'amountInput' });
     const amount = new BigNumber(amountInput || '');
     const isAmountTooHigh = amount.gt(account.formattedBalance);
-    const isReserveRecommended = shouldRecommendWrapReserve(amountInput, account.formattedBalance);
+
+    const wrapReserveStatus = getWrapReserveStatus({
+        amountInput,
+        nativeFormattedBalance: account.formattedBalance,
+        reserve: gasReserve.recommended,
+    });
     const isAmountValid = amount.gt(0) && !isAmountTooHigh && methods.formState.isValid;
+
+    const shouldCheckWrapAmount = !broadcast;
 
     useEffect(() => {
         if (pendingTxStatus !== 'failed') {
@@ -80,7 +156,7 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
             }),
         );
         setBroadcast(null);
-        methods.reset({ amountInput: '' });
+        methods.reset({ amountInput: '', fiatInput: '' });
     }, [pendingTxStatus, dispatch, methods]);
 
     const wrapMutation = useMutation({
@@ -94,12 +170,27 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
     });
 
     const handleSubmit = methods.handleSubmit(async ({ amountInput: wrapAmount }) => {
+        // The form stays mounted while a wrap is pending so its transaction remains visible, which
+        // leaves this path reachable after the feature has been disabled remotely. Checked before
+        // reporting so a blocked submit is not counted as one.
+        if (isDisabled) {
+            return;
+        }
+
+        reportSubmit();
+
         if (!(await ensureDeviceReady())) {
             return;
         }
 
         wrapMutation.mutate(wrapAmount);
     });
+
+    const handleMaxClick = () => {
+        reportMaxClick();
+
+        setMaxAmount(maxWrapAmount);
+    };
 
     const openTxDetail = (txid: string) => {
         dispatch(
@@ -110,22 +201,38 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
                 symbol: account.symbol,
                 deviceState: account.deviceState,
                 flow: 'detail',
+                showCancelButton: true,
             }),
         );
     };
 
     const renderWrapWarning = () => {
+        if (!shouldCheckWrapAmount) {
+            return null;
+        }
+
+        if (isNativeFeeInsufficient) {
+            return (
+                <YieldActionStepWarning
+                    insufficientFeeReserve={{ amount: formattedReserve, nativeSymbol }}
+                />
+            );
+        }
+
         if (isAmountTooHigh) {
             return <YieldActionStepWarning isInsufficientFunds />;
         }
 
-        if (isReserveRecommended) {
+        if (wrapReserveStatus === 'kept') {
+            return (
+                <YieldActionStepWarning reserveKept={{ amount: formattedReserve, nativeSymbol }} />
+            );
+        }
+
+        if (wrapReserveStatus === 'below') {
             return (
                 <YieldActionStepWarning
-                    reserveRecommendation={{
-                        amount: WETH_WRAP_GAS_RESERVE.toString(),
-                        nativeSymbol,
-                    }}
+                    reserveRecommendation={{ amount: formattedReserve, nativeSymbol }}
                 />
             );
         }
@@ -134,10 +241,11 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
     };
 
     const renderContent = () => {
-        if (broadcast && pendingTxStatus === 'confirmed') {
+        if (broadcast && isFlowComplete) {
             return (
                 <WrappedNativeFlowComplete
                     account={account}
+                    flow="wrap"
                     heading={<Translation id="TR_WRAP_COMPLETE_HEADING" />}
                     description={
                         <Translation
@@ -153,6 +261,17 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
                         output={{ token, amount: broadcast.amount }}
                     />
                 </WrappedNativeFlowComplete>
+            );
+        }
+
+        // A wrap already broadcast keeps rendering the form, so its pending transaction stays visible.
+        if (isDisabled && !broadcast) {
+            return (
+                <YieldDisabledBanner
+                    type="wrap"
+                    content={disabledContent}
+                    variant={disabledVariant}
+                />
             );
         }
 
@@ -172,18 +291,15 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
                         availableAmount={account.formattedBalance}
                         shouldShowReceivingRow={false}
                         isSubmitting={wrapMutation.isPending}
-                        isSubmitDisabled={!isAmountValid}
+                        isSubmitDisabled={!isAmountValid || isDisabled || isNativeFeeInsufficient}
                         warning={renderWrapWarning()}
                         pendingTransaction={
                             broadcast
                                 ? { type: 'wrap', txid: broadcast.txid, amount: broadcast.amount }
                                 : undefined
                         }
-                        onMaxClick={() =>
-                            methods.setValue('amountInput', maxWrapAmount, {
-                                shouldValidate: true,
-                            })
-                        }
+                        fiatToggle={fiatToggle}
+                        onMaxClick={handleMaxClick}
                         onSubmit={handleSubmit}
                         onPendingTxClick={openTxDetail}
                     />

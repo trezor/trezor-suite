@@ -1,13 +1,12 @@
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    mockWalletAccount,
-    networkSpecificDefaultEthereum,
-} from '@suite-common/wallet-types/mocks';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import {
     type ReceiveAccountState,
+    type ReceiveSliceDeps,
     type ReceiveState,
     prepareReceiveReducer,
     receiveActions,
@@ -15,21 +14,20 @@ import {
     selectTouchedAddresses,
 } from './receiveSlice';
 
-const bitcoinAccount = mockWalletAccount({ symbol: 'btc' });
-const ethereumAccount = mockWalletAccount({ symbol: 'eth' }, networkSpecificDefaultEthereum);
-const extraDependencies = {
-    ...extraDependenciesCommonMock,
+const bitcoinAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
+const ethereumAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+type StorageLoadReceiveAccountsParams = {
+    payload: {
+        receive?: { key: string; value: ReceiveAccountState }[];
+    };
+};
+
+const extraDependencies: ReceiveSliceDeps = {
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
     reducers: {
-        ...extraDependenciesCommonMock.reducers,
         storageLoadReceiveAccounts: (
             state: ReceiveState,
-            {
-                payload,
-            }: {
-                payload: {
-                    receive?: { key: string; value: ReceiveAccountState }[];
-                };
-            },
+            { payload }: StorageLoadReceiveAccountsParams,
         ) => {
             state.accounts =
                 payload.receive?.reduce<ReceiveState['accounts']>((accounts, { key, value }) => {
@@ -45,7 +43,7 @@ const receiveReducer = prepareReceiveReducer(extraDependencies);
 describe('receiveSlice', () => {
     it('loads persisted accounts with touched addresses on @storage/load', () => {
         const state = receiveReducer(undefined, {
-            type: extraDependenciesCommonMock.actionTypes.storageLoad,
+            type: extraDependencies.actionTypes.storageLoad,
             payload: {
                 receive: [
                     {

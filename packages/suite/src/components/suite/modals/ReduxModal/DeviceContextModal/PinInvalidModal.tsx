@@ -4,7 +4,9 @@ import { Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 
-export const PinInvalidModal = ({ onCancel }: { onCancel: () => void }) => {
+type PinInvalidModalProps = { onCancel: () => void };
+
+export const PinInvalidModal = ({ onCancel }: PinInvalidModalProps) => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
     return (

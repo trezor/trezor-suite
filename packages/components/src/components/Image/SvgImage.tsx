@@ -41,7 +41,7 @@ export type SvgImageProps = {
 const getImageSrc = (image: ImageType) => resolveStaticPath(`${IMAGES_PATH}/${IMAGES[image]}`);
 
 export const SvgImage = ({ image, width, height, color }: SvgImageProps) => (
-    <Container $width={width} $height={height} $color={color}>
+    <Container data-component="SvgImage" $width={width} $height={height} $color={color}>
         <StyledReactSVG src={getImageSrc(image)} loading={() => null} />
     </Container>
 );

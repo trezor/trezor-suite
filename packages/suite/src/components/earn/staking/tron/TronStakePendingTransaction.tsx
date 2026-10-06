@@ -3,12 +3,12 @@ import { type ReactNode } from 'react';
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS,
     PendingTransactionInfo,
 } from '@trezor/product-components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { useTronStakeContext } from './TronStakeContext';
 
@@ -17,7 +17,7 @@ interface TronStakePendingTransactionProps {
 }
 
 export const TronStakePendingTransaction = ({ title }: TronStakePendingTransactionProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { account, actions } = useTronStakeContext();
     const { pendingTxid } = actions;
 

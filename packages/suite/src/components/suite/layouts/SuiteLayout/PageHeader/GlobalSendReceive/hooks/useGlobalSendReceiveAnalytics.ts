@@ -4,12 +4,12 @@ import {
     type DashboardReceiveModalOptionsEventOption,
     type DashboardSendModalOptionsEventOption,
     events,
-    selectDesktopAnalyticsDep,
+    injectDesktopAnalytics,
 } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 
 export const useGlobalSendReceiveAnalytics = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const reportSend = useCallback(
         (option: DashboardSendModalOptionsEventOption, filledSearch: boolean) => {
             analytics.report({

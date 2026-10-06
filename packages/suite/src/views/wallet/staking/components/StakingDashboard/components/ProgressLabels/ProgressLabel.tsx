@@ -9,13 +9,15 @@ import { type ProgressLabelState } from './types';
 
 const DEFAULT_LABEL_HEIGHT = 48;
 
+type MapProgressStateToBackgroundParams = {
+    theme: DefaultTheme;
+    $progressState: ProgressLabelState;
+};
+
 const mapProgressStateToBackground = ({
     theme,
     $progressState,
-}: {
-    theme: DefaultTheme;
-    $progressState: ProgressLabelState;
-}) => {
+}: MapProgressStateToBackgroundParams) => {
     switch ($progressState) {
         case 'active':
             return theme.elementFillWarningSoft;

@@ -3,10 +3,10 @@ import { type Account } from '@suite-common/wallet-types';
 import {
     getAccountTotalStakingBalance,
     getAccountsWithSomeTransactionHistory,
-    getStakingProvidersForAnalytics,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { getStakingProvidersForAnalytics } from '../staking/shared/stakingUtils';
 import { getAccountAnalyticsTokenSymbols } from '../tokens/tokenUtils';
 
 export const isAccountActiveForAnalytics = (account: Account) =>

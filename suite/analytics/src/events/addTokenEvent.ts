@@ -28,7 +28,13 @@ export const addTokenEvent: EventDef<Attributes, EventType.AddToken> = {
         token: {
             description:
                 'Identifier of the token being added (token symbol for EVM networks, contract address for Stellar)',
-            changelog: [{ version: '1.9.0', notes: 'added' }],
+            changelog: [
+                { version: '1.9.0', notes: 'added' },
+                {
+                    version: '26.9.0',
+                    notes: 'no longer lowercased, reports the exact casing returned by the blockchain backend',
+                },
+            ],
         },
     },
 };

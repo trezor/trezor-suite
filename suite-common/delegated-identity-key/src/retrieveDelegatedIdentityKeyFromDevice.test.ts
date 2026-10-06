@@ -1,7 +1,7 @@
 import { type DeviceIdentity, asDeviceUniquePath } from '@trezor/connect';
+import { type GetTrezorConnect } from '@trezor/connect-common';
 
 import {
-    type RetrieveDelegatedIdentityKeyFromDeviceDeps,
     type RetrieveDelegatedIdentityKeyParams,
     createRetrieveDelegatedIdentityKeyFromDevice,
 } from './retrieveDelegatedIdentityKeyFromDevice';
@@ -12,19 +12,19 @@ const device123: RetrieveDelegatedIdentityKeyParams['device'] = {
     connected: true,
 };
 
-const connectSimple: RetrieveDelegatedIdentityKeyFromDeviceDeps['trezorConnect'] = {
+const mockGetTrezorConnect: GetTrezorConnect<'evoluGetDelegatedIdentityKey'> = () => ({
     evoluGetDelegatedIdentityKey: device =>
         Promise.resolve({
             device: device as DeviceIdentity,
             success: true,
             payload: { private_key: 'delegated-key-123' },
         }),
-};
+});
 
 describe(createRetrieveDelegatedIdentityKeyFromDevice.name, () => {
     it('calls TrezorConnect to get the delegated key', async () => {
         const retrieveDelegatedIdentityKeyFromDevice = createRetrieveDelegatedIdentityKeyFromDevice(
-            { trezorConnect: connectSimple },
+            { getTrezorConnect: mockGetTrezorConnect },
         );
 
         const result = await retrieveDelegatedIdentityKeyFromDevice({
@@ -36,9 +36,9 @@ describe(createRetrieveDelegatedIdentityKeyFromDevice.name, () => {
     });
 
     it('returns DeviceNotConnectedError without calling Connect when device is not connected', async () => {
-        const evoluGetDelegatedIdentityKey = jest.fn();
+        const getTrezorConnect = jest.fn();
         const retrieveDelegatedIdentityKeyFromDevice = createRetrieveDelegatedIdentityKeyFromDevice(
-            { trezorConnect: { evoluGetDelegatedIdentityKey } },
+            { getTrezorConnect },
         );
 
         const result = await retrieveDelegatedIdentityKeyFromDevice({
@@ -47,6 +47,6 @@ describe(createRetrieveDelegatedIdentityKeyFromDevice.name, () => {
 
         expect(result.success).toBe(false);
         expect(!result.success && result.error.type).toBe('DeviceNotConnectedError');
-        expect(evoluGetDelegatedIdentityKey).not.toHaveBeenCalled();
+        expect(getTrezorConnect).not.toHaveBeenCalled();
     });
 });

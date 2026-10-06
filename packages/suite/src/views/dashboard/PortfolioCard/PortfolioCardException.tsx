@@ -1,10 +1,11 @@
 import { type ComponentProps, type JSX } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { type DiscoveryStatus, type FailedAccount } from '@suite-common/wallet-types';
@@ -20,8 +21,7 @@ import {
 } from '@trezor/components';
 import { PlusIcon, RepeatIcon, WarningIcon } from '@trezor/icons';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 import { type DiscoveryStatusType } from 'src/types/wallet';
 
 interface CTA {
@@ -139,8 +139,7 @@ export const PortfolioCardException = ({
     discovery,
     failed,
 }: PortfolioCardExceptionProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     switch (exception.type) {
         case 'discovery-empty':
@@ -197,7 +196,9 @@ export const PortfolioCardException = ({
                     cta={{
                         action: async () => {
                             // enable passphrase
-                            const result = await dispatch(applySettings({ use_passphrase: true }));
+                            const result = await dispatch(
+                                applySettingsThunk({ use_passphrase: true }),
+                            );
                             if (!result?.success) return;
                             // restart discovery
                             dispatch(startOrRestartDiscoveryThunk());

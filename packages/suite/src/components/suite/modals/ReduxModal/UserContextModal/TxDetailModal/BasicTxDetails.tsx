@@ -2,6 +2,8 @@ import styled from 'styled-components';
 
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Network } from '@suite-common/wallet-config';
 import {
@@ -38,12 +40,12 @@ import {
     TagIcon,
     WarningIcon,
 } from '@trezor/icons';
-import { FeeRate, TokenIcon } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
+import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
-import { useDispatch } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 import { getTransactionIcon } from 'src/utils/wallet/transactionIconUtils';
@@ -101,7 +103,7 @@ export const BasicTxDetails = ({
     nonceStatus,
     nextNonce,
 }: BasicTxDetailsProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const { isBelowTablet } = useLayoutSize();
     const explorerLink = useExternalLink(`${explorerUrl}${tx.txid}${explorerUrlQueryString ?? ''}`);
@@ -322,7 +324,7 @@ export const BasicTxDetails = ({
                 )}
 
                 {tx.stellarSpecific?.memo && (
-                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} icon={TagIcon}>
+                    <Item label={<Translation id="MEMO" />} icon={TagIcon}>
                         <BlurUrls text={tx.stellarSpecific.memo} />
                     </Item>
                 )}

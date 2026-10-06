@@ -41,7 +41,7 @@ export type EnsureStorageParams = {
     isWriteMode: boolean;
 };
 
-export type CreateEnsureStorage = (
+export type EnsureStorage = (
     params: EnsureStorageParams,
 ) => Promise<
     Result<
@@ -56,7 +56,7 @@ export type CreateEnsureStorage = (
 >;
 
 export type EnsureStorageDep = {
-    ensureStorage: CreateEnsureStorage;
+    ensureStorage: EnsureStorage;
 };
 
 /**
@@ -65,8 +65,8 @@ export type EnsureStorageDep = {
  * - Orchestrate prerequisites such as keys and quota before the storage is used.
  */
 export const createEnsureStorage =
-    (deps: EnsureStorageDeps): CreateEnsureStorage =>
-    async ({ deviceStaticSessionId, isWriteMode }): ReturnType<CreateEnsureStorage> => {
+    (deps: EnsureStorageDeps): EnsureStorage =>
+    async ({ deviceStaticSessionId, isWriteMode }): ReturnType<EnsureStorage> => {
         const storageId = createStorageIdFromDeviceStaticSessionId(deviceStaticSessionId);
         const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
 

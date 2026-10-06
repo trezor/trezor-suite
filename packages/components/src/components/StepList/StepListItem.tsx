@@ -25,6 +25,7 @@ import {
 } from './utils';
 import { commonFocusStyles } from '../../utils/utils';
 import { IconCircle } from '../IconCircle/IconCircle';
+import { Spinner } from '../loaders/Spinner/Spinner';
 import { Text } from '../typography/Text/Text';
 
 const Item = styled.li<{ $direction: StepListDirection }>`
@@ -155,6 +156,12 @@ const Line = styled.div<{
     $bulletGap: SpacingValue;
     $lineWidth: StepLineWidth;
 }>`
+    ${({ $lineWidth }) =>
+        $lineWidth === 0 &&
+        css`
+            display: none;
+        `}
+
     ${({ $direction, $bulletGap, $lineWidth }) =>
         $direction === 'horizontal'
             ? css`
@@ -181,7 +188,17 @@ const Line = styled.div<{
               `}
 `;
 
-const Content = styled.div<{ $itemGap: SpacingValue; $titleGap: SpacingValue }>`
+const Content = styled.div<{
+    $itemGap: SpacingValue;
+    $titleGap: SpacingValue;
+    $isFullWidth: boolean;
+}>`
+    ${({ $isFullWidth }) =>
+        $isFullWidth &&
+        css`
+            grid-column: 1 / -1;
+        `}
+
     padding-bottom: ${({ $itemGap }) => `${$itemGap}px`};
 
     &:not(:empty) {
@@ -197,6 +214,7 @@ export type StepListItemProps = {
     children?: React.ReactNode;
     title: React.ReactNode;
     state?: StepListItemState;
+    isLoading?: boolean;
     onClick?: () => void;
     'data-testid'?: string;
 };
@@ -204,12 +222,21 @@ export type StepListItemProps = {
 export const StepListItem = ({
     state = 'default',
     title,
+    isLoading = false,
     onClick,
     'data-testid': dataTestId,
     children,
 }: StepListItemProps) => {
-    const { itemGap, bulletGap, titleGap, bulletSize, isOrdered, direction, lineWidth } =
-        useStepList();
+    const {
+        itemGap,
+        bulletGap,
+        titleGap,
+        bulletSize,
+        isOrdered,
+        isContentFullWidth,
+        direction,
+        lineWidth,
+    } = useStepList();
     const isClickable = !!onClick;
 
     const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -220,6 +247,10 @@ export const StepListItem = ({
     };
 
     const renderStepIndicator = () => {
+        if (isLoading) {
+            return <Spinner size={mapSizeToDimension({ $size: bulletSize })} />;
+        }
+
         if (state !== 'done') {
             return <StepIndicator $state={state} $isOrdered={isOrdered} $size={bulletSize} />;
         }
@@ -245,7 +276,7 @@ export const StepListItem = ({
     };
 
     return (
-        <Item $direction={direction} data-testid={dataTestId}>
+        <Item $direction={direction} data-component="StepListItem" data-testid={dataTestId}>
             <ItemLayout
                 $bulletGap={bulletGap}
                 $titleGap={titleGap}
@@ -270,7 +301,11 @@ export const StepListItem = ({
                 </Title>
                 <Line $direction={direction} $bulletGap={bulletGap} $lineWidth={lineWidth} />
                 {direction === 'vertical' && (
-                    <Content $itemGap={itemGap} $titleGap={titleGap}>
+                    <Content
+                        $itemGap={itemGap}
+                        $titleGap={titleGap}
+                        $isFullWidth={isContentFullWidth}
+                    >
                         {children && (
                             <Text as="div" typographyStyle="body-sm">
                                 {children}

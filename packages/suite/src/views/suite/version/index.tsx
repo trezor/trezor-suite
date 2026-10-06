@@ -1,5 +1,6 @@
 import { Column, H3, InfoItem, Link, Modal } from '@trezor/components';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
+
 export const Version = () => (
     <Modal data-testid="@modal/version" width={600}>
         <Column gap={20}>

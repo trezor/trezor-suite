@@ -1,3 +1,4 @@
+import { selectFullSelectedAccount } from '@suite/account';
 import { Column } from '@trezor/components';
 
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
@@ -5,7 +6,7 @@ import { useSelector } from 'src/hooks/suite';
 import { CoinjoinConfirmation } from 'src/views/wallet/anonymize/components/CoinjoinConfirmation';
 
 const Anonymize = () => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
 
     return (
         <WalletLayout title="TR_NAV_ANONYMIZE" isSubpage account={selectedAccount}>

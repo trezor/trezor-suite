@@ -2,7 +2,7 @@
 
 # Paths
 JSON_PATH='./submodules/trezor-common/models.json'
-TS_PATH='./packages/connect/src/data/models.ts'
+TS_PATH='./packages/connect-core/src/data/models.ts'
 
 # Check if the JSON file exists
 if [ ! -f "$JSON_PATH" ]; then

@@ -6,7 +6,6 @@ import {
     type FormOptions,
     type FormState,
     type Output,
-    type Rate,
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import {
@@ -17,10 +16,10 @@ import {
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
+import { useSelector } from 'src/hooks/suite';
 import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
 
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
-import { useSelector } from '../suite';
 
 export type GetCurrentRateParams = {
     currencyCode: BaseCurrencyCode;
@@ -28,7 +27,6 @@ export type GetCurrentRateParams = {
 };
 
 type UseSendFormFieldsParams = UseFormReturn<FormState> & {
-    fiatRate?: Rate;
     network: UseSendFormState['network'];
 };
 

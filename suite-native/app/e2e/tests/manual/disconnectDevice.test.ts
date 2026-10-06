@@ -19,7 +19,7 @@ describe.skip('Manual', () => {
             ],
             category: TestCategory.Device,
             priority: TestPriority.Medium,
-            stream: TestStream.Foundation,
+            stream: TestStream.Connect,
         },
         async () => {},
     );

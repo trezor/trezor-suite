@@ -15,6 +15,6 @@ These files are the source of truth. They are committed to this repository and e
 
 Edit the relevant file directly: `packages/connect-data/files/coins.json` for Bitcoin-like and miscellaneous coins, or `packages/connect-data/files/coins-eth.json` for Ethereum networks.
 
-> Warning: the retired pipeline used to drop any coin whose `support` map was `false` for every device model. Nothing filters those out anymore, so a coin present in the JSON is parsed by `packages/connect/src/data/coinInfo.ts` and surfaces in `getAllNetworks()` regardless of its `support` values. When adding a coin, make sure its `support` map reflects reality — a coin unsupported on all models should not be added.
+> Warning: the retired pipeline used to drop any coin whose `support` map was `false` for every device model. Nothing filters those out anymore, so a coin present in the JSON is parsed by `packages/connect-core/src/data/coinInfo.ts` and surfaces in `getAllNetworks()` regardless of its `support` values. When adding a coin, make sure its `support` map reflects reality — a coin unsupported on all models should not be added.
 
 > Note: the `submodules/trezor-common` submodule is still required for other purposes (e2e test vectors and `yarn update-models`) and is unaffected by coin-definition edits.

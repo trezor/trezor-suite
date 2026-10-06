@@ -2,12 +2,15 @@ import { type Dispatch } from '@reduxjs/toolkit';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-type CreateOnSharedWorkerUnsupportedDeps = {
+type OnSharedWorkerUnsupportedDeps = {
     dispatch: Dispatch;
 };
 
+type OnSharedWorkerUnsupported = () => void;
+
 export const createOnSharedWorkerUnsupported =
-    (deps: CreateOnSharedWorkerUnsupportedDeps) => () => {
+    (deps: OnSharedWorkerUnsupportedDeps): OnSharedWorkerUnsupported =>
+    () => {
         console.error('Suite Sync shared worker is unsupported in this tab.');
 
         deps.dispatch(

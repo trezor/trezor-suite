@@ -13,11 +13,5 @@ export const EarnDeposit = () => {
         return <EarnLayoutFallback layoutState={result} />;
     }
 
-    return (
-        <YieldDeposit
-            account={result.account}
-            routeParams={result.routeParams}
-            vault={result.vault}
-        />
-    );
+    return <YieldDeposit account={result.account} vault={result.vault} />;
 };

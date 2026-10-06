@@ -1,6 +1,4 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { selectOAuthServerEnvironment } from '@suite/settings';
 import {
     type DataType,
@@ -11,27 +9,30 @@ import {
     ProviderErrorAction,
     type Tokens,
 } from '@suite-common/metadata-types';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type Dispatch, type WithServices } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exhaustive } from '@trezor/type-utils';
 import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
 
+import * as metadataActions from './metadataActions';
 import * as METADATA from './metadataConstants';
-import { disposeMetadata } from './metadataDataThunks';
+import { disposeMetadataThunk } from './metadataDataThunks';
 import * as METADATA_PROVIDER from './metadataProviderConstants';
-import { type MetadataRootState, selectSelectedProviderForLabels } from './metadataReducer';
+import {
+    type MetadataRootState,
+    selectMetadata,
+    selectSelectedProviderForLabels,
+} from './metadataReducer';
 import { type FetchIntervalTrackingId } from './metadataUtils';
+import { type OauthDesktopApiDep } from './oauth';
 import { DropboxProvider } from './providers/DropboxProvider';
-import { FileSystemProvider } from './providers/FileSystemProvider';
+import { FileSystemProvider, type FileSystemProviderDep } from './providers/FileSystemProvider';
 import { GoogleProvider } from './providers/GoogleProvider';
 import { InMemoryTestProvider } from './providers/InMemoryTestProvider';
 
 type ProviderInstance =
-    | DropboxProvider
-    | GoogleProvider
-    | FileSystemProvider
-    | InMemoryTestProvider;
+    DropboxProvider | GoogleProvider | FileSystemProvider | InMemoryTestProvider;
 
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
 export const providerInstance: Record<DataType, ProviderInstance | undefined> = {
@@ -41,22 +42,26 @@ export const providerInstance: Record<DataType, ProviderInstance | undefined> = 
 
 export const fetchIntervals: { [id: FetchIntervalTrackingId]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
+type ProviderInstanceDeps = OauthDesktopApiDep & FileSystemProviderDep;
+
 const createProviderInstance = (
+    deps: ProviderInstanceDeps,
     type: MetadataProvider['type'],
     tokens: Tokens = {},
     environment: OAuthServerEnvironment = 'production',
     clientId?: string,
-) => {
+): ProviderInstance => {
     switch (type) {
         case 'dropbox':
             return new DropboxProvider({
+                desktopApi: deps.desktopApi,
                 token: tokens?.refreshToken,
                 clientId: clientId || METADATA_PROVIDER.DROPBOX_CLIENT_ID,
             });
         case 'google':
-            return new GoogleProvider(tokens, environment);
+            return new GoogleProvider(tokens, environment, deps);
         case 'fileSystem':
-            return new FileSystemProvider();
+            return new FileSystemProvider(deps);
         case 'inMemoryTest':
             return new InMemoryTestProvider();
 
@@ -67,14 +72,21 @@ const createProviderInstance = (
 
 type GetProviderInstanceParams = { clientId: string; dataType: DataType };
 
+type GetProviderInstanceThunkState = MetadataRootState;
+
 /**
  * Return already existing instance of AbstractProvider or recreate it from token;
  */
-export const getProviderInstance =
+type GetProviderInstanceThunkDeps = WithServices<ProviderInstanceDeps>;
+
+export const getProviderInstanceThunk =
     ({ clientId, dataType = 'labels' }: GetProviderInstanceParams) =>
-    (_dispatch: Dispatch, getState: () => MetadataRootState) => {
-        const state = getState();
-        const { providers } = state.metadata;
+    (
+        _dispatch: Dispatch,
+        getState: () => GetProviderInstanceThunkState,
+        extra: GetProviderInstanceThunkDeps,
+    ) => {
+        const { providers } = selectMetadata(getState());
 
         const provider = providers.find(p => p.clientId === clientId);
 
@@ -88,9 +100,10 @@ export const getProviderInstance =
         if (providerInstance[dataType]) return providerInstance[dataType];
 
         providerInstance[dataType] = createProviderInstance(
+            extra.services,
             provider.type,
             provider.tokens,
-            selectOAuthServerEnvironment(state),
+            selectOAuthServerEnvironment(getState()),
             clientId,
         );
 
@@ -103,9 +116,19 @@ type DisconnectProviderParams = {
     removeMetadata?: boolean;
 };
 
-export const disconnectProvider =
+type DisconnectProviderDeps = WithServices<DesktopAnalyticsDep>;
+
+type DisconnectProviderThunkState = MetadataRootState;
+
+type DisconnectProviderThunkDeps = DisconnectProviderDeps;
+
+export const disconnectProviderThunk =
     ({ clientId, dataType, removeMetadata = true }: DisconnectProviderParams) =>
-    async (dispatch: Dispatch, _getState: () => MetadataRootState, extra: ExtraDependencies) => {
+    async (
+        dispatch: Dispatch,
+        _getState: () => DisconnectProviderThunkState,
+        extra: DisconnectProviderThunkDeps,
+    ) => {
         typedObjectKeys(fetchIntervals).forEach((id: FetchIntervalTrackingId) => {
             const [trackedDataType, trackedClientId] = id.split('-');
             if (trackedDataType === dataType && trackedClientId === clientId) {
@@ -116,26 +139,23 @@ export const disconnectProvider =
 
         // dispose metadata values (not keys)
         if (removeMetadata) {
-            dispatch(disposeMetadata());
+            dispatch(disposeMetadataThunk());
         }
 
-        const provider = dispatch(getProviderInstance({ clientId, dataType }));
+        const provider = dispatch(getProviderInstanceThunk({ clientId, dataType }));
 
         if (provider !== undefined) {
             await provider.disconnect();
             providerInstance[dataType] = undefined;
 
             // flush reducer
-            dispatch({
-                type: METADATA.REMOVE_PROVIDER,
-                payload: { clientId },
-            });
+            dispatch(metadataActions.removeMetadataProvider({ clientId }));
             dispatch({
                 type: METADATA.SET_SELECTED_PROVIDER,
                 payload: { dataType, clientId: undefined },
             });
 
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.settingsGeneralLabelingProviderEvent.name,
                 payload: {
                     provider: '',
@@ -181,9 +201,9 @@ export const handleProviderError =
                 case 'ACCESS_ERROR':
                 case 'BAD_INPUT_ERROR':
                 case 'OTHER_ERROR':
-                    dispatch(disposeMetadata());
+                    dispatch(disposeMetadataThunk());
                     dispatch(
-                        disconnectProvider({
+                        disconnectProviderThunk({
                             clientId,
                             dataType: 'labels',
                         }),
@@ -194,7 +214,7 @@ export const handleProviderError =
                 case 'RATE_LIMIT_ERROR':
                 case 'AUTH_ERROR':
                     dispatch(
-                        disconnectProvider({
+                        disconnectProviderThunk({
                             clientId,
                             dataType: 'labels',
                         }),
@@ -222,8 +242,10 @@ export const initProvider = () => (dispatch: Dispatch) => {
     return decision.promise;
 };
 
+type SelectProviderParams = { dataType: DataType; clientId: string };
+
 const selectProvider =
-    ({ dataType, clientId }: { dataType: DataType; clientId: string }) =>
+    ({ dataType, clientId }: SelectProviderParams) =>
     (dispatch: Dispatch) => {
         dispatch({
             type: METADATA.SET_SELECTED_PROVIDER,
@@ -240,10 +262,21 @@ type ConnectProviderParams = {
     clientId?: string;
 };
 
-export const connectProvider =
+export type ConnectProviderDeps = WithServices<DesktopAnalyticsDep & ProviderInstanceDeps>;
+
+type ConnectProviderThunkState = MetadataRootState;
+
+type ConnectProviderThunkDeps = ConnectProviderDeps;
+
+export const connectProviderThunk =
     ({ type, dataType = 'labels', clientId }: ConnectProviderParams) =>
-    async (dispatch: Dispatch, getState: () => MetadataRootState, extra: ExtraDependencies) => {
+    async (
+        dispatch: Dispatch,
+        getState: () => ConnectProviderThunkState,
+        extra: ConnectProviderThunkDeps,
+    ) => {
         const providerInstance = createProviderInstance(
+            extra.services,
             type,
             {},
             selectOAuthServerEnvironment(getState()),
@@ -271,15 +304,14 @@ export const connectProvider =
             return;
         }
 
-        dispatch({
-            type: METADATA.ADD_PROVIDER,
-            payload: {
+        dispatch(
+            metadataActions.addMetadataProvider({
                 ...providerDetails.payload,
                 data: {},
-            },
-        });
+            }),
+        );
 
-        asTypedDesktopAnalytics(extra.services.analytics).report({
+        extra.services.analytics.report({
             type: events.settingsGeneralLabelingProviderEvent.name,
             payload: {
                 provider: providerDetails.payload.type,
@@ -291,12 +323,14 @@ export const connectProvider =
         return true;
     };
 
-export const exportMetadataToLocalFile =
-    () => async (dispatch: Dispatch, getState: () => MetadataRootState) => {
+type ExportMetadataToLocalFileThunkState = MetadataRootState;
+
+export const exportMetadataToLocalFileThunk =
+    () => async (dispatch: Dispatch, getState: () => ExportMetadataToLocalFileThunkState) => {
         const provider = selectSelectedProviderForLabels(getState());
         if (!provider) return;
         const providerInstance = dispatch(
-            getProviderInstance({
+            getProviderInstanceThunk({
                 clientId: provider.clientId,
                 dataType: 'labels',
             }),

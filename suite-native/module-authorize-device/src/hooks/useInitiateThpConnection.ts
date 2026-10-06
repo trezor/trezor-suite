@@ -1,10 +1,11 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { selectSelectedDevice } from '@suite-common/device';
-import { acquireDevice } from '@suite-common/wallet-core';
+import { useServices } from '@suite-common/dependency-injection';
+import { acquireDeviceThunk, selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -14,7 +15,7 @@ type NavigationProp = NativeStackNavigationProp<AuthorizeDeviceStackParamList>;
 
 export const useInitiateThpConnection = () => {
     const navigation = useNavigation<NavigationProp>();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const device = useSelector(selectSelectedDevice);
 
@@ -23,7 +24,7 @@ export const useInitiateThpConnection = () => {
         // do that. In addition to better UX, this also prevents the current screen from multiplying
         // in the navigation stack and the invalidCode alert from reappearing once dismissed.
         navigation.replace(AuthorizeDeviceStackRoutes.ThpConfirmation);
-        dispatch(acquireDevice({ requestedDevice: device }));
+        dispatch(acquireDeviceThunk({ requestedDevice: device }));
     };
 
     return {

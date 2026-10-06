@@ -22,33 +22,35 @@ describe('TradingEnvironmentWarning', () => {
         }),
     } as const;
 
-    const renderTradingEnvironmentWarning = (
+    const renderTradingEnvironmentWarning = async (
         tradingEnvironment: TradingState['tradingEnvironment'],
     ) =>
-        renderWithStoreProvider(<TradingEnvironmentWarning />, {
-            store: createLightStore({
-                reducer,
-                preloadedState: {
-                    wallet: {
-                        trading: {
-                            ...tradingInitialState,
-                            tradingEnvironment,
+        await renderWithStoreProvider(<TradingEnvironmentWarning />, {
+            services: {
+                store: createLightStore({
+                    reducer,
+                    preloadedState: {
+                        wallet: {
+                            trading: {
+                                ...tradingInitialState,
+                                tradingEnvironment,
+                            },
                         },
-                    },
-                } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
-            }),
+                    } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
+                }),
+            },
         });
 
-    it('should render nothing when tradingEnvironment is [production]', () => {
-        const { toJSON } = renderTradingEnvironmentWarning('production');
+    it('should render nothing when tradingEnvironment is [production]', async () => {
+        const { toJSON } = await renderTradingEnvironmentWarning('production');
 
         expect(toJSON()).toBeNull();
     });
 
     it.each<TradingState['tradingEnvironment']>(['staging', 'dev', 'localhost'])(
         'should render warning for tradingEnvironment [%s]',
-        tradingEnvironment => {
-            const { getByText } = renderTradingEnvironmentWarning(tradingEnvironment);
+        async tradingEnvironment => {
+            const { getByText } = await renderTradingEnvironmentWarning(tradingEnvironment);
 
             expect(getByText(`Trading environment: ${tradingEnvironment}`)).toBeOnTheScreen();
         },

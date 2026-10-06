@@ -1,8 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
-import { selectUpdateOutputLabelDep } from '@suite-common/suite-sync-types';
+import { injectUpdateOutputLabel } from '@suite-common/suite-sync-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTokenTargetId } from '@suite-common/wallet-core';
 import { type AccountDescriptor, type TxTargetId } from '@suite-common/wallet-types';
@@ -30,10 +31,9 @@ export const TransactionOutputLabelEditable = ({
     accountDescriptor,
     networkSymbol,
 }: TransactionOutputLabelEditableProps) => {
-    const dispatch = useDispatch();
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
 
-    const { updateOutputLabel } = useServices(selectUpdateOutputLabelDep);
+    const { updateOutputLabel, dispatch } = useServices(injectUpdateOutputLabel, injectDispatch);
 
     const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
     const isTokenTxTargetId = isTokenTargetId(txTargetId);

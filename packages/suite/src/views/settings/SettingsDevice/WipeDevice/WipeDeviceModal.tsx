@@ -2,30 +2,28 @@ import { useState } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { Button, Column, Modal } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { NewspaperIcon, TrashIcon } from '@trezor/icons';
 import { StepCard } from '@trezor/product-components';
 
-import { useDispatch } from 'src/hooks/suite';
-
 type WipeDeviceModalProps = {
     onCancel: () => void;
 };
 
 export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isLoading, setIsLoading] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
 
     const { device, isLocked } = useDevice();
-    const dispatch = useDispatch();
 
     const isBootloaderMode = isDeviceInBootloaderMode(device);
 

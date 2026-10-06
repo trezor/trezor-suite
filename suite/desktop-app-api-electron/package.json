@@ -1,0 +1,19 @@
+{
+    "name": "@suite/desktop-app-api-electron",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "description": "Electron implementation of the DesktopApi contract",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite/desktop-app-api": "workspace:*",
+        "electron": "43.2.0"
+    }
+}

@@ -5,6 +5,7 @@
         { "path": "../analytics-redux" },
         { "path": "../device" },
         { "path": "../discreet-mode" },
+        { "path": "../networks" },
         { "path": "../react-query" },
         { "path": "../redux-utils" },
         { "path": "../suite-types" },
@@ -15,6 +16,7 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
-        { "path": "../../packages/type-utils" }
+        { "path": "../../packages/type-utils" },
+        { "path": "../wallet-config" }
     ]
 }

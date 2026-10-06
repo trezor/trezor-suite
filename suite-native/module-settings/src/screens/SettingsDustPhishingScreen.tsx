@@ -1,6 +1,8 @@
 import { Keyboard } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     phishingActions,
     selectDustPhishingIsEnabled,
@@ -14,7 +16,7 @@ import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { useDustPhishingForm } from '../hooks/useDustPhishingForm';
 
 export const SettingsDustPhishingScreen = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { translate } = useTranslate();
 
     const dustPhishingIsEnabled = useSelector(selectDustPhishingIsEnabled);

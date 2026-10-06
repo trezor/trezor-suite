@@ -1,8 +1,9 @@
 import { act } from '@testing-library/react';
 import { type ExchangeTrade } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { tradingExchangeActions } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { useExchangeApproval } from './useExchangeApproval';
@@ -32,19 +33,21 @@ jest.mock('@suite-common/trading', () => {
     };
 });
 
-const ACCOUNT = mockWalletAccount({ symbol: 'eth', formattedBalance: '2' });
+const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth'), formattedBalance: '2' });
 
 const TRADE: ExchangeTrade = { exchange: 'provider-1', status: 'CONFIRM' };
 
 const renderExchangeApproval = (receiveAddress?: string) => {
-    const store = configureMockStore();
+    const { services } = createTestCompositionRoot<void, unknown>({});
 
     const utils = renderHookWithStoreProvider(
         () => useExchangeApproval({ account: ACCOUNT, receiveAddress, extraField: undefined }),
-        { store },
+        { services },
     );
 
-    return { ...utils, store };
+    const { getActions } = services.store;
+
+    return { ...utils, getActions };
 };
 
 describe('useExchangeApproval', () => {
@@ -83,7 +86,7 @@ describe('useExchangeApproval', () => {
     });
 
     it('revokeApproval saves a ZERO-approval quote before confirming', async () => {
-        const { result, store } = renderExchangeApproval('0xreceive');
+        const { result, getActions } = renderExchangeApproval('0xreceive');
 
         let outcome: boolean | undefined;
         await act(async () => {
@@ -91,7 +94,7 @@ describe('useExchangeApproval', () => {
         });
 
         expect(outcome).toBe(true);
-        expect(store.getActions().map(action => action.type)).toContain(
+        expect(getActions().map(action => action.type)).toContain(
             tradingExchangeActions.saveSelectedQuote.type,
         );
         expect(mockConfirmApproval).toHaveBeenCalledWith(

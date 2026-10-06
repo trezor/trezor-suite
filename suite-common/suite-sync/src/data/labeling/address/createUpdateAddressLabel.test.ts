@@ -1,6 +1,6 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import { type UpdateAddressLabelParams } from '@suite-common/suite-sync-types';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
@@ -10,7 +10,7 @@ import { createSuiteSyncStorageMock } from '../../../../mocks/mockCreateSuiteSyn
 import { SuiteSyncUnavailableOnDeviceError } from '../../../createEnsureSuiteSyncKeys';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
-const networkSymbol: NetworkSymbol = 'btc';
+const networkSymbol = asNetworkSymbol('btc');
 const accountDescriptor = asAccountDescriptor('accountDescriptor');
 
 const params: UpdateAddressLabelParams = {

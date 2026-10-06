@@ -1,10 +1,12 @@
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { connectPopupActions, selectConnectAppPermissions } from '@suite-common/connect-popup';
 // TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { type AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     AnimatedBox,
     Button,
@@ -26,7 +28,7 @@ import { ConnectAppIcon } from '../components/ConnectAppIcon';
 import { GroupedPermissionsList } from '../components/GroupedPermissionsList';
 
 const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const handleDisconnect = () => {
         dispatch(connectPopupActions.forgetAppPermissions(app));
     };

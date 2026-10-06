@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { MODAL_CONTEXT_DEVICE, openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import {
@@ -15,25 +16,31 @@ import {
 } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import TrezorConnect, {
     type CallMethodKeys,
     type CallMethodPayload,
-    UI_REQUEST,
+    type PermissionRequest,
+    UI_EVENTS,
+    UI_REQUESTS,
 } from '@trezor/connect';
 import { isMacOs } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
 
 export const useConnectPopupDesktop = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { desktopApi, analytics, dispatch } = useServices(
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectDesktopApi,
+    );
     const popupCall = useSelector(selectConnectPopupCall);
     const selectedDevice = useSelector(selectSelectedDevice);
     const selectedDeviceRef = useRef(selectedDevice);
     selectedDeviceRef.current = selectedDevice;
-    const lifecycle = useSelector(state => state.suite.lifecycle);
+    const lifecycle = useSelector(selectSuiteLifecycle);
     const initialized = useRef(false);
 
     useEffect(() => {
@@ -116,6 +123,9 @@ export const useConnectPopupDesktop = () => {
                                   },
                                   origin: params.origin,
                                   manifest: params.manifest,
+                                  // Cast across the IPC boundary, same as `params.method` above.
+                                  requestedPermissions: params.requestedPermissions as
+                                      PermissionRequest[] | undefined,
                               },
                     }),
                 );
@@ -158,7 +168,7 @@ export const useConnectPopupDesktop = () => {
                 desktopApi.removeAllListeners('app/auto-start/popup-request');
             }
         };
-    }, [dispatch, analytics, lifecycle.status]);
+    }, [desktopApi, dispatch, analytics, lifecycle.status]);
 
     // App focus control
     const callOrigin = popupCall && 'source' in popupCall ? popupCall.source.origin : undefined;
@@ -175,11 +185,11 @@ export const useConnectPopupDesktop = () => {
 
         return (
             [
-                UI_REQUEST.REQUEST_PIN,
-                UI_REQUEST.INVALID_PIN,
-                UI_REQUEST.REQUEST_PASSPHRASE,
-                UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE,
-                UI_REQUEST.REQUEST_WORD,
+                UI_REQUESTS.REQUEST_PIN,
+                UI_EVENTS.PIN_INVALID,
+                UI_REQUESTS.REQUEST_PASSPHRASE,
+                UI_EVENTS.PASSPHRASE_ON_DEVICE,
+                UI_REQUESTS.REQUEST_WORD,
             ] as string[]
         ).includes(modal.windowType);
     });
@@ -237,5 +247,5 @@ export const useConnectPopupDesktop = () => {
             }
             setCurrentlyOngoing(false);
         }
-    }, [popupCall, currentlyOngoing, wasVisible, isSilentMode, isUserInputModalOpen]);
+    }, [desktopApi, popupCall, currentlyOngoing, wasVisible, isSilentMode, isUserInputModalOpen]);
 };

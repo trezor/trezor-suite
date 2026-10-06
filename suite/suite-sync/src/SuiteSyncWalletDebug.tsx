@@ -1,7 +1,9 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { deviceActions } from '@suite-common/device';
+import { useServices } from '@suite-common/dependency-injection';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     isSuiteSyncSupportedByDevice,
@@ -13,6 +15,7 @@ import {
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { Code, Row, Text, Tooltip } from '@trezor/components';
 import { parseStaticSessionId } from '@trezor/device-utils';
+
 type SuiteSyncWalletDebugProps = {
     device: AcquiredDevice;
     /** @deprecated this prop is a hack so we do not depend on Legacy Metadata Labeling */
@@ -23,7 +26,7 @@ export const SuiteSyncWalletDebug = ({
     device,
     isLegacyLabelingVisible,
 }: SuiteSyncWalletDebugProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
@@ -56,7 +59,7 @@ export const SuiteSyncWalletDebug = ({
             }),
         );
         dispatch(
-            deviceActions.setDelegatedIdentityKey({
+            persistentDeviceDataActions.setDelegatedIdentityKey({
                 deviceId: device.id,
                 delegatedKey: null,
             }),
@@ -66,18 +69,18 @@ export const SuiteSyncWalletDebug = ({
     return isSuiteSyncEnabled ? (
         <Row gap={4}>
             🐞
-            {isLegacyLabelingVisible && <Text intent="accentViolet">[Legacy]</Text>}
+            {isLegacyLabelingVisible && <Text intent="explore">[Legacy]</Text>}
             {isSuiteSyncEnabled && (
                 <>
                     <Text typographyStyle="body-sm" intent="warning">
                         <Code>{walletDescriptor.slice(-8)}</Code>
                     </Text>
                     @
-                    <Text typographyStyle="body-sm" intent="accentViolet">
+                    <Text typographyStyle="body-sm" intent="explore">
                         <Code>{deviceId.slice(-8)}</Code>
                     </Text>
                     <Tooltip content={<Code>{JSON.stringify(suiteSyncOwner, null, 2)}</Code>}>
-                        <Text typographyStyle="body-sm" intent="accentViolet">
+                        <Text typographyStyle="body-sm" intent="explore">
                             E:
                             <Code>{suiteSyncOwner?.slice(-8)}</Code>
                         </Text>

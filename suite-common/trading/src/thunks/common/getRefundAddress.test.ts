@@ -1,20 +1,29 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { deviceInitialState } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     confirmAddressOnDeviceThunk,
     prepareWalletSettingsReducer,
 } from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
-import { getRefundAddress } from './getRefundAddress';
+import { type GetRefundAddressThunkState, getRefundAddressThunk } from './getRefundAddress';
 import { accounts } from '../../reducers/__fixtures__/account';
-import { initialState } from '../../reducers/tradingCommonReducer';
-import { prepareTradingReducer } from '../../reducers/tradingReducer';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
-const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
+const walletSettingsReducer = prepareWalletSettingsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadWalletSettings: mockReducer() },
+});
+const reducer = combineReducers({
+    device: () => deviceInitialState,
+    wallet: combineReducers({
+        accounts: () => accounts,
+        settings: walletSettingsReducer,
+    }),
+});
 
 // Mock external dependencies
 jest.mock('@suite-common/wallet-core', () => ({
@@ -47,24 +56,10 @@ describe('getRefundAddress thunk', () => {
         });
     });
 
-    const createMockStore = (preloadedState = {}) =>
-        configureMockStore({
-            extra: extraDependenciesCommonMock,
-            reducer: combineReducers({
-                wallet: combineReducers({
-                    settings: walletSettingsReducer,
-                    trading: tradingReducer,
-                }),
-            }),
-            preloadedState: {
-                wallet: {
-                    trading: {
-                        ...initialState,
-                        ...preloadedState,
-                    },
-                },
-            },
-        });
+    const createMockStore = () =>
+        createTestCompositionRoot<void, GetRefundAddressThunkState>({
+            reducer,
+        }).services.store;
 
     describe('successful address confirmation', () => {
         it('should successfully get refund address and MAC', async () => {
@@ -79,9 +74,9 @@ describe('getRefundAddress thunk', () => {
             );
 
             const store = createMockStore();
-            const result = await store.dispatch(getRefundAddress({ account: mockAccount }));
+            const result = await store.dispatch(getRefundAddressThunk({ account: mockAccount }));
 
-            expect(result.type).toBe(getRefundAddress.fulfilled.type);
+            expect(result.type).toBe(getRefundAddressThunk.fulfilled.type);
             expect(result.payload).toEqual({
                 address: mockAddress,
                 mac: mockMac,
@@ -109,27 +104,23 @@ describe('getRefundAddress thunk', () => {
                 })),
             );
 
-            const storeWithNonChunked = configureMockStore({
-                extra: extraDependenciesCommonMock,
-                reducer: combineReducers({
-                    wallet: combineReducers({
-                        settings: walletSettingsReducer,
-                        trading: tradingReducer,
-                    }),
-                }),
+            const { store: storeWithNonChunked } = createTestCompositionRoot<
+                void,
+                GetRefundAddressThunkState
+            >({
+                reducer,
                 preloadedState: {
                     wallet: {
                         settings: { addressDisplayType: AddressDisplayOptions.ORIGINAL },
-                        trading: initialState,
                     },
                 },
-            });
+            }).services;
 
             const result = await storeWithNonChunked.dispatch(
-                getRefundAddress({ account: mockAccount }),
+                getRefundAddressThunk({ account: mockAccount }),
             );
 
-            expect(result.type).toBe(getRefundAddress.fulfilled.type);
+            expect(result.type).toBe(getRefundAddressThunk.fulfilled.type);
             expect(confirmAddressOnDeviceThunk).toHaveBeenCalledWith({
                 accountKey: mockAccount.key,
                 addressPath: mockPath,
@@ -147,9 +138,9 @@ describe('getRefundAddress thunk', () => {
             });
 
             const store = createMockStore();
-            const result = await store.dispatch(getRefundAddress({ account: mockAccount }));
+            const result = await store.dispatch(getRefundAddressThunk({ account: mockAccount }));
 
-            expect(result.type).toBe(getRefundAddress.rejected.type);
+            expect(result.type).toBe(getRefundAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
                 error: {
@@ -168,9 +159,9 @@ describe('getRefundAddress thunk', () => {
             });
 
             const store = createMockStore();
-            const result = await store.dispatch(getRefundAddress({ account: mockAccount }));
+            const result = await store.dispatch(getRefundAddressThunk({ account: mockAccount }));
 
-            expect(result.type).toBe(getRefundAddress.rejected.type);
+            expect(result.type).toBe(getRefundAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
                 error: {
@@ -188,9 +179,9 @@ describe('getRefundAddress thunk', () => {
             );
 
             const store = createMockStore();
-            const result = await store.dispatch(getRefundAddress({ account: mockAccount }));
+            const result = await store.dispatch(getRefundAddressThunk({ account: mockAccount }));
 
-            expect(result.type).toBe(getRefundAddress.rejected.type);
+            expect(result.type).toBe(getRefundAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
                 error: {
@@ -211,9 +202,9 @@ describe('getRefundAddress thunk', () => {
             );
 
             const store = createMockStore();
-            const result = await store.dispatch(getRefundAddress({ account: mockAccount }));
+            const result = await store.dispatch(getRefundAddressThunk({ account: mockAccount }));
 
-            expect(result.type).toBe(getRefundAddress.rejected.type);
+            expect(result.type).toBe(getRefundAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
                 error: {
@@ -234,9 +225,9 @@ describe('getRefundAddress thunk', () => {
             );
 
             const store = createMockStore();
-            const result = await store.dispatch(getRefundAddress({ account: mockAccount }));
+            const result = await store.dispatch(getRefundAddressThunk({ account: mockAccount }));
 
-            expect(result.type).toBe(getRefundAddress.rejected.type);
+            expect(result.type).toBe(getRefundAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
                 error: {
@@ -264,9 +255,9 @@ describe('getRefundAddress thunk', () => {
             );
 
             const store = createMockStore();
-            const result = await store.dispatch(getRefundAddress({ account: segwitAccount }));
+            const result = await store.dispatch(getRefundAddressThunk({ account: segwitAccount }));
 
-            expect(result.type).toBe(getRefundAddress.fulfilled.type);
+            expect(result.type).toBe(getRefundAddressThunk.fulfilled.type);
             expect(result.payload).toEqual({
                 address: mockAddress,
                 mac: mockMac,
@@ -293,9 +284,9 @@ describe('getRefundAddress thunk', () => {
             );
 
             const store = createMockStore();
-            const result = await store.dispatch(getRefundAddress({ account: mockAccount }));
+            const result = await store.dispatch(getRefundAddressThunk({ account: mockAccount }));
 
-            expect(result.type).toBe(getRefundAddress.fulfilled.type);
+            expect(result.type).toBe(getRefundAddressThunk.fulfilled.type);
             expect(confirmAddressOnDeviceThunk).toHaveBeenCalledWith({
                 accountKey: mockAccount.key,
                 addressPath: tapRootPath,
@@ -307,7 +298,7 @@ describe('getRefundAddress thunk', () => {
 
     describe('thunk metadata', () => {
         it('should have correct thunk type prefix', () => {
-            expect(getRefundAddress.typePrefix).toBe('@trading/thunk/getRefundAddress');
+            expect(getRefundAddressThunk.typePrefix).toBe('@trading/thunk/getRefundAddress');
         });
 
         it('should handle pending state correctly', async () => {
@@ -322,16 +313,16 @@ describe('getRefundAddress thunk', () => {
             );
 
             const store = createMockStore();
-            const promise = store.dispatch(getRefundAddress({ account: mockAccount }));
+            const promise = store.dispatch(getRefundAddressThunk({ account: mockAccount }));
 
             // Check if the action is in pending state
             const actions = store.getActions();
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const firstAction: (typeof actions)[number] = actions[0];
-            expect(firstAction.type).toBe(getRefundAddress.pending.type);
+            expect(firstAction.type).toBe(getRefundAddressThunk.pending.type);
 
             const result = await promise;
-            expect(result.type).toBe(getRefundAddress.fulfilled.type);
+            expect(result.type).toBe(getRefundAddressThunk.fulfilled.type);
         });
     });
 });

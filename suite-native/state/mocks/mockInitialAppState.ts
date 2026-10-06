@@ -5,6 +5,7 @@ import { firmwareInitialState } from '@suite-common/firmware';
 import { geolocationInitialState } from '@suite-common/geolocation';
 import { logsSliceInitialState } from '@suite-common/logger';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { receiveInitialState } from '@suite-common/receive';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager';
@@ -16,6 +17,7 @@ import {
     accountsRefreshTimeInitialState,
     blockchainInitialState,
     discoveryInitialState,
+    earnOnboardingInitialState,
     explorerInitialState,
     feesInitialState,
     fiatRatesInitialState,
@@ -24,10 +26,11 @@ import {
     initialWalletSettingsState,
     phishingInitialState,
     stakeInitialState,
+    stellarContractTokensInitialState,
     transactionsInitialState,
 } from '@suite-common/wallet-core';
 import { walletConnectInitialState } from '@suite-common/walletconnect';
-import { bannerFlagsInitialState } from '@suite-native/banner-flags';
+import { bannerFlagsInitialState } from '@suite-native/banners';
 import { biometricsSliceInitialState } from '@suite-native/biometrics';
 import { bluetoothInitialState } from '@suite-native/bluetooth';
 import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
@@ -43,13 +46,14 @@ import { tradingInitialState } from '@suite-native/trading-state';
 import { sendFormInitialState } from '@suite-native/transaction-management';
 
 import { appSliceInitialState } from '../src/appSlice';
-import type { FullAppState } from '../src/store';
+import type { FullAppState } from '../src/createReduxStore';
 
 /**
  * Create a complete app state for Suite Mobile to be used as basis for state fixtures in tests.
  */
 
 export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullAppState => ({
+    networks: null,
     analytics: analyticsInitialState,
     app: appSliceInitialState,
     appSettings: appSettingsInitialState,
@@ -79,9 +83,11 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
     walletConnect: walletConnectInitialState,
     suiteSyncQuotaManager: quotaManagerInitialState,
     featureFeedback: featureFeedbackInitialState,
+    persistentDeviceData: persistentDeviceDataInitialState,
 
     wallet: {
         accounts: accountsInitialState,
+        earnOnboarding: earnOnboardingInitialState,
         accountsRefreshTime: accountsRefreshTimeInitialState,
         blockchain: blockchainInitialState,
         explorer: explorerInitialState,
@@ -96,6 +102,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
         trading: tradingInitialState,
         settings: initialWalletSettingsState,
         formDrafts: formDraftInitialState,
+        stellarContractTokens: stellarContractTokensInitialState,
     },
 
     ...partialState,

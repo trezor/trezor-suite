@@ -3,18 +3,20 @@ import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
-import { selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
+import { injectGetNamedAddressSupport } from '@suite-common/networks';
+import { selectAccounts, selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
     GeneralPrecomposedTransactionFinal,
-    ReviewOutput,
     StakeFormState,
     StakeType,
+    TransactionReviewOutput as TransactionReviewOutputType,
 } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
-    getEvmTransactionTextSignature,
+    getEvmTransactionPurpose,
     isEvmApprovalTx,
     isEvmYieldTxByTextSignature,
 } from '@suite-common/wallet-utils';
@@ -33,7 +35,7 @@ export type TransactionReviewOutputListProps = {
     precomposedTx: GeneralPrecomposedTransactionFinal;
     precomposedForm: FormState | StakeFormState;
     signedTx?: { tx: string };
-    outputs: ReviewOutput[];
+    outputs: TransactionReviewOutputType[];
     buttonRequestsCount: number;
     isRbfAction: boolean;
     reviewStep: number;
@@ -47,7 +49,12 @@ const Wrapper = styled.div`
     scroll-margin-top: 48px;
 `;
 
-const SectionHeading = ({ output, index }: { output: ReviewOutput; index: number }) => (
+type SectionHeadingProps = {
+    output: TransactionReviewOutputType;
+    index: number;
+};
+
+const SectionHeading = ({ output, index }: SectionHeadingProps) => (
     <H4 margin={{ top: index === 0 ? 0 : 8 }}>
         {output.type === 'address' ? (
             <Translation
@@ -78,9 +85,12 @@ export const TransactionReviewOutputList = ({
 }: TransactionReviewOutputListProps) => {
     const outputRefs = useRef<(HTMLDivElement | null)[]>([]);
     const totalOutputRef = useRef<HTMLDivElement | null>(null);
-    const accounts = useSelector(state => state.wallet.accounts);
+    const accounts = useSelector(selectAccounts);
+    const { getNamedAddressSupport } = useServices(injectGetNamedAddressSupport);
     const { networkType, symbol } = account;
-    const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
+    const namedAddress = getNamedAddressSupport(symbol);
+    const isMultirecipient =
+        outputs.filter(({ type }) => ['address', 'opreturn'].includes(type)).length > 1;
     const isFirstOutputAddress = outputs[0]?.type === 'address';
 
     const lastButtonRequestCode = useSelector((state: DeviceRootState) =>
@@ -102,7 +112,15 @@ export const TransactionReviewOutputList = ({
 
     const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);
 
-    const evmTxType = getEvmTransactionTextSignature(precomposedForm.transactionData);
+    // Resolved from the full context, not the calldata alone, so a WETH deposit()/withdraw() is
+    // classified as wrap/unwrap — the review rows for those mirror the device's clear-signing
+    // screens and need to know which of the two it is.
+    const evmTxType = getEvmTransactionPurpose({
+        networkSymbol: symbol,
+        to: precomposedTx.outputs.find(o => 'address' in o && typeof o.address === 'string')
+            ?.address,
+        data: precomposedForm.transactionData,
+    });
 
     const isYieldOperation = isEvmYieldTxByTextSignature(evmTxType) || evmTxType === 'claim';
 
@@ -144,12 +162,28 @@ export const TransactionReviewOutputList = ({
         !isYieldOperation &&
         !signedTx
     ) {
+        // If the user typed an ENS name, the form keeps the original input on `address`
+        // and the resolved hex on `resolvedAddress`. Surface both so the user can cross-
+        // check what they entered against what the device shows.
+        const firstFormOutput =
+            'outputs' in precomposedForm ? precomposedForm.outputs?.[0] : undefined;
+        const isEnsResolved =
+            !!firstFormOutput &&
+            !!firstFormOutput.address &&
+            !!firstFormOutput.resolvedAddress &&
+            firstFormOutput.address !== firstFormOutput.resolvedAddress &&
+            namedAddress.isNameLike(firstFormOutput.address);
+        const ensName = isEnsResolved ? firstFormOutput.address : undefined;
+        const ensResolvedAddress = isEnsResolved ? firstFormOutput.resolvedAddress : undefined;
+
         return (
             <TransactionReviewVerifyAddress
                 networkType={networkType}
                 deadline={deadline}
                 onTryAgain={onTryAgain}
                 isSending={isSending}
+                ensName={ensName}
+                resolvedAddress={ensResolvedAddress}
             />
         );
     }
@@ -160,7 +194,7 @@ export const TransactionReviewOutputList = ({
                 const isHeadingShown =
                     isMultirecipient && (output.type === 'address' || index === summaryIndex);
                 const recipientIndex = outputs
-                    .filter(({ type }) => type === 'address')
+                    .filter(({ type }) => ['address', 'opreturn'].includes(type))
                     .indexOf(output);
 
                 return (

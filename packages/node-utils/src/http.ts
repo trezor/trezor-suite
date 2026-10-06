@@ -2,8 +2,9 @@ import { sanitizeUrl } from '@braintree/sanitize-url';
 import * as http from 'http';
 import type * as net from 'net';
 
+import type { Log } from '@trezor/logger';
 import type { RequiredKey } from '@trezor/type-utils';
-import { type Log, TypedEmitter, arrayPartition } from '@trezor/utils';
+import { TypedEmitter, arrayPartition } from '@trezor/utils';
 
 import { findProcessFromIncomingPort } from './findProcessFromIncomingPort';
 import { formatRequestUrl, parseRequestUrl } from './parseRequestUrl';
@@ -586,7 +587,7 @@ const checkReferer = ({
 }) => {
     const { referer } = request.headers;
     const referers = allowedReferer ?? [];
-    let isRefererAllowed = false;
+    let isRefererAllowed: boolean;
     // Allow all origins
     if (referers.includes('*')) {
         isRefererAllowed = true;

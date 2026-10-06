@@ -1,6 +1,8 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceAuthenticityCheckSupported } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -19,7 +21,7 @@ export const ToggleDeviceAuthenticityCheckCard = () => {
     );
     const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const navigateTo = useSettingsNavigateTo();
     const openLink = useOpenLink();
 

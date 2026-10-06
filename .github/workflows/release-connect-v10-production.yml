@@ -16,6 +16,9 @@ on:
           - canary
           - stable
 
+env:
+  CONNECT_CLOUDFRONT_DISTRIBUTION_ID: E3LVNAOGT94E37
+
 jobs:
   extract-version:
     runs-on: ubuntu-latest
@@ -23,25 +26,27 @@ jobs:
       version: ${{ steps.set-version.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           # Number of commits to fetch. 0 indicates all history for all branches and tags.
           fetch-depth: 0
 
       - name: Setup node
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
 
       - name: Extract connect version
         id: set-version
-        run: echo "version=$(node ./scripts/ci/get-connect-version.js)" >> $GITHUB_OUTPUT
+        run: |
+          VERSION="$(node ./scripts/ci/get-connect-version.js)"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
   check-version-match:
     runs-on: ubuntu-latest
     needs: [extract-version]
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
       - name: Check connect version match
         uses: ./.github/actions/check-connect-version-match
@@ -52,7 +57,8 @@ jobs:
   # set the rollback
   sync-rollback-connect-v10:
     needs: [extract-version, check-version-match]
-    if: startsWith(github.ref, 'refs/heads/release/connect/')
+    # Only stable deploys move the /10 alias, so only they should refresh the /10 rollback snapshot.
+    if: startsWith(github.ref, 'refs/heads/release/connect/') && github.event.inputs.deploymentType == 'stable'
     environment: production-connect
     name: "Backing up current production version ${{ needs.extract-version.outputs.version }} to rollback bucket"
     runs-on: ubuntu-latest
@@ -60,14 +66,14 @@ jobs:
       LATEST_VERSION: 10
     steps:
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_connect_prod_deploy
           aws-region: eu-central-1
 
       - name: Synching rollback bucket with current production
         run: |
-          aws s3 sync "s3://connect.trezor.io/${{ env.LATEST_VERSION }}/" "s3://rollback-connect.trezor.io/${{ env.LATEST_VERSION }}/"
+          aws s3 sync --delete "s3://connect.trezor.io/${{ env.LATEST_VERSION }}/" "s3://rollback-connect.trezor.io/${{ env.LATEST_VERSION }}/"
 
   deploy-production-semantic-version:
     needs: [extract-version, check-version-match]
@@ -79,7 +85,7 @@ jobs:
       CURRENT_VERSION: ${{ needs.extract-version.outputs.version }}
     steps:
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_connect_prod_deploy
           aws-region: eu-central-1
@@ -87,7 +93,7 @@ jobs:
       - name: Synching production bucket with current staging
         run: |
           aws s3 sync --delete --cache-control 'public, max-age=3600' "s3://staging-connect.trezor.io/${{ env.CURRENT_VERSION }}/" "s3://connect.trezor.io/${{ env.CURRENT_VERSION }}/"
-          aws cloudfront create-invalidation --distribution-id E3LVNAOGT94E37 --paths '/*'
+          aws cloudfront create-invalidation --distribution-id ${{ env.CONNECT_CLOUDFRONT_DISTRIBUTION_ID }} --paths '/*'
 
   # From staging move it to production
   deploy-production-v10:
@@ -101,7 +107,7 @@ jobs:
       LATEST_VERSION: 10
     steps:
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_connect_prod_deploy
           aws-region: eu-central-1
@@ -109,4 +115,4 @@ jobs:
       - name: Synching production bucket with current staging
         run: |
           aws s3 sync --delete --cache-control 'public, max-age=3600' "s3://staging-connect.trezor.io/${{ env.LATEST_VERSION }}/" "s3://connect.trezor.io/${{ env.LATEST_VERSION }}/"
-          aws cloudfront create-invalidation --distribution-id E3LVNAOGT94E37 --paths '/*'
+          aws cloudfront create-invalidation --distribution-id ${{ env.CONNECT_CLOUDFRONT_DISTRIBUTION_ID }} --paths '/*'

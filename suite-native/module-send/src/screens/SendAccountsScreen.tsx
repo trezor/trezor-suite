@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -15,19 +15,24 @@ import {
 } from '@suite-native/navigation';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
-    RootStackParamList,
-    RootStackRoutes.AccountAssets,
-    SendStackParamList
+    SendStackParamList,
+    SendStackRoutes.SendAccounts,
+    RootStackParamList
 >;
 
 export const SendAccountsScreen = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const navigation = useNavigation<NavigationProps>();
 
     const handleSelectAccount: OnSelectAccount = ({ account, hasAnyKnownTokens }) => {
+        analytics.report({
+            type: events.sendOptionsScreenEvent.name,
+            payload: { option: 'account' },
+        });
+
         if (hasAnyKnownTokens) {
-            navigation.navigate(RootStackRoutes.AccountAssets, {
+            navigation.navigate(RootStackRoutes.AccountOverview, {
                 accountKey: account.key,
                 flowType: 'send',
             });
@@ -35,26 +40,26 @@ export const SendAccountsScreen = () => {
             return;
         }
 
-        analytics.report({
-            type: events.sendFlowEnteredEvent.name,
-            payload: {
-                location: 'dashboard',
-                assetSymbol: account.symbol,
-            },
-        });
-
         navigation.navigate(SendStackRoutes.SendOutputs, {
             accountKey: account.key,
         });
     };
 
+    const handleClose = () => {
+        analytics.report({
+            type: events.sendOptionsScreenEvent.name,
+            payload: { option: 'close' },
+        });
+        navigateToInitialScreen();
+    };
+
     return (
-        <Screen>
+        <Screen isScrollable={false}>
             <AccountsListWithFilter
                 title={<Translation id="moduleSend.accountsList.title" />}
                 onSelectAccount={handleSelectAccount}
                 closeActionType="close"
-                closeAction={navigateToInitialScreen}
+                closeAction={handleClose}
                 isSendFlow
             />
         </Screen>

@@ -10,9 +10,10 @@ import { renderWithSlippageTestProvider } from '../test-utils/testUtils';
 
 const mockShowSheet = jest.fn();
 const mockHideSheet = jest.fn();
+const mockOnSlippageConfirmed = jest.fn();
 
-jest.mock('@suite-native/trading-atoms', () => ({
-    ...jest.requireActual('@suite-native/trading-atoms'),
+jest.mock('@suite-native/atoms', () => ({
+    ...jest.requireActual('@suite-native/atoms'),
     useBottomSheetControls: () => ({
         isSheetVisible: false,
         showSheet: mockShowSheet,
@@ -26,7 +27,13 @@ describe('SlippagePicker', () => {
     });
 
     const renderSlippagePicker = async (quote: ExchangeTrade = mercuryoDexQuote) => {
-        const result = renderWithSlippageTestProvider(<SlippagePicker />, { quote });
+        const result = await renderWithSlippageTestProvider(
+            <SlippagePicker
+                receiveAmount={mercuryoDexQuote.receiveStringAmount!}
+                onSlippageConfirmed={mockOnSlippageConfirmed}
+            />,
+            { quote },
+        );
 
         await act(async () => {});
 

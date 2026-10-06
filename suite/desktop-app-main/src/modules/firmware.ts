@@ -1,0 +1,115 @@
+import { FirmwareType } from '@trezor/connect';
+import {
+    buildLocalFirmwareFileName,
+    buildLocalReleaseName,
+} from '@trezor/connect-core/src/utils/firmwareUtils';
+
+import type { ModuleInit } from './module';
+import type { ILogger } from '../libs/logger';
+import { readDir, save } from '../libs/user-data';
+import { app } from '../typed-electron';
+
+export const SERVICE_NAME = '@trezor/firmware';
+
+const FIRMWARE_DIR = '/firmware';
+
+export const getStoredFirmwares = async (logger: ILogger) => {
+    const userDataDir = app?.getPath('userData');
+    const resp = await readDir({ directory: FIRMWARE_DIR, logger });
+    if (!resp.success) {
+        return { success: false, error: resp.error };
+    }
+    const { payload } = resp;
+
+    return {
+        success: true,
+        payload: {
+            firmwareDir: `${userDataDir}${FIRMWARE_DIR}/`,
+            firmwareList: payload,
+        },
+    };
+};
+
+export const init: ModuleInit = ({ mainThreadEmitter, logger }) => {
+    mainThreadEmitter.on('module/trezor-connect/firmware-store', async event => {
+        const {
+            binary,
+            binaryVersion,
+            internalModel,
+            firmwareType = FirmwareType.Universal,
+            release,
+        } = event;
+
+        const firmwareBinName = buildLocalFirmwareFileName(
+            firmwareType,
+            internalModel,
+            binaryVersion,
+        );
+
+        const { success, error, payload } = await getStoredFirmwares(logger);
+        if (!success || !payload) {
+            logger.error(SERVICE_NAME, `Failed to read firmware directory: ${error}`);
+
+            return;
+        }
+
+        const { firmwareList } = payload;
+
+        if (!firmwareList.includes(firmwareBinName)) {
+            logger.info(
+                SERVICE_NAME,
+                `Saving new downloaded firmware: ${firmwareBinName} to ${FIRMWARE_DIR}`,
+            );
+
+            const saveFwResponse = await save({
+                directory: FIRMWARE_DIR,
+                name: firmwareBinName,
+                content: binary,
+                encoding: 'binary',
+                logger,
+            });
+            if (!saveFwResponse.success) {
+                logger.error(SERVICE_NAME, `Failed to save firmware: ${saveFwResponse.error}`);
+
+                return;
+            }
+
+            if (release) {
+                const releaseJsonName = buildLocalReleaseName(
+                    firmwareType,
+                    internalModel,
+                    binaryVersion,
+                );
+
+                logger.info(
+                    SERVICE_NAME,
+                    `Saving firmware release notes: ${releaseJsonName} to ${FIRMWARE_DIR}`,
+                );
+
+                const releaseData = JSON.stringify(release, null, 4);
+
+                const saveReleaseResponse = await save({
+                    directory: FIRMWARE_DIR,
+                    name: releaseJsonName,
+                    content: releaseData,
+                    encoding: 'utf-8',
+                    logger,
+                });
+                if (!saveReleaseResponse.success) {
+                    logger.error(
+                        SERVICE_NAME,
+                        `Failed to save firmware release notes: ${saveReleaseResponse.error}`,
+                    );
+                }
+            }
+
+            // Emit updated firmware list only if the firmware was saved successfully.
+            const updatedFirmwares = await getStoredFirmwares(logger);
+            if (updatedFirmwares.payload) {
+                mainThreadEmitter.emit('module/firmware/list', updatedFirmwares.payload);
+            }
+        } else {
+            logger.info(SERVICE_NAME, `Firmware ${firmwareBinName} already exists, skipping save.`);
+        }
+    });
+};

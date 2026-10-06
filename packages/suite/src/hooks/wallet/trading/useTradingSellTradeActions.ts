@@ -1,17 +1,20 @@
 import type { BankAccount } from 'invity-api';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { type TranslationKey, useTranslation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingSignAndPushSendFormTransactionProps,
     isSendRejectedError,
+    isSilentSendRejection,
     selectTradingComposedTransactionInfo,
-    selectTradingIsSlip24Allowed,
+    selectTradingIsSlip24SellAllowed,
     selectTradingSellActiveTrade,
     selectTradingSellInfo,
     selectTradingSellQuotesRequest,
@@ -22,16 +25,19 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { requestSellTradeThunk } from 'src/actions/wallet/trading/sell/requestSellTradeThunk';
-import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { submitRequestFormThunk } from 'src/actions/wallet/trading/tradingCommonActions';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormAccount } from 'src/hooks/wallet/trading/form/useTradingFormAccount';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { buildSellReturnUrl } from 'src/utils/wallet/trading/buildSellReturnUrl';
 
 export const useTradingSellTradeActions = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { desktopApi, analytics, dispatch } = useServices(
+        injectDesktopApi,
+        injectDesktopAnalytics,
+        injectDispatch,
+    );
     const { translationString } = useTranslation();
 
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
@@ -58,7 +64,7 @@ export const useTradingSellTradeActions = () => {
     const isSlip24ExperimentalFeatureEnabled = useSelector(selectHasExperimentalFeature('slip24'));
     const isSlip24Active = useSelector(state =>
         account
-            ? selectTradingIsSlip24Allowed(
+            ? selectTradingIsSlip24SellAllowed(
                   state,
                   account,
                   isSlip24FeatureEnabled && isSlip24ExperimentalFeatureEnabled,
@@ -71,6 +77,7 @@ export const useTradingSellTradeActions = () => {
 
         const quote = { ...selectedQuote, bankAccount };
         const returnUrl = await buildSellReturnUrl({
+            desktopApi,
             quote,
             account,
             sellInfo,
@@ -94,7 +101,7 @@ export const useTradingSellTradeActions = () => {
                 returnUrl,
                 triggerAnalyticsTradeConfirmation,
                 processResponseData: response => {
-                    dispatch(submitRequestForm(response.tradeForm?.form));
+                    dispatch(submitRequestFormThunk(response.tradeForm?.form));
                 },
             }),
         );
@@ -110,7 +117,7 @@ export const useTradingSellTradeActions = () => {
         if (!account) return false;
 
         const nextStep = () => {
-            dispatch(goto({ routeName: 'wallet-trading-sell-detail' }));
+            dispatch(gotoThunk({ routeName: 'wallet-trading-sell-detail' }));
         };
 
         const signAndPushSendFormTransaction = async ({
@@ -135,7 +142,6 @@ export const useTradingSellTradeActions = () => {
                     trade: trade?.data,
                     shouldSendInSats,
                     decimals,
-                    // TODO: slip24 - exclude from debug mode
                     isSlip24Active,
                     nextStep,
                     signAndPushSendFormTransaction,
@@ -148,7 +154,7 @@ export const useTradingSellTradeActions = () => {
                 return false;
             }
 
-            if (e.type !== 'sign-transaction-timeout') {
+            if (!isSilentSendRejection(e.type)) {
                 dispatch(
                     notificationsActions.addToast({
                         type: e.type,
@@ -168,5 +174,3 @@ export const useTradingSellTradeActions = () => {
         sendTransaction,
     };
 };
-
-export type TradingSellTradeActionsValues = ReturnType<typeof useTradingSellTradeActions>;

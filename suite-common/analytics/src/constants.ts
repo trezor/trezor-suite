@@ -1,4 +1,6 @@
 export enum EventType {
+    CoinSignMessage = 'coin/sign-message',
+    CoinVerifyMessage = 'coin/verify-message',
     // eslint-disable-next-line local-rules/analytics-event-name
     ConnectPopupCall = 'connect-popup/call',
     // eslint-disable-next-line local-rules/analytics-event-name
@@ -34,11 +36,15 @@ export enum EventType {
     OnboardingFeedbackBannerClicked = 'onboarding/feedback-banner',
     OnboardingRecoveryWarningCreateNewWallet = 'onboarding/recovery-warning/create-new-wallet',
     PromoNoDeviceEshopCta = 'promo/no-device-eshop-cta',
+    PromoDashboardBanner = 'promo/dashboard-banner',
     GuideSupportChatOpened = 'guide/support-chat-opened',
+    ReceiveEntryInteraction = 'receive/entry-interaction',
     YieldEarnDashboardReady = 'yield/earn-dashboard-ready',
     YieldInteraction = 'yield/interaction',
     YieldNavigate = 'yield/navigate',
     YieldDeposit = 'yield/deposit',
     YieldWithdraw = 'yield/withdraw',
     YieldClaim = 'yield/claim',
+    YieldWrap = 'yield/wrap',
+    YieldUnwrap = 'yield/unwrap',
 }

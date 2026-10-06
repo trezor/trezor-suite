@@ -1,4 +1,4 @@
-import { type Run, testCreateWebSocket } from '@evolu/common';
+import { type Run, createOwnerWebSocketTransport, testCreateWebSocket } from '@evolu/common';
 import type { EvoluPlatformDeps } from '@evolu/common/local-first';
 
 import {
@@ -10,6 +10,7 @@ import {
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-sync-storage';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { asWalletDescriptor } from '@trezor/device-utils';
 import { createDeferred } from '@trezor/utils';
@@ -17,6 +18,8 @@ import { createDeferred } from '@trezor/utils';
 import { createEvoluInstanceFactory } from './createEvoluInstance';
 import { createEvoluStorageFactory } from './evoluStorage';
 import { testCreateRunWithEvoluDeps } from '../mocks/testCreateRunWithEvoluDeps';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const suiteSyncOwner: SuiteSyncOwner = {
     ownerId: asSuiteSyncOwnerId('yg0UgROParTpm60ltI3hDw'),
@@ -26,12 +29,56 @@ const suiteSyncOwner: SuiteSyncOwner = {
 };
 
 const createTestStorage = async (run: Run<EvoluPlatformDeps>) => {
-    const createEvoluInstance = createEvoluInstanceFactory({ run });
+    const evoluInstanceFactory = createEvoluInstanceFactory({ run });
 
-    return await createEvoluStorageFactory({ createEvoluInstance })({ suiteSyncOwner });
+    return await createEvoluStorageFactory({
+        evoluInstanceFactory,
+        createOwnerWebSocketTransport,
+    })({ suiteSyncOwner });
 };
 
 describe(createEvoluStorageFactory.name, () => {
+    it('forces a new sync round using the current relay', async () => {
+        const createWebSocket = testCreateWebSocket();
+        const firstSync = createDeferred<void>();
+        const nextSync = createDeferred<void>();
+        await using run = await testCreateRunWithEvoluDeps({
+            createWebSocket: (url, options) => async taskRun => {
+                const result = await createWebSocket(url, options)(taskRun);
+                if (!result.ok) return result;
+
+                return {
+                    ...result,
+                    value: {
+                        ...result.value,
+                        send: data => {
+                            const sent = result.value.send(data);
+                            // Every subscription change is one message to the relay: [0] the
+                            // first sync request, [1] the unsubscribe forceResync sends when it
+                            // drops that subscription, [2] the resync's own sync request, [3]
+                            // the unsubscribe from dispose. Counting them is how the test waits
+                            // for [0] and [2], the two requests it compares below.
+                            if (createWebSocket.sentMessages.length === 1) firstSync.resolve();
+                            if (createWebSocket.sentMessages.length === 3) nextSync.resolve();
+
+                            return sent;
+                        },
+                    },
+                };
+            },
+        });
+        const storage = await createTestStorage(run);
+
+        await storage.updateRelayUrl('ws://relay.example.com');
+        await firstSync.promise;
+        await storage.forceResync();
+        await nextSync.promise;
+
+        // Unsubscribing and subscribing again must send a fresh sync request to the same relay.
+        expect(createWebSocket.sentMessages[2]).toEqual(createWebSocket.sentMessages[0]);
+        await storage.dispose();
+    });
+
     it('stores wallet data and notifies subscribers', async () => {
         await using run = await testCreateRunWithEvoluDeps({
             createWebSocket: testCreateWebSocket({ throwOnCreate: true }),
@@ -82,7 +129,7 @@ describe(createEvoluStorageFactory.name, () => {
 
         const updateResult = storage.data.accounts.update({
             accountDescriptor: asAccountDescriptor('xpub123'),
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
             label: 'My Bitcoin Account',
         });
         expect(updateResult.success).toBe(true);
@@ -125,7 +172,7 @@ describe(createEvoluStorageFactory.name, () => {
             address: 'bc1test123',
             label: 'My Receive Address',
             accountDescriptor: asAccountDescriptor('xpub123'),
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
         });
         expect(updateResult.success).toBe(true);
 
@@ -169,7 +216,7 @@ describe(createEvoluStorageFactory.name, () => {
             txTargetId: '0',
             label: 'Payment to Alice',
             accountDescriptor: asAccountDescriptor('xpub123'),
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
         });
         expect(updateResult.success).toBe(true);
 

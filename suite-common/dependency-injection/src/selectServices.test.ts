@@ -10,17 +10,17 @@ type SelectedServices = {
     b: typeof services.b;
 };
 
-const selectADep = (currentServices: any) => ({
+const injectA = (currentServices: any) => ({
     a: currentServices.a,
 });
 
-const selectBDep = (currentServices: any) => ({
+const injectB = (currentServices: any) => ({
     b: currentServices.b,
 });
 
 describe(selectServices.name, () => {
     it('selects and merges a subset of nested services', () => {
-        const selectedServices: SelectedServices = selectServices(services, selectADep, selectBDep);
+        const selectedServices: SelectedServices = selectServices(services, injectA, injectB);
 
         expect(selectedServices.a).toBe(services.a);
         expect(selectedServices.b).toBe(services.b);

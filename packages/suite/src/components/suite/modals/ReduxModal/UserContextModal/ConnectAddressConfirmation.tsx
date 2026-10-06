@@ -8,7 +8,9 @@ import {
     getPermissionDeferred,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Badge, Button, Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -18,12 +20,12 @@ import { ConfirmOnDevicePill, mapTrezorModelToIcon } from '@trezor/product-compo
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const ConnectAddressConfirmation = () => {
     const { device } = useDevice();
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const popupCall = useSelector(selectConnectPopupCall);
     const onVerify = (index: number) => {
         dispatch(connectPopupVerifyAddressThunk({ index }));

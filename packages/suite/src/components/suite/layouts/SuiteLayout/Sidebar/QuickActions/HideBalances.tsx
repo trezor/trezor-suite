@@ -1,4 +1,4 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
@@ -7,7 +7,7 @@ import { EyeIcon, EyeSlashIcon } from '@trezor/icons';
 import { QuickActionButton } from '@trezor/product-components';
 
 export const HideBalances = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const { translationString } = useTranslation();
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
     const translationLabel = isDiscreetMode ? 'TR_SHOW_BALANCES' : 'TR_HIDE_BALANCES';

@@ -1,12 +1,15 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { getFirstFreshAddress, getFreshAddresses } from './getFirstFreshAddress';
 
+const testSymbol = asNetworkSymbol('test');
+
 describe(getFirstFreshAddress.name, () => {
     it('returns all unrevealed unused addresses for utxo-based accounts in order', () => {
         const account = mockWalletAccount({
-            symbol: 'test',
+            symbol: testSymbol,
             path: "m/84'/1'/0'",
             descriptor: asAccountDescriptor('descriptorTest'),
             history: { total: 13, tokens: 0, unconfirmed: 0 },
@@ -68,7 +71,7 @@ describe(getFirstFreshAddress.name, () => {
 
     it('returns the first unrevealed unused address for utxo-based accounts', () => {
         const account = mockWalletAccount({
-            symbol: 'test',
+            symbol: testSymbol,
             path: "m/84'/1'/0'",
             descriptor: asAccountDescriptor('descriptorTest'),
             history: { total: 13, tokens: 0, unconfirmed: 0 },
@@ -120,7 +123,7 @@ describe(getFirstFreshAddress.name, () => {
 
     it('returns the next address after a labeled unused address', () => {
         const account = mockWalletAccount({
-            symbol: 'test',
+            symbol: testSymbol,
             path: "m/84'/1'/0'",
             descriptor: asAccountDescriptor('descriptorTest'),
             history: { total: 13, tokens: 0, unconfirmed: 0 },
@@ -180,7 +183,7 @@ describe(getFirstFreshAddress.name, () => {
 
     it('returns the descriptor-based receive address for non-utxo accounts', () => {
         const account = mockWalletAccount({
-            symbol: 'xrp',
+            symbol: asNetworkSymbol('xrp'),
             path: "m/44'/144'/0'/0/0",
             descriptor: asAccountDescriptor('rXrpDescriptor'),
             history: { total: 7, tokens: 0, unconfirmed: 0 },
@@ -199,7 +202,7 @@ describe(getFirstFreshAddress.name, () => {
 
     it('returns the descriptor-based receive address for non-utxo accounts with empty addresses', () => {
         const account = mockWalletAccount({
-            symbol: 'trx',
+            symbol: asNetworkSymbol('trx'),
             path: "m/44'/195'/0'/0/0",
             descriptor: asAccountDescriptor('tTrxDescriptor'),
             history: { total: 3, tokens: 0, unconfirmed: 0 },
@@ -222,7 +225,7 @@ describe(getFirstFreshAddress.name, () => {
 
     it('returns undefined when all unused utxo addresses are already revealed or pending', () => {
         const account = mockWalletAccount({
-            symbol: 'test',
+            symbol: testSymbol,
             path: "m/84'/1'/0'",
             descriptor: asAccountDescriptor('descriptorTest'),
             history: { total: 13, tokens: 0, unconfirmed: 0 },

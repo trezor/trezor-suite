@@ -24,7 +24,7 @@ type TradingReceiveAccountSuiteOptionProps = {
 export const TradingReceiveAccountSuiteOption = ({
     account,
 }: TradingReceiveAccountSuiteOptionProps) => {
-    const { tradingReceiveAddress, extraFieldDescription } = useTradingReceiveAddressValues();
+    const { tradingReceiveAddress } = useTradingReceiveAddressValues();
     const modalControls = useReceiveAddressModalControls();
 
     const baseCurrency = useSelector(selectBaseCurrency);
@@ -37,7 +37,6 @@ export const TradingReceiveAccountSuiteOption = ({
     });
 
     const isUtxoBasedNetwork = isUtxoBased(account);
-    const requiresExtraField = !!extraFieldDescription;
 
     const { address } = getUnusedAddressFromAccount(account);
 
@@ -50,15 +49,11 @@ export const TradingReceiveAccountSuiteOption = ({
         if (isUtxoBasedNetwork) {
             modalControls.open('utxoAddressModal');
         }
-
-        if (requiresExtraField) {
-            modalControls.open('extraFieldModal');
-        }
     };
 
     return (
         <TradingReceiveOptionRow
-            data-testid="@trading/receive-account-modal/option/suite"
+            data-testid={`@trading/receive-account-modal/option/suite/${account.accountType}/${account.symbol}/${account.index}`}
             isDisabled={isDiscoveryRunning}
             onClick={onOptionClick}
         >
@@ -103,7 +98,7 @@ export const TradingReceiveAccountSuiteOption = ({
                     </Text>
                 </Column>
 
-                {(isUtxoBasedNetwork || requiresExtraField) && (
+                {isUtxoBasedNetwork && (
                     <Icon as={CaretRightIcon} size={20} intent="neutral" priority="secondary" />
                 )}
             </Row>

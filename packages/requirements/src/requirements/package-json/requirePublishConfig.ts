@@ -1,5 +1,4 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { type PackageJson, readPackageJson } from '@trezor/node-utils';
 
 import type { Requirement } from '../Requirement';
 
@@ -14,18 +13,16 @@ interface ExportValueMap {
     [key: string]: ExportValue;
 }
 
-type PackageJson = {
-    readonly name?: string;
+type PublishConfig = {
     readonly main?: string;
+    readonly types?: string;
     readonly type?: string;
-    readonly files?: ReadonlyArray<string>;
-    readonly publishConfig?: {
-        readonly main?: string;
-        readonly types?: string;
-        readonly type?: string;
-        readonly exports?: ExportValueMap;
-    };
+    readonly exports?: ExportValueMap;
 };
+
+// The shared PackageJson intentionally doesn't model `publishConfig`; extend it
+// with the publish-specific shape this requirement validates.
+type PublishablePackageJson = PackageJson & { readonly publishConfig?: PublishConfig };
 
 const getExpectedExport = (exportKey: string): ExportValue | null => {
     if (exportKey === '.') {
@@ -51,7 +48,7 @@ const getExpectedExport = (exportKey: string): ExportValue | null => {
     return `${basePath}*`;
 };
 
-const validatePublicPackage = (packageJson: PackageJson): ReadonlyArray<string> => {
+const validatePublicPackage = (packageJson: PublishablePackageJson): ReadonlyArray<string> => {
     const errors: string[] = [];
     const { publishConfig } = packageJson;
 
@@ -123,7 +120,7 @@ const validateKeyOrder = (obj: ExportValue, context: string): ReadonlyArray<stri
 };
 
 const validateExports = (
-    exportsConfig: NonNullable<PackageJson['publishConfig']>['exports'],
+    exportsConfig: NonNullable<PublishablePackageJson['publishConfig']>['exports'],
 ): ReadonlyArray<string> => {
     const errors: string[] = [];
     if (!exportsConfig) {
@@ -165,11 +162,9 @@ export const requirePublishConfig: Requirement<'workspace'> = {
     name: 'package-json-publishConfig',
     scope: 'workspace',
     applies: context => {
-        const packageJsonPath = join(context.workspaceDir, PACKAGE_JSON_FILE);
-
-        let parsed: PackageJson;
+        let parsed: PublishablePackageJson;
         try {
-            parsed = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as PackageJson;
+            parsed = readPackageJson<PublishablePackageJson>(context.workspaceDir);
         } catch {
             return false;
         }
@@ -177,11 +172,9 @@ export const requirePublishConfig: Requirement<'workspace'> = {
         return parsed.publishConfig !== undefined;
     },
     verify: context => {
-        const packageJsonPath = join(context.workspaceDir, PACKAGE_JSON_FILE);
-
-        let parsed: PackageJson;
+        let parsed: PublishablePackageJson;
         try {
-            parsed = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as PackageJson;
+            parsed = readPackageJson<PublishablePackageJson>(context.workspaceDir);
         } catch {
             return Promise.resolve([
                 `${context.workspaceName}: ${PACKAGE_JSON_FILE} is missing or contains invalid JSON`,

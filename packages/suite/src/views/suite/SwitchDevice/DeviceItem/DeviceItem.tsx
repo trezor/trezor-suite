@@ -1,9 +1,11 @@
 import { type ReactNode, useEffect, useState } from 'react';
 
-import { setFlag } from '@suite/flags';
+import { selectHasSeenDisconnectTooltip, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { SettingsAnchor, goto } from '@suite/router';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
@@ -23,7 +25,8 @@ import {
     addDeviceIdToSeenDisconnectNotification,
     setRecentlyDisconnectedDevice,
 } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectRecentlyDisconnectedDevice } from 'src/selectors/suite/suiteSelectors';
 import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 import { CardWithDevice } from '../CardWithDevice';
@@ -36,7 +39,9 @@ type DeviceItemProps = {
     onCancel?: ForegroundAppProps['onCancel'];
 };
 
-const ListItem = ({ children, icon }: { children: ReactNode; icon: IconComponent }) => (
+type ListItemProps = { children: ReactNode; icon: IconComponent };
+
+const ListItem = ({ children, icon }: ListItemProps) => (
     <List.Item bulletComponent={<Icon as={icon} intent="neutral" priority="secondary" size={20} />}>
         <Paragraph
             typographyStyle="body-md"
@@ -50,11 +55,11 @@ const ListItem = ({ children, icon }: { children: ReactNode; icon: IconComponent
 );
 
 export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const selectedDevice = useSelector(selectSelectedDevice);
     const deviceId = selectedDevice?.id;
-    const recentlyDisconnectedDevice = useSelector(state => state.suite.recentlyDisconnectedDevice);
-    const hasSeenDisconnectTooltip = useSelector(state => state.flags.hasSeenDisconnectTooltip);
+    const recentlyDisconnectedDevice = useSelector(selectRecentlyDisconnectedDevice);
+    const hasSeenDisconnectTooltip = useSelector(selectHasSeenDisconnectTooltip);
     const [showTooltip, setShowTooltip] = useState(false);
     const deviceModelInternal = device.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
     const instancesWithState = instances.filter(i => i.state);
@@ -140,7 +145,7 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                                 onClick={() => {
                                                     onTooltipClose();
                                                     dispatch(
-                                                        goto({
+                                                        gotoThunk({
                                                             routeName: 'settings-index',
                                                             anchor: SettingsAnchor.AutoEject,
                                                         }),

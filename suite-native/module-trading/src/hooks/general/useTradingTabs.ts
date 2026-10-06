@@ -1,11 +1,13 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { selectActiveTradingType, tradingActions } from '@suite-native/trading-state';
 
 export const useTradingTabs = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const activeTab = useSelector(selectActiveTradingType);
 
     const setActiveTab = useCallback(

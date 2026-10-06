@@ -1,9 +1,14 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createSliceWithExtraDeps,
+} from '@suite-common/redux-utils';
 import { DEVICE } from '@trezor/connect';
+import { typedObjectFromEntries } from '@trezor/utils';
 
-import { type NewContentIndicatorId } from './flagsConstants';
+import { NewContentIndicatorId } from './flagsConstants';
 
 export type FlagsState = {
     initialRun: boolean;
@@ -15,10 +20,13 @@ export type FlagsState = {
     dashboardAssetsGridMode: boolean;
     showTEXDashboardPromoBanner: boolean;
     showTS7DashboardPromoBanner: boolean;
-    showStablecoinYieldDashboardPromoBanner: boolean;
+    showDefiYieldDashboardPromoBanner: boolean;
+    showETHVaultDashboardPromoBanner: boolean;
+    showTradingExperienceDashboardPromoBanner: boolean;
     showOnboardingFeedbackBanner: boolean;
     showSettingsDesktopAppPromoBanner: boolean;
     activateAssetsBannerClosed: boolean;
+    addAccountNetworksBannerClosed: boolean;
     stakeEthBannerClosed: boolean;
     earnEthBannerClosed: boolean;
     stakeSolBannerClosed: boolean;
@@ -44,6 +52,8 @@ export type BooleanFlagKey = {
     [Key in keyof FlagsState]: FlagsState[Key] extends boolean ? Key : never;
 }[keyof FlagsState];
 
+export type FlagsSliceDeps = ActionTypesDep<'storageLoad'> & ReducersDep<'storageLoadFlags'>;
+
 export const flagsInitialState: FlagsState = {
     initialRun: true,
     discreetModeCompleted: false,
@@ -54,10 +64,13 @@ export const flagsInitialState: FlagsState = {
     dashboardAssetsGridMode: true,
     showTEXDashboardPromoBanner: true,
     showTS7DashboardPromoBanner: true,
-    showStablecoinYieldDashboardPromoBanner: true,
+    showDefiYieldDashboardPromoBanner: true,
+    showETHVaultDashboardPromoBanner: true,
+    showTradingExperienceDashboardPromoBanner: true,
     showOnboardingFeedbackBanner: false,
     showSettingsDesktopAppPromoBanner: true,
     activateAssetsBannerClosed: false,
+    addAccountNetworksBannerClosed: false,
     stakeEthBannerClosed: false,
     earnEthBannerClosed: false,
     stakeSolBannerClosed: false,
@@ -74,7 +87,11 @@ export const flagsInitialState: FlagsState = {
     hasSeenDisconnectTooltip: false,
     showNoDeviceEshopSidebarBanner: true,
     areNoDeviceEshopBannersDisabled: false,
-    seenNewContentIndicators: {},
+    // In a fresh Suite, all content is new, so we don't need to distinguish individual features as "new" → mark all as seen.
+    // See the unit test, which specifies this behavior.
+    seenNewContentIndicators: typedObjectFromEntries(
+        Object.values(NewContentIndicatorId).map(indicatorId => [indicatorId, true] as const),
+    ),
 };
 
 const flagsSlice = createSliceWithExtraDeps({
@@ -104,7 +121,7 @@ const flagsSlice = createSliceWithExtraDeps({
             }
         },
     },
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: FlagsSliceDeps) => {
         builder
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFlags)
             .addCase(DEVICE.CONNECT, state => {
@@ -127,14 +144,20 @@ export const selectIsTEXDashboardPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showTEXDashboardPromoBanner;
 export const selectIsTS7DashboardPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showTS7DashboardPromoBanner;
-export const selectIsStablecoinYieldDashboardPromoBannerShown = (state: FlagsRootState) =>
-    state.flags.showStablecoinYieldDashboardPromoBanner;
+export const selectIsDefiYieldDashboardPromoBannerShown = (state: FlagsRootState) =>
+    state.flags.showDefiYieldDashboardPromoBanner;
+export const selectIsETHVaultDashboardPromoBannerShown = (state: FlagsRootState) =>
+    state.flags.showETHVaultDashboardPromoBanner;
+export const selectIsTradingExperienceDashboardPromoBannerShown = (state: FlagsRootState) =>
+    state.flags.showTradingExperienceDashboardPromoBanner;
 export const selectIsOnboardingFeedbackBannerShown = (state: FlagsRootState) =>
     state.flags.showOnboardingFeedbackBanner;
 export const selectIsSettingsDesktopAppPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showSettingsDesktopAppPromoBanner;
 export const selectIsActivateAssetsBannerClosed = (state: FlagsRootState) =>
     state.flags.activateAssetsBannerClosed;
+export const selectIsAddAccountNetworksBannerClosed = (state: FlagsRootState) =>
+    state.flags.addAccountNetworksBannerClosed;
 export const selectIsUnhideTokenModalShown = (state: FlagsRootState) =>
     state.flags.showUnhideTokenModal;
 export const selectIsCopyAddressModalShown = (state: FlagsRootState) =>
@@ -143,6 +166,8 @@ export const selectIsNoDeviceEshopSidebarBannerShown = (state: FlagsRootState) =
     state.flags.showNoDeviceEshopSidebarBanner;
 export const selectAreNoDeviceEshopBannersDisabled = (state: FlagsRootState) =>
     state.flags.areNoDeviceEshopBannersDisabled;
+export const selectHasSeenDisconnectTooltip = (state: FlagsRootState) =>
+    state.flags.hasSeenDisconnectTooltip;
 export const selectIsNewContentIndicatorVisible =
     (indicatorId: NewContentIndicatorId) => (state: FlagsRootState) =>
         state.flags.seenNewContentIndicators[indicatorId] !== true;

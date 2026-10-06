@@ -7,9 +7,11 @@ import {
     request,
     requestMultiple,
 } from 'react-native-permissions';
-import { useDispatch } from 'react-redux';
 
 import Constants from 'expo-constants';
+
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { updatePermissionStatus } from '../bluetoothSlice';
 import { type BluetoothPermissionStatus } from '../types';
@@ -41,7 +43,7 @@ const queryAndroidPermission = async (
 };
 
 export const useBluetoothPermissions = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const queryBluetoothPermission = useCallback(
         async (permissionMethod: PermissionMethod) => {

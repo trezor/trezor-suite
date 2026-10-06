@@ -10,9 +10,13 @@ import { useSelector } from 'src/hooks/suite';
 export type AssetAmountProps = {
     symbol: string;
     amount: string;
-    contractAddress: string;
+    contractAddress?: string | null;
+    /** The token's decimals, so a stablecoin balance is shown the way money is. */
+    decimals?: number;
     fiatAmount?: BaseCurrencyAmount;
-    fiatFallackText?: boolean;
+    showNoTradingPairText?: boolean;
+    isFiatPrimary?: boolean;
+    isDisabled?: boolean;
 };
 
 export function AssetAmount({
@@ -20,32 +24,60 @@ export function AssetAmount({
     symbol,
     fiatAmount,
     contractAddress,
-    fiatFallackText = false,
+    decimals,
+    showNoTradingPairText = false,
+    isFiatPrimary = false,
+    isDisabled = false,
 }: AssetAmountProps) {
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const fiatCurrency = useSelector(selectBaseCurrency);
 
-    return (
-        <Column alignItems="flex-end">
-            <Text intent="neutral" typographyStyle="body-md">
-                <FormattedCryptoAmount
-                    value={amount}
-                    symbol={symbol}
-                    contractAddress={contractAddress}
-                    isBalance
-                />
-            </Text>
+    const cryptoAmount = (
+        <Text
+            intent="neutral"
+            priority={isFiatPrimary ? 'secondary' : undefined}
+            typographyStyle={isFiatPrimary ? 'body-sm' : 'body-md'}
+            isDisabled={isDisabled}
+        >
+            <FormattedCryptoAmount
+                value={amount}
+                symbol={symbol}
+                contractAddress={contractAddress}
+                isCompact
+                tokenDecimals={decimals}
+            />
+        </Text>
+    );
 
+    const fiat = (
+        <>
             {fiatAmount && (
-                <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
+                <Text
+                    intent="neutral"
+                    priority={isFiatPrimary ? undefined : 'secondary'}
+                    typographyStyle={isFiatPrimary ? 'body-md' : 'body-sm'}
+                    isDisabled={isDisabled}
+                >
                     <BaseCurrencyAmountFormatter value={fiatAmount} currency={fiatCurrency} />
                 </Text>
             )}
-            {!fiatAmount && fiatFallackText && (
-                <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
+            {!fiatAmount && showNoTradingPairText && (
+                <Text
+                    intent="neutral"
+                    priority="secondary"
+                    typographyStyle="body-sm"
+                    isDisabled={isDisabled}
+                >
                     <Translation id="TR_HIDDEN_TOKEN_WITHOUT_FIAT" />
                 </Text>
             )}
+        </>
+    );
+
+    return (
+        <Column alignItems="flex-end">
+            {isFiatPrimary ? fiat : cryptoAmount}
+            {isFiatPrimary ? cryptoAmount : fiat}
         </Column>
     );
 }

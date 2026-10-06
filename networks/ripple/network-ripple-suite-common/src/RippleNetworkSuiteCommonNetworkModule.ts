@@ -1,18 +1,15 @@
-import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
+import {
+    type SuiteCommonNetworkModule,
+    createNetworkModule,
+} from '@trezor/network-module-suite-common-types';
+import { supportedRippleNetworks } from '@trezor/network-ripple/constants';
 
 import { rippleValidator } from './addressValidator/rippleAddressValidator';
-import { getNetworkColor } from './networkColor';
-import {
-    type RippleNetworkSymbol,
-    getSupportedNetworks,
-    isSupportedNetwork,
-} from './supportedNetworks';
+import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
-export type RippleNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<RippleNetworkSymbol>;
-
-export const createRippleSuiteCommonNetworkModule = (): RippleNetworkSuiteCommonNetworkModule => ({
-    addressValidator: rippleValidator,
-    getSupportedNetworks,
-    isSupportedNetwork,
-    getNetworkColor,
-});
+export const createRippleSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
+    createNetworkModule(supportedRippleNetworks, {
+        addressValidator: rippleValidator,
+        getNetworkConfig,
+        getAccountSyncInterval,
+    });

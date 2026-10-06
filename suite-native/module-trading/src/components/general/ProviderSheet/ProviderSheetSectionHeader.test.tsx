@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { type QuotesCategory } from '@suite-native/trading-types';
 
 import {
@@ -7,16 +8,21 @@ import {
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('ProviderSheetSectionHeader', () => {
-    const renderProviderSheetSectionHeader = (props: ProviderSheetSectionHeaderProps) =>
-        renderWithTradingProvider(<ProviderSheetSectionHeader {...props} />);
+    const renderProviderSheetSectionHeader = async (props: ProviderSheetSectionHeaderProps) =>
+        await renderWithTradingProvider(<ProviderSheetSectionHeader {...props} />);
 
     it.each<[QuotesCategory, string]>([
-        ['fixed', 'Fixed-rate CEX'],
-        ['float', 'Floating-rate CEX'],
-        ['dex', 'DEX'],
-    ])('should render correct section based on category [%s]', (category, expectedTitle) => {
-        const { getByText } = renderProviderSheetSectionHeader({ category });
+        ['fixed', getTranslation('moduleTrading.providerSheet.fixed.titleOffers')],
+        ['float', getTranslation('moduleTrading.providerSheet.float.titleOffers')],
+    ])('should render correct section based on category [%s]', async (category, expectedTitle) => {
+        const { getByText } = await renderProviderSheetSectionHeader({ category });
 
         expect(getByText(expectedTitle)).toBeOnTheScreen();
+    });
+
+    it('should throw when category is dex', async () => {
+        await expect(() => renderProviderSheetSectionHeader({ category: 'dex' })).rejects.toThrow(
+            'DEX section header should not be rendered as DEX quotes are shown inside fixed/float rate sections',
+        );
     });
 });

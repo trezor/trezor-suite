@@ -1,12 +1,13 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner, Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { QuestionFilledIcon, ShieldWarningIcon, WarningFilledIcon } from '@trezor/icons';
 
 import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';
 import { CheckItem } from 'src/components/suite/CheckItem';
-import { useDispatch } from 'src/hooks/suite';
 
 type DeviceAuthenticityOptOutModalProps = {
     onCancel: () => void;
@@ -14,7 +15,7 @@ type DeviceAuthenticityOptOutModalProps = {
 
 export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOptOutModalProps) => {
     const [isConfirmed, setIsConfirmed] = useState(false);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const handleTurningOffRevisionCheck = () => {
         dispatch(toggleDeviceAuthenticityCheck(false));
@@ -43,7 +44,7 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
             intent="warning"
         >
             <H3>
-                <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE" />
+                <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_TITLE" />
             </H3>
             <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                 <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_3" />

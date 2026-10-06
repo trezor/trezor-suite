@@ -14,6 +14,7 @@ on:
       - develop
     paths-ignore:
       - "suite-native/**"
+      - "jest.config.native.js"
       - "packages/react-native-usb/**"
       # ignore unrelated github workflows config files
       - ".github/workflows/connect*"
@@ -39,9 +40,10 @@ jobs:
     outputs:
       strategy: ${{ steps.determine.outputs.strategy }}
       spec-list: ${{ steps.determine.outputs.spec-list }}
+      edited-specs: ${{ steps.determine.outputs.edited-specs }}
     steps:
       - name: Checkout PR head
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
@@ -67,9 +69,9 @@ jobs:
       - build-app
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
       - name: Install Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
       - name: Generate GitHub App token
@@ -98,6 +100,7 @@ jobs:
       needs.build-app.result == 'success' &&
       needs.resolve-spec-list.result == 'success'
     needs:
+      - determine-strategy
       - build-app
       - resolve-spec-list
     strategy:
@@ -109,10 +112,12 @@ jobs:
       target: "desktop"
       pw-config: ${{ needs.resolve-spec-list.outputs.spec-list != '' && './playwright-config/playwright-desktop-pr-all.config.ts' || './playwright-config/playwright-desktop-pr.config.ts' }}
       test-group: ${{ matrix.TEST_GROUP }}
+      caller-job-id: ${{ github.job }}
       fail-fast: "7"
       currents-project-id: "4ytF0E"
       download-artifact-name: "desktop-app-build-e2e"
       spec-list: ${{ needs.resolve-spec-list.outputs.spec-list }}
+      edited-specs: ${{ needs.determine-strategy.outputs.edited-specs }}
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
@@ -141,7 +146,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           ref: ${{ needs.extract-branch.outputs.branch }}
 
@@ -153,6 +158,7 @@ jobs:
           serverHostname: "dev.suite.sldev.cz"
           serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
           uploadArtifacts: "true"
+          explorerRetentionDays: "1"
           buildArtifacts: "true"
           nodeEnv: "development"
           connectPopupUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web/connect-popup"
@@ -172,7 +178,7 @@ jobs:
       # runs with secrets. The PR head is fetched separately purely for computing
       # the diff; its code is never installed or executed.
       - name: Checkout repository (trusted develop ref)
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           ref: develop
           fetch-depth: 0
@@ -190,6 +196,7 @@ jobs:
         uses: ./.github/actions/llm-test-selector
         with:
           openrouter-api-key: ${{ secrets.E2E_SELECTOR_API_KEY }}
+          slack-webhook: ${{ secrets.SLACK_FIX_AGENT_WEBHOOK }}
       - name: Post LLM analysis to PR description
         if: steps.check-size.outputs.is_small_pr == 'true'
         uses: ./.github/actions/post-llm-analysis
@@ -210,21 +217,24 @@ jobs:
       matrix-web: ${{ steps.matrix.outputs.matrix-web }}
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
       - name: Resolve final spec list
         id: resolve
         shell: bash
+        env:
+          STRATEGY: ${{ needs.determine-strategy.outputs.strategy }}
+          DIRECT_SPEC: ${{ needs.determine-strategy.outputs.spec-list }}
+          EDITED_SPECS: ${{ needs.determine-strategy.outputs.edited-specs }}
+          LLM_SPEC: ${{ needs.run-llm-analysis.outputs.spec-list }}
         run: |
-          STRATEGY="${{ needs.determine-strategy.outputs.strategy }}"
-          DIRECT_SPEC="${{ needs.determine-strategy.outputs.spec-list }}"
-          LLM_SPEC="${{ needs.run-llm-analysis.outputs.spec-list }}"
-
           if [[ "$STRATEGY" == "specific-tests" ]]; then
             echo "Using direct spec list from strategy determination: $DIRECT_SPEC"
             echo "spec-list=$DIRECT_SPEC" >> "$GITHUB_OUTPUT"
           elif [[ "$STRATEGY" == "analyze" ]] && [[ -n "$LLM_SPEC" ]]; then
-            echo "Using LLM-recommended spec list: $LLM_SPEC"
-            echo "spec-list=$LLM_SPEC" >> "$GITHUB_OUTPUT"
+            # Test files the PR edited always run, even when the selector did not pick them.
+            SPEC_LIST=$(echo "$LLM_SPEC,$EDITED_SPECS" | tr ',' '\n' | grep . | sort -u | paste -sd,)
+            echo "Using LLM-recommended spec list plus edited test files: $SPEC_LIST"
+            echo "spec-list=$SPEC_LIST" >> "$GITHUB_OUTPUT"
           else
             echo "Running all tests (strategy=$STRATEGY, LLM spec empty or PR too large)."
             echo "spec-list=" >> "$GITHUB_OUTPUT"
@@ -247,7 +257,7 @@ jobs:
       - build-web
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
       - name: Generate GitHub App token
         id: trezor-bot-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
@@ -271,9 +281,9 @@ jobs:
       - build-connect
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
       - name: Install Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
       - name: Generate GitHub App token
@@ -303,6 +313,7 @@ jobs:
       needs.build-connect.result == 'success' &&
       needs.resolve-spec-list.result == 'success'
     needs:
+      - determine-strategy
       - build-web
       - build-connect
       - resolve-spec-list
@@ -315,10 +326,12 @@ jobs:
       target: "web"
       pw-config: ${{ needs.resolve-spec-list.outputs.spec-list != '' && './playwright-config/playwright-web-pr-all.config.ts' || './playwright-config/playwright-web-pr.config.ts' }}
       test-group: ${{ matrix.TEST_GROUP }}
+      caller-job-id: ${{ github.job }}
       fail-fast: "7"
       currents-project-id: "Og0NOQ"
       download-artifact-name: "connect-explorer-webextension-dev.suite.sldev.cz"
       spec-list: ${{ needs.resolve-spec-list.outputs.spec-list }}
+      edited-specs: ${{ needs.determine-strategy.outputs.edited-specs }}
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

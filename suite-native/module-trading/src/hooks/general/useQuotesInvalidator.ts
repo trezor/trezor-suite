@@ -1,8 +1,9 @@
 import { type RefObject, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { type ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type AbortablePromise } from '@suite-native/trading-types';
 import { type useDebounce } from '@trezor/react-utils';
 
@@ -25,7 +26,7 @@ export const useQuotesInvalidator = ({
     getClearRequestAction,
     getClearStateAction,
 }: UseQuotesInvalidatorProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const shouldClearDebounceCallback = !isFormValid;
     const shouldAbortQuotesRequest = !isFormValid && isLoading;

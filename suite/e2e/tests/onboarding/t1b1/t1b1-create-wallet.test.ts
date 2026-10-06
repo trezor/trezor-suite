@@ -1,9 +1,9 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
-test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] }, () => {
+test.describe('Onboarding - create wallet', { tag: ['@T1B1'] }, () => {
     test.use({
         setupEmulator: false,
     });
@@ -20,19 +20,12 @@ test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] 
                     'Verify that a user can successfully create a wallet during the onboarding process.',
                 category: TestCategory.Onboarding,
                 priority: TestPriority.Critical,
+                stream: TestStream.Growth,
             }),
         },
-        async ({
-            page,
-            device,
-            analyticsSection,
-            onboardingPage,
-            dashboardPage,
-            devicePrompt,
-            trezorInput,
-        }) => {
+        async ({ page, device, onboardingPage, dashboardPage, devicePrompt, trezorInput }) => {
             await test.step('Pass through analytics and firmware steps', async () => {
-                await analyticsSection.passThroughAnalytics();
+                await onboardingPage.passThroughAnalyticsAndDeviceCheck();
                 await onboardingPage.firmware.continueThroughFirmware();
             });
 

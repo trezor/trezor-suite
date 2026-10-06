@@ -34,12 +34,10 @@ describe('sanitizeRequestedPermissions', () => {
     });
 
     it('drops entries whose coin is not a known coin symbol', () => {
-        // Host-supplied input can carry arbitrary strings, so it violates the compile-time
-        // `CoinSymbol` type — cast to model the untrusted wire shape.
         const requested = [
             { permission: 'read_address', coin: 'btc' },
             { permission: 'read_address', coin: 'not-a-coin' },
-        ] as unknown as PermissionRequest[];
+        ];
         expect(sanitizeRequestedPermissions(requested, false)).toEqual([
             { permission: 'read_address', coin: 'btc' },
         ]);
@@ -49,7 +47,7 @@ describe('sanitizeRequestedPermissions', () => {
         const requested = [
             { permission: 'read_address', coin: 'BTC' },
             { permission: 'read_address', coin: 'tADA' },
-        ] as unknown as PermissionRequest[];
+        ];
         expect(sanitizeRequestedPermissions(requested, false)).toEqual([
             { permission: 'read_address', coin: 'btc' },
             { permission: 'read_address', coin: 'tada' },
@@ -57,13 +55,72 @@ describe('sanitizeRequestedPermissions', () => {
     });
 
     it('drops unknown/garbage permission values', () => {
-        const requested = [
-            { permission: 'read_address', coin: 'btc' },
-            { permission: 'nonsense' },
-        ] as unknown as PermissionRequest[];
+        const requested = [{ permission: 'read_address', coin: 'btc' }, { permission: 'nonsense' }];
         expect(sanitizeRequestedPermissions(requested, false)).toEqual([
             { permission: 'read_address', coin: 'btc' },
         ]);
+    });
+
+    // Nothing schema-validates this on the way in, and a throw here would fail every later call
+    // from that app — so every malformed shape has to be dropped instead.
+    describe('malformed host input', () => {
+        it.each([
+            ['a non-array', 'read_address'],
+            ['an object instead of an array', { permission: 'read_address' }],
+            ['null', null],
+            ['a number', 42],
+        ])('returns an empty array for %s', (_name, requested) => {
+            expect(sanitizeRequestedPermissions(requested, false)).toEqual([]);
+        });
+
+        it.each([
+            ['null entries', [null]],
+            ['undefined entries', [undefined]],
+            ['primitive entries', ['read_address', 42]],
+            ['entries with no permission', [{ coin: 'btc' }]],
+            ['entries whose permission is not a string', [{ permission: 42, coin: 'btc' }]],
+            ['entries whose coin is not a string', [{ permission: 'read_address', coin: 5 }]],
+            ['entries whose coin is null', [{ permission: 'read_address', coin: null }]],
+        ])('drops %s', (_name, requested) => {
+            expect(sanitizeRequestedPermissions(requested, false)).toEqual([]);
+        });
+
+        it('keeps valid entries alongside malformed ones', () => {
+            const requested = [
+                null,
+                { permission: 'read_address', coin: 'btc' },
+                { permission: 'read_xpub', coin: 5 },
+                'garbage',
+                { permission: 'read_features' },
+            ];
+            expect(sanitizeRequestedPermissions(requested, false)).toEqual([
+                { permission: 'read_address', coin: 'btc' },
+                { permission: 'read_features' },
+            ]);
+        });
+
+        it('does not widen a malformed coin into a device-wide coin-less grant', () => {
+            expect(
+                sanitizeRequestedPermissions([{ permission: 'sign', coin: null }], false),
+            ).toEqual([]);
+            expect(sanitizeRequestedPermissions([{ permission: 'sign' }], false)).toEqual([
+                { permission: 'sign' },
+            ]);
+        });
+
+        it('copies only whitelisted fields, dropping attacker-chosen keys', () => {
+            const requested = [
+                {
+                    permission: 'read_address',
+                    coin: 'btc',
+                    silentMode: true,
+                    origin: 'evil.example',
+                },
+            ];
+            expect(sanitizeRequestedPermissions(requested, false)).toEqual([
+                { permission: 'read_address', coin: 'btc' },
+            ]);
+        });
     });
 });
 

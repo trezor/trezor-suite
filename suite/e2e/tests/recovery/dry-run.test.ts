@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { MNEMONICS } from '@trezor/trezor-user-env-link';
 
 import { BRIDGE_VERSION } from '../../support/bridge';
@@ -25,6 +25,7 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'Verify that a user can successfully perform a standard recovery dry run.',
                 category: TestCategory.Settings,
                 priority: TestPriority.High,
+                stream: TestStream.Growth,
             }),
         },
         async ({ device, settingsPage, recoveryModal, trezorInput }) => {
@@ -60,6 +61,7 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'Verify that a user can successfully perform a recovery dry run with device reconnection.',
                 category: TestCategory.Settings,
                 priority: TestPriority.Medium,
+                stream: TestStream.Growth,
             }),
         },
         async ({ page, device, settingsPage, recoveryModal, trezorUserEnv, trezorInput }) => {
@@ -110,6 +112,7 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'Verify that a user can successfully perform a recovery dry run after page reload.',
                 category: TestCategory.Settings,
                 priority: TestPriority.Medium,
+                stream: TestStream.Growth,
             }),
             tag: ['@desktopOnly', '@T3W1', '@T3T1'],
         },

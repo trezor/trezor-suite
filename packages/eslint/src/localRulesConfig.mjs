@@ -1,4 +1,7 @@
 import pluginLocalRules from 'eslint-plugin-local-rules';
+
+import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
+import { allRoots } from './workspaceRoots.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
  */
@@ -9,13 +12,16 @@ const publishableTrezorPackages = [
     '@trezor/blockchain-link',
     '@trezor/blockchain-link-types',
     '@trezor/blockchain-link-utils',
+    '@trezor/network-bitcoin',
     '@trezor/network-cardano',
+    '@trezor/network-ethereum',
     '@trezor/network-ripple',
     '@trezor/network-solana',
     '@trezor/network-stellar',
     '@trezor/network-tron',
     '@trezor/connect',
     '@trezor/connect-common',
+    '@trezor/connect-core',
     '@trezor/connect-data',
     '@trezor/connect-mobile',
     '@trezor/connect-plugin-ethereum',
@@ -56,11 +62,9 @@ export const localRulesConfig = [
         },
     },
     {
-        files: [
-            'suite/**/*.{js,mjs,cjs,ts,jsx,tsx}',
-            'suite-native/**/*.{js,mjs,cjs,ts,jsx,tsx}',
-            'suite-common/**/*.{js,mjs,cjs,ts,jsx,tsx}',
-        ],
+        files: [allRoots.suite, allRoots.suiteNative, allRoots.suiteCommon].map(
+            root => `${root}/**/*.{js,mjs,cjs,ts,jsx,tsx}`,
+        ),
         rules: {
             'local-rules/no-package-deep-imports': [
                 'error',
@@ -75,6 +79,9 @@ export const localRulesConfig = [
                         /^@(?:suite-native|suite|suite-common|trezor)\/[^/]+\/mocks$/,
                         // Suite test setup imports global polyfills through this side-effect-only entry point.
                         /^@suite-common\/test-utils\/globalOverrides$/,
+                        // The applications import the Webpack pieces they share from this
+                        // build-only entry point; it is never part of an application bundle.
+                        /^@trezor\/suite\/webpack\/[\w/-]+$/,
                     ],
                 },
             ],
@@ -82,9 +89,39 @@ export const localRulesConfig = [
         },
     },
     {
-        files: ['suite-common/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        files: [`${allRoots.suiteCommon}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
         rules: {
             'local-rules/no-suite-imports-in-suite-common': 'error',
         },
     },
+    {
+        files: [
+            allRoots.networks,
+            `${allRoots.packages}/suite`,
+            allRoots.suite,
+            allRoots.suiteCommon,
+        ].map(root => `${root}/**/*.{ts,tsx}`),
+        rules: {
+            'local-rules/enforce-named-parameter-types': 'error',
+        },
+    },
+    {
+        files: ['**/src/**/*.{ts,tsx}'],
+        ignores: ['**/__fixtures__/**', '**/*.test.{ts,tsx}', '**/*.type-test.ts'],
+        rules: {
+            'local-rules/enforce-di-factory-contracts': 'error',
+            'local-rules/enforce-thunk-contracts': 'error',
+            'local-rules/enforce-thunk-names': 'error',
+        },
+    },
+    ...(areExpensiveChecksEnabled
+        ? [
+              {
+                  files: Object.values(allRoots).map(root => `${root}/**/src/**/*.{ts,tsx}`),
+                  rules: {
+                      'local-rules/no-unused-intersection-members': 'error',
+                  },
+              },
+          ]
+        : []),
 ];

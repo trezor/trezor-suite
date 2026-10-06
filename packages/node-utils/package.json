@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@braintree/sanitize-url": "^7.1.2",
+        "@trezor/logger": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "ajv": "^8.20.0"

@@ -18,16 +18,18 @@ import {
     type FormDraftWithSendKeyPrefix,
     type FormState,
     type GeneralPrecomposedTransaction,
-    type ReviewOutputState,
     type TokenAddress,
+    type TransactionReviewOutputState,
+    type TransactionReviewStatefulOutput,
+    type TransactionReviewSummaryOutput,
 } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputs,
+    getDecreaseOutputId,
     getFormDraftKey,
     getIsUpdatedSendFlow,
     getTransactionReviewOutputState,
     isClearSignedEvmTradingSwapTransaction,
-    isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
@@ -79,12 +81,26 @@ export const selectIsTransactionAlreadySigned = (state: NativeSendRootState) => 
     return isNotNullOrUndefined(serializedTx);
 };
 
+const selectSendReviewButtonRequestsCount = (
+    state: TransactionReviewOutputsState,
+    accountKey: AccountKey,
+    _tokenContract?: TokenAddress,
+    precomposedForm?: FormState | null,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+    const precomposedTx = selectSendPrecomposedTx(state);
+
+    const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
+
+    return selectSendFormReviewButtonRequestsCount(state, account?.symbol, decreaseOutputId);
+};
+
 export const selectTransactionReviewOutputs = createSendMemoizedSelector(
     [
-        state => state,
+        selectSendReviewButtonRequestsCount,
         (
             _state,
-            _accountKey: string,
+            _accountKey: AccountKey,
             _tokenContract?: TokenAddress,
             precomposedForm?: FormState | null,
         ) => precomposedForm,
@@ -93,21 +109,19 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
         selectSelectedDevice,
         selectIsTransactionAlreadySigned,
     ],
-    (state, precomposedForm, precomposedTx, account, device, isTransactionAlreadySigned) => {
+    (
+        sendReviewButtonRequests,
+        precomposedForm,
+        precomposedTx,
+        account,
+        device,
+        isTransactionAlreadySigned,
+    ) => {
         if (!account || !device || !precomposedForm || !precomposedTx) {
             return null;
         }
 
-        const decreaseOutputId =
-            isRbfBumpFeeTransaction(precomposedTx) && precomposedTx.useNativeRbf
-                ? precomposedForm?.setMaxOutputId
-                : undefined;
-
-        const sendReviewButtonRequests = selectSendFormReviewButtonRequestsCount(
-            state,
-            account?.symbol,
-            decreaseOutputId,
-        );
+        const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
         const outputs = constructTransactionReviewOutputs({
             account,
@@ -122,11 +136,11 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
             : outputs?.filter(output => output.type !== 'fee'); // The `fee` output is already included in the final transaction summary output.
 
         return newFlowOutputs.map((output, outputIndex) => {
-            const outputState: ReviewOutputState = isTransactionAlreadySigned
+            const outputState: TransactionReviewOutputState = isTransactionAlreadySigned
                 ? 'success'
                 : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests);
 
-            return { ...output, state: outputState };
+            return { ...output, state: outputState } satisfies TransactionReviewStatefulOutput;
         });
     },
 );
@@ -227,7 +241,7 @@ export const selectReviewSummaryOutputState = (
     prefix: FormDraftWithSendKeyPrefix,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
-): ReviewOutputState => {
+): TransactionReviewOutputState => {
     const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
 
     if (isTransactionAlreadySigned) {
@@ -259,31 +273,9 @@ export const selectReviewSummaryOutput = createSendMemoizedSelector(
             state: outputState,
             totalSpent: precomposedTx.totalSpent,
             fee: precomposedTx.fee,
-        };
+        } satisfies TransactionReviewSummaryOutput;
     },
 );
-
-export const selectTransactionReviewActiveStepIndex = (
-    state: TransactionReviewOutputsState,
-    prefix: FormDraftWithSendKeyPrefix,
-    accountKey: AccountKey,
-    tokenContract?: TokenAddress,
-) => {
-    const reviewOutputs = selectTransactionReviewOutputsFromDraft(
-        state,
-        prefix,
-        accountKey,
-        tokenContract,
-    );
-
-    if (!reviewOutputs) {
-        return 0;
-    }
-
-    const activeIndex = reviewOutputs.findIndex(output => output.state === 'active');
-
-    return activeIndex === -1 ? reviewOutputs.length : activeIndex;
-};
 
 export const selectIsClearSignedTradingSwap = createSendMemoizedSelector(
     [

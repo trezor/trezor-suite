@@ -1,13 +1,19 @@
-import { type AnyAction } from '@reduxjs/toolkit';
+import { type PayloadAction, type UnknownAction } from '@reduxjs/toolkit';
 
 import type { FeedbackFeatureName } from '@suite/experimental';
-import { createFeatureFeedbackSlice } from '@suite-common/feedback';
+import { type FeatureFeedbackState, createFeatureFeedbackSlice } from '@suite-common/feedback';
+
+type StorageLoadFeatureFeedbackAction = PayloadAction<
+    { featureFeedback?: FeatureFeedbackState<FeedbackFeatureName> },
+    '@storage/load'
+>;
 
 const featureFeedbackSlice = createFeatureFeedbackSlice<FeedbackFeatureName>({
     extraReducers: builder =>
         builder.addMatcher(
-            (action): action is AnyAction => action.type === '@storage/load',
-            (state, action: AnyAction) => action.payload.featureFeedback ?? state,
+            (action: UnknownAction): action is StorageLoadFeatureFeedbackAction =>
+                action.type === '@storage/load',
+            (state, action) => action.payload.featureFeedback ?? state,
         ),
 });
 

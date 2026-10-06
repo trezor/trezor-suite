@@ -1,12 +1,15 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectIsTradingNetworkFeeMissing,
+    selectTradingSellProviders,
     selectTradingSendAccount,
     tradingSellActions,
 } from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 
 import { selectSellQuoteThunk } from 'src/actions/wallet/trading/sell/selectSellQuoteThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { getTradingFirstOutput } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
@@ -15,15 +18,15 @@ import { useTradingFormOfferCommon } from 'src/views/wallet/trading/common/Tradi
 import { TradingKYCWarning } from 'src/views/wallet/trading/common/TradingKYCWarning';
 
 export const TradingFormOfferSellActions = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const context = useTradingFormContext<'sell'>();
     const {
         watch,
         shouldSendInSats,
-        sellInfo,
         form: { state, helpers },
     } = context;
     const account = useSelector(reduxState => selectTradingSendAccount(reduxState, 'sell'));
+    const sellProviders = useSelector(selectTradingSellProviders);
 
     const isNetworkFeeMissing = useSelector(selectIsTradingNetworkFeeMissing);
 
@@ -52,7 +55,7 @@ export const TradingFormOfferSellActions = () => {
     const onSelectQuote = () => {
         if (!quote) return;
 
-        const provider = quote.exchange ? sellInfo?.providerInfos[quote.exchange] : undefined;
+        const provider = quote.exchange ? sellProviders?.[quote.exchange] : undefined;
 
         if (provider?.flow === 'BANK_ACCOUNT') {
             dispatch(tradingSellActions.setFormStep('BANK_ACCOUNT'));

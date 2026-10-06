@@ -1,5 +1,8 @@
 import { type ExchangeIssue } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils-store';
 import { createPrecomposedTxFinal, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
@@ -13,6 +16,7 @@ import {
 } from '../../../test-utils/tradingTestUtils';
 
 const mockNavigate = jest.fn();
+const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -51,8 +55,8 @@ const setIssue = (
     });
 };
 
-const btcAccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' });
-const ethAccountKey = mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' });
+const btcAccountKey = mockAccountKey({ symbol: asNetworkSymbol('btc'), descriptor: 'btc1normal' });
+const ethAccountKey = mockAccountKey({ symbol: asNetworkSymbol('eth'), descriptor: 'eth1normal' });
 
 describe('ExchangePreviewIssueBanner', () => {
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
@@ -75,12 +79,14 @@ describe('ExchangePreviewIssueBanner', () => {
         },
     };
 
-    const renderExchangePreviewIssueBanner = ({ onSignTransactionNavigation = jest.fn() } = {}) =>
-        renderWithTradingProvider(
+    const renderExchangePreviewIssueBanner = async ({
+        onSignTransactionNavigation = jest.fn(),
+    } = {}) =>
+        await renderWithTradingProvider(
             <ExchangePreviewIssueBanner
                 onSignTransactionNavigation={onSignTransactionNavigation}
             />,
-            { tradeType: 'exchange', overrides: baseOverrides },
+            { overrides: baseOverrides, services, tradeType: 'exchange' },
         );
 
     beforeEach(() => {
@@ -88,16 +94,16 @@ describe('ExchangePreviewIssueBanner', () => {
         setIssue(null);
     });
 
-    it('renders nothing without an issue', () => {
-        const { toJSON } = renderExchangePreviewIssueBanner();
+    it('renders nothing without an issue', async () => {
+        const { toJSON } = await renderExchangePreviewIssueBanner();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('renders the price impact issue with a formatted percent', () => {
+    it('renders the price impact issue with a formatted percent', async () => {
         setIssue(priceImpactIssue);
 
-        const { getByText } = renderExchangePreviewIssueBanner();
+        const { getByText } = await renderExchangePreviewIssueBanner();
 
         expect(
             getByText(
@@ -115,10 +121,10 @@ describe('ExchangePreviewIssueBanner', () => {
         ).toBeOnTheScreen();
     });
 
-    it('renders the high-risk issue with its title and description', () => {
+    it('renders the high-risk issue with its title and description', async () => {
         setIssue(highRiskIssue);
 
-        const { getByText } = renderExchangePreviewIssueBanner();
+        const { getByText } = await renderExchangePreviewIssueBanner();
 
         expect(
             getByText(getTranslation('moduleTrading.transactionSimulation.issues.highRisk.title')),
@@ -130,7 +136,7 @@ describe('ExchangePreviewIssueBanner', () => {
         ).toBeOnTheScreen();
     });
 
-    it('renders the combined issue as bullets under the high-risk title', () => {
+    it('renders the combined issue as bullets under the high-risk title', async () => {
         setIssue({
             type: 'high-risk-with-price-impact',
             severity: 'critical',
@@ -138,7 +144,7 @@ describe('ExchangePreviewIssueBanner', () => {
             deviation: 0.99,
         });
 
-        const { getByText } = renderExchangePreviewIssueBanner();
+        const { getByText } = await renderExchangePreviewIssueBanner();
 
         expect(
             getByText(getTranslation('moduleTrading.transactionSimulation.issues.highRisk.title')),
@@ -157,10 +163,10 @@ describe('ExchangePreviewIssueBanner', () => {
         ).toBeOnTheScreen();
     });
 
-    it('renders the issue without continue anyway when the simulation is disabled', () => {
+    it('renders the issue without continue anyway when the simulation is disabled', async () => {
         setIssue(priceImpactIssue, { isSimulationEnabled: false });
 
-        const { getByText, queryByText } = renderExchangePreviewIssueBanner();
+        const { getByText, queryByText } = await renderExchangePreviewIssueBanner();
 
         expect(
             getByText(
@@ -178,7 +184,7 @@ describe('ExchangePreviewIssueBanner', () => {
         const mockOnSignTransactionNavigation = jest.fn();
         setIssue(priceImpactIssue);
 
-        const { getByText } = renderExchangePreviewIssueBanner({
+        const { getByText } = await renderExchangePreviewIssueBanner({
             onSignTransactionNavigation: mockOnSignTransactionNavigation,
         });
 
@@ -186,7 +192,7 @@ describe('ExchangePreviewIssueBanner', () => {
             getByText(getTranslation('moduleTrading.transactionSimulation.continueAnyway')),
         );
 
-        expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeOutputsReview', {
+        expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeTransactionReview', {
             accountKey: btcAccountKey,
             orderId: mercuryoFixedWorstQuote.orderId,
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',

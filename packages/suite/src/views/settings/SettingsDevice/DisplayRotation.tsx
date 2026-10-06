@@ -1,18 +1,18 @@
 import { type JSX } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Icon, SelectBar, Tooltip } from '@trezor/components';
 import { type DisplayRotation as DisplayRotationType, PROTO } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 
 type Rotation = { label: JSX.Element; value: DisplayRotationType };
 
@@ -59,9 +59,8 @@ interface DisplayRotationProps {
 }
 
 export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
-    const dispatch = useDispatch();
     const { device } = useDevice();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const isSupported =
         device?.features !== undefined &&
         DEVICES_SUPPORTING_ROTATION.includes(device.features.internal_model);
@@ -95,7 +94,7 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                                 options={DISPLAY_ROTATIONS}
                                 size="small"
                                 onChange={(value: DisplayRotationType) => {
-                                    dispatch(applySettings({ display_rotation: value }));
+                                    dispatch(applySettingsThunk({ display_rotation: value }));
                                     analytics.report({
                                         type: events.settingsDeviceChangeOrientationEvent.name,
                                         payload: {

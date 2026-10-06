@@ -6,11 +6,13 @@ import {
 } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceLocked } from '@suite/locks';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Badge, Column, Modal, Paragraph } from '@trezor/components';
 
 import { PreBackupCheckboxes } from 'src/components/backup';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { BackupStepDescription } from './BackupStepDescription';
 
@@ -19,16 +21,15 @@ const canStart = (userConfirmed: ConfirmKey[], isDeviceLocked: boolean) =>
         userConfirmed.includes(e),
     ) && !isDeviceLocked;
 
-export const BackupStep1Initial = ({
-    onCancel,
-    backup,
-}: {
+type BackupStep1InitialProps = {
     onCancel: () => void;
     backup: BackupState;
-}) => {
+};
+
+export const BackupStep1Initial = ({ onCancel, backup }: BackupStep1InitialProps) => {
     const device = useSelector(selectSelectedDevice);
     const isDeviceLocked = useSelector(selectIsDeviceLocked);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const params: BackupDeviceParams =
         device?.features?.backup_type === 'Slip39_Basic' ||

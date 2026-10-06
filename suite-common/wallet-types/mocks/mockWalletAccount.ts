@@ -1,5 +1,7 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
+import type { DeepPartial } from '@trezor/type-utils';
+import { mergeDeepObject } from '@trezor/utils';
 
 import {
     Account,
@@ -81,46 +83,48 @@ type NetworkSpecificDefault =
     | typeof networkSpecificDefaultCardano
     | typeof networkSpecificDefaultStellar;
 
-const networkTypeMap: Record<NetworkSymbol, NetworkSpecificDefault> = {
-    // Bitcoin-like
+// Keys stay plain literals: a branded symbol cannot type an object literal's keys. A symbol with
+// no entry is caught by the lookup below rather than by the type.
+const networkTypeMap: Record<string, NetworkSpecificDefault> = {
     btc: networkSpecificDefaultBitcoin,
     regtest: networkSpecificDefaultBitcoin,
     test: networkSpecificDefaultBitcoin,
     ltc: networkSpecificDefaultBitcoin,
     bch: networkSpecificDefaultBitcoin,
     doge: networkSpecificDefaultBitcoin,
+    zec: networkSpecificDefaultBitcoin,
 
-    // Eth
+    // EVM
     eth: networkSpecificDefaultEthereum,
     etc: networkSpecificDefaultEthereum,
     hype: networkSpecificDefaultEthereum,
-
-    // Testnet Eth
+    pol: networkSpecificDefaultEthereum,
+    bsc: networkSpecificDefaultEthereum,
+    arb: networkSpecificDefaultEthereum,
+    base: networkSpecificDefaultEthereum,
+    op: networkSpecificDefaultEthereum,
+    rhc: networkSpecificDefaultEthereum,
+    avax: networkSpecificDefaultEthereum,
     tsep: networkSpecificDefaultEthereum,
     thod: networkSpecificDefaultEthereum,
 
-    // Solana
     sol: networkSpecificDefaultSolana,
     dsol: networkSpecificDefaultSolana,
 
     // Stellar
-    xlm: networkSpecificDefaultBitcoin,
+    xlm: networkSpecificDefaultStellar,
+    txlm: networkSpecificDefaultStellar,
 
-    // Todo: fix map for remaining networks
-    xrp: networkSpecificDefaultBitcoin,
-    zec: networkSpecificDefaultBitcoin,
-    ada: networkSpecificDefaultBitcoin,
-    pol: networkSpecificDefaultBitcoin,
-    bsc: networkSpecificDefaultBitcoin,
-    arb: networkSpecificDefaultBitcoin,
-    base: networkSpecificDefaultBitcoin,
-    op: networkSpecificDefaultBitcoin,
-    rhc: networkSpecificDefaultEthereum,
-    avax: networkSpecificDefaultBitcoin,
+    // Ripple
+    xrp: networkSpecificDefaultRipple,
+    txrp: networkSpecificDefaultRipple,
+
+    // Cardano
+    ada: networkSpecificDefaultCardano,
+
+    // Tron
     trx: networkSpecificDefaultTron,
     ttrx: networkSpecificDefaultTron,
-    txrp: networkSpecificDefaultBitcoin,
-    txlm: networkSpecificDefaultBitcoin,
 };
 
 type MandatoryAccountData = {
@@ -136,7 +140,7 @@ export const mockWalletAccount = (
         | 'symbol'
     > &
         MandatoryAccountData,
-    networkSpecific?: NetworkSpecificDefault,
+    networkSpecific?: DeepPartial<NetworkSpecificDefault>,
     accountFailure: AccountFailureSpecific = { failed: false },
 ): Account => {
     const descriptor = account.descriptor ?? asAccountDescriptor(account.symbol);
@@ -169,12 +173,24 @@ export const mockWalletAccount = (
         symbol: account.symbol,
     };
 
+    const networkSpecificDefault = networkTypeMap[account.symbol];
+
+    if (!networkSpecificDefault) {
+        throw new Error(`No mock defaults registered for network symbol: ${account.symbol}.`);
+    }
+
+    // The override is merged over the network default, so a test changes only the fields it needs.
+    // The merged type cannot be expressed against the union, hence the assertion.
+    const networkSpecificData = networkSpecific
+        ? (mergeDeepObject(networkSpecificDefault, networkSpecific) as NetworkSpecificDefault)
+        : networkSpecificDefault;
+
     // This is needed to be separated, as typing the `Account` type with the union-type of
     // the Networks and Backends seems impossible.
     // This way, we at least get type-safety for AccountBase and AccountFailureSpecific data.
     return {
         ...accountBase,
         ...accountFailure,
-        ...(networkSpecific ?? networkTypeMap[account.symbol]),
+        ...networkSpecificData,
     };
 };

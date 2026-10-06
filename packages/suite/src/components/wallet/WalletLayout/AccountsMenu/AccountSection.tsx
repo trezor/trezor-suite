@@ -1,78 +1,48 @@
-import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { Row } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { type AccountItemType } from 'src/types/wallet';
-import { getTokens } from 'src/utils/wallet/tokenUtils';
 
 import { AccountItem } from './AccountItem/AccountItem';
 import { AccountItemsGroup } from './AccountItemsGroup';
 
 interface AccountSectionProps {
     account: Account;
-    forceOnlyItemClick?: boolean;
-    hideStaking?: boolean;
+    tokens: TokenInfo[];
     selected: boolean;
-    onItemClick?: (account: Account, type: AccountItemType) => void;
 }
 
-export const AccountSection = ({
-    account,
-    forceOnlyItemClick,
-    hideStaking,
-    selected,
-    onItemClick,
-}: AccountSectionProps) => {
-    const {
-        symbol,
-        accountType,
-        index,
-        descriptor,
-        formattedBalance,
-        tokens: accountTokens = [],
-    } = account;
-
-    const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
+export const AccountSection = ({ account, tokens, selected }: AccountSectionProps) => {
+    const { symbol, accountType, index, descriptor, formattedBalance } = account;
 
     const showGroup = hasNetworkFeatures(account, 'tokens');
 
-    const isStakeShownStored = useSelector(state =>
-        selectAccountIsStakingActive(state, account.key),
-    );
-    const isStakeShown = !hideStaking && isStakeShownStored;
-
-    const tokens = getTokens({
-        tokens: accountTokens,
-        symbol: account.symbol,
-        tokenDefinitions: coinDefinitions,
-    });
-
+    const isStakeShown = useSelector(state => selectAccountIsStakingActive(state, account.key));
     const dataTestKey = `@account-menu/${symbol}/${accountType}/${index}`;
 
-    return showGroup && (isStakeShown || tokens.shownWithBalance.length) ? (
+    return showGroup && (isStakeShown || tokens.length) ? (
         <AccountItemsGroup
             key={`${descriptor}-${symbol}`}
-            forceOnlyItemClick={forceOnlyItemClick}
             account={account}
             selected={selected}
             showStaking={isStakeShown}
-            tokens={tokens.shownWithBalance}
+            tokens={tokens}
             dataTestKey={dataTestKey}
-            onItemClick={onItemClick}
         />
     ) : (
-        <AccountItem
-            type="coin"
-            key={`${descriptor}-${symbol}`}
-            forceOnlyItemClick={forceOnlyItemClick}
-            account={account}
-            isSelected={selected}
-            onClick={onItemClick}
-            formattedBalance={formattedBalance}
-            tokens={tokens.shownWithBalance}
-            dataTestKey={dataTestKey}
-        />
+        <Row>
+            <AccountItem
+                type="coin"
+                key={`${descriptor}-${symbol}`}
+                account={account}
+                isSelected={selected}
+                formattedBalance={formattedBalance}
+                tokens={tokens}
+                dataTestKey={dataTestKey}
+            />
+        </Row>
     );
 };

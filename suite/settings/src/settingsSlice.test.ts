@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 
 import { selectAutodetectLanguage, selectLanguage, selectTheme } from './settingsSelectors';
 import {
@@ -9,7 +9,10 @@ import {
     suiteSettingsInitialState,
 } from './settingsSlice';
 
-const suiteSettingsReducer = prepareSuiteSettingsReducer(extraDependenciesCommonMock);
+const suiteSettingsReducer = prepareSuiteSettingsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadSuiteSettings: mockReducer() },
+});
 
 const initStore = (preloadedState = suiteSettingsInitialState) =>
     configureStore({

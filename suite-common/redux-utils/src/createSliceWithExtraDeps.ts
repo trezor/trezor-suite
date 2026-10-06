@@ -6,22 +6,21 @@ import {
     createSlice,
 } from '@reduxjs/toolkit';
 
-import { type ExtraDependenciesForReducer } from './extraDependenciesType';
-
 /*
 This is nearly same function as createSlice from redux-toolkit, but instead of generating reducer it will generate
 prepareReducer function that will be used to generate reducer. This functions accepts one argument - extra dependencies.
 */
+type SliceExtra<TExtra> = [TExtra] extends [void] ? Record<never, never> : TExtra;
+type PrepareSliceExtra<TExtra> = [TExtra] extends [void] ? unknown : TExtra;
+
 export const createSliceWithExtraDeps = <
     State,
     CaseReducers extends SliceCaseReducers<State>,
     Name extends string = string,
+    TExtra = void,
 >(
     options: Omit<CreateSliceOptions<State, CaseReducers, Name>, 'extraReducers'> & {
-        extraReducers: (
-            builder: ActionReducerMapBuilder<State>,
-            extra: ExtraDependenciesForReducer,
-        ) => void;
+        extraReducers: (builder: ActionReducerMapBuilder<State>, extra: SliceExtra<TExtra>) => void;
     },
 ) => {
     const emptyActionTypesProxy: any = new Proxy(
@@ -51,23 +50,21 @@ export const createSliceWithExtraDeps = <
     const { actions, name, getInitialState } = createSlice({
         ...options,
         extraReducers: builder => {
-            options.extraReducers(builder, {
+            const emptyExtra = {
                 actionTypes: emptyActionTypesProxy,
                 actions: emptyActionsProxy,
                 reducers: emptyReducersProxy,
-            });
+            } as SliceExtra<TExtra>;
+
+            options.extraReducers(builder, emptyExtra);
         },
     });
 
-    const prepareReducer = (extraDeps: ExtraDependenciesForReducer) =>
+    const prepareReducer = (extraDeps: PrepareSliceExtra<TExtra>) =>
         createSlice({
             ...options,
             extraReducers: builder => {
-                options.extraReducers(builder, {
-                    actionTypes: extraDeps.actionTypes,
-                    actions: extraDeps.actions,
-                    reducers: extraDeps.reducers,
-                });
+                options.extraReducers(builder, extraDeps as SliceExtra<TExtra>);
             },
         }).reducer;
 

@@ -5,15 +5,19 @@
         { "path": "../analytics" },
         { "path": "../bluetooth" },
         { "path": "../calldata" },
+        { "path": "../dependency-injection" },
         { "path": "../device" },
         { "path": "../earn-stablecoin-api" },
         { "path": "../earn-staking-api" },
         { "path": "../fiat-services" },
         { "path": "../firmware" },
+        { "path": "../legacy-network-config" },
+        { "path": "../metadata-types" },
+        { "path": "../networks" },
+        { "path": "../persistent-device-data" },
         { "path": "../react-query" },
         { "path": "../redux-utils" },
         { "path": "../schemas" },
-        { "path": "../staking" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
@@ -41,9 +45,17 @@
         {
             "path": "../../packages/connect-common"
         },
+        { "path": "../../packages/connect-core" },
         { "path": "../../packages/crypto-utils" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/eslint" },
+        {
+            "path": "../../networks/cardano/network-cardano"
+        },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
         {
             "path": "../../networks/ripple/network-ripple"
         },
@@ -57,7 +69,9 @@
             "path": "../../networks/tron/network-tron"
         },
         { "path": "../../packages/protobuf" },
+        { "path": "../../packages/react-utils" },
         { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }
     ]
 }

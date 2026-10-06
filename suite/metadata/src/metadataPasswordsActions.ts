@@ -1,4 +1,3 @@
-import { type Dispatch } from '@reduxjs/toolkit';
 import crypto from 'crypto';
 
 import { selectSelectedDevice } from '@suite-common/device';
@@ -7,6 +6,7 @@ import {
     type PasswordEntry,
     ProviderErrorAction,
 } from '@suite-common/metadata-types';
+import { type Dispatch } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 
@@ -19,11 +19,13 @@ import { type MetadataRootState, selectSelectedProviderForPasswords } from './me
 import * as metadataUtils from './metadataUtils';
 import { type FetchIntervalTrackingId } from './metadataUtils';
 
-const fetchPasswords =
+type FetchPasswordsThunkState = MetadataRootState;
+
+const fetchPasswordsThunk =
     (keys: LabelableEntityKeys) =>
-    async (dispatch: Dispatch, _getState: () => MetadataRootState) => {
+    async (dispatch: Dispatch, _getState: () => FetchPasswordsThunkState) => {
         const provider = dispatch(
-            metadataProviderActions.getProviderInstance({
+            metadataProviderActions.getProviderInstanceThunk({
                 clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
                 dataType: 'passwords',
             }),
@@ -79,7 +81,11 @@ const fetchPasswords =
         );
     };
 
-export const init = () => async (dispatch: Dispatch, getState: () => MetadataRootState) => {
+const selectIsSuiteOnline = (state: MetadataRootState) => state.suite.online;
+
+type InitThunkState = MetadataRootState;
+
+export const initThunk = () => async (dispatch: Dispatch, getState: () => InitThunkState) => {
     let device = selectSelectedDevice(getState());
 
     if (!device?.state?.staticSessionId) {
@@ -146,7 +152,7 @@ export const init = () => async (dispatch: Dispatch, getState: () => MetadataRoo
         const selectedProvider = selectSelectedProviderForPasswords(getState());
         if (!selectedProvider) {
             await dispatch(
-                metadataProviderActions.connectProvider({
+                metadataProviderActions.connectProviderThunk({
                     type: 'dropbox',
                     dataType: 'passwords',
                     clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
@@ -155,7 +161,7 @@ export const init = () => async (dispatch: Dispatch, getState: () => MetadataRoo
         }
 
         await dispatch(
-            fetchPasswords({
+            fetchPasswordsThunk({
                 fileName: fname,
                 aesKey: encryptionKey,
             }),
@@ -181,11 +187,11 @@ export const init = () => async (dispatch: Dispatch, getState: () => MetadataRoo
             device = selectSelectedDevice(getState());
             const { fileName, aesKey } = device?.passwords?.[1] || {};
 
-            if (!getState().suite.online || !device?.state || !fileName || !aesKey) {
+            if (!selectIsSuiteOnline(getState()) || !device?.state || !fileName || !aesKey) {
                 return;
             }
             dispatch(
-                fetchPasswords({
+                fetchPasswordsThunk({
                     fileName,
                     aesKey,
                 }),
@@ -194,15 +200,17 @@ export const init = () => async (dispatch: Dispatch, getState: () => MetadataRoo
     }
 };
 
-export const addPasswordMetadata =
+type AddPasswordMetadataThunkState = MetadataRootState;
+
+export const addPasswordMetadataThunk =
     (nextId: number, payload: PasswordEntry, fileName: string, aesKey: string) =>
-    (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    (dispatch: Dispatch, getState: () => AddPasswordMetadataThunkState) => {
         if (!payload.note) {
             return Promise.resolve({ success: false, error: 'required field (note) missing' });
         }
         const provider = selectSelectedProviderForPasswords(getState());
         const providerInstance = dispatch(
-            metadataProviderActions.getProviderInstance({
+            metadataProviderActions.getProviderInstanceThunk({
                 clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
                 dataType: 'passwords',
             }),
@@ -240,12 +248,14 @@ export const addPasswordMetadata =
         });
     };
 
-export const removePasswordMetadata =
+type RemovePasswordMetadataThunkState = MetadataRootState;
+
+export const removePasswordMetadataThunk =
     (index: number, fileName: string, aesKey: string) =>
-    (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    (dispatch: Dispatch, getState: () => RemovePasswordMetadataThunkState) => {
         const provider = selectSelectedProviderForPasswords(getState());
         const providerInstance = dispatch(
-            metadataProviderActions.getProviderInstance({
+            metadataProviderActions.getProviderInstanceThunk({
                 clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
                 dataType: 'passwords',
             }),

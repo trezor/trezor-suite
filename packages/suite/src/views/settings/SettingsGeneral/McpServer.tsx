@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { Button, Column, Modal, SelectBar } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { ArrowsClockwiseIcon, CopyIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { GITHUB_MCP_DOCS_URL } from '@trezor/urls';
 
 const ConfigBox = styled.div`
@@ -67,13 +68,12 @@ const getSnippet = (client: McpClient, url: string, token: string | null) => {
     return JSON.stringify({ mcpServers: { 'trezor-suite': { url: authUrl } } }, null, 4);
 };
 
-const RegenerateTokenModal = ({
-    onCancel,
-    onSubmit,
-}: {
+type RegenerateTokenModalProps = {
     onCancel: () => void;
     onSubmit: () => void;
-}) => (
+};
+
+const RegenerateTokenModal = ({ onCancel, onSubmit }: RegenerateTokenModalProps) => (
     <Modal
         heading={<Translation id="TR_MCP_REGENERATE_TOKEN_HEADING" />}
         onCancel={onCancel}
@@ -100,6 +100,7 @@ const RegenerateTokenModal = ({
 );
 
 export const McpServer = () => {
+    const { desktopApi } = useServices(injectDesktopApi);
     const [settings, setSettings] = useState<{
         enabled: boolean;
         port: number;
@@ -114,7 +115,7 @@ export const McpServer = () => {
         if (desktopApi.available) {
             desktopApi.mcpGetSettings().then(setSettings);
         }
-    }, []);
+    }, [desktopApi]);
 
     const handleCopy = () => {
         if (!settings?.url) return;

@@ -27,9 +27,9 @@ nix develop .#use_android
 
 ## Before you run the app
 
-1. Run `yarn native:prebuild:clean` to generate `ios/` and `android/` directories.
-    - You can prebuild for specific platform if you setup only Android/iOS: `yarn prebuild:clean --platform [android|ios]`
-    - It's necessary to re-run faster version of this command `yarn native:prebuild` (shortcut `yarn p`) on any change in native code (when you change branch/pull/rebase).
+1. Run `yarn native:prebuild` (shortcut `yarn p`) to generate `ios/` and `android/` directories.
+    - You can prebuild for specific platform if you setup only Android/iOS: `yarn prebuild --platform [android|ios]`
+    - It's necessary to re-run faster version of this command `yarn native:prebuild:no-clean` on any change in native code (when you change branch/pull/rebase).
 
 ## Running app on Android
 
@@ -38,6 +38,7 @@ nix develop .#use_android
         - It's recommended to use [adb over wifi](https://developer.android.com/studio/command-line/adb#connect-to-a-device-over-wi-fi-android-11+) because you will have free up a USB port to connect Trezor device.
 2. Run packager - `yarn native:start` in separate terminal window and keep it running
 3. Run native build - `yarn native:android` this takes time (~10min) and it should install and start the app at the end
+    - If you need to debug a C++ issue, run `yarn workspace @suite-native/app android:debug` to use the regular `debug` variant.
 4. With emulator running, reverse android emulator ports to enable communication between the app and localhost services - `yarn native:reverse-ports`
 
 ## Running app on iOS
@@ -98,6 +99,9 @@ You can override ENV variables locally using `.env.development.local` (or `.env.
 - `EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true` to debug Sentry locally and
 - `EXPO_PUBLIC_IS_NATIVE_USB_LOGGER_ENABLED=true` to debug @trezor/transport-native-usb locally.
 - `EXPO_PUBLIC_IS_NATIVE_BLUETOOTH_LOGGER_ENABLED=true` to debug @trezor/transport-native-bluetooth locally.
+- `EXPO_PUBLIC_IS_ROZENITE_REDUX_DEVTOOLS_ENABLED=true` to enable Rozenite Redux DevTools locally.
+- `EXPO_PUBLIC_IS_ROZENITE_MMKV_DEVTOOLS_ENABLED=true` to enable Rozenite MMKV DevTools locally.
+- Rozenite Network Activity DevTools are enabled by default in debug builds.
 - `EXPO_PUBLIC_FF_*` overrides initial state for Feature Flags. See [.env.development](./.env.development) for examples to copy to `.env.development.local` file and [featureFlagsSlice.ts](../feature-flags/src/featureFlagsSlice.ts) for all available values.
 
 ## Native changes - bumping runtimeVersion
@@ -107,7 +111,7 @@ Whenever you do a change in a native code (updating native dependency and so on)
 ## Troubleshooting
 
 1. For any issues with the build, try to clean the project and rebuild it:
-    - `yarn native:prebuild:clean`
+    - `yarn native:prebuild`
     - `yarn native:android` or `yarn native:ios`
 2. In case of issues with the packager, try to restart it with `--reset-cache` i.e (`yarn s --reset-cache`).
 3. If metro crashes after running `yarn start` on iOS, try running `watchman watch-del-all` to clear stale file‑watch state.

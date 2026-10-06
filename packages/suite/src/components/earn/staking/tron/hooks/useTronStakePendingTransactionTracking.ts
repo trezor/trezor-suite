@@ -1,7 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TronFlow,
+    confirmTronPendingTransactionThunk,
     fetchAndUpdateAccountThunk,
     selectConvertedNetworkFeeInfo,
     selectTransactionByAccountKeyAndTxid,
@@ -11,7 +14,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const DEFAULT_POLL_INTERVAL_MS = 3_000;
 const MIN_POLL_INTERVAL_MS = 2_000;
@@ -32,7 +35,7 @@ export const useTronStakePendingTransactionTracking = ({
     account,
     flow,
 }: UseTronStakePendingTransactionTrackingProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { pendingTxid } = useSelector(state => selectTronStakeSession(state, account.key, flow));
     const trackedTransaction = useSelector(state =>
         pendingTxid ? selectTransactionByAccountKeyAndTxid(state, account.key, pendingTxid) : null,
@@ -55,6 +58,8 @@ export const useTronStakePendingTransactionTracking = ({
         return () => clearInterval(interval);
     }, [account.key, dispatch, isCurrentlyPending, pollIntervalMs]);
 
+    const confirmingTxidRef = useRef<string | null>(null);
+
     useEffect(() => {
         if (!pendingTxid || !trackedTransaction || isPending(trackedTransaction)) {
             return;
@@ -62,10 +67,23 @@ export const useTronStakePendingTransactionTracking = ({
 
         if (trackedTransaction.type === 'failed') {
             dispatch(tronStakeActions.pendingTransactionFailed({ accountKey: account.key, flow }));
-        } else {
-            dispatch(
-                tronStakeActions.pendingTransactionConfirmed({ accountKey: account.key, flow }),
-            );
+
+            return;
         }
-    }, [account.key, flow, pendingTxid, trackedTransaction, dispatch]);
+
+        if (confirmingTxidRef.current === pendingTxid) {
+            return;
+        }
+
+        confirmingTxidRef.current = pendingTxid;
+
+        dispatch(
+            confirmTronPendingTransactionThunk({
+                accountKey: account.key,
+                flow,
+                txid: pendingTxid,
+                retryDelayMs: pollIntervalMs,
+            }),
+        );
+    }, [account.key, flow, pendingTxid, trackedTransaction, dispatch, pollIntervalMs]);
 };

@@ -26,6 +26,7 @@ export const usdcAsset: TradeableAsset = {
     cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
     networkId: 'ethereum',
     contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
+    decimals: 6,
 };
 
 export const usdtAsset: TradeableAsset = {
@@ -35,6 +36,7 @@ export const usdtAsset: TradeableAsset = {
     cryptoId: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
     networkId: 'ethereum',
     contractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7' as TokenAddress,
+    decimals: 6,
 };
 
 export const adaAsset: TradeableAsset = {

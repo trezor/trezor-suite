@@ -6,10 +6,10 @@
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/flags" },
-        { "path": "../../suite-common/trading" },
         {
-            "path": "../../suite-common/validators"
+            "path": "../../suite-common/redux-utils"
         },
+        { "path": "../../suite-common/trading" },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../forms" },
@@ -29,6 +29,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../test-utils" },
-        { "path": "../test-utils-store" }
+        { "path": "../test-utils-store" },
+        { "path": "../trading-types" }
     ]
 }

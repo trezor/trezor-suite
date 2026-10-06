@@ -1,7 +1,7 @@
 import { type NavigatorScreenParams } from '@react-navigation/native';
 import { type RequireAllOrNone } from 'type-fest';
 
-import { type BackupType, type Locale } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import { type TradingType } from '@suite-common/trading';
 import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -16,10 +16,13 @@ import { type AccountInfo } from '@trezor/connect';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 
 import {
+    type AccountDetailStackRoutes,
     type AccountsImportStackRoutes,
     type AccountsStackRoutes,
+    type ActivityCenterStackRoutes,
     type AddCoinAccountStackRoutes,
     type AppTabsRoutes,
+    type AssetsStackRoutes,
     type AuthorizeDeviceStackRoutes,
     type DemoAccountQuestionnaireStackRoutes,
     type DeviceAuthenticityStackRoutes,
@@ -38,14 +41,17 @@ import {
     type OnboardingStackRoutes,
     type PassphraseStackRoutes,
     type ReceiveAddressVerificationSource,
+    type ReceiveAddressVerificationStackRoutes,
     type ReceiveStackRoutes,
     type RootStackRoutes,
     type SendStackRoutes,
     type SettingsStackRoutes,
+    type SignAndVerifyStackRoutes,
     type StellarManageTokenStackRoutes,
     type TradingStackRoutes,
     type TransactionDetailStackRoutes,
     type WipeDeviceStackRoutes,
+    type WrappedNativeTokenStackRoutes,
     type YieldStackRoutes,
 } from './routes';
 import { type NavigateParameters } from './types';
@@ -56,8 +62,8 @@ type AccountIdentityParams = RequireAllOrNone<
 >;
 
 export type CloseActionType = 'back' | 'close';
-export type AccountAssetsTab = 'tokens' | 'defi' | 'hidden' | 'inactive';
-export type AccountAssetsFlow = 'assets' | 'send';
+export type AccountOverviewTab = 'tokens' | 'defi' | 'hidden' | 'inactive';
+export type AccountOverviewFlow = 'overview' | 'send';
 export type DeviceSuspicionCause =
     | 'deviceLooksDifferent'
     | 'firmwareAlreadyInstalled'
@@ -82,6 +88,23 @@ export type AccountsStackParamList = {
     [AccountsStackRoutes.Accounts]: { networksFilter?: NetworkSymbol[] } | undefined;
 };
 
+export type AccountDetailStackParamList = {
+    [AccountDetailStackRoutes.AccountDetail]: AccountDetailParams;
+    [AccountDetailStackRoutes.AccountSettings]: { accountKey: AccountKey };
+};
+
+export type SignAndVerifyStackParamList = {
+    [SignAndVerifyStackRoutes.DeviceConnectionGuard]: undefined;
+    [SignAndVerifyStackRoutes.ContinueOnTrezor]: undefined;
+};
+
+export type AssetsStackParamList = {
+    [AssetsStackRoutes.AssetDetail]: {
+        networkSymbol: NetworkSymbol;
+        tokenContract?: TokenAddress;
+    };
+};
+
 export type EarnStackParamList = {
     [EarnStackRoutes.Earn]: undefined;
 };
@@ -92,14 +115,21 @@ export type YieldFlowParams = {
     yieldId?: string;
 };
 
-export type YieldClaimParams = {
-    accountKey: AccountKey;
+export type YieldClaimVaultParams = {
+    name: string;
+    tokenContract: TokenAddress;
 };
 
-export type YieldInsufficientBalanceParams = {
+export type YieldClaimParams = {
     accountKey: AccountKey;
-    tokenContract: TokenAddress;
-    yieldId: string;
+    vault?: YieldClaimVaultParams;
+};
+
+export type WrappedNativeTokenPendingTxParams = {
+    amount: string;
+    fee?: string;
+    submittedAt: number;
+    txid: string;
 };
 
 type YieldDepositApprovalReviewParams = YieldFlowParams & {
@@ -122,21 +152,51 @@ export type YieldWithdrawParams = YieldFlowParams & {
 };
 
 export type YieldStackParamList = {
-    [YieldStackRoutes.HowYieldWorks]: YieldFlowParams;
+    [YieldStackRoutes.HowYieldWorks]: YieldFlowParams & { isInfoOnly?: boolean };
     [YieldStackRoutes.YieldConsents]: YieldFlowParams;
     [YieldStackRoutes.YieldClaim]: YieldClaimParams;
     [YieldStackRoutes.YieldClaimReview]: YieldClaimParams;
     [YieldStackRoutes.YieldClaimComplete]: YieldClaimParams;
+    [YieldStackRoutes.YieldDepositWrap]: YieldFlowParams;
+    [YieldStackRoutes.YieldDepositWrapReview]: YieldFlowParams;
     [YieldStackRoutes.YieldDepositApproval]: YieldFlowParams;
     [YieldStackRoutes.YieldDeposit]: YieldFlowParams;
+    [YieldStackRoutes.YieldDepositNoBalance]: YieldFlowParams;
     [YieldStackRoutes.YieldDepositRevoke]: YieldDepositRevokeParams;
     [YieldStackRoutes.YieldWithdraw]: YieldWithdrawParams;
     [YieldStackRoutes.YieldDepositApprovalReview]: YieldDepositApprovalReviewParams;
     [YieldStackRoutes.YieldDepositRevokeReview]: YieldDepositRevokeReviewParams;
     [YieldStackRoutes.YieldDepositReview]: YieldFlowParams;
+    [YieldStackRoutes.YieldWithdrawUnwrap]: YieldWithdrawParams;
+    [YieldStackRoutes.YieldWithdrawUnwrapReview]: YieldWithdrawParams;
     [YieldStackRoutes.YieldWithdrawReview]: YieldWithdrawParams;
     [YieldStackRoutes.YieldDepositComplete]: YieldFlowParams;
     [YieldStackRoutes.YieldWithdrawComplete]: YieldWithdrawParams;
+};
+
+type WrappedNativeTokenFormParams = {
+    accountKey: AccountKey;
+    pendingTransaction?: WrappedNativeTokenPendingTxParams;
+};
+
+type WrappedNativeTokenReviewParams = {
+    accountKey: AccountKey;
+    amount: string;
+    unsignedTransaction: string;
+};
+
+type WrappedNativeTokenCompleteParams = {
+    accountKey: AccountKey;
+    amount: string;
+};
+
+export type WrappedNativeTokenStackParamList = {
+    [WrappedNativeTokenStackRoutes.WrapNativeToken]: WrappedNativeTokenFormParams;
+    [WrappedNativeTokenStackRoutes.WrapNativeTokenReview]: WrappedNativeTokenReviewParams;
+    [WrappedNativeTokenStackRoutes.WrapNativeTokenComplete]: WrappedNativeTokenCompleteParams;
+    [WrappedNativeTokenStackRoutes.UnwrapNativeToken]: WrappedNativeTokenFormParams;
+    [WrappedNativeTokenStackRoutes.UnwrapNativeTokenReview]: WrappedNativeTokenReviewParams;
+    [WrappedNativeTokenStackRoutes.UnwrapNativeTokenComplete]: WrappedNativeTokenCompleteParams;
 };
 
 export type HomeStackParamList = {
@@ -174,6 +234,8 @@ export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveAccounts]: undefined;
     [ReceiveStackRoutes.ReceiveAddress]: AccountDetailParams;
     [ReceiveStackRoutes.ReceiveAddressVerification]: {
+        accountKey: AccountKey;
+        addressPath: string;
         source: ReceiveAddressVerificationSource;
     };
     [ReceiveStackRoutes.ReceiveAddressList]: {
@@ -182,6 +244,15 @@ export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveAddressDetail]: {
         accountKey: AccountKey;
         addressPath: string;
+    };
+};
+
+export type ReceiveAddressVerificationStackParamList = {
+    [ReceiveAddressVerificationStackRoutes.DeviceConnectionGuard]: undefined;
+    [ReceiveAddressVerificationStackRoutes.ContinueOnTrezor]: {
+        accountKey: AccountKey;
+        addressPath: string;
+        source: ReceiveAddressVerificationSource;
     };
 };
 
@@ -290,6 +361,15 @@ export type AccountsImportStackParamList = {
 
 export type AddCoinFlowType = 'home' | 'receive' | 'accounts' | 'trade' | 'earn';
 
+export type AddCoinEarnFlowParams =
+    | { earnType: 'staking' }
+    | {
+          earnType: 'yield';
+          yieldId: string;
+          underlyingTokenContract: TokenAddress;
+          receiptTokenContract: TokenAddress | null;
+      };
+
 export type PinActionType = 'enable' | 'change' | 'disable';
 
 export type AddCoinAccountStackParamList = {
@@ -304,10 +384,12 @@ export type AddCoinAccountStackParamList = {
     [AddCoinAccountStackRoutes.AddCoinDiscoveryRunning]: {
         networkSymbol: NetworkSymbol;
         flowType: AddCoinFlowType;
+        earnFlowParams?: AddCoinEarnFlowParams;
     };
     [AddCoinAccountStackRoutes.AddCoinDiscoveryFinished]: {
         networkSymbol: NetworkSymbol;
         flowType: AddCoinFlowType;
+        earnFlowParams?: AddCoinEarnFlowParams;
     };
 };
 
@@ -318,9 +400,7 @@ export type DeviceSettingsStackParamList = {
         closeActionType: CloseActionType;
     };
     [DeviceSettingsStackRoutes.FirmwareUpdateStack]: undefined;
-    [DeviceSettingsStackRoutes.FirmwareLanguageStack]: {
-        language: Locale;
-    };
+    [DeviceSettingsStackRoutes.FirmwareLanguageStack]: undefined;
     [DeviceSettingsStackRoutes.DeviceConnection]: undefined;
     [DeviceSettingsStackRoutes.DeviceAutoConnectStack]: undefined;
     [DeviceSettingsStackRoutes.ForgetDevice]: undefined;
@@ -334,12 +414,10 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DevicePassphraseStack]: undefined;
     [DeviceSettingsStackRoutes.DeviceAuthenticity]: undefined;
     [DeviceSettingsStackRoutes.DeviceAuthenticityStack]:
-        | NavigatorScreenParams<DeviceAuthenticityStackParamList>
-        | undefined;
+        NavigatorScreenParams<DeviceAuthenticityStackParamList> | undefined;
     [DeviceSettingsStackRoutes.WipeDevice]: undefined;
     [DeviceSettingsStackRoutes.WipeDeviceStack]:
-        | NavigatorScreenParams<WipeDeviceStackParamList>
-        | undefined;
+        NavigatorScreenParams<WipeDeviceStackParamList> | undefined;
 };
 
 export type DeviceNameStackParamList = {
@@ -413,8 +491,7 @@ export type DeviceAuthenticityStackParamList = {
 
 export type AuthorizeDeviceStackParamList = {
     [AuthorizeDeviceStackRoutes.DeviceConnectionGuard]:
-        | { onCancelNavigationTarget: NavigateParameters<RootStackParamList> }
-        | undefined;
+        { onCancelNavigationTarget: NavigateParameters<RootStackParamList> } | undefined;
     [AuthorizeDeviceStackRoutes.ConnectDeviceCrossroads]: undefined;
     [AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice]: undefined;
     [AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice]: undefined;
@@ -445,30 +522,34 @@ export type PassphraseStackParamList = {
 
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
+    [RootStackRoutes.AccountDetailStack]: NavigatorScreenParams<AccountDetailStackParamList>;
+    [RootStackRoutes.AssetsStack]: NavigatorScreenParams<AssetsStackParamList>;
+    [RootStackRoutes.AccountOverview]: {
+        accountKey: AccountKey;
+        tab?: AccountOverviewTab;
+        flowType?: AccountOverviewFlow;
+    } & AccountIdentityParams;
     [RootStackRoutes.OnboardingStack]: NavigatorScreenParams<OnboardingStackParamList>;
     [RootStackRoutes.DeviceOnboardingStack]: NavigatorScreenParams<DeviceOnboardingStackParamList>;
     [RootStackRoutes.AuthorizeDeviceStack]: NavigatorScreenParams<AuthorizeDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.DemoAccountQuestionnaireStack]: NavigatorScreenParams<DemoAccountQuestionnaireStackParamList>;
-    [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
+    [RootStackRoutes.SignAndVerify]: { accountKey: AccountKey };
+    [RootStackRoutes.SignAndVerifyStack]: undefined;
     [RootStackRoutes.TransactionDetailStack]: NavigatorScreenParams<TransactionDetailStackParamList>;
     [RootStackRoutes.DevUtils]: undefined;
     [RootStackRoutes.MessageSystemManager]: undefined;
-    [RootStackRoutes.AccountAssets]: {
-        accountKey: AccountKey;
-        tab?: AccountAssetsTab;
-        flowType?: AccountAssetsFlow;
-    } & AccountIdentityParams;
-    [RootStackRoutes.AccountDetail]: AccountDetailParams;
-    [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
+    [RootStackRoutes.MessageSystemExperiments]: undefined;
     [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };
+    [RootStackRoutes.YieldVaultDetail]: { accountKey: AccountKey; tokenContract: TokenAddress };
     [RootStackRoutes.HowStakeWorksScreen]: {
+        isInfoOnly?: boolean;
         accountKey?: AccountKey;
         symbol: NetworkSymbol;
     };
     [RootStackRoutes.YieldNavigator]: NavigatorScreenParams<YieldStackParamList>;
-    [RootStackRoutes.YieldInsufficientBalance]: YieldInsufficientBalanceParams;
-    [RootStackRoutes.EarnForm]: {
+    [RootStackRoutes.WrappedNativeTokenNavigator]: NavigatorScreenParams<WrappedNativeTokenStackParamList>;
+    [RootStackRoutes.StakingForm]: {
         accountKey: AccountKey;
     };
     [RootStackRoutes.EarnConsents]: {
@@ -476,21 +557,20 @@ export type RootStackParamList = {
         amount: string;
         account: Account;
     };
-    [RootStackRoutes.EarnTransactionDataReview]: {
+    [RootStackRoutes.StakingTransactionDataReview]: {
         accountKey: AccountKey;
-        amount: string;
+        stakeType: 'stake' | 'unstake' | 'claim';
+        amount?: string;
+    };
+    [RootStackRoutes.StakingTransactionComplete]: {
+        accountKey: AccountKey;
+        stakeType: 'stake' | 'unstake' | 'claim';
+        amountInBaseUnits: string;
     };
     [RootStackRoutes.UnstakeFlow]: { accountKey: AccountKey };
-    [RootStackRoutes.UnstakeTransactionDataReview]: {
-        accountKey: AccountKey;
-        amount: string;
-    };
-    [RootStackRoutes.ClaimReview]: {
+    [RootStackRoutes.StakingClaimReview]: {
         accountKey: AccountKey;
         symbol: NetworkSymbol;
-    };
-    [RootStackRoutes.ClaimTransactionDataReview]: {
-        accountKey: AccountKey;
     };
     [RootStackRoutes.DeviceSettingsStack]: NavigatorScreenParams<DeviceSettingsStackParamList>;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
@@ -525,12 +605,13 @@ export type RootStackParamList = {
         shouldIncreaseLimit?: boolean;
     };
     [RootStackRoutes.TradingSellPreview]: undefined;
-    [RootStackRoutes.TradingSellOutputsReview]: {
+    [RootStackRoutes.TradingSellCompletion]: undefined;
+    [RootStackRoutes.TradingSellTransactionReview]: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
         orderId: string;
     };
-    [RootStackRoutes.TradingExchangeOutputsReview]: {
+    [RootStackRoutes.TradingExchangeTransactionReview]: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
         orderId: string;
@@ -539,12 +620,28 @@ export type RootStackParamList = {
     [RootStackRoutes.TradingConfirming]: {
         flowType: ConfirmingScreenFlowType;
     };
+    [RootStackRoutes.TradingMyAsset]: {
+        tradingType: Extract<TradingType, 'sell' | 'exchange'>;
+    };
+    [RootStackRoutes.TradingTradeableAsset]: {
+        tradingType: Extract<TradingType, 'buy' | 'exchange'>;
+    };
     [RootStackRoutes.ReceiveAccounts]: {
         symbol: NetworkSymbol;
         tradingType: Exclude<TradingType, 'sell'>;
     };
+    [RootStackRoutes.TradingReceiveAddress]: {
+        accountKey: AccountKey;
+        tradingType: Exclude<TradingType, 'sell'>;
+    };
     [RootStackRoutes.TradingHistory]: undefined;
+    [RootStackRoutes.TradingHistoryDetail]: { orderId: string };
     [RootStackRoutes.TradingBuyPreview]: undefined;
+    [RootStackRoutes.ActivityCenterStack]: NavigatorScreenParams<ActivityCenterStackParamList>;
+};
+
+export type ActivityCenterStackParamList = {
+    [ActivityCenterStackRoutes.ActivityCenter]: undefined;
 };
 
 export type TransactionDetailStackParamList = {
@@ -565,7 +662,12 @@ export type ConfirmingScreenFlowType = 'approve' | 'revoke' | 'revoke-and-approv
 export type ExchangeFlowType = 'swap' | 'sign-data' | ConfirmingScreenFlowType;
 
 export type TradingStackParamList = {
-    [TradingStackRoutes.Trading]: { tradingType?: TradingType };
+    [TradingStackRoutes.Trading]: {
+        tradingType?: TradingType;
+        selectedMyAssetAccountKey?: AccountKey;
+        selectedMyAssetCryptoId?: string;
+        selectedTradeableAssetCryptoId?: string;
+    };
 };
 
 export type StellarManageTokenStackParamList = {

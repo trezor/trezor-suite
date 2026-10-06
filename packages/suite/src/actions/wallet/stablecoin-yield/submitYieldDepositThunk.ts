@@ -1,20 +1,23 @@
-import { asTypedDesktopAnalytics } from '@suite/analytics';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { openDeferredModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
-import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
+import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    STABLECOIN_YIELD_PREFIX,
+    type ComposeYieldDepositTransactionThunkState,
+    YIELD_PREFIX,
     type YieldFlowResolvedData,
     composeYieldDepositTransactionThunk,
     getYieldDepositErrorTranslationKey,
     openYieldApproveModal,
     setYieldError,
-    stablecoinYieldActions,
+    yieldActions,
 } from '@suite-common/wallet-core';
 
 import {
+    type SendYieldTransactionDeps,
+    type SendYieldTransactionState,
     getYieldErrorTranslationKey,
     getYieldSubmitErrorAnalyticsMessage,
     sendYieldTransaction,
@@ -26,16 +29,24 @@ type SubmitYieldDepositPayload = {
     amount: string;
 };
 
-export const submitYieldDepositThunk = createThunk(
-    `${STABLECOIN_YIELD_PREFIX}/thunk/submitDeposit`,
-    async (
-        { flowKey, flowData, amount }: SubmitYieldDepositPayload,
-        { dispatch, getState, extra },
-    ) => {
+type SubmitYieldDepositThunkState = ComposeYieldDepositTransactionThunkState &
+    SendYieldTransactionState;
+
+type SubmitYieldDepositThunkDeps = SendYieldTransactionDeps & {
+    services: DesktopAnalyticsDep;
+};
+
+export const submitYieldDepositThunk = createThunk<
+    void,
+    SubmitYieldDepositPayload,
+    { state: SubmitYieldDepositThunkState; extra: SubmitYieldDepositThunkDeps }
+>(
+    `${YIELD_PREFIX}/thunk/submitDeposit`,
+    async ({ flowKey, flowData, amount }, { dispatch, getState, extra }) => {
         const flowType = 'deposit' as const;
 
         try {
-            dispatch(stablecoinYieldActions.startSubmittingAction({ flowType, flowKey, amount }));
+            dispatch(yieldActions.startSubmittingAction({ flowType, flowKey, amount }));
 
             const result = await dispatch(
                 composeYieldDepositTransactionThunk({ flowData, amount }),
@@ -53,14 +64,14 @@ export const submitYieldDepositThunk = createThunk(
             }
 
             if (result.type === 'revoke-required') {
-                dispatch(stablecoinYieldActions.enterModifyMode({ flowType, flowKey }));
-                dispatch(stablecoinYieldActions.setRevokeRequired({ flowType, flowKey }));
+                dispatch(yieldActions.enterModifyMode({ flowType, flowKey }));
+                dispatch(yieldActions.setRevokeRequired({ flowType, flowKey }));
 
                 return;
             }
 
             if (result.type === 'approval-required') {
-                dispatch(stablecoinYieldActions.enterModifyMode({ flowType, flowKey }));
+                dispatch(yieldActions.enterModifyMode({ flowType, flowKey }));
 
                 openYieldApproveModal({
                     dispatch,
@@ -86,21 +97,25 @@ export const submitYieldDepositThunk = createThunk(
                 }),
             );
 
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            if (userAcceptedTxSimulation === undefined) {
+                return;
+            }
+
+            extra.services.analytics.report({
                 type: events.yieldDepositEvent.name,
                 payload: {
                     type: 'tx-simulation-modal',
-                    action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
+                    action: userAcceptedTxSimulation.value === false ? 'cancel' : 'continue',
                     networkSymbol: flowData.account.symbol,
                     vaultId: flowData.vault.id,
                 },
             });
 
-            if (userAcceptedTxSimulation?.value === false) {
+            if (userAcceptedTxSimulation.value === false) {
                 return;
             }
 
-            const selectedFee = userAcceptedTxSimulation?.selectedFee ?? null;
+            const { selectedFee } = userAcceptedTxSimulation;
 
             const sendResult = await sendYieldTransaction({
                 account: flowData.account,
@@ -114,20 +129,10 @@ export const submitYieldDepositThunk = createThunk(
                 selectedFee,
             });
 
-            userAcceptedTxSimulation?.resolve();
+            userAcceptedTxSimulation.resolve();
 
-            if (!sendResult) {
-                asTypedDesktopAnalytics(extra.services.analytics).report({
-                    type: events.yieldDepositEvent.name,
-                    payload: {
-                        type: 'error',
-                        action: 'continue',
-                        networkSymbol: flowData.account.symbol,
-                        vaultId: flowData.vault.id,
-                        errorMessage: 'submit-failed',
-                    },
-                });
-
+            // A deliberate user cancel — not reported as a failure.
+            if (sendResult.status === 'cancelled') {
                 return;
             }
 
@@ -141,20 +146,22 @@ export const submitYieldDepositThunk = createThunk(
             );
 
             dispatch(
-                stablecoinYieldActions.setPendingTx({
+                yieldActions.setPendingTx({
                     flowType,
                     flowKey,
                     tx: {
                         type: flowType,
                         txid: sendResult.txid,
                         amount,
+                        fee: sendResult.fee,
+                        submittedAt: Date.now(),
                     },
                     receiptAmount: result.receiptAmount,
                 }),
             );
         } catch (error) {
             console.error(error);
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.yieldDepositEvent.name,
                 payload: {
                     type: 'error',
@@ -165,14 +172,14 @@ export const submitYieldDepositThunk = createThunk(
                 },
             });
             dispatch(
-                stablecoinYieldActions.setError({
+                yieldActions.setError({
                     flowType,
                     flowKey,
                     error: getYieldErrorTranslationKey(error),
                 }),
             );
         } finally {
-            dispatch(stablecoinYieldActions.finishSubmittingAction({ flowType, flowKey }));
+            dispatch(yieldActions.finishSubmittingAction({ flowType, flowKey }));
         }
     },
 );

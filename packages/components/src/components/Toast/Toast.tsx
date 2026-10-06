@@ -56,7 +56,7 @@ export const Toast = ({
     );
 
     return (
-        <div data-testid={dataTestBase} data-toast-intent={intent}>
+        <div data-component="Toast" data-testid={dataTestBase} data-toast-intent={intent}>
             <Box
                 borderRadius={8}
                 backgroundColor={mapToastIntentToBackgroundColor(intent)}

@@ -1,5 +1,6 @@
 import { messages } from '@suite/intl';
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
@@ -26,6 +27,7 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, 
                     'Verify that a user can successfully create a wallet during the offline onboarding process.',
                 category: TestCategory.Onboarding,
                 priority: TestPriority.Critical,
+                stream: TestStream.Growth,
             }),
         },
         async ({
@@ -45,7 +47,7 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, 
             await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation(
                 'TR_YOU_WERE_DISCONNECTED_DOT',
             );
-            await analyticsSection.continueButton.click();
+            await onboardingPage.setupDeviceButton.click();
 
             await test.step('Device onboarding steps', async () => {
                 await onboardingPage.firmware.continueThroughFirmware();
@@ -77,7 +79,7 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, 
 
             await test.step('Enable Bitcoin so discovery can be attempted', async () => {
                 await settingsPage.changeNetworks({
-                    enableNetworks: ['btc'],
+                    enableNetworks: [asNetworkSymbol('btc')],
                     skipDiscovery: true,
                 });
                 await dashboardPage.navigateTo();

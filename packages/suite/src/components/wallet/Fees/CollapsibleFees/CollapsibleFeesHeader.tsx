@@ -1,39 +1,36 @@
 import { useMemo } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { isTronAccountActivation } from '@suite-common/wallet-utils';
 import { Row, Text, TextButton, Tooltip } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 
 import { useFeesContext } from '../context/FeesContext';
+import { getFeeTooltipTextId } from '../feeUtils';
 
-export interface CollapsibleFeesHeaderProps {
+export type CollapsibleFeesHeaderProps = {
     label?: TranslationKey;
     typographyStyle: TypographyStyle;
     supportsAdjustableFees?: boolean;
-}
+};
 
 export function CollapsibleFeesHeader({
     label,
     typographyStyle,
     supportsAdjustableFees,
 }: CollapsibleFeesHeaderProps) {
-    const { networkType } = useFeesContext();
+    const { networkType, networkSymbol, composedLevels } = useFeesContext();
 
-    const feeTooltipTextId = useMemo(() => {
-        switch (networkType) {
-            case 'ethereum':
-                return 'TR_EVM_MAX_FEE_DESC';
-            case 'stellar':
-                return 'TR_STELLAR_FEE_DESC';
-            case 'solana':
-                return 'TR_SOL_FEE_DESC';
-            case 'ripple':
-                return 'TR_XRP_FEE_DESC';
-            default:
-                return 'TR_TRANSACTION_FEE_DESC';
-        }
-    }, [networkType]);
+    const feeTooltipTextId = useMemo(
+        () =>
+            getFeeTooltipTextId({
+                networkType,
+                isTronAccountActivation: isTronAccountActivation(composedLevels?.normal),
+            }),
+        [networkType, composedLevels],
+    );
 
     const feeLabelId = useMemo(() => {
         switch (networkType) {
@@ -65,7 +62,15 @@ export function CollapsibleFeesHeader({
                 }
                 hasIcon
                 maxWidth={328}
-                content={<Translation id={feeTooltipTextId} values={{ br: <br /> }} />}
+                content={
+                    <Translation
+                        id={feeTooltipTextId}
+                        values={{
+                            br: <br />,
+                            networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol),
+                        }}
+                    />
+                }
             >
                 <Text typographyStyle={typographyStyle} intent="neutral" priority="secondary">
                     <Translation id={label ?? feeLabelId} />

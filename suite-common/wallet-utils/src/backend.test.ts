@@ -1,10 +1,12 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+
 import { getDefaultBackendType, isTrezorConnectBackendType } from './backendUtils';
 
 describe('backend utils', () => {
     test('getDefaultBackendType', () => {
-        expect(getDefaultBackendType('btc')).toBe('blockbook');
-        expect(getDefaultBackendType('ltc')).toBe('blockbook');
-        expect(getDefaultBackendType('ada')).toBe('blockfrost');
+        expect(getDefaultBackendType(asNetworkSymbol('btc'))).toBe('blockbook');
+        expect(getDefaultBackendType(asNetworkSymbol('ltc'))).toBe('blockbook');
+        expect(getDefaultBackendType(asNetworkSymbol('ada'))).toBe('blockfrost');
     });
 
     test('isTrezorConnectBackendType', () => {

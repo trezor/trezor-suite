@@ -1,75 +1,96 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
-import { deviceInitialState } from '@suite-common/device';
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
+import { type NetworksRootState } from '@suite-common/networks';
+import { mockNetworksState } from '@suite-common/networks/mocks';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
+import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
+    initialWalletSettingsState,
+} from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
+    type PreloadedStatePartial,
     act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
-import { selectIsAmountInputActive, tradingSlice } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    selectIsAmountInputActive,
+    tradingSlice,
+} from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useFocusedValueWatch } from './useFocusedValueWatch';
 import { useBuyForm } from '../buy/useBuyForm';
 
+type State = TradingRootState &
+    AccountsRootState &
+    WalletSettingsRootState &
+    DeviceRootState &
+    NetworksRootState;
+
 jest.mock('./useFocusedValueWatch', () => jest.requireActual('./useFocusedValueWatch'));
 
 describe('useFocusedValueWatch', () => {
     let form: BuyFormType;
-    let store: TestStore;
+    let store: Store<State>;
 
     const reducer = {
+        networks: createStaticReducer(mockNetworksState(mockGetSupportedNetworks())),
         device: createStaticReducer(deviceInitialState),
         locale: localeReducer,
         wallet: combineReducers({
             settings: createStaticReducer(initialWalletSettingsState),
             accounts: createStaticReducer(getWalletState({ tradeType: 'buy' }).accounts),
-            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+            trading: tradingSlice.prepareReducer({
+                actionTypes: { storageLoad: mockActionType('storageLoad') },
+            }),
         }),
     } as const;
 
-    const preloadedState = {
+    const preloadedState: PreloadedStatePartial<State> = {
+        networks: mockNetworksState(mockGetSupportedNetworks()),
         device: deviceInitialState,
         wallet: {
             trading: getWalletState({ tradeType: 'buy' }).trading,
         },
     };
 
-    const renderForm = () =>
-        renderHookWithStoreProvider(() => useBuyForm(), {
+    const renderForm = async () =>
+        await renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState,
         });
 
-    const renderUseFocusedValueWatch = () =>
-        renderHookWithStoreProvider(({ control }) => useFocusedValueWatch(control), {
+    const renderUseFocusedValueWatch = async () =>
+        await renderHookWithStoreProvider(({ control }) => useFocusedValueWatch(control), {
             initialProps: { control: form.control },
-            store,
+            services: { store },
         });
 
-    beforeEach(() => {
-        const { result } = renderForm();
+    beforeEach(async () => {
+        const { result } = await renderForm();
         form = result.current;
 
         store = createLightStore({ reducer, preloadedState });
     });
 
-    it('should return false by default', () => {
-        const { result } = renderUseFocusedValueWatch();
+    it('should return false by default', async () => {
+        const { result } = await renderUseFocusedValueWatch();
 
         expect(result.current).toEqual(false);
         expect(selectIsAmountInputActive(store.getState())).toBe(false);
     });
 
     it('should be false right after input is focused', async () => {
-        const { result } = renderUseFocusedValueWatch();
+        const { result } = await renderUseFocusedValueWatch();
 
-        act(() => {
+        await act(() => {
             form.setValue('focusedValue', 'fiatValue');
         });
 
@@ -81,7 +102,7 @@ describe('useFocusedValueWatch', () => {
     });
 
     it('should be true after 300ms of input focus', async () => {
-        const { result } = renderUseFocusedValueWatch();
+        const { result } = await renderUseFocusedValueWatch();
 
         await act(() => {
             form.setValue('focusedValue', 'fiatValue');
@@ -97,7 +118,7 @@ describe('useFocusedValueWatch', () => {
     });
 
     it('should set isAmountInputActive to false on unmount', async () => {
-        const { unmount } = renderUseFocusedValueWatch();
+        const { unmount } = await renderUseFocusedValueWatch();
         await act(() => {
             form.setValue('focusedValue', 'fiatValue');
         });
@@ -107,7 +128,7 @@ describe('useFocusedValueWatch', () => {
             await new Promise(resolve => setTimeout(resolve, 300));
         });
 
-        unmount();
+        await unmount();
 
         expect(selectIsAmountInputActive(store.getState())).toBe(false);
     });

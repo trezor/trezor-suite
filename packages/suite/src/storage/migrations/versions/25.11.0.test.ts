@@ -1,6 +1,6 @@
-import '@suite-common/test-utils/globalOverrides';
-import { type IDBPDatabase, deleteDB, openDB } from 'idb';
+import { type IDBPDatabase, openDB } from 'idb';
 
+import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 
 import { type SuiteDBSchema } from 'src/storage/definitions';
@@ -18,8 +18,8 @@ const runMigration = () =>
     });
 
 describe('migration 25.11.0', () => {
-    beforeEach(async () => {
-        await deleteDB(DB_NAME);
+    beforeEach(() => {
+        installFakeIndexedDb();
     });
 
     test('migrates autoEject and autoForget from suiteSettings to walletSettings', async () => {

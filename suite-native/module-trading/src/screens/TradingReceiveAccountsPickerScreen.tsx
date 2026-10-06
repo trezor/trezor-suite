@@ -1,57 +1,22 @@
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { AccountLabel } from '@suite-native/accounts';
 import { AccountTypeDecisionBottomSheet, useAddCoinAccount } from '@suite-native/add-coin-account';
 import { Translation } from '@suite-native/intl';
 import {
     type AddCoinFlowType,
+    DynamicScreenHeader,
     type RootStackParamList,
     type RootStackRoutes,
     Screen,
-    ScreenHeader,
 } from '@suite-native/navigation';
-import {
-    selectBuySelectedReceiveAccount,
-    selectExchangeSelectedReceiveAccount,
-} from '@suite-native/trading-state';
-import { type ReceiveAccount } from '@suite-native/trading-types';
 
 import { AccountList } from '../components/general/AccountList/AccountList';
-import { type ReceiveAccountsListMode } from '../hooks/general/useReceiveAccountsListData';
-
-const HeaderTitle = ({
-    pickerMode,
-    selectedReceiveAccount,
-}: {
-    pickerMode: ReceiveAccountsListMode;
-    selectedReceiveAccount: ReceiveAccount | undefined;
-}) => {
-    if (pickerMode === 'account') {
-        return <Translation id="moduleTrading.accountScreen.titleStep1" />;
-    }
-
-    if (selectedReceiveAccount?.account) {
-        return <AccountLabel account={selectedReceiveAccount.account} />;
-    }
-
-    return selectedReceiveAccount?.account.accountLabel;
-};
+import { useReceiveAccountsListData } from '../hooks/general/useReceiveAccountsListData';
 
 export const TradingReceiveAccountsPickerScreen = () => {
     const {
         params: { symbol, tradingType },
     } = useRoute<RouteProp<RootStackParamList, RootStackRoutes.ReceiveAccounts>>();
-
-    const accountSelector =
-        tradingType === 'buy'
-            ? selectBuySelectedReceiveAccount
-            : selectExchangeSelectedReceiveAccount;
-    const selectedReceiveAccount = useSelector(accountSelector);
-
-    const [pickerMode, setPickerMode] = useState<ReceiveAccountsListMode>('account');
 
     const {
         onSelectedNetworkItem,
@@ -61,6 +26,8 @@ export const TradingReceiveAccountsPickerScreen = () => {
         getAccountTypeToBeAddedName,
         bottomSheetRef,
     } = useAddCoinAccount();
+
+    const data = useReceiveAccountsListData({ symbol });
 
     const flowType: AddCoinFlowType = 'trade';
 
@@ -73,22 +40,20 @@ export const TradingReceiveAccountsPickerScreen = () => {
     return (
         <Screen
             header={
-                <ScreenHeader
+                <DynamicScreenHeader
                     title={
-                        <HeaderTitle
-                            pickerMode={pickerMode}
-                            selectedReceiveAccount={selectedReceiveAccount}
-                        />
+                        data.length > 0 ? (
+                            <Translation id="moduleTrading.accountScreen.titleStep1" />
+                        ) : undefined
                     }
                     closeActionType="back"
                 />
             }
         >
             <AccountList
+                data={data}
                 symbol={symbol}
-                pickerMode={pickerMode}
                 onAddAccountTap={handleAddAccount}
-                onSetPickerMode={setPickerMode}
                 tradingType={tradingType}
             />
             <AccountTypeDecisionBottomSheet

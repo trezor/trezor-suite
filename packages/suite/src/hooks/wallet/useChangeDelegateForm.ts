@@ -1,8 +1,11 @@
-import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
+import { createContext, useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
+    getStakeFormsDefaultValues,
+    getStakingContractAddress,
     selectBaseCurrency,
     selectRawNetworkFeeInfo,
     selectVotingDelegationOption,
@@ -12,10 +15,10 @@ import {
     type SelectedAccountLoaded,
 } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
-import { throwError } from '@trezor/utils';
+import { useCurrentRef } from '@trezor/react-utils';
 
-import { signTransaction } from 'src/actions/wallet/stakeActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { signTransactionThunk } from 'src/actions/wallet/stakeActions';
+import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
 
 import { useFees } from './form/useFees';
@@ -32,13 +35,15 @@ type UseChangeDelegateFormsProps = {
 export const useChangeDelegateForm = ({
     selectedAccount,
 }: UseChangeDelegateFormsProps): ChangeDelegateContextValues => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const { account, network } = selectedAccount;
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
-    const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
+    const selectedVotingDelegation = useSelector(state =>
+        selectVotingDelegationOption(state, account.key),
+    );
 
     const feeInfo = getConvertedOrDefaultFeeInfo({
         networkType: account.networkType,
@@ -62,9 +67,8 @@ export const useChangeDelegateForm = ({
             network,
             feeInfo,
             formValues: defaultValues,
-            selectedVotingDelegation,
         }),
-        [account, network, feeInfo, defaultValues, selectedVotingDelegation],
+        [account, network, feeInfo, defaultValues],
     );
 
     const methods = useForm<ChangeDelegateFormState>({
@@ -91,6 +95,12 @@ export const useChangeDelegateForm = ({
         state,
     });
 
+    const composeRequestRef = useCurrentRef(composeRequest);
+
+    useEffect(() => {
+        composeRequestRef.current();
+    }, [composeRequestRef, selectedVotingDelegation]);
+
     const { changeFeeLevel, selectedFee: _selectedFee } = useFees({
         defaultValue: 'normal',
         feeInfo,
@@ -110,7 +120,7 @@ export const useChangeDelegateForm = ({
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
-            const result = await dispatch(signTransaction(values, composedTx));
+            const result = await dispatch(signTransactionThunk(values, composedTx));
 
             if (result?.success) {
                 clearForm();
@@ -136,7 +146,3 @@ export const useChangeDelegateForm = ({
         changeFeeLevel,
     };
 };
-
-export const useChangeDelegateFormContext = () =>
-    useContext(ChangeDelegateFormContext) ??
-    throwError('useChangeDelegateFormContext used without Context');

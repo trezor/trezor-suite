@@ -1,11 +1,12 @@
 import type { CryptoId } from 'invity-api';
 
+import { type DeviceRootState } from '@suite-common/device';
 import {
     Feature,
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -18,11 +19,13 @@ import {
     type TradingTransaction,
     type TradingType,
     type TradingTypeWithConcierge,
-    cryptoIdToSymbol,
+    cryptoIdToNetworkSymbol,
     isFinalStatus,
     selectDeviceTradingTrades,
     selectTradingIsSlip24Allowed,
+    selectTradingIsSlip24SellAllowed,
     selectTradingSupportedSymbols,
+    selectTradingTradeByOrderId,
     toTokenCryptoId,
 } from '@suite-common/trading';
 import {
@@ -59,13 +62,17 @@ import {
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 import { type CombinedLabelingState } from '@suite-native/labeling';
+import {
+    type SettingsSliceRootState,
+    selectIsExperimentalFeatureEnabled,
+} from '@suite-native/settings';
 import { type TokensRootState } from '@suite-native/tokens';
 import {
     type SectionListData,
     getSymbolFromTradeableAsset,
     toCaseAwareCryptoId,
 } from '@suite-native/trading-atoms';
-import { type MyAsset, type MyAssetRow, type TradeableAsset } from '@suite-native/trading-types';
+import { type MyAsset, type TradeableAsset } from '@suite-native/trading-types';
 
 import { selectIsTradingEnabledForCountry } from './residenceSelectors';
 import { type TradingRootState } from '../reducers';
@@ -75,7 +82,8 @@ export type CombinedSelectorsRootState = TradingRootStateWithDeviceAndAccounts &
     FiatRatesRootState &
     WalletSettingsRootState &
     TokensRootState &
-    FeatureFlagsRootState;
+    FeatureFlagsRootState &
+    NetworksRootState;
 
 const createTradingWithDeviceAndAccountsMemoizedSelector =
     createWeakMapSelector.withTypes<TradingRootStateWithDeviceAndAccounts>();
@@ -133,16 +141,24 @@ export const selectIsTradingConciergeEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState,
 ) => selectIsFeatureEnabled(state, Feature.trading.concierge, true);
 
+export const selectIsTradingTxSimulationEnabled = (state: MessageSystemRootState) =>
+    selectIsFeatureEnabled(state, Feature.trading.txSimulation, true);
+
+const selectIsTradingSlip24Active = (state: MessageSystemRootState & SettingsSliceRootState) =>
+    selectIsFeatureEnabled(state, Feature.trading.slip24, true) &&
+    selectIsExperimentalFeatureEnabled(state, 'slip24');
+
 export const selectIsTradingSlip24Enabled = (
-    state: MessageSystemRootState & FeatureFlagsRootState & TradingRootStateWithDeviceAndAccounts,
+    state: MessageSystemRootState & SettingsSliceRootState & TradingRootStateWithDeviceAndAccounts,
     account: Account | undefined | null,
-) =>
-    selectTradingIsSlip24Allowed(
-        state,
-        account,
-        selectIsFeatureEnabled(state, Feature.trading.slip24, true) &&
-            selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSlip24Enabled),
-    );
+    tradeType: 'exchange' | 'sell',
+) => {
+    const isSlip24Active = selectIsTradingSlip24Active(state);
+
+    return tradeType === 'sell'
+        ? selectTradingIsSlip24SellAllowed(state, account, isSlip24Active)
+        : selectTradingIsSlip24Allowed(state, account, isSlip24Active);
+};
 
 export const selectIsTradingEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState,
@@ -243,14 +259,11 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             selectTokenDefinitions,
             selectCurrentFiatRates,
             selectBaseCurrency,
-            (
-                state: CombinedSelectorsRootState,
-                tradingType: TradingType,
-                supportedCoins: readonly NetworkSymbol[],
-            ) => selectTradingSupportedSymbols(state, tradingType, supportedCoins),
+            selectTradingSupportedSymbols,
             (state: CombinedSelectorsRootState) =>
                 selectIsFeatureFlagEnabled(state, FeatureFlag.IsCardanoSendEnabled),
             (_state, tradingType: TradingType) => tradingType,
+            selectSupportedNetworkSymbols,
         ],
         (
             accounts,
@@ -260,6 +273,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             sellCryptoIds,
             isCardanoSendEnabled,
             tradingType,
+            supportedNetworks,
         ) => {
             if (tradingType === 'buy') {
                 return returnStableArrayIfEmpty([]);
@@ -277,7 +291,10 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                 return networkType !== 'cardano' || isCardanoSendEnabled;
             });
 
-            const sortedAccounts = sortAccountsByNetworksAndAccountTypes(filteredAccounts);
+            const sortedAccounts = sortAccountsByNetworksAndAccountTypes(
+                filteredAccounts,
+                supportedNetworks,
+            );
 
             return sortedAccounts
                 .map<SectionListData<MyAsset, Account>[number]>((account: Account) => {
@@ -322,6 +339,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                                 fiatBalance,
                                 tokenSymbol,
                                 contract: token.contract as TokenAddress,
+                                decimals: token.decimals,
                                 cryptoId,
                                 isEnabled: sellCryptoIdsSet.has(cryptoId),
                                 fiatRateKey,
@@ -377,26 +395,6 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
         },
     );
 
-export const selectAccountsWithTokensToSellSectionCondensedListByTradingType =
-    createCombinedMemoizedSelector(
-        [selectAccountsWithTokensToSellSectionListByTradingType],
-        sectionListData =>
-            sectionListData.map(section => {
-                const data = section.data.filter(({ isEnabled }) => isEnabled) as MyAssetRow[];
-
-                const nonTradeableAssetsCount = section.data.length - data.length;
-                if (nonTradeableAssetsCount > 0) {
-                    data.push({
-                        count: nonTradeableAssetsCount,
-                        name: 'non-tradeable-assets',
-                        isEnabled: false,
-                    });
-                }
-
-                return { ...section, data };
-            }),
-    );
-
 export const selectTradesToWatchByAccount = createTradingWithDeviceAndAccountsMemoizedSelector(
     [selectDeviceTradingTrades, selectVisibleDeviceAccountsMap],
     (deviceTrades, visibleDeviceAccountsMap) => {
@@ -430,15 +428,29 @@ export const selectTradesToWatchByAccount = createTradingWithDeviceAndAccountsMe
     },
 );
 
-export const selectVisibleDeviceAccountsByNetworkSymbolSorted =
-    createTradingWithDeviceAndAccountsMemoizedSelector(
-        [selectVisibleDeviceAccountsByNetworkSymbol],
-        accounts => {
-            const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
+export const selectTradingAccountKeyByOrderId = (
+    state: TradingRootState,
+    orderId: string | undefined,
+) => {
+    const trade = selectTradingTradeByOrderId(state, orderId);
 
-            return returnStableArrayIfEmpty(sortedAccounts);
-        },
-    );
+    if (!trade) {
+        return undefined;
+    }
+
+    return trade.tradeType === 'buy' ? trade.selectedAccountKey : trade.sendAccountKey;
+};
+
+export const selectVisibleDeviceAccountsByNetworkSymbolSorted = createWeakMapSelector.withTypes<
+    AccountsRootState & DeviceRootState & NetworksRootState
+>()(
+    [selectVisibleDeviceAccountsByNetworkSymbol, selectSupportedNetworkSymbols],
+    (accounts, supportedNetworks) => {
+        const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts, supportedNetworks);
+
+        return returnStableArrayIfEmpty(sortedAccounts);
+    },
+);
 
 export const selectAccountLabelWithNetworkFallback = (
     state: AccountsRootState & CombinedLabelingState,
@@ -465,7 +477,7 @@ export const selectAccountLabelWithNetworkFallback = (
     }
 
     if (cryptoId) {
-        const networkSymbol = cryptoIdToSymbol(cryptoId);
+        const networkSymbol = cryptoIdToNetworkSymbol(cryptoId);
         if (networkSymbol) {
             return getNetwork(networkSymbol).name;
         }

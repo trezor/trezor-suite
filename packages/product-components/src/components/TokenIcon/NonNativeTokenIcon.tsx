@@ -11,6 +11,7 @@ import {
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '@trezor/components';
+import { useAsyncMemo } from '@trezor/react-utils';
 
 import { TokenInitials } from './TokenInitials';
 import { type TokenIconProps, allowedTokenIconFrameProps } from './tokenIconTypes';
@@ -75,11 +76,12 @@ export const NonNativeTokenIcon = ({
     'data-testid': dataTestId,
     ...rest
 }: NonNativeTokenIconProps) => {
-    const [contractAddressArray, setContractAddressArray] = useState<string[] | undefined>();
-
-    useEffect(() => {
-        getAssetLogoContractAddresses(symbol, contractAddress).then(setContractAddressArray);
-    }, [symbol, contractAddress]);
+    // resolves synchronously for everything except the first XLM token after a cold start
+    // so most icons render in the first frame without a placeholder flash
+    const contractAddressArray = useAsyncMemo(
+        () => getAssetLogoContractAddresses(symbol, contractAddress),
+        [symbol, contractAddress],
+    );
 
     const normalizedAddresses = useMemo(
         () =>

@@ -2,7 +2,7 @@
 
 script_directory="$(dirname "${BASH_SOURCE[0]}")"
 
-domains=("connect" "foundation" "growth" "trade" "qa" "wallet")
+domains=("connect" "earn" "growth" "networks" "qa" "trade" "wallet")
 valid_arguments_hint="Valid values are: ${domains[*]}."
 
 # Check if an argument was provided
@@ -33,4 +33,7 @@ if ! contains "$1" "${domains[@]}"; then
 fi
 
 # Run yarn outdated on target dependencies
-tr '\n' ' ' < "$script_directory/$1-dependencies.txt" | xargs yarn outdated
+sed -E 's/[[:space:]]*#.*$//; s/^[[:space:]]+//; s/[[:space:]]+$//; /^[[:space:]]*$/d' \
+  "$script_directory/$1-dependencies.txt" |
+  tr '\n' ' ' |
+  xargs yarn outdated

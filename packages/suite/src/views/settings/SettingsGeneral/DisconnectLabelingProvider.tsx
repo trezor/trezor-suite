@@ -1,22 +1,28 @@
 import { Translation } from '@suite/intl';
-import { disconnectProvider, selectSelectedProviderForLabels } from '@suite/metadata';
+import {
+    disconnectProviderThunk,
+    selectMetadata,
+    selectSelectedProviderForLabels,
+} from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const DisconnectLabelingProvider = () => {
-    const metadata = useSelector(state => state.metadata);
+    const metadata = useSelector(selectMetadata);
     const selectedProvider = useSelector(selectSelectedProviderForLabels);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     if (!metadata.enabled || !selectedProvider) return null;
 
     const handleClick = () =>
         dispatch(
-            disconnectProvider({
+            disconnectProviderThunk({
                 clientId: metadata.selectedProvider.labels,
                 dataType: 'labels',
             }),

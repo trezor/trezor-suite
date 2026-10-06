@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import {
     EarnAnchor,
-    goto,
+    gotoThunk,
     isEarnYieldRowAnchor,
     selectRouterAnchor,
     useAnchor,
@@ -18,32 +18,32 @@ import {
     useAllYieldOpportunities,
 } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { NORMAL_ACCOUNT_TYPE } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button, Card, Column, Table } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
 import { EarnYieldClaimRewardsBanner } from './EarnYieldClaimRewardsBanner';
 import { EarnYieldClaimSelectAccountModal } from './EarnYieldClaimSelectAccountModal';
 import { EarnYieldTableBody } from './EarnYieldTableBody';
-import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
-import { useYieldTableData } from './hooks/useYieldTableData';
 import { PoweredByBadge } from '../../providers/PoweredByBadge';
 import { getYieldOpportunityAnchor } from '../../utils/getYieldOpportunityAnchor';
 import { useMerklRewards } from '../../yield/claim/hooks';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
+import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
+import { useYieldTableData } from './hooks/useYieldTableData';
 
 const emptyVaults: YieldDtoV2[] = [];
 
 export const EarnYieldTable = () => {
     const { isBelowLaptop } = useLayoutSize();
     const isCardLayout = isBelowLaptop;
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
     const claimMessageSystem = useMessageSystemYield('claim');
 
@@ -157,7 +157,7 @@ export const EarnYieldTable = () => {
 
     const handleClaimableAccountSelect = ({ account }: YieldAccountRewards) => {
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-yield-claim',
                 params: {
                     symbol: account.symbol,
@@ -177,15 +177,15 @@ export const EarnYieldTable = () => {
                 heading={<Translation id="TR_EARN_DEFI_YIELD_TITLE" />}
                 subheading={<Translation id="TR_EARN_DEFI_YIELD_DASHBOARD_TEXT" />}
                 actions={<PoweredByBadge provider="morpho" />}
+                areActionsBelowSubheading={isCardLayout}
                 ref={anchorRef}
             >
                 <Column gap={16} alignItems="center">
                     {(isYieldActive || accountsRewards.length > 0) && (
                         <>
                             <EarnYieldClaimRewardsBanner
-                                value={merklRewardsQuery.data.totalRewardsToClaim.value}
-                                currency={merklRewardsQuery.data.totalRewardsToClaim.currency}
-                                isValueLoading={merklRewardsQuery.isLoading}
+                                rewards={merklRewardsQuery}
+                                isFiatRateLoading={missingRateTickersQuery.isLoading}
                                 isClaimDisabled={isClaimDisabled}
                                 claimDisabledTooltip={
                                     claimMessageSystem.isDisabled
@@ -220,6 +220,7 @@ export const EarnYieldTable = () => {
                             <Table isRowHighlightedOnHover margin={{ top: 8 }}>
                                 <EarnDashboardTableHeader
                                     accountColumnTranslationId="TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT"
+                                    variant="yield"
                                     showRewardsColumns={hasAnyRewardsData}
                                 />
                                 <EarnYieldTableBody

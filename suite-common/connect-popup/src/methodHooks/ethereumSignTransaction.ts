@@ -1,5 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { asNetworkSymbol, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
@@ -23,14 +24,15 @@ import { selectConnectPopupCall } from '../connectPopupReducer';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
 
 const temporaryAccounts: Account[] = [];
+type _storePrecomposedTransactionParams = {
+    typedPayload: EthereumSignTransaction;
+    txSigningPrecomposed: PrecomposedTransactionFinal;
+};
 
 const _storePrecomposedTransaction = ({
     typedPayload,
     txSigningPrecomposed,
-}: {
-    typedPayload: EthereumSignTransaction;
-    txSigningPrecomposed: PrecomposedTransactionFinal;
-}) =>
+}: _storePrecomposedTransactionParams) =>
     sendFormActions.storePrecomposedTransaction({
         formState: {
             // Can be left empty, not used in tx review modal
@@ -86,7 +88,7 @@ const preCallHook = async <M extends CallMethodKeys>({
         const network = getNetworkByEvmChainId(chainId) || {
             // Placeholder for chains not supported in Suite
             networkType: 'ethereum',
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             name: 'Chain ID: ' + chainId,
             isHidden: true,
         };
@@ -96,9 +98,11 @@ const preCallHook = async <M extends CallMethodKeys>({
             : null;
         if (!selectedAccount) {
             // Create a new placeholder account
-            const createdAccount = await dispatch(createPlaceholderAccount(network, path));
-            temporaryAccounts.push(createdAccount.payload);
-            selectedAccount = createdAccount.payload;
+            const createdAccount = await dispatch(
+                createPlaceholderAccount(network, path, selectSupportedNetworkSymbols(getState())),
+            );
+            temporaryAccounts.push(createdAccount.payload.account);
+            selectedAccount = createdAccount.payload.account;
         }
         if (!selectedAccount) {
             throw new Error('Selected account is missing'); // Should not happen

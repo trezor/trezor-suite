@@ -1,23 +1,26 @@
-import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
+import { useGetter, useServices } from '@suite-common/dependency-injection';
 import { firmwareActions, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { injectGetAllowPrerelease } from '@suite-common/suite-types';
 import { Column, Text } from '@trezor/components';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-
-const effectiveFirmwareChannel = selectEffectiveFirmwareChannel(selectDesktopUpdateAllowPrerelease);
+import { useSelector } from 'src/hooks/suite';
 
 export const FirmwareUpdateEnvironmentSelect = () => {
-    const firmwareChannel = useSelector(effectiveFirmwareChannel);
-    const isAllowPrerelease = useSelector(selectDesktopUpdateAllowPrerelease);
-    const dispatch = useDispatch();
+    const isAllowPrerelease = useGetter(injectGetAllowPrerelease);
+    const firmwareChannel = useSelector(state =>
+        selectEffectiveFirmwareChannel(state, isAllowPrerelease),
+    );
+    const { dispatch } = useServices(injectDispatch);
 
     const options: { label: string; value: FirmwareChannel }[] = [
         { label: 'Production', value: 'production' },
         { label: 'Production Early Access', value: 'production-early-access' },
         { label: 'Test Unsigned', value: 'test-unsigned' },
         { label: 'Test Unsigned Stable', value: 'test-unsigned-stable' },
+        { label: 'Test Unsigned Nightly', value: 'test-unsigned-nightly' },
         { label: 'Test Signed', value: 'test-signed' },
         { label: 'Localhost Signed', value: 'localhost-signed' },
         { label: 'Localhost Unsigned', value: 'localhost-unsigned' },

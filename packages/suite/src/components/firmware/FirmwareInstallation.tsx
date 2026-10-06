@@ -9,7 +9,7 @@ import { BluetoothIcon, TrezorDevicesFilledIcon } from '@trezor/icons';
 import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
 import { ReconnectDevicePrompt } from 'src/components/firmware/ReconnectDevicePrompt';
 import { RotatingPhrases } from 'src/components/firmware/RotatingPhrases';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 type FirmwareInstallationProps = {
@@ -38,8 +38,7 @@ export const FirmwareInstallation = ({
     // in normal mode, till it is paired again.
     const isDeviceNotSelected =
         isWebUsbTransport &&
-        reconnectEvent &&
-        reconnectEvent.disconnected &&
+        reconnectEvent?.disconnected &&
         reconnectEvent.i > 2 && // Add some latency for cases when the device is already paired or is restarting.
         status !== 'done';
 

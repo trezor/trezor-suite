@@ -1,13 +1,13 @@
-import { useDispatch } from 'react-redux';
-
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     Card,
     HStack,
+    IconCircle,
     Image,
     PressableOpacity,
-    RoundedIcon,
     Text,
     TextDivider,
     VStack,
@@ -57,7 +57,7 @@ const ConnectCard = ({ image, title, subtitle, icon, onPress }: ConnectCardProps
                         <Text variant="headline-sm">
                             <Translation id={subtitle} />
                         </Text>
-                        <RoundedIcon name={icon} size={32} />
+                        <IconCircle name={icon} size={32} />
                     </HStack>
                 </Box>
             </VStack>
@@ -72,7 +72,7 @@ export const ConnectDeviceCrossroadsScreen = ({
     AuthorizeDeviceStackRoutes.ConnectDeviceCrossroads,
     RootStackParamList
 >) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const navigateToTurnOnAndUnlockDeviceScreen = () => {
         // Make sure auto-connect is enabled in case some device was manually disconnected.

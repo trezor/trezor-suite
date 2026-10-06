@@ -181,6 +181,26 @@ export const StellarClaimClaimableBalanceOperation = Type.Object({
     balanceId: Type.String(), // Proto: "balance_id"
 });
 
+// Soroban smart-contract invocation. Unlike the classic operations, its payload has no
+// simpler representation than the on-wire XDR, so `function` and `auth` reuse the protobuf
+// structures directly. network-stellar walks the parsed XDR into this shape.
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred (recursive) protobuf types in the emitted declaration.
+export type StellarInvokeHostFunctionOperation = {
+    type: 'invokeHostFunction';
+    source?: string;
+    function: PROTO.StellarHostFunction;
+    auth: PROTO.StellarSorobanAuthorizationEntry[];
+};
+
+export const StellarInvokeHostFunctionOperation: TUnsafe<StellarInvokeHostFunctionOperation> =
+    Type.Object({
+        type: Type.Literal('invokeHostFunction'), // Proto: "StellarInvokeHostFunctionOp"
+        source: Type.Optional(Type.String()), // Proto: "source_account"
+        function: PROTO.StellarHostFunction, // Proto: "function"
+        auth: Type.Array(PROTO.StellarSorobanAuthorizationEntry), // Proto: "auth"
+    });
+
 // [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 export type StellarOperation =
@@ -198,7 +218,8 @@ export type StellarOperation =
     | StellarInflationOperation
     | StellarManageDataOperation
     | StellarBumpSequenceOperation
-    | StellarClaimClaimableBalanceOperation;
+    | StellarClaimClaimableBalanceOperation
+    | StellarInvokeHostFunctionOperation;
 
 export const StellarOperation: TUnsafe<StellarOperation> = Type.Union([
     StellarCreateAccountOperation,
@@ -216,6 +237,7 @@ export const StellarOperation: TUnsafe<StellarOperation> = Type.Union([
     StellarManageDataOperation,
     StellarBumpSequenceOperation,
     StellarClaimClaimableBalanceOperation,
+    StellarInvokeHostFunctionOperation,
 ]);
 
 export type StellarTransaction = Static<typeof StellarTransaction>;
@@ -238,6 +260,9 @@ export const StellarTransaction = Type.Object({
         }),
     ),
     operations: Type.Array(StellarOperation), // Proto: calculated array length > "num_operations"
+    // Raw SorobanTransactionData XDR (hex), required for Soroban (InvokeHostFunction)
+    // transactions. Sent to the device as StellarTxExt after the operations.
+    sorobanData: Type.Optional(Type.String()), // Proto: StellarTxExt.soroban_data
 });
 
 export type StellarSignTransaction = Static<typeof StellarSignTransaction>;
@@ -298,6 +323,10 @@ export type StellarOperationMessage =
     | StellarOperationMessageOf<
           'StellarClaimClaimableBalanceOp',
           typeof PROTO.StellarClaimClaimableBalanceOp
+      >
+    | StellarOperationMessageOf<
+          'StellarInvokeHostFunctionOp',
+          typeof PROTO.StellarInvokeHostFunctionOp
       >;
 
 export const StellarOperationMessage: TUnsafe<StellarOperationMessage> = Type.Union([
@@ -384,5 +413,11 @@ export const StellarOperationMessage: TUnsafe<StellarOperationMessage> = Type.Un
             type: Type.Literal('StellarClaimClaimableBalanceOp'),
         }),
         PROTO.StellarClaimClaimableBalanceOp,
+    ]),
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarInvokeHostFunctionOp'),
+        }),
+        PROTO.StellarInvokeHostFunctionOp,
     ]),
 ]);

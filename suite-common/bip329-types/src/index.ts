@@ -45,6 +45,7 @@ export type ExportBip329Params = {
     account: Account;
 };
 
+/** @serviceContract */
 export type ExportBip329 = (params: ExportBip329Params) => Bip329ExportResult;
 
 export type ExportBip329Dep = {
@@ -57,6 +58,7 @@ export type ImportBip329Params = {
     bip329Labels: Bip329Label[];
 };
 
+/** @serviceContract */
 export type ImportBip329 = (
     params: ImportBip329Params,
 ) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>>;
@@ -74,6 +76,6 @@ export type Bip329Dep = {
     bip329: Bip329;
 };
 
-export const selectBip329Dep = (services: any): Bip329Dep => ({
+export const injectBip329 = (services: any): Bip329Dep => ({
     bip329: services.bip329,
 });

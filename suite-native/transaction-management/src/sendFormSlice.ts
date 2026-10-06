@@ -4,6 +4,7 @@ import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type SendState as CommonSendState,
     type SendFormError,
+    type SendFormReducerDeps,
     initialState as commonInitialState,
     composeSendFormTransactionFeeLevelsThunk,
     prepareSendFormReducer as prepareCommonSendFormReducer,
@@ -43,7 +44,7 @@ const sendFormSlice = createSliceWithExtraDeps({
             state.feeLevels = payload.feeLevels;
         },
     },
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: SendFormReducerDeps) => {
         const commonSendFormReducer = prepareCommonSendFormReducer(extra);
         builder
             .addMatcher(

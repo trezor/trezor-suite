@@ -1,18 +1,18 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useDebounce } from 'react-use';
 
-import useDebounce from 'react-use/lib/useDebounce';
-
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     getStakeFormsDefaultValues,
     getStakingContractAddress,
-    simulateUnstake,
-} from '@suite-common/staking';
-import { getNetwork } from '@suite-common/wallet-config';
-import {
+    getStakingDataForNetwork,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
+    simulateUnstake,
     useFormDraft,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -20,13 +20,12 @@ import {
     fromBaseCurrencyToCryptoUnit,
     getConvertedOrDefaultFeeInfo,
     getFiatRateKey,
-    getStakingDataForNetwork,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { BigNumber, isChanged, throwError } from '@trezor/utils';
 
-import { signTransaction } from 'src/actions/wallet/stakeActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { signTransactionThunk } from 'src/actions/wallet/stakeActions';
+import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
@@ -53,7 +52,7 @@ type UseWithdrawalFormProps = {
 };
 
 export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): WithdrawalContextValues => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
         null,
     );
@@ -274,10 +273,18 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
-            const result = await dispatch(signTransaction(values, composedTx));
+            try {
+                const result = await dispatch(signTransactionThunk(values, composedTx));
 
-            if (result?.success) {
-                clearForm();
+                if (result?.success) {
+                    clearForm();
+                }
+            } catch (error) {
+                // The sign thunk reaches TrezorConnect, whose rejection messages may embed the
+                // composed account payload, and `signTx` is submitted fire-and-forget. Handling the
+                // rejection here keeps it from being reported verbatim by Sentry's global
+                // unhandled-rejection handler. Only the error name, never its message, is safe to log.
+                console.warn('Stake signing failed', error instanceof Error ? error.name : error);
             }
         }
     }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);

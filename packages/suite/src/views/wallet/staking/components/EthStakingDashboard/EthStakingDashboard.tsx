@@ -1,25 +1,26 @@
 import { useEffect, useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api/src/staking';
-import { getDaysToAddToPool, getDaysToUnstake } from '@suite-common/staking';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     fetchAllTransactionsForAccountThunk,
+    getDaysToAddToPool,
+    getDaysToUnstake,
+    getStakingDataForNetwork,
+    hasStakeInPendingDepositedState,
     selectAccountIsStakingActive,
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,
-    selectEthNextRewardPayout,
+    selectEthereumNextRewardPayout,
     selectHasRunningDiscovery,
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import {
-    getStakingDataForNetwork,
-    hasStakeInPendingDepositedState,
-} from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 
 import { InstantStakeBanner } from './InstantStakeBanner';
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
@@ -43,12 +44,12 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const apy = useSelector(state => selectPoolStatsApy(state, { account }));
-    const nextRewardPayout = useSelector(selectEthNextRewardPayout);
+    const nextRewardPayout = useSelector(selectEthereumNextRewardPayout);
 
     const stakeTxs = useSelector(state => selectAccountStakeTransactions(state, accountKey));
     const unstakeTxs = useSelector(state => selectAccountUnstakeTransactions(state, accountKey));
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const lastTxBlockTime = stakeTxs[0]?.blockTime;
     const timestamp = hasStakeInPendingDepositedState(account) ? lastTxBlockTime : undefined;

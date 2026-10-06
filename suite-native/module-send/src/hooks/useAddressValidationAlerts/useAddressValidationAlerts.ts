@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { checkAddressChecksum, selectAddressValidatorDep } from '@suite-common/address';
+import { checkAddressChecksum } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectAddressValidator } from '@suite-common/networks';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { useFormContext, useWatch } from '@suite-native/forms';
@@ -17,10 +18,15 @@ import { getOutputFieldName } from '../../utils';
 
 type UseAddressValidationAlertsArgs = {
     inputIndex: number;
+    /** Onchain address a named input (e.g. ENS) resolved to, if the input was a name. */
+    resolvedAddress?: string;
 };
 
-export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationAlertsArgs) => {
-    const { addressValidator } = useServices(selectAddressValidatorDep);
+export const useAddressValidationAlerts = ({
+    inputIndex,
+    resolvedAddress,
+}: UseAddressValidationAlertsArgs) => {
+    const { addressValidator } = useServices(injectAddressValidator);
     const {
         params: { tokenContract, accountKey },
     } = useRoute<RouteProp<SendStackParamList, SendStackRoutes.SendOutputs>>();
@@ -31,17 +37,20 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
 
     const addressFieldName = getOutputFieldName(inputIndex, 'address');
     const addressValue = useWatch({ control, name: addressFieldName });
+    // A name is not something the backend can look up, so every check runs against the address it
+    // resolved to. Without this, a name resolving to a contract would skip the contract warning.
+    const checkedAddress = resolvedAddress ?? addressValue;
 
     const { handleAddressChecksum, wasAddressChecksummed, resetAddressChecksummed } =
         useAddressChecksum(addressFieldName);
 
     const { handleContractAddressCheck, wasContractAlertDisplayed, resetContractAlert } =
-        useContractAddressCheck(addressValue);
+        useContractAddressCheck(checkedAddress);
 
     const { handleTokenAlert, wasTokenAlertDisplayed, resetTokenAlert } = useTokenAlert();
 
     const isFilledValidAddress =
-        !!addressValue && !!symbol && addressValidator.isAddressValid(addressValue, symbol);
+        !!checkedAddress && !!symbol && addressValidator.isAddressValid(checkedAddress, symbol);
 
     const networkType = symbol ? getNetworkType(symbol) : null;
 
@@ -58,7 +67,10 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
 
         const shouldChecksumAddress =
             networkType === 'ethereum' &&
-            !checkAddressChecksum(addressValue ?? '') &&
+            // Resolver output is already canonical, and checksumming rewrites the input field —
+            // which would replace the name the user typed with a hex address.
+            !resolvedAddress &&
+            !checkAddressChecksum(checkedAddress ?? '') &&
             !wasAddressChecksummed;
 
         const shouldCheckContractAddress =
@@ -94,7 +106,8 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
         handleContractAddressCheck,
         handleTokenAlert,
         networkType,
-        addressValue,
+        checkedAddress,
+        resolvedAddress,
         symbol,
         resetContractAlert,
         resetAddressChecksummed,

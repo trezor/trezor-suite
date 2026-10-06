@@ -1,16 +1,17 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { type Account } from '@suite-common/wallet-types';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getTronRewardClaimCooldownEndsAt,
     getTronStakingRewards,
     isTronClaimSupported,
     isTronRewardClaimOnCooldown,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import {
     Box,
     Button,
@@ -24,7 +25,6 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue, CountdownTimer, FormattedCryptoAmount } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
@@ -33,8 +33,7 @@ interface TronVotingRewardsCardProps {
 }
 
 export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { device } = useDevice();
     const { translationString } = useTranslation();
     const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
@@ -63,7 +62,7 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-tron-claim',
                 params: {
                     symbol: account.symbol,

@@ -1,0 +1,38 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/toast-notifications"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../activity-center" },
+        { "path": "../atoms" },
+        { "path": "../formatters" },
+        { "path": "../icons" },
+        { "path": "../intl" },
+        { "path": "../link" },
+        { "path": "../markdown" },
+        { "path": "../navigation" },
+        { "path": "../../packages/env-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/urls" }
+    ]
+}

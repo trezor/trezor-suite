@@ -20,6 +20,7 @@ export type FirmwareCapability =
     | 'amountUnit'
     | 'decreaseOutput'
     | 'eip1559'
+    | 'eip7702'
     | 'taproot'
     | 'signMessageNoScriptType'
     | 'eip712-domain-only'
@@ -90,21 +91,14 @@ export type FirmwareReleaseConfigInfo = {
  *      Case: fresh device with no FW (most usual case).
  */
 export type FirmwareUpdateFlowType =
-    | 'reboot_and_wait'
-    | 'reboot_and_upgrade'
-    | 'manual'
-    | 'unknown_flow';
+    'reboot_and_wait' | 'reboot_and_upgrade' | 'manual' | 'unknown_flow';
 
 export type FirmwareChannel =
     | 'production'
     | 'production-early-access'
     | 'test-unsigned'
     | 'test-unsigned-stable'
+    | 'test-unsigned-nightly'
     | 'test-signed'
     | 'localhost-unsigned'
     | 'localhost-signed';
-
-export type CurrentVersion = {
-    bootloaderVersion: VersionArray | null;
-    firmwareVersion: VersionArray | null;
-};

@@ -4,10 +4,12 @@ import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/ad
 import { RedactNumericalValue } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
-    type EnhancedTokenInfo,
+    type TokenInfo,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
@@ -41,21 +43,20 @@ import {
     PictureFrameIcon,
 } from '@trezor/icons';
 
-import { SUITE } from 'src/actions/suite/constants';
+import { setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { HiddenPlaceholder } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { DropdownRow } from '../../tokens/DropdownRow';
 import { BlurUrls } from '../../tokens/common/BlurUrls';
 
 type NftsRowProps = {
-    nft: EnhancedTokenInfo;
+    nft: TokenInfo;
     network: Network;
     selectedAccount: SelectedAccountStatus;
     isShown?: boolean;
     isEmptyCollection?: boolean;
-    setIsEmptyCollectionsOpen?: (open: boolean) => void;
     isEmptyCollectionsOpen?: boolean;
 };
 
@@ -67,7 +68,7 @@ const NftsRow = ({
     isEmptyCollection = false,
     isEmptyCollectionsOpen = false,
 }: NftsRowProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const [isCollectionOpen, setIsCollectionOpen] = useState(false);
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
     const explorer = useSelector(state => selectExplorer(state, network.symbol)) as Explorer;
@@ -159,13 +160,10 @@ const NftsRow = ({
                                     label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
                                     icon: NewspaperIcon,
                                     onClick: () => {
-                                        dispatch({
-                                            type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
-                                            payload: nft.contract || '',
-                                        });
+                                        dispatch(setTransactionHistoryPrefill(nft.contract || ''));
                                         if (account) {
                                             dispatch(
-                                                goto({
+                                                gotoThunk({
                                                     routeName: 'wallet-index',
                                                     params: {
                                                         symbol: account.symbol,

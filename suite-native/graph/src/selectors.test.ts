@@ -1,6 +1,6 @@
 import type { DeviceRootState } from '@suite-common/device';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type DiscoveryRootState,
@@ -147,11 +147,40 @@ describe('selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning', () => {
 
     it('should return portfolio graph account items when discovery is not running', () => {
         const account = mockWalletAccount({
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             descriptor: asAccountDescriptor('descriptor1'),
         });
 
         mockSelectDeviceMainnetAccounts.mockReturnValue([account]);
+
+        const result = selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning(mockState);
+
+        expect(result).toEqual([
+            {
+                symbol: 'btc',
+                descriptor: 'descriptor1',
+                identity: undefined,
+                accountKey: account.key,
+                tokensFilter: [],
+            },
+        ]);
+    });
+
+    it('should exclude accounts whose discovery failed', () => {
+        const account = mockWalletAccount({
+            symbol: asNetworkSymbol('btc'),
+            descriptor: asAccountDescriptor('descriptor1'),
+        });
+        const failedAccount = mockWalletAccount(
+            {
+                symbol: asNetworkSymbol('btc'),
+                descriptor: asAccountDescriptor('failed:16:btc:normal'),
+            },
+            undefined,
+            { failed: true, error: 'Discovery failed' },
+        );
+
+        mockSelectDeviceMainnetAccounts.mockReturnValue([account, failedAccount]);
 
         const result = selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning(mockState);
 

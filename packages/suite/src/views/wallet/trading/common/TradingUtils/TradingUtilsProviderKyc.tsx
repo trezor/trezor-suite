@@ -19,8 +19,7 @@ const getKycType = ({
     isDex,
     isBuySell,
 }: Pick<TradingUtilsProviderKycProps, 'exchange' | 'providers' | 'isDex' | 'isBuySell'>):
-    | ExchangeKYCType
-    | undefined => {
+    ExchangeKYCType | undefined => {
     // Buy and sell providers always require KYC and do not expose a kyc policy.
     if (isBuySell) {
         return KYC_REQUIRED;

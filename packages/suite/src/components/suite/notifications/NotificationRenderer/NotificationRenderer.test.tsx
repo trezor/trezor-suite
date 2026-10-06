@@ -1,35 +1,147 @@
 import '@suite-common/test-utils/globalOverrides';
 
-import { Translation } from '@suite/intl';
-import { configureMockStore, screen } from '@suite-common/test-utils';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { events } from '@suite-common/analytics';
+import { createTestCompositionRoot, fireEvent, screen } from '@suite-common/test-utils';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { PiggyBankIcon } from '@trezor/icons';
 
+import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { NotificationRenderer } from './NotificationRenderer';
-import { extraDependenciesDesktopMock } from '../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
-type TradingErrorNotification = Extract<NotificationEntry, { type: 'trading-error' }>;
+type LocalizedNotificationEntry = NotificationEntry<TranslationKey>;
+type TradingErrorNotification = Extract<LocalizedNotificationEntry, { type: 'trading-error' }>;
+type WrapNotification = Extract<LocalizedNotificationEntry, { type: 'tx-wrap' | 'tx-unwrap' }>;
+
+const ethSymbol = asNetworkSymbol('eth');
+
+type NotificationTestDeps = { services: DesktopAnalyticsDep };
+
+const mockReport = jest.fn();
+const analytics = mockDesktopAnalytics(mockReport);
 
 const MessageView = ({ message, messageValues }: NotificationViewProps) => (
     <Translation id={message} values={messageValues} />
 );
 
-const renderTradingError = (payload: Omit<TradingErrorNotification, 'context' | 'id'>) => {
-    const notification: TradingErrorNotification = { context: 'toast', id: 0, ...payload };
-    const store = configureMockStore({
-        preloadedState: mockInitialAppState,
+// Stands in for ToastNotificationView, the only view that wires `onCancel`.
+const DismissableView = ({ onCancel }: NotificationViewProps & { onCancel?: () => void }) => (
+    <button type="button" onClick={onCancel}>
+        dismiss
+    </button>
+);
+
+const NotificationViewProbe = ({
+    icon,
+    message,
+    messageValues,
+    variant,
+}: NotificationViewProps) => (
+    <div
+        data-testid="notification-view"
+        data-variant={variant}
+        data-icon={icon === PiggyBankIcon ? 'piggy-bank' : undefined}
+    >
+        <Translation id={message} values={messageValues} />
+    </div>
+);
+
+const renderNotification = (notification: LocalizedNotificationEntry) => {
+    const { services } = createTestCompositionRoot<NotificationTestDeps, AppState>({
+        preloadedState: {
+            ...mockInitialAppState,
+            wallet: {
+                ...mockInitialAppState.wallet,
+                accounts: [],
+                transactions: {
+                    transactions: {},
+                    phishing: {},
+                    fetchStatusDetail: {},
+                },
+            },
+        },
         serializableCheck: { ignoredActions: [] },
+        services: () => ({ analytics }),
     });
 
     return renderWithProviders(
-        store,
-        extraDependenciesDesktopMock.services,
+        services,
+        <NotificationRenderer render={NotificationViewProbe} notification={notification} />,
+    );
+};
+const renderTradingError = (payload: Omit<TradingErrorNotification, 'context' | 'id'>) => {
+    const notification: TradingErrorNotification = { context: 'toast', id: 0, ...payload };
+    const { services } = createTestCompositionRoot<NotificationTestDeps, AppState>({
+        preloadedState: mockInitialAppState,
+        serializableCheck: { ignoredActions: [] },
+        services: () => ({ analytics }),
+    });
+
+    return renderWithProviders(
+        services,
         <NotificationRenderer render={MessageView} notification={notification} />,
     );
 };
+
+const renderWrapToast = (payload: Omit<WrapNotification, 'context' | 'id'>) => {
+    const notification = { context: 'toast', id: 0, ...payload } as WrapNotification;
+    const { services } = createTestCompositionRoot<NotificationTestDeps, AppState>({
+        preloadedState: mockInitialAppState,
+        serializableCheck: { ignoredActions: [] },
+        services: () => ({ analytics }),
+    });
+    renderWithProviders(
+        services,
+        <NotificationRenderer render={DismissableView} notification={notification} />,
+    );
+
+    fireEvent.click(screen.getByText('dismiss'));
+};
+
+const wrapMetadata = {
+    send: { symbol: ethSymbol, displaySymbol: 'ETH', amount: '1' },
+    receive: { symbol: ethSymbol, displaySymbol: 'WETH', amount: '1' },
+} as const;
+
+const wrapToastPayload = {
+    type: 'tx-wrap',
+    metadata: wrapMetadata,
+    descriptor: '0xdescriptor',
+    symbol: ethSymbol,
+    txid: '0xwrap',
+    amount: '1',
+} as const;
+
+describe('NotificationRenderer wrap toast dismissal', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it.each([
+        ['tx-wrap', 'yieldWrapEvent'],
+        ['tx-unwrap', 'yieldUnwrapEvent'],
+    ] as const)('reports %s dismissal as sent/close', (type, eventKey) => {
+        renderWrapToast({ ...wrapToastPayload, type });
+
+        expect(mockReport).toHaveBeenCalledWith({
+            type: events[eventKey].name,
+            payload: { type: 'sent', action: 'close', networkSymbol: 'eth' },
+        });
+    });
+
+    it('stays silent for an in-flow yield step', () => {
+        renderWrapToast({ ...wrapToastPayload, isYieldFlowStep: true });
+
+        expect(mockReport).not.toHaveBeenCalled();
+    });
+});
 
 describe('NotificationRenderer trading-error', () => {
     it('step 1: renders the structured message when data is present, ignoring the partner message', () => {
@@ -127,4 +239,39 @@ describe('NotificationRenderer trading-error', () => {
             screen.getByText('No response from the exchange. Please try again.'),
         ).toBeInTheDocument();
     });
+});
+
+describe('NotificationRenderer transaction broadcasts', () => {
+    const transactionPayload = {
+        context: 'toast' as const,
+        id: 1,
+        amount: '1',
+        descriptor: 'descriptor',
+        symbol: asNetworkSymbol('eth'),
+        txid: 'txid',
+    };
+
+    it('renders a broadcast transaction with the warning variant', () => {
+        renderNotification({
+            ...transactionPayload,
+            type: 'tx-sent',
+        });
+
+        const notificationView = screen.getByTestId('notification-view');
+        expect(notificationView).toHaveAttribute('data-variant', 'warning');
+    });
+
+    it.each(['tx-staked', 'tx-unstaked', 'tx-claimed'] as const)(
+        'renders a %s broadcast with the warning variant and piggy-bank icon',
+        type => {
+            renderNotification({
+                ...transactionPayload,
+                type,
+            });
+
+            const notificationView = screen.getByTestId('notification-view');
+            expect(notificationView).toHaveAttribute('data-variant', 'warning');
+            expect(notificationView).toHaveAttribute('data-icon', 'piggy-bank');
+        },
+    );
 });

@@ -10,22 +10,23 @@ jest.mock('../hooks/useIsTradingAvailableForForm', () => ({
 }));
 
 describe('TradingAvailability', () => {
-    const renderTradingAvailability = () => renderWithBasicProvider(<TradingAvailability />);
+    const renderTradingAvailability = async () =>
+        await renderWithBasicProvider(<TradingAvailability />);
 
-    it('should render negative message when selected country is not whitelisted', () => {
+    it('should render negative message when selected country is not whitelisted', async () => {
         mockIsTradingAvailableForForm = false;
 
-        const { getByText } = renderTradingAvailability();
+        const { getByText } = await renderTradingAvailability();
 
         expect(
             getByText(getTranslation('tradingResidence.locationSettings.tradingUnavailable')),
         ).toBeOnTheScreen();
     });
 
-    it('should render positive message when selected country is whitelisted', () => {
+    it('should render positive message when selected country is whitelisted', async () => {
         mockIsTradingAvailableForForm = true;
 
-        const { getByText } = renderTradingAvailability();
+        const { getByText } = await renderTradingAvailability();
 
         expect(
             getByText(getTranslation('tradingResidence.locationSettings.tradingAvailable')),

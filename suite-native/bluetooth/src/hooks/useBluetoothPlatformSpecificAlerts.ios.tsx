@@ -1,9 +1,10 @@
 // This is iOS version, see the file name.
 
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 
@@ -12,7 +13,7 @@ import { SystemUnpairingAlertIosInstructions } from '../components/SystemUnpairi
 export const useBluetoothPlatformSpecificAlerts = () => {
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const showBluetoothAdapterDisabledAlert = useCallback(() => {
         showAlert({

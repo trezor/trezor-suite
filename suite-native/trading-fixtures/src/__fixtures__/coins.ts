@@ -39,6 +39,16 @@ export const coins = {
             exchange: true,
         },
     },
+    'ethereum--0x123': {
+        symbol: 'btc',
+        name: 'BTC token',
+        coingeckoId: 'fake-btc-token',
+        services: {
+            buy: true,
+            sell: true,
+            exchange: true,
+        },
+    },
     'base--0x0000000000000000000000000000000000000000': {
         symbol: 'eth',
         name: 'Ethereum',

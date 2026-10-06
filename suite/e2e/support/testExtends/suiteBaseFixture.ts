@@ -54,6 +54,7 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
     target: [PlaywrightTarget.Web, { option: true }],
     model: [undefined, { option: true }],
     firmwareVersion: [undefined, { option: true }],
+    webClipboardRead: [false, { option: true }],
     startEmulator: true,
     setupEmulator: true,
     deviceSetup: {},
@@ -170,13 +171,13 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
         }
     },
 
-    page: async ({ target, context, electronApp }, use) => {
+    page: async ({ target, context, electronApp, webClipboardRead }, use) => {
         if (isDesktopProject(target)) {
             const window = await electronApp!.firstWindow();
             enhancePage(window);
             await use(window);
         } else {
-            const page = await webSetup(context);
+            const page = await webSetup(context, { webClipboardRead });
             enhancePage(page);
             await use(page);
         }

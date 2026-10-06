@@ -1,15 +1,13 @@
+import { useFetchFees } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 
-import { type Account } from 'src/types/wallet';
-
 import { CollapsibleFees, type CollapsibleFeesProps } from './CollapsibleFees/CollapsibleFees';
-import { useFetchFees } from './CollapsibleFees/hooks/useFetchFees';
+import { useIsFeeRefetchDisabled } from './CollapsibleFees/hooks/useIsFeeRefetchDisabled';
 import { FieldErrorBanner } from './FieldErrorBanner';
 
-export type FeesProps = {
-    account: Pick<Account, 'symbol' | 'networkType' | 'misc'>;
-} & Pick<
+export type FeesProps = Pick<
     CollapsibleFeesProps,
+    | 'account'
     | 'label'
     | 'rbfForm'
     | 'feeInfo'
@@ -20,7 +18,7 @@ export type FeesProps = {
 >;
 
 export const Fees = ({
-    account: { symbol: networkSymbol, networkType, misc },
+    account,
     feeInfo,
     changeFeeLevel,
     composedLevels,
@@ -29,14 +27,13 @@ export const Fees = ({
     headerTypographyStyle,
     isOpen,
 }: FeesProps) => {
-    const tronResources = misc && 'tronResources' in misc ? misc.tronResources : undefined;
-    useFetchFees({ networkSymbol });
+    const isRefetchDisabled = useIsFeeRefetchDisabled();
+    useFetchFees({ networkSymbol: account.symbol, isRefetchDisabled });
 
     return (
         <Column gap={16} overflow="unset">
             <CollapsibleFees
-                networkType={networkType}
-                networkSymbol={networkSymbol}
+                account={account}
                 label={label}
                 feeInfo={feeInfo}
                 composedLevels={composedLevels}
@@ -44,7 +41,6 @@ export const Fees = ({
                 rbfForm={rbfForm}
                 headerTypographyStyle={headerTypographyStyle}
                 isOpen={isOpen}
-                tronResources={tronResources}
             />
 
             <FieldErrorBanner fieldName="selectedFee" />

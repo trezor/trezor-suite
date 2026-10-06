@@ -2,11 +2,13 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import { sendDexTransactionThunk } from './sendDexTransactionThunk';
+import { type SendTransactionThunkState } from './sendTransactionThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingExchangeState } from '../../reducers/exchangeReducer';
@@ -29,7 +31,9 @@ jest.mock('./sendDexTransactionThunk', () => {
     };
 });
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 describe('sendTransactionThunk', () => {
     beforeEach(() => {
@@ -74,8 +78,7 @@ describe('sendTransactionThunk', () => {
     };
 
     const getMocks = (initialExchangeState?: Partial<TradingExchangeState>) => {
-        const store = configureMockStore({
-            extra: {},
+        const { store } = createTestCompositionRoot<void, SendTransactionThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -93,7 +96,7 @@ describe('sendTransactionThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         const account = accountBtc as Account;
 
@@ -245,6 +248,13 @@ describe('sendTransactionThunk', () => {
             ['when payload is undefined', undefined],
             ['when payload contains error', { type: 'error', error: { id: 'TR_ERROR' } }],
             ['when payload is not successful', { success: false }],
+            [
+                'when the signing was cancelled on the device',
+                {
+                    type: 'sign-cancelled',
+                    error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+                },
+            ],
         ])('%s', async (_, recomposeAndSignPayload) => {
             const { store, returnUrl, account, trade } = getMocks();
 
@@ -343,6 +353,7 @@ describe('sendTransactionThunk', () => {
                     partnerPaymentExtraId: undefined,
                 },
                 key: trade.data.orderId,
+                sendTxid: 'txid',
             },
         ]);
         expect(store.getState().wallet.trading.exchange.transactionId).toBe(trade.data.orderId);

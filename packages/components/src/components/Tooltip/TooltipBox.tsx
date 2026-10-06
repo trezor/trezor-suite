@@ -20,6 +20,9 @@ const tooltipContentTheme = { ...intermediaryTheme.dark, variant: 'dark' as cons
 export const TooltipBox = ({ addon, tooltipMaxWidth, content }: TooltipBoxExtendedProps) => (
     <Box
         maxWidth={tooltipMaxWidth}
+        maxHeight="inherit"
+        minHeight={0}
+        overflow="auto"
         tabIndex={-1}
         borderRadius={12}
         backgroundColor="surfaceFillModelessNeutralDark"

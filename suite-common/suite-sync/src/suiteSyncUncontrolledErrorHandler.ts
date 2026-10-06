@@ -10,9 +10,7 @@ import { type TrezorDeviceWithState } from '@suite-common/suite-types';
  * a user-controlled flow (e.g. asynchronously in response to some websocket message).
  */
 export type SuiteSyncUncontrolledError =
-    | AllocateOwnerQuotaErr
-    | EnsureWalletSuiteSyncOnErrors
-    | SuiteSyncOtherError;
+    AllocateOwnerQuotaErr | EnsureWalletSuiteSyncOnErrors | SuiteSyncOtherError;
 
 /**
  * This is External error handler. The caller of the SuiteSync (Desktop, Web, Native, ...)

@@ -1,9 +1,13 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { exchangeInitialState, initialState as tradingInitialState } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+
+import { type AppState } from 'src/reducers/store';
 
 import { useTradingExchangeTradeActions } from './useTradingExchangeTradeActions';
 
@@ -79,7 +83,7 @@ jest.mock('@suite-common/trading', () => {
     };
 });
 
-const ACCOUNT = mockWalletAccount({ symbol: 'eth' });
+const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const ETHEREUM_CRYPTO_ID = 'ethereum' as CryptoId;
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
 
@@ -133,12 +137,14 @@ const renderActions = (overrides?: StateOverrides) => {
         cryptoId: ETHEREUM_CRYPTO_ID,
     });
 
-    const store = configureMockStore({ preloadedState: state });
+    const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: state });
     const { result } = renderHookWithStoreProvider(() => useTradingExchangeTradeActions(), {
-        store,
+        services,
     });
 
-    return { store, result };
+    const { getActions } = services.store;
+
+    return { getActions, result };
 };
 
 describe('useTradingExchangeTradeActions', () => {
@@ -151,9 +157,9 @@ describe('useTradingExchangeTradeActions', () => {
 
     describe('mount is side-effect free', () => {
         it('does not dispatch anything on mount', () => {
-            const { store } = renderActions();
+            const { getActions } = renderActions();
 
-            expect(store.getActions()).toHaveLength(0);
+            expect(getActions()).toHaveLength(0);
         });
     });
 
@@ -170,6 +176,41 @@ describe('useTradingExchangeTradeActions', () => {
 
             expect(args.account).toBe(ACCOUNT);
             expect(args.setMaxOutputId).toBeUndefined();
+        });
+
+        const rejectSendWith = (rejection: unknown) => {
+            mockSendTransactionThunk.mockImplementationOnce((args: unknown) =>
+                Object.assign(() => ({ unwrap: () => Promise.reject(rejection) }), { args }),
+            );
+        };
+
+        const toastsOf = (actions: { type: string }[]) =>
+            actions.filter(action => action.type === notificationsActions.addToast.type);
+
+        it('adds no toast of its own when the signing was cancelled', async () => {
+            rejectSendWith({
+                type: 'sign-cancelled',
+                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+            });
+            const { getActions, result } = renderActions();
+
+            const success = await result.current.sendTransaction();
+
+            expect(success).toBe(false);
+            expect(toastsOf(getActions())).toHaveLength(0);
+        });
+
+        it('reports an error nothing else has reported', async () => {
+            rejectSendWith({
+                type: 'sign-tx-error',
+                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+            });
+            const { getActions, result } = renderActions();
+
+            const success = await result.current.sendTransaction();
+
+            expect(success).toBe(false);
+            expect(toastsOf(getActions())).toHaveLength(1);
         });
 
         it('returns false without dispatching when the account is missing', async () => {

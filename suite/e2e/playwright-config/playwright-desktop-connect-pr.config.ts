@@ -15,7 +15,7 @@ import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
  */
 const target = PlaywrightTarget.Desktop;
 const definition: PlaywrightProjectDefinition[] = [
-    { model: Model.T3T1, additionalGrepInvert: /@nightlyOnly/, currentsTags: tagsPr },
+    { model: Model.T3T1, additionalGrepInvert: /@skipOnPR/, currentsTags: tagsPr },
 ];
 
 const config = defineConfig({

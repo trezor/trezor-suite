@@ -1,7 +1,8 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import {
     getNetwork,
@@ -11,15 +12,14 @@ import {
 import { ArrowDownIcon, ArrowsLeftRightIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
-import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
+
 interface AccountEmptyProps {
     account: Account;
 }
 
 export const AccountEmpty = ({ account }: AccountEmptyProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const isTokensNetwork = getNetworkFeatures(account.symbol).includes('tokens');
 
@@ -27,7 +27,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const networkName = getNetwork(account.symbol).name;
 
     const handleNavigateToReceivePage = () => {
-        dispatch(goto({ routeName: 'wallet-receive', preserveParams: true }));
+        dispatch(gotoThunk({ routeName: 'wallet-receive', preserveParams: true }));
         analytics.report({
             type: events.accountsEmptyAccountReceiveEvent.name,
             payload: {
@@ -41,7 +41,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                 getTradingPrefilledFromAccountData(account),
             ),
         );
-        dispatch(goto({ routeName: 'wallet-trading-buy' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));
 
         analytics.report({
             type: events.tradeNavigateEvent.name,

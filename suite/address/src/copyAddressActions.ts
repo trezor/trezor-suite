@@ -16,8 +16,8 @@ export const showCopyAddressModal =
         );
     };
 
-export const copyAddressToClipboard = (address: string) => (dispatch: Dispatch) => {
-    const result = copyToClipboard(address);
+export const copyAddressToClipboard = (address: string) => async (dispatch: Dispatch) => {
+    const result = await copyToClipboard(address);
 
     const isSuccess = result === true;
 

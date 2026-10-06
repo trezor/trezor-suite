@@ -8,10 +8,12 @@ import { type RefetchGraphThunkParams, type RefetchGraphThunkResult } from './gr
 const GRAPH_MODULE_PREFIX = '@suite-native/graph';
 const GRAPH_DISABLED_ERROR_MESSAGE = 'Graph is disabled for E2E tests for performance reasons.';
 
+type RefetchGraphThunkState = void;
+
 export const refetchGraphThunk = createThunk<
     RefetchGraphThunkResult,
     RefetchGraphThunkParams,
-    { rejectValue: string }
+    { rejectValue: string; state: RefetchGraphThunkState }
 >(`${GRAPH_MODULE_PREFIX}/refetchGraph`, (_params, { rejectWithValue }) =>
     rejectWithValue(GRAPH_DISABLED_ERROR_MESSAGE),
 );

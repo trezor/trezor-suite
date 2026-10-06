@@ -4,8 +4,8 @@ import { AnimatedDoubleInput, type AnimatedDoubleInputProps } from './AnimatedDo
 import { Input } from '../Input/Input';
 
 describe('AnimatedDoubleInput', () => {
-    const renderAnimatedDoubleInput = (props: Partial<AnimatedDoubleInputProps>) =>
-        renderWithBasicProvider(
+    const renderAnimatedDoubleInput = async (props: Partial<AnimatedDoubleInputProps>) =>
+        await renderWithBasicProvider(
             <AnimatedDoubleInput
                 renderPrimary={({ onPress, isDisabled, inputRef }) => (
                     <Input
@@ -31,7 +31,7 @@ describe('AnimatedDoubleInput', () => {
 
     it('should call onViewSwitch when Switch button is pressed', async () => {
         const onInputSwitch = jest.fn();
-        const { getByLabelText } = renderAnimatedDoubleInput({ onInputSwitch });
+        const { getByLabelText } = await renderAnimatedDoubleInput({ onInputSwitch });
 
         const switchButton = getByLabelText('Switch');
         await userEvent.press(switchButton);
@@ -42,7 +42,7 @@ describe('AnimatedDoubleInput', () => {
 
     it('should derive the next view from the controlled activeView', async () => {
         const onInputSwitch = jest.fn();
-        const { getByLabelText } = renderAnimatedDoubleInput({
+        const { getByLabelText } = await renderAnimatedDoubleInput({
             onInputSwitch,
             activeView: 'secondary',
         });
@@ -54,9 +54,11 @@ describe('AnimatedDoubleInput', () => {
         expect(onInputSwitch).toHaveBeenCalledWith('primary');
     });
 
-    it('should propagate switch label', () => {
+    it('should propagate switch label', async () => {
         const switchLabel = 'Custom Switch Label';
-        const { getByLabelText, queryByLabelText } = renderAnimatedDoubleInput({ switchLabel });
+        const { getByLabelText, queryByLabelText } = await renderAnimatedDoubleInput({
+            switchLabel,
+        });
 
         expect(queryByLabelText('Switch')).toBeNull();
         expect(getByLabelText(switchLabel)).toBeOnTheScreen();

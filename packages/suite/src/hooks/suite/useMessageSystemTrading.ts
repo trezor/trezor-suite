@@ -6,7 +6,7 @@ import {
 } from '@suite-common/message-system';
 import { type TradingTypeWithConcierge } from '@suite-common/trading';
 
-import { useSelector } from './useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 export const useMessageSystemTrading = (type: TradingTypeWithConcierge) => {
     const language = useSelector(selectLanguage);

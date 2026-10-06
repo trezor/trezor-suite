@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
@@ -6,7 +6,7 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 const mnemonic =
     'nasty answer gentle inform unaware abandon regret supreme dragon gravity behind lava dose pilot garden into dynamic outer hard speed luxury run truly armed';
 
-test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T1B1'] }, () => {
+test.describe('Onboarding - recover wallet T1B1', { tag: ['@T1B1'] }, () => {
     test.use({
         setupEmulator: false,
     });
@@ -23,19 +23,12 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T
                     'Verify that a user can successfully recover a wallet from a mnemonic during the onboarding process.',
                 category: TestCategory.Onboarding,
                 priority: TestPriority.High,
+                stream: TestStream.Growth,
             }),
         },
-        async ({
-            page,
-            device,
-            onboardingPage,
-            analyticsSection,
-            devicePrompt,
-            recoveryModal,
-            trezorInput,
-        }) => {
+        async ({ page, device, onboardingPage, devicePrompt, recoveryModal, trezorInput }) => {
             await test.step('Start wallet recovery process', async () => {
-                await analyticsSection.passThroughAnalytics();
+                await onboardingPage.passThroughAnalyticsAndDeviceCheck();
                 await onboardingPage.firmware.continueThroughFirmware();
                 await onboardingPage.recoverWalletButton.click();
                 await recoveryModal.selectWordCount(24);

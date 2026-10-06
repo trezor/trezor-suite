@@ -1,9 +1,12 @@
 import { type UseFormReturn } from 'react-hook-form';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import {
     TRADING_BUY_RECEIVE_ADDRESS,
+    TRADING_FORM_AMOUNT_INPUT_SOURCE,
+    TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
@@ -18,9 +21,11 @@ import {
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 
-import { useDispatch } from 'src/hooks/suite';
-import { useStore } from 'src/hooks/suite/useStore';
-import { isBuyQuotesFetchAllowed } from 'src/utils/wallet/trading/buyQuotesRequestUtils';
+import {
+    getBuyActiveAmount,
+    getBuyActiveAmountField,
+    isBuyQuotesFetchAllowed,
+} from 'src/utils/wallet/trading/buyQuotesRequestUtils';
 
 import { useTradingQuoteRequest } from '../common/useTradingQuoteRequest';
 
@@ -38,17 +43,25 @@ const BUY_IMMEDIATE_FIELDS = [
     TRADING_BUY_RECEIVE_ADDRESS,
 ] as const;
 
-const BUY_DEBOUNCED_FIELDS = [TRADING_FORM_FIAT_INPUT, TRADING_FORM_CRYPTO_INPUT] as const;
+const BUY_DEBOUNCED_FIELDS = [
+    TRADING_FORM_FIAT_INPUT,
+    TRADING_FORM_CRYPTO_INPUT,
+    TRADING_FORM_AMOUNT_IN_CRYPTO,
+] as const;
 
 export const useBuyQuotes = ({ methods, network, shouldSendInSats }: UseBuyQuotesProps) => {
-    const dispatch = useDispatch();
-    const store = useStore();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch, getState } = useServices(
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectGetState,
+    );
 
     const { isScheduledQuotesRefresh } = useTradingQuoteRequest({
         methods,
         immediateFields: BUY_IMMEDIATE_FIELDS,
         debouncedFields: BUY_DEBOUNCED_FIELDS,
+        getActiveAmountField: getBuyActiveAmountField,
+        getActiveAmount: getBuyActiveAmount,
         isFetchAllowed: isBuyQuotesFetchAllowed,
         requestQuotes: values =>
             dispatch(
@@ -61,12 +74,13 @@ export const useBuyQuotes = ({ methods, network, shouldSendInSats }: UseBuyQuote
                 payload: {
                     type: 'buy',
                     count: quotes.length,
+                    input: values[TRADING_FORM_AMOUNT_INPUT_SOURCE],
                 },
             });
 
             const selectedPaymentMethod = values.paymentMethod?.value;
             const paymentMethodOption = selectTradingSelectedPaymentMethodByType(
-                store.getState(),
+                getState(),
                 'buy',
                 selectedPaymentMethod,
             );

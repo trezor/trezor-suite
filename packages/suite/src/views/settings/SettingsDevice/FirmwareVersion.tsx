@@ -1,15 +1,18 @@
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
-import { Anchor, SettingsAnchor, goto } from '@suite/router';
+import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch } from 'src/hooks/suite';
 import { type AcquiredDevice } from 'src/types/suite';
 
-const getButtonLabelId = ({ device }: { device: AcquiredDevice }) => {
+type GetButtonLabelIdParams = { device: AcquiredDevice };
+
+const getButtonLabelId = ({ device }: GetButtonLabelIdParams) => {
     if (!device.firmwareReleaseConfigInfo?.isNewer) {
         return 'TR_REINSTALL';
     }
@@ -30,7 +33,7 @@ interface FirmwareVersionProps {
 }
 
 export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
     const { translationString } = useTranslation();
 
@@ -43,7 +46,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const changelogUrl = getChangelogUrl(device, revision);
 
     const handleUpdate = () => {
-        dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
+        dispatch(gotoThunk({ routeName: 'firmware-index', params: { cancelable: true } }));
     };
 
     return (

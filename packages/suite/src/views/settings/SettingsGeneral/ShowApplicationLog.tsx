@@ -1,12 +1,12 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch } from 'src/hooks/suite';
-
 export const ShowApplicationLog = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const handleClick = () => dispatch(openModal({ type: 'application-log' }));
 

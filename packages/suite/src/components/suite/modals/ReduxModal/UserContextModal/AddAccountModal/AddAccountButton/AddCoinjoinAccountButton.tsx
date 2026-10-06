@@ -1,19 +1,21 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
-import { createCoinjoinAccount } from '@suite/coinjoin';
+import { createCoinjoinAccountThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { openDeferredModal, openModal, selectModalType } from '@suite/modal';
-import { selectTorState } from '@suite/tor';
+import { openDeferredModal, openModal } from '@suite/modal';
+import { selectIsTorEnabled } from '@suite/tor';
+import { toggleTorThunk } from '@suite/tor-desktop';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { type Network, type NetworkAccount, type NetworkSymbol } from '@suite-common/wallet-config';
-import { type UnavailableCapabilities } from '@trezor/connect';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveAfter } from '@trezor/utils';
 
-import { toggleTor } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 import { AddButton } from './AddButton';
@@ -21,27 +23,15 @@ import { AddButton } from './AddButton';
 interface VerifyAvailabilityProps {
     coinjoinAccounts: Account[];
     symbol: NetworkSymbol;
-    unavailableCapabilities?: UnavailableCapabilities;
 }
 
-const verifyAvailability = ({
-    coinjoinAccounts,
-    symbol,
-    unavailableCapabilities,
-}: VerifyAvailabilityProps) => {
+const verifyAvailability = ({ coinjoinAccounts, symbol }: VerifyAvailabilityProps) => {
     if (coinjoinAccounts.length > 0) {
         return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED" />;
-    }
-    const capability = unavailableCapabilities?.coinjoin;
-    if (capability === 'no-support') {
-        return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT" />;
     }
     // regtest coinjoin account enabled in web app for development
     if (!isDesktop() && !(isDevEnv && symbol === 'regtest')) {
         return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY" />;
-    }
-    if (capability === 'update-required') {
-        return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED" />;
     }
 };
 
@@ -53,11 +43,10 @@ interface AddCoinjoinAccountProps {
 export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjoinAccountProps) => {
     const [isLoading, setIsLoading] = useState(false);
 
-    const { isTorEnabled } = useSelector(selectTorState);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
     const device = useSelector(selectSelectedDevice);
-    const accounts = useSelector(state => state.wallet.accounts);
-    const modalType = useSelector(selectModalType);
-    const dispatch = useDispatch();
+    const accounts = useSelector(selectAccounts);
+    const { dispatch } = useServices(injectDispatch);
 
     if (!device) {
         return null;
@@ -70,15 +59,11 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
             a.accountType === selectedAccount.accountType,
     );
 
-    const disabledMessage = verifyAvailability({
-        coinjoinAccounts,
-        symbol: network.symbol,
-        unavailableCapabilities: device.unavailableCapabilities,
-    });
+    const disabledMessage = verifyAvailability({ coinjoinAccounts, symbol: network.symbol });
 
     const onCreateCoinjoinAccountClick = async () => {
         const createAccount = async () => {
-            await dispatch(createCoinjoinAccount(network, selectedAccount));
+            await dispatch(createCoinjoinAccountThunk(network, selectedAccount));
             setIsLoading(false);
         };
 
@@ -107,7 +92,7 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
             }
 
             // Triggering Tor process and displaying Tor loading to give user feedback of Tor progress.
-            dispatch(toggleTor(true, modalType));
+            dispatch(toggleTorThunk(true));
             const isTorLoaded = await dispatch(openDeferredModal({ type: 'tor-loading' }));
             // When Tor was not loaded it means there was an error or user canceled it, stop the coinjoin account activation.
             if (!isTorLoaded) return;

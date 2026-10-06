@@ -3,23 +3,35 @@ import { type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ThemeProvider, useTheme } from 'styled-components';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { useExternalLink } from '@suite/external-links';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { Box, Button, Column, Image, Paragraph, Row, intermediaryTheme } from '@trezor/components';
+import { injectDispatch } from '@suite-common/redux-utils';
+import {
+    Box,
+    Button,
+    Column,
+    IconButton,
+    Image,
+    Paragraph,
+    Row,
+    intermediaryTheme,
+} from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 import { DASHBOARD_ONBOARDING_FEEDBACK_URL } from '@trezor/urls';
 
-import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { selectShouldShowOnboardingFeedbackBanner } from './onboardingFeedbackBannerSelectors';
-import { CloseButton } from '../DashboardPromoBanner/CommonPromoBannerComponents';
 import { bannerAnimationConfig } from '../banner-animations';
 
-const Title = ({ isVerticalLayout }: { isVerticalLayout: boolean }) => {
+type TitleProps = { isVerticalLayout: boolean };
+
+const Title = ({ isVerticalLayout }: TitleProps) => {
     const { isBelowLaptop } = useLayoutSize();
     const { variant } = useTheme();
     const isDarkMode = variant === 'dark';
@@ -51,13 +63,12 @@ const Description = () => {
     );
 };
 
-export const ForceDarkTheme = ({
-    children,
-    isActive,
-}: {
+type ForceDarkThemeProps = {
     children: ReactNode;
     isActive: boolean;
-}) =>
+};
+
+export const ForceDarkTheme = ({ children, isActive }: ForceDarkThemeProps) =>
     isActive ? (
         <ThemeProvider theme={{ variant: 'dark', ...intermediaryTheme.dark }}>
             {children}
@@ -66,14 +77,16 @@ export const ForceDarkTheme = ({
         children
     );
 
-const CTAButton = ({ onClick, isBelowLaptop }: { onClick: () => void; isBelowLaptop: boolean }) => {
+type CTAButtonProps = { onClick: () => void };
+
+const CTAButton = ({ onClick }: CTAButtonProps) => {
     const href = useExternalLink(DASHBOARD_ONBOARDING_FEEDBACK_URL);
 
     return (
         <Button
             intent="neutral"
             onClick={onClick}
-            size={isBelowLaptop ? 'medium' : 'large'}
+            size="medium"
             href={href}
             data-testid="@dashboard/onboarding-feedback-banner/button"
         >
@@ -83,8 +96,7 @@ const CTAButton = ({ onClick, isBelowLaptop }: { onClick: () => void; isBelowLap
 };
 
 export const OnboardingFeedbackBanner = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isBelowLaptop, isBelowDesktop } = useLayoutSize();
     const isVerticalLayout = useIsContentBelowBreakpoint();
 
@@ -133,15 +145,12 @@ export const OnboardingFeedbackBanner = () => {
                                     margin={{ horizontal: 24, vertical: isVerticalLayout ? 16 : 0 }}
                                     zIndex={1}
                                 >
-                                    <Column gap={isBelowLaptop ? 4 : 8}>
+                                    <Column>
                                         <Title isVerticalLayout={isVerticalLayout} />
                                         <Description />
                                     </Column>
 
-                                    <CTAButton
-                                        onClick={handleCTAClick}
-                                        isBelowLaptop={isBelowLaptop}
-                                    />
+                                    <CTAButton onClick={handleCTAClick} />
                                 </Column>
 
                                 <Row
@@ -166,7 +175,15 @@ export const OnboardingFeedbackBanner = () => {
                                     />
                                 </Row>
                             </ContentFlex>
-                            <CloseButton onClose={handleClose} />
+                            <Box position={{ type: 'absolute', top: 12, right: 12 }}>
+                                <IconButton
+                                    icon={XIcon}
+                                    intent="neutral"
+                                    priority="secondary"
+                                    onClick={handleClose}
+                                    tooltip={{ content: <Translation id="TR_CLOSE" /> }}
+                                />
+                            </Box>
                         </Box>
                     </motion.div>
                 )}

@@ -1,21 +1,23 @@
 import { useEffect, useState } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
-import { desktopApi } from '@trezor/suite-desktop-api';
-
-import { useDispatch } from 'src/hooks/suite';
 
 export const AutoStartBeforeQuitModal = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { desktopApi, analytics, dispatch } = useServices(
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectDesktopApi,
+    );
     const [dontAskAgain, setDontAskAgain] = useState(false);
     useEffect(() => {
         if (desktopApi.available) desktopApi.appAutoStartPopupAck();
-    }, []);
+    }, [desktopApi]);
 
     if (!desktopApi.available) return null;
 

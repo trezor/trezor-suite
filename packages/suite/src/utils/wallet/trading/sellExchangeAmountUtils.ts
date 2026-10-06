@@ -1,39 +1,10 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     asAmountUnit,
-    fromBaseCurrencyToCryptoUnit,
     getCryptoAmountWithReserve,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
-
-type CalcCryptoFromFiatParams = {
-    fiatAmount: string;
-    rate: number | undefined;
-    networkDecimals: number;
-    shouldSendInSats: boolean | undefined;
-};
-
-export const calcCryptoFromFiat = ({
-    fiatAmount,
-    rate,
-    networkDecimals,
-    shouldSendInSats,
-}: CalcCryptoFromFiatParams): string => {
-    const cryptoAmount =
-        fromBaseCurrencyToCryptoUnit({ fiatAmount, rate })?.toFixed(networkDecimals) ?? null;
-
-    if (!cryptoAmount) {
-        return '';
-    }
-
-    return shouldSendInSats
-        ? unitsToSubunits({
-              value: asAmountUnit(new BigNumber(cryptoAmount)),
-              decimals: networkDecimals,
-          }).toString()
-        : cryptoAmount;
-};
 
 type CalcRatioAmountParams = {
     divisor: number;

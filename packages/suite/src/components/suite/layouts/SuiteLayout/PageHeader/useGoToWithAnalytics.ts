@@ -1,24 +1,24 @@
-import { selectSelectedAccount } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { goto } from '@suite/router';
+import { selectSelectedAccountSymbol } from '@suite/account';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const useGoToWithAnalytics = (account?: Account) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const selectedAccount = useSelector(selectSelectedAccount);
-    const accountToUse = account ?? selectedAccount;
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const selectedAccountSymbol = useSelector(selectSelectedAccountSymbol);
+    const symbol = account?.symbol ?? selectedAccountSymbol;
 
-    return (...[payload]: Parameters<typeof goto>) => {
-        if (accountToUse?.symbol) {
+    return (...[payload]: Parameters<typeof gotoThunk>) => {
+        if (symbol) {
             analytics.report({
                 type: events.accountsActionsEvent.name,
-                payload: { symbol: accountToUse.symbol, action: payload.routeName },
+                payload: { symbol, action: payload.routeName },
             });
         }
-        dispatch(goto(payload));
+        dispatch(gotoThunk(payload));
     };
 };

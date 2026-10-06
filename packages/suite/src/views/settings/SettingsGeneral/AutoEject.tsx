@@ -1,24 +1,24 @@
 import { useState } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDevices } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
 import { Modal, Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { setAutoEjectEnabledThunk } from 'src/actions/suite/autoEjectThunks';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
-const AutoEjectConfirmationModal = ({
-    onCancel,
-    onSubmit,
-}: {
+type AutoEjectConfirmationModalProps = {
     onCancel: () => void;
     onSubmit: () => void;
-}) => {
+};
+
+const AutoEjectConfirmationModal = ({ onCancel, onSubmit }: AutoEjectConfirmationModalProps) => {
     const handleConfirmClick = () => {
         onSubmit();
         onCancel();
@@ -46,9 +46,8 @@ const AutoEjectConfirmationModal = ({
 };
 
 export const AutoEject = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const isAutoEjectEnabled = useSelector(selectIsDeviceAutoEjectEnabled);
-    const dispatch = useDispatch();
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
     const devices = useSelector(selectDevices);

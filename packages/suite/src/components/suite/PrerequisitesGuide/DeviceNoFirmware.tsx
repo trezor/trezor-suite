@@ -1,22 +1,23 @@
 import { type MouseEventHandler } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { CpuIcon } from '@trezor/icons';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
-import { useDispatch } from 'src/hooks/suite';
-import { useStore } from 'src/hooks/suite/useStore';
 
 export const DeviceNoFirmware = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const { getState } = useStore();
+    const { analytics, dispatch, getState } = useServices(
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectGetState,
+    );
 
     const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
@@ -31,7 +32,7 @@ export const DeviceNoFirmware = () => {
             },
             { force: true },
         );
-        dispatch(goto({ routeName: 'onboarding-index' }));
+        dispatch(gotoThunk({ routeName: 'onboarding-index' }));
     };
 
     return (

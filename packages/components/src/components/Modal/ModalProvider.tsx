@@ -41,7 +41,7 @@ export const ModalProvider = ({ isDisabled = false, children }: ModalProviderPro
                 isDisabled: disabled,
             }}
         >
-            <div ref={target} />
+            <div ref={target} data-component="ModalProvider" />
             {children}
         </ModalContext.Provider>
     );

@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 
-import { useDispatch } from './useDispatch';
-
 export const useWindowVisibility = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const onWindowVisibilityChange = () => {
         if (document.visibilityState === 'hidden') {

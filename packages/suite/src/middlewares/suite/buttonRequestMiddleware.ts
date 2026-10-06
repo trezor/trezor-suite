@@ -1,10 +1,10 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
 import { PAYMENT_REQUEST_BUTTON_NAMES, selectAccountByKey } from '@suite-common/wallet-core';
-import { UI_REQUEST } from '@trezor/connect';
-import { bluetoothIpc } from '@trezor/transport-bluetooth';
+import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 
-import { type Action, type AppState, type Dispatch } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 const SIGN_TX_NETWORK_TYPES = ['cardano', 'ethereum', 'stellar', 'tron'] as const;
 
@@ -17,6 +17,11 @@ const SIGN_TX_ROUTES = [
     'earn-yield-deposit',
     'earn-yield-withdraw',
     'earn-yield-claim',
+    // The clear-signed wrap/unwrap review needs these too: firmware announces its provider and
+    // intent screens with ButtonRequest_Other (confirm_action's default), which without remapping
+    // would replace the review with ConfirmActionModal midway and reset its step tracking.
+    'earn-yield-wrap',
+    'earn-yield-unwrap',
     'earn-tron-stake',
     'earn-tron-vote',
     'earn-tron-unstake',
@@ -82,26 +87,14 @@ const shouldRemapToSignTx = (
 };
 
 const buttonRequest =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
-    (next: Dispatch) =>
-    (action: Action): Action => {
-        if (
-            action.type === UI_REQUEST.FIRMWARE_DISCONNECT &&
-            action.payload.device.descriptor.apiType === 'bluetooth' &&
-            action.payload.device.descriptor.id
-        ) {
-            const { id } = action.payload.device.descriptor;
-            bluetoothIpc
-                .disconnectDevice(id)
-                .then(() => bluetoothIpc.startScan()) // restart scanning
-                .catch(() => {});
-        }
-
+    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
+    (next: Dispatch<UnknownAction>) =>
+    (action: UnknownAction): UnknownAction => {
         // firmware bug https://github.com/trezor/trezor-firmware/issues/35
         // ugly hack to make Cardano review modal work
         // ugly hack to make Ethereum staking and bump fee review modal on specific devices work
         // root cause of this bug is wrong button request ButtonRequest_Other from CardanoSignTx - should be ButtonRequest_SignTx
-        if (action.type === UI_REQUEST.REQUEST_BUTTON) {
+        if (isUiEventOfType(action, UI_EVENTS.BUTTON_REQUEST)) {
             if (shouldRemapToSignTx(action.payload.code, action.payload.name, api.getState())) {
                 api.dispatch({
                     ...action,

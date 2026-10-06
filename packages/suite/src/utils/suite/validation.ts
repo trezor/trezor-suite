@@ -5,11 +5,11 @@ import {
     getNetworkDisplaySymbol,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
+import { getSolanaUnstakeAmountBounds } from '@suite-common/wallet-core';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getAmountValidationResult,
-    getSolanaUnstakeAmountBounds,
     isAmountWithinNetworkReserve,
     isDecimalsValid,
     isInteger,

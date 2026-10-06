@@ -22,7 +22,7 @@ jest.mock('./setLastErrorMessageByTradingType', () => {
 
     return {
         ...originalModule,
-        setLastErrorMessageByTradingType: jest
+        setLastErrorMessageByTradingTypeThunk: jest
             .fn()
             .mockImplementation(({ tradingType, errorMessage }) => ({
                 type: 'mockedSetLastErrorMessageByTradingTypeAction',

@@ -1,46 +1,25 @@
-import { useCallback, useEffect, useEffectEvent } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useEffectEvent } from 'react';
+import { useSelector } from 'react-redux';
 
 import {
-    type TradingSellType,
-    isFinalStatus,
+    selectTradingProviderMetadata,
     selectTradingSellSelectedQuote,
-    useTradingDetailData,
 } from '@suite-common/trading';
-import { Screen } from '@suite-native/navigation';
+import { VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { useSellAnalyticReportCallback } from '@suite-native/trading-analytics';
-import {
-    ProviderConfirmationStatusInfo,
-    ProviderStatusDevButtons,
-} from '@suite-native/trading-browser-auth';
+import { KYCWarning } from '@suite-native/trading-atoms';
 import { Footer } from '@suite-native/trading-provider-utils';
 
 import { LastErrorMessage } from '../components/general/Error/LastErrorMessage';
-import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
-import {
-    SellPreviewContinueButton,
-    SellPreviewScreenHeader,
-    SellPreviewView,
-} from '../components/sell/SellPreview';
-import { useWatchTrade } from '../hooks/general/useWatchTrade';
-import { useSellFlow } from '../hooks/sell/useSellFlow';
-import { clearTradingStateThunk } from '../thunks';
+import { TradingPreviewErrorScreen } from '../components/general/TradingPreview/TradingPreviewErrorScreen';
+import { SellPreviewContinueButton } from '../components/sell/SellPreview/SellPreviewContinueButton';
+import { SellPreviewView } from '../components/sell/SellPreview/SellPreviewView';
 
-const TradingSellPreviewScreenContent = () => {
-    const dispatch = useDispatch();
-    const { txnErrorString, doBankAccountVerificationCheck, composeTradingTransaction } =
-        useSellFlow();
-    const { trade } = useTradingDetailData<TradingSellType>('sell');
-    const selectedQuote = useSelector(selectTradingSellSelectedQuote);
-
-    const currentQuote = trade?.data ? trade.data : selectedQuote;
-    const isFinalized = isFinalStatus('sell', currentQuote?.status);
-
-    useWatchTrade({
-        accountKey: trade?.sendAccountKey,
-        orderId: currentQuote?.orderId,
-        isInProgress: true,
-    });
+export const TradingSellPreviewScreen = () => {
+    const providerMetadata = useSelector(selectTradingProviderMetadata);
+    const quote = useSelector(selectTradingSellSelectedQuote);
 
     const reportToAnalytics = useSellAnalyticReportCallback();
     const reportVisit = useEffectEvent(() => {
@@ -50,54 +29,40 @@ const TradingSellPreviewScreenContent = () => {
         reportVisit();
     }, []);
 
-    const runBankAccountVerificationCheck = useEffectEvent(() => {
-        doBankAccountVerificationCheck();
-    });
-    useEffect(() => {
-        runBankAccountVerificationCheck();
-    }, []);
+    if (!quote || !providerMetadata) {
+        return <TradingPreviewErrorScreen screenName="TradingSellPreviewScreen" />;
+    }
 
-    // Compose transaction when status is SEND_CRYPTO
-    useEffect(() => {
-        if (currentQuote?.status === 'SEND_CRYPTO') {
-            composeTradingTransaction();
-        }
-    }, [currentQuote?.status, composeTradingTransaction]);
-
-    // clear trading state on unmount
-    useEffect(
-        () => () => {
-            dispatch(clearTradingStateThunk());
-        },
-        [dispatch],
-    );
-
-    const onSignTransactionNavigation = useCallback(() => {
-        reportToAnalytics('transaction-preview', 'continue');
-    }, [reportToAnalytics]);
-
-    const errorString = txnErrorString ?? currentQuote?.error;
+    const { companyName } = providerMetadata;
 
     return (
-        <Screen header={<SellPreviewScreenHeader />}>
-            <ProviderStatusDevButtons />
-            <LastErrorMessage tradingType="sell" />
-            <ProviderConfirmationStatusInfo quoteStatus={currentQuote?.status} />
-            <SellPreviewView quote={currentQuote} txnErrorString={errorString} />
-            {!isFinalized && (
-                <SellPreviewContinueButton
-                    quote={currentQuote}
-                    isDisabled={!!errorString}
-                    onSignTransactionNavigation={onSignTransactionNavigation}
+        <Screen
+            header={
+                <DynamicScreenHeader
+                    title={
+                        <Translation
+                            id="moduleTrading.tradingSellPreviewScreen.headerTitle"
+                            values={{ companyName }}
+                        />
+                    }
+                    subtitleVariant="body-sm"
+                    subtitle={
+                        <Translation
+                            id="moduleTrading.tradingSellPreviewScreen.subtitle"
+                            values={{ companyName }}
+                        />
+                    }
+                    closeActionType="back"
                 />
-            )}
-            <Footer />
+            }
+            footer={<SellPreviewContinueButton companyName={companyName} />}
+        >
+            <VStack spacing="sp16" flex={1}>
+                <LastErrorMessage tradingType="sell" />
+                <SellPreviewView quote={quote} />
+                <KYCWarning />
+                <Footer />
+            </VStack>
         </Screen>
     );
 };
-
-export const TradingSellPreviewScreen = () => (
-    <TradingDeviceConnectionGuard>
-        <TradingSellPreviewScreenContent />
-    </TradingDeviceConnectionGuard>
-);

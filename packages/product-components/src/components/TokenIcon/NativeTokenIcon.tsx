@@ -2,9 +2,9 @@ import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
-import { cryptoIcons } from '@suite-common/icons';
+import { cryptoIcons, isCryptoIconSymbol } from '@suite-common/icons';
 
-import { type TokenIconProps, type TokenIconSize } from './tokenIconTypes';
+import { type TokenIconSize } from './tokenIconTypes';
 
 const SvgContainer = styled.div<{ $size: TokenIconSize }>`
     display: flex;
@@ -31,13 +31,19 @@ const StyledReactSVG = styled(ReactSVG)`
     }
 ` as typeof ReactSVG;
 
-type NativeTokenIconProps = TokenIconProps;
+type NativeTokenIconProps = {
+    symbol: string;
+    size?: TokenIconSize;
+    'data-testid'?: string;
+};
 
 export const NativeTokenIcon = ({
     symbol,
     size = 32,
     'data-testid': dataTestId,
 }: NativeTokenIconProps) => {
+    if (!isCryptoIconSymbol(symbol)) return null;
+
     const src = cryptoIcons[symbol];
 
     return (

@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { type WordCount, wordCounts } from '@suite/recovery';
 import { Card, Column, Grid, H4, Paragraph, RadioCard } from '@trezor/components';
+
 type SelectWordCountStepProps = {
     setWordCount: (number: WordCount) => void;
     wordCount?: WordCount;

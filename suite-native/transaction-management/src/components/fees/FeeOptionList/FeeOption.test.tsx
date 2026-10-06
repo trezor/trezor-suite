@@ -1,8 +1,9 @@
-import { yup } from '@suite-common/validators';
+import { type Store } from '@reduxjs/toolkit';
+
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Form, useForm } from '@suite-native/forms';
+import { type FeesRootState } from '@suite-common/wallet-core';
+import { Form, useForm, yup } from '@suite-native/forms';
 import {
-    type TestStore,
     createStoreFromPreloadedState,
     renderWithStoreProvider,
     userEvent,
@@ -12,6 +13,8 @@ import { FeeOption } from './FeeOption';
 import { createFeeLevel } from '../../../__fixtures__/feeLevels';
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { type NativeSupportedPredefinedFeeLevel } from '../../../types';
+
+type State = FeesRootState;
 
 // Create a simple validation schema for testing
 const testValidationSchema = yup.object({
@@ -49,7 +52,7 @@ const mockSelectConvertedNetworkFeeLevelFeePerUnit = jest.requireMock(
 ).selectConvertedNetworkFeeLevelFeePerUnit;
 
 describe('FeeOption', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let mockOnSelectedFeeLevel: jest.Mock;
 
     const defaultProps = {
@@ -67,22 +70,19 @@ describe('FeeOption', () => {
         onSelectedFeeLevel: jest.fn(),
     };
 
-    const getPreloadedState = () => ({
+    const getPreloadedState = (): State => ({
         wallet: getWalletState(),
     });
 
-    const renderFeeOption = (props = {}) => {
+    const renderFeeOption = async (props = {}) => {
         const finalProps = { ...defaultProps, ...props };
         mockOnSelectedFeeLevel = finalProps.onSelectedFeeLevel;
 
-        return renderWithStoreProvider(
+        return await renderWithStoreProvider(
             <TestFormWrapper>
                 <FeeOption {...finalProps} />
             </TestFormWrapper>,
-            {
-                store,
-                preloadedState: getPreloadedState(),
-            },
+            { services: { store }, preloadedState: getPreloadedState() },
         );
     };
 
@@ -103,35 +103,35 @@ describe('FeeOption', () => {
             ['normal', /Normal/],
             ['economy', /Low/],
             ['high', /High/],
-        ])('should render %s fee level with correct label', (feeKey, expectedLabel) => {
-            const { getByText } = renderFeeOption({ feeKey });
+        ])('should render %s fee level with correct label', async (feeKey, expectedLabel) => {
+            const { getByText } = await renderFeeOption({ feeKey });
 
             expect(getByText(expectedLabel)).toBeTruthy();
         });
 
-        it('should display fee information correctly', () => {
-            const { getByText } = renderFeeOption();
+        it('should display fee information correctly', async () => {
+            const { getByText } = await renderFeeOption();
 
             expect(getByText('4 sat/vB')).toBeTruthy();
             expect(getByText('~ ~10 minutes')).toBeTruthy();
         });
 
-        it('should show radio button when interactive', () => {
-            const { getByTestId } = renderFeeOption();
+        it('should show radio button when interactive', async () => {
+            const { getByTestId } = await renderFeeOption();
 
             expect(getByTestId('@transactionManagement/fees-level-radio-normal')).toBeTruthy();
         });
 
-        it('should not show radio button when not interactive', () => {
-            const { queryByTestId } = renderFeeOption({
+        it('should not show radio button when not interactive', async () => {
+            const { queryByTestId } = await renderFeeOption({
                 isInteractive: false,
             });
 
             expect(queryByTestId('@transactionManagement/fees-level-radio-normal')).toBeNull();
         });
 
-        it('should show loading skeleton when isLoading is true', () => {
-            const { queryAllByTestId } = renderFeeOption({
+        it('should show loading skeleton when isLoading is true', async () => {
+            const { queryAllByTestId } = await renderFeeOption({
                 isLoading: true,
             });
 
@@ -141,7 +141,7 @@ describe('FeeOption', () => {
 
     describe('Interaction', () => {
         it('should call onSelectedFeeLevel when pressed', async () => {
-            const { getByTestId } = renderFeeOption({
+            const { getByTestId } = await renderFeeOption({
                 feeKey: 'high',
             });
 
@@ -151,7 +151,7 @@ describe('FeeOption', () => {
         });
 
         it('should not call onSelectedFeeLevel when not interactive', async () => {
-            const { getByTestId } = renderFeeOption({
+            const { getByTestId } = await renderFeeOption({
                 isInteractive: false,
             });
 
@@ -163,7 +163,7 @@ describe('FeeOption', () => {
         });
 
         it('should handle different fee levels correctly', async () => {
-            const { getByTestId } = renderFeeOption({
+            const { getByTestId } = await renderFeeOption({
                 feeKey: 'economy',
             });
 
@@ -174,8 +174,8 @@ describe('FeeOption', () => {
     });
 
     describe('Fee calculation', () => {
-        it('should calculate fee per unit correctly for bitcoin', () => {
-            const { getByText } = renderFeeOption({
+        it('should calculate fee per unit correctly for bitcoin', async () => {
+            const { getByText } = await renderFeeOption({
                 symbol: 'btc',
                 feeLevel: defaultProps.feeLevel,
                 transactionBytes: 250,
@@ -185,8 +185,8 @@ describe('FeeOption', () => {
             expect(getByText('4 sat/vB')).toBeTruthy();
         });
 
-        it('should use feePerByte for non-bitcoin networks', () => {
-            const { getByText } = renderFeeOption({
+        it('should use feePerByte for non-bitcoin networks', async () => {
+            const { getByText } = await renderFeeOption({
                 symbol: 'eth',
                 feeLevel: defaultProps.feeLevel,
                 transactionBytes: 250,

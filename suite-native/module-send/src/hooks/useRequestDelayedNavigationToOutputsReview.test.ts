@@ -22,8 +22,8 @@ jest.mock('@react-navigation/native', () => ({
 const accountKey = mockAccountKey({ descriptor: 'accountKey' });
 
 describe('useRequestDelayedNavigationToOutputsReview', () => {
-    const renderUseRequestDelayedNavigationToOutputsReview = () =>
-        renderHookWithStoreProvider(() =>
+    const renderUseRequestDelayedNavigationToOutputsReview = async () =>
+        await renderHookWithStoreProvider(() =>
             useRequestDelayedNavigationToOutputsReview({
                 accountKey,
                 tokenContract: 'tokenContract' as TokenAddress,
@@ -34,17 +34,17 @@ describe('useRequestDelayedNavigationToOutputsReview', () => {
         jest.clearAllMocks();
     });
 
-    it('should call navigate once there are any button requests', () => {
-        const { result, rerender } = renderUseRequestDelayedNavigationToOutputsReview();
+    it('should call navigate once there are any button requests', async () => {
+        const { result, rerender } = await renderUseRequestDelayedNavigationToOutputsReview();
 
-        act(() => {
+        await act(() => {
             result.current();
         });
 
         expect(mockNavigate).not.toHaveBeenCalled();
 
         mockSelectDeviceButtonRequestsCodes.mockReturnValue(['buttonRequestMock1']);
-        rerender({});
+        await rerender({});
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith('SendOutputsReview', {

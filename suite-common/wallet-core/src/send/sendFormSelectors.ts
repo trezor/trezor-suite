@@ -17,6 +17,7 @@ import { type SendFormDrafts, type SendRootState } from './sendFormReducer';
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
 export const selectSendPrecomposedTx = (state: SendRootState) => state.wallet.send.precomposedTx;
+export const selectSend = (state: SendRootState) => state.wallet.send;
 export const selectSendSerializedTx = (state: SendRootState) => state.wallet.send.serializedTx;
 export const selectSendSignedTx = (state: SendRootState) => state.wallet.send.signedTx;
 export const selectSendFormDrafts = (state: SendRootState): SendFormDrafts =>
@@ -65,8 +66,7 @@ export const selectSendFormButtonRequestCodes = createMemoizedSelector(
                     ({ code, name }) =>
                         code === 'ButtonRequest_ConfirmOutput' ||
                         code === 'ButtonRequest_SignTx' ||
-                        isCardano ||
-                        (isEthereum && code === 'ButtonRequest_Other') ||
+                        ((isCardano || isEthereum) && code === 'ButtonRequest_Other') ||
                         (code === 'ButtonRequest_Other' &&
                             name !== undefined &&
                             PAYMENT_REQUEST_BUTTON_NAMES.includes(name)) ||
@@ -88,9 +88,6 @@ export const selectSendFormReviewButtonRequestsCount = (
 ) => {
     if (symbol === undefined) return 0;
 
-    const networkType = getNetworkType(symbol);
-    const isCardano = networkType === 'cardano';
-
     const sendFormReviewRequest = selectSendFormButtonRequestCodes(state, symbol);
 
     let count = sendFormReviewRequest.length;
@@ -104,7 +101,7 @@ export const selectSendFormReviewButtonRequestsCount = (
         count -= 1;
     }
 
-    return isCardano ? Math.max(0, count - 1) : count;
+    return count;
 };
 
 export const selectSendFormReviewLastButtonCode = (

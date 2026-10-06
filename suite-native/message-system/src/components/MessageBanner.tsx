@@ -1,14 +1,15 @@
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useDispatch } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { messageSystemActions } from '@suite-common/message-system';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Message, type Variant } from '@suite-common/suite-types';
 import {
     Box,
     HStack,
+    IconCircle,
+    type IconCircleIntent,
     PressableOpacity,
-    RoundedIcon,
-    type RoundedIconIntent,
     Text,
     VStack,
 } from '@suite-native/atoms';
@@ -28,7 +29,7 @@ type MessageBannerStyle = {
     backgroundColor: Color;
     icon: IconName;
     iconColor: Color;
-    iconIntent: RoundedIconIntent;
+    iconIntent: IconCircleIntent;
 };
 
 const MessageBannerVariantToStyleMap = {
@@ -76,16 +77,16 @@ const MessageCloseButton = ({
     intent,
     onClose,
 }: {
-    intent: RoundedIconIntent;
+    intent: IconCircleIntent;
     onClose: () => void;
 }) => (
     <PressableOpacity onPress={onClose}>
-        <RoundedIcon name="x" intent={intent} size={40} />
+        <IconCircle name="x" intent={intent} size={40} />
     </PressableOpacity>
 );
 
 export const MessageBanner = ({ message }: MessageBannerProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { applyStyle } = useNativeStyles();
 
     // TODO: We use only English locale in suite-native so far. When the localization to other

@@ -3,10 +3,12 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [
         "**/*.json",
+        "llmExploratoryTester",
         "fixtures",
         "snapshots",
         "tests",
         "support",
+        "performance",
         "playwright-config",
         "scripts/**/*.ts"
     ],
@@ -23,12 +25,19 @@
             "path": "../../suite-common/earn-staking-api"
         },
         { "path": "../../suite-common/feedback" },
+        { "path": "../../suite-common/firmware" },
+        {
+            "path": "../../suite-common/formatters"
+        },
         {
             "path": "../../suite-common/message-system"
         },
         { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/suite-sync-evolu"
+        },
+        {
+            "path": "../../suite-common/suite-sync-quota-manager"
         },
         {
             "path": "../../suite-common/suite-sync-storage"
@@ -50,7 +59,9 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../analytics" },
+        { "path": "../app-assets" },
         { "path": "../debug" },
+        { "path": "../desktop-app" },
         { "path": "../flags" },
         { "path": "../intl" },
         { "path": "../labeling" },
@@ -65,13 +76,14 @@
         { "path": "../../packages/e2e-utils" },
         { "path": "../../packages/eslint" },
         {
+            "path": "../../networks/network-module/network-module-suite-common-types"
+        },
+        {
             "path": "../../networks/solana/network-solana"
         },
+        { "path": "../../packages/perf-e2e" },
         { "path": "../../packages/protobuf" },
-        { "path": "../../packages/suite-data" },
-        {
-            "path": "../../packages/suite-desktop"
-        },
+        { "path": "../../packages/suite" },
         { "path": "../../packages/theme" },
         {
             "path": "../../packages/transport-common"
@@ -79,8 +91,8 @@
         {
             "path": "../../packages/trezor-user-env-link"
         },
-        { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/utxo-lib" }
     ]
 }

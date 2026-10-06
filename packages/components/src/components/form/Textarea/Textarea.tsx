@@ -40,7 +40,6 @@ type TextareaHTMLProps = TextareaHTMLAttributes<HTMLTextAreaElement>;
 export type TextareaProps = AllowedFrameProps &
     TextareaHTMLProps &
     Omit<FormCellProps, 'children'> & {
-        isDisabled?: boolean;
         label?: ReactNode;
         innerRef?: Ref<HTMLTextAreaElement>;
         value?: string;
@@ -71,7 +70,7 @@ export const Textarea = ({
     }, {} as TextareaHTMLProps);
 
     return (
-        <FormCell {...formCellProps}>
+        <FormCell {...formCellProps} data-component="Textarea">
             <InputWrapper hasError={hasError} isDisabled={isDisabled}>
                 <StyledTextarea
                     $hasLabel={!!label}

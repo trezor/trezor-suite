@@ -14,8 +14,23 @@ export enum StellarAssetType {
 export type EnumStellarAssetType = Static<typeof EnumStellarAssetType>;
 export const EnumStellarAssetType = Type.Enum(StellarAssetType);
 
+export enum StellarContractExecutableType {
+    CONTRACT_EXECUTABLE_WASM = 0,
+}
+
+export type EnumStellarContractExecutableType = Static<typeof EnumStellarContractExecutableType>;
+export const EnumStellarContractExecutableType = Type.Enum(StellarContractExecutableType);
+
+export enum StellarContractIDPreimageType {
+    CONTRACT_ID_PREIMAGE_FROM_ADDRESS = 0,
+}
+
+export type EnumStellarContractIDPreimageType = Static<typeof EnumStellarContractIDPreimageType>;
+export const EnumStellarContractIDPreimageType = Type.Enum(StellarContractIDPreimageType);
+
 export enum StellarHostFunctionType {
     HOST_FUNCTION_TYPE_INVOKE_CONTRACT = 0,
+    HOST_FUNCTION_TYPE_CREATE_CONTRACT_V2 = 3,
 }
 
 export type EnumStellarHostFunctionType = Static<typeof EnumStellarHostFunctionType>;
@@ -65,8 +80,20 @@ export enum StellarSignerType {
 export type EnumStellarSignerType = Static<typeof EnumStellarSignerType>;
 export const EnumStellarSignerType = Type.Enum(StellarSignerType);
 
+export enum StellarSorobanAuthorizationEnvelopeType {
+    ENVELOPE_TYPE_SOROBAN_AUTHORIZATION_WITH_ADDRESS = 10,
+}
+
+export type EnumStellarSorobanAuthorizationEnvelopeType = Static<
+    typeof EnumStellarSorobanAuthorizationEnvelopeType
+>;
+export const EnumStellarSorobanAuthorizationEnvelopeType = Type.Enum(
+    StellarSorobanAuthorizationEnvelopeType,
+);
+
 export enum StellarSorobanAuthorizedFunctionType {
     SOROBAN_AUTHORIZED_FUNCTION_TYPE_CONTRACT_FN = 0,
+    SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_V2_HOST_FN = 2,
 }
 
 export type EnumStellarSorobanAuthorizedFunctionType = Static<
@@ -78,7 +105,8 @@ export const EnumStellarSorobanAuthorizedFunctionType = Type.Enum(
 
 export enum StellarSorobanCredentialsType {
     SOROBAN_CREDENTIALS_SOURCE_ACCOUNT = 0,
-    SOROBAN_CREDENTIALS_ADDRESS = 1,
+    SOROBAN_CREDENTIALS_ADDRESS_V2 = 2,
+    SOROBAN_CREDENTIALS_ADDRESS_WITH_DELEGATES = 3,
 }
 
 export type EnumStellarSorobanCredentialsType = Static<typeof EnumStellarSorobanCredentialsType>;
@@ -159,6 +187,35 @@ export const StellarClaimClaimableBalanceOp = Type.Object(
     { $id: 'StellarClaimClaimableBalanceOp' },
 );
 
+export type StellarContractExecutable = Static<typeof StellarContractExecutable>;
+export const StellarContractExecutable = Type.Object(
+    {
+        type: EnumStellarContractExecutableType,
+        wasm_hash: Type.Optional(Type.String()),
+    },
+    { $id: 'StellarContractExecutable' },
+);
+
+export type StellarContractIDPreimageFromAddress = Static<
+    typeof StellarContractIDPreimageFromAddress
+>;
+export const StellarContractIDPreimageFromAddress = Type.Object(
+    {
+        address: Type.String(),
+        salt: Type.String(),
+    },
+    { $id: 'StellarContractIDPreimageFromAddress' },
+);
+
+export type StellarContractIDPreimage = Static<typeof StellarContractIDPreimage>;
+export const StellarContractIDPreimage = Type.Object(
+    {
+        type: EnumStellarContractIDPreimageType,
+        from_address: Type.Optional(StellarContractIDPreimageFromAddress),
+    },
+    { $id: 'StellarContractIDPreimage' },
+);
+
 export type StellarCreateAccountOp = Static<typeof StellarCreateAccountOp>;
 export const StellarCreateAccountOp = Type.Object(
     {
@@ -167,29 +224,6 @@ export const StellarCreateAccountOp = Type.Object(
         starting_balance: Type.Uint(),
     },
     { $id: 'StellarCreateAccountOp' },
-);
-
-export type StellarCreatePassiveSellOfferOp = Static<typeof StellarCreatePassiveSellOfferOp>;
-export const StellarCreatePassiveSellOfferOp = Type.Object(
-    {
-        source_account: Type.Optional(Type.String()),
-        selling_asset: StellarAsset,
-        buying_asset: StellarAsset,
-        amount: Type.Uint(),
-        price_n: Type.Number(),
-        price_d: Type.Number(),
-    },
-    { $id: 'StellarCreatePassiveSellOfferOp' },
-);
-
-export type StellarGetAddress = Static<typeof StellarGetAddress>;
-export const StellarGetAddress = Type.Object(
-    {
-        address_n: Type.Array(Type.Number()),
-        show_display: Type.Optional(Type.Boolean()),
-        chunkify: Type.Optional(Type.Boolean()),
-    },
-    { $id: 'StellarGetAddress' },
 );
 
 export type StellarUInt128Parts = Static<typeof StellarUInt128Parts>;
@@ -265,12 +299,46 @@ export const StellarSCVal = Type.Recursive(
     { $id: 'StellarSCVal' },
 );
 
+export type StellarCreateContractArgsV2 = Static<typeof StellarCreateContractArgsV2>;
+export const StellarCreateContractArgsV2 = Type.Object(
+    {
+        contract_id_preimage: StellarContractIDPreimage,
+        executable: StellarContractExecutable,
+        constructor_args: Type.Array(StellarSCVal),
+    },
+    { $id: 'StellarCreateContractArgsV2' },
+);
+
+export type StellarCreatePassiveSellOfferOp = Static<typeof StellarCreatePassiveSellOfferOp>;
+export const StellarCreatePassiveSellOfferOp = Type.Object(
+    {
+        source_account: Type.Optional(Type.String()),
+        selling_asset: StellarAsset,
+        buying_asset: StellarAsset,
+        amount: Type.Uint(),
+        price_n: Type.Number(),
+        price_d: Type.Number(),
+    },
+    { $id: 'StellarCreatePassiveSellOfferOp' },
+);
+
+export type StellarGetAddress = Static<typeof StellarGetAddress>;
+export const StellarGetAddress = Type.Object(
+    {
+        address_n: Type.Array(Type.Number()),
+        show_display: Type.Optional(Type.Boolean()),
+        chunkify: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'StellarGetAddress' },
+);
+
 export type StellarInvokeContractArgs = Static<typeof StellarInvokeContractArgs>;
 export const StellarInvokeContractArgs = Type.Object(
     {
         contract_address: Type.String(),
         function_name: Type.String(),
         args: Type.Array(StellarSCVal),
+        asset_hint: Type.Optional(StellarAsset),
     },
     { $id: 'StellarInvokeContractArgs' },
 );
@@ -280,6 +348,7 @@ export const StellarHostFunction = Type.Object(
     {
         type: EnumStellarHostFunctionType,
         invoke_contract: Type.Optional(StellarInvokeContractArgs),
+        create_contract_v2: Type.Optional(StellarCreateContractArgsV2),
     },
     { $id: 'StellarHostFunction' },
 );
@@ -288,18 +357,41 @@ export type StellarSorobanAddressCredentials = Static<typeof StellarSorobanAddre
 export const StellarSorobanAddressCredentials = Type.Object(
     {
         address: Type.String(),
-        nonce: Type.Number(),
+        nonce: Type.Uint({ allowNegative: true }),
         signature_expiration_ledger: Type.Number(),
         signature: StellarSCVal,
     },
     { $id: 'StellarSorobanAddressCredentials' },
 );
 
+export type StellarSorobanDelegateSignature = Static<typeof StellarSorobanDelegateSignature>;
+export const StellarSorobanDelegateSignature = Type.Recursive(
+    This =>
+        Type.Object({
+            address: Type.String(),
+            signature: StellarSCVal,
+            nested_delegates: Type.Array(This),
+        }),
+    { $id: 'StellarSorobanDelegateSignature' },
+);
+
+export type StellarSorobanAddressCredentialsWithDelegates = Static<
+    typeof StellarSorobanAddressCredentialsWithDelegates
+>;
+export const StellarSorobanAddressCredentialsWithDelegates = Type.Object(
+    {
+        address_credentials: StellarSorobanAddressCredentials,
+        delegates: Type.Array(StellarSorobanDelegateSignature),
+    },
+    { $id: 'StellarSorobanAddressCredentialsWithDelegates' },
+);
+
 export type StellarSorobanCredentials = Static<typeof StellarSorobanCredentials>;
 export const StellarSorobanCredentials = Type.Object(
     {
         type: EnumStellarSorobanCredentialsType,
-        address: Type.Optional(StellarSorobanAddressCredentials),
+        address_v2: Type.Optional(StellarSorobanAddressCredentials),
+        address_with_delegates: Type.Optional(StellarSorobanAddressCredentialsWithDelegates),
     },
     { $id: 'StellarSorobanCredentials' },
 );
@@ -309,6 +401,7 @@ export const StellarSorobanAuthorizedFunction = Type.Object(
     {
         type: EnumStellarSorobanAuthorizedFunctionType,
         contract_fn: Type.Optional(StellarInvokeContractArgs),
+        create_contract_v2_host_fn: Type.Optional(StellarCreateContractArgsV2),
     },
     { $id: 'StellarSorobanAuthorizedFunction' },
 );
@@ -447,6 +540,30 @@ export const StellarSignedTx = Type.Object(
     { $id: 'StellarSignedTx' },
 );
 
+export type StellarSorobanAuthorizationWithAddress = Static<
+    typeof StellarSorobanAuthorizationWithAddress
+>;
+export const StellarSorobanAuthorizationWithAddress = Type.Object(
+    {
+        nonce: Type.Uint({ allowNegative: true }),
+        signature_expiration_ledger: Type.Number(),
+        address: Type.String(),
+        invocation: StellarSorobanAuthorizedInvocation,
+    },
+    { $id: 'StellarSorobanAuthorizationWithAddress' },
+);
+
+export type StellarSignSorobanAuthorization = Static<typeof StellarSignSorobanAuthorization>;
+export const StellarSignSorobanAuthorization = Type.Object(
+    {
+        address_n: Type.Array(Type.Number()),
+        network_passphrase: Type.String(),
+        envelope_type: EnumStellarSorobanAuthorizationEnvelopeType,
+        soroban_authorization_with_address: Type.Optional(StellarSorobanAuthorizationWithAddress),
+    },
+    { $id: 'StellarSignSorobanAuthorization' },
+);
+
 export type StellarSignTx = Static<typeof StellarSignTx>;
 export const StellarSignTx = Type.Object(
     {
@@ -465,6 +582,17 @@ export const StellarSignTx = Type.Object(
         payment_req: Type.Optional(PaymentRequest),
     },
     { $id: 'StellarSignTx' },
+);
+
+export type StellarSorobanAuthorizationSignature = Static<
+    typeof StellarSorobanAuthorizationSignature
+>;
+export const StellarSorobanAuthorizationSignature = Type.Object(
+    {
+        public_key: Type.String(),
+        signature: Type.String(),
+    },
+    { $id: 'StellarSorobanAuthorizationSignature' },
 );
 
 export type StellarTxExt = Static<typeof StellarTxExt>;

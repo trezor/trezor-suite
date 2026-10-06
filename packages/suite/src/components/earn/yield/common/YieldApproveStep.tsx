@@ -9,7 +9,11 @@ import { Banner, Button, Column, Row } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
-import { YieldAmountCard } from './YieldAmountCard';
+import {
+    YieldAmountCard,
+    type YieldAmountCardFiatToggleProps,
+    type YieldApproxFiat,
+} from './YieldAmountCard';
 import { YieldApprovedAmountCard } from './YieldApprovedAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
 import type { YieldApprovalAction } from '../yieldFlowUtils';
@@ -32,6 +36,7 @@ const getApproveButtonTranslationId = (approvalAction: YieldApprovalAction) => {
 export type YieldApproveStepProps = {
     token: YieldFlowDisplayToken;
     summaryValue: ReactNode;
+    approxFiat?: YieldApproxFiat;
     isDisabled?: boolean;
     isLoading?: boolean;
     /** Current on-chain allowance amount fetched by RPC. */
@@ -42,6 +47,7 @@ export type YieldApproveStepProps = {
     canRevokeAllowance: boolean;
     warning?: ReactNode;
     pendingApproveTransaction?: YieldPendingTransactionState;
+    fiatToggle?: YieldAmountCardFiatToggleProps;
     onMaxClick?: () => void;
     onApprovalSubmit?: () => void;
     onSkip?: () => void;
@@ -52,6 +58,7 @@ export type YieldApproveStepProps = {
 export const YieldApproveStep = ({
     token,
     summaryValue,
+    approxFiat,
     isDisabled = false,
     isLoading = false,
     approvedAmount,
@@ -61,6 +68,7 @@ export const YieldApproveStep = ({
     canRevokeAllowance,
     warning,
     pendingApproveTransaction,
+    fiatToggle,
     onMaxClick,
     onApprovalSubmit,
     onSkip,
@@ -85,6 +93,7 @@ export const YieldApproveStep = ({
             <YieldAmountCard
                 tokenSymbol={token.symbol}
                 decimals={token.decimals}
+                approxFiat={approxFiat}
                 summary={{
                     labelTranslationId: 'TR_BALANCE',
                     value: summaryValue,
@@ -93,6 +102,7 @@ export const YieldApproveStep = ({
                 heading={{
                     amountLabelTranslationId: 'AMOUNT',
                 }}
+                fiatToggle={pendingApproveTransaction ? undefined : fiatToggle}
                 warning={warning}
                 isDisabled={!!pendingApproveTransaction}
             />

@@ -1,7 +1,5 @@
 import { type Locale } from '@suite-common/suite-types';
-import { BigNumber } from '@trezor/utils';
-
-import { localizeNumber } from './localizeNumberUtils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 export const isZero = (value: string) => {
     const valueBig = new BigNumber(value);

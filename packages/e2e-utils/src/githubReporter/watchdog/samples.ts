@@ -6,6 +6,7 @@ import {
     TestStatus,
     TestStream,
 } from '../../enums/testAnnotations';
+import type { AssignedTestStream } from '../types';
 
 interface ReporterWatchdogManualSample {
     testCase: string;
@@ -13,7 +14,7 @@ interface ReporterWatchdogManualSample {
     steps: string[];
     category: TestCategory;
     priority: TestPriority;
-    stream: TestStream;
+    stream: AssignedTestStream;
     deviceModel: DeviceModel;
     osMatrix: TestOsMatrix[];
 }
@@ -25,7 +26,7 @@ export const REPORTER_WATCHDOG_MANUAL_SAMPLES: ReporterWatchdogManualSample[] = 
         steps: ['step one'],
         category: TestCategory.General,
         priority: TestPriority.Low,
-        stream: TestStream.Foundation,
+        stream: TestStream.Growth,
         deviceModel: DeviceModel.T3T1,
         osMatrix: [TestOsMatrix.Linux],
     },

@@ -88,6 +88,7 @@ export const Radio = ({
         <Row
             gap={12}
             alignItems={verticalAlignment === 'start' ? 'flex-start' : 'center'}
+            data-component="Radio"
             data-testid={dataTest}
             data-checked={isChecked}
             isReversed={labelAlignment === 'start'}

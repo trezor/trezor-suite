@@ -6,18 +6,12 @@ import { useEarnLayout } from '../useEarnLayout';
 export const EarnWithdraw = () => {
     const result = useEarnLayout({
         type: 'withdraw',
-        fallbackTitleId: 'TR_EARN_YIELD_WITHDRAW',
+        fallbackTitleId: 'TR_EARN_YIELD_WITHDRAW_TITLE',
     });
 
     if (result.status !== 'valid') {
         return <EarnLayoutFallback layoutState={result} />;
     }
 
-    return (
-        <YieldWithdraw
-            account={result.account}
-            routeParams={result.routeParams}
-            vault={result.vault}
-        />
-    );
+    return <YieldWithdraw account={result.account} vault={result.vault} />;
 };

@@ -1,24 +1,25 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { selectAccountIncludingChosenInTrading } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { closeModal, preserveModalOnTxTimeout } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useYieldVaultName } from '@suite-common/earn-stablecoin/src/allowance';
+import { useYieldVaultName } from '@suite-common/earn-stablecoin';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
-import { selectStablecoinYieldTxReview } from '@suite-common/wallet-core';
+import { selectYieldTxReview } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
+    getDecreaseOutputId,
     getTxValidityTimeoutInMs,
-    isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { type Deferred } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
 
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';
@@ -43,11 +44,10 @@ export const TransactionReviewModalBody = ({
     precomposedForm,
     isRbfConfirmedError,
 }: TransactionReviewModalBodyProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const account = useSelector(selectAccountIncludingChosenInTrading);
     const device = useSelector(selectSelectedDevice);
-    const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
+    const yieldTxReview = useSelector(selectYieldTxReview);
     const swapSlippage = useSelector(selectTradingExchangeSelectedQuote)?.swapSlippage;
 
     const isYield = Boolean(yieldTxReview);
@@ -98,13 +98,7 @@ export const TransactionReviewModalBody = ({
         };
     }, [deadline, dispatch, isSending, shouldCheckTxTimeValidity]);
 
-    const isBumpFeeRbfAction =
-        precomposedTx !== undefined && isRbfBumpFeeTransaction(precomposedTx);
-
-    const decreaseOutputId =
-        isBumpFeeRbfAction && precomposedTx.useNativeRbf
-            ? precomposedForm?.setMaxOutputId
-            : undefined;
+    const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
     const outputs = constructTransactionReviewOutputsOptional({
         account,

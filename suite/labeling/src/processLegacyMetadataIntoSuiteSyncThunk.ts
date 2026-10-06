@@ -1,8 +1,11 @@
 import { featureUsed } from '@suite/feature-feedback';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
-import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
+import {
+    type EnsureWalletSuiteSyncOnErrors,
+    type SuiteSyncDep,
+} from '@suite-common/suite-sync-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
@@ -14,6 +17,8 @@ type ProcessMetadataMessageThunkParams = {
     value: string | undefined;
 };
 
+type ProcessLegacyMetadataIntoSuiteSyncThunkDeps = WithServices<SuiteSyncDep>;
+
 /**
  * This is a compatibility thunk to map the old Metadata code to a new Evolu storage.
  *
@@ -22,7 +27,7 @@ type ProcessMetadataMessageThunkParams = {
 export const processLegacyMetadataIntoSuiteSyncThunk = createThunk<
     Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>,
     ProcessMetadataMessageThunkParams,
-    void
+    { extra: ProcessLegacyMetadataIntoSuiteSyncThunkDeps }
 >(
     '@suite/labeling/processMetadataMessageThunk',
     async ({ payload, deviceStaticSessionId, value }, { dispatch, extra: { services } }) => {

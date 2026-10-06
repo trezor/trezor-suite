@@ -1,24 +1,31 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { selectTradingProviderConfirmationStatus, tradingSlice } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    selectTradingProviderConfirmationStatus,
+    tradingSlice,
+} from '@suite-native/trading-state';
 
 import { useDispatchProviderConfirmationStatus } from './useDispatchProviderConfirmationStatus';
 
-describe('useDispatchProviderConfirmationStatus', () => {
-    let store: TestStore;
+type State = TradingRootState;
 
-    const renderUseDispatchProviderConfirmationStatus = () =>
-        renderHookWithStoreProvider(() => useDispatchProviderConfirmationStatus(), { store });
+describe('useDispatchProviderConfirmationStatus', () => {
+    let store: Store<State>;
+
+    const renderUseDispatchProviderConfirmationStatus = async () =>
+        await renderHookWithStoreProvider(() => useDispatchProviderConfirmationStatus(), {
+            services: { store },
+        });
 
     beforeEach(() => {
         store = createLightStore({
@@ -26,16 +33,18 @@ describe('useDispatchProviderConfirmationStatus', () => {
                 locale: localeReducer,
                 wallet: combineReducers({
                     settings: createStaticReducer(initialWalletSettingsState),
-                    trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+                    trading: tradingSlice.prepareReducer({
+                        actionTypes: { storageLoad: mockActionType('storageLoad') },
+                    }),
                 }),
             },
         });
     });
 
-    it('should provide callback for dispatching setProviderConfirmationStatus trading action', () => {
-        const { result } = renderUseDispatchProviderConfirmationStatus();
+    it('should provide callback for dispatching setProviderConfirmationStatus trading action', async () => {
+        const { result } = await renderUseDispatchProviderConfirmationStatus();
 
-        act(() => {
+        await act(() => {
             result.current('window_opened');
         });
 

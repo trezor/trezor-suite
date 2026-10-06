@@ -12,13 +12,17 @@ type SelectTriggerProps = {
     label?: ReactNode;
     value: string | null;
     icon?: ReactNode;
-    handlePress: () => void;
+    handlePress?: () => void;
+    rightIcon?: ReactNode;
+    hasError?: boolean;
     testID?: string;
 };
 
-const SELECT_HEIGHT = 58 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+type StyleProps = {
+    hasError: boolean;
+};
 
-const selectStyle = prepareNativeStyle(utils => ({
+const selectStyle = prepareNativeStyle<StyleProps>((utils, { hasError }) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -28,15 +32,37 @@ const selectStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.elementBorderField,
     color: utils.colors.contentSecondary,
     paddingLeft: utils.spacings.sp12,
-    paddingRight: 23.25,
-    height: SELECT_HEIGHT,
+    paddingRight: utils.spacings.sp16,
+    height: 58 * ACCESSIBILITY_FONTSIZE_MULTIPLIER,
+    extend: [
+        {
+            condition: hasError,
+            style: {
+                borderColor: utils.colors.elementBorderFieldError,
+            },
+        },
+    ],
 }));
 
-export const SelectTrigger = ({ label, value, icon, handlePress, testID }: SelectTriggerProps) => {
+export const SelectTrigger = ({
+    label,
+    value,
+    icon,
+    handlePress,
+    rightIcon,
+    hasError = false,
+    testID,
+}: SelectTriggerProps) => {
     const { applyStyle } = useNativeStyles();
 
+    const Wrapper = handlePress ? PressableOpacity : Box;
+
     return (
-        <PressableOpacity onPress={handlePress} style={applyStyle(selectStyle)} testID={testID}>
+        <Wrapper
+            onPress={handlePress}
+            style={applyStyle(selectStyle, { hasError })}
+            testID={testID}
+        >
             <Box>
                 {label && (
                     <Text variant="body-xs" color="contentSecondary">
@@ -50,7 +76,11 @@ export const SelectTrigger = ({ label, value, icon, handlePress, testID }: Selec
                     </Text>
                 </HStack>
             </Box>
-            <Icon size="large" color="contentSecondary" name="caretDown" />
-        </PressableOpacity>
+            {handlePress ? (
+                <Icon size="large" color="contentSecondary" name="caretDown" />
+            ) : (
+                rightIcon
+            )}
+        </Wrapper>
     );
 };

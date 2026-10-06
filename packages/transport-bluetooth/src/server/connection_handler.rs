@@ -8,7 +8,10 @@ use hyper_tungstenite::{tungstenite::Message, HyperWebsocket};
 use hyper_util::rt::TokioIo;
 use log::info;
 use std::sync::Arc;
-use tokio::{net::TcpListener, sync::Mutex};
+use tokio::{
+    net::TcpListener,
+    sync::{broadcast::error::RecvError, Mutex},
+};
 
 use crate::server::{
     adapter_manager::{AdapterError, AdapterManager},
@@ -57,7 +60,16 @@ async fn handle_ws_connection(
     let ws_write_event = ws_write.clone();
     let ws_write_peer = peer.clone();
     let channel_message_listener = tokio::spawn(async move {
-        while let Ok(event) = receiver.recv().await {
+        loop {
+            let event = match receiver.recv().await {
+                Ok(event) => event,
+                Err(RecvError::Lagged(skipped)) => {
+                    info!("ChannelMessage listener lagged, {skipped} events skipped");
+                    continue;
+                }
+                Err(RecvError::Closed) => break,
+            };
+
             match event {
                 ChannelMessage::Notification(event) => {
                     info!("Sending notification to peer {ws_write_peer}");
@@ -65,7 +77,7 @@ async fn handle_ws_connection(
                         Ok(json) => json,
                         Err(err) => {
                             info!("Error serialize notification {err:?}");
-                            return;
+                            continue;
                         }
                     };
 
@@ -131,9 +143,28 @@ async fn handle_http_request(
     peer: String,
     req: hyper::Request<Incoming>,
     manager: AdapterManager,
+    ws_token: Arc<Option<String>>,
 ) -> Result<HyperResponse<Full<Bytes>>, ServerError> {
-    // TODO: cors check like trezord-go and node-bridge
-    // let = req.headers().get("origin");
+    let is_token_valid = match ws_token.as_deref() {
+        Some(expected_token) => req
+            .headers()
+            .get("authorization")
+            .and_then(|value| value.to_str().ok())
+            .and_then(|value| value.strip_prefix("Bearer "))
+            .is_some_and(|token| token == expected_token),
+        None => true,
+    };
+
+    if !is_token_valid {
+        info!("Missing or invalid Authorization token");
+        info!("- Peer: {peer}");
+
+        // Stealth rejection: return error to close the connection without sending a response
+        return Err(ServerError::Io(std::io::Error::new(
+            std::io::ErrorKind::ConnectionReset,
+            "",
+        )));
+    }
 
     if hyper_tungstenite::is_upgrade_request(&req) {
         let (response, websocket) = match hyper_tungstenite::upgrade(req, None) {
@@ -176,6 +207,21 @@ pub async fn start_server(address: &str) -> Result<(), ServerError> {
     let tcp_listener = TcpListener::bind(&address).await?;
     info!("Version: {} Listening on: {}", utils::APP_VERSION, address);
 
+    let ws_token = Arc::new(match std::env::var("TREZOR_BLUETOOTH_AUTH_TOKEN") {
+        Ok(token) if !token.trim().is_empty() => Some(token),
+        _ => {
+            if cfg!(debug_assertions) {
+                log::warn!("WebSocket auth disabled");
+                None
+            } else {
+                return Err(ServerError::Io(std::io::Error::new(
+                    std::io::ErrorKind::InvalidInput,
+                    "TREZOR_BLUETOOTH_AUTH_TOKEN is missing",
+                )));
+            }
+        }
+    });
+
     let manager = AdapterManager::new().await?;
 
     let mut http = hyper::server::conn::http1::Builder::new();
@@ -185,8 +231,9 @@ pub async fn start_server(address: &str) -> Result<(), ServerError> {
         let (stream, _) = tcp_listener.accept().await?;
         let peer = stream.peer_addr()?;
         let manager = manager.clone();
+        let ws_token = ws_token.clone();
         let service = hyper::service::service_fn(move |req| {
-            handle_http_request(peer.to_string(), req, manager.clone())
+            handle_http_request(peer.to_string(), req, manager.clone(), ws_token.clone())
         });
 
         let connection = http

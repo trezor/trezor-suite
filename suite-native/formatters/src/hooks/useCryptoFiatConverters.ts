@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
     type WalletSettingsRootState,
@@ -29,10 +29,8 @@ import { type BigNumber } from '@trezor/utils';
 type UseConvertFiatToCryptoParams = {
     symbol: NetworkSymbol | null;
     tokenContract?: TokenAddress;
-    tokenDecimals?: number;
     historicRate?: number;
     useHistoricRate?: boolean;
-    isBalance?: boolean;
 };
 
 export const useCryptoFiatConverters = ({
@@ -41,7 +39,7 @@ export const useCryptoFiatConverters = ({
     historicRate,
     useHistoricRate,
 }: UseConvertFiatToCryptoParams) => {
-    const symbolHelper = symbol ?? 'btc'; // handles passing the value to selectors
+    const symbolHelper = symbol ?? asNetworkSymbol('btc'); // handles passing the value to selectors
     const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbolHelper),
     );
@@ -67,7 +65,7 @@ export const useCryptoFiatConverters = ({
                 ? asBaseCurrencyAmount(
                       subunitsToUnits({
                           value: asAmountSubunit(baseCurrencyAmount),
-                          symbol: 'btc',
+                          symbol: asNetworkSymbol('btc'),
                       }),
                   )
                 : baseCurrencyAmount;
@@ -101,7 +99,10 @@ export const useCryptoFiatConverters = ({
             // 2. If BaseUnits are Sats (BTC only), we have to convert it to sats
             return isBaseCurrencyInSats
                 ? asBaseCurrencyAmount(
-                      unitsToSubunits({ value: asAmountUnit(baseCurrency), symbol: 'btc' }),
+                      unitsToSubunits({
+                          value: asAmountUnit(baseCurrency),
+                          symbol: asNetworkSymbol('btc'),
+                      }),
                   )
                 : baseCurrency;
         },

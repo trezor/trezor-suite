@@ -1,9 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import type { BuyTradeResponse } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
     buyThunks,
@@ -15,7 +16,7 @@ import {
     tradingBuyActions,
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     type RootStackParamList,
     type StackToStackCompositeNavigationProps,
@@ -23,6 +24,7 @@ import {
     type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
+import { tradingActions } from '@suite-native/trading-state';
 
 import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
 
@@ -33,8 +35,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useBuyPreviewFlow = () => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const navigation = useNavigation<NavigationProps>();
 
     const selectedQuote = useSelector(selectTradingBuySelectedQuote);
@@ -71,14 +72,14 @@ export const useBuyPreviewFlow = () => {
         }
 
         if (response.tradeForm) {
-            await openBrowserForFormData(
-                response.tradeForm.form,
-                returnUrl,
-                response.trade.orderId,
-            );
+            await openBrowserForFormData(response.tradeForm.form, returnUrl);
+        }
 
-            navigation.popToTop();
-            dispatch(tradingBuyActions.clearQuotesAndParams());
+        navigation.popToTop();
+        dispatch(tradingBuyActions.clearQuotesAndParams());
+
+        if (response.trade.orderId) {
+            dispatch(tradingActions.setTradeOrderIdToBeOpened(response.trade.orderId));
         }
     };
 

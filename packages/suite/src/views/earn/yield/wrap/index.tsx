@@ -1,23 +1,27 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { goto } from '@suite/router';
-import { WRAPPED_NATIVE } from '@suite-common/wallet-config';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
 import { WrappedNativePageHeader } from 'src/components/earn/yield/common/WrappedNativePageHeader';
 import { WrapNativeToken } from 'src/components/earn/yield/wrap/WrapNativeToken';
-import { useDispatch, useLayout } from 'src/hooks/suite';
+import { useLayout } from 'src/hooks/suite';
 
 import { EarnLayoutFallback } from '../../EarnLayoutFallback';
 
 export const EarnWrap = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { account, routeParams } = useEarnRouteAccount();
-    const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
+    const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
+    // Held here rather than in WrapNativeToken because useLayout renders the header outside it.
+    const [isFlowComplete, setIsFlowComplete] = useState(false);
 
     useEffect(() => {
         if (!routeParams) {
-            dispatch(goto({ routeName: 'suite-earn' }));
+            dispatch(gotoThunk({ routeName: 'suite-earn' }));
         }
     }, [dispatch, routeParams]);
 
@@ -25,8 +29,10 @@ export const EarnWrap = () => {
         'Earn',
         <WrappedNativePageHeader
             titleId="TR_WRAP_NATIVE_TOKEN"
+            flow="wrap"
             account={account}
             contractAddress={wrappedNative?.address}
+            isFlowComplete={isFlowComplete}
         />,
     );
 
@@ -47,5 +53,7 @@ export const EarnWrap = () => {
         contractAddress: wrappedNative.address,
     };
 
-    return <WrapNativeToken account={account} token={token} />;
+    return (
+        <WrapNativeToken account={account} token={token} onFlowCompleteChange={setIsFlowComplete} />
+    );
 };

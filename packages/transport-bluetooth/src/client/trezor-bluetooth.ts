@@ -70,6 +70,7 @@ export class TrezorBluetooth extends WebsocketClient<NotificationEvent> {
     createWebsocket() {
         return this.initWebsocket({
             url: this.settings.url,
+            headers: this.settings.headers,
         });
     }
 

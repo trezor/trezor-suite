@@ -9,6 +9,7 @@
     "references": [
         { "path": "../crypto-utils" },
         { "path": "../device-utils" },
+        { "path": "../logger" },
         { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../type-utils" },
@@ -16,6 +17,7 @@
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../device-authenticity" },
+        { "path": "../eslint" },
         {
             "path": "../../networks/cardano/network-cardano"
         },

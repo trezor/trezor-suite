@@ -1,5 +1,6 @@
 import { type RouterState, routerLocationChange } from '@suite/router';
 import { TorStatus, torActions } from '@suite/tor';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import { type Account, type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -8,6 +9,54 @@ import { DEVICE, type StaticSessionId } from '@trezor/connect';
 
 import * as COINJOIN from '../coinjoinConstants';
 import { type CoinjoinAccount, type CoinjoinSession, type CoinjoinState } from '../coinjoinTypes';
+
+type FixtureDevice = {
+    available: boolean;
+    connected: boolean;
+    id: string;
+    remember: boolean;
+    state: {
+        staticSessionId: string;
+    };
+    type: string;
+};
+
+type FixtureState = Partial<{
+    device: {
+        devices: FixtureDevice[];
+        selectedDevice: FixtureDevice;
+    };
+    router: RouterState;
+    suite: {
+        online: boolean;
+    };
+    tor: {
+        torStatus: TorStatus;
+        torBootstrap: null;
+    };
+    wallet: {
+        accounts: Account[];
+        coinjoin: CoinjoinState;
+        selectedAccount: SelectedAccountLoaded;
+    };
+}>;
+
+type FixtureAction = {
+    type: string;
+    payload?: unknown;
+};
+
+/** Opaque mock responses passed directly to setTrezorConnectFixtures. */
+type ConnectFixtures = unknown;
+
+type Fixture = {
+    description: string;
+    state: FixtureState;
+    action: FixtureAction;
+    expectedActions: FixtureAction[];
+    client?: 'btc';
+    connect?: ConnectFixtures;
+};
 
 const DEVICE_A = {
     available: true,
@@ -25,12 +74,12 @@ const DEVICE_B = {
 
 const ACCOUNT_A_KEY = mockAccountKey({
     descriptor: 'accountAKey',
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     deviceStaticSessionId: '1stTestnet@device_A_id:0',
 });
 const ACCOUNT_B_KEY = mockAccountKey({
     descriptor: 'accountBKey',
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     deviceStaticSessionId: '1stTestnet@device_B_id:0',
 });
 
@@ -150,11 +199,11 @@ const RESTORE_SESSION_B_ACTIONS = [
     },
 ];
 
-export const fixtures = [
+export const fixtures: Fixture[] = [
     {
         description: 'stopping coinjoin session when remembered device disconnects',
         state: DEFAULT_STATE,
-        client: 'btc' as const,
+        client: asNetworkSymbol('btc'),
         action: {
             type: DEVICE.DISCONNECT,
             payload: {
@@ -179,7 +228,7 @@ export const fixtures = [
     {
         description: 'restore all interrupted coinjoin sessions when Tor is enabled',
         state: STATE_WITH_INTERRUPTED_SESSION,
-        client: 'btc' as const,
+        client: asNetworkSymbol('btc'),
         connect: {
             success: true,
         },
@@ -209,7 +258,7 @@ export const fixtures = [
     {
         description: 'restore all interrupted coinjoin sessions when user leaves send form',
         state: STATE_WITH_INTERRUPTED_SESSION,
-        client: 'btc' as const,
+        client: asNetworkSymbol('btc'),
         connect: [
             {
                 success: true,
@@ -274,7 +323,7 @@ export const fixtures = [
     {
         description: 'restore related coinjoin session when an account syncs',
         state: STATE_WITH_INTERRUPTED_SESSION,
-        client: 'btc' as const,
+        client: asNetworkSymbol('btc'),
         connect: [
             {
                 success: true,
@@ -298,7 +347,7 @@ export const fixtures = [
     {
         description: 'restore all interrupted coinjoin sessions when Suite goes online',
         state: STATE_WITH_INTERRUPTED_SESSION,
-        client: 'btc' as const,
+        client: asNetworkSymbol('btc'),
         connect: [
             {
                 success: true,
@@ -316,7 +365,7 @@ export const fixtures = [
             ...STATE_WITH_INTERRUPTED_SESSION,
             router: { route: { name: 'wallet-send' } } as RouterState,
         },
-        client: 'btc' as const,
+        client: asNetworkSymbol('btc'),
         connect: [
             {
                 success: true,

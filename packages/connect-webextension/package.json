@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-webextension",
-    "version": "10.0.0-beta.1",
+    "version": "10.0.1",
     "type": "module",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-webextension",
@@ -19,6 +19,10 @@
         "javascript",
         "serviceworker",
         "webextension"
+    ],
+    "sideEffects": [
+        "./src/index.ts",
+        "./lib/index.js"
     ],
     "main": "src/index.ts",
     "publishConfig": {
@@ -51,7 +55,8 @@
     "devDependencies": {
         "@babel/preset-typescript": "^7.29.7",
         "@trezor/eslint": "workspace:*",
-        "@types/chrome": "^0.1.40",
+        "@trezor/requirements": "workspace:*",
+        "@types/chrome": "^0.2.2",
         "@types/w3c-web-usb": "^1.0.14",
         "babel-loader": "^10.1.1",
         "rimraf": "^6.1.2",

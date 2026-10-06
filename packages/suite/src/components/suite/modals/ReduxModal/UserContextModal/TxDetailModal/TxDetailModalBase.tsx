@@ -2,7 +2,9 @@ import { type ReactNode } from 'react';
 
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceRemembered } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type PhishingDetectorId } from '@suite-common/token-definitions';
 import { type Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
@@ -19,7 +21,7 @@ import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Modal, Tooltip } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { BasicTxDetails } from './BasicTxDetails';
@@ -36,6 +38,8 @@ const getPhishingBannerTranslationId = (detectorId?: PhishingDetectorId) => {
             return 'TR_PHISHING_BANNER_ZERO_AMOUNT';
         case 'TRC10_TRANSFER':
             return 'TR_PHISHING_BANNER_TRC10_TRANSFER';
+        case 'UNSOLICITED_ASSET_OFFER':
+            return 'TR_PHISHING_BANNER_UNSOLICITED_ASSET_OFFER';
         default:
             return 'TR_ZERO_PHISHING_BANNER';
     }
@@ -85,7 +89,7 @@ export const TxDetailModalBase = ({
         selectTransactionIsMarkedAsNotScam(state, tx.txid, accountKey),
     );
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const onMarkTxAsNotScamClick = () => {
         dispatch(

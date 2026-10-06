@@ -23,7 +23,9 @@ const accountsRefreshTimeSlice = createSlice({
     name: 'accountsRefreshTime',
     initialState: accountsRefreshTimeInitialState,
     reducers: {
-        // Marks a refresh event that did not change the account – i.e. did not dispatch createAccount or updateAccount.
+        /**
+         * Marks a refresh event that did not change the account – i.e. did not dispatch createAccount or updateAccount.
+         */
         accountRefreshed: (state, action: PayloadAction<Account['key']>) => {
             state[action.payload] = Date.now();
         },
@@ -31,10 +33,10 @@ const accountsRefreshTimeSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(accountsActions.createAccount, (state, action) => {
-                state[action.payload.key] = Date.now();
+                state[action.payload.account.key] = Date.now();
             })
             .addCase(accountsActions.updateAccount, (state, action) => {
-                state[action.payload.key] = Date.now();
+                state[action.payload.account.key] = Date.now();
             })
             .addCase(accountsActions.removeAccount, (state, action) => {
                 action.payload.forEach(account => {
@@ -51,3 +53,17 @@ export const selectAccountRefreshTime = (
     state: AccountsRefreshTimeRootState,
     accountKey: Account['key'],
 ): number | undefined => state.wallet.accountsRefreshTime[accountKey];
+
+export const isAccountStaleSelector = (
+    state: AccountsRefreshTimeRootState,
+    accountKey: Account['key'],
+) => {
+    const accountLastRefreshTime = state.wallet.accountsRefreshTime[accountKey];
+
+    if (accountLastRefreshTime === undefined) return true;
+
+    const minRefreshRate = 5_000;
+    const durationSinceLastRefresh = Date.now() - accountLastRefreshTime;
+
+    return durationSinceLastRefresh >= minRefreshRate;
+};

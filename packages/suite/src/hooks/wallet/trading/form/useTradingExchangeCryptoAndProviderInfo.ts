@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 
 import {
     type TradingExchangeType,
+    selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 
@@ -10,15 +11,15 @@ import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from './useTradingCommonForm';
 
 export const useTradingExchangeCryptoAndProviderInfo = () => {
-    const { exchangeInfo, getValues } = useTradingFormContext<TradingExchangeType>();
+    const { getValues } = useTradingFormContext<TradingExchangeType>();
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
+    const exchangeProviders = useSelector(selectTradingExchangeProviders);
 
     const getCryptoInfo = useCallback(() => {
         const { sendCryptoSelect, receiveCryptoSelect, selectedFee } = getValues();
 
         const quoteExchange = selectedQuote?.exchange;
-        const quoteProviderName =
-            quoteExchange && exchangeInfo?.providerInfos[quoteExchange]?.companyName;
+        const quoteProviderName = quoteExchange && exchangeProviders?.[quoteExchange]?.companyName;
 
         return {
             sendCryptoLabel: sendCryptoSelect?.displaySymbol,
@@ -32,7 +33,7 @@ export const useTradingExchangeCryptoAndProviderInfo = () => {
             exchangeName: quoteProviderName,
             selectedFee,
         };
-    }, [getValues, selectedQuote?.exchange, exchangeInfo?.providerInfos]);
+    }, [getValues, selectedQuote?.exchange, exchangeProviders]);
 
     return getCryptoInfo;
 };

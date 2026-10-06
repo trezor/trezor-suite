@@ -28,8 +28,8 @@ describe('CustomFeeCard', () => {
         wallet: getWalletState(),
     };
 
-    const renderUseFeesForm = (accountKey: AccountKey = ETH_ACCOUNT_KEY) => {
-        const { result } = renderHookWithStoreProvider(
+    const renderUseFeesForm = async (accountKey: AccountKey = ETH_ACCOUNT_KEY) => {
+        const { result } = await renderHookWithStoreProvider(
             () =>
                 useFeesForm({
                     accountKey,
@@ -43,7 +43,7 @@ describe('CustomFeeCard', () => {
         return result.current;
     };
 
-    const renderCustomFeeCard = ({
+    const renderCustomFeeCard = async ({
         form,
         props,
     }: {
@@ -52,7 +52,7 @@ describe('CustomFeeCard', () => {
     }) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return renderWithStoreProvider(<CustomFeeCard {...finalProps} />, {
+        return await renderWithStoreProvider(<CustomFeeCard {...finalProps} />, {
             preloadedState: defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
@@ -63,9 +63,9 @@ describe('CustomFeeCard', () => {
     });
 
     describe('Rendering', () => {
-        it('should render custom fee card when custom fee transaction is available', () => {
-            const form = renderUseFeesForm();
-            const { getByText } = renderCustomFeeCard({
+        it('should render custom fee card when custom fee transaction is available', async () => {
+            const form = await renderUseFeesForm();
+            const { getByText } = await renderCustomFeeCard({
                 form,
             });
 
@@ -74,28 +74,28 @@ describe('CustomFeeCard', () => {
             expect(getByText(getTranslation('generic.buttons.edit'))).toBeTruthy();
         });
 
-        it('should display fee amount correctly', () => {
-            const form = renderUseFeesForm();
-            const { getByText } = renderCustomFeeCard({
+        it('should display fee amount correctly', async () => {
+            const form = await renderUseFeesForm();
+            const { getByText } = await renderCustomFeeCard({
                 form,
             });
 
             expect(getByText('0.000000426691398 ETH')).toBeTruthy();
         });
 
-        it('should display price and limit correctly', () => {
-            const form = renderUseFeesForm();
-            const { getByText } = renderCustomFeeCard({
+        it('should display price and limit correctly', async () => {
+            const form = await renderUseFeesForm();
+            const { getByText } = await renderCustomFeeCard({
                 form,
             });
 
             expect(getByText('1.00 Gwei')).toBeTruthy();
         });
 
-        it('should not render if using wrong accountKey', () => {
+        it('should not render if using wrong accountKey', async () => {
             const accountKey = mockAccountKey({ descriptor: 'wrongKey' });
-            const form = renderUseFeesForm(accountKey);
-            const { toJSON } = renderCustomFeeCard({
+            const form = await renderUseFeesForm(accountKey);
+            const { toJSON } = await renderCustomFeeCard({
                 form,
                 props: {
                     accountKey,
@@ -108,8 +108,8 @@ describe('CustomFeeCard', () => {
 
     describe('Interaction', () => {
         it('should call onEdit when edit button is pressed', async () => {
-            const form = renderUseFeesForm();
-            const { getByText } = renderCustomFeeCard({
+            const form = await renderUseFeesForm();
+            const { getByText } = await renderCustomFeeCard({
                 form,
             });
 
@@ -119,8 +119,8 @@ describe('CustomFeeCard', () => {
         });
 
         it('should call onCancel when cancel button is pressed', async () => {
-            const form = renderUseFeesForm();
-            const { getByText } = renderCustomFeeCard({
+            const form = await renderUseFeesForm();
+            const { getByText } = await renderCustomFeeCard({
                 form,
             });
 
@@ -130,10 +130,10 @@ describe('CustomFeeCard', () => {
         });
     });
 
-    it('should render for bitcoin network', () => {
+    it('should render for bitcoin network', async () => {
         const accountKey = BTC_ACCOUNT_KEY;
-        const form = renderUseFeesForm(accountKey);
-        const { getByText } = renderCustomFeeCard({
+        const form = await renderUseFeesForm(accountKey);
+        const { getByText } = await renderCustomFeeCard({
             form,
             props: {
                 accountKey,

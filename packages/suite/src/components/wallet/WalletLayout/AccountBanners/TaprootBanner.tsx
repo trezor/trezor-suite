@@ -2,10 +2,11 @@ import styled from 'styled-components';
 
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getBip43Type } from '@suite-common/wallet-utils';
 
-import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 import { BannerPoints } from './BannerPoints';
@@ -21,7 +22,7 @@ const Dark = styled.span`
 
 export const TaprootBanner = ({ account }: TaprootBannerProps) => {
     const { taprootBannerClosed } = useSelector(selectFlags);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const isVisible =
         !taprootBannerClosed && account && account.empty && getBip43Type(account.path) === 'bip86';

@@ -1,4 +1,5 @@
 import type { BackupState } from '@suite/backup';
+import { initialDesktopBluetoothState } from '@suite/bluetooth';
 import { debugInitialState } from '@suite/debug';
 import { desktopUpdateInitialState } from '@suite/desktop-update';
 import { initialState } from '@suite/device';
@@ -12,18 +13,18 @@ import { TorStatus } from '@suite/tor';
 import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
+import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { receiveInitialState } from '@suite-common/receive';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { initialDesktopBluetoothState } from 'src/actions/bluetooth/desktopBluetoothReducer';
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { type AppState } from 'src/reducers/store';
 import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
-import { type WalletState } from 'src/reducers/wallet';
+import { walletReducers } from 'src/reducers/wallet';
 
 export const mockInitialAppState: AppState = {
+    networks: null,
     suite: suiteInitialState,
     discreetMode: {
         isActive: false,
@@ -73,14 +74,8 @@ export const mockInitialAppState: AppState = {
     },
     notifications: [],
     receive: receiveInitialState,
-    wallet: {
-        discovery: {},
-        accountSearch: {},
-        settings: {
-            enabledNetworks: [] as NetworkSymbol[],
-        },
-        blockchain: {},
-    } as WalletState, // Todo: maybe one day, fix types
+    persistentDeviceData: persistentDeviceDataInitialState,
+    wallet: walletReducers(undefined, { type: '@@INIT' }),
     desktopUpdate: desktopUpdateInitialState,
     router: {
         loaded: true,
@@ -98,7 +93,7 @@ export const mockInitialAppState: AppState = {
         },
     } as RouterState, // TODO: this is state copied from actual app runtime, so how can there be type error???
     recovery: {
-        advancedRecovery: false,
+        recoveryInputType: 'standard',
         wordsCount: 12,
         status: 'initial',
     },

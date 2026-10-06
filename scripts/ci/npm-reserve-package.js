@@ -134,7 +134,7 @@ const removeLatestDistTag = packageName => {
         { encoding: 'utf-8' },
     );
 
-    let distTags = {};
+    let distTags;
     try {
         distTags = JSON.parse(stdout);
     } catch {

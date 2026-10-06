@@ -1,3 +1,4 @@
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type BackendType, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TimerId } from '@trezor/type-utils';
 
@@ -42,4 +43,4 @@ export interface Blockchain extends ConnectionStatus {
     };
 }
 
-export type BlockchainNetworks = Record<NetworkSymbol, Blockchain>;
+export type BlockchainNetworks = Record<LegacyNetworkSymbol, Blockchain>;

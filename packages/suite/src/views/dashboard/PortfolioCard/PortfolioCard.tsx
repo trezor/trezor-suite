@@ -3,6 +3,8 @@ import { memo, useMemo } from 'react';
 import { useDevice } from '@suite/device';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
@@ -25,10 +27,10 @@ import {
 import { CaretDownIcon, CaretUpIcon, InfoIcon } from '@trezor/icons';
 import { breakpoints } from '@trezor/theme';
 
-import { updateGraphData } from 'src/actions/wallet/graphActions';
+import { updateGraphDataThunk } from 'src/actions/wallet/graphActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { GraphRangeSelector, GraphSkeleton } from 'src/components/suite';
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from 'src/hooks/suite';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
@@ -50,7 +52,7 @@ export const PortfolioCard = memo(() => {
 
     const accounts = useSelector(selectAllAccountsToList);
     const { dashboardGraphHidden } = useSelector(selectFlags);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
     const isBelowLaptop = useIsContentBelowBreakpoint(breakpoints.laptop);
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
@@ -127,7 +129,7 @@ export const PortfolioCard = memo(() => {
 
     const onSelectedRange = () =>
         dispatch(
-            updateGraphData({
+            updateGraphDataThunk({
                 accounts,
             }),
         );

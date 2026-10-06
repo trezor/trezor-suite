@@ -11,9 +11,9 @@ import {
 import {
     Box,
     CircularSpinner,
-    RoundedIcon,
-    type RoundedIconIntent,
-    type RoundedIconSize,
+    IconCircle,
+    type IconCircleIntent,
+    type IconCircleSize,
 } from '@suite-native/atoms';
 import { type IconName, TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -23,9 +23,10 @@ type TransactionIconProps = {
     stakeOperationType?: StakeType;
     symbol?: NetworkSymbol;
     contractAddress?: TokenAddress;
+    tokenSymbol?: string;
     isAnimated?: boolean;
-    intent?: RoundedIconIntent;
-    size?: RoundedIconSize;
+    intent?: IconCircleIntent;
+    size?: IconCircleSize;
 };
 
 const transactionIconMap: Record<TransactionType, IconName> = {
@@ -57,6 +58,7 @@ const cryptoIconStyle = prepareNativeStyle(utils => ({
 export const TransactionIcon = ({
     symbol,
     contractAddress,
+    tokenSymbol,
     transactionType,
     stakeOperationType,
     intent,
@@ -70,7 +72,7 @@ export const TransactionIcon = ({
     if (contractAddress) {
         iconSymbol = symbol;
     } else if (symbol) {
-        iconSymbol = getNetworkDisplaySymbol(symbol) as NetworkDisplaySymbol;
+        iconSymbol = getNetworkDisplaySymbol(symbol);
     }
 
     const iconName = stakeOperationType
@@ -79,11 +81,16 @@ export const TransactionIcon = ({
 
     return (
         <Box>
-            <RoundedIcon name={iconName} intent={intent} size={size} />
+            <IconCircle name={iconName} intent={intent} size={size} />
             {isAnimated && <CircularSpinner size={size} color="elementFillWarningBold" width={3} />}
             {iconSymbol && (
                 <Box style={applyStyle(cryptoIconStyle)}>
-                    <TokenIcon symbol={iconSymbol} contractAddress={contractAddress} size="tiny" />
+                    <TokenIcon
+                        networkSymbol={iconSymbol}
+                        contractAddress={contractAddress}
+                        tokenSymbol={tokenSymbol}
+                        size="tiny"
+                    />
                 </Box>
             )}
         </Box>

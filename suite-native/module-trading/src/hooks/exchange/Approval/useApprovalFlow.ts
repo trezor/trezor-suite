@@ -1,8 +1,10 @@
 import { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     exchangeThunks,
     selectTradingExchangeSelectedQuote,
@@ -17,7 +19,7 @@ import {
 import { getReceiveAccountAddressText } from '../../../utils/general/receiveAccountUtils';
 
 export const useApprovalFlow = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { translate } = useTranslate();
 
     const quote = useSelector(selectTradingExchangeSelectedQuote);

@@ -2,9 +2,10 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { CardList, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { type IconComponent } from '@trezor/components';
@@ -20,7 +21,7 @@ import {
 } from '@trezor/icons';
 
 import { openNode } from 'src/actions/suite/guideActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
 import { GuideItem } from './GuideItem';
@@ -48,8 +49,7 @@ type GuideNodeProps = {
 
 export const GuideNode = ({ node, description, itemVariant = 'cardList' }: GuideNodeProps) => {
     const language = useSelector(selectLanguage);
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const navigateToNode = () => {
         dispatch(openNode(node));

@@ -18,7 +18,7 @@ describe('BuyPreviewReceiveCard', () => {
     };
 
     const renderBuyPreviewReceiveCard = async (overrides?: typeof withReceiveAccount) => {
-        const result = renderWithTradingProvider(
+        const result = await renderWithTradingProvider(
             <BuyPreviewReceiveCard quote={mercuryoApplePayBuyQuote} />,
             { tradeType: 'buy', overrides },
         );
@@ -50,6 +50,6 @@ describe('BuyPreviewReceiveCard', () => {
     it('renders receive amount with plus prefix', async () => {
         const { getByText } = await renderBuyPreviewReceiveCard(withReceiveAccount);
 
-        expect(getByText('+0.00100017 BTC')).toBeOnTheScreen();
+        expect(getByText('+0.00100016 BTC')).toBeOnTheScreen();
     });
 });

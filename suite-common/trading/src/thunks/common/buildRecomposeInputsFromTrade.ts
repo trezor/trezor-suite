@@ -1,5 +1,6 @@
 import { type ExchangeTrade } from 'invity-api';
 
+import { type NetworkType } from '@suite-common/wallet-config';
 import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
@@ -31,6 +32,7 @@ export type TradeRecomposeInput =
           dexTx: NonNullable<ExchangeTrade['dexTx']>;
           partnerPaymentExtraId: string | undefined;
           serializedTx: string | undefined;
+          networkType: NetworkType;
       }
     // Sell trade.
     | {
@@ -75,7 +77,8 @@ export const buildRecomposeInputsFromTrade = (trade: TradeRecomposeInput): Recom
             destinationTag: trade.partnerPaymentExtraId,
             transactionData: trade.serializedTx,
             ethereumAdjustGasLimit: ETHEREUM_ADJUST_GAS_LIMIT,
-            recalculateCustomLimit: true,
+            // Bitcoin has no fee limit, and the provider's PSBT fixes the fee anyway.
+            recalculateCustomLimit: trade.networkType !== 'bitcoin',
         };
     }
 

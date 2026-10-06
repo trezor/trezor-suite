@@ -1,13 +1,14 @@
-import { type StateFromReducersMapObject, combineReducers } from '@reduxjs/toolkit';
+import { type StateFromReducersMapObject, type Store, combineReducers } from '@reduxjs/toolkit';
 import { WebBrowserResultType } from 'expo-web-browser';
 
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type TradingType, selectTradingSellLastErrorMessage } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
     type PreloadedStatePartial,
-    type TestStore,
     act,
     createLightStore,
     createStaticReducer,
@@ -15,7 +16,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 import {
-    selectTradeToBeOpened,
+    type TradingRootState,
     selectTradingProviderConfirmationStatus,
     tradingActions,
     tradingSlice,
@@ -24,8 +25,11 @@ import {
 import { TRADING_URL_DEFAULT_BACK } from '../consts';
 import { useBrowserAuth } from './useBrowserAuth';
 
+type State = TradingRootState;
+
 const mockOpenBrowserAsync = jest.fn();
 const mockDismissBrowser = jest.fn();
+const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 
 jest.mock('expo-web-browser', () => {
     const originalModule = jest.requireActual('expo-web-browser');
@@ -58,10 +62,12 @@ jest.mock('./useOnForegroundCallback', () => ({
 }));
 
 describe('useBrowserAuth', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
-    const renderUseBrowserAuth = (tradingType: TradingType = 'sell') =>
-        renderHookWithStoreProvider(() => useBrowserAuth(tradingType), { store });
+    const renderUseBrowserAuth = async (tradingType: TradingType = 'sell') =>
+        await renderHookWithStoreProvider(() => useBrowserAuth(tradingType), {
+            services: { ...services, store },
+        });
 
     const defaultWalletState = getWalletState();
 
@@ -69,7 +75,9 @@ describe('useBrowserAuth', () => {
         locale: localeReducer,
         wallet: combineReducers({
             settings: createStaticReducer(initialWalletSettingsState),
-            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+            trading: tradingSlice.prepareReducer({
+                actionTypes: { storageLoad: mockActionType('storageLoad') },
+            }),
             accounts: createStaticReducer(defaultWalletState.accounts),
             fiat: createStaticReducer(defaultWalletState.fiat),
             send: createStaticReducer(defaultWalletState.send),
@@ -93,8 +101,8 @@ describe('useBrowserAuth', () => {
         });
     });
 
-    it('should return openBrowser callback', () => {
-        const { result } = renderUseBrowserAuth();
+    it('should return openBrowser callback', async () => {
+        const { result } = await renderUseBrowserAuth();
 
         expect(result.current.openBrowser).toBeInstanceOf(Function);
     });
@@ -103,8 +111,8 @@ describe('useBrowserAuth', () => {
         it('should log error to sentry and return early when called with undefined tradingType', async () => {
             const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
-            const { result } = renderHookWithStoreProvider(() => useBrowserAuth(undefined), {
-                store,
+            const { result } = await renderHookWithStoreProvider(() => useBrowserAuth(undefined), {
+                services: { ...services, store },
             });
 
             await act(async () => {
@@ -124,11 +132,11 @@ describe('useBrowserAuth', () => {
             );
         });
 
-        it('should call openBrowserAsync', () => {
+        it('should call openBrowserAsync', async () => {
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
-            const { result } = renderUseBrowserAuth();
+            const { result } = await renderUseBrowserAuth();
 
-            act(() => {
+            await act(() => {
                 result.current.openBrowser('URL', 'CALLBACK_URL');
             });
 
@@ -141,7 +149,7 @@ describe('useBrowserAuth', () => {
             'should call handleBrowserClosed when openBrowserAsync resolves with %s',
             async type => {
                 mockOpenBrowserAsync.mockResolvedValue({ type });
-                const { result } = renderUseBrowserAuth();
+                const { result } = await renderUseBrowserAuth();
 
                 await act(async () => {
                     await result.current.openBrowser('URL', 'CALLBACK_URL');
@@ -155,7 +163,7 @@ describe('useBrowserAuth', () => {
 
         it('should call setShouldWatchForForeground when openBrowserAsync resolves with opened', async () => {
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
-            const { result } = renderUseBrowserAuth();
+            const { result } = await renderUseBrowserAuth();
 
             await act(async () => {
                 await result.current.openBrowser('URL', 'CALLBACK_URL');
@@ -168,7 +176,7 @@ describe('useBrowserAuth', () => {
 
         it('should set last error message when openBrowserAsync resolves with locked', async () => {
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.LOCKED });
-            const { result } = renderUseBrowserAuth();
+            const { result } = await renderUseBrowserAuth();
 
             await act(async () => {
                 await result.current.openBrowser('URL', 'CALLBACK_URL');
@@ -185,7 +193,7 @@ describe('useBrowserAuth', () => {
             const error = new Error('Browser error');
 
             mockOpenBrowserAsync.mockRejectedValue(error);
-            const { result } = renderUseBrowserAuth();
+            const { result } = await renderUseBrowserAuth();
 
             await act(async () => {
                 await result.current.openBrowser('URL', 'CALLBACK_URL');
@@ -204,69 +212,61 @@ describe('useBrowserAuth', () => {
             store.dispatch(tradingActions.setProviderConfirmationStatus('window_opened'));
         });
 
-        it('should do nothing when url is empty', () => {
+        it('should do nothing when url is empty', async () => {
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.CANCEL });
-            renderUseBrowserAuth();
+            await renderUseBrowserAuth();
 
-            expect(selectTradeToBeOpened(store.getState())).toBeUndefined();
             expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
             expect(mockDismissBrowser).not.toHaveBeenCalled();
         });
 
-        it('should do nothing when url is not closeCallbackUrl', () => {
+        it('should do nothing when url is not closeCallbackUrl', async () => {
             mockLinkingURL = 'https://some.other.url';
-            mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.CANCEL });
-            const { result } = renderUseBrowserAuth();
+            mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
+            const { result } = await renderUseBrowserAuth();
 
-            act(() => {
+            await act(() => {
                 result.current.openBrowser('URL', 'CALLBACK_URL');
             });
 
-            expect(selectTradeToBeOpened(store.getState())).toBeUndefined();
             expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
             expect(mockDismissBrowser).not.toHaveBeenCalled();
         });
 
-        it('should call dismissBrowser and handleBrowserSuccess for sell tradingType when url matches closeCallbackUrl ', () => {
+        it('should call dismissBrowser and handleBrowserSuccess for sell tradingType when url matches closeCallbackUrl ', async () => {
             mockLinkingURL = TRADING_URL_DEFAULT_BACK;
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.CANCEL });
-            const { result } = renderUseBrowserAuth();
+            const { result } = await renderUseBrowserAuth();
 
-            act(() => {
+            await act(() => {
                 result.current.openBrowser('URL', TRADING_URL_DEFAULT_BACK);
             });
 
-            expect(selectTradeToBeOpened(store.getState())).toBeUndefined();
             expect(selectTradingProviderConfirmationStatus(store.getState())).toBe(
                 'window_closed_with_success',
             );
             expect(mockDismissBrowser).toHaveBeenCalledTimes(1);
         });
 
-        it('should call handleBrowserSuccess and set tradeToBeOpened for buy ', () => {
+        it('should dismiss browser for buy when url matches closeCallbackUrl', async () => {
             mockLinkingURL = TRADING_URL_DEFAULT_BACK;
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.CANCEL });
-            const { result } = renderUseBrowserAuth('buy');
+            const { result } = await renderUseBrowserAuth('buy');
 
-            act(() => {
-                result.current.openBrowser('URL', TRADING_URL_DEFAULT_BACK, 'trade-order-id-1');
+            await act(() => {
+                result.current.openBrowser('URL', TRADING_URL_DEFAULT_BACK);
             });
 
-            expect(selectTradeToBeOpened(store.getState())).toEqual(
-                expect.objectContaining({
-                    data: expect.objectContaining({ orderId: 'trade-order-id-1' }),
-                }),
-            );
             expect(mockDismissBrowser).toHaveBeenCalledTimes(1);
         });
 
-        it('should handle dismissBrowser returning undefined', () => {
+        it('should handle dismissBrowser returning undefined', async () => {
             mockLinkingURL = TRADING_URL_DEFAULT_BACK;
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.CANCEL });
             mockDismissBrowser.mockReturnValue(undefined);
-            const { result } = renderUseBrowserAuth();
+            const { result } = await renderUseBrowserAuth();
 
-            act(() => {
+            await act(() => {
                 result.current.openBrowser('URL', TRADING_URL_DEFAULT_BACK);
             });
 
@@ -278,11 +278,11 @@ describe('useBrowserAuth', () => {
     });
 
     describe('openBrowserForFormData', () => {
-        it('should call openBrowserAsync with URL extracted from formData', () => {
+        it('should call openBrowserAsync with URL extracted from formData', async () => {
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
-            const { result } = renderUseBrowserAuth();
+            const { result } = await renderUseBrowserAuth();
 
-            act(() => {
+            await act(() => {
                 result.current.openBrowserForFormData(
                     {
                         formMethod: 'GET',
@@ -298,12 +298,12 @@ describe('useBrowserAuth', () => {
             expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
         });
 
-        it('should log error and dispatch error message when method is not supported', () => {
+        it('should log error and dispatch error message when method is not supported', async () => {
             const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
-            const { result } = renderUseBrowserAuth();
+            const { result } = await renderUseBrowserAuth();
 
-            act(() => {
+            await act(() => {
                 result.current.openBrowserForFormData(
                     {
                         formMethod: 'IFRAME',
@@ -326,12 +326,12 @@ describe('useBrowserAuth', () => {
             );
         });
 
-        it('should call handleBrowserSuccess and set tradeToBeOpened for buy ', () => {
+        it('should dismiss browser for buy when form callback matches', async () => {
             mockLinkingURL = TRADING_URL_DEFAULT_BACK;
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.CANCEL });
-            const { result } = renderUseBrowserAuth('buy');
+            const { result } = await renderUseBrowserAuth('buy');
 
-            act(() => {
+            await act(() => {
                 result.current.openBrowserForFormData(
                     {
                         formMethod: 'GET',
@@ -339,15 +339,9 @@ describe('useBrowserAuth', () => {
                         fields: {},
                     },
                     TRADING_URL_DEFAULT_BACK,
-                    'trade-order-id-1',
                 );
             });
 
-            expect(selectTradeToBeOpened(store.getState())).toEqual(
-                expect.objectContaining({
-                    data: expect.objectContaining({ orderId: 'trade-order-id-1' }),
-                }),
-            );
             expect(mockDismissBrowser).toHaveBeenCalledTimes(1);
         });
     });

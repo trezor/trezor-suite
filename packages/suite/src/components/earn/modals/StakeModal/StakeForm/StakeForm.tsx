@@ -11,6 +11,7 @@ import { ConfirmStakeModal } from './ConfirmStakeModal';
 import { EarnAvailableBalance } from './EarnAvailableBalance';
 import { StakeInputs } from './StakeInputs';
 import { StakeRegistrationDepositCard } from './StakeRegistrationDepositCard';
+import { CardanoVotingPreference } from '../../shared/VotingDelegations/CardanoVotingPreference';
 
 type StakeFormProps = {
     flow: StakeModalFlow;
@@ -45,9 +46,12 @@ export const StakeForm = ({ flow }: StakeFormProps) => {
                 />
             )}
 
-            <Column gap={32} margin={{ bottom: 20 }}>
+            <Column gap={20} margin={{ bottom: 20 }}>
                 {isCardanoNetwork ? (
-                    <StakeRegistrationDepositCard account={account} />
+                    <>
+                        <StakeRegistrationDepositCard account={account} />
+                        <CardanoVotingPreference account={account} />
+                    </>
                 ) : (
                     <>
                         <EarnAvailableBalance formattedBalance={formattedBalance} symbol={symbol} />

@@ -1,18 +1,25 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { explorerActions } from './explorerActions';
 import {
     type ExplorerConfig,
+    type ExplorerState,
     explorerInitialState,
     prepareExplorerReducer,
 } from './explorerReducer';
 
-const explorerReducer = prepareExplorerReducer(extraDependenciesCommonMock);
+const explorerReducer = prepareExplorerReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadExplorer: mockReducer() },
+});
+const btcSymbol = asNetworkSymbol('btc');
 
 const initStore = (state: Partial<ExplorerConfig> = {}) =>
-    configureMockStore({
+    createTestCompositionRoot<void, ExplorerState>({
         reducer: {
             wallet: combineReducers({
                 explorer: explorerReducer,
@@ -23,7 +30,7 @@ const initStore = (state: Partial<ExplorerConfig> = {}) =>
                 explorer: { ...explorerInitialState, ...state },
             },
         },
-    });
+    }).services.store;
 
 describe('setExplorer', () => {
     test.each([
@@ -35,7 +42,7 @@ describe('setExplorer', () => {
 
         store.dispatch(
             explorerActions.setExplorer({
-                symbol: 'btc',
+                symbol: btcSymbol,
                 explorer,
             }),
         );
@@ -45,13 +52,13 @@ describe('setExplorer', () => {
 
     test('removes stored custom explorer', () => {
         const store = initStore({
-            btc: {
+            [btcSymbol]: {
                 default: { base: 'https://mempool.space', tx: 'tx', address: 'address' },
                 custom: { base: 'https://mempool.space', tx: 'tx', address: 'address' },
             },
         });
 
-        store.dispatch(explorerActions.setExplorer({ symbol: 'btc' }));
+        store.dispatch(explorerActions.setExplorer({ symbol: btcSymbol }));
 
         expect(store.getState().wallet.explorer.btc.custom).toEqual(undefined);
     });
@@ -66,7 +73,7 @@ describe('setExplorer', () => {
 
         store.dispatch(
             explorerActions.setExplorer({
-                symbol: 'btc',
+                symbol: btcSymbol,
                 explorer,
             }),
         );

@@ -25,6 +25,7 @@ export const settingsToggleExperimentalFeatureEvent: EventDef<
                 },
                 { version: '26.6.1', notes: 'removed `tron-view-only` value' },
                 { version: '26.7.1', notes: 'removed `testnet-networks` value' },
+                { version: '26.10.1', notes: 'added `slip24` value' },
             ],
             description: 'The identifier of the experimental feature being toggled',
         },

@@ -18,3 +18,4 @@ export { DeviceAuthenticityBlacklistConfig } from './config/deviceAuthenticityBl
 export { deviceAuthenticityConfig } from './config/deviceAuthenticityConfig';
 export { DeviceAuthenticityConfig } from './config/deviceAuthenticityConfigTypes';
 export { AuthenticateDeviceParams } from './authenticateDeviceParams';
+export { EXPECTED_ALGORITHM_NAME_PER_PROOF_TYPE } from './constants';

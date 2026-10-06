@@ -41,6 +41,7 @@ export const DeviceImage = ({ deviceModel, size = 'normal', maxHeight }: DeviceI
         <Image
             source={deviceImageMap[deviceModel]}
             style={applyStyle(imageStyle, { size, maxHeight })}
+            testID="@device/image"
         />
     );
 };

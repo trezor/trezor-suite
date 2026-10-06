@@ -1,3 +1,6 @@
+import { type Store } from '@reduxjs/toolkit';
+
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
@@ -6,9 +9,12 @@ import {
     getInitializedTradingState,
     mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useBuyPreviewFlow } from './useBuyPreviewFlow';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & AccountsRootState;
 
 const mockPopToTop = jest.fn();
 
@@ -61,7 +67,7 @@ describe('useBuyPreviewFlow', () => {
     } = {}) => {
         const baseBuyState = getInitializedTradingState().buy;
 
-        return createTradingLightStore({
+        return createTradingTestStore({
             tradeType: 'buy',
             overrides: {
                 wallet: {
@@ -82,8 +88,10 @@ describe('useBuyPreviewFlow', () => {
         });
     };
 
-    const renderHook = (store: ReturnType<typeof getInitializedStore>) =>
-        renderHookWithStoreProvider(() => useBuyPreviewFlow(), { store, services });
+    const renderHook = async (store: Store<State>) =>
+        await renderHookWithStoreProvider(() => useBuyPreviewFlow(), {
+            services: { ...services, store },
+        });
 
     const getProcessResponseData = () => {
         const [payload] = mockConfirmTradeThunk.mock.calls[0] as [any];
@@ -92,34 +100,34 @@ describe('useBuyPreviewFlow', () => {
     };
 
     describe('canProceed', () => {
-        it('is false when isLoading is true', () => {
+        it('is false when isLoading is true', async () => {
             const store = getInitializedStore({ isLoading: true, withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
             expect(result.current.canProceed).toBe(false);
         });
 
-        it('is false when receive address or account key is missing', () => {
+        it('is false when receive address or account key is missing', async () => {
             const store = getInitializedStore({ withFullState: false });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
             expect(result.current.canProceed).toBe(false);
         });
 
-        it('is true when not loading and all required state is set', () => {
+        it('is true when not loading and all required state is set', async () => {
             const store = getInitializedStore({ withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
             expect(result.current.canProceed).toBe(true);
         });
     });
 
     describe('confirmTrade', () => {
-        it('dispatches confirmTradeThunk with correct address and account when canProceed is true', () => {
+        it('dispatches confirmTradeThunk with correct address and account when canProceed is true', async () => {
             const store = getInitializedStore({ withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 
@@ -131,11 +139,11 @@ describe('useBuyPreviewFlow', () => {
             );
         });
 
-        it('does not dispatch confirmTradeThunk when canProceed is false', () => {
+        it('does not dispatch confirmTradeThunk when canProceed is false', async () => {
             const store = getInitializedStore({ isLoading: true, withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 
@@ -144,11 +152,11 @@ describe('useBuyPreviewFlow', () => {
     });
 
     describe('handleTradeResponse', () => {
-        it('opens browser, pops to top, and clears Redux state when tradeForm is present', async () => {
+        it('opens browser, pops to top, clears Redux state, and opens trade detail when tradeForm is present', async () => {
             const store = getInitializedStore({ withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 
@@ -164,18 +172,20 @@ describe('useBuyPreviewFlow', () => {
             expect(mockOpenBrowserForFormData).toHaveBeenCalledTimes(1);
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
             expect(store.getState().wallet.trading.buy.selectedQuote).toBeUndefined();
+            expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBe('order-123');
         });
 
-        it('navigates to trading screen before clearing Redux state', async () => {
+        it('navigates to trading screen before clearing Redux state and opening trade detail', async () => {
             const store = getInitializedStore({ withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 
             mockPopToTop.mockImplementationOnce(() => {
                 expect(store.getState().wallet.trading.buy.selectedQuote).toBeDefined();
+                expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBeUndefined();
             });
 
             await act(async () => {
@@ -188,13 +198,14 @@ describe('useBuyPreviewFlow', () => {
             });
 
             expect(store.getState().wallet.trading.buy.selectedQuote).toBeUndefined();
+            expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBe('order-123');
         });
 
-        it('does not open browser or navigate when tradeForm is absent', async () => {
+        it('opens trade detail without opening browser when tradeForm is absent', async () => {
             const store = getInitializedStore({ withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 
@@ -205,19 +216,18 @@ describe('useBuyPreviewFlow', () => {
             });
 
             expect(mockOpenBrowserForFormData).not.toHaveBeenCalled();
-            expect(mockPopToTop).not.toHaveBeenCalled();
-            expect(store.getState().wallet.trading.buy.selectedQuote).toStrictEqual(
-                mercuryoApplePayBuyQuote,
-            );
+            expect(mockPopToTop).toHaveBeenCalledTimes(1);
+            expect(store.getState().wallet.trading.buy.selectedQuote).toBeUndefined();
+            expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBe('order-123');
         });
     });
 
     describe('analytics', () => {
-        it('reports buy-preview continue when confirmTrade is called and canProceed is true', () => {
+        it('reports buy-preview continue when confirmTrade is called and canProceed is true', async () => {
             const store = getInitializedStore({ withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 
@@ -233,22 +243,22 @@ describe('useBuyPreviewFlow', () => {
             );
         });
 
-        it('does not report analytics when canProceed is false', () => {
+        it('does not report analytics when canProceed is false', async () => {
             const store = getInitializedStore({ isLoading: true, withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 
             expect(mockReport).not.toHaveBeenCalled();
         });
 
-        it('triggerAnalyticsTradeConfirmation reports tradingConfirmTradeEvent', () => {
+        it('triggerAnalyticsTradeConfirmation reports tradingConfirmTradeEvent', async () => {
             const store = getInitializedStore({ withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 

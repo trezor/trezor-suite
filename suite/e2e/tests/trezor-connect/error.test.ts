@@ -1,4 +1,5 @@
 import TrezorConnect from '@trezor/connect-web';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -27,6 +28,7 @@ test.describe('TrezorConnect', { tag: ['@T3T1', '@T3W1', '@desktopOnly'] }, () =
         {
             annotation: createTestAnnotation({
                 testCase: 'Suite Connect correctly displays invalid path error screen',
+                stream: TestStream.Connect,
             }),
         },
         async ({ page }) => {

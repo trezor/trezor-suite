@@ -1,13 +1,11 @@
-import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { btcCoinEnabled } from '../fixtures/btcCoinEnabled';
-import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
-import { getModelFromEnv } from '../support/utils';
 
 const finishOnboardingFlow = async () => {
     // Create Pin
@@ -24,7 +22,7 @@ const finishOnboardingFlow = async () => {
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
-    getModelFromEnv() === Model.T3W1 ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
+    deviceChecksEnabledState,
     btcCoinEnabled,
 );
 

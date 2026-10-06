@@ -1,5 +1,7 @@
 import { useWatch } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -15,7 +17,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingCryptoAssetChange } from 'src/hooks/wallet/trading/form/common/useTradingCryptoAssetChange';
 import { useTradingFiatCryptoAmount } from 'src/hooks/wallet/trading/form/common/useTradingFiatCryptoAmount';
 import { useTradingSendAssetBalance } from 'src/hooks/wallet/trading/form/common/useTradingSendAssetBalance';
@@ -43,7 +45,7 @@ export const useExchangeFormInputs = ({
     setShowReserveBanner,
     setAccountOnChange,
 }: UseExchangeFormInputsProps): TradingUseFormActionsReturnProps => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
     const accounts = useSelector(selectVisibleDeviceAccounts);
@@ -71,9 +73,6 @@ export const useExchangeFormInputs = ({
 
     const { fractionButton, setFractionButton, onFiatCurrencyChange } = useTradingFiatCryptoAmount({
         methods,
-        tradingFiatValues,
-        networkDecimals,
-        shouldSendInSats,
     });
 
     const { onCryptoCurrencyChange } = useTradingCryptoAssetChange({
@@ -114,6 +113,10 @@ export const useExchangeFormInputs = ({
     };
 
     const setAllAmount = () => {
+        if (!account) {
+            return;
+        }
+
         if (tokenData) {
             const cryptoInputValue = calcMaxTokenAmount({
                 balance: tokenData.balance || '0',

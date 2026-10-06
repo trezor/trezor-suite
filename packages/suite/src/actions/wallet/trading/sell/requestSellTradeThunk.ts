@@ -1,7 +1,9 @@
 import { type SellFiatTrade } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
+import { type DesktopApiDep } from '@suite/desktop-app-api';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
+    type TradingFormAccountRootState,
     selectTradingComposedTransactionInfo,
     selectTradingSellInfo,
     selectTradingSellQuotesRequest,
@@ -11,38 +13,46 @@ import {
 
 import { buildSellReturnUrl } from 'src/utils/wallet/trading/buildSellReturnUrl';
 
-import { submitRequestForm } from '../tradingCommonActions';
+import { submitRequestFormThunk } from '../tradingCommonActions';
 
-export const requestSellTradeThunk = createThunk(
-    'trading/sell/requestTrade',
-    async ({ quote }: { quote: SellFiatTrade }, { dispatch, getState }) => {
-        const account = selectTradingSendAccount(getState(), 'sell');
+type RequestSellTradeThunkParams = { quote: SellFiatTrade };
 
-        if (!account) {
-            return;
-        }
+export type RequestSellTradeThunkState = TradingFormAccountRootState;
 
-        const returnUrl = await buildSellReturnUrl({
-            quote,
+export type RequestSellTradeThunkDeps = WithServices<DesktopApiDep<'getHttpReceiverAddress'>>;
+
+export const requestSellTradeThunk = createThunk<
+    void,
+    RequestSellTradeThunkParams,
+    { state: RequestSellTradeThunkState; extra: RequestSellTradeThunkDeps }
+>('trading/sell/requestTrade', async ({ quote }, { dispatch, getState, extra }) => {
+    const account = selectTradingSendAccount(getState(), 'sell');
+
+    if (!account) {
+        return;
+    }
+
+    const returnUrl = await buildSellReturnUrl({
+        desktopApi: extra.services.desktopApi,
+        quote,
+        account,
+        sellInfo: selectTradingSellInfo(getState()),
+        quotesRequest: selectTradingSellQuotesRequest(getState()),
+        composedInfo: selectTradingComposedTransactionInfo(getState()),
+    });
+
+    if (!returnUrl) {
+        return;
+    }
+
+    await dispatch(
+        sellThunks.handleTradeThunk({
             account,
-            sellInfo: selectTradingSellInfo(getState()),
-            quotesRequest: selectTradingSellQuotesRequest(getState()),
-            composedInfo: selectTradingComposedTransactionInfo(getState()),
-        });
-
-        if (!returnUrl) {
-            return;
-        }
-
-        await dispatch(
-            sellThunks.handleTradeThunk({
-                account,
-                trade: quote,
-                returnUrl,
-                processResponseData: response => {
-                    dispatch(submitRequestForm(response.tradeForm?.form));
-                },
-            }),
-        );
-    },
-);
+            trade: quote,
+            returnUrl,
+            processResponseData: response => {
+                dispatch(submitRequestFormThunk(response.tradeForm?.form));
+            },
+        }),
+    );
+});

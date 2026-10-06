@@ -6,12 +6,12 @@ import {
     type AnalyticsNativeEvents,
     type CountryChangeContext,
     events,
-    selectNativeAnalyticsDep,
+    injectNativeAnalytics,
 } from '@suite-native/analytics';
-import { Flag, HStack, Text } from '@suite-native/atoms';
+import { Flag, HStack, Text, useBottomSheetControls } from '@suite-native/atoms';
 import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { OverviewRow, useBottomSheetControls } from '@suite-native/trading-atoms';
+import { OverviewRow } from '@suite-native/trading-atoms';
 import { type Analytics } from '@trezor/analytics-uploader';
 
 import { CountrySheet } from './CountrySheet';
@@ -42,7 +42,7 @@ export const CountryOfResidencePicker = ({
     noBottomBorder = true,
 }: CountryOfResidencePickerProps) => {
     const { translate } = useTranslate();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const { isSheetVisible, hideSheet, showSheet } = useBottomSheetControls();
 
     const { control, setValue } = useFormContext<TradingLocationFormValues>();

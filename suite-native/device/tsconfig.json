@@ -22,7 +22,13 @@
             "path": "../../suite-common/message-system"
         },
         {
+            "path": "../../suite-common/persistent-device-data"
+        },
+        {
             "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-sync-types"
         },
         {
             "path": "../../suite-common/suite-types"
@@ -34,6 +40,9 @@
             "path": "../../suite-common/test-utils"
         },
         { "path": "../../suite-common/thp" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
         {
             "path": "../../suite-common/wallet-core"
         },
@@ -70,7 +79,6 @@
             "path": "../../packages/connect-common"
         },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/env-utils" },
         {
             "path": "../../packages/styles-native"
         },

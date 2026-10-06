@@ -1,4 +1,6 @@
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type Account,
     type TokenInfoBranded,
@@ -13,6 +15,11 @@ import {
     selectIsAccountDiscoveryFailed,
 } from './selectors';
 import { isFilterValueMatchingAccount, sortAccountsByNetworksAndAccountTypes } from './utils';
+
+const supportedNetworks = mockGetSupportedNetworks();
+
+const btcSymbol = asNetworkSymbol('btc');
+const solSymbol = asNetworkSymbol('sol');
 
 let mockStakingBalance = '0';
 
@@ -85,7 +92,7 @@ describe('sortAccountsByNetworksAndAccountTypes', () => {
             { symbol: 'ltc', accountType: 'normal' },
         ] as unknown as Account[];
 
-        const result = sortAccountsByNetworksAndAccountTypes(fixtureAccounts);
+        const result = sortAccountsByNetworksAndAccountTypes(fixtureAccounts, supportedNetworks);
 
         expect(result).toEqual([
             { symbol: 'btc', accountType: 'normal' },
@@ -102,8 +109,8 @@ describe('sortAccountsByNetworksAndAccountTypes', () => {
 
 describe('selectFreshAccountAddress', () => {
     const mockAccount = {
-        symbol: 'btc',
-        key: mockAccountKey({ symbol: 'btc', descriptor: 'btc1' }),
+        symbol: btcSymbol,
+        key: mockAccountKey({ symbol: btcSymbol, descriptor: 'btc1' }),
         addresses: {
             unused: [
                 {
@@ -409,20 +416,26 @@ describe('selectIsAccountDiscoveryFailed', () => {
             expect(
                 selectHasDeviceAnyFailedAccountForNetworkSymbol(
                     getState([normalAccount, failedAccount]),
-                    'sol',
+                    solSymbol,
                 ),
             ).toBe(true);
         });
 
         it('returns false when no account of the network failed', () => {
             expect(
-                selectHasDeviceAnyFailedAccountForNetworkSymbol(getState([normalAccount]), 'sol'),
+                selectHasDeviceAnyFailedAccountForNetworkSymbol(
+                    getState([normalAccount]),
+                    solSymbol,
+                ),
             ).toBe(false);
         });
 
         it('returns false for another network', () => {
             expect(
-                selectHasDeviceAnyFailedAccountForNetworkSymbol(getState([failedAccount]), 'btc'),
+                selectHasDeviceAnyFailedAccountForNetworkSymbol(
+                    getState([failedAccount]),
+                    btcSymbol,
+                ),
             ).toBe(false);
         });
     });

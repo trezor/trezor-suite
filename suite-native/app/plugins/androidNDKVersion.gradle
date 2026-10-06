@@ -1,0 +1,6 @@
+// Expo SQLite, Expo Updates and Sentry otherwise fall back to the Android Gradle plugin's NDK.
+subprojects { subproject ->
+    subproject.plugins.withId('com.android.library') {
+        subproject.android.ndkVersion = rootProject.ext.ndkVersion
+    }
+}

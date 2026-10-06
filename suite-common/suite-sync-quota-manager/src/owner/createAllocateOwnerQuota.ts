@@ -36,14 +36,14 @@ export type AllocateOwnerQuotaErr =
     | WriteModeRequiredForAllocationErrType
     | QuotaManagerCommunicationFailedErrType;
 
-export type AllocateOwnerQuota = (
-    params: AllocateOwnerQuotaParams,
-) => Promise<Result<void, AllocateOwnerQuotaErr>>;
-
 export type AllocateOwnerQuotaDeps = {
     getLeftDeviceQuota: GetLeftDeviceQuota;
 } & TransferStorageFetchDep &
     PrepareChallengeSessionFetchDep;
+
+export type AllocateOwnerQuota = (
+    params: AllocateOwnerQuotaParams,
+) => Promise<Result<void, AllocateOwnerQuotaErr>>;
 
 export type AllocateOwnerQuotaDep = {
     allocateOwnerQuota: AllocateOwnerQuota;

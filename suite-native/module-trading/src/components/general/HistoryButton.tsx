@@ -20,10 +20,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
 import { useWatchAllTrades } from '../../hooks/general/useWatchAllTrades';
 
-export type HistoryButtonProps = {
-    isFormMountedRecently?: boolean;
-};
-
 export type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
     TradingStackRoutes.Trading,

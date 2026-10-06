@@ -1,6 +1,6 @@
 {
     "name": "@trezor/network-cardano",
-    "version": "10.0.0-beta.1",
+    "version": "10.0.1",
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"
@@ -44,12 +44,21 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "generate:csl-asmjs": "node ./scripts/csl-asmjs/generate.js",
+        "verify:csl-asmjs": "./scripts/csl-asmjs/verify.sh",
         "test:unit": "yarn g:jest --passWithNoTests",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib"
     },
     "dependencies": {
         "@fivebinaries/coin-selection": "3.0.0",
+        "@trezor/utils": "workspace:*",
         "cbor": "^10.0.12"
+    },
+    "devDependencies": {
+        "@emurgo/cardano-serialization-lib-asmjs": "13.2.0",
+        "@emurgo/cardano-serialization-lib-browser": "13.2.0",
+        "@emurgo/cardano-serialization-lib-nodejs": "13.2.0",
+        "binaryen": "132.0.0"
     }
 }

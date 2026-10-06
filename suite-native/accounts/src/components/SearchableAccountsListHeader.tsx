@@ -16,7 +16,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { AddAccountButton } from './AddAccountsButton';
 import { FilterCountBadge } from './FilterCountBadge';
 
-type SearchableAccountsListHeaderProps = {
+export type SearchableAccountsListHeaderProps = {
     title: ReactNode;
     onSearchInputChange: (value: string) => void;
     isSearchActive: boolean;
@@ -24,15 +24,20 @@ type SearchableAccountsListHeaderProps = {
     flowType?: AddCoinFlowType;
     closeActionType?: CloseActionType;
     closeAction?: () => void;
+    onAddAccount?: () => void;
     onFilterPress?: () => void;
     activeFilterCount?: number;
+    noPaddingTop?: boolean;
 };
 
 const HEADER_ANIMATION_DURATION = 100;
 
-const searchFormContainerStyle = prepareNativeStyle(({ spacings }) => ({
-    marginBottom: spacings.sp8,
-}));
+const searchFormContainerStyle = prepareNativeStyle<{ noPaddingTop: boolean }>(
+    ({ spacings }, { noPaddingTop }) => ({
+        marginBottom: spacings.sp8,
+        paddingTop: noPaddingTop ? 0 : spacings.sp16,
+    }),
+);
 
 export const SearchableAccountsListHeader = ({
     title,
@@ -42,8 +47,10 @@ export const SearchableAccountsListHeader = ({
     flowType,
     closeActionType,
     closeAction,
+    onAddAccount,
     onFilterPress,
     activeFilterCount = 0,
+    noPaddingTop = false,
 }: SearchableAccountsListHeaderProps) => {
     const isFirstRender = useSharedValue(true);
     const { applyStyle } = useNativeStyles();
@@ -76,10 +83,10 @@ export const SearchableAccountsListHeader = ({
     };
 
     return (
-        <Box style={applyStyle(searchFormContainerStyle)}>
+        <Box style={applyStyle(searchFormContainerStyle, { noPaddingTop })}>
             {isSearchActive ? (
                 <SearchForm
-                    placeholder="accounts.searchForm.placeholder"
+                    placeholder="accounts.searchForm.searchAccountsPlaceholder"
                     onPressCancel={handleHideFilter}
                     onInputChange={onSearchInputChange}
                 />
@@ -131,6 +138,7 @@ export const SearchableAccountsListHeader = ({
                             {flowType && (
                                 <AddAccountButton
                                     flowType={flowType}
+                                    onPress={onAddAccount}
                                     testID="@myAssets/addAccountButton"
                                 />
                             )}

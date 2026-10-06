@@ -56,17 +56,17 @@ const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
     },
 };
 
-const renderSignDataMessageReview = (
+const renderSignDataMessageReview = async (
     overrides: PreloadedStatePartial<TradingTestPreloadedState> = baseOverrides,
 ) =>
-    renderWithTradingProvider(<SignDataMessageReview />, {
+    await renderWithTradingProvider(<SignDataMessageReview />, {
         tradeType: 'exchange',
         overrides,
     });
 
 describe('SignDataMessageReview', () => {
-    it('should render nothing when quote has no signData', () => {
-        const { toJSON } = renderSignDataMessageReview({
+    it('should render nothing when quote has no signData', async () => {
+        const { toJSON } = await renderSignDataMessageReview({
             wallet: {
                 trading: {
                     exchange: {
@@ -79,8 +79,8 @@ describe('SignDataMessageReview', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when signData type is not eip712-typed-data', () => {
-        const { toJSON } = renderSignDataMessageReview({
+    it('should render nothing when signData type is not eip712-typed-data', async () => {
+        const { toJSON } = await renderSignDataMessageReview({
             wallet: {
                 trading: {
                     exchange: {
@@ -96,16 +96,16 @@ describe('SignDataMessageReview', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render heading', () => {
-        const { getByText } = renderSignDataMessageReview();
+    it('should render heading', async () => {
+        const { getByText } = await renderSignDataMessageReview();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingReviewOutputs.signData.heading')),
         ).toBeOnTheScreen();
     });
 
-    it('should render domain card with simplified JSON', () => {
-        const { getByText } = renderSignDataMessageReview();
+    it('should render domain card with simplified JSON', async () => {
+        const { getByText } = await renderSignDataMessageReview();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingReviewOutputs.signData.domain')),
@@ -113,8 +113,8 @@ describe('SignDataMessageReview', () => {
         expect(getByText(/1inch Aggregation Router/)).toBeOnTheScreen();
     });
 
-    it('should render message card with labeled field rows', () => {
-        const { getByText } = renderSignDataMessageReview();
+    it('should render message card with labeled field rows', async () => {
+        const { getByText } = await renderSignDataMessageReview();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingReviewOutputs.signData.message')),
@@ -128,16 +128,16 @@ describe('SignDataMessageReview', () => {
         expect(getByText(/amount: 42/)).toBeOnTheScreen();
     });
 
-    it('should render address card when send account is available', () => {
-        const { getByText } = renderSignDataMessageReview();
+    it('should render address card when send account is available', async () => {
+        const { getByText } = await renderSignDataMessageReview();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingReviewOutputs.signData.address')),
         ).toBeOnTheScreen();
     });
 
-    it('should not render address card when send account is not found', () => {
-        const { queryByText } = renderSignDataMessageReview({
+    it('should not render address card when send account is not found', async () => {
+        const { queryByText } = await renderSignDataMessageReview({
             wallet: {
                 trading: {
                     exchange: {

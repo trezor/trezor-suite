@@ -37,17 +37,9 @@ const globalSendReceiveFiltersSlice = createSlice({
         selectSearch: state => state.search,
         filledSearch: state => state.search !== '',
         selectNetworkSymbol: state => state.networkSymbol,
-        selectFilters: state => ({
-            search: state.search,
-            networkSymbol: state.networkSymbol,
-        }),
     },
 });
 
 export const globalSendReceiveFiltersActions = globalSendReceiveFiltersSlice.actions;
 export const globalSendReceiveFiltersReducer = globalSendReceiveFiltersSlice.reducer;
 export const globalSendReceiveFiltersSelectors = globalSendReceiveFiltersSlice.selectors;
-
-export type GlobalSendReceiveAction = ReturnType<
-    (typeof globalSendReceiveFiltersActions)[keyof typeof globalSendReceiveFiltersActions]
->;

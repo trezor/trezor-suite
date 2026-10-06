@@ -6,8 +6,9 @@ import { ExchangeInfoNotification } from '@trezor/product-components';
 
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
+import { FormattedCryptoAmount } from '../../FormattedCryptoAmount';
 import { AccountLabeling } from '../../labeling/AccountLabeling';
 
 type ExchangeInfoRendererProps = Omit<NotificationViewProps, 'messageValues'> &
@@ -77,7 +78,15 @@ export const ExchangeInfoRenderer = ({ render: View, ...props }: ExchangeInfoRen
                         }}
                         renderAmount={(amount, side) => (
                             <HiddenPlaceholder data-testid={`@toast/tx-exchange/${side}-amount`}>
-                                {amount}
+                                {/* No symbol: ExchangeAmountWithSymbol renders the ticker itself. */}
+                                <FormattedCryptoAmount
+                                    value={String(amount)}
+                                    contractAddress={
+                                        (side === 'send' ? send : receive).contractAddress
+                                    }
+                                    isCompact
+                                    disableHiddenPlaceholder
+                                />
                             </HiddenPlaceholder>
                         )}
                     />

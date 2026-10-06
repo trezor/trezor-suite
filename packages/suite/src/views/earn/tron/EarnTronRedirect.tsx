@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 
-import { goto } from '@suite/router';
-
-import { useDispatch } from 'src/hooks/suite';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 export const EarnTronRedirect = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
-        dispatch(goto({ routeName: 'suite-earn' }));
+        dispatch(gotoThunk({ routeName: 'suite-earn' }));
     }, [dispatch]);
 
     return null;

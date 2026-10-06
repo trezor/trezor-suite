@@ -48,6 +48,12 @@
                 "distribution": "store"
             }
         },
+        "adhoc-simulator": {
+            "extends": "adhoc",
+            "ios": {
+                "simulator": true
+            }
+        },
         "production": {
             "extends": "base",
             "env": {
@@ -60,6 +66,13 @@
             },
             "ios": {
                 "credentialsSource": "remote"
+            }
+        },
+        "production-simulator": {
+            "extends": "production",
+            "autoIncrement": false,
+            "ios": {
+                "simulator": true
             }
         },
         "productionAPK": {

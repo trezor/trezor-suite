@@ -3,14 +3,17 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/assets" },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/fiat-services"
+        },
         {
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/networks" },
+        {
+            "path": "../../suite-common/react-query"
+        },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -37,7 +40,6 @@
         { "path": "../intl" },
         { "path": "../module-earn" },
         { "path": "../navigation" },
-        { "path": "../staking" },
         { "path": "../tokens" },
         { "path": "../../packages/utils" }
     ]

@@ -63,6 +63,7 @@ const downloadCoverageMap = async (localFile: string): Promise<void> => {
         } else {
             throw new Error(
                 `Failed to download coverage map: ${err instanceof Error ? err.message : err}`,
+                { cause: err },
             );
         }
     }

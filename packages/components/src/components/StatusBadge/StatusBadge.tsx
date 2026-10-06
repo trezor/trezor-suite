@@ -53,7 +53,7 @@ export const StatusBadge = ({
     const y = offset?.y ?? 0;
 
     return isShown ? (
-        <Box position={{ type: 'relative' }} display="inline-flex">
+        <Box position={{ type: 'relative' }} display="inline-flex" data-component="StatusBadge">
             <MaskedContent $x={x} $y={y}>
                 {children}
             </MaskedContent>

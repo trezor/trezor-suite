@@ -78,6 +78,7 @@ export const Checkbox = ({
         <Row
             gap={12}
             alignItems={verticalAlignment === 'start' ? 'flex-start' : 'center'}
+            data-component="Checkbox"
             data-testid={dataTest}
             isReversed={labelAlignment === 'start'}
             cursor={isDisabled ? 'not-allowed' : 'pointer'}

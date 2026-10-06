@@ -7,19 +7,21 @@ import {
     TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
     getSlippageFormValidationSchema,
 } from '@suite-common/trading';
-import { yup } from '@suite-common/validators';
-import { useForm } from '@suite-native/forms';
+import { useForm, yup } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
 type SlippageForm = ReturnType<typeof useForm<SlippageFormValues>>;
 type UseSlippageFormRet = {
     isValid: SlippageForm['formState']['isValid'];
+    isSubmitting: SlippageForm['formState']['isSubmitting'];
     handlePresetPress: (preset: string) => void;
     handleSubmit: SlippageForm['handleSubmit'];
     form: SlippageForm;
 };
 
-export const useSlippageForm = (): UseSlippageFormRet => {
+export const useSlippageForm = (
+    initialSlippage = TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
+): UseSlippageFormRet => {
     const { translate } = useTranslate();
 
     const validationSchema = useMemo(
@@ -38,14 +40,14 @@ export const useSlippageForm = (): UseSlippageFormRet => {
     );
 
     const form = useForm<SlippageFormValues>({
-        defaultValues: { slippage: TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT },
+        defaultValues: { slippage: initialSlippage },
         validation: validationSchema,
         mode: 'onChange',
     });
 
     const {
         setValue,
-        formState: { isValid },
+        formState: { isSubmitting, isValid },
         handleSubmit,
     } = form;
 
@@ -56,5 +58,5 @@ export const useSlippageForm = (): UseSlippageFormRet => {
         [setValue],
     );
 
-    return { isValid, handlePresetPress, handleSubmit, form };
+    return { isSubmitting, isValid, handlePresetPress, handleSubmit, form };
 };

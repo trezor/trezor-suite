@@ -60,7 +60,7 @@ const getParams = () => {
 // ✅ Chrome 125+ / Opera 111+
 // ❌ Firefox / Safari / many WebViews / some Chromium forks
 const getUnpartitionedBroadcastChannel = async (channelName: string): Promise<BroadcastChannel> => {
-    let handle: { BroadcastChannel?: (name: string) => BroadcastChannel } | null = null;
+    let handle: { BroadcastChannel?: (name: string) => BroadcastChannel } | null;
     try {
         // @ts-expect-error - requestStorageAccess params not yet lib.dom.d.ts
         handle = await document.requestStorageAccess({ BroadcastChannel: true });

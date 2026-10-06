@@ -1,21 +1,24 @@
 import { useMemo, useState } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { getDaysToAddToPoolInitial } from '@suite-common/staking';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectEthValidatorsQueue } from '@suite-common/wallet-core';
+import {
+    getDaysToAddToPoolInitial,
+    getStakingHelpCenterLink,
+    selectEthereumValidatorsQueue,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getStakingHelpCenterLink } from '@suite-common/wallet-utils';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
 import { ClockIcon, HandIcon } from '@trezor/icons';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const getStakeEnteringMessage = (networkType?: NetworkType) => {
     if (networkType === 'ethereum') return 'TR_STAKE_ENTERING_POOL_MAY_TAKE';
@@ -38,10 +41,9 @@ export const ConfirmStakeModal = ({
     onCancel,
     flow,
 }: ConfirmStakeModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [hasAgreed, setHasAgreed] = useState(false);
-    const validatorsQueue = useSelector(selectEthValidatorsQueue);
+    const validatorsQueue = useSelector(selectEthereumValidatorsQueue);
 
     const daysToAddToPool = getDaysToAddToPoolInitial(validatorsQueue);
 

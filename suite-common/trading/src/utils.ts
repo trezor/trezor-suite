@@ -11,6 +11,7 @@ import {
     type SellTradeFinalStatus,
 } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Network,
     type NetworkSymbol,
@@ -154,8 +155,9 @@ export const cryptoIdToNetworkAndContractAddress = (
 export const cryptoIdToNetwork = (cryptoId: CryptoId | undefined): Network | undefined =>
     cryptoIdToNetworkAndContractAddress(cryptoId)?.network;
 
-export const cryptoIdToSymbol = (cryptoId: CryptoId | undefined): NetworkSymbol | undefined =>
-    cryptoIdToNetwork(cryptoId)?.symbol;
+export const cryptoIdToNetworkSymbol = (
+    cryptoId: CryptoId | undefined,
+): NetworkSymbol | undefined => cryptoIdToNetwork(cryptoId)?.symbol;
 
 export const cryptoIdToNetworkSymbolAndContractAddress = (cryptoId: CryptoId | undefined) => {
     const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
@@ -207,14 +209,12 @@ export const getUnusedAddressFromAccount = (account: Account) => {
     }
 };
 
-export const mapTestnetSymbol = (
-    symbol: NetworkSymbol,
-): Exclude<NetworkSymbol, 'test' | 'tsep' | 'thod' | 'txrp' | 'txlm'> => {
-    if (symbol === 'test') return 'btc';
-    if (symbol === 'tsep') return 'eth';
-    if (symbol === 'thod') return 'eth';
-    if (symbol === 'txrp') return 'xrp';
-    if (symbol === 'txlm') return 'xlm';
+export const mapTestnetSymbol = (symbol: NetworkSymbol): NetworkSymbol => {
+    if (symbol === 'test') return asNetworkSymbol('btc');
+    if (symbol === 'tsep') return asNetworkSymbol('eth');
+    if (symbol === 'thod') return asNetworkSymbol('eth');
+    if (symbol === 'txrp') return asNetworkSymbol('xrp');
+    if (symbol === 'txlm') return asNetworkSymbol('xlm');
 
     return symbol;
 };
@@ -325,7 +325,7 @@ export const getTradingFormState = ({
             return {
                 activeSection,
                 recipientName: provider.companyName,
-                isSlip24Active: isSlip24Active && !!receiveAccountKey,
+                isSlip24Active,
                 send: {
                     cryptoId: trade.cryptoCurrency,
                     accountKey: sendAccountKey,
@@ -412,4 +412,15 @@ export const getStatusUrl = (provider?: TradingProviderInfo, trade?: TradingTrad
     }
 
     return tradeStatusUrl || provider?.statusUrl;
+};
+
+export const isCrossChainTrade = (sendCryptoId?: CryptoId, receiveCryptoId?: CryptoId) => {
+    const sendNetworkSymbol = cryptoIdToNetworkSymbol(sendCryptoId);
+    const receiveNetworkSymbol = cryptoIdToNetworkSymbol(receiveCryptoId);
+
+    if (!sendNetworkSymbol || !receiveNetworkSymbol) {
+        return false;
+    }
+
+    return sendNetworkSymbol !== receiveNetworkSymbol;
 };

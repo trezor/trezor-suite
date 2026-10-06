@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    changeCoinVisibility,
+    changeCoinVisibilityThunk,
     selectDeviceAccountsByNetworkSymbol,
     selectDiscoveryForSelectedDevice,
     selectHasRunningDiscovery,
@@ -31,8 +33,8 @@ import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
 export const AddCoinDiscoveryRunningScreen = ({
     route,
 }: StackProps<AddCoinAccountStackParamList, AddCoinAccountStackRoutes.AddCoinDiscoveryRunning>) => {
-    const { networkSymbol, flowType } = route.params;
-    const dispatch = useDispatch();
+    const { networkSymbol, flowType, earnFlowParams } = route.params;
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
     const accounts = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccountsByNetworkSymbol(state, networkSymbol),
@@ -50,6 +52,7 @@ export const AddCoinDiscoveryRunningScreen = ({
             symbol: networkSymbol,
             accountType: account.accountType,
             accountIndex: account.index,
+            earnFlowParams,
         });
     };
 
@@ -80,6 +83,7 @@ export const AddCoinDiscoveryRunningScreen = ({
             navigation.replace(AddCoinAccountStackRoutes.AddCoinDiscoveryFinished, {
                 networkSymbol,
                 flowType,
+                earnFlowParams,
             });
 
             return;
@@ -100,7 +104,7 @@ export const AddCoinDiscoveryRunningScreen = ({
             !isBlockedByPassphraseError
         ) {
             dispatch(
-                changeCoinVisibility({
+                changeCoinVisibilityThunk({
                     symbol: networkSymbol,
                     shouldBeVisible: true,
                 }),

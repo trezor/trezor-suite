@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
-    TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeAmountLimitProps,
@@ -17,7 +18,6 @@ import {
     selectTradingExchangeInfo,
     selectTradingExchangeIsFromRedirect,
     selectTradingExchangeIsLoading,
-    selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeTransactionId,
     selectTradingSendAccount,
@@ -27,10 +27,10 @@ import {
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
+import { useTradingAmountUnitSync } from 'src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
-import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/exchange/useTradingExchangeFormDefaultValues';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
@@ -49,8 +49,7 @@ import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
 
 export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const type = 'exchange';
-    const dispatch = useDispatch();
-    const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
+    const { dispatch } = useServices(injectDispatch);
     const isFromRedirect = useSelector(selectTradingExchangeIsFromRedirect);
     const transactionId = useSelector(selectTradingExchangeTransactionId);
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
@@ -82,7 +81,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         defaultValues,
     });
 
-    const { reset, register, setValue, clearErrors, formState, control } = methods;
+    const { reset, register, formState, control } = methods;
 
     // Watch only the values the orchestrator itself renders with; each atomic hook
     // owns its own narrow named subscription. Replaces the former broad useWatch.
@@ -114,7 +113,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     });
 
     const formIsValid = Object.keys(formState.errors).length === 0;
-    const hasValues = !!outputAmount && !!receiveCryptoSelect;
+    const hasValues = !!outputAmount && !!receiveCryptoSelect && !!sendCryptoSelect;
     const isAmountEmpty = outputAmount === '';
     const noProviders = Object.keys(exchangeInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !exchangeInfo?.providerInfos;
@@ -145,13 +144,10 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const isFormLoadingBase = isInitialDataLoading || formState.isSubmitting || isLoading;
     const isFormInvalid = !(formIsValid && hasValues) || !isReceiveAddressFormValid;
 
-    const { toggleAmountInCrypto: baseToggleAmountInCrypto } = useTradingCurrencySwitcher({
-        account,
+    useTradingAmountUnitSync({
+        networkSymbol: account?.symbol,
         methods,
-        inputNames: {
-            cryptoInput: TRADING_FORM_OUTPUT_AMOUNT,
-            fiatInput: TRADING_FORM_OUTPUT_FIAT,
-        },
+        cryptoInputName: TRADING_FORM_OUTPUT_AMOUNT,
     });
 
     const { dexQuotes, isScheduledQuotesRefresh, refreshQuotes } = useExchangeQuotes({
@@ -168,13 +164,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
 
     const isFormLoading = isFormLoadingBase || isScheduledQuotesRefresh;
     const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
-
-    const toggleAmountInCrypto = () => {
-        setValue(TRADING_FORM_OUTPUT_AMOUNT, '', { shouldDirty: true });
-        setValue(TRADING_FORM_OUTPUT_FIAT, '', { shouldDirty: true });
-        clearErrors([TRADING_FORM_OUTPUT_AMOUNT, TRADING_FORM_OUTPUT_FIAT]);
-        baseToggleAmountInCrypto();
-    };
 
     const helpers = useExchangeFormInputs({
         account,
@@ -238,14 +227,10 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
                 isFormLoading,
                 isFormInvalid,
                 isLoadingOrInvalid,
-
-                toggleAmountInCrypto,
             },
             helpers,
         },
         methods,
-        exchangeInfo,
-        quotesRequest,
         isComposing,
         composedLevels,
         feeInfo,
@@ -254,11 +239,9 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         receiveAccount,
         verifiedAddress,
         shouldSendInSats,
-        trade,
         isAmountEmpty,
         setReceiveAccount,
         composeRequest,
-        composedTransactionInfo,
         changeFeeLevel,
         setAmountLimits,
         verifyAddress,

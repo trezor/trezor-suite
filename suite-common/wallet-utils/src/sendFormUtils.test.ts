@@ -1,9 +1,5 @@
-import { networks, networksCollection } from '@suite-common/wallet-config';
-import {
-    mockWalletAccount,
-    networkSpecificDefaultRipple,
-    networkSpecificDefaultStellar,
-} from '@suite-common/wallet-types/mocks';
+import { asNetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -23,6 +19,9 @@ import {
     prepareEthereumTransaction,
     restoreOrigOutputsOrder,
 } from './sendFormUtils';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 describe('sendForm utils', () => {
     fixtures.prepareEthereumTransaction.forEach(f => {
@@ -112,7 +111,7 @@ describe('sendForm utils', () => {
         // @ts-expect-error: invalid params
         expect(getBitcoinComposeOutputs('A', 'btc')).toEqual([]);
 
-        expect(getBitcoinComposeOutputs({ outputs: [] }, 'btc')).toEqual([]);
+        expect(getBitcoinComposeOutputs({ outputs: [] }, btcSymbol)).toEqual([]);
 
         let outputs: any[] = [
             null,
@@ -120,10 +119,10 @@ describe('sendForm utils', () => {
             { type: 'payment', amount: '' },
             { type: 'payment', amount: '1' },
         ];
-        expect(getBitcoinComposeOutputs({ outputs }, 'btc')).toEqual([
+        expect(getBitcoinComposeOutputs({ outputs }, btcSymbol)).toEqual([
             { type: 'payment-noaddress', amount: '100000000' },
         ]);
-        expect(getBitcoinComposeOutputs({ outputs }, 'btc', true)).toEqual([
+        expect(getBitcoinComposeOutputs({ outputs }, btcSymbol, true)).toEqual([
             { type: 'payment-noaddress', amount: '1' },
         ]);
 
@@ -143,7 +142,7 @@ describe('sendForm utils', () => {
                     setMaxOutputId: 2,
                     outputs,
                 },
-                'btc',
+                btcSymbol,
             ),
         ).toEqual([
             { type: 'payment', amount: '100000000', address: 'A' },
@@ -159,7 +158,7 @@ describe('sendForm utils', () => {
                     setMaxOutputId: 0,
                     outputs,
                 },
-                'btc',
+                btcSymbol,
             ),
         ).toEqual([{ type: 'send-max-noaddress' }]);
 
@@ -170,7 +169,7 @@ describe('sendForm utils', () => {
                     setMaxOutputId: 0,
                     outputs,
                 },
-                'btc',
+                btcSymbol,
             ),
         ).toEqual([{ type: 'send-max', address: 'A' }]);
 
@@ -179,7 +178,7 @@ describe('sendForm utils', () => {
             { type: 'payment', amount: '', address: 'A' },
             { type: 'payment', amount: '1', address: 'B' },
         ];
-        expect(getBitcoinComposeOutputs({ outputs }, 'btc')).toEqual([
+        expect(getBitcoinComposeOutputs({ outputs }, btcSymbol)).toEqual([
             { type: 'payment-noaddress', amount: '100000000', address: 'B' },
         ]);
 
@@ -194,7 +193,7 @@ describe('sendForm utils', () => {
                     setMaxOutputId: 1,
                     outputs,
                 },
-                'btc',
+                btcSymbol,
             ),
         ).toEqual([{ type: 'send-max-noaddress', address: 'B' }]);
 
@@ -202,7 +201,7 @@ describe('sendForm utils', () => {
             { type: 'payment', amount: '', address: 'A' },
             { type: 'payment', amount: '1' },
         ];
-        expect(getBitcoinComposeOutputs({ outputs }, 'btc')).toEqual([
+        expect(getBitcoinComposeOutputs({ outputs }, btcSymbol)).toEqual([
             { type: 'payment-noaddress', amount: '100000000' },
         ]);
     });
@@ -238,7 +237,7 @@ describe('sendForm utils', () => {
         };
 
         const EthAccount = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             tokens: [
                 {
                     standard: 'ERC20',
@@ -256,8 +255,8 @@ describe('sendForm utils', () => {
                 },
             ],
         });
-        const EthNetwork = networks.eth;
-        const XrpNetwork = networks.xrp;
+        const EthNetwork = getNetwork('eth');
+        const XrpNetwork = getNetwork('xrp');
 
         expect(getExternalComposeOutput({ outputs: [] }, EthAccount, EthNetwork)).toEqual(
             undefined,
@@ -355,6 +354,62 @@ describe('sendForm utils', () => {
             output: { type: 'payment', address: 'A', amount: '1' },
             tokenInfo: EthAccount.tokens![0],
         });
+
+        // A named input composes to the address it resolved to. That address is what gets signed
+        // and what the device shows, so it has to be the one the review screen reads back.
+        const ENS_NAME = 'vitalik.eth';
+        const RESOLVED_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
+
+        expect(
+            getExternalComposeOutput(
+                {
+                    outputs: [
+                        {
+                            ...OUTPUT,
+                            address: ENS_NAME,
+                            resolvedAddress: RESOLVED_ADDRESS,
+                            amount: '1',
+                        },
+                    ],
+                },
+                EthAccount,
+                EthNetwork,
+            ),
+        ).toEqual({
+            decimals: 18,
+            output: {
+                type: 'payment',
+                address: RESOLVED_ADDRESS,
+                amount: '1000000000000000000',
+            },
+            tokenInfo: undefined,
+        });
+
+        expect(
+            getExternalComposeOutput(
+                {
+                    setMaxOutputId: 0,
+                    outputs: [
+                        {
+                            ...OUTPUT,
+                            address: ENS_NAME,
+                            resolvedAddress: RESOLVED_ADDRESS,
+                            amount: '1',
+                        },
+                    ],
+                },
+                EthAccount,
+                EthNetwork,
+            ),
+        ).toEqual({
+            decimals: 18,
+            output: {
+                type: 'send-max',
+                address: RESOLVED_ADDRESS,
+                amount: '1000000000000000000',
+            },
+            tokenInfo: undefined,
+        });
     });
 
     it('calculateTotalGasCost', () => {
@@ -374,7 +429,7 @@ describe('sendForm utils', () => {
     describe('getAmountValidationResult', () => {
         describe('should test bitcoin without tokens', () => {
             const btcAccount = mockWalletAccount({
-                symbol: 'btc',
+                symbol: btcSymbol,
                 tokens: undefined,
                 balance: '1000000000', // 10 BTC
                 availableBalance: '10000000', // 0.1 BTC
@@ -400,12 +455,12 @@ describe('sendForm utils', () => {
         describe('should test ripple (with reserve)', () => {
             const rippleAccount = mockWalletAccount(
                 {
-                    symbol: 'xrp',
+                    symbol: asNetworkSymbol('xrp'),
                     tokens: undefined,
                     balance: '10000000', // 10 XRP
                     availableBalance: '9000000', // 9 XRP
                 },
-                { ...networkSpecificDefaultRipple, misc: { reserve: '1000000', sequence: 0 } },
+                { misc: { reserve: '1000000' } },
             );
 
             it('returns reserve when amount is above available but below total balance', () => {
@@ -427,14 +482,11 @@ describe('sendForm utils', () => {
         describe('should test stellar (with reserve)', () => {
             const stellarAccount = mockWalletAccount(
                 {
-                    symbol: 'xlm',
+                    symbol: asNetworkSymbol('xlm'),
                     balance: '100000000', // 10 XLM
                     availableBalance: '95000000', // 9.5 XLM
                 },
-                {
-                    ...networkSpecificDefaultStellar,
-                    misc: { reserve: '5000000', baseReserve: '5000000', stellarSequence: '0' },
-                },
+                { misc: { reserve: '5000000', baseReserve: '5000000' } },
             );
 
             it('returns reserve when amount exceeds available but below total', () => {
@@ -455,7 +507,7 @@ describe('sendForm utils', () => {
 
         describe('should test token balances', () => {
             const tokenAccount = mockWalletAccount({
-                symbol: 'eth',
+                symbol: ethSymbol,
                 balance: '0',
                 availableBalance: '0',
                 tokens: [

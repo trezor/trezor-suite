@@ -21,7 +21,7 @@ export type UpdateAddressLabel = (
 
 export type UpdateAddressLabelDep = { updateAddressLabel: UpdateAddressLabel };
 
-export const selectUpdateAddressLabelDep = (services: any): UpdateAddressLabelDep => ({
+export const injectUpdateAddressLabel = (services: any): UpdateAddressLabelDep => ({
     updateAddressLabel: services.suiteSync.labeling.updateAddressLabel,
 });
 

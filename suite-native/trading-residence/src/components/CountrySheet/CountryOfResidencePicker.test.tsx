@@ -64,18 +64,19 @@ describe('CountryOfResidencePicker', () => {
         (useCountryFilteredData as jest.Mock).mockImplementation(mockUseCountryFilteredData);
     });
 
-    afterEach(() => {
+    afterEach(async () => {
         // make sure component is unmounted (FlashList otherwise might try to do some magic)
-        screen.unmount();
+        await screen.unmount();
     });
 
-    const renderCountryOfResidencePicker = (props: Partial<CountryOfResidencePickerProps> = {}) => {
-        const { result } = renderHookWithStoreProvider(() => useLocationForm(), {
-            services,
-            store: createTradingResidenceStore(),
+    const renderCountryOfResidencePicker = async (
+        props: Partial<CountryOfResidencePickerProps> = {},
+    ) => {
+        const { result } = await renderHookWithStoreProvider(() => useLocationForm(), {
+            services: { ...services, store: createTradingResidenceStore() },
         });
 
-        return renderWithBasicProvider(
+        return await renderWithBasicProvider(
             <CountryOfResidencePicker testID="TEST_ID" context="settings" {...props} />,
             {
                 services,
@@ -84,8 +85,8 @@ describe('CountryOfResidencePicker', () => {
         );
     };
 
-    it('should display value from expo-localization (Poland) when in default state', () => {
-        const { getByLabelText } = renderCountryOfResidencePicker();
+    it('should display value from expo-localization (Poland) when in default state', async () => {
+        const { getByLabelText } = await renderCountryOfResidencePicker();
 
         expect(
             getByLabelText(
@@ -95,7 +96,7 @@ describe('CountryOfResidencePicker', () => {
     });
 
     it('should allow to select country', async () => {
-        const { getByText, getByLabelText } = renderCountryOfResidencePicker();
+        const { getByText, getByLabelText } = await renderCountryOfResidencePicker();
 
         await userEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
@@ -110,7 +111,7 @@ describe('CountryOfResidencePicker', () => {
     });
 
     it('should clear selected subdivision when country changes', async () => {
-        const form = renderHookWithBasicProvider(
+        const form = await renderHookWithBasicProvider(
             () =>
                 useForm<TradingLocationFormValues>({
                     defaultValues: {
@@ -133,7 +134,7 @@ describe('CountryOfResidencePicker', () => {
             { services },
         );
 
-        const { getByText } = renderWithBasicProvider(
+        const { getByText } = await renderWithBasicProvider(
             <CountryOfResidencePicker testID="TEST_ID" context="settings" />,
             {
                 services,
@@ -156,7 +157,7 @@ describe('CountryOfResidencePicker', () => {
             setFilterValue: jest.fn(),
         }));
 
-        const { getByText } = renderCountryOfResidencePicker();
+        const { getByText } = await renderCountryOfResidencePicker();
         await userEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
         );
@@ -168,7 +169,7 @@ describe('CountryOfResidencePicker', () => {
     });
 
     it('should report to analytics after country changed', async () => {
-        const { getByText } = renderCountryOfResidencePicker();
+        const { getByText } = await renderCountryOfResidencePicker();
 
         await userEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
@@ -179,7 +180,7 @@ describe('CountryOfResidencePicker', () => {
     });
 
     it('should not report to analytics when user selects already selected country', async () => {
-        const { getByText } = renderCountryOfResidencePicker();
+        const { getByText } = await renderCountryOfResidencePicker();
 
         await userEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
@@ -195,13 +196,13 @@ describe('CountryOfResidencePicker', () => {
         expect(reportMock).not.toHaveBeenCalled();
     });
 
-    it('should render even when no value is selected', () => {
-        const formWithoutCountrySet = renderHookWithBasicProvider(
+    it('should render even when no value is selected', async () => {
+        const formWithoutCountrySet = await renderHookWithBasicProvider(
             () => useForm<TradingLocationFormValues>({ validation: locationFormValidationSchema }),
             { services },
         );
 
-        const { getByLabelText } = renderWithBasicProvider(
+        const { getByLabelText } = await renderWithBasicProvider(
             <CountryOfResidencePicker testID="TEST_ID" context="settings" />,
             {
                 services,

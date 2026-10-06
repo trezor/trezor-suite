@@ -1,9 +1,11 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { sendFormActions } from '@suite-common/wallet-core';
 import {
     type AccountKey,
@@ -13,6 +15,7 @@ import {
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
+    AccountDetailStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     type SendStackParamList,
@@ -45,7 +48,7 @@ export const useHandleOnDeviceTransactionReview = ({
     tokenContract,
     transaction,
 }: HandleOnDeviceTransactionReviewProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
 
@@ -111,10 +114,13 @@ export const useHandleOnDeviceTransactionReview = ({
                 return;
             }
 
-            navigation.navigate(RootStackRoutes.AccountDetail, {
-                accountKey,
-                tokenContract,
-                closeActionType: 'back',
+            navigation.navigate(RootStackRoutes.AccountDetailStack, {
+                screen: AccountDetailStackRoutes.AccountDetail,
+                params: {
+                    accountKey,
+                    tokenContract,
+                    closeActionType: 'back',
+                },
             });
         }
     }, [

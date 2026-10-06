@@ -1,21 +1,22 @@
 import { useMemo } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { goto, selectRouter } from '@suite/router';
+import { gotoThunk, selectRouter } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
+    getNetworkAdjustedStakingBalance,
     getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
     isSupportedStakingNetworkSymbol,
-} from '@suite-common/wallet-utils';
+    selectAccountIsStakingActive,
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
@@ -23,7 +24,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { EarnEthBanner } from './EarnEthBanner';
 import { useEarnEthBanner } from './hooks/useEarnEthBanner';
@@ -33,8 +34,7 @@ type StakingBannerProps = {
 };
 
 export const StakingBanner = ({ account }: StakingBannerProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { CryptoAmountFormatter } = useFormatters();
     const {
         stakeEthBannerClosed,
@@ -103,7 +103,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     };
 
     const goToStakingTab = () => {
-        dispatch(goto({ routeName: 'wallet-staking', preserveParams: true }));
+        dispatch(gotoThunk({ routeName: 'wallet-staking', preserveParams: true }));
 
         analytics.report({
             type: events.stakingNavigateEvent.name,

@@ -1,11 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+
 import {
     addPendingCoinVisibility,
     clearPendingCoinVisibility,
     pendingCoinVisibilitySlice,
     selectPendingCoinVisibilitySymbols,
 } from './pendingCoinVisibilitySlice';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+const ltcSymbol = asNetworkSymbol('ltc');
 
 describe('pendingCoinVisibilitySlice', () => {
     const createStore = () =>
@@ -18,7 +24,7 @@ describe('pendingCoinVisibilitySlice', () => {
     it('should add symbol to pending when not already present', () => {
         const store = createStore();
 
-        store.dispatch(addPendingCoinVisibility('btc'));
+        store.dispatch(addPendingCoinVisibility(btcSymbol));
 
         expect(selectPendingCoinVisibilitySymbols(store.getState())).toEqual(['btc']);
     });
@@ -26,8 +32,8 @@ describe('pendingCoinVisibilitySlice', () => {
     it('should not add duplicate symbols', () => {
         const store = createStore();
 
-        store.dispatch(addPendingCoinVisibility('btc'));
-        store.dispatch(addPendingCoinVisibility('btc'));
+        store.dispatch(addPendingCoinVisibility(btcSymbol));
+        store.dispatch(addPendingCoinVisibility(btcSymbol));
 
         expect(selectPendingCoinVisibilitySymbols(store.getState())).toEqual(['btc']);
     });
@@ -35,9 +41,9 @@ describe('pendingCoinVisibilitySlice', () => {
     it('should add multiple different symbols', () => {
         const store = createStore();
 
-        store.dispatch(addPendingCoinVisibility('btc'));
-        store.dispatch(addPendingCoinVisibility('eth'));
-        store.dispatch(addPendingCoinVisibility('ltc'));
+        store.dispatch(addPendingCoinVisibility(btcSymbol));
+        store.dispatch(addPendingCoinVisibility(ethSymbol));
+        store.dispatch(addPendingCoinVisibility(ltcSymbol));
 
         expect(selectPendingCoinVisibilitySymbols(store.getState())).toEqual(['btc', 'eth', 'ltc']);
     });
@@ -45,8 +51,8 @@ describe('pendingCoinVisibilitySlice', () => {
     it('should clear all pending symbols', () => {
         const store = createStore();
 
-        store.dispatch(addPendingCoinVisibility('btc'));
-        store.dispatch(addPendingCoinVisibility('eth'));
+        store.dispatch(addPendingCoinVisibility(btcSymbol));
+        store.dispatch(addPendingCoinVisibility(ethSymbol));
         store.dispatch(clearPendingCoinVisibility());
 
         expect(selectPendingCoinVisibilitySymbols(store.getState())).toEqual([]);

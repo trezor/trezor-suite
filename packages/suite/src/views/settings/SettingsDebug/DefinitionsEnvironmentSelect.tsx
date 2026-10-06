@@ -1,9 +1,11 @@
 import { selectDefinitionsChannel, suiteSettingsActions } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type DefinitionsChannel } from '@trezor/connect-common';
 import { isDesktop } from '@trezor/env-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const options: { label: string; value: DefinitionsChannel }[] = [
     { label: 'Production', value: 'production' },
@@ -13,7 +15,7 @@ const options: { label: string; value: DefinitionsChannel }[] = [
 
 export const DefinitionsEnvironmentSelect = () => {
     const definitionsChannel = useSelector(selectDefinitionsChannel);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const selectedOption = options.find(o => o.value === definitionsChannel) ?? options[0];
     const handleChange = (item: { value: DefinitionsChannel }) => {

@@ -3,13 +3,15 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { type CryptoId } from 'invity-api';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { selectIsDebugModeActive } from '@suite/debug';
-import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectAddressValidator, selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingType,
-    cryptoIdToSymbol,
+    cryptoIdToNetworkSymbol,
     getUnusedAddressFromAccount,
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
@@ -19,50 +21,30 @@ import {
     tradingBuyActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import {
-    type TradingGetTranslationIdsProps,
-    type TradingVerifyFormProps,
-} from 'src/types/trading/tradingVerify';
+import { useSelector } from 'src/hooks/suite';
+import { type TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
 
 import { useAccountAddressDictionary } from '../../useAccounts';
 
-const getTranslationIds = (
-    selectedAccount: Account | null | undefined,
-): TradingGetTranslationIdsProps => {
-    if (selectedAccount === null) {
-        return {
-            accountTooltipTranslationId: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP',
-            addressTooltipTranslationId: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP',
-        };
-    }
-
-    return {
-        accountTooltipTranslationId: 'TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
-        addressTooltipTranslationId: 'TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
-    };
-};
-
-interface UseTradingReceiveAddressProps {
+type UseTradingReceiveAddressProps = {
     cryptoId?: CryptoId;
     nonSuiteAccount: boolean;
     type: TradingType;
-}
+};
 
 export const useTradingReceiveAddress = ({
     type,
     cryptoId,
     nonSuiteAccount,
 }: UseTradingReceiveAddressProps) => {
-    const dispatch = useDispatch();
-    const { addressValidator } = useServices(selectAddressValidatorDep);
-    const accounts = useSelector(state => state.wallet.accounts);
-    const walletSelectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const { addressValidator, dispatch } = useServices(injectAddressValidator, injectDispatch);
+    const accounts = useSelector(selectAccounts);
+    const walletSelectedAccount = useSelector(selectFullSelectedAccount);
     const device = useSelector(selectSelectedDevice);
     const sendAccountKey = useSelector(selectTradingExchangeAccountKey);
 
@@ -79,7 +61,7 @@ export const useTradingReceiveAddress = ({
 
     const isDebug = useSelector(selectIsDebugModeActive);
 
-    const symbol = cryptoId && cryptoIdToSymbol(cryptoId);
+    const symbol = cryptoId && cryptoIdToNetworkSymbol(cryptoId);
     const { supportedMainnets, supportedTestnets } = useNetworkSupport();
 
     const methods = useForm<TradingVerifyFormProps>({
@@ -93,6 +75,7 @@ export const useTradingReceiveAddress = ({
     const prevCryptoIdRef = useRef<CryptoId | undefined>(undefined);
 
     const receiveAccount = useSelector(state => selectAccountByKey(state, selectedAccount?.key));
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
 
     const isSupportedNetwork = [...supportedMainnets, ...supportedTestnets].some(
         network => network.symbol === symbol,
@@ -102,14 +85,15 @@ export const useTradingReceiveAddress = ({
         () =>
             filterReceiveAccounts({
                 accounts,
+                supportedNetworks,
                 deviceState: device?.state?.staticSessionId,
                 symbol,
                 isDebug,
             }),
-        [accounts, symbol, device?.state?.staticSessionId, isDebug],
+        [accounts, symbol, device?.state?.staticSessionId, isDebug, supportedNetworks],
     );
 
-    const canAddSuiteAccount = !!(device?.connected && isSupportedNetwork);
+    const canAddSuiteAccount = isSupportedNetwork;
     const canUseNonSuiteAccount = nonSuiteAccount;
     const hasSuiteReceiveAccount = !!suiteReceiveAccounts?.length;
 
@@ -214,7 +198,7 @@ export const useTradingReceiveAddress = ({
         }
 
         if (!isNewAsset && persistedReceiveAddress && canUseNonSuiteAccount && symbol) {
-            let isValidForCurrentSymbol = false;
+            let isValidForCurrentSymbol: boolean;
 
             try {
                 isValidForCurrentSymbol = addressValidator.isAddressValid(
@@ -334,7 +318,6 @@ export const useTradingReceiveAddress = ({
         accountAddress,
         isMenuOpen,
         onChangeAccount,
-        getTranslationIds,
         receiveAddress,
         extraField,
         canAddSuiteAccount,

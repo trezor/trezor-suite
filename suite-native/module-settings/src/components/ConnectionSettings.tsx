@@ -8,8 +8,8 @@ import {
     Card,
     Divider,
     HStack,
+    IconCircle,
     PressableOpacity,
-    RoundedIcon,
     Text,
     TitledSection,
     useBottomSheetModal,
@@ -58,7 +58,7 @@ export const ConnectionSettings = () => {
                     <PressableOpacity onPress={openModal} testID="@settings/wallet-connect-add">
                         <HStack justifyContent="space-between" alignItems="center">
                             <HStack spacing="sp16" alignItems="center">
-                                <RoundedIcon name="qrCode" intent="brand" />
+                                <IconCircle name="qrCode" intent="brand" />
                                 <Text color="contentBrand">
                                     <Translation id="moduleSettings.items.connections.walletConnect.add" />
                                 </Text>

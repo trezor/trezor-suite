@@ -14,11 +14,11 @@ jest.mock('@suite-common/message-system', () => {
 });
 
 describe('LegalGatewayContextMessage', () => {
-    const renderLegalGatewayContextMessage = () =>
-        renderWithStoreProvider(<LegalGatewayContextMessage />);
+    const renderLegalGatewayContextMessage = async () =>
+        await renderWithStoreProvider(<LegalGatewayContextMessage />);
 
-    it('should render legal.gateway context message', () => {
-        const { getByText } = renderLegalGatewayContextMessage();
+    it('should render legal.gateway context message', async () => {
+        const { getByText } = await renderLegalGatewayContextMessage();
 
         expect(getByText('Legal gateway message')).toBeOnTheScreen();
     });

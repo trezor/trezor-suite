@@ -8,10 +8,6 @@ export { p2sh } from './p2sh';
 export { p2tr } from './p2tr';
 export { p2wpkh } from './p2wpkh';
 export { p2wsh } from './p2wsh';
-export { sstxchange } from './sstxchange';
-export { sstxcommitment } from './sstxcommitment';
-export { sstxpkh } from './sstxpkh';
-export { sstxsh } from './sstxsh';
 
 // TODO
 // witness commitment

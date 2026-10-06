@@ -5,6 +5,7 @@ import type {
     TransactionWithFiatAmount,
 } from './types';
 import { createPhishingResult } from './utils';
+
 export class PhishingTransactionValidator {
     private transaction?: TransactionWithFiatAmount;
     private tokenDefinitions?: TokenDefinitions;

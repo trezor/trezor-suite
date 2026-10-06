@@ -1,6 +1,14 @@
 import { TxSimulationResult } from '@suite/tx-simulation/src/common';
-import { EvmTxSimulationAsset } from '@suite/tx-simulation/src/evm';
-import { type NetworkTxSimulationResult } from '@suite-common/tx-simulation';
+import { EvmTxSimulationAsset, TxSimulationCrossChainAsset } from '@suite/tx-simulation/src/evm';
+import { SolanaTxSimulationAsset } from '@suite/tx-simulation/src/solana';
+import { StellarTxSimulationAsset } from '@suite/tx-simulation/src/stellar';
+import {
+    type NetworkTxSimulationResult,
+    getCrossChainAssetDiffs,
+    getEvmSimulationSummary,
+    getSolanaAssetDiffs,
+    getStellarAssetDiffs,
+} from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 
 import { TxSimulationContractInfo } from './TxSimulationContractInfo';
@@ -19,22 +27,36 @@ export function TxSimulationSuccessResult({
     switch (method) {
         case 'ethereumSignTransaction':
         case 'ethereumSignTypedData': {
-            if (payload.simulation?.status !== 'Success') {
+            const summary = getEvmSimulationSummary(payload);
+
+            if (!summary) {
                 return null;
             }
 
-            const { assets_diffs, exposures } = payload.simulation.account_summary;
+            const { simulation, assetsDiffs, exposures } = summary;
+            // A bridge leaves the account summary empty — its outcome is reported per chain.
+            const crossChainDiffs = getCrossChainAssetDiffs(simulation, payload.account_address);
 
             return (
                 <>
                     <TxSimulationResult
-                        isEmpty={assets_diffs.length === 0 && exposures.length === 0}
+                        isEmpty={
+                            assetsDiffs.length === 0 &&
+                            exposures.length === 0 &&
+                            crossChainDiffs.length === 0
+                        }
                     >
-                        {assets_diffs.map((assetDiff, index) => (
+                        {assetsDiffs.map((assetDiff, index) => (
                             <EvmTxSimulationAsset
                                 key={`asset-diff-${index}`}
                                 assetDiff={assetDiff}
                                 network={network}
+                            />
+                        ))}
+                        {crossChainDiffs.map((assetDiff, index) => (
+                            <TxSimulationCrossChainAsset
+                                key={`cross-chain-diff-${index}`}
+                                assetDiff={assetDiff}
                             />
                         ))}
                         {exposures.map((assetExposure, index) => (
@@ -48,11 +70,51 @@ export function TxSimulationSuccessResult({
                     {targetContract && (
                         <TxSimulationContractInfo
                             targetContract={targetContract}
-                            simulation={payload.simulation}
+                            simulation={simulation}
                             network={network}
                         />
                     )}
                 </>
+            );
+        }
+
+        case 'solanaSignTransaction': {
+            const assetDiffs = getSolanaAssetDiffs(payload);
+
+            if (!assetDiffs) {
+                return null;
+            }
+
+            return (
+                <TxSimulationResult isEmpty={assetDiffs.length === 0}>
+                    {assetDiffs.map((assetDiff, index) => (
+                        <SolanaTxSimulationAsset
+                            key={`asset-diff-${index}`}
+                            assetDiff={assetDiff}
+                            network={network}
+                        />
+                    ))}
+                </TxSimulationResult>
+            );
+        }
+
+        case 'stellarSignTransaction': {
+            const assetDiffs = getStellarAssetDiffs(payload);
+
+            if (!assetDiffs) {
+                return null;
+            }
+
+            return (
+                <TxSimulationResult isEmpty={assetDiffs.length === 0}>
+                    {assetDiffs.map((assetDiff, index) => (
+                        <StellarTxSimulationAsset
+                            key={`asset-diff-${index}`}
+                            assetDiff={assetDiff}
+                            network={network}
+                        />
+                    ))}
+                </TxSimulationResult>
             );
         }
 

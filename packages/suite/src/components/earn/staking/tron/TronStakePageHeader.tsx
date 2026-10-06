@@ -1,9 +1,10 @@
 import { AccountLabel } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { goto, selectRouteName, selectSettingsBackRoute } from '@suite/router';
+import { gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectTronStakeSession } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
@@ -13,7 +14,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { TRON_FLOW_BY_ROUTE } from 'src/constants/suite/staking';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 type TronStakePageHeaderProps = {
@@ -21,8 +22,7 @@ type TronStakePageHeaderProps = {
 };
 
 export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
     const previousRoute = useSelector(selectSettingsBackRoute);
@@ -78,7 +78,7 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
 
     const onBackClick = () => {
         reportFlowClose();
-        dispatch(goto({ routeName: previousRoute.name, params: previousRoute.params }));
+        dispatch(gotoThunk({ routeName: previousRoute.name, params: previousRoute.params }));
     };
 
     const onHowItWorksClick = () => {

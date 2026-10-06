@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import { goto } from '@suite/router';
+import { selectFullSelectedAccount } from '@suite/account';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Column } from '@trezor/components';
 
 import { Route } from 'src/components/suite/Route';
 import { WalletLayout } from 'src/components/wallet';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { NftsTablesSection } from './NftsTablesSection';
 import { TokensNavigation } from '../tokens/TokensNavigation';
@@ -13,16 +16,16 @@ import { TokensNavigation } from '../tokens/TokensNavigation';
 export const Nfts = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         if (
             selectedAccount.status === 'loaded' &&
             !selectedAccount.network?.features.includes('nfts')
         ) {
-            dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
+            dispatch(gotoThunk({ routeName: 'wallet-index', preserveParams: true }));
         }
     }, [selectedAccount, dispatch]);
 

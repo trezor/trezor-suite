@@ -6,5 +6,5 @@
         "rootDir": "./src",
         "types": ["node", "chrome", "jest"]
     },
-    "references": []
+    "references": [{ "path": "../requirements" }]
 }

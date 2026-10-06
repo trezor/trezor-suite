@@ -1,18 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import { Keyboard } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
-import {
-    selectDeviceUnavailableCapabilities,
-    selectIsDeviceRemembered,
-} from '@suite-common/device';
+import { selectIsDeviceRemembered } from '@suite-common/device';
+import { injectAddressValidator, injectGetNamedAddressSupport } from '@suite-common/networks';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
 import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -28,6 +26,7 @@ import {
     selectSendFormDraftByKey,
     sendFormActions,
     updateFeeInfoThunk,
+    useResolveNamedAddress,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -44,8 +43,9 @@ import {
 } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useForm } from '@suite-native/forms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
+    AccountDetailStackRoutes,
     AuthorizeDeviceStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
@@ -71,7 +71,7 @@ import {
     type SendOutputsFormValues,
     sendOutputsFormValidationSchema,
 } from '../sendOutputsFormSchema';
-import { constructFormDraft } from '../utils';
+import { constructFormDraft, getSendMaxAmount } from '../utils';
 import { useRequestDelayedNavigationToOutputsReview } from './useRequestDelayedNavigationToOutputsReview';
 import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
 import { useUtxoSelection } from './useUtxoSelection';
@@ -113,14 +113,18 @@ type SendFormNavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
-    const dispatch = useDispatch();
     const debounce = useDebounce();
     const navigation = useNavigation<SendFormNavigationProp>();
-    const { addressValidator } = useServices(selectAddressValidatorDep);
+    const { translate } = useTranslate();
+    const { addressValidator, getNamedAddressSupport, dispatch } = useServices(
+        injectAddressValidator,
+        injectGetNamedAddressSupport,
+        injectDispatch,
+    );
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
 
-    const [feeLevelsMaxAmount, setFeeLevelsMaxAmount] = useState<FeeLevelsMaxAmount>();
+    const [maxSendAmountByFeeLevel, setMaxSendAmountByFeeLevel] = useState<FeeLevelsMaxAmount>();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -143,6 +147,8 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         selectSendFormDraftByKey(state, accountKey, tokenContract),
     );
 
+    const networkFeeLevels = networkFeeInfo?.levels;
+
     const excludedUtxos = useMemo(
         () =>
             getExcludedUtxos({
@@ -155,9 +161,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     useSubscribeForSolanaBlockUpdates(account);
 
-    const deviceUnavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
-
     const network = account ? getNetwork(account.symbol) : null;
+
+    const namedAddress = getNamedAddressSupport(account?.symbol);
 
     const networkReserve = account
         ? getNetworkReserve({
@@ -182,12 +188,12 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             availableBalance: tokenInfo?.balance ?? account?.availableBalance,
             isTokenFlow: !!tokenContract,
             isValueInSats: isAmountInSats,
-            feeLevelsMaxAmount,
+            maxSendAmountByFeeLevel,
             decimals: tokenInfo?.decimals ?? network?.decimals,
-            isTaprootAvailable: !deviceUnavailableCapabilities?.taproot,
-            accountNativeAvailableBalance: account?.availableBalance,
+            nativeCurrencyAvailableBalance: account?.availableBalance,
             networkReserve,
             rippleReserve,
+            namedAddress,
         },
         defaultValues: getDefaultValues({
             tokenContract,
@@ -200,8 +206,24 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const watchedFormValues = useWatch({ control });
     const watchedAddress = useWatch({ name: 'outputs.0.address', control });
 
+    const { mode: namedAddressMode, isResolving } = useResolveNamedAddress(
+        watchedAddress ?? '',
+        account?.symbol,
+    );
+    // Submitting before a name resolves would compose against the name itself. Reverse lookups
+    // run on an already-valid address, so they do not block.
+    const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
+
     const updateFormState = useCallback(async () => {
-        if (account && network && networkFeeInfo) {
+        const formValues = getValues();
+        // Unlike other networks, Cardano composes outputs without an amount, and the validation
+        // triggered below would flag the fields the user has not filled in yet.
+        const isIncompleteCardanoOutput =
+            network?.networkType === 'cardano' &&
+            formValues.setMaxOutputId === undefined &&
+            !formValues.outputs.some(output => !!output.amount);
+
+        if (account && network && networkFeeInfo?.levels.length && !isIncompleteCardanoOutput) {
             const response = await dispatch(
                 composeSendFormTransactionFeeLevelsThunk({
                     formState: constructFormDraft({
@@ -235,6 +257,22 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                     });
                 }
 
+                const missingTrustline = Object.values(response.payload).find(
+                    feeLevel =>
+                        feeLevel.type === 'error' &&
+                        feeLevel.error === 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
+                );
+                if (missingTrustline?.type === 'error') {
+                    setError('outputs.0.amount', {
+                        message: translate(
+                            'moduleSend.outputs.recipients.stellar.missingTrustline',
+                            {
+                                symbol: missingTrustline.errorMessage?.values?.symbol ?? '',
+                            },
+                        ),
+                    });
+                }
+
                 const normalFeeLevel = networkFeeInfo?.levels.find(
                     level => level.label === 'normal',
                 );
@@ -263,6 +301,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         }
     }, [
         accountKey,
+        translate,
         dispatch,
         getValues,
         tokenContract,
@@ -275,21 +314,12 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         trigger,
     ]);
 
-    const calculateNormalFeeMaxAmount = useCallback(async () => {
-        const response = await dispatch(
-            calculateFeeLevelsMaxAmountThunk({
-                formState: constructFormDraft({ formValues: getValues(), selectedUtxos }),
-                accountKey,
-            }),
-        );
-
-        if (isFulfilled(response)) {
-            setFeeLevelsMaxAmount(response.payload);
-        }
-    }, [getValues, accountKey, dispatch, selectedUtxos]);
+    useEffect(() => {
+        dispatch(transactionManagementActions.clearFeeLevels());
+    }, [accountKey, dispatch, tokenContract]);
 
     useEffect(() => {
-        const prefillValuesFromStoredDraft = async () => {
+        const prefillValuesFromStoredDraft = () => {
             if (sendFormDraft?.outputs) {
                 form.reset({
                     ...getDefaultValues({
@@ -299,9 +329,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                     }),
                     ...sendFormDraft,
                 });
-
-                // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)
-                if (!tokenContract) await calculateNormalFeeMaxAmount();
 
                 // We need to wait for the context to hydrate before validating the form with the draft values.
                 setTimeout(() => {
@@ -321,15 +348,51 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     }, [updateFormState, watchedFormValues, debounce, selectedUtxos, isNetworkReserveEnabled]);
 
     useEffect(() => {
+        setMaxSendAmountByFeeLevel(undefined);
+
         // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)
-        if (!tokenContract) calculateNormalFeeMaxAmount();
+        if (tokenContract || !networkFeeLevels?.length) return;
+
+        const controller = new AbortController();
+
+        const calculateMaxSendAmountByFeeLevel = async () => {
+            const response = await dispatch(
+                calculateFeeLevelsMaxAmountThunk(
+                    {
+                        formState: constructFormDraft({
+                            formValues: getValues(),
+                            selectedUtxos,
+                        }),
+                        accountKey,
+                    },
+                    { signal: controller.signal },
+                ),
+            );
+
+            if (!controller.signal.aborted && isFulfilled(response)) {
+                setMaxSendAmountByFeeLevel(response.payload);
+            }
+        };
+
+        calculateMaxSendAmountByFeeLevel();
+
+        return () => {
+            controller.abort();
+        };
     }, [
-        watchedAddress,
-        calculateNormalFeeMaxAmount,
-        networkFeeInfo,
-        tokenContract,
+        accountKey,
+        dispatch,
+        getValues,
         isNetworkReserveEnabled,
+        networkFeeLevels,
+        selectedUtxos,
+        tokenContract,
+        watchedAddress,
     ]);
+
+    useEffect(() => {
+        if (getValues('outputs.0.amount')) trigger('outputs.0.amount');
+    }, [maxSendAmountByFeeLevel, getValues, trigger]);
 
     // TODO: Fetch periodically. So if the user stays on the screen for a long time, the fee info is updated in the background.
     useEffect(() => {
@@ -434,10 +497,13 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                     }
 
                     dispatch(sendFormActions.discardTransaction());
-                    navigation.navigate(RootStackRoutes.AccountDetail, {
-                        accountKey,
-                        tokenContract,
-                        closeActionType: 'back',
+                    navigation.navigate(RootStackRoutes.AccountDetailStack, {
+                        screen: AccountDetailStackRoutes.AccountDetail,
+                        params: {
+                            accountKey,
+                            tokenContract,
+                            closeActionType: 'back',
+                        },
                     });
                 }
             });
@@ -514,12 +580,18 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const amount = isAmountInSats
         ? getValues('outputs.0.amount')
         : convertAmountUnitsToSubunits(getValues('outputs.0.amount'), network?.decimals ?? 0);
+    const maxSpendableAmount = getSendMaxAmount({
+        isTokenFlow: !!tokenContract,
+        tokenBalance: tokenInfo?.balance,
+        normalFeeLevelMaxAmount: maxSendAmountByFeeLevel?.normal,
+    });
 
     return {
         handleSubmitSendForm,
         form,
         network,
         amount,
-        feeLevelsMaxAmount,
+        maxSpendableAmount,
+        isResolvingNamedAddress,
     };
 };

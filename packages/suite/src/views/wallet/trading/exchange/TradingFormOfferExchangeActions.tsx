@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import type { CryptoId } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     requiresTokenApproval,
     selectIsTradingNetworkFeeMissing,
@@ -13,7 +15,7 @@ import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
 
 import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingStellarActivation } from 'src/hooks/wallet/trading/useTradingStellarActivation';
 import { getTradingFirstOutput } from 'src/utils/wallet/trading/tradingUtils';
@@ -25,7 +27,7 @@ import { TradingRevokeModal } from 'src/views/wallet/trading/common/TradingForm/
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 export const TradingFormOfferExchangeActions = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const context = useTradingFormContext<'exchange'>();
     const {
         watch,
@@ -150,7 +152,6 @@ export const TradingFormOfferExchangeActions = () => {
                 <Button
                     onClick={onContinueClick}
                     intent="brand"
-                    margin={{ top: 16 }}
                     isDisabled={isButtonDisabled}
                     isLoading={areFeesLoading || state.isFormLoading || isComposing}
                     size="large"

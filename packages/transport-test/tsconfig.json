@@ -1,9 +1,13 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev",
+        "types": ["jest", "node", "w3c-web-usb"]
+    },
     "references": [
         { "path": "../transport-common" },
         { "path": "../eslint" },
+        { "path": "../logger" },
         { "path": "../protobuf" },
         { "path": "../transport-bridge" },
         { "path": "../trezor-user-env-link" },

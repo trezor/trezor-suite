@@ -4,14 +4,17 @@ import { it } from '../../../support/wrappedIt';
 
 describe.skip('Manual', () => {
     it(
-        'Coin enabling - settings',
+        'Coin enabling - settings and receive',
         {
-            testCase: 'Coin enabling - settings',
+            testCase: 'Coin enabling - settings and receive',
             prerequisites: ['connected device', 'one remembered device that is disconnected'],
             steps: [
                 'Connect a device (different than the remembered) and wait for initial discovery',
                 'Navigate to Settings → Enabled coins and enable a new coin that wasn’t enabled before',
-                'Verify dashboard starts discovery for that coin and view-only device unchanged',
+                'Verify dashboard starts discovery for that coin and view-only device coins are unchanged',
+                'Navigate to Receive and click + to add new',
+                'Click on a different new coin that wasn’t enabled before',
+                'Verify dashboard starts discovery for that coin and view-only device coins are unchanged',
                 'Switch back to connected device, go to Settings → Enabled coins and disable a coin present in connected device, Portfolio and view-only device',
                 'Verify the disabled coin is disabled only for devices and remains in Portfolio tracker',
             ],

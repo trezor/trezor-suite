@@ -2,33 +2,35 @@ import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
-import { CARDANO_ACTIVATION_PERIOD_DAYS, CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
+import {
+    CARDANO_ACTIVATION_PERIOD_MAX_DAYS,
+    CARDANO_ACTIVATION_PERIOD_MIN_DAYS,
+} from '@suite-common/wallet-constants';
+import { getStakingAccountCurrentStatus, getTxStakeType } from '@suite-common/wallet-core';
 import {
     type Account,
     type StakeType,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import {
-    getStakingAccountCurrentStatus,
-    getTxStakeType,
-    isPending,
-} from '@suite-common/wallet-utils';
+import { isPending } from '@suite-common/wallet-utils';
 import { Column, Paragraph } from '@trezor/components';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { type ProgressLabelData } from '../components/ProgressLabels/types';
+
+type BuildEthereumLabelsParams = {
+    isStakeConfirming: boolean;
+    isStakePending: boolean;
+    isDaysToAddToPoolShown: boolean;
+    daysToAddToPool?: number;
+};
 
 const buildEthereumLabels = ({
     isStakeConfirming,
     isStakePending,
     isDaysToAddToPoolShown,
     daysToAddToPool,
-}: {
-    isStakeConfirming: boolean;
-    isStakePending: boolean;
-    isDaysToAddToPoolShown: boolean;
-    daysToAddToPool?: number;
-}): ProgressLabelData[] => [
+}: BuildEthereumLabelsParams): ProgressLabelData[] => [
     {
         id: 0,
         'data-testid': '@staking/transaction-status',
@@ -77,13 +79,15 @@ const buildEthereumLabels = ({
     },
 ];
 
+type BuildSolanaLabelsParams = {
+    solStakingAccountStatus: string | null;
+    isStakeConfirming: boolean;
+};
+
 const buildSolanaLabels = ({
     solStakingAccountStatus,
     isStakeConfirming,
-}: {
-    solStakingAccountStatus: string | null;
-    isStakeConfirming: boolean;
-}): ProgressLabelData[] => [
+}: BuildSolanaLabelsParams): ProgressLabelData[] => [
     {
         id: 0,
         'data-testid': '@staking/transaction-status',
@@ -125,32 +129,21 @@ const buildSolanaLabels = ({
 
             return 'stale';
         })(),
-        children: (
-            <Column>
-                <Translation id="TR_STAKE_STAKED_AND_EARNING" />
-
-                <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
-                    <Translation
-                        id="TR_UP_TO_DAYS"
-                        values={{
-                            count: SOLANA_EPOCH_DAYS,
-                        }}
-                    />
-                </Paragraph>
-            </Column>
-        ),
+        children: <Translation id="TR_STAKE_STAKED_AND_EARNING" />,
     },
 ];
+
+type BuildCardanoLabelsParams = {
+    isStakeConfirming: boolean;
+    isStakePending: boolean;
+    isUnstake: boolean;
+};
 
 const buildCardanoLabels = ({
     isStakeConfirming,
     isStakePending,
     isUnstake,
-}: {
-    isStakeConfirming: boolean;
-    isStakePending: boolean;
-    isUnstake: boolean;
-}): ProgressLabelData[] =>
+}: BuildCardanoLabelsParams): ProgressLabelData[] =>
     [
         {
             id: 0,
@@ -173,9 +166,10 @@ const buildCardanoLabels = ({
                     <Translation id="TR_STAKE_ACTIVATION_PERIOD" />
                     <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
                         <Translation
-                            id="TR_UP_TO_DAYS"
+                            id="TR_EARN_APPROXIMATE_DAYS_RANGE"
                             values={{
-                                count: CARDANO_ACTIVATION_PERIOD_DAYS,
+                                minDays: CARDANO_ACTIVATION_PERIOD_MIN_DAYS,
+                                maxDays: CARDANO_ACTIVATION_PERIOD_MAX_DAYS,
                             }}
                         />
                     </Paragraph>
@@ -199,34 +193,29 @@ const buildCardanoLabels = ({
                         <Translation id="TR_STAKE_STAKED_AND_EARNING" />
                     )}
 
-                    <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
-                        {isUnstake ? (
-                            <Translation id="TR_EARN_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY" />
-                        ) : (
-                            <Translation
-                                id="TR_UP_TO_DAYS"
-                                values={{
-                                    count: CARDANO_EPOCH_DAYS,
-                                }}
-                            />
-                        )}
-                    </Paragraph>
+                    {isUnstake && (
+                        <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
+                            <Translation id="TR_EARN_INSTANTLY" />
+                        </Paragraph>
+                    )}
                 </Column>
             ),
         },
     ].filter(Boolean) as ProgressLabelData[];
+
+type ShouldHideProgressBarParams = {
+    networkType: NetworkType;
+    pendingTxStakeType?: StakeType;
+    lastTxStakeType?: StakeType;
+    isStakedWithEverstake: boolean;
+};
 
 const shouldHideProgressBar = ({
     networkType,
     pendingTxStakeType,
     lastTxStakeType,
     isStakedWithEverstake,
-}: {
-    networkType: NetworkType;
-    pendingTxStakeType?: StakeType;
-    lastTxStakeType?: StakeType;
-    isStakedWithEverstake: boolean;
-}) => {
+}: ShouldHideProgressBarParams) => {
     const isClaimPending = pendingTxStakeType === 'claim';
     const isUnstakePending = pendingTxStakeType === 'unstake';
     const isChangeDelegatePending = pendingTxStakeType === 'change-delegate';

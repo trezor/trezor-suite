@@ -7,7 +7,11 @@ import { useSelector } from 'src/hooks/suite';
 
 import { ConnectAppIcon } from './ConnectAppIcon';
 
-export const ConnectCallSource = () => {
+type ConnectCallSourceProps = {
+    'data-testid'?: string;
+};
+
+export const ConnectCallSource = ({ 'data-testid': dataTestId }: ConnectCallSourceProps = {}) => {
     const connectPopupCall = useSelector(selectConnectPopupCall);
     if (
         connectPopupCall?.state !== 'ongoing' &&
@@ -28,7 +32,12 @@ export const ConnectCallSource = () => {
                         : 'trezorConnect'
                 }
             />
-            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+            <Text
+                data-testid={dataTestId}
+                typographyStyle="body-sm"
+                intent="neutral"
+                priority="secondary"
+            >
                 <Translation id="TR_CONNECTED_TO" />
                 {': '}
                 <Text intent="neutral">

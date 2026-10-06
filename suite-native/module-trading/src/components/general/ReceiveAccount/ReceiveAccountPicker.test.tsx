@@ -1,11 +1,22 @@
+import { type Store } from '@reduxjs/toolkit';
+
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
-import { type TestStore, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { type CombinedLabelingState } from '@suite-native/labeling';
+import {
+    type PreloadedStatePartial,
+    fireEvent,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils-store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { ReceiveAccountPicker, type ReceiveAccountPickerProps } from './ReceiveAccountPicker';
 import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
 
-const defaultOverrides = {
+type State = TradingRootState & CombinedLabelingState;
+
+const defaultOverrides: PreloadedStatePartial<State> = {
     device: {
         devices: [],
         selectedDevice: {
@@ -28,17 +39,17 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('ReceiveAccountPicker', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
-    const renderReceiveAccountPicker = (
+    const renderReceiveAccountPicker = async (
         props: Partial<ReceiveAccountPickerProps>,
-        overrides: Record<string, unknown> = defaultOverrides,
+        overrides: PreloadedStatePartial<State> = defaultOverrides,
     ) => {
         store = createTradingTestStore({ overrides });
 
-        return renderWithStoreProvider(
+        return await renderWithStoreProvider(
             <ReceiveAccountPicker
-                symbol="btc"
+                symbol={asNetworkSymbol('btc')}
                 tradingType="buy"
                 receiveAccount={{
                     account: btc1NormalAccount,
@@ -46,7 +57,7 @@ describe('ReceiveAccountPicker', () => {
                 }}
                 {...props}
             />,
-            { store },
+            { services: { store } },
         );
     };
 
@@ -54,27 +65,29 @@ describe('ReceiveAccountPicker', () => {
         jest.clearAllMocks();
     });
 
-    it('should display nothing when selectedSymbol is not specified', () => {
-        const { toJSON } = renderReceiveAccountPicker({ symbol: undefined });
+    it('should display nothing when selectedSymbol is not specified', async () => {
+        const { toJSON } = await renderReceiveAccountPicker({ symbol: undefined });
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should display "Not selected" when receiveAccount is not specified', () => {
-        const { getByText } = renderReceiveAccountPicker({
+    it('should display "Not selected" when receiveAccount is not specified', async () => {
+        const { getByText } = await renderReceiveAccountPicker({
             receiveAccount: undefined,
         });
 
         expect(getByText(getTranslation('moduleTrading.notSelected'))).toBeTruthy();
     });
 
-    it('should call navigate to account picker when symbol is specified and picker pressed', () => {
-        const { getByText } = renderReceiveAccountPicker({
-            symbol: 'btc',
+    it('should call navigate to account picker when symbol is specified and picker pressed', async () => {
+        const { getByText } = await renderReceiveAccountPicker({
+            symbol: asNetworkSymbol('btc'),
             receiveAccount: undefined,
         });
 
-        fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')));
+        await fireEvent.press(
+            getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
+        );
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', {
@@ -83,14 +96,16 @@ describe('ReceiveAccountPicker', () => {
         });
     });
 
-    it('should call navigate to account picker when tradingType is exchange, symbol is specified and picker pressed', () => {
-        const { getByText } = renderReceiveAccountPicker({
-            symbol: 'btc',
+    it('should call navigate to account picker when tradingType is exchange, symbol is specified and picker pressed', async () => {
+        const { getByText } = await renderReceiveAccountPicker({
+            symbol: asNetworkSymbol('btc'),
             receiveAccount: undefined,
             tradingType: 'exchange',
         });
 
-        fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')));
+        await fireEvent.press(
+            getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
+        );
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', {
@@ -99,8 +114,8 @@ describe('ReceiveAccountPicker', () => {
         });
     });
 
-    it('should display account name', () => {
-        const { getByText } = renderReceiveAccountPicker({
+    it('should display account name', async () => {
+        const { getByText } = await renderReceiveAccountPicker({
             receiveAccount: {
                 account: btc1NormalAccount,
                 address: undefined,
@@ -110,8 +125,8 @@ describe('ReceiveAccountPicker', () => {
         expect(getByText('BTC Account #1')).toBeTruthy();
     });
 
-    it('should display account name when address is selected', () => {
-        const { getByText } = renderReceiveAccountPicker({
+    it('should display account name when address is selected', async () => {
+        const { getByText } = await renderReceiveAccountPicker({
             receiveAccount: {
                 account: btc1NormalAccount,
                 address: btc1NormalAccount.addresses!.used[0],
@@ -122,8 +137,8 @@ describe('ReceiveAccountPicker', () => {
     });
 
     describe('with testID specified', () => {
-        it('should render correctly with no receiveAccount', () => {
-            const { getByTestId } = renderReceiveAccountPicker({
+        it('should render correctly with no receiveAccount', async () => {
+            const { getByTestId } = await renderReceiveAccountPicker({
                 receiveAccount: undefined,
                 testID: 'TEST_ID',
             });
@@ -133,8 +148,8 @@ describe('ReceiveAccountPicker', () => {
             );
         });
 
-        it('should render correctly with receiveAccount but no address', () => {
-            const { getByTestId } = renderReceiveAccountPicker({
+        it('should render correctly with receiveAccount but no address', async () => {
+            const { getByTestId } = await renderReceiveAccountPicker({
                 receiveAccount: {
                     account: btc1NormalAccount,
                     address: undefined,
@@ -145,8 +160,8 @@ describe('ReceiveAccountPicker', () => {
             expect(getByTestId('TEST_ID/selected-account')).toHaveTextContent('BTC Account #1');
         });
 
-        it('should render correctly with receiveAccount and address', () => {
-            const { getByTestId } = renderReceiveAccountPicker({
+        it('should render correctly with receiveAccount and address', async () => {
+            const { getByTestId } = await renderReceiveAccountPicker({
                 receiveAccount: {
                     account: btc1NormalAccount,
                     address: btc1NormalAccount.addresses!.used[0],

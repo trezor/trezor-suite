@@ -10,6 +10,7 @@ import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
 import { ConnectDeviceScreenHeader } from '../components/ConnectDeviceScreenHeader';
+import { useDeviceReadyEvents } from '../hooks/useDeviceReadyEvents';
 import { useOnThpPairingCanceled } from '../hooks/useOnThpPairingCanceled';
 
 type DeviceConnectionGuardScreenParams = {
@@ -17,6 +18,7 @@ type DeviceConnectionGuardScreenParams = {
 };
 
 export const DeviceConnectionGuardScreen = ({ onCancel }: DeviceConnectionGuardScreenParams) => {
+    const { emitDeviceNotReadyEvent } = useDeviceReadyEvents();
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const bluetoothPermissionStatus = useSelector(selectBluetoothPermissionStatus);
@@ -25,11 +27,16 @@ export const DeviceConnectionGuardScreen = ({ onCancel }: DeviceConnectionGuardS
     const isBluetoothVariantVisible =
         bluetoothPermissionStatus === 'granted' && isBluetoothSupportedByDevice;
 
-    useOnThpPairingCanceled(navigateToInitialScreen);
+    const handleCancel = () => {
+        emitDeviceNotReadyEvent();
+        navigateToInitialScreen();
+    };
+
+    useOnThpPairingCanceled(handleCancel);
 
     const defaultOnCancel = () => {
         TrezorConnect.cancel();
-        navigateToInitialScreen();
+        handleCancel();
     };
 
     return (

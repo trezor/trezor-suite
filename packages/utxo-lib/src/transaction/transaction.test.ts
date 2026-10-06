@@ -1,8 +1,6 @@
 import * as NETWORKS from '../networks';
 import fixturesBitcoin from './__fixtures__/bitcoin';
 import fixturesBitcoinCash from './__fixtures__/bitcoinCash';
-import fixturesDash from './__fixtures__/dash';
-import fixturesDecred from './__fixtures__/decred';
 import fixturesDoge from './__fixtures__/doge';
 import fixturesKomodo from './__fixtures__/komodo';
 import fixturesLitecoin from './__fixtures__/litecoin';
@@ -37,8 +35,6 @@ describe('Transaction', () => {
 
         fixturesBitcoinCash.valid.forEach(importExport);
 
-        fixturesDash.valid.forEach(importExport);
-
         fixturesDoge.valid.forEach(importExport);
 
         fixturesKomodo.valid.forEach(importExport);
@@ -46,46 +42,6 @@ describe('Transaction', () => {
         fixturesZcash.valid.forEach(importExport);
 
         fixturesLitecoin.valid.forEach(importExport);
-
-        // Decred requires special check for tree and witness
-        fixturesDecred.valid.forEach(f => {
-            it(f.description, () => {
-                const tx = Transaction.fromHex(f.hex, {
-                    network: utils.getNetwork(f.network),
-                });
-
-                expect(tx.version).toEqual(f.raw.version);
-                expect(tx.type).toEqual(f.raw.type);
-                expect(tx.ins.length).toEqual(f.raw.ins.length);
-                expect(tx.outs.length).toEqual(f.raw.outs.length);
-                expect(tx.locktime).toEqual(f.raw.locktime);
-                expect(tx.expiry).toEqual(f.raw.expiry);
-                tx.ins.forEach((input, i) => {
-                    const expected = f.raw.ins[i] as any;
-                    expect(input.hash.toString('hex')).toEqual(expected.hash);
-                    expect(input.index).toEqual(expected.index);
-                    expect(input.decredTree).toEqual(expected.tree);
-                    expect(input.sequence).toEqual(expected.sequence);
-                    if (tx.hasWitnesses() && input.decredWitness) {
-                        const witness = input.decredWitness;
-                        expect(witness.script.toString('hex')).toEqual(expected.script);
-                        expect(witness.value).toEqual(expected.value);
-                        expect(witness.height).toEqual(expected.height);
-                        expect(witness.blockIndex).toEqual(expected.blockIndex);
-                    }
-                });
-                tx.outs.forEach((output, i) => {
-                    const { outs } = f.raw;
-                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                    const expectedOut: (typeof outs)[number] = outs[i];
-                    expect(output.value).toEqual(expectedOut.value);
-                    expect(output.script.toString('hex')).toEqual(expectedOut.script);
-                    expect(output.decredVersion).toEqual(expectedOut.version);
-                });
-
-                expect(tx.toHex()).toEqual(f.hex);
-            });
-        });
 
         it('.version should be interpreted as an int32le', () => {
             const txHex = 'ffffffff0000ffffffff';
@@ -113,14 +69,6 @@ describe('Transaction', () => {
                 expect(() => Transaction.fromHex(f.hex)).toThrow(f.exception);
             });
         });
-
-        fixturesDecred.invalid.forEach(f => {
-            it(`Decred: throws ${f.exception} for ${f.description}`, () => {
-                expect(() => Transaction.fromHex(f.hex, { network: NETWORKS.decred })).toThrow(
-                    f.exception,
-                );
-            });
-        });
     });
 
     describe('toBuffer/toHex', () => {
@@ -145,22 +93,6 @@ describe('Transaction', () => {
             });
         });
 
-        fixturesDash.valid.forEach(f => {
-            it(`Dash: exports ${f.description}`, () => {
-                const actual = utils.fromRaw(f.raw, {
-                    network: NETWORKS.dashTest,
-                    txSpecific: {
-                        type: 'dash',
-                        extraPayload: f.raw.extraPayload
-                            ? Buffer.from(f.raw.extraPayload, 'hex')
-                            : undefined,
-                    },
-                });
-                actual.type = f.raw.type;
-                expect(actual.toHex()).toEqual(f.hex);
-            });
-        });
-
         fixturesDoge.valid.forEach(f => {
             it(`Doge: exports ${f.description} (${f.hash})`, () => {
                 const actual = utils.fromRaw(f.raw);
@@ -175,7 +107,7 @@ describe('Transaction', () => {
             });
         });
 
-        // TODO: decred, zcash, komodo
+        // TODO: zcash, komodo
     });
 
     describe('hasWitnesses', () => {
@@ -183,17 +115,6 @@ describe('Transaction', () => {
             it(`detects if the transaction has witnesses: ${f.whex ? 'true' : 'false'}`, () => {
                 const tx = Transaction.fromHex(f.whex || f.hex);
                 expect(tx.hasWitnesses()).toEqual(!!f.whex);
-            });
-        });
-
-        fixturesDecred.valid.forEach(f => {
-            it(`detects if Decred transaction has witnesses: ${
-                f.raw.type !== 1 ? 'true' : 'false'
-            }`, () => {
-                const tx = Transaction.fromHex(f.hex, {
-                    network: utils.getNetwork(f.network),
-                });
-                expect(tx.hasWitnesses()).toEqual(f.raw.type !== 1);
             });
         });
     });
@@ -219,9 +140,7 @@ describe('Transaction', () => {
         [
             ...fixturesBitcoin.valid,
             ...fixturesBitcoinCash.valid,
-            ...fixturesDash.valid,
             ...fixturesDoge.valid,
-            ...fixturesDecred.valid,
             ...fixturesKomodo.valid,
             ...fixturesZcash.valid,
             ...fixturesLitecoin.valid,
@@ -240,9 +159,7 @@ describe('Transaction', () => {
         [
             ...fixturesBitcoin.valid,
             ...fixturesBitcoinCash.valid,
-            ...fixturesDash.valid,
             ...fixturesDoge.valid,
-            ...fixturesDecred.valid,
             ...fixturesKomodo.valid,
             ...fixturesZcash.valid,
             ...fixturesLitecoin.valid,
@@ -261,9 +178,7 @@ describe('Transaction', () => {
         [
             ...fixturesBitcoin.valid,
             ...fixturesBitcoinCash.valid,
-            ...fixturesDash.valid,
             ...fixturesDoge.valid,
-            ...fixturesDecred.valid,
             ...fixturesKomodo.valid,
             ...fixturesZcash.valid,
         ].forEach((f: utils.Fixture) => {
@@ -277,14 +192,6 @@ describe('Transaction', () => {
     });
 
     describe('getExtraData', () => {
-        fixturesDash.valid.forEach(f => {
-            it(`Dash: imports ${f.description}`, () => {
-                const tx = Transaction.fromHex(f.hex, { network: NETWORKS.dashTest });
-                const extraData = tx.getExtraData();
-                expect(extraData?.toString('hex')).toEqual(f.extraData);
-            });
-        });
-
         fixturesZcash.valid.forEach(f => {
             it(`Zcash: ${f.description}`, () => {
                 const tx = Transaction.fromHex(f.hex, { network: NETWORKS.zcash });
@@ -295,15 +202,6 @@ describe('Transaction', () => {
     });
 
     describe('getSpecificData', () => {
-        fixturesDash.valid.forEach(f => {
-            it(`Dash: ${f.description}`, () => {
-                const tx = Transaction.fromHex(f.hex, { network: NETWORKS.dashTest });
-                const specificData = tx.getSpecificData();
-                if (specificData?.type !== 'dash') throw Error('not a dash tx');
-                expect(specificData.extraPayload?.toString('hex')).toEqual(f.raw.extraPayload);
-            });
-        });
-
         fixturesZcash.valid.forEach(f => {
             it(`Zcash: ${f.description}`, () => {
                 const tx = Transaction.fromHex(f.hex, { network: NETWORKS.zcash });

@@ -15,7 +15,11 @@ import {
     selectDeviceFirmwareVersion,
     selectDeviceUnavailableCapabilities,
 } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
+import {
+    type NetworkSymbol,
+    type NetworksRootState,
+    selectSupportedNetworkSymbols,
+} from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -44,8 +48,14 @@ import { unique, versionUtils } from '@trezor/utils';
 import {
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_SLIP24_MIN_FIRMWARE_VERSION,
+    TRADING_SLIP24_SELL_MIN_FIRMWARE_VERSION,
     TRADING_SLIP24_SUPPORTED_NETWORK_TYPES,
 } from '../constants';
+import {
+    EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE,
+    type GroupedExchangeQuotesByRateType,
+    groupExchangeQuotesByRateTypeProjection,
+} from './utils/groupExchangeQuotesByRateTypeProjection';
 import {
     EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES,
     type GroupedTradingExchangeQuotes,
@@ -90,6 +100,7 @@ import {
 import { isAccountEligibleForTrade } from '../utils/tradingAccountUtils';
 
 export { EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES, type GroupedTradingExchangeQuotes };
+export { EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE, type GroupedExchangeQuotesByRateType };
 
 type SelectedAccountRootState = {
     wallet: {
@@ -97,9 +108,10 @@ type SelectedAccountRootState = {
     };
 };
 
-export type TradingRootStateWithDeviceAndAccounts = TradingRootState &
+export type TradingRootStateWithAccounts = TradingRootState & AccountsRootState;
+
+export type TradingRootStateWithDeviceAndAccounts = TradingRootStateWithAccounts &
     DeviceRootState &
-    AccountsRootState &
     SelectedAccountRootState;
 
 export type TradingFormAccountRootState = TradingRootStateWithDeviceAndAccounts &
@@ -137,9 +149,7 @@ export type TradingSellInfoSelector = Omit<
     supportedFiatCurrencies: Set<FiatCurrencyCode>;
 };
 
-export type TradingSellStateSelector = Omit<TradingSellState, 'sellInfo'> & {
-    sell?: TradingSellInfoSelector;
-};
+export type TradingSellStateSelector = Omit<TradingSellState, 'sellInfo'>;
 
 export type TradingStateSelector = Omit<TradingState, 'buy' | 'exchange' | 'sell'> & {
     buy: TradingBuyStateSelector;
@@ -147,7 +157,14 @@ export type TradingStateSelector = Omit<TradingState, 'buy' | 'exchange' | 'sell
     sell: TradingSellStateSelector;
 };
 
+const createNetworkMemoizedSelector = createWeakMapSelector.withTypes<
+    TradingRootState & NetworksRootState
+>();
+
 const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
+const createMemoizedSelectorWithAccounts =
+    createWeakMapSelector.withTypes<TradingRootStateWithAccounts>();
+const createMemoizedDeviceSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 const createMemoizedSelectorWithDeviceAndAccounts =
     createWeakMapSelector.withTypes<TradingRootStateWithDeviceAndAccounts>();
 const createMemoizedFormAccountSelector =
@@ -191,6 +208,9 @@ export const selectTradingBuyLoadingTimestampAndStatus = createMemoizedSelector(
 );
 
 export const selectTradingInfo = (state: TradingRootState) => state.wallet?.trading?.info;
+
+export const selectTradingBtcSwapComposeTemplate = (state: TradingRootState) =>
+    state.wallet?.trading?.info?.config?.btcSwapComposeTemplate;
 
 export const selectTradingCoins = (state: TradingRootState): Coins | undefined =>
     state.wallet.trading.info.coins;
@@ -322,6 +342,37 @@ export const selectTradingExchangeProviders = (state: TradingRootState) =>
 export const selectTradingSellProviders = (state: TradingRootState) =>
     selectTradingSellInfo(state)?.providerInfos;
 
+export const selectTradingProvidersByTradeType = (state: TradingRootState, type: TradingType) => {
+    switch (type) {
+        case 'buy':
+            return selectTradingBuyProviders(state);
+        case 'exchange':
+            return selectTradingExchangeProviders(state);
+        case 'sell':
+            return selectTradingSellProviders(state);
+
+        default:
+            return exhaustive(type);
+    }
+};
+
+export const selectTradingSupportedFiatCurrenciesByTradeType = (
+    state: TradingRootState,
+    type: TradingType,
+): Set<FiatCurrencyCode> | undefined => {
+    switch (type) {
+        case 'buy':
+            return selectTradingBuyInfo(state)?.supportedFiatCurrencies;
+        case 'sell':
+            return selectTradingSellInfo(state)?.supportedFiatCurrencies;
+        case 'exchange':
+            return undefined;
+
+        default:
+            return exhaustive(type);
+    }
+};
+
 export const selectTradingProviderByNameAndTradeType = (
     state: TradingRootState,
     name: string | undefined,
@@ -331,17 +382,7 @@ export const selectTradingProviderByNameAndTradeType = (
         return undefined;
     }
 
-    switch (type) {
-        case 'buy':
-            return selectTradingBuyProviders(state)?.[name];
-        case 'exchange':
-            return selectTradingExchangeProviders(state)?.[name];
-        case 'sell':
-            return selectTradingSellProviders(state)?.[name];
-
-        default:
-            return exhaustive(type);
-    }
+    return selectTradingProvidersByTradeType(state, type)?.[name];
 };
 
 export const selectTradingProviderKycPolicy = (
@@ -550,7 +591,7 @@ const getFilteredCryptoIds = (
         });
 };
 
-export const selectTradingBuySupportedCryptoIds = createMemoizedSelector(
+export const selectTradingBuySupportedCryptoIds = createNetworkMemoizedSelector(
     [
         selectTradingCoins,
         ({ wallet }) => wallet.trading.info.platforms,
@@ -558,13 +599,13 @@ export const selectTradingBuySupportedCryptoIds = createMemoizedSelector(
             returnStableArrayIfEmpty<CryptoId>(
                 wallet.trading.buy.buyInfo?.supportedCryptoCurrencies,
             ),
-        (_: TradingRootState, supportedCoins: readonly NetworkSymbol[]) => supportedCoins,
+        selectSupportedNetworkSymbols,
     ],
     (coins, platforms, supportedCryptoIds, supportedCoins) =>
         getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
 );
 
-export const selectTradingSellSupportedCryptoIds = createMemoizedSelector(
+export const selectTradingSellSupportedCryptoIds = createNetworkMemoizedSelector(
     [
         selectTradingCoins,
         ({ wallet }) => wallet.trading.info.platforms,
@@ -572,20 +613,20 @@ export const selectTradingSellSupportedCryptoIds = createMemoizedSelector(
             returnStableArrayIfEmpty<CryptoId>(
                 wallet.trading.sell.sellInfo?.supportedCryptoCurrencies,
             ),
-        (_: TradingRootState, supportedCoins: readonly NetworkSymbol[]) => supportedCoins,
+        selectSupportedNetworkSymbols,
     ],
     (coins, platforms, supportedCryptoIds, supportedCoins) =>
         getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
 );
 
 const createExchangeCryptoIdsSelector = (key: 'buyCryptoIds' | 'sellCryptoIds') =>
-    createMemoizedSelector(
+    createNetworkMemoizedSelector(
         [
             selectTradingCoins,
             ({ wallet }) => wallet.trading.info.platforms,
             ({ wallet }) =>
                 returnStableArrayIfEmpty<CryptoId>(wallet.trading.exchange.exchangeInfo?.[key]),
-            (_: TradingRootState, supportedCoins: readonly NetworkSymbol[]) => supportedCoins,
+            selectSupportedNetworkSymbols,
         ],
         (coins, platforms, cryptoIds, supportedCoins) =>
             getFilteredCryptoIds(cryptoIds, coins, platforms, supportedCoins),
@@ -594,12 +635,12 @@ const createExchangeCryptoIdsSelector = (key: 'buyCryptoIds' | 'sellCryptoIds') 
 export const selectTradingExchangeSellCryptoIds = createExchangeCryptoIdsSelector('sellCryptoIds');
 export const selectTradingExchangeBuyCryptoIds = createExchangeCryptoIdsSelector('buyCryptoIds');
 
-export const selectTradingSellSellCryptoIds = createMemoizedSelector(
+export const selectTradingSellSellCryptoIds = createNetworkMemoizedSelector(
     [
         selectTradingCoins,
         ({ wallet }) => wallet.trading.info.platforms,
         ({ wallet }) => wallet.trading.sell.sellInfo?.supportedCryptoCurrencies,
-        (_: TradingRootState, supportedCoins: readonly NetworkSymbol[]) => supportedCoins,
+        selectSupportedNetworkSymbols,
     ],
     (coins, platforms, supportedCryptoIds, supportedCoins) =>
         getFilteredCryptoIds(
@@ -649,6 +690,11 @@ export const selectTradingExchangeAmountLimits = (state: TradingRootState) =>
 export const selectGroupedTradingExchangeQuotes = createMemoizedSelector(
     [selectTradingExchangeQuotes, selectTradingExchangeProviders],
     groupTradingExchangeQuotesProjection,
+);
+
+export const selectGroupedExchangeQuotes = createMemoizedSelector(
+    [selectTradingExchangeQuotes, selectTradingExchangeProviders],
+    groupExchangeQuotesByRateTypeProjection,
 );
 
 export const selectTradingExchangeDexQuotes = createMemoizedSelector(
@@ -783,18 +829,21 @@ export const selectIsTradingNetworkFeeMissing = (
 };
 
 export const selectTradingAccountAccordingActiveSection: (
-    state: TradingRootStateWithDeviceAndAccounts,
+    state: TradingRootStateWithAccounts,
     activeSection: TradingType,
     selectedAccount: SelectedAccountStatus,
-) => Account | undefined = createMemoizedSelectorWithDeviceAndAccounts(
+) => Account | undefined = createMemoizedSelectorWithAccounts(
     [
         selectTradingExchange,
         selectTradingSell,
         selectTradingBuy,
         ({ wallet }) => wallet.accounts,
-        (_: TradingRootState, activeSection: TradingType) => activeSection,
-        (_: TradingRootState, __: TradingType, selectedAccount: SelectedAccountStatus) =>
-            selectedAccount,
+        (_: TradingRootStateWithAccounts, activeSection: TradingType) => activeSection,
+        (
+            _: TradingRootStateWithAccounts,
+            __: TradingType,
+            selectedAccount: SelectedAccountStatus,
+        ) => selectedAccount,
     ],
     (tradingExchange, tradingSell, tradingBuy, accounts, activeSection, selectedAccount) => {
         const tradingSectionMap = {
@@ -919,6 +968,17 @@ export const selectTradingBuyReceiveAccountKey = (state: TradingRootState) =>
 export const selectTradingBuyReceiveAddress = (state: TradingRootState) =>
     state.wallet.trading.buy.receiveAddress;
 
+export const selectTradingBuyReceiveAccount = createMemoizedSelectorWithAccounts(
+    [selectAccounts, selectTradingBuyReceiveAccountKey],
+    (accounts, receiveAccountKey): Account | undefined => {
+        if (!receiveAccountKey) {
+            return undefined;
+        }
+
+        return accounts.find(account => account.key === receiveAccountKey);
+    },
+);
+
 export const selectTradingExchangeAccountKey = (state: TradingRootState) =>
     state.wallet.trading.exchange.tradingAccountKey;
 
@@ -960,14 +1020,11 @@ export const selectTradingPrefilledFromAccount = (state: TradingRootState) =>
 export const selectTradingActiveSection = (state: TradingRootState) =>
     state.wallet.trading.activeSection;
 
-export const selectTradingSupportedSymbols = createMemoizedSelector(
+export const selectTradingSupportedSymbols = createNetworkMemoizedSelector(
     [
-        (state: TradingRootState, _type: TradingType, supportedCoins: readonly NetworkSymbol[]) =>
-            selectTradingBuySupportedCryptoIds(state, supportedCoins),
-        (state: TradingRootState, _type: TradingType, supportedCoins: readonly NetworkSymbol[]) =>
-            selectTradingExchangeSellCryptoIds(state, supportedCoins),
-        (state: TradingRootState, _type: TradingType, supportedCoins: readonly NetworkSymbol[]) =>
-            selectTradingSellSupportedCryptoIds(state, supportedCoins),
+        selectTradingBuySupportedCryptoIds,
+        selectTradingExchangeSellCryptoIds,
+        selectTradingSellSupportedCryptoIds,
         (_: TradingRootState, type: TradingType) => type,
     ],
     (buyCryptoIds, exchangeCryptoIds, sellCryptoIds, type) => {
@@ -1077,13 +1134,13 @@ export const selectTradingFormAccount = createMemoizedFormAccountSelector(
 );
 
 export const selectTradingFormCryptoId = createMemoizedFormAccountSelector(
-    [selectTradingFormAccount, selectPreferredTradingAccount, selectTradingPrefilledFromAccount],
-    (account, preferredAccount, prefilled): CryptoId | undefined => {
+    [selectTradingFormAccount, selectTradingPrefilledFromAccount],
+    (account, prefilled): CryptoId | undefined => {
         if (!account) {
             return undefined;
         }
 
-        if (prefilled.cryptoId && account.key === preferredAccount?.key) {
+        if (prefilled.key && prefilled.cryptoId && account.key === prefilled.key) {
             return prefilled.cryptoId;
         }
 
@@ -1140,12 +1197,12 @@ export const selectTradingBuyTransactionId = (state: TradingRootState) =>
 export const selectTradingVerifiedAddress = (state: TradingRootState) =>
     state.wallet.trading.verifiedAddress;
 
-export const selectTradingIsSlip24Allowed = createMemoizedSelectorWithDeviceAndAccounts(
+export const selectTradingIsSlip24Allowed = createMemoizedDeviceSelector(
     [
         state => selectDeviceUnavailableCapabilities(state),
         state => selectDeviceFirmwareVersion(state),
-        (_: TradingRootState, account: Account | undefined | null) => account,
-        (_: TradingRootState, __: Account | undefined | null, isSlip24Active: boolean) =>
+        (_: DeviceRootState, account: Account | undefined | null) => account,
+        (_: DeviceRootState, __: Account | undefined | null, isSlip24Active: boolean) =>
             isSlip24Active,
     ],
     (unavailableCapabilities, firmwareVersion, account, isSlip24Active) => {
@@ -1164,6 +1221,20 @@ export const selectTradingIsSlip24Allowed = createMemoizedSelectorWithDeviceAndA
         return isSlip24Active && isFirmwareVersionSlip24Compatible && isNetworkSupported;
     },
 );
+
+export const selectTradingIsSlip24SellAllowed = (
+    state: DeviceRootState,
+    account: Account | undefined | null,
+    isSlip24Active: boolean,
+) => {
+    const firmwareVersion = selectDeviceFirmwareVersion(state);
+
+    return (
+        selectTradingIsSlip24Allowed(state, account, isSlip24Active) &&
+        !!firmwareVersion &&
+        versionUtils.isNewerOrEqual(firmwareVersion, TRADING_SLIP24_SELL_MIN_FIRMWARE_VERSION)
+    );
+};
 
 export const selectTradingDetailData = createMemoizedSelector(
     [

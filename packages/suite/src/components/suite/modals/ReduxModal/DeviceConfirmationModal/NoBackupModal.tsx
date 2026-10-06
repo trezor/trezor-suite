@@ -1,19 +1,21 @@
 import { Translation } from '@suite/intl';
-import { onReceiveConfirmation } from '@suite/modal';
-import { SettingsAnchor, goto } from '@suite/router';
+import { onReceiveConfirmationThunk } from '@suite/modal';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { H2, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite/useDispatch';
-
 export const NoBackupModal = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
-    const confirm = () => dispatch(onReceiveConfirmation(true));
-    const close = () => dispatch(onReceiveConfirmation(false));
+    const confirm = () => dispatch(onReceiveConfirmationThunk(true));
+    const close = () => dispatch(onReceiveConfirmationThunk(false));
     const goToSettings = () => {
         close();
-        dispatch(goto({ routeName: 'settings-device', anchor: SettingsAnchor.BackupRecoverySeed }));
+        dispatch(
+            gotoThunk({ routeName: 'settings-device', anchor: SettingsAnchor.BackupRecoverySeed }),
+        );
     };
 
     return (

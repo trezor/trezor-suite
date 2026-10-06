@@ -1,102 +1,45 @@
-import { isRejected } from '@reduxjs/toolkit';
-
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    type ChainedTransactions,
-    type WalletAccountTransaction,
+import type {
+    Account,
+    ChainedTransactions,
+    WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { getMyInputsFromTransaction } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     DEFAULT_SORTING_STRATEGY,
     type PrecomposeResultFinal,
 } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { SEND_MODULE_PREFIX } from '../sendFormConstants';
-import { calculateNewFee } from './calculateNewFee';
-import {
-    type ComposeCancelTransactionPartialAccount,
-    type ConnectComposeTxCallParams,
-} from './cancelTransactionTypes';
-import { resolveCancelAddress } from './resolveCancelAddress';
+import { calculateBaseFee, getRelayFee } from './calculateNewFee';
 
-type ConnectComposeParams = {
-    account: ComposeCancelTransactionPartialAccount;
-    tx: Pick<WalletAccountTransaction, 'details'>;
-    newFeeRate: string;
-    baseFee?: number;
+export type ComposeCancelTransactionAccount = Required<
+    Pick<Account, 'addresses' | 'path' | 'symbol'>
+>;
+
+export const isComposeCancelTransactionAccount = (
+    account: Account,
+): account is Account & ComposeCancelTransactionAccount => !!account.addresses;
+
+const resolveCancelAddress = (
+    tx: Pick<WalletAccountTransaction, 'details'>,
+    { addresses }: ComposeCancelTransactionAccount,
+): string | undefined => {
+    const firstChangeAddress = tx.details.vout.find(vout => vout.isAccountOwned)?.addresses?.[0];
+    if (firstChangeAddress) {
+        return firstChangeAddress;
+    }
+
+    const firstUnused = addresses.change.find(a => !a.transfers) ?? addresses.change.at(-1);
+    if (firstUnused) {
+        return firstUnused.address;
+    }
 };
-
-const composeCancelTransaction = async ({
-    account,
-    tx,
-    newFeeRate,
-    baseFee,
-}: ConnectComposeParams) => {
-    // override Account data, similar to RBF
-    const cancelAccount: ConnectComposeTxCallParams['account'] = {
-        ...account,
-        utxo: getMyInputsFromTransaction({ tx, account }),
-
-        // make sure that the exact same change output will be picked by @trezor/connect > hd-wallet during the tx compose process
-        addresses: account.addresses,
-    };
-
-    const cancelAddress = resolveCancelAddress({ account, tx });
-
-    const params: ConnectComposeTxCallParams = {
-        feeLevels: [{ feePerUnit: newFeeRate }],
-        account: cancelAccount,
-        outputs: [
-            {
-                type: 'send-max',
-                address: cancelAddress,
-            },
-        ],
-        sortingStrategy: DEFAULT_SORTING_STRATEGY,
-        coin: account.symbol,
-        baseFee,
-    };
-
-    return await TrezorConnect.composeTransaction(params);
-};
-
-type CalculateNewTransactionSizeParams = {
-    tx: Pick<WalletAccountTransaction, 'details'>;
-    account: ComposeCancelTransactionPartialAccount;
-};
-
-const calculateNewTransactionSize = createThunk<
-    number,
-    CalculateNewTransactionSizeParams,
-    { rejectValue: string }
->(
-    `${SEND_MODULE_PREFIX}/calculateNewTransactionSize`,
-    async ({ account, tx }, { rejectWithValue }) => {
-        const tempCancelTxResult = await composeCancelTransaction({
-            account,
-            tx,
-            newFeeRate: '1', // We don't care about the fee, we just need to compose transaction to get its size
-        });
-
-        if (!tempCancelTxResult.success) {
-            return rejectWithValue(`Unexpected compose error: ${tempCancelTxResult.error.message}`);
-        }
-
-        const { payload } = tempCancelTxResult;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const tempCancelTx: (typeof payload)[number] = payload[0];
-
-        if (tempCancelTx.type !== 'final') {
-            return rejectWithValue('Unexpected compose tempCancelTxResult (non-final)');
-        }
-
-        return tempCancelTx.bytes;
-    },
-);
 
 export type ComposeCancelTransactionThunkParams = {
-    tx: Pick<WalletAccountTransaction, 'details' | 'vsize' | 'fee'>;
-    account: ComposeCancelTransactionPartialAccount;
+    tx: Pick<WalletAccountTransaction, 'details' | 'fee'>;
+    account: ComposeCancelTransactionAccount;
     chainedTxs?: ChainedTransactions;
 };
 
@@ -106,41 +49,37 @@ export const composeCancelTransactionThunk = createThunk<
     { rejectValue: string }
 >(
     `${SEND_MODULE_PREFIX}/composeCancelTransactionThunk`,
-    async ({ tx, account, chainedTxs }, { rejectWithValue, dispatch }) => {
-        if (tx.vsize === undefined) {
-            return rejectWithValue('Transaction vsize is not loaded');
+    async ({ tx, account, chainedTxs }, { rejectWithValue }) => {
+        const utxo = getMyInputsFromTransaction({ tx, account });
+        const cancelAddress = resolveCancelAddress(tx, account);
+        const baseFee = calculateBaseFee(tx, chainedTxs);
+        const feePerUnit = getRelayFee().toString();
+        const coin = asCoinSymbol(account.symbol);
+
+        if (!cancelAddress) {
+            return rejectWithValue('No change addresses, should not happen!');
         }
 
-        const response = await dispatch(calculateNewTransactionSize({ account, tx }));
-
-        if (isRejected(response)) {
-            return rejectWithValue(response.error.message ?? 'unknown');
-        }
-
-        const newTransactionSize = response.payload;
-
-        const { newFeeRate, chainedTransactionFees } = calculateNewFee({
-            originalFee: tx.fee,
-            newTransactionSize,
-            chainedTxs,
+        const response = await TrezorConnect.composeTransaction({
+            account: {
+                path: account.path,
+                addresses: account.addresses,
+                utxo,
+            },
+            outputs: [{ type: 'send-max', address: cancelAddress }],
+            sortingStrategy: DEFAULT_SORTING_STRATEGY,
+            coin,
+            feeLevels: [{ feePerUnit }],
+            baseFee,
         });
 
-        const sizeCalculationResponse = await composeCancelTransaction({
-            account,
-            tx,
-            newFeeRate: newFeeRate.toString(),
-            baseFee: chainedTransactionFees, // BIP-125 rule 3 (paying for chained transactions)
-        });
-
-        if (!sizeCalculationResponse.success) {
-            return rejectWithValue('Unexpected compose result (error)');
+        if (!response.success) {
+            return rejectWithValue(`Unexpected compose error: ${response.error.message}`);
         }
 
-        const { payload: sizeCalculationPayload } = sizeCalculationResponse;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const composedTx: (typeof sizeCalculationPayload)[number] = sizeCalculationPayload[0];
+        const composedTx = response.payload[0];
 
-        if (composedTx.type !== 'final') {
+        if (composedTx?.type !== 'final') {
             return rejectWithValue('Unexpected compose result (non-final)');
         }
 

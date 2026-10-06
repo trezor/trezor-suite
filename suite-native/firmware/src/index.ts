@@ -10,4 +10,3 @@ export * from './components/FirmwareInfoScreenFooter';
 export * from './components/FirmwareInfoScreenContent';
 export * from './hooks/useIsFirmwareUpdateFeatureEnabled';
 export * from './hooks/useFirmware';
-export * from './hooks/useFirmwareLanguage';

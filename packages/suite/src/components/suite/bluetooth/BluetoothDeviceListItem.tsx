@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
+import { type DesktopBluetoothDevice } from '@suite/bluetooth';
+import { selectConnectingDevices } from '@suite/bluetooth';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import {
@@ -10,12 +12,11 @@ import {
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Row } from '@trezor/components';
 import { type BluetoothDeviceId } from '@trezor/connect';
 
-import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
-import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { PairingState } from './PairingState';
@@ -48,7 +49,7 @@ const GhostDeviceActionButton = ({
     isConnectingDevice,
     onPairAgain,
 }: GhostDeviceActionButtonProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const handleDelete = useCallback(() => {
         dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.id }));
@@ -79,7 +80,7 @@ const ActionButton = ({
 }: ActionButtonProps) => {
     const connectingDevicesIds = useSelector(selectConnectingDevices);
     const { onConnect } = useConnectionGlobalModalContext();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const isSuiteTryingToConnectToDevice = connectingDevicesIds.includes(device.id);
     const connectionStatus = connectionStatusMap[device.connectionStatus.type];
     const isClickable = connectionStatus?.component === 'button';

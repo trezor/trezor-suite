@@ -43,6 +43,3 @@ export type WithdrawalContextValues = UseFormReturn<WithdrawalFormState> &
         onFiatAmountChange: (amount: string) => void;
         currentRate: Rate | undefined;
     };
-
-export type UnstakeFormState = WithdrawalFormState;
-export type UnstakeContextValues = WithdrawalContextValues;

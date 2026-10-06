@@ -1,7 +1,14 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
 
-import { getStellarInactiveTokens } from './stellarTokens';
+import {
+    getStellarInactiveTokens,
+    getStellarTrustlineMemo,
+    getStellarTrustlineMemoFromMetadata,
+} from './stellarTokens';
+
+const xlmSymbol = asNetworkSymbol('xlm');
 
 jest.mock('@trezor/blockchain-link-utils/src/stellar', () => ({
     STELLAR_DECIMALS: 7,
@@ -16,14 +23,14 @@ describe(getStellarInactiveTokens.name, () => {
     });
 
     it('returns empty array for non-Stellar accounts', async () => {
-        const account = mockWalletAccount({ symbol: 'btc' });
+        const account = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 
         await expect(getStellarInactiveTokens(account)).resolves.toEqual([]);
         expect(mockedGetTokenMetadata).not.toHaveBeenCalled();
     });
 
     it('returns all tokens when account has no active Stellar tokens', async () => {
-        const account = mockWalletAccount({ symbol: 'xlm', tokens: undefined });
+        const account = mockWalletAccount({ symbol: xlmSymbol, tokens: undefined });
 
         mockedGetTokenMetadata.mockResolvedValue({
             'USDC-GA123': { name: 'USD Coin', symbol: 'USDC', home_domain: 'centre.io', rating: 5 },
@@ -56,7 +63,7 @@ describe(getStellarInactiveTokens.name, () => {
 
     it('filters out active Stellar tokens', async () => {
         const account = mockWalletAccount({
-            symbol: 'xlm',
+            symbol: xlmSymbol,
             tokens: [{ contract: 'YBX-GC789' }] as never,
         });
 
@@ -73,7 +80,7 @@ describe(getStellarInactiveTokens.name, () => {
     });
 
     it('sorts tokens by rating in descending order and keeps unrated tokens last', async () => {
-        const account = mockWalletAccount({ symbol: 'xlm' });
+        const account = mockWalletAccount({ symbol: xlmSymbol });
 
         mockedGetTokenMetadata.mockResolvedValue({
             'LOW-GA111': { name: 'Low', symbol: 'LOW', home_domain: 'low.org', rating: 1 },
@@ -90,5 +97,42 @@ describe(getStellarInactiveTokens.name, () => {
         ]);
 
         expect(result[2]?.rating).toBeUndefined();
+    });
+});
+
+const USDC_ISSUER = 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+const CATCOIN_ISSUER = 'GDJVFDG5OCW5PYWHB64MGTHGFF57DRRJEDUEFDEL2SLNIOONHYJWHA3Z';
+const USDC = `USDC-${USDC_ISSUER}`;
+const CATCOIN = `CATCOIN12345-${CATCOIN_ISSUER}`;
+
+describe(getStellarTrustlineMemoFromMetadata.name, () => {
+    const metadataOf = (name: string) => ({ [USDC]: { name, symbol: 'USDC' } });
+
+    it('uses the token name from the definitions', () => {
+        expect(getStellarTrustlineMemoFromMetadata(USDC, metadataOf('USD Coin'))).toBe('USD Coin');
+    });
+
+    it('returns nothing for a token missing from the definitions', () => {
+        expect(
+            getStellarTrustlineMemoFromMetadata(CATCOIN, metadataOf('USD Coin')),
+        ).toBeUndefined();
+    });
+
+    it('returns nothing for a blank name', () => {
+        expect(getStellarTrustlineMemoFromMetadata(USDC, metadataOf('   '))).toBeUndefined();
+    });
+});
+
+describe(getStellarTrustlineMemo.name, () => {
+    it('gives up on definitions that never arrive, rather than holding up the device prompt', async () => {
+        jest.useFakeTimers();
+        mockedGetTokenMetadata.mockReturnValue(new Promise(() => {}));
+
+        const memo = getStellarTrustlineMemo(USDC);
+        await jest.advanceTimersByTimeAsync(10_000);
+
+        await expect(memo).resolves.toBeUndefined();
+
+        jest.useRealTimers();
     });
 });

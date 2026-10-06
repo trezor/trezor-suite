@@ -1,15 +1,16 @@
 import type { Locale } from 'date-fns';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch, useLocales } from 'src/hooks/suite';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
+import { useLocales } from 'src/hooks/suite';
 
 // auto lock times in seconds; allowed lock times by device: <1 minute, 6 days>
 const AUTO_LOCK_TIMES = {
@@ -30,10 +31,9 @@ interface AutoLockProps {
 }
 
 export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
-    const dispatch = useDispatch();
     const { device } = useDevice();
     const locale = useLocales();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const autoLockDelay = device?.features?.auto_lock_delay_ms;
 
     if (typeof autoLockDelay !== 'number') {
@@ -48,7 +48,7 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
     const handleChange = (option: { value: number; label: string }) => {
         const value = option.value * 1000;
 
-        dispatch(applySettings({ auto_lock_delay_ms: value }));
+        dispatch(applySettingsThunk({ auto_lock_delay_ms: value }));
         analytics.report({
             type: events.settingsDeviceUpdateAutoLockEvent.name,
             payload: {

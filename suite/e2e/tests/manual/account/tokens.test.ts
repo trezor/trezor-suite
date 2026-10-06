@@ -55,7 +55,7 @@ test.describe.skip('Account tokens', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Accounts,
                 priority: TestPriority.High,
-                stream: TestStream.Wallet,
+                stream: TestStream.Network,
             }),
         },
         async () => {},

@@ -1,4 +1,14 @@
+import { type Getter } from '@suite-common/dependency-injection';
+import { type ThpHostNameDep } from '@suite-common/suite-types';
+import { type ThpSettings } from '@trezor/connect';
+
 import { type ThpState } from './thpReducer';
+
+export type GetThpSettingsDep = {
+    getThpSettings: Getter<[], ThpSettings>;
+};
+
+export type { ThpHostNameDep };
 
 export type ThpRootState = {
     thp: ThpState;

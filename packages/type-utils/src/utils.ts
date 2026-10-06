@@ -24,6 +24,18 @@ export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) ex
 export type UnionSubset<T, U extends T> = U;
 
 /**
+ * Whether `T` is exactly `any`, which a plain conditional cannot tell (`any` matches both branches).
+ * Only `any` absorbs the intersection into itself, making `0 extends any` hold.
+ *
+ * Example:
+ *  ```
+ *  type A = IsAny<any>; // true
+ *  type B = IsAny<unknown>; // false
+ *  ```
+ */
+export type IsAny<T> = 0 extends 1 & T ? true : false;
+
+/**
  * Make property of the object required.
  *
  * Example:
@@ -81,10 +93,7 @@ export type ConstWithOptionalFields<
 > = {
     [Key in keyof Const]: {
         [FieldKey in Fields]: Const[Key][FieldKey] extends
-            | string
-            | number
-            | { [key: string]: any }
-            | boolean
+            string | number | { [key: string]: any } | boolean
             ? Const[Key][FieldKey]
             : undefined;
     };

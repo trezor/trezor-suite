@@ -8,3 +8,4 @@ export const BigNumber = BN.clone({
 
 export type BigNumber = BN;
 export type BigNumberValue = BN.Value;
+export type BigNumberRoundingMode = BN.RoundingMode;

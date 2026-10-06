@@ -2,13 +2,13 @@ import { useState } from 'react';
 
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type AddressType } from '@suite-common/wallet-types';
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { WarningIcon } from '@trezor/icons';
-
-import { useDispatch } from 'src/hooks/suite/useDispatch';
 
 const getAddressTypeText = (addressType: AddressType) => {
     switch (addressType) {
@@ -30,14 +30,14 @@ interface CopyAddressModalProps {
 export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddressModalProps) => {
     const [checked, setChecked] = useState(false);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
-    const onCopyAddress = () => {
+    const onCopyAddress = async () => {
         if (checked) {
             dispatch(setFlag({ key: 'showCopyAddressModal', value: false }));
         }
 
-        const result = copyToClipboard(address);
+        const result = await copyToClipboard(address);
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
         }

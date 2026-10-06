@@ -2,8 +2,10 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
 
+export type TradeExchangeAction = 'continue' | 'cancel';
+
 type Attributes = {
-    action: AttributeDef<'continue' | 'cancel'>;
+    action: AttributeDef<TradeExchangeAction>;
     step: AttributeDef<
         | 'exchange-form'
         | 'receive-address'
@@ -28,6 +30,7 @@ type Attributes = {
     approvalType?: AttributeDef<string>;
     slippage?: AttributeDef<string>;
     rateType?: AttributeDef<string>;
+    feeLevel?: AttributeDef<string>;
 };
 
 export const tradeExchangeEvent: EventDef<Attributes, EventType.TradeExchange> = {
@@ -105,6 +108,11 @@ export const tradeExchangeEvent: EventDef<Attributes, EventType.TradeExchange> =
         rateType: {
             changelog: [{ version: '25.5.2', notes: 'added' }],
             description: '`fixed` or `floating`',
+        },
+        feeLevel: {
+            changelog: [{ version: '26.9.0', notes: 'added' }],
+            description:
+                'Network fee level the swap is signed with: `economy`, `normal`, `high` or `custom`. The label only, never the amount.',
         },
     },
 };

@@ -1,7 +1,8 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto, selectIsAccountTabPage, selectRouteName } from '@suite/router';
+import { gotoThunk, selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { ButtonGroup, Row } from '@trezor/components';
@@ -9,20 +10,19 @@ import { MinusIcon, PlusIcon } from '@trezor/icons';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 interface TradeActionsProps {
     selectedAccount?: SelectedAccountStatus;
 }
 
 export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const account = selectedAccount?.account;
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const currentRouteName = useSelector(selectRouteName);
 
-    const goToWithAnalytics = (...[payload]: Parameters<typeof goto>) => {
+    const goToWithAnalytics = (...[payload]: Parameters<typeof gotoThunk>) => {
         if (currentRouteName === 'suite-index') {
             analytics.report({
                 type: events.dashboardActionsEvent.name,
@@ -37,7 +37,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
             });
         }
 
-        dispatch(goto(payload));
+        dispatch(gotoThunk(payload));
     };
 
     const navigateToTrading = (type: 'buy' | 'sell') => {

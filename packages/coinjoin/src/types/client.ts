@@ -6,6 +6,7 @@ import type { CoinjoinRequestEvent, CoinjoinRoundEvent, SessionPhaseEvent } from
 export interface CoinjoinStatusEvent {
     rounds: Round[];
     changed: Round[];
+    prevStatusTimestamp?: number;
     feeRateMedian: number;
     coordinationFeeRate: {
         rate: number;

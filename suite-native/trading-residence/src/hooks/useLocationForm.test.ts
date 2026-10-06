@@ -1,24 +1,26 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 import Localization, { type Locale } from 'expo-localization';
 
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { residenceActions, residenceReducer } from '@suite-native/trading-state';
+import { type TradingResidenceRootState } from '@suite-native/trading-types';
 
 import { useLocationForm } from './useLocationForm';
 
-describe('useLocationForm', () => {
-    let store: TestStore;
+type State = TradingResidenceRootState;
 
-    const renderUseLocationForm = () =>
-        renderHookWithStoreProvider(() => useLocationForm(), { store });
+describe('useLocationForm', () => {
+    let store: Store<State>;
+
+    const renderUseLocationForm = async () =>
+        await renderHookWithStoreProvider(() => useLocationForm(), { services: { store } });
 
     beforeEach(() => {
         store = createLightStore({
@@ -34,8 +36,8 @@ describe('useLocationForm', () => {
         });
     });
 
-    it('should use default subdivision value from redux state', () => {
-        act(() => {
+    it('should use default subdivision value from redux state', async () => {
+        await act(() => {
             store.dispatch(
                 residenceActions.setResidenceCountry({
                     country: 'US',
@@ -44,7 +46,7 @@ describe('useLocationForm', () => {
             );
         });
 
-        const { result } = renderUseLocationForm();
+        const { result } = await renderUseLocationForm();
 
         expect(result.current.getValues('country')).toEqual(
             expect.objectContaining({
@@ -58,8 +60,8 @@ describe('useLocationForm', () => {
         });
     });
 
-    it('should ignore persisted subdivision when it does not belong to country', () => {
-        act(() => {
+    it('should ignore persisted subdivision when it does not belong to country', async () => {
+        await act(() => {
             store.dispatch(
                 residenceActions.setResidenceCountry({
                     country: 'CZ',
@@ -68,13 +70,13 @@ describe('useLocationForm', () => {
             );
         });
 
-        const { result } = renderUseLocationForm();
+        const { result } = await renderUseLocationForm();
 
         expect(result.current.getValues('countrySubdivision')).toBeUndefined();
     });
 
-    it('should use value from expo-localization when country is not set in store', () => {
-        const { result } = renderUseLocationForm();
+    it('should use value from expo-localization when country is not set in store', async () => {
+        const { result } = await renderUseLocationForm();
 
         expect(result.current.getValues('country')).toEqual(
             expect.objectContaining({
@@ -83,7 +85,7 @@ describe('useLocationForm', () => {
         );
     });
 
-    it('should fallback to worldwide when country is not set in store and expo-localization country is not supported', () => {
+    it('should fallback to worldwide when country is not set in store and expo-localization country is not supported', async () => {
         jest.spyOn(Localization, 'getLocales').mockReturnValue([
             {
                 languageTag: 'es-CU',
@@ -99,7 +101,7 @@ describe('useLocationForm', () => {
             } as unknown as Locale,
         ]);
 
-        const { result } = renderUseLocationForm();
+        const { result } = await renderUseLocationForm();
 
         expect(result.current.getValues('country')).toEqual(
             expect.objectContaining({

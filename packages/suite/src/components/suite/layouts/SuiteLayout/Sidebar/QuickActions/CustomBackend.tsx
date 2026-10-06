@@ -1,19 +1,19 @@
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { CheckIcon, DatabaseIcon } from '@trezor/icons';
 import { QuickActionButton } from '@trezor/product-components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { NavBackends } from './NavBackends';
 import { useEnabledBackends } from '../../utils';
 
 export const CustomBackend = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const enabledBackends = useEnabledBackends();
     const isCustomBackendIconVisible = enabledBackends.length > 0;
 
     const handleClick = () => {
-        dispatch(goto({ routeName: 'settings-coins' }));
+        dispatch(gotoThunk({ routeName: 'settings-coins' }));
     };
 
     return (
@@ -21,6 +21,7 @@ export const CustomBackend = () => {
             <QuickActionButton
                 tooltip={{ content: <NavBackends customBackends={enabledBackends} /> }}
                 onClick={handleClick}
+                data-testid="@quickActions/customBackend"
                 icon={DatabaseIcon}
                 subIconIntent="brand"
                 subIcon={CheckIcon}

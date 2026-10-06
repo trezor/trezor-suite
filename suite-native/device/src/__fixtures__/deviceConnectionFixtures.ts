@@ -2,9 +2,11 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
+import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-device-data';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { prepareThpReducer } from '@suite-common/thp';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { prepareWalletSettingsReducer } from '@suite-common/wallet-core';
 import { deviceOnboardingSlice } from '@suite-native/device-onboarding';
 import { featureFlagsSlice } from '@suite-native/feature-flags';
@@ -17,19 +19,42 @@ import {
 } from '@suite-native/navigation';
 import type { RootStackParamList } from '@suite-native/navigation';
 import { type AppSettingsState, appSettingsReducer } from '@suite-native/settings';
-import { FirmwareType, UI_REQUEST } from '@trezor/connect';
+import { FirmwareType, UI_EVENTS } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 const INIT_ACTION = { type: 'foo' };
 
-const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
-const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
-const thpReducer = prepareThpReducer(extraDependenciesCommonMock);
+const deviceReducer = prepareDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const walletSettingsReducer = prepareWalletSettingsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadWalletSettings: mockReducer() },
+});
+const thpReducer = prepareThpReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const persistentDeviceDataReducer = preparePersistentDeviceDataReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadPersistentDeviceData: mockReducer() },
+});
 
 type InitialStateConfig = {
     nativeFirmware?: Partial<NativeFirmwareState>;
     device?: Partial<ReturnType<typeof deviceReducer>>;
+    persistentDeviceData?: ReturnType<typeof persistentDeviceDataReducer>;
     deviceOnboarding?: Partial<typeof deviceOnboardingSlice.reducer>;
     walletSettings?: Partial<ReturnType<typeof walletSettingsReducer>>;
     appSettings?: Partial<AppSettingsState>;
@@ -44,6 +69,7 @@ type RootState = {
     wallet: {
         settings: ReturnType<typeof walletSettingsReducer>;
     };
+    persistentDeviceData: ReturnType<typeof persistentDeviceDataReducer>;
     messageSystem: ReturnType<typeof messageSystemReducer>;
     appSettings: AppSettingsState;
     featureFlags: ReturnType<typeof featureFlagsSlice.reducer>;
@@ -99,6 +125,7 @@ type NoNavigationFixture = {
 const buildInitialState = ({
     nativeFirmware,
     device,
+    persistentDeviceData,
     walletSettings,
     deviceOnboarding,
     appSettings,
@@ -123,6 +150,8 @@ const buildInitialState = ({
             ...walletSettings,
         },
     },
+    persistentDeviceData:
+        persistentDeviceData ?? persistentDeviceDataReducer(undefined, INIT_ACTION),
     appSettings: {
         ...appSettingsReducer(undefined, INIT_ACTION),
         ...appSettings,
@@ -141,14 +170,14 @@ const buildInitialState = ({
 // THP Pairing Fixtures
 export const thpPairingBlockedFixtures: NoNavigationFixture[] = [
     {
-        description: 'blocks non-THP UI_REQUEST.REQUEST_BUTTON actions',
+        description: 'blocks non-THP UI_EVENTS.BUTTON_REQUEST actions',
         initialState: buildInitialState(),
-        action: { type: UI_REQUEST.REQUEST_BUTTON },
+        action: { type: UI_EVENTS.BUTTON_REQUEST },
     },
     {
-        description: 'blocks UI_REQUEST.REQUEST_BUTTON with invalid payload name',
+        description: 'blocks UI_EVENTS.BUTTON_REQUEST with invalid payload name',
         initialState: buildInitialState(),
-        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'non-valid-name' } },
+        action: { type: UI_EVENTS.BUTTON_REQUEST, payload: { name: 'non-valid-name' } },
     },
     {
         description: 'blocks unrelated action types',
@@ -162,7 +191,7 @@ export const thpPairingBlockedFixtures: NoNavigationFixture[] = [
                 isFirmwareInstallationRunning: true,
             },
         }),
-        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'thp_pairing_request' } },
+        action: { type: UI_EVENTS.BUTTON_REQUEST, payload: { name: 'thp_pairing_request' } },
     },
     {
         description: 'blocks thp_connection_request when firmware installation is running',
@@ -171,7 +200,7 @@ export const thpPairingBlockedFixtures: NoNavigationFixture[] = [
                 isFirmwareInstallationRunning: true,
             },
         }),
-        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'thp_connection_request' } },
+        action: { type: UI_EVENTS.BUTTON_REQUEST, payload: { name: 'thp_connection_request' } },
     },
 ];
 
@@ -179,7 +208,7 @@ export const thpPairingNavigationFixtures: NavigationFixture[] = [
     {
         description: 'navigates to ThpConfirmation on thp_pairing_request',
         initialState: buildInitialState(),
-        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'thp_pairing_request' } },
+        action: { type: UI_EVENTS.BUTTON_REQUEST, payload: { name: 'thp_pairing_request' } },
         expectedNavigation: {
             route: RootStackRoutes.AuthorizeDeviceStack,
             params: {
@@ -190,7 +219,7 @@ export const thpPairingNavigationFixtures: NavigationFixture[] = [
     {
         description: 'navigates to ThpConfirmation on thp_connection_request',
         initialState: buildInitialState(),
-        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'thp_connection_request' } },
+        action: { type: UI_EVENTS.BUTTON_REQUEST, payload: { name: 'thp_connection_request' } },
         expectedNavigation: {
             route: RootStackRoutes.AuthorizeDeviceStack,
             params: {
@@ -325,7 +354,7 @@ export const deviceConnectBlockedFixtures: NoNavigationFixture[] = [
                 devices: [mockSuiteDevice()],
             },
             walletSettings: {
-                enabledNetworks: ['btc'],
+                enabledNetworks: [asNetworkSymbol('btc')],
             },
         }),
         action: {
@@ -358,11 +387,13 @@ export const deviceConnectCompromisedFixtures: NavigationFixture[] = [
                 isDeviceAuthenticityCheckEnabled: true,
             },
             walletSettings: {
-                enabledNetworks: ['btc'],
+                enabledNetworks: [asNetworkSymbol('btc')],
             },
             device: {
                 selectedDevice: mockSuiteDevice(),
-                persistentDeviceData: [
+            },
+            persistentDeviceData: {
+                devices: [
                     {
                         ...defaultDevicePersistentData,
                         authenticityResult: { valid: false, error: 'ROOT_PUBKEY_NOT_FOUND' },
@@ -445,7 +476,7 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
             'navigates to ConnectingDevice when connected new device and network is enabled',
         initialState: buildInitialState({
             walletSettings: {
-                enabledNetworks: ['btc'],
+                enabledNetworks: [asNetworkSymbol('btc')],
             },
         }),
         action: {

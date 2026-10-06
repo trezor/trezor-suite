@@ -1,28 +1,27 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch, Tooltip } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 
 interface PassphraseProps {
     isDeviceLocked: boolean;
 }
 
 export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
-    const dispatch = useDispatch();
     const { device } = useDevice();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const passphraseProtection = !!device?.features?.passphrase_protection;
 
     const handleChange = () => {
-        dispatch(applySettings({ use_passphrase: !passphraseProtection }));
+        dispatch(applySettingsThunk({ use_passphrase: !passphraseProtection }));
         analytics.report({
             type: events.settingsDeviceChangePassphraseProtectionEvent.name,
             payload: {

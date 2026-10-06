@@ -1,17 +1,18 @@
 import { type ReactNode, createContext, useContext, useState } from 'react';
 
+import { type DesktopBluetoothDevice } from '@suite/bluetooth';
+import { NEARBY_DEVICES_LAST_UPDATED_LIMIT, isBluetoothDeviceReachable } from '@suite/bluetooth';
 import { selectDeviceDefaultConnectionMode, setConnectionMode } from '@suite/device';
 import {
     prepareSelectAllDevices,
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isDesktop } from '@trezor/env-utils';
 
-import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
-import { NEARBY_DEVICES_LAST_UPDATED_LIMIT } from 'src/actions/bluetooth/filterOutNonResponsiveDevices';
-import { isBluetoothDeviceReachable } from 'src/actions/bluetooth/isBluetoothDeviceReachable';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import {
     type UseBluetoothConnectionReturn,
@@ -65,7 +66,7 @@ const ConnectionGlobalModalReactContext = createContext<ConnectionGlobalModalCon
 const selectAllDevices = prepareSelectAllDevices<DesktopBluetoothDevice>();
 
 const useConnectionGlobalModal = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const [showHints, setShowHints] = useState(false);
     const [shouldPairAgain, setShouldPairAgain] = useState(false);
     const [showRemoveFromOsBluetooth, setShowRemoveFromOsBluetooth] = useState(false);

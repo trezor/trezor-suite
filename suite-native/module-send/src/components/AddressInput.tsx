@@ -3,18 +3,19 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    type AddressCorrection,
-    autocorrectAddress,
-    selectAddressValidatorDep,
-} from '@suite-common/address';
+import { type AddressCorrection, autocorrectAddress } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
-import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+import {
+    injectAddressValidator,
+    injectGetNamedAddressSupport,
+    selectNetworkSymbolForProtocol,
+} from '@suite-common/networks';
+import { injectGetState } from '@suite-common/redux-utils';
 import { parseTransferUri } from '@suite-common/transfer-uri';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    ADDRESS_MAX_LENGTH,
     type AccountsRootState,
     selectAccountByKey,
     selectAccountNetworkSymbol,
@@ -23,7 +24,7 @@ import {
 import { type AccountKey, toTokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { TextInputField, useFormContext, useWatch } from '@suite-native/forms';
@@ -37,10 +38,12 @@ import {
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM, HELP_CENTER_SOLANA_HELP_URL } from '@trezor/urls';
 
 import { AddressInfoMessage } from './AddressInfoMessage';
+import { EnsResolutionMessage } from './EnsResolutionMessage';
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
 import { SendFormLabelEditable } from './SendFormLabelEditable';
 import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts/useAddressValidationAlerts';
 import { useSolAssociatedTokenAddress } from '../hooks/useAddressValidationAlerts/useSolAssociatedTokenAddress';
+import { useResolvedAddress } from '../hooks/useResolvedAddress';
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { getOutputFieldName } from '../utils';
 
@@ -62,19 +65,23 @@ type AddressInputProps = {
     accountKey: AccountKey;
     onQrNetworkMismatch?: (qrNetworkSymbol: NetworkSymbol | null) => void;
 };
+
 export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: AddressInputProps) => {
     const addressFieldName = getOutputFieldName(index, 'address');
     const utxoLabelFieldName = getOutputFieldName(index, 'label');
     const amountFieldName = getOutputFieldName(index, 'amount');
     const tokenFieldName = getOutputFieldName(index, 'token');
     const { setValue, control } = useFormContext<SendOutputsFormValues>();
-    const { analytics, addressValidator } = useServices(
-        selectNativeAnalyticsDep,
-        selectAddressValidatorDep,
+    const { getState, analytics, addressValidator, getNamedAddressSupport } = useServices(
+        injectGetState,
+        injectNativeAnalytics,
+        injectAddressValidator,
+        injectGetNamedAddressSupport,
     );
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
+    const namedAddress = getNamedAddressSupport(symbol);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -89,7 +96,14 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
         selectFreshAccountAddress(state, accountKey),
     );
 
-    const { wasAddressChecksummed } = useAddressValidationAlerts({ inputIndex: index });
+    const { isResolvingName, resolvedAddress, reverseResolvedName } = useResolvedAddress({
+        inputIndex: index,
+        accountKey,
+    });
+    const { wasAddressChecksummed } = useAddressValidationAlerts({
+        inputIndex: index,
+        resolvedAddress,
+    });
 
     const [autocorrectMessageId, setAutocorrectMessageId] = useState<TxKeyPath | null>(null);
     const autocorrectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -128,7 +142,9 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
     };
 
     const handleScanAddressQRCode = (qrCodeData: string) => {
-        const parsed = parseTransferUri(qrCodeData);
+        const parsed = parseTransferUri(qrCodeData, protocol =>
+            selectNetworkSymbolForProtocol(getState(), protocol),
+        );
 
         // ERC-681 (Ethereum) — may switch to a matching account on another EVM network.
         const erc681 =
@@ -191,7 +207,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
         if (
             parsed.success &&
             parsed.payload.format === 'bip321' &&
-            getNetworkSymbolForProtocol(parsed.payload.scheme) === symbol
+            selectNetworkSymbolForProtocol(getState(), parsed.payload.scheme) === symbol
         ) {
             const bip321 = parsed.payload;
             onQrNetworkMismatch?.(null);
@@ -255,7 +271,13 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
         <VStack spacing="sp12">
             <HStack alignItems="center" justifyContent="space-between" spacing="sp12">
                 <Text variant="body-sm">
-                    <Translation id="moduleSend.outputs.recipients.addressLabel" />
+                    <Translation
+                        id={
+                            namedAddress.isSupported
+                                ? 'moduleSend.outputs.recipients.addressOrEnsLabel'
+                                : 'moduleSend.outputs.recipients.addressLabel'
+                        }
+                    />
                 </Text>
                 {/* Tokens labels wouldn't sync properly between desktop & mobile, so labeling is */}
                 {/* turned off for tokens until it's fixed. */}
@@ -282,10 +304,12 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
             )}
             <TextInputField
                 multiline
+                autoCorrect={false}
+                autoCapitalize="none"
                 name={addressFieldName}
                 testID={addressFieldName}
                 onChangeText={handleChangeValue}
-                maxLength={formInputsMaxLength.address}
+                maxLength={ADDRESS_MAX_LENGTH}
                 accessibilityLabel="address input"
                 rightIcon={<QrCodeBottomSheetIcon onCodeScanned={handleScanAddressQRCode} />}
             />
@@ -303,6 +327,11 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
                     link={HELP_CENTER_SOLANA_HELP_URL}
                 />
             )}
+            <EnsResolutionMessage
+                isResolving={isResolvingName}
+                resolvedAddress={resolvedAddress}
+                reverseResolvedName={reverseResolvedName}
+            />
         </VStack>
     );
 };

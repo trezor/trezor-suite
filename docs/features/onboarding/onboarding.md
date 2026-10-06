@@ -207,7 +207,7 @@ Support for the WebUSB came pretty late for T1B1 (bootloader [1.6.0](https://git
 
 ##### UI.FIRMWARE_PROGRESS
 
-- Devices won’t dispatch any event after the user confirms the installation on a device. We only detect that the installation has started when we receive `UI.FIRMWARE_PROGRESS` which is triggered about 10 seconds too late on T1B1.
+- Devices won’t dispatch any event after the user confirms the installation on a device. We only detect that the installation has started when we receive `UI_EVENTS.FIRMWARE_PROGRESS` which is triggered about 10 seconds too late on T1B1.
 
 ##### Remembered wallet, multiple devices
 
@@ -266,7 +266,7 @@ When the user hits cancel on a device, `@SUITE/lock-device` is fired, `buttonReq
 
 #### T1B1
 
-After the user confirms setting new PIN on the device we'll receive `UI.REQUEST_PIN`, which will be stored in `modal` reducer (as every other request coming from a device). Based on this we display PIN matrix.
+After the user confirms setting new PIN on the device we'll receive `UI_REQUESTS.REQUEST_PIN`, which will be stored in `modal` reducer (as every other request coming from a device). Based on this we display PIN matrix.
 
 The user enters PIN twice, if there is a mismatch, process is stopped and an error shown with a button to try again.
 

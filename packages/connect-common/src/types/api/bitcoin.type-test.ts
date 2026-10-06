@@ -1,4 +1,8 @@
-import type { PrecomposedResult, TrezorConnectPrivilegedAPI as TrezorConnect } from '../../index';
+import type {
+    PrecomposedResult,
+    SignedTransaction,
+    TrezorConnectPrivilegedAPI as TrezorConnect,
+} from '../../index';
 import { asDeviceUniquePath } from '../../index';
 
 export const getAddress = async (api: TrezorConnect) => {
@@ -497,17 +501,49 @@ export const pushTransaction = async (api: TrezorConnect) => {
     api.pushTransaction({ coin: 'btc' });
 };
 
-export const composeTransaction = async (api: TrezorConnect) => {
-    // Method with mixed params and mixed responses
-
-    const compose = await api.composeTransaction({
+export const sendTransaction = async (api: TrezorConnect) => {
+    const send = await api.sendTransaction({
         outputs: [],
         coin: 'btc',
+        push: true,
+        // @ts-expect-error
+        account: null as any,
     });
-    if (compose.success) {
-        compose.payload.serializedTx.toLowerCase();
-    }
 
+    if (send.success) {
+        const a: SignedTransaction = send.payload;
+        void a;
+    }
+};
+
+export const composePsbt = async (api: TrezorConnect) => {
+    const precompose = await api.composePsbt({
+        account: {
+            addresses: {
+                used: [],
+                unused: [],
+                change: [],
+            },
+            utxo: [],
+        },
+        coin: 'btc',
+        psbtData: '70736274ff01000a0000000000000000000000',
+    });
+
+    if (precompose.success) {
+        const { payload } = precompose;
+        const tx = payload;
+        if (tx.type === 'final') {
+            tx.inputs.map(a => a.prev_index.toFixed());
+            tx.outputs.map(a => a.amount.toString());
+        }
+    } else {
+        precompose.error.message.toLowerCase();
+        precompose.error.code.toLowerCase();
+    }
+};
+
+export const composeTransaction = async (api: TrezorConnect) => {
     const precompose = await api.composeTransaction({
         outputs: [],
         account: {
@@ -533,16 +569,15 @@ export const composeTransaction = async (api: TrezorConnect) => {
         if (tx.type === 'nonfinal') {
             tx.bytes.toFixed();
             tx.feePerByte.toLowerCase();
-            tx.inputs.map((a: any) => a);
+            tx.inputs.map(a => a.prev_index.toFixed());
         }
         if (tx.type === 'final') {
-            tx.inputs.map((a: any) => a);
-            tx.outputs.map((a: any) => a);
+            tx.inputs.map(a => a.prev_index.toFixed());
+            tx.outputs.map(a => a.amount.toString());
         }
     } else {
         precompose.error.message.toLowerCase();
-        // @ts-expect-error
-        precompose.payload.type.toLowerCase();
+        precompose.error.code.toLowerCase();
     }
 };
 
@@ -640,6 +675,13 @@ export const signMessage = async (api: TrezorConnect) => {
         payload.address.toLowerCase();
         payload.signature.toLowerCase();
     }
+
+    // optional scriptType override
+    api.signMessage({ path: 'm/44', coin: 'btc', message: 'foo', scriptType: 'SPENDTAPROOT' });
+
+    // @ts-expect-error unknown scriptType
+    api.signMessage({ path: 'm/44', coin: 'btc', message: 'foo', scriptType: 'NOT_A_SCRIPT_TYPE' });
+
     const verify = await api.verifyMessage({
         address: 'a',
         signature: 'a',

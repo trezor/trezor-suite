@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
-
-import { useDispatch } from 'src/hooks/suite';
 
 export type AccountOverviewRoute = 'wallet-index' | 'wallet-tokens';
 
@@ -11,7 +11,7 @@ export const useNavigateToAccountRoute = (
     account: Account | undefined,
     routeName: AccountOverviewRoute,
 ) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     return useCallback(() => {
         if (!account) {
@@ -19,7 +19,7 @@ export const useNavigateToAccountRoute = (
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName,
                 params: {
                     symbol: account.symbol,

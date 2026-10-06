@@ -11,6 +11,7 @@ import {
 } from '@suite-native/add-coin-account';
 import {
     Box,
+    BulletList,
     BulletListItem,
     Button,
     SelectableItem,
@@ -40,19 +41,13 @@ const bulletsForKeyPath = (keyPath: TxKeyPath) => (
         <Translation
             id={keyPath}
             values={{
-                li: chunks =>
-                    chunks.map(
-                        row =>
-                            row && (
-                                <BulletListItem
-                                    key={`${row}`}
-                                    variant="body-sm"
-                                    color="contentSecondary"
-                                >
-                                    {row}
-                                </BulletListItem>
-                            ),
-                    ),
+                li: chunks => (
+                    <BulletList textVariant="body-sm" textColor="contentSecondary">
+                        {chunks.map(row => (
+                            <BulletListItem key={`${row}`}>{row}</BulletListItem>
+                        ))}
+                    </BulletList>
+                ),
             }}
         />
     </Box>

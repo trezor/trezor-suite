@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Card, variables } from '@trezor/components';
+
 export const SectionCard = ({ children }: { children: ReactNode }) => (
     <Card margin={{ bottom: 24 }}>{children}</Card>
 );

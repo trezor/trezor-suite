@@ -1,7 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
+import type { ExchangeTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type ApprovalStatus,
     type TradingRootState,
@@ -39,7 +42,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useExchangeSelectQuote = (form: ExchangeFormType) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const candidateQuote = useWatch({ name: 'quote', control: form.control });
     const receiveAsset = useWatch({ name: 'receiveAsset', control: form.control });
 
@@ -77,7 +80,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
 
     const dispatchSelectQuote = async (
         analyticsAction: 'continue' | 'revoke',
-        nextStep: (approvalStatus: ApprovalStatus) => void,
+        nextStep: (approvalStatus: ApprovalStatus, selectedQuote: ExchangeTrade) => void,
     ) => {
         if (!candidateQuote || isLoading || isCandidateQuotePrefetchBlocked) {
             return;
@@ -95,18 +98,18 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
                 quote: candidateQuote,
                 nextStep: () => {
                     clearExchangeFormQuoteData(form);
-                    nextStep(getApprovalStatus(candidateQuote));
+                    nextStep(getApprovalStatus(candidateQuote), candidateQuote);
                 },
             }),
         );
     };
 
     const selectQuote = () =>
-        dispatchSelectQuote('continue', approvalStatus => {
+        dispatchSelectQuote('continue', (approvalStatus, selectedQuote) => {
             // selectExchangeQuoteThunk skips saveSelectedQuote for DEX ERC-20 quotes in pre-CONFIRM
             // status to preserve desktop behavior. The approval/revoke screens read selectedQuote,
             // so persist it explicitly here.
-            dispatch(tradingExchangeActions.saveSelectedQuote(candidateQuote));
+            dispatch(tradingExchangeActions.saveSelectedQuote(selectedQuote));
 
             switch (approvalStatus) {
                 case 'approved':
@@ -136,7 +139,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
         });
 
     const selectQuoteForRevoke = () =>
-        dispatchSelectQuote('revoke', approvalStatus => {
+        dispatchSelectQuote('revoke', (approvalStatus, selectedQuote) => {
             switch (approvalStatus) {
                 case 'not_needed':
                 case 'needs_approval':
@@ -146,7 +149,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
                 case 'needs_increase':
                 case 'needs_revoke':
                 case 'approved':
-                    dispatch(tradingExchangeActions.saveSelectedQuote(candidateQuote));
+                    dispatch(tradingExchangeActions.saveSelectedQuote(selectedQuote));
 
                     return navigation.navigate(RootStackRoutes.TradingExchangeRevoke, {
                         shouldIncreaseLimit: false,

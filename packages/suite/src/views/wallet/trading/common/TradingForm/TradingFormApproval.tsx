@@ -1,10 +1,11 @@
 import styled, { type DefaultTheme } from 'styled-components';
 
 import { Address } from '@suite/address';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingExchangeType,
     requiresTokenApproval,
@@ -21,7 +22,7 @@ import { PendingTransactionInfo } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
@@ -39,8 +40,7 @@ const TextButton = styled.div<{ $disabled: boolean }>`
 
 export const TradingFormApproval = () => {
     const context = useTradingFormContext<TradingExchangeType>();
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const { tx, state: allowanceState } = useAllowanceContext();
 
@@ -275,6 +275,7 @@ export const TradingFormApproval = () => {
                         </>
                     ) : (
                         <Button
+                            data-testid="@trading/form/approve-button"
                             onClick={() => handleApproveClick(onApproveTransactionClick)}
                             intent="brand"
                             size="large"
@@ -324,7 +325,13 @@ export const TradingFormApproval = () => {
             )}
 
             {approvalStep === 'LOADING' && (
-                <Button intent="brand" size="large" width="100%" isDisabled={true}>
+                <Button
+                    data-testid="@trading/form/swap-button"
+                    intent="brand"
+                    size="large"
+                    width="100%"
+                    isDisabled={true}
+                >
                     <Translation id="TR_TRADING_SWAP" />
                 </Button>
             )}
@@ -361,6 +368,7 @@ export const TradingFormApproval = () => {
                                 value={tx.approvalTxid}
                                 intent="brand"
                                 typographyStyle="body-md"
+                                data-testid="@pending-transaction/txid/value"
                             />
                         ) : (
                             <Translation id="TR_UNKNOWN" />

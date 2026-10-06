@@ -7,33 +7,33 @@ import { ExchangeEIP712Info, type ExchangeEIP712InfoProps } from './ExchangeEIP7
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('ExchangeEIP712Info', () => {
-    const renderExchangeEIP712Info = (
+    const renderExchangeEIP712Info = async (
         exchange: string,
         children?: ExchangeEIP712InfoProps['children'],
     ) =>
-        renderWithTradingProvider(
+        await renderWithTradingProvider(
             <ExchangeEIP712Info exchange={exchange}>{children}</ExchangeEIP712Info>,
             {
                 tradeType: 'exchange',
             },
         );
 
-    it('should render the provider name for Fusion+', () => {
-        const { getByText } = renderExchangeEIP712Info('1inchfusionplus');
+    it('should render the provider name for Fusion+', async () => {
+        const { getByText } = await renderExchangeEIP712Info('1inchfusionplus');
 
         expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
         expect(getByText(exchangeOneInchFusionPlus.companyName)).toBeOnTheScreen();
     });
 
-    it('should render the provider name for Fusion', () => {
-        const { getByText } = renderExchangeEIP712Info('1inchfusion');
+    it('should render the provider name for Fusion', async () => {
+        const { getByText } = await renderExchangeEIP712Info('1inchfusion');
 
         expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
         expect(getByText(exchangeOneInchFusion.companyName)).toBeOnTheScreen();
     });
 
-    it('should render all three bullet points', () => {
-        const { getByText } = renderExchangeEIP712Info('1inchfusionplus');
+    it('should render all three bullet points', async () => {
+        const { getByText } = await renderExchangeEIP712Info('1inchfusionplus');
 
         expect(
             getByText(
@@ -52,8 +52,8 @@ describe('ExchangeEIP712Info', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render children', () => {
-        const { getByText } = renderExchangeEIP712Info(
+    it('should render children', async () => {
+        const { getByText } = await renderExchangeEIP712Info(
             '1inchfusionplus',
             <Text>child content</Text>,
         );

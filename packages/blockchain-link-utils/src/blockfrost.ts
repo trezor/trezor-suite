@@ -1,17 +1,19 @@
-import type {
-    AccountAddresses,
-    AccountInfo,
-    AssetBalance,
-    BlockfrostAccountInfo,
-    BlockfrostTransaction,
-    BlockfrostUtxos,
-    ParseAssetResult,
-    TokenInfo,
-    TokenTransfer,
-    Transaction,
-    TransferType,
-    Utxo,
-    VinVout,
+import {
+    type AccountAddresses,
+    type AccountInfo,
+    type AssetBalance,
+    type BlockfrostAccountInfo,
+    type BlockfrostTransaction,
+    type BlockfrostUtxos,
+    type CardanoStakingInfo,
+    type ParseAssetResult,
+    type TokenInfo,
+    type TokenTransfer,
+    type Transaction,
+    type TransferType,
+    type Utxo,
+    type VinVout,
+    cardanoStakingInfoSchema,
 } from '@trezor/blockchain-link-types';
 import { isNotNullOrUndefined } from '@trezor/utils';
 import { BigNumber, type BigNumberValue } from '@trezor/utils/src/bigNumber';
@@ -57,8 +59,8 @@ const getSubtype = (
 ) => {
     const { withdrawal_count, stake_cert_count, delegation_count, deposit, fees } = tx.txData;
 
-    const withdrawal = withdrawal_count > 0;
-    if (withdrawal) {
+    // Deregistering needs an empty reward account, so a withdrawal here means unstake, not claim.
+    if (withdrawal_count > 0 && stake_cert_count === 0) {
         return 'withdrawal';
     }
 
@@ -280,13 +282,12 @@ export const transformTransaction = (
         }
 
         if (blockfrostTxData.txData.withdrawal_count > 0) {
-            // output including fee is larger than the sum of all inputs,
-            // so there must be more coin somewhere and that's the withdrawal amount
+            // Outputs plus fee exceed inputs by the withdrawal and any refunded deposit.
+            // `deposit` is negative on a deregistration, so adding it back cancels the refund.
             const extra = new BigNumber(totalOutput)
                 .plus(blockfrostTxData.txData.fees || 0)
                 .minus(totalInput);
-            const withdrawalBn = depositBn.isNegative() ? extra.minus(depositBn) : extra;
-            withdrawal = withdrawalBn.abs().toString();
+            withdrawal = extra.plus(depositBn).abs().toString();
         }
     } else if (outgoing.length === 0 && incoming.length > 0) {
         // none of the input is mine but and output or token transfer is mine
@@ -343,11 +344,19 @@ export const transformTransaction = (
     };
 };
 
+const parseCardanoStakingInfo = (staking: unknown): CardanoStakingInfo | undefined => {
+    const result = cardanoStakingInfoSchema.safeParse(staking);
+
+    return result.success ? result.data : undefined;
+};
+
 export const transformAccountInfo = (info: BlockfrostAccountInfo): AccountInfo => {
     const blockfrostTxs = info.history.transactions;
+    const staking = parseCardanoStakingInfo(info.misc?.staking);
 
     const result = {
         ...info,
+        misc: staking ? { staking } : undefined,
         tokens: transformTokenInfo(info.tokens),
         history: {
             ...info.history,

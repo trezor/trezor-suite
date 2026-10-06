@@ -26,7 +26,7 @@ if (buildFolderIndex > -1) {
 
 rootPaths.forEach(dir => {
     const rootPath = path.join(__dirname, dir);
-    const buildPath = path.join(rootPath, 'build');
+    const buildPath = path.join(rootPath, buildFolder);
 
     fs.readdirSync(buildPath).forEach(p => {
         // Skip TypeScript source files - they should no longer exist

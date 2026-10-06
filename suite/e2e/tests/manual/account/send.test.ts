@@ -55,7 +55,6 @@ test.describe.skip('Account send', { tag: ['@group=manual'] }, () => {
                     'On an XRP/XLM account, send to a new (unfunded) address and confirm the network reserve requirement is communicated',
                     'On an EVM account, enter a valid address with wrong checksum casing and confirm Suite warns and offers checksum autocorrect',
                     'Enter a deprecated address format (e.g. LTC legacy 3-address) and confirm the deprecation warning is shown',
-                    'Send to a Taproot (bc1p) address with old firmware and confirm the firmware update requirement is communicated',
                 ],
                 category: TestCategory.Accounts,
                 priority: TestPriority.Critical,

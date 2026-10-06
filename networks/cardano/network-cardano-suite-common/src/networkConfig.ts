@@ -1,0 +1,72 @@
+import { DeviceModelInternal } from '@trezor/device-utils';
+import { CARDANO_DECIMALS, type CardanoNetworkSymbol } from '@trezor/network-cardano/constants';
+import {
+    DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    type Explorer,
+    type SuiteCommonNetworkConfig,
+    asDisplayOrderKey,
+    asProtocol,
+} from '@trezor/network-module-suite-common-types';
+
+const syncIntervalBySymbol: Readonly<Record<CardanoNetworkSymbol, number>> = {
+    ada: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+};
+
+const getExplorerUrls = (baseUrl: string): Explorer => ({
+    base: baseUrl,
+    tx: `${baseUrl}/tx/`,
+    address: `${baseUrl}/address/`,
+    token: `${baseUrl}/asset/`,
+});
+
+type NetworkConfig = SuiteCommonNetworkConfig & {
+    readonly networkType: 'cardano';
+};
+
+export const networkConfigBySymbol = {
+    ada: {
+        color: '#3468d1',
+        displayOrder: asDisplayOrderKey('aC'),
+        protocols: [asProtocol('cardano'), asProtocol('ada')],
+        // icarus derivation
+        displaySymbol: 'ADA',
+        name: 'Cardano',
+        networkType: 'cardano',
+        bip43Path: "m/1852'/1815'/i'",
+        decimals: CARDANO_DECIMALS,
+        testnet: false,
+        features: ['tokens', 'staking', 'coin-definitions', 'sign-verify'],
+        explorer: getExplorerUrls('https://cexplorer.io'),
+        support: {
+            [DeviceModelInternal.T2T1]: '2.4.3',
+            [DeviceModelInternal.T2B1]: '2.0.0',
+            [DeviceModelInternal.T3B1]: '2.0.0',
+            [DeviceModelInternal.T3T1]: '2.0.0',
+            [DeviceModelInternal.T3W1]: '2.0.0',
+        },
+        backendOptions: [{ type: 'blockfrost' }],
+        accountTypes: {
+            legacy: {
+                // icarus-trezor derivation, differs from default just for 24 words seed
+                accountType: 'legacy',
+                bip43Path: "m/1852'/1815'/i'",
+                isDebugOnlyAccountType: true,
+            },
+            ledger: {
+                // ledger derivation
+                accountType: 'ledger',
+                bip43Path: "m/1852'/1815'/i'",
+                isDebugOnlyAccountType: true,
+            },
+        },
+        coingeckoId: 'cardano',
+        tradeCryptoId: 'cardano',
+        yieldXyzId: 'cardano',
+    },
+} satisfies Readonly<Record<CardanoNetworkSymbol, NetworkConfig>>;
+
+export const getNetworkConfig = (symbol: CardanoNetworkSymbol): SuiteCommonNetworkConfig =>
+    networkConfigBySymbol[symbol];
+
+export const getAccountSyncInterval = (symbol: CardanoNetworkSymbol): number =>
+    syncIntervalBySymbol[symbol];

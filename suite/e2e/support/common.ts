@@ -1,19 +1,18 @@
 import { createIntl, createIntlCache } from 'react-intl';
 
-import test, { Locator, Page, TestInfo } from '@playwright/test';
+import test, { Locator, Page, TestInfo, expect } from '@playwright/test';
 import { isEqual, omit } from 'lodash';
 import { readdirSync } from 'node:fs';
 import path from 'node:path';
 
+import { formatCompactCryptoAmount, isMoneyLikeToken } from '@suite-common/formatters';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
 import { type TradingCountryCode, regional } from '@suite-common/trading';
-import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
-import { Model } from '@trezor/trezor-user-env-link';
-import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';
+import { getAccountDecimals } from '@suite-common/wallet-utils';
+import { BigNumber, localizeNumber, splitStringEveryNCharacters } from '@trezor/utils';
 
 import { PlaywrightTarget } from './testExtends/suiteTestOptions';
 import { PercentageOfBalanceParams } from './types';
-import releases from '../../../submodules/trezor-common/releases.json';
 
 export const isDesktopProject = (target: PlaywrightTarget) => target === PlaywrightTarget.Desktop;
 
@@ -105,23 +104,6 @@ export const getVideoPath = (videoFolder: string): string | false => {
     return path.join(videoFolder, videoFilenames[0] ?? '');
 };
 
-export const findLatestVersionForModel = (model: Model): string => {
-    const firmwareVersions = releases.firmware;
-    const versions = Object.keys(firmwareVersions);
-
-    // Sort versions in descending order
-    versions.sort((a, b) => (a > b ? -1 : 1));
-
-    // Find the latest version supporting our model
-    for (const version of versions) {
-        if (firmwareVersions[version as keyof typeof firmwareVersions].includes(model)) {
-            return version;
-        }
-    }
-
-    throw new Error(`No firmware version found for model ${model}`);
-};
-
 export const getCountryLabel = (country: TradingCountryCode) => {
     const countryOption = regional.countriesOptionsMap.get(country);
     if (!countryOption) {
@@ -131,12 +113,61 @@ export const getCountryLabel = (country: TradingCountryCode) => {
     return countryOption.label.substring(countryOption.label.indexOf(' ') + 1);
 };
 
-export const calculatePercentageOfBalance = (params: PercentageOfBalanceParams) => {
-    if (params.balance === null) {
-        throw new Error('Account balance is null');
+type CompactAmountOptions = {
+    /**
+     * The `decimals` the token states, as the app passes to `FormattedCryptoAmount`. Omit for a
+     * network coin. Six of them (USDC, USDT) make a token read as money: two decimals and a
+     * `<0.01` dust limit, rather than five and `<0.00001`.
+     */
+    tokenDecimals?: number;
+};
+
+/**
+ * The amount as a compact surface shows it, by way of the formatter the app itself uses, so that
+ * dust, millions, zero and stablecoins are covered rather than approximated here.
+ *
+ * Accepts a grouped value (`1,234.5`), which is what the rest of this file produces and what
+ * `BigNumber` would otherwise read as NaN.
+ */
+export const toCompactAmount = (value: string, { tokenDecimals }: CompactAmountOptions = {}) => {
+    const ungroupedValue = value.replace(/,/g, '');
+
+    if (!new BigNumber(ungroupedValue).isFinite()) {
+        throw new Error(`Cannot compact "${value}": not a finite number.`);
     }
-    const fraction = (parseFloat(params.balance) * params.percentage) / 100;
+
+    return formatCompactCryptoAmount({
+        value: ungroupedValue,
+        locale: 'en-US',
+        isMoneyLike: isMoneyLikeToken(tokenDecimals),
+    });
+};
+
+/**
+ * As {@link toCompactAmount}, for a value that arrives with its symbol attached: `"1.2009 SOL"`.
+ */
+export const toCompactAmountWithSymbol = (
+    amountWithSymbol: string,
+    options?: CompactAmountOptions,
+) => {
+    const [value, ...symbol] = amountWithSymbol.split(' ');
+
+    if (value === undefined) {
+        throw new Error(`Cannot compact an empty amount: "${amountWithSymbol}"`);
+    }
+
+    return [toCompactAmount(value, options), ...symbol].join(' ');
+};
+
+export const calculatePercentageOfBalance = (params: PercentageOfBalanceParams) => {
     const maxDecimals = getAccountDecimals(params.symbol);
+    const exactFraction = BigNumber(params.balance).times(params.percentage).div(100);
+    // The form rounds a fraction of the balance to the coin's precision, while `localizeNumber`
+    // truncates, so round before handing it over.
+    const fraction =
+        maxDecimals === undefined
+            ? exactFraction
+            : exactFraction.decimalPlaces(maxDecimals, BigNumber.ROUND_HALF_UP);
 
     return localizeNumber(fraction, 'en-US', 0, maxDecimals);
 };
@@ -150,17 +181,15 @@ export const countDecimalPlaces = (value: string | number) => {
 };
 
 export const getBigNumberFromBalance = async (locator: Locator) => {
-    let originalBalanceText = await locator.textContent();
-    if (!originalBalanceText) {
-        throw new Error('Balance text content is empty');
-    }
-
-    const hasEllipsis = originalBalanceText?.includes('…');
+    await expect(locator).toHaveText(/\d/);
+    let originalBalanceText = await locator.innerText();
+    const hasEllipsis = originalBalanceText.includes('…');
     if (hasEllipsis) {
         originalBalanceText = originalBalanceText.slice(0, -1);
     }
 
-    const originalBalance = BigNumber(originalBalanceText);
+    // Grouped past a thousand (`1,000.99`), which BigNumber reads as NaN.
+    const originalBalance = BigNumber(originalBalanceText.replace(/,/g, ''));
 
     return { originalBalance, hasEllipsis };
 };
@@ -237,8 +266,16 @@ export const sanitizeAndStringifyLogFields = (fields: Record<string, unknown>) =
         2,
     );
 
-export const toADA = (lovelace: number, options?: { maxDecimals?: number }) =>
-    `${localizeNumber(lovelace / 1000000, 'en-US', 0, options?.maxDecimals ?? 6)} ADA`;
+export const toADA = (lovelace: number, options?: { maxDecimals?: number }) => {
+    const maxDecimals = options?.maxDecimals ?? 6;
+    // A fee is rounded up, never truncated, so it is not understated. `localizeNumber`
+    // truncates, so round first.
+    const ada = BigNumber(lovelace)
+        .div(1_000_000)
+        .decimalPlaces(maxDecimals, BigNumber.ROUND_HALF_UP);
+
+    return `${localizeNumber(ada, 'en-US', 0, maxDecimals)} ADA`;
+};
 
 export const replaceTemplatesInTranslation = (
     template: string,

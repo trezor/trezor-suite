@@ -1,35 +1,24 @@
-import { useSelector } from 'react-redux';
-
-import {
-    type TransactionsRootState,
-    selectAreAllAccountTransactionsLoaded,
-} from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Button, Loader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type TransactionsListFooterProps = {
-    accountKey: AccountKey;
+    hasMoreTransactions: boolean;
     isLoading: boolean;
     onButtonPress: () => void;
 };
 
 export const TransactionsListFooter = ({
-    accountKey,
+    hasMoreTransactions,
     isLoading,
-
     onButtonPress,
 }: TransactionsListFooterProps) => {
-    const areAllTxnsFetched = useSelector((state: TransactionsRootState) =>
-        selectAreAllAccountTransactionsLoaded(state, accountKey),
-    );
     if (isLoading) {
         return (
             <Box paddingVertical="sp40">
                 <Loader />
             </Box>
         );
-    } else if (!areAllTxnsFetched) {
+    } else if (hasMoreTransactions) {
         return (
             <Box paddingTop="sp32" paddingHorizontal="sp16">
                 <Button

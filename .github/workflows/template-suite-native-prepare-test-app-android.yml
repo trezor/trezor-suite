@@ -17,12 +17,13 @@ jobs:
       COMMIT_HASH: "e2e-test" # it has to be hardcoded to avoid the fingerprint change
     steps:
       - name: Checkout project
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           submodules: "true"
+          lfs: true
 
       - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
+        uses: jlumbroso/free-disk-space@ceedf095f4ec1a097402bc6bd80831f2e1a6fde6 # main
         with:
           # The free GH runner has limited disk space, so we need to uninstall some preinstalled tools.
           dotnet: true
@@ -33,7 +34,7 @@ jobs:
           large-packages: false
 
       - name: Install node and yarn
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
@@ -48,7 +49,7 @@ jobs:
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
         continue-on-error: true
         with:
           version: v0.19.1
@@ -60,14 +61,14 @@ jobs:
         run: yarn install --immutable
 
       - name: Setup Java
-        uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 # v5
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v5
         with:
           distribution: temurin
           java-version: 17
 
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
-        run: yarn prebuild --platform android --clean
+        run: yarn prebuild --platform android
 
       - name: Sign message system config
         working-directory: ./suite-common/message-system
@@ -80,7 +81,7 @@ jobs:
         run: yarn exec fingerprint ./ > expo-fingerprint.json && node -e "console.log('HASH=' + require('./expo-fingerprint.json').hash)" >> $GITHUB_OUTPUT
 
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
           aws-region: eu-central-1
@@ -99,7 +100,9 @@ jobs:
 
       - name: Setup Android SDK
         if: steps.s3_build_cache.outputs.hit == 'true'
-        uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4
+        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4
+        with:
+          packages: "platform-tools"
 
       - name: Download Apktool
         if: steps.s3_build_cache.outputs.hit == 'true'
@@ -157,7 +160,9 @@ jobs:
       - name: Build a new Detox test .apk
         if: steps.s3_build_cache.outputs.hit == 'false'
         working-directory: ./suite-native/app
-        run: yarn exec detox build -PreactNativeArchitectures=x86_64 --configuration android.emu.release
+        env:
+          ORG_GRADLE_PROJECT_reactNativeArchitectures: x86_64
+        run: yarn exec detox build --configuration android.emu.release
 
       - name: save .apk to the aws s3 bucket
         if: steps.s3_build_cache.outputs.hit == 'false'

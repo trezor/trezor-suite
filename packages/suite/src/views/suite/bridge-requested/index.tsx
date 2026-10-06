@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, H3, H4, Modal, Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
-import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { Metadata } from 'src/components/suite';
-import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
+import { useLayout, useSelector } from 'src/hooks/suite';
 import { AutoStart } from 'src/views/settings/SettingsGeneral/AutoStart';
 
 import { ErrorPage } from '../ErrorPage';
@@ -21,9 +23,12 @@ export const BridgeRequested = () => {
     const [confirmGoToWallet, setConfirmGoToWallet] = useState(false);
     const popupCall = useSelector(selectConnectPopupCall);
 
-    const dispatch = useDispatch();
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
 
-    const goToWallet = useCallback(() => dispatch(goto({ routeName: 'wallet-index' })), [dispatch]);
+    const goToWallet = useCallback(
+        () => dispatch(gotoThunk({ routeName: 'wallet-index' })),
+        [dispatch],
+    );
 
     useEffect(() => {
         // Popup flow started, exit the bridge requested foreground app

@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { type TextInput } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { useFilteredUtxos } from '@suite-common/transaction-search';
 import {
     type AccountsRootState,
@@ -31,7 +33,7 @@ export const SendUtxoScreen = ({
     route: { params },
 }: StackProps<SendStackParamList, SendStackRoutes.SendUtxo>) => {
     const { accountKey, amount } = params;
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const { translate } = useTranslate();
     const navigation = useNavigation();

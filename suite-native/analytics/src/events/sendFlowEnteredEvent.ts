@@ -8,7 +8,7 @@ type SendFlowLocation = 'dashboard' | 'accountDetail';
 
 type Attributes = {
     location: AttributeDef<SendFlowLocation>;
-    assetSymbol: AttributeDef<NetworkSymbol>;
+    assetSymbol?: AttributeDef<NetworkSymbol>;
     tokenSymbol?: AttributeDef<TokenSymbol>;
     tokenContract?: AttributeDef<TokenAddress>;
 };
@@ -24,9 +24,12 @@ export const sendFlowEnteredEvent: EventDef<Attributes, EventType.SendFlowEntere
                 'Where the send flow was initiated: `dashboard` from the main dashboard, `accountDetail` from an account detail page',
         },
         assetSymbol: {
-            changelog: [{ version: '25.5.1', notes: 'added' }],
+            changelog: [
+                { version: '25.5.1', notes: 'added' },
+                { version: '26.8.1', notes: 'made optional for dashboard entry' },
+            ],
             description:
-                'The blockchain network symbol for which the transaction is being sent (e.g., `btc`, `eth`, `ada`)',
+                'The blockchain network symbol for which the transaction is being sent (e.g., `btc`, `eth`, `ada`); omitted when entering from the dashboard before selecting an account',
         },
         tokenSymbol: {
             changelog: [{ version: '25.5.1', notes: 'added' }],

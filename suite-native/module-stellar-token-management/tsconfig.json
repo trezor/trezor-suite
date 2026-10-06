@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
@@ -32,9 +35,6 @@
         { "path": "../transaction-management" },
         {
             "path": "../../packages/blockchain-link-types"
-        },
-        {
-            "path": "../../packages/blockchain-link-utils"
         },
         {
             "path": "../../networks/stellar/network-stellar"

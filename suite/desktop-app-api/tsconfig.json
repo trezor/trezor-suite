@@ -1,0 +1,18 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "noImplicitAny": false,
+        "outDir": "./libDev"
+    },
+    "include": ["."],
+    "references": [
+        {
+            "path": "../../suite-common/platform-encryption"
+        },
+        { "path": "../tor-types" },
+        { "path": "../../packages/type-utils" },
+        {
+            "path": "../../suite-common/dependency-injection"
+        }
+    ]
+}

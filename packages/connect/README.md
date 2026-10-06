@@ -1,12 +1,14 @@
 # @trezor/connect
 
-API version 10.0.0-beta.1
+API version 10.0.1
 
 [![NPM](https://img.shields.io/npm/v/@trezor/connect.svg)](https://www.npmjs.org/package/@trezor/connect)
 
 Trezor Connect is a platform for easy integration of Trezor into 3rd party services, as well as into Trezor Suite. It provides an API with functionality to access public keys, sign transactions and authenticate users.
 
 This package is intended to be used in node.js environment. If you wan't to build a web application please refer to [@trezor/connect-web package](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-web/README.md).
+
+It runs Connect in-process: it composes the execution engine from [@trezor/connect-core](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-core/README.md) and supplies the node transports, Trezor Bridge first and direct USB (from [@trezor/transport](https://www.npmjs.com/package/@trezor/transport)) as the fallback. No extra package or transport wiring is needed; `init({ manifest })` is enough. Passing a non-empty `transports` list replaces the defaults.
 
 > **Building a web app?** Use [@trezor/connect-web](https://www.npmjs.com/package/@trezor/connect-web) instead — it adds browser transport handling and popup-based UI.
 >
@@ -40,7 +42,7 @@ For more instructions [refer to this document](https://github.com/trezor/trezor-
 
 ## Versioning
 
-Version 10 is the current major version and is currently in beta. New major versions are released when there are breaking API changes.
+Version 10 is the current major version. New major versions are released when there are breaking API changes.
 
 ## Docs
 
@@ -52,4 +54,4 @@ A collection of examples on how to implement @trezor/connect in various environm
 
 ## Tests
 
-For integration testing against trezord and emulator refer to [this document](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/e2e/README.md).
+For integration testing against trezord and emulator refer to [this document](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-core/e2e/README.md).

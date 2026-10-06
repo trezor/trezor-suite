@@ -36,7 +36,7 @@ const tx = new Transaction(..., Networks.TESTNET);
 await TrezorConnect.stellarSignTransaction({
     device,
     path,
-    xdrBase64: tx.toXDR(),
+    xdrBase64: tx.toXdr(),
     testnet: true,
 });
 ```

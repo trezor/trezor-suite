@@ -51,11 +51,11 @@ export function createHttpClient({ baseUrl, ...defaultFetcherOptions }: HttpClie
             T,
             any
         >,
-        Schema extends EndpointFetcherOptions['schema'] extends infer S
+        Schema extends (EndpointFetcherOptions['schema'] extends infer S
             ? S extends StandardSchemaV1<infer I, infer O>
                 ? Required<StandardSchemaV1<I, O>>
                 : never
-            : never,
+            : never),
         Endpoint extends string,
     >(endpoint: Endpoint, options: EndpointFetcherOptions) {
         return <
@@ -66,8 +66,7 @@ export function createHttpClient({ baseUrl, ...defaultFetcherOptions }: HttpClie
                 ([RouteParams] extends [never] ? unknown : { routeParams: RouteParams }),
         ) => {
             const opts = fetcherOptions as
-                | (Options & { routeParams?: Record<string, string> })
-                | undefined;
+                (Options & { routeParams?: Record<string, string> }) | undefined;
 
             const pathname = opts?.routeParams
                 ? composePathnameFromRoute(endpoint, opts.routeParams)

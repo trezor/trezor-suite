@@ -6,7 +6,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { type Address as BlockchainLinkAddress } from '@trezor/blockchain-link-types';
 import { Column, Row, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { CoinBalance } from 'src/components/suite';
@@ -17,14 +16,16 @@ import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/
 
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
-interface TradingUtxoReceiveAddressOptionProps {
+type TradingUtxoReceiveAddressOptionProps = {
     account: Account;
     address: BlockchainLinkAddress;
-}
+    label?: string;
+};
 
 export const TradingUtxoReceiveAddressOption = ({
     account,
     address,
+    label,
 }: TradingUtxoReceiveAddressOptionProps) => {
     const { tradingReceiveAddress } = useTradingReceiveAddressValues();
     const modalControls = useReceiveAddressModalControls();
@@ -55,13 +56,22 @@ export const TradingUtxoReceiveAddressOption = ({
             data-testid="@trading/bitcoin-receive-address-modal/option"
             onClick={onOptionClick}
         >
-            <Row width="100%" gap={12} justifyContent="space-between">
-                <Row gap={12}>
-                    <TokenIcon size={24} symbol={account.symbol} />
-                    <Column alignItems="flex-start">
+            <Row
+                width="100%"
+                minHeight={44}
+                gap={12}
+                alignItems="center"
+                justifyContent="space-between"
+            >
+                <Column alignItems="flex-start" flex="1" minWidth={0}>
+                    {label ? (
+                        <Text as="div" typographyStyle="body-md" ellipsisLineCount={1}>
+                            {label}
+                        </Text>
+                    ) : (
                         <Address isTruncated value={address.address} />
-                    </Column>
-                </Row>
+                    )}
+                </Column>
 
                 {!!address.received && address.received !== '0' && (
                     <Column alignItems="flex-end">

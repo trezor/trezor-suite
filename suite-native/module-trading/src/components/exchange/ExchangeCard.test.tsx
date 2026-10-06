@@ -1,3 +1,7 @@
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -6,12 +10,24 @@ import {
     renderWithStoreProvider,
     within,
 } from '@suite-native/test-utils-store';
-import { ethOnBaseAsset, usdcAsset } from '@suite-native/trading-fixtures';
+import { btcAsset, ethOnBaseAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
+import { PROTO } from '@trezor/connect';
 
 import { ExchangeCard } from './ExchangeCard';
 import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 import { createTradingPreloadedState } from '../../test-utils/tradingTestUtils';
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({ navigate: jest.fn(), setParams: jest.fn() }),
+    useRoute: () => ({ params: {} }),
+}));
+
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
+    analytics: mockNativeAnalytics(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
+};
 
 describe('ExchangeCard', () => {
     let form: ExchangeFormType;
@@ -31,30 +47,32 @@ describe('ExchangeCard', () => {
         },
     });
 
-    const renderForm = () =>
-        renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderForm = async () =>
+        await renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
+            services,
         });
 
-    const renderExchangeCard = () =>
-        renderWithStoreProvider(<ExchangeCard isAmountInputActive={false} />, {
+    const renderExchangeCard = async () =>
+        await renderWithStoreProvider(<ExchangeCard isAmountInputActive={false} />, {
             preloadedState,
+            services,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(() => {
-        const { result } = renderForm();
+    beforeEach(async () => {
+        const { result } = await renderForm();
         form = result.current;
     });
 
-    it('should render send and receive sections with selected assets', () => {
-        act(() => {
+    it('should render send and receive sections with selected assets', async () => {
+        await act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('sendCryptoAmount', '100');
             form.setValue('receiveAsset', ethOnBaseAsset);
         });
 
-        const { getByTestId } = renderExchangeCard();
+        const { getByTestId } = await renderExchangeCard();
         const sendSection = getByTestId('@trading/exchangeCard/sendSection');
         const receiveSection = getByTestId('@trading/exchangeCard/receiveSection');
 
@@ -66,9 +84,6 @@ describe('ExchangeCard', () => {
                 getTranslation('moduleTrading.selectCoin.buttonTitle'),
             ),
         ).toHaveTextContent(/USDC/);
-        expect(
-            within(sendSection).getByLabelText(getTranslation('moduleTrading.networkName')),
-        ).toHaveTextContent('Ethereum');
         expect(
             within(sendSection).getByLabelText(
                 getTranslation('moduleTrading.selectCoinToSell.amountLabel'),
@@ -84,9 +99,6 @@ describe('ExchangeCard', () => {
             ),
         ).toHaveTextContent(/ETH/);
         expect(
-            within(receiveSection).getByLabelText(getTranslation('moduleTrading.networkName')),
-        ).toHaveTextContent('Base');
-        expect(
             within(receiveSection).getByLabelText(
                 getTranslation('moduleTrading.selectCoin.amountLabel'),
             ),
@@ -94,5 +106,42 @@ describe('ExchangeCard', () => {
         expect(
             within(receiveSection).getByText(getTranslation('moduleTrading.tradingScreen.balance')),
         ).toBeOnTheScreen();
+    });
+
+    it('should convert receiveCryptoAmount to the base unit before passing it to CryptoToFiatValueBadge when bitcoin amount unit is sats', async () => {
+        const satsPreloadedState = createTradingPreloadedState({
+            tradeType: 'exchange',
+            overrides: {
+                wallet: {
+                    settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI },
+                    trading: {
+                        exchange: {
+                            exchangeInfo: {
+                                buyCryptoIds: [],
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        await act(() => {
+            form.setValue('receiveAsset', btcAsset);
+        });
+        await act(() => {
+            form.setValue('receiveCryptoAmount', '1234567123456');
+        });
+
+        const { getByText, queryByText } = await renderWithStoreProvider(
+            <ExchangeCard isAmountInputActive={false} />,
+            {
+                preloadedState: satsPreloadedState,
+                services,
+                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            },
+        );
+
+        expect(getByText('12345.67123456-bitcoin')).toBeOnTheScreen();
+        expect(queryByText('1234567123456-bitcoin')).toBeNull();
     });
 });

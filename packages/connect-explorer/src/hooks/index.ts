@@ -1,4 +1,5 @@
 import { useMemo, useRef } from 'react';
+// eslint-disable-next-line no-restricted-syntax -- Connect Explorer cannot depend on Suite Common packages.
 import { useDispatch, useSelector as useSelectorOrig } from 'react-redux';
 import type { TypedUseSelectorHook } from 'react-redux';
 

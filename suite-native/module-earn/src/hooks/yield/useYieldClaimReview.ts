@@ -1,0 +1,106 @@
+import { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import { useNavigation } from '@react-navigation/native';
+
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import {
+    type YieldRootState,
+    isYieldTxReviewForFlow,
+    selectYieldTxReview,
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
+import type {
+    StackNavigationProps,
+    YieldStackParamList,
+    YieldStackRoutes,
+} from '@suite-native/navigation';
+
+import { useYieldReviewAnalytics } from './useYieldReviewAnalytics';
+import {
+    pushYieldClaimReviewThunk,
+    signYieldClaimReviewThunk,
+} from '../../thunks/yield/yieldClaimThunks';
+import { useEarnTransactionReview } from '../earn/useEarnTransactionReview';
+
+type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldClaimReview>;
+
+interface UseYieldClaimReviewProps {
+    account: Account;
+    flowKey: string;
+    onReviewLeave?: () => void;
+}
+
+export const useYieldClaimReview = ({
+    account,
+    flowKey,
+    onReviewLeave,
+}: UseYieldClaimReviewProps) => {
+    const { dispatch } = useServices(injectDispatch);
+    const navigation = useNavigation<NavigationProps>();
+
+    const { reportError: reportClaimError, reportCancel: reportClaimCancel } =
+        useYieldReviewAnalytics({
+            flow: 'claim',
+            networkSymbol: account.symbol,
+        });
+
+    const txReview = useSelector((state: YieldRootState) => selectYieldTxReview(state));
+
+    // A leftover signed tx from a previous review of the same account must not appear
+    // as signed here, hence the flow identity and `notBefore` guard.
+    const [reviewOpenedAt] = useState(() => Date.now());
+
+    const isClaimSigned =
+        isYieldTxReviewForFlow(txReview, {
+            accountKey: account.key,
+            flowKey,
+            flowType: 'claim',
+            notBefore: reviewOpenedAt,
+        }) && !!txReview.serializedTx;
+
+    const signAction = useCallback(
+        () => dispatch(signYieldClaimReviewThunk({ account, flowKey })),
+        [account, dispatch, flowKey],
+    );
+
+    const pushAction = useCallback(
+        () => dispatch(pushYieldClaimReviewThunk({ account, flowKey })),
+        [account, dispatch, flowKey],
+    );
+
+    const onPushSuccess = useCallback(() => navigation.goBack(), [navigation]);
+
+    const { finalizeSubmit, leaveReviewFromDeviceCancel, startReview, status, submitReview } =
+        useEarnTransactionReview({
+            formType: 'yield-claim',
+            isSigned: isClaimSigned,
+            navigation,
+            onPushSuccess,
+            onReviewLeave,
+            reportCancel: reportClaimCancel,
+            reportError: reportClaimError,
+            signAction,
+            pushAction,
+        });
+
+    const submitClaim = useCallback(async () => {
+        const pushedPayload = await submitReview();
+
+        return pushedPayload?.txid;
+    }, [submitReview]);
+
+    const finalizeClaimSubmit = useCallback(
+        (txid: string) => finalizeSubmit({ txid }),
+        [finalizeSubmit],
+    );
+
+    return {
+        finalizeClaimSubmit,
+        leaveReviewFromDeviceCancel,
+        startReview,
+        status,
+        submitClaim,
+    };
+};

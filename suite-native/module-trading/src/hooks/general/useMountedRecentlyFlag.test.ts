@@ -5,8 +5,8 @@ import { RECENT_DURATION, useMountedRecentlyFlag } from './useMountedRecentlyFla
 jest.mock('./useMountedRecentlyFlag', () => jest.requireActual('./useMountedRecentlyFlag'));
 
 describe('useMountedRecentlyFlag', () => {
-    const renderUseMountedRecentlyFlag = () =>
-        renderHookWithBasicProvider(({ context }) => useMountedRecentlyFlag(context), {
+    const renderUseMountedRecentlyFlag = async () =>
+        await renderHookWithBasicProvider(({ context }) => useMountedRecentlyFlag(context), {
             initialProps: { context: 'context_1' },
         });
 
@@ -14,48 +14,48 @@ describe('useMountedRecentlyFlag', () => {
         jest.useFakeTimers();
     });
 
-    afterEach(() => {
-        act(() => {
+    afterEach(async () => {
+        await act(() => {
             jest.runOnlyPendingTimers();
         });
         jest.useRealTimers();
     });
 
-    it('should be true by default', () => {
-        const { result } = renderUseMountedRecentlyFlag();
+    it('should be true by default', async () => {
+        const { result } = await renderUseMountedRecentlyFlag();
 
         expect(result.current).toEqual(true);
     });
 
-    it('should be false after RECENT_DURATION time', () => {
-        const { result } = renderUseMountedRecentlyFlag();
+    it('should be false after RECENT_DURATION time', async () => {
+        const { result } = await renderUseMountedRecentlyFlag();
 
-        act(() => {
+        await act(() => {
             jest.advanceTimersByTime(RECENT_DURATION);
         });
 
         expect(result.current).toEqual(false);
     });
 
-    it('should reset to true when context changes', () => {
-        const { result, rerender } = renderUseMountedRecentlyFlag();
-        act(() => {
+    it('should reset to true when context changes', async () => {
+        const { result, rerender } = await renderUseMountedRecentlyFlag();
+        await act(() => {
             jest.advanceTimersByTime(RECENT_DURATION);
         });
 
-        rerender({ context: 'context_2' });
+        await rerender({ context: 'context_2' });
 
         expect(result.current).toEqual(true);
     });
 
-    it('should re-run timer on context change', () => {
-        const { result, rerender } = renderUseMountedRecentlyFlag();
-        act(() => {
+    it('should re-run timer on context change', async () => {
+        const { result, rerender } = await renderUseMountedRecentlyFlag();
+        await act(() => {
             jest.advanceTimersByTime(RECENT_DURATION);
         });
-        rerender({ context: 'context_2' });
+        await rerender({ context: 'context_2' });
 
-        act(() => {
+        await act(() => {
             jest.advanceTimersByTime(RECENT_DURATION);
         });
 

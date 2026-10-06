@@ -53,29 +53,34 @@ jobs:
             platform: win
     steps:
       - name: Checkout code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           lfs: true
-          submodules: recursive
       - name: Install node and yarn
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
+
+      - name: Install native binaries for every target architecture
+        uses: ./.github/actions/yarn-target-architectures
+        with:
+          platform: ${{ matrix.platform }}
 
       # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
       - name: Install deps and build libs
         run: |
-          yarn workspaces focus @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
+          # Must be the same list of workspaces as in .github/workflows/build-desktop-apps.yml
+          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
-          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
       - name: Build ${{ matrix.platform }} suite-desktop
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
-          yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
-          bash packages/suite-desktop-core/scripts/gnupg-sign.sh
-          mv packages/suite-desktop/build-electron/* .
+          yarn workspace @suite/desktop-app build:${{ matrix.platform }}
+          bash suite/desktop-app-main/scripts/gnupg-sign.sh
+          mv suite/desktop-app/build-electron/* .
       - name: Upload suite-desktop production artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
@@ -94,7 +99,7 @@ jobs:
     needs: suite-desktop
     steps:
       - name: Checkout code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         # checkout is only needed for the version number for draft release
       - name: Download suite-desktop apps
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -128,9 +133,9 @@ jobs:
     needs: suite-desktop
     steps:
       - name: Checkout code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
           aws-region: eu-central-1
@@ -172,16 +177,16 @@ jobs:
     runs-on: trezor-suite-release-runners
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           lfs: true
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
           aws-region: eu-central-1
       - name: Setup node
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
@@ -189,7 +194,8 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/suite-web @trezor/suite-data @suite-common/message-system
+          # Must be the same list of workspaces as in .github/workflows/build-suite-web.yml
+          yarn workspaces focus @suite/web-app @trezor/suite @suite/app-assets @suite-common/message-system
 
       - name: Build suite-web
         env:
@@ -198,13 +204,13 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           yarn message-system-sign-config
-          yarn workspace @trezor/suite-data build:lib
-          yarn workspace @trezor/suite-web build
+          yarn workspace @suite/app-assets build:lib
+          yarn workspace @suite/web-app build
 
       # this step should upload build result to s3 bucket staging-suite.trezor.io using awscli
       - name: Upload suite-web to staging-suite.trezor.io
         run: |
-          cd packages/suite-web
+          cd suite/web-app
           ./scripts/s3sync.sh staging-suite
 
   create-test-releases:
@@ -230,21 +236,26 @@ jobs:
             platform: win
     steps:
       - name: Checkout code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           lfs: true
-          submodules: recursive
       - name: Install node and yarn
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
+
+      - name: Install native binaries for every target architecture
+        uses: ./.github/actions/yarn-target-architectures
+        with:
+          platform: ${{ matrix.platform }}
 
       # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
       - name: Install deps and build libs
         run: |
-          yarn workspaces focus @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
+          # Must be the same list of workspaces as in .github/workflows/build-desktop-apps.yml
+          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
-          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
 
       - name: Prepare versions for autoupdate
@@ -260,10 +271,10 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           mv version0.json packages/suite/package.json
-          yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
-          bash packages/suite-desktop-core/scripts/gnupg-sign.sh
-          mv packages/suite-desktop/build-electron/Trezor-Suite* .
-          mv packages/suite-desktop/build-electron/latest*.yml .
+          yarn workspace @suite/desktop-app build:${{ matrix.platform }}
+          bash suite/desktop-app-main/scripts/gnupg-sign.sh
+          mv suite/desktop-app/build-electron/Trezor-Suite* .
+          mv suite/desktop-app/build-electron/latest*.yml .
 
       - name: Upload suite-desktop autoupdate version 0.xx.x artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -284,10 +295,10 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           mv version3.json packages/suite/package.json
-          yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
-          bash packages/suite-desktop-core/scripts/gnupg-sign.sh
-          mv packages/suite-desktop/build-electron/Trezor-Suite* .
-          mv packages/suite-desktop/build-electron/latest*.yml .
+          yarn workspace @suite/desktop-app build:${{ matrix.platform }}
+          bash suite/desktop-app-main/scripts/gnupg-sign.sh
+          mv suite/desktop-app/build-electron/Trezor-Suite* .
+          mv suite/desktop-app/build-electron/latest*.yml .
 
       - name: Upload suite-desktop autoupdate version 3x.x.x artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -305,7 +316,7 @@ jobs:
     needs: create-test-releases
     steps:
       - name: Checkout code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
       - name: Download suite-desktop apps
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:

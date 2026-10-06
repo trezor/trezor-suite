@@ -54,6 +54,9 @@ export const Bip329ExportButton = ({
         }
 
         switch (result.reason) {
+            case 'cancelled':
+                // User dismissed the directory picker; nothing to report.
+                return;
             case 'exportFailed':
                 showToast({
                     intent: 'critical',

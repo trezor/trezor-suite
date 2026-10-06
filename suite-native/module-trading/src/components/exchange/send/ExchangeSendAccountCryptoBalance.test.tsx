@@ -16,41 +16,41 @@ import {
 describe('ExchangeSendAccountCryptoBalance', () => {
     let exchangeForm: ExchangeFormType;
 
-    const renderExchangeForm = () => {
-        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+    const renderExchangeForm = async () => {
+        const { result } = await renderHookWithTradingProvider(() => useExchangeForm(), {
             tradeType: 'exchange',
         });
 
         return result.current;
     };
 
-    const renderComponent = () =>
-        renderWithTradingProvider(<ExchangeSendAccountCryptoBalance />, {
+    const renderComponent = async () =>
+        await renderWithTradingProvider(<ExchangeSendAccountCryptoBalance />, {
             tradeType: 'exchange',
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
         });
 
-    beforeEach(() => {
-        exchangeForm = renderExchangeForm();
+    beforeEach(async () => {
+        exchangeForm = await renderExchangeForm();
     });
 
-    it('should use asset form field as default symbol', () => {
-        act(() => {
+    it('should use asset form field as default symbol', async () => {
+        await act(() => {
             exchangeForm.setValue('sendAsset', btcAsset);
         });
-        const { getByTestId } = renderComponent();
+        const { getByTestId } = await renderComponent();
 
         expect(getByTestId(SEND_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:- BTC');
     });
 
-    it('should use sendAccount form field to obtain account', () => {
-        act(() => {
+    it('should use sendAccount form field to obtain account', async () => {
+        await act(() => {
             exchangeForm.setValue('sendAsset', btcAsset);
         });
-        act(() => {
+        await act(() => {
             exchangeForm.setValue('sendAccount', getBtcAccount());
         });
-        const { getByTestId } = renderComponent();
+        const { getByTestId } = await renderComponent();
 
         expect(getByTestId(SEND_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:0.01 BTC');
     });

@@ -10,8 +10,8 @@ const getPreloadedState = (swapSlippage: string | undefined) => {
     return { wallet: { trading } };
 };
 
-const renderUseReceiveAmountMultiplier = (swapSlippage: string | undefined) =>
-    renderHookWithStoreProvider(() => useReceiveAmountMultiplier(), {
+const renderUseReceiveAmountMultiplier = async (swapSlippage: string | undefined) =>
+    await renderHookWithStoreProvider(() => useReceiveAmountMultiplier(), {
         preloadedState: getPreloadedState(swapSlippage),
     });
 
@@ -22,8 +22,8 @@ describe('useReceiveAmountMultiplier', () => {
         ['5', '0.95'],
     ])(
         'applies slippage multiplier for selected quote swapSlippage=%s',
-        (swapSlippage, expectedAmount) => {
-            const { result } = renderUseReceiveAmountMultiplier(swapSlippage);
+        async (swapSlippage, expectedAmount) => {
+            const { result } = await renderUseReceiveAmountMultiplier(swapSlippage);
 
             expect(result.current('1')).toBe(expectedAmount);
         },

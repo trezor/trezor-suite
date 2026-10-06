@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { isPhishingTransaction } from '@suite-common/token-definitions';
 import {
@@ -13,7 +15,7 @@ import {
 } from '@suite-common/wallet-core';
 import { getSynchronize } from '@trezor/utils';
 
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from 'src/hooks/suite';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { shouldAttemptToLoadNextPageForVisibleTransactions } from './transaction-fetch-utils';
@@ -65,7 +67,7 @@ export const useFetchTransactions = (
     }, [fetchedAll, isLastPage]);
 
     const synchronize = useMemo(getSynchronize, [accountKey]);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const fetchCommon = useCallback(
         (
@@ -94,7 +96,6 @@ export const useFetchTransactions = (
         (
             page: number,
             options: {
-                recursive?: boolean;
                 noLoading?: boolean;
             } = {},
         ) => {
@@ -146,15 +147,17 @@ export const useFetchTransactions = (
     return { fetchNext, pagesFetched, fetchPage, fetchAll, isFetching, fetchedAll };
 };
 
+type UseVisibleTransactionsParams = {
+    account: Account;
+    numberOfPagesRequested: number;
+    enableFiltering?: boolean;
+};
+
 export const useVisibleTransactions = ({
     account,
     numberOfPagesRequested,
     enableFiltering = false,
-}: {
-    account: Account;
-    numberOfPagesRequested: number;
-    enableFiltering?: boolean;
-}) => {
+}: UseVisibleTransactionsParams) => {
     const allTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, account.key),
     );

@@ -1,18 +1,18 @@
 import { useState } from 'react';
 
-import { exportMetadataToLocalFile } from '@suite/metadata';
+import { exportMetadataToLocalFileThunk } from '@suite/metadata';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch } from 'src/hooks/suite';
-
 export const Metadata = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const [exporting, setExporting] = useState(false);
 
     const onClick = () => {
         setExporting(true);
-        dispatch(exportMetadataToLocalFile()).finally(() => {
+        dispatch(exportMetadataToLocalFileThunk()).finally(() => {
             setExporting(false);
         });
     };

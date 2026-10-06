@@ -1,33 +1,66 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
 import assert from 'assert';
+import { type ThunkAction } from 'redux-thunk';
 
-import type { SuiteSettingsState } from '@suite/settings';
-import { deviceActions, deviceInitialState, prepareDeviceReducer } from '@suite-common/device';
-import { type TrezorDevice } from '@suite-common/suite-types';
+import { type ForgetBluetoothDeviceDep } from '@suite-common/bluetooth';
+import {
+    type DeviceRootState,
+    deviceActions,
+    deviceInitialState,
+    prepareDeviceReducer,
+} from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
+import { type WithServices } from '@suite-common/redux-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import {
+    type OpenModalDep,
+    type ReportSecurityCheckDep,
+    type TrezorDevice,
+} from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { wipeDeviceThunk } from '@suite-common/wallet-core';
+import {
+    type ForgetDevicePersistentDataThunkState,
+    wipeDeviceThunk,
+} from '@suite-common/wallet-core';
 import { type Response } from '@trezor/connect';
 
-import type suiteReducer from 'src/reducers/suite/suiteReducer';
-import { extraDependencies } from 'src/support/extraDependencies';
-import { type ThunkAction } from 'src/types/suite';
-
 import * as deviceSettingsActions from '../deviceSettingsActions';
+import { type ResetDeviceThunkState } from '../deviceSettingsActions';
 
-export const deviceReducer = prepareDeviceReducer(extraDependencies);
+export const deviceReducer = prepareDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
 
-export type DeviceSettingsFixtureState = {
-    suite: ReturnType<typeof suiteReducer>;
-    suiteSettings: SuiteSettingsState;
-    device: ReturnType<typeof deviceReducer>;
+export type DeviceSettingsFixtureState = DeviceRootState;
+
+export type DeviceSettingsActionsTestDeps = WithServices<ReportSecurityCheckDep> & {
+    actions: OpenModalDep;
+    thunks: ForgetBluetoothDeviceDep;
 };
+
+type DeviceSettingsAction = ThunkAction<
+    unknown,
+    ForgetDevicePersistentDataThunkState & ResetDeviceThunkState,
+    DeviceSettingsActionsTestDeps,
+    UnknownAction
+>;
 
 const deviceChange = mockSuiteDevice({ path: '1' }, { device_id: 'new-device-id' });
 assert(deviceChange.features !== undefined);
 
 type Fixture = {
     description: string;
-    action: () => ThunkAction;
+    action: () => DeviceSettingsAction;
     initialState: Partial<DeviceSettingsFixtureState>;
     deviceChange?: TrezorDevice;
     mocks: Awaited<Response<{ message: string }>>;
@@ -77,7 +110,7 @@ const fixture: Fixture[] = [
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
-                    type: deviceActions.forgetDevicePersistentData.type,
+                    type: persistentDeviceDataActions.forgetDevicePersistentData.type,
                     payload: { deviceId: 'device-id' },
                 },
                 {
@@ -213,7 +246,7 @@ const fixture: Fixture[] = [
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
-                    type: deviceActions.forgetDevicePersistentData.type,
+                    type: persistentDeviceDataActions.forgetDevicePersistentData.type,
                     payload: { deviceId: 'device-id' },
                 },
                 {
@@ -253,7 +286,7 @@ const fixture: Fixture[] = [
     },
     {
         description: 'Apply settings',
-        action: () => deviceSettingsActions.applySettings({ label: 'foo' }),
+        action: () => deviceSettingsActions.applySettingsThunk({ label: 'foo' }),
         mocks: { success: true, payload: { message: 'huraa' } },
         result: {
             actions: [
@@ -267,7 +300,7 @@ const fixture: Fixture[] = [
     },
     {
         description: 'Apply settings - connect error',
-        action: () => deviceSettingsActions.applySettings({ label: 'foo' }),
+        action: () => deviceSettingsActions.applySettingsThunk({ label: 'foo' }),
         mocks: { success: false, error: { message: 'eeeh', code: 'Failure_UnknownCode' } },
         result: {
             actions: [
@@ -286,7 +319,7 @@ const fixture: Fixture[] = [
     },
     {
         description: 'Change pin',
-        action: () => deviceSettingsActions.changePin({}),
+        action: () => deviceSettingsActions.changePinThunk({}),
         mocks: { success: true, payload: { message: 'huraa' } },
         result: {
             actions: [
@@ -300,7 +333,7 @@ const fixture: Fixture[] = [
     },
     {
         description: 'Change pin - connect error',
-        action: () => deviceSettingsActions.changePin({}),
+        action: () => deviceSettingsActions.changePinThunk({}),
         mocks: { success: false, error: { message: 'eeeh', code: 'Failure_UnknownCode' } },
         result: {
             actions: [
@@ -319,7 +352,7 @@ const fixture: Fixture[] = [
     },
     {
         description: 'Reset device - Cancel - Entropy check not triggered',
-        action: () => deviceSettingsActions.resetDevice(),
+        action: () => deviceSettingsActions.resetDeviceThunk(),
         mocks: { success: false, error: { message: 'Canceled', code: 'Method_Cancel' } },
         result: {
             actions: [
@@ -345,14 +378,14 @@ const fixture: Fixture[] = [
     },
     {
         description: 'Reset device - Entropy check success',
-        action: () => deviceSettingsActions.resetDevice(),
+        action: () => deviceSettingsActions.resetDeviceThunk(),
         mocks: { success: true, payload: { message: 'whatever' } },
         result: {
             actions: [
                 {
-                    type: deviceActions.setEntropyCheckResult.type,
+                    type: persistentDeviceDataActions.setEntropyCheckResult.type,
                     payload: { deviceId: 'device-id', success: true },
-                } satisfies ReturnType<typeof deviceActions.setEntropyCheckResult>,
+                } satisfies ReturnType<typeof persistentDeviceDataActions.setEntropyCheckResult>,
             ],
         },
         initialState: {
@@ -364,7 +397,7 @@ const fixture: Fixture[] = [
     },
     {
         description: 'Reset device - Entropy check errored - show Device compromised',
-        action: () => deviceSettingsActions.resetDevice(),
+        action: () => deviceSettingsActions.resetDeviceThunk(),
         mocks: {
             success: false,
             error: { message: 'Entropy check failed', code: 'Failure_EntropyCheck' },
@@ -381,9 +414,9 @@ const fixture: Fixture[] = [
                     },
                 } satisfies ReturnType<typeof notificationsActions.addToast>,
                 {
-                    type: deviceActions.setEntropyCheckResult.type,
+                    type: persistentDeviceDataActions.setEntropyCheckResult.type,
                     payload: { deviceId: 'device-id', success: false },
-                } satisfies ReturnType<typeof deviceActions.setEntropyCheckResult>,
+                } satisfies ReturnType<typeof persistentDeviceDataActions.setEntropyCheckResult>,
             ],
         },
         initialState: {

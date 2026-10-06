@@ -9,6 +9,7 @@
     "references": [
         { "path": "../connect-common" },
         { "path": "../connect-web" },
-        { "path": "../eslint" }
+        { "path": "../eslint" },
+        { "path": "../requirements" }
     ]
 }

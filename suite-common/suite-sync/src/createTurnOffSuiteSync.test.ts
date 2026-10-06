@@ -1,9 +1,7 @@
-import type { Dispatch } from '@reduxjs/toolkit';
-
-import { createMockDeps, mock } from '@suite-common/dependency-injection';
+import { createMockDeps } from '@suite-common/dependency-injection';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { type CreateTurnOffSuiteSyncDeps, createTurnOffSuiteSync } from './createTurnOffSuiteSync';
+import { type TurnOffSuiteSyncDeps, createTurnOffSuiteSync } from './createTurnOffSuiteSync';
 import { clearAll } from './data/suiteSyncDataReducer';
 import { updateSuiteSyncEnabled } from './suiteSyncSlice';
 
@@ -12,9 +10,9 @@ const deviceStaticSessionId2: StaticSessionId = '4@5:6';
 
 describe(createTurnOffSuiteSync.name, () => {
     it('returns early when suite sync is already disabled', async () => {
-        const deps = createMockDeps<CreateTurnOffSuiteSyncDeps>({
+        const deps = createMockDeps<TurnOffSuiteSyncDeps>({
             getIsSuiteSyncEnabled: () => false,
-            dispatch: mock<Dispatch>(() => {}),
+            dispatch: jest.fn(),
             getAllDeviceSessionIds: () => [],
             turnOffSuiteSyncForWallet: () => Promise.resolve(),
         });
@@ -28,9 +26,9 @@ describe(createTurnOffSuiteSync.name, () => {
     });
 
     it('disables suite sync and turns off sync for all devices', async () => {
-        const deps = createMockDeps<CreateTurnOffSuiteSyncDeps>({
+        const deps = createMockDeps<TurnOffSuiteSyncDeps>({
             getIsSuiteSyncEnabled: () => true,
-            dispatch: mock<Dispatch>(() => {}),
+            dispatch: jest.fn(),
             getAllDeviceSessionIds: () => [deviceStaticSessionId1, deviceStaticSessionId2],
             turnOffSuiteSyncForWallet: () => Promise.resolve(),
         });
@@ -49,9 +47,9 @@ describe(createTurnOffSuiteSync.name, () => {
     });
 
     it('clears data and flushes storage even when no devices exist', async () => {
-        const deps = createMockDeps<CreateTurnOffSuiteSyncDeps>({
+        const deps = createMockDeps<TurnOffSuiteSyncDeps>({
             getIsSuiteSyncEnabled: () => true,
-            dispatch: mock<Dispatch>(() => {}),
+            dispatch: jest.fn(),
             getAllDeviceSessionIds: () => [],
             turnOffSuiteSyncForWallet: () => Promise.resolve(),
         });

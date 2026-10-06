@@ -1,12 +1,18 @@
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { requestSellTradeThunk } from './requestSellTradeThunk';
+import {
+    type RequestSellTradeThunkDeps,
+    type RequestSellTradeThunkState,
+    requestSellTradeThunk,
+} from './requestSellTradeThunk';
 
 const mockCreateQuoteLink = jest.fn((..._args: unknown[]) => Promise.resolve('https://return.url'));
 jest.mock('src/utils/wallet/trading/sellUtils', () => ({
@@ -44,13 +50,13 @@ jest.mock('@suite-common/trading', () => {
 const mockSubmitRequestForm = jest.fn((..._args: unknown[]) => () => {});
 jest.mock('../tradingCommonActions', () => ({
     ...jest.requireActual('../tradingCommonActions'),
-    submitRequestForm: (...args: unknown[]) => mockSubmitRequestForm(...args),
+    submitRequestFormThunk: (...args: unknown[]) => mockSubmitRequestForm(...args),
 }));
 
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 
 const ACCOUNT: Account = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btcAccount'),
     balance: '100000000',
 });
@@ -67,8 +73,7 @@ const QUOTE: SellFiatTrade = {
 };
 
 const buildStore = (accounts: Account[] = [ACCOUNT]) =>
-    configureMockStore({
-        extra: {},
+    createTestCompositionRoot<RequestSellTradeThunkDeps, RequestSellTradeThunkState>({
         preloadedState: {
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
             tokenDefinitions: {},
@@ -90,7 +95,8 @@ const buildStore = (accounts: Account[] = [ACCOUNT]) =>
                 },
             },
         },
-    });
+        services: () => ({ desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() } }),
+    }).services.store;
 
 describe('requestSellTradeThunk', () => {
     beforeEach(() => {

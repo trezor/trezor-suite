@@ -1,6 +1,7 @@
 import { BrowserContext, TestInfo, expect } from '@playwright/test';
 import { execSync } from 'child_process';
 
+import { installPerfInstrumentation } from '@trezor/perf-e2e';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { BRIDGE_VERSION } from './bridge';
@@ -26,6 +27,13 @@ export const electronSetup = async (
         viewport: testInfo.project.use.viewport!,
         ...electronConf,
     });
+
+    // The reload puts the init script in place before the renderer's React loads; the window is
+    // still on its initial screen, so no state is lost. Passive until a test opts in. PERF=0 skips it.
+    if (process.env.PERF !== '0') {
+        await suite.window.addInitScript(installPerfInstrumentation);
+        await suite.window.reload();
+    }
 
     // Mocks shell.openExternal to prevent opening real browser windows.
     await suite.electronApp.evaluate(({ shell }) => {
@@ -87,18 +95,53 @@ export const electronTeardown = async (
     await closePromise;
 };
 
-export const webSetup = async (browserContext: BrowserContext) => {
+type WebSetupParams = { webClipboardRead: boolean };
+
+export const webSetup = async (
+    browserContext: BrowserContext,
+    { webClipboardRead }: WebSetupParams,
+) => {
     await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
 
-    // Need to allow this to be able to access bridge on localhost
-    // When running tests against suite deployed elsewhere
     if (browserContext.browser()?.browserType().name() === 'chromium') {
-        await browserContext.grantPermissions(['local-network-access']);
+        await browserContext.grantPermissions([
+            // Need to allow this to be able to access bridge on localhost
+            // When running tests against suite deployed elsewhere
+            'local-network-access',
+            // Need to allow this to be able to read and write to the clipboard
+            ...(webClipboardRead ? (['clipboard-read', 'clipboard-write'] as const) : []),
+        ]);
+    }
+
+    if (webClipboardRead) {
+        // Deployed Suite sends Permissions-Policy: clipboard-read=(), which the granted
+        // permission cannot override, so relax the header for this browser context only.
+        await browserContext.route('**/*', async route => {
+            if (route.request().resourceType() !== 'document') {
+                return route.fallback();
+            }
+            const response = await route.fetch();
+            const headers = { ...response.headers() };
+            const policy = headers['permissions-policy'];
+            if (policy?.includes('clipboard-read')) {
+                const clipboardDirective = /clipboard-read=\([^)]*\)/;
+                if (!clipboardDirective.test(policy)) {
+                    throw new Error(
+                        `Cannot rewrite clipboard-read in the Permissions-Policy header, its format changed: ${policy}`,
+                    );
+                }
+                headers['permissions-policy'] = policy.replace(
+                    clipboardDirective,
+                    'clipboard-read=(self)',
+                );
+            }
+            await route.fulfill({ response, headers });
+        });
     }
 
     const page = await browserContext.newPage();
 
-    // Tells the app to attach Redux Store to window object. packages/suite-web/src/support/usePlaywright.ts
+    // Tells the app to attach Redux Store to window object. suite/web-app/src/support/usePlaywright.ts
     // Which is needed for methods manupalating Redux store like onboardingPage.disableFirmwareHashCheck
     await page.context().addInitScript(() => {
         window.Playwright = true;

@@ -1,15 +1,16 @@
 import { useMemo } from 'react';
 import { Keyboard } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { yup } from '@suite-common/validators';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Explorer, type Network } from '@suite-common/wallet-config';
 import {
     type ExplorerState,
     selectNetworkExplorers,
     setNetworkExplorerThunk,
 } from '@suite-common/wallet-core';
-import { useForm } from '@suite-native/forms';
+import { useForm, yup } from '@suite-native/forms';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { isUrl } from '@trezor/utils';
 
@@ -19,7 +20,7 @@ type PathInputField = {
 };
 
 export const useNetworkExplorerForm = ({ symbol }: Network) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { translate } = useTranslate();
 
     const networkExplorers = useSelector((state: ExplorerState) =>

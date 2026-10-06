@@ -1,6 +1,5 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { type IconComponent, type UIIntent } from '@trezor/components';
 import { ArrowDownIcon, ArrowsClockwiseFilledIcon, CheckIcon, PlugsIcon } from '@trezor/icons';
 
@@ -32,8 +31,8 @@ export const mapUpdateStatusToIntent: Record<UpdateStatus, UIIntent> = {
     'update-downloaded-manual': 'info',
     'update-downloaded-auto-restart-to-update': 'info',
     'up-to-date': 'brand',
-    'update-available': 'accentViolet',
-    'just-updated': 'accentViolet',
+    'update-available': 'explore',
+    'just-updated': 'explore',
 };
 
 type OnClickCallback = ((params: { dispatch: Dispatch }) => void) | null;
@@ -41,7 +40,7 @@ type OnClickCallback = ((params: { dispatch: Dispatch }) => void) | null;
 export const mapDeviceUpdateToClick: Record<UpdateStatusDevice, OnClickCallback> = {
     disconnected: null,
     'up-to-date': null,
-    'update-available': ({ dispatch }) => dispatch(goto({ routeName: 'firmware-index' })),
+    'update-available': ({ dispatch }) => dispatch(gotoThunk({ routeName: 'firmware-index' })),
 };
 
 export const mapSuiteUpdateToClick: Record<UpdateStatusSuite, OnClickCallback> = {

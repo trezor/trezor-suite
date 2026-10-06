@@ -1,11 +1,11 @@
 import { type PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
 
-import { DesktopAppUpdateState as UpdateState } from '@suite-common/suite-constants';
 import {
     type HandshakeElectron,
     type UpdateInfo,
     type UpdateProgress,
-} from '@trezor/suite-desktop-api';
+} from '@suite/desktop-app-api';
+import { DesktopAppUpdateState as UpdateState } from '@suite-common/suite-constants';
 
 export { DesktopAppUpdateState as UpdateState } from '@suite-common/suite-constants';
 

@@ -3,23 +3,24 @@ import { useFormState } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { formInputsMaxLength } from '@suite-common/validators';
+import { useServices } from '@suite-common/dependency-injection';
+import { useFormatters } from '@suite-common/formatters';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { TRON_STAKING_RESERVE } from '@suite-common/wallet-constants';
-import { composeTronFreezeFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
-    asAmountSubunit,
+    AMOUNT_MAX_LENGTH,
+    TRON_STAKING_RESERVE,
+    composeTronFreezeFeeLevelsThunk,
     getStakingLimitsByNetworkSymbol,
-    subunitsToUnits,
-    toFiatCurrency,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/wallet-core';
+import { asAmountSubunit, subunitsToUnits, toFiatCurrency } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import {
     validateDecimals,
     validateMin,
@@ -30,9 +31,10 @@ import { TronCurrencySwitchButton } from '../TronCurrencySwitchButton';
 import { useTronStakeContext } from '../TronStakeContext';
 
 export const TronFreezeAmount = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const locale = useSelector(selectLanguage);
     const { translationString } = useTranslation();
+    const { CryptoAmountFormatter } = useFormatters();
     const { account, form, actions, amountInput } = useTronStakeContext();
     const { control, setValue } = form.methods;
     const { errors } = useFormState({ control });
@@ -58,6 +60,13 @@ export const TronFreezeAmount = () => {
     const minStakingAmount = stakingLimits?.MIN_AMOUNT_FOR_STAKING;
 
     const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+
+    const formatCryptoAmount = (value: string) =>
+        CryptoAmountFormatter.format(value, {
+            symbol: account.symbol,
+            isBalance: true,
+            withSymbol: false,
+        });
 
     const amount = form.methods.watch('amount');
     const resourceType = form.methods.watch('resourceType');
@@ -94,7 +103,7 @@ export const TronFreezeAmount = () => {
             minStakingAmount: (value: string) => {
                 if (value && minStakingAmount?.isGreaterThan(value)) {
                     return translationString('TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE', {
-                        amount: minStakingAmount.toString(),
+                        amount: formatCryptoAmount(minStakingAmount.toString()),
                         displaySymbol: networkDisplaySymbol,
                     });
                 }
@@ -221,7 +230,7 @@ export const TronFreezeAmount = () => {
         locale,
         control,
         rules: currency === 'crypto' ? cryptoInputRules : fiatInputRules,
-        maxLength: currency === 'crypto' ? formInputsMaxLength.amount : formInputsMaxLength.fiat,
+        maxLength: AMOUNT_MAX_LENGTH,
         isDisabled,
         hasError,
         onChange: currency === 'crypto' ? handleCryptoAmountChange : handleFiatAmountChange,
@@ -288,7 +297,7 @@ export const TronFreezeAmount = () => {
                         <Translation
                             id="TR_EARN_TRON_RESERVE_LEFT_FOR_VOTING"
                             values={{
-                                amount: TRON_STAKING_RESERVE.toString(),
+                                amount: formatCryptoAmount(TRON_STAKING_RESERVE.toString()),
                                 networkDisplaySymbol,
                             }}
                         />
@@ -303,7 +312,7 @@ export const TronFreezeAmount = () => {
                         <Translation
                             id="TR_EARN_TRON_RESERVE_RECOMMENDED_FOR_VOTING"
                             values={{
-                                amount: TRON_STAKING_RESERVE.toString(),
+                                amount: formatCryptoAmount(TRON_STAKING_RESERVE.toString()),
                                 networkDisplaySymbol,
                             }}
                         />

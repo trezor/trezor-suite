@@ -7,6 +7,7 @@ import { useSetAtom } from 'jotai';
 import {
     BottomSheetModal,
     Box,
+    BulletList,
     BulletListItem,
     Button,
     CardWithIconLayout,
@@ -95,15 +96,17 @@ export const RecoveryInstructionsBottomSheet = forwardRef<BottomSheetModalMethod
                                     <Text variant="body-md" color="contentSecondary">
                                         <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card2.paragraph2" />
                                     </Text>
-                                    <BulletListItem variant="body-md" color="contentSecondary">
-                                        <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card2.bullets.1" />
-                                    </BulletListItem>
-                                    <BulletListItem variant="body-md" color="contentSecondary">
-                                        <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card2.bullets.2" />
-                                    </BulletListItem>
-                                    <BulletListItem variant="body-md" color="contentSecondary">
-                                        <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card2.bullets.3" />
-                                    </BulletListItem>
+                                    <BulletList textVariant="body-md" textColor="contentSecondary">
+                                        <BulletListItem>
+                                            <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card2.bullets.1" />
+                                        </BulletListItem>
+                                        <BulletListItem>
+                                            <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card2.bullets.2" />
+                                        </BulletListItem>
+                                        <BulletListItem>
+                                            <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card2.bullets.3" />
+                                        </BulletListItem>
+                                    </BulletList>
                                 </Box>
                             </VStack>
                             <Button onPress={handleSetUpPress}>

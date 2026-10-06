@@ -1,13 +1,15 @@
 import { type MouseEvent, type ReactNode } from 'react';
 
-import { type Route, goto } from '@suite/router';
+import { type Route, gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
+import { useAccountSearch, useSelector } from 'src/hooks/suite';
 
 type AssetActionButtonRoute = Extract<Route['name'], 'wallet-staking' | 'wallet-trading-buy'>;
 
@@ -26,7 +28,7 @@ export const AssetActionButton = ({
     routeName,
     'data-testid': dataTest,
 }: AssetActionButtonProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { toggleCoinFilter, setSearchString } = useAccountSearch();
     const accounts = useSelector(selectVisibleDeviceAccounts);
 
@@ -40,7 +42,7 @@ export const AssetActionButton = ({
         switch (routeName) {
             case 'wallet-staking':
                 dispatch(
-                    goto({
+                    gotoThunk({
                         routeName,
                         params: {
                             symbol,
@@ -58,7 +60,7 @@ export const AssetActionButton = ({
                         ),
                     );
                 }
-                dispatch(goto({ routeName }));
+                dispatch(gotoThunk({ routeName }));
                 break;
             default:
                 exhaustive(routeName);

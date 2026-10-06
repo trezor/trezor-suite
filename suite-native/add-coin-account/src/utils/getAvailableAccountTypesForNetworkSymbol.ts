@@ -1,40 +1,37 @@
 import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
-    type NetworkConfig,
     type NetworkSymbol,
-    networks,
+    asNetworkSymbol,
+    getNetwork,
 } from '@suite-common/wallet-config';
+import { isEvmNetwork } from '@suite-common/wallet-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
-const networkSymbolsWithOnlyNormalAccountType = new Set<NetworkSymbol>([
-    'ada',
-    'eth',
-    'pol',
-    'bsc',
-    'sol',
-    'op',
-    'base',
-    'arb',
-    'rhc',
-    'hype',
-    'avax',
-]);
+const normalOnlyNonEvmNetworkSymbols: NetworkSymbol[] = [
+    asNetworkSymbol('ada'),
+    asNetworkSymbol('sol'),
+];
 
 export const getAvailableAccountTypesForNetworkSymbol = ({
     symbol,
 }: {
     symbol: NetworkSymbol;
 }): [AccountType, ...AccountType[]] => {
-    const networkConfig = networks[symbol] as NetworkConfig | undefined;
+    const networkConfig = getNetwork(symbol);
     if (!networkConfig) {
+        return [NORMAL_ACCOUNT_TYPE];
+    }
+
+    const supportsOnlyNormalAccountType =
+        isEvmNetwork(symbol) || normalOnlyNonEvmNetworkSymbols.includes(symbol);
+    if (supportsOnlyNormalAccountType) {
         return [NORMAL_ACCOUNT_TYPE];
     }
 
     const accountTypes = typedObjectKeys(networkConfig.accountTypes).filter(
         accountType => !['coinjoin', 'imported', 'ledger'].includes(accountType),
     );
-    const supportsOnlyNormalAccountType = networkSymbolsWithOnlyNormalAccountType.has(symbol);
 
-    return [NORMAL_ACCOUNT_TYPE, ...(supportsOnlyNormalAccountType ? [] : accountTypes)];
+    return [NORMAL_ACCOUNT_TYPE, ...accountTypes];
 };

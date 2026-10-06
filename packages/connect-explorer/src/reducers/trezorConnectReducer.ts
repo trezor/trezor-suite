@@ -1,53 +1,46 @@
 import type { ConnectOptions, MethodAction, TrezorConnectAction } from '../types/actions';
-import {
-    ON_CHANGE_CONNECT_OPTION,
-    ON_CHANGE_CONNECT_OPTIONS,
-    ON_INIT_ERROR,
-} from '../types/actions';
-import type { Field } from '../types/common';
+import { ON_CHANGE_CONNECT_OPTIONS, ON_INIT_ERROR, ON_INIT_START } from '../types/actions';
 
 type Action = MethodAction | TrezorConnectAction;
 
 export type ConnectState = {
     options?: ConnectOptions;
+    isInitializing: boolean;
     isInitSuccess: boolean;
     initError?: string;
 };
 
+export type ConnectRootState = {
+    connect: ConnectState;
+};
+
+export const selectConnect = (state: ConnectRootState) => state.connect;
+export const selectIsConnectInitializing = (state: ConnectRootState) =>
+    state.connect?.isInitializing ?? false;
+export const selectIsConnectInitSuccess = (state: ConnectRootState) =>
+    state.connect?.isInitSuccess ?? false;
+export const selectConnectInitError = (state: ConnectRootState) => state.connect?.initError;
+
 const initialState: ConnectState = {
     options: undefined,
+    isInitializing: false,
     isInitSuccess: false,
     initError: undefined,
 };
 
-const onOptionChange = <T>(state: ConnectState, field: Field<T>, value: T): ConnectState => {
-    const newState = {
-        ...state,
-    };
-    if (!newState.options) {
-        newState.options = {
-            manifest: {
-                email: 'info@trezor.io',
-                appUrl: '@trezor/connect-explorer',
-                appName: 'Trezor Connect Explorer',
-            },
-        };
-    }
-
-    (newState.options as any)[field.name] = value;
-
-    return newState;
-};
-
 export default function connect(state: ConnectState = initialState, action: Action): ConnectState {
     switch (action.type) {
-        case ON_CHANGE_CONNECT_OPTION:
-            return onOptionChange(state, action.payload.option, action.payload.value);
-
+        case ON_INIT_START:
+            return {
+                ...state,
+                isInitializing: true,
+                initError: undefined,
+            };
         case ON_CHANGE_CONNECT_OPTIONS:
             return {
                 ...state,
                 initError: undefined,
+                isInitializing: false,
                 isInitSuccess: true,
                 options: action.payload,
             };
@@ -55,6 +48,7 @@ export default function connect(state: ConnectState = initialState, action: Acti
             return {
                 ...state,
                 initError: action.payload,
+                isInitializing: false,
                 isInitSuccess: false,
             };
         default:

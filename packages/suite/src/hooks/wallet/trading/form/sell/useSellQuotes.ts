@@ -1,13 +1,17 @@
 import { useEffect } from 'react';
-import { type UseFormReturn } from 'react-hook-form';
+import { type UseFormReturn, useWatch } from 'react-hook-form';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import {
+    TRADING_FORM_AMOUNT_INPUT_SOURCE,
+    TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
+    TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingSellFormProps,
@@ -17,10 +21,13 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
+import { useDidUpdate } from '@trezor/react-utils';
 
-import { useDispatch } from 'src/hooks/suite';
-import { useStore } from 'src/hooks/suite/useStore';
-import { isSellQuotesFetchAllowed } from 'src/utils/wallet/trading/sellQuotesRequestUtils';
+import {
+    getSellActiveAmount,
+    getSellActiveAmountField,
+    isSellQuotesFetchAllowed,
+} from 'src/utils/wallet/trading/sellQuotesRequestUtils';
 
 import { useTradingQuoteRequest } from '../common/useTradingQuoteRequest';
 
@@ -32,13 +39,16 @@ type UseSellQuotesProps = {
 };
 
 const SELL_IMMEDIATE_FIELDS = [
-    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
     TRADING_FORM_OUTPUT_CURRENCY,
 ] as const;
 
-const SELL_DEBOUNCED_FIELDS = [TRADING_FORM_OUTPUT_AMOUNT] as const;
+const SELL_DEBOUNCED_FIELDS = [
+    TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_FIAT,
+    TRADING_FORM_AMOUNT_IN_CRYPTO,
+] as const;
 
 export const useSellQuotes = ({
     methods,
@@ -46,14 +56,23 @@ export const useSellQuotes = ({
     shouldSendInSats,
     composeRequestCallback,
 }: UseSellQuotesProps) => {
-    const dispatch = useDispatch();
-    const store = useStore();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch, getState } = useServices(
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectGetState,
+    );
 
-    const { isScheduledQuotesRefresh } = useTradingQuoteRequest({
+    const sendCryptoSelect = useWatch({
+        control: methods.control,
+        name: TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    });
+
+    const { isScheduledQuotesRefresh, refreshQuotes } = useTradingQuoteRequest({
         methods,
         immediateFields: SELL_IMMEDIATE_FIELDS,
         debouncedFields: SELL_DEBOUNCED_FIELDS,
+        getActiveAmountField: getSellActiveAmountField,
+        getActiveAmount: getSellActiveAmount,
         isFetchAllowed: isSellQuotesFetchAllowed,
         requestQuotes: values =>
             network
@@ -73,12 +92,13 @@ export const useSellQuotes = ({
                 payload: {
                     type: 'sell',
                     count: quotes.length,
+                    input: values[TRADING_FORM_AMOUNT_INPUT_SOURCE],
                 },
             });
 
             const selectedPaymentMethod = values.paymentMethod?.value;
             const paymentMethodOption = selectTradingSelectedPaymentMethodByType(
-                store.getState(),
+                getState(),
                 'sell',
                 selectedPaymentMethod,
             );
@@ -89,6 +109,10 @@ export const useSellQuotes = ({
         },
         isRequestContextAvailable: !!network,
     });
+
+    useDidUpdate(() => {
+        refreshQuotes();
+    }, [sendCryptoSelect?.accountKey, sendCryptoSelect?.id, refreshQuotes]);
 
     useEffect(() => {
         if (!network) {

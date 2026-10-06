@@ -8,18 +8,14 @@ import { expect } from '../../testExtends/customMatchers';
 
 export class RewardsList {
     readonly rewardItems: Locator;
-    readonly itemDate: Locator;
-    readonly itemEpoch: Locator;
-    readonly itemCryptoAmount: Locator;
-    readonly itemFiatAmount: Locator;
+    readonly latestRewardEpoch: Locator;
     readonly itemsPerPage = 10;
 
     constructor(private readonly page: Page) {
         this.rewardItems = this.page.getByTestId('@staking/rewards-item');
-        this.itemDate = this.page.getByTestId('@staking/rewards-item/date');
-        this.itemEpoch = this.page.getByTestId('@staking/rewards-item/epoch');
-        this.itemCryptoAmount = this.page.getByTestId('@staking/rewards-item/crypto-amount');
-        this.itemFiatAmount = this.page.getByTestId('@staking/rewards-item/fiat-amount');
+        this.latestRewardEpoch = this.rewardItems
+            .first()
+            .getByTestId('@staking/rewards-item/epoch');
     }
 
     getRewardsFromPage = async () => await this.rewardItems.all();
@@ -40,20 +36,21 @@ export class RewardsList {
             .toHaveText(this.formatDate(reward.time));
         await expect
             .soft(item.getByTestId('@staking/rewards-item/epoch'))
-            .toHaveText(`Epoch number ${reward.epoch}`);
+            .toHaveTranslation('TR_STAKE_REWARDS_BADGE', { values: { count: reward.epoch } });
         await expect
             .soft(item.getByTestId('@staking/rewards-item/crypto-amount'))
             .toHaveText(this.formatSolana(reward.amount));
     };
 
     @step()
-    async checkPage(rewardsResponse: SolanaReward[], page: number) {
+    async verifyRewardsList(rewardsResponse: SolanaReward[], page: number) {
         const startIndex = (page - 1) * this.itemsPerPage;
         const endIndex = Math.min(startIndex + this.itemsPerPage, rewardsResponse.length);
         const expectedItemsCount = endIndex - startIndex;
 
+        // Waits for the page to render its rewards, e.g. after switching to another page
+        await expect(this.rewardItems).toHaveCount(expectedItemsCount);
         const rewardItems = await this.getRewardsFromPage();
-        expect(rewardItems).toHaveLength(expectedItemsCount);
 
         // Loop through all items on the page and verify their content
         // with corresponding reward from response
@@ -72,7 +69,7 @@ export class RewardsList {
 
         // Loops through all pages and checks rewards
         for (let page = 1; page <= pagesToCheck; page++) {
-            await this.checkPage(rewardsResponse, page);
+            await this.verifyRewardsList(rewardsResponse, page);
             const notLastPage = page !== pagesToCheck;
             if (notLastPage) {
                 await this.page.getByTestId(`@wallet/accounts/pagination/${page + 1}`).click();

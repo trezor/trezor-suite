@@ -40,7 +40,11 @@ export const ProgressBar = ({
     const theme = useTheme();
 
     return (
-        <Wrapper $color={backgroundColor || theme.elementFillNeutralBold} data-testid={dataTestId}>
+        <Wrapper
+            $color={backgroundColor || theme.elementFillNeutralBold}
+            data-component="ProgressBar"
+            data-testid={dataTestId}
+        >
             <Value $max={max} $value={value} $color={foregroundColor || theme.contentBrand} />
         </Wrapper>
     );

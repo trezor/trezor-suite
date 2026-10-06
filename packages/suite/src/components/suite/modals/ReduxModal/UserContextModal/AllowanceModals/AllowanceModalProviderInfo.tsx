@@ -9,6 +9,7 @@ export type AllowanceModalProvider = {
     companyName?: string;
     logo?: string | TokenIconProps;
     label: TranslationKey;
+    kind?: 'provider' | 'vault';
 };
 
 interface AllowanceModalProviderInfoProps {
@@ -32,12 +33,12 @@ export const AllowanceModalProviderInfo = ({
     const providerName = provider.companyName ?? provider.name;
 
     return (
-        <CardList.Item paddingType={showSpender ? 'medium' : 'normal'}>
+        <CardList.Item>
             <Text typographyStyle="body-sm">
                 <Translation id={provider.label} />
             </Text>
             <Column alignItems="flex-end" gap={2}>
-                <Logo>
+                <Logo data-testid="@modal/approve/provider-value">
                     {provider.logo && (
                         <Row alignItems="center" justifyContent="center">
                             {typeof provider.logo === 'string' ? (

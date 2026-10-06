@@ -1,10 +1,22 @@
+import { fixupConfigRules } from '@eslint/compat';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import playwright from 'eslint-plugin-playwright';
 import globals from 'globals';
 
 import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
-import { globalNoExtraneousDependenciesDevDependencies, importConfig } from './importConfig.mjs';
-import { javascriptConfig, noCastedObjectHelpersSyntax } from './javascriptConfig.mjs';
+import {
+    allowDevDependenciesIn,
+    allowTypeOnlyDevDependenciesIn,
+    desktopApiCompositionRootAllowance,
+    desktopApiRestrictedImports,
+    importConfig,
+    selectorRestrictedImports,
+} from './importConfig.mjs';
+import {
+    javascriptConfig,
+    noCastedObjectHelpersSyntax,
+    noRestrictedSyntax,
+} from './javascriptConfig.mjs';
 import { javascriptNodejsConfig } from './javascriptNodejsConfig.mjs';
 import { jestConfig } from './jestConfig.mjs';
 import { localRulesConfig } from './localRulesConfig.mjs';
@@ -16,9 +28,14 @@ import { restrictedImportsPatterns, typescriptConfig } from './typescriptConfig.
  */
 
 export {
-    globalNoExtraneousDependenciesDevDependencies,
+    allowDevDependenciesIn,
+    allowTypeOnlyDevDependenciesIn,
+    desktopApiCompositionRootAllowance,
+    desktopApiRestrictedImports,
     noCastedObjectHelpersSyntax,
+    noRestrictedSyntax,
     restrictedImportsPatterns,
+    selectorRestrictedImports,
 };
 
 /** @type {Config[]} */
@@ -28,6 +45,7 @@ export const eslint = [
             '**/.nx/*',
             '**/lib/*',
             '**/libDev/*',
+            '**/generated/csl-asmjs/*',
             '**/dist/*',
             '**/coverage/*',
             '**/build/*',
@@ -38,7 +56,7 @@ export const eslint = [
             '**/.expo/*',
             '**/.cache/*',
             '**/playwright-report/*',
-            '**/suite-data/files/favicon.js',
+            '**/app-assets/files/favicon.js',
         ],
     },
     { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
@@ -66,7 +84,8 @@ export const eslint = [
     ...jestConfig,
     ...localRulesConfig,
 
-    jsxA11y.flatConfigs.recommended,
+    // TODO: Remove the compatibility wrapper when eslint-plugin-jsx-a11y supports ESLint 10.
+    ...fixupConfigRules(jsxA11y.flatConfigs.recommended),
 
     // Tests
     {

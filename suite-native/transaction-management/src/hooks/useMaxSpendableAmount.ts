@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState, type TokenAddress } from '@suite-common/wallet-types';
@@ -13,7 +15,7 @@ type UseMaxSpendableAmountProps = {
     tokenContract?: TokenAddress;
     formState?: FormState;
     enabled?: boolean;
-    symbol: NetworkSymbol | null;
+    symbol?: NetworkSymbol | null;
 };
 
 const buildDefaultFormState = ({ tokenContract }: { tokenContract?: TokenAddress }): FormState => ({
@@ -44,7 +46,7 @@ export const useMaxSpendableAmount = ({
     enabled = true,
     symbol,
 }: UseMaxSpendableAmountProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const [maxSpendableAmount, setMaxSpendableAmount] = useState<string | undefined>(undefined);
 

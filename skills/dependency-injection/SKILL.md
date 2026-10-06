@@ -62,6 +62,64 @@ export const createServiceName =
     };
 ```
 
+### 5. Dependency injector:
+
+Name it `injectServiceName`, after the `ServiceNameDep` it returns. `inject` keeps it apart from
+Redux state selectors, which own the `select` prefix.
+
+```ts
+export const injectServiceName = (services: any): ServiceNameDep => ({
+    serviceName: services.serviceName,
+});
+```
+
+### Dependency access
+
+Take the dependency object whole and read it as `deps.serviceName`. Never destructure it, neither in
+the parameter list nor in the body.
+
+```ts
+// bad
+export const createServiceName =
+    ({ otherService }: ServiceNameDeps): ServiceName =>
+    params =>
+        otherService(params);
+
+// also bad
+export const createServiceName =
+    (deps: ServiceNameDeps): ServiceName =>
+    params => {
+        const { otherService } = deps;
+
+        return otherService(params);
+    };
+
+// good
+export const createServiceName =
+    (deps: ServiceNameDeps): ServiceName =>
+    params =>
+        deps.otherService(params);
+```
+
+The `deps.` prefix is the point: it tells the reader at a glance that the value is an injected
+service rather than a local variable, a parameter or an import.
+
+### Multiple implementations of a shared contract
+
+Mark shared contracts with `@serviceContract` to allow differently named factories.
+Unmarked contracts must match the factory name.
+
+```ts
+/** @serviceContract */
+export interface PlatformEncryption {
+    encrypt: (value: string) => Promise<string>;
+    decrypt: (value: string) => Promise<string>;
+}
+```
+
+Both `createNativePlatformEncryption` and `createElectronPlatformEncryption` return this contract.
+Their dependencies remain `NativePlatformEncryptionDeps` and `ElectronPlatformEncryptionDeps`.
+
 ## Composition root
 
 This is the place where the tree of dependencies is created and wired together.
@@ -86,11 +144,17 @@ export const createCompositionRoot = (deps: CompositionRootDeps) => {
 };
 ```
 
-## React service selection
+## Testing services
 
-`useServices` accepts multiple selectors. Prefer one call with all needed selectors instead of
+Tests MUST use the service's declared dependency type: annotate object literals (`const deps: ServiceDeps`)
+or pass it to `createMockDeps<ServiceDeps>`. Use `createMockDeps` and `mock` wherever possible. See
+[Dependencies in tests](../tests/SKILL.md#dependencies-in-tests).
+
+## React service injection
+
+`useServices` accepts multiple injectors. Prefer one call with all needed injectors instead of
 multiple `useServices` calls when a component or hook needs several services.
 
 ```ts
-const { serviceName, otherService } = useServices(selectServiceNameDep, selectOtherServiceDep);
+const { serviceName, otherService } = useServices(injectServiceName, injectOtherService);
 ```

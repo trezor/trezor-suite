@@ -1,16 +1,16 @@
 import { type ReactNode } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
-import { Translation, useTranslation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { injectDesktopAnalytics } from '@suite/analytics';
+import { Translation } from '@suite/intl';
+import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import { type Rating } from '@suite-common/feedback';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
-import { FeedbackCard } from '@trezor/product-components';
 
-import { useDispatch } from 'src/hooks/suite';
+import { EarnFlowFeedbackCard } from 'src/components/earn/common/EarnFlowFeedbackCard';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 type YieldFlowCompleteProps = {
@@ -30,9 +30,7 @@ export const YieldFlowComplete = ({
     vaultId,
     children,
 }: YieldFlowCompleteProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const { translationString } = useTranslation();
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isBelowMobile } = useLayoutSize();
 
     const handleBackToOverview = () => {
@@ -46,10 +44,10 @@ export const YieldFlowComplete = ({
             },
         });
 
-        dispatch(goto({ routeName: 'suite-earn' }));
+        dispatch(gotoThunk({ routeName: 'suite-earn' }));
     };
 
-    const handleFeedbackSubmit = (rating: Rating, description: string) => {
+    const handleFeedbackSubmit = (rating: Rating) => {
         analytics.report({
             type: events.yieldInteractionEvent.name,
             payload: {
@@ -58,19 +56,6 @@ export const YieldFlowComplete = ({
                 vaultId,
             },
         });
-
-        dispatch(
-            sendFeedbackAction({
-                type: 'SUGGESTION',
-                payload: {
-                    category: 'experimental',
-                    feature: 'stablecoin-yield',
-                    rating,
-                    description,
-                    ...buildUserFeedbackData(),
-                },
-            }),
-        );
     };
 
     return (
@@ -113,24 +98,22 @@ export const YieldFlowComplete = ({
                 </Column>
             </Card>
 
-            <Button intent="neutral" priority="secondary" onClick={handleBackToOverview}>
+            <Button
+                intent="neutral"
+                priority="secondary"
+                data-testid="@yield/flow-complete/back-to-overview-button"
+                onClick={handleBackToOverview}
+            >
                 <Translation id="TR_EARN_YIELD_BACK_TO_OVERVIEW" />
             </Button>
 
             {showFeedback && (
-                <FeedbackCard
-                    heading={
-                        <Translation
-                            id="TR_FEATURE_FEEDBACK_CARD_HEADING"
-                            values={{
-                                feature: translationString('TR_EARN_DEFI_YIELD_TITLE'),
-                            }}
-                        />
-                    }
-                    description={<Translation id="TR_FEEDBACK_CARD_DESCRIPTION" />}
-                    submitLabel={<Translation id="TR_FEEDBACK_CARD_SEND" />}
-                    successHeading={<Translation id="TR_FEEDBACK_CARD_SUCCESS_TITLE" />}
-                    successDescription={<Translation id="TR_FEEDBACK_CARD_SUCCESS_DESCRIPTION" />}
+                <EarnFlowFeedbackCard
+                    featureTitleId="TR_EARN_DEFI_YIELD_TITLE"
+                    analyticsCategory="yield"
+                    context={type}
+                    provider={vaultId}
+                    feature="yield"
                     onSubmit={handleFeedbackSubmit}
                 />
             )}

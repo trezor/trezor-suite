@@ -1,9 +1,12 @@
 import { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { selectCurrentFreshAddress } from '@suite-common/receive';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { ErrorMessage, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
@@ -12,10 +15,10 @@ import { type CloseActionType, Screen } from '@suite-native/navigation';
 
 import { ReceiveAddressActions } from './ReceiveAddressActions';
 import { ReceiveAddressCard } from './ReceiveAddressCard';
+import { ReceiveAddressInteractionsProvider } from './ReceiveAddressInteractionsProvider';
 import { ReceiveAddressLoader } from './ReceiveAddressLoader';
 import { ReceiveDestinationTagInfo } from './ReceiveDestinationTagInfo';
 import { ReceiveFreshAddressHeader } from './ReceiveFreshAddressHeader';
-import { useReceiveAddressVerification } from '../hooks/useReceiveAddressVerification';
 import { setCurrentFreshAddressForFlowEntryThunk } from '../receiveThunks';
 import { ReceiveBlockedDeviceCompromisedScreen } from '../screens/ReceiveBlockedDeviceCompromisedScreen';
 import { type ReceiveAddressListRootState } from '../selectors';
@@ -31,7 +34,7 @@ export const ReceiveAddressContent = ({
     tokenContract,
     closeActionType,
 }: ReceiveAddressContentProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const [initializedAccountKey, setInitializedAccountKey] = useState<AccountKey | null>(null);
 
     const currentFreshAddress = useSelector((state: ReceiveAddressListRootState) =>
@@ -49,14 +52,10 @@ export const ReceiveAddressContent = ({
         }, [accountKey, dispatch, initializedAccountKey]),
     );
 
-    const { verifyAddressOnDevice } = useReceiveAddressVerification(
-        accountKey,
-        currentFreshAddress?.path,
-    );
-
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
     );
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const hasInitializedCurrentFreshAddress = initializedAccountKey === accountKey;
 
     if (hasFirmwareAuthenticityCheckHardFailed) {
@@ -74,35 +73,45 @@ export const ReceiveAddressContent = ({
     }
 
     return (
-        <Screen
-            header={
-                <ReceiveFreshAddressHeader
-                    accountKey={accountKey}
-                    tokenContract={tokenContract}
-                    closeActionType={closeActionType}
-                />
-            }
-            footer={
-                <>
-                    <ScreenFooterGradient />
-                    <VStack paddingHorizontal="sp16" paddingTop="sp8" paddingBottom="sp16">
-                        <ReceiveAddressActions
-                            address={currentFreshAddress.address}
-                            onVerifyAddress={verifyAddressOnDevice}
-                        />
-                    </VStack>
-                </>
-            }
-            noBottomPadding
+        <ReceiveAddressInteractionsProvider
+            accountKey={accountKey}
+            address={currentFreshAddress.address}
+            addressPath={currentFreshAddress.path}
+            isDeviceVerificationEnabled={!isPortfolioTrackerDevice}
         >
-            <VStack marginTop="sp8" spacing="sp16" flex={1}>
-                <ReceiveAddressCard
-                    accountKey={accountKey}
-                    address={currentFreshAddress.address}
-                    tokenContract={tokenContract}
-                />
-                <ReceiveDestinationTagInfo accountKey={accountKey} tokenContract={tokenContract} />
-            </VStack>
-        </Screen>
+            <Screen
+                header={
+                    <ReceiveFreshAddressHeader
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                        closeActionType={closeActionType}
+                    />
+                }
+                footer={
+                    <>
+                        <ScreenFooterGradient />
+                        <VStack paddingHorizontal="sp16" paddingTop="sp8" paddingBottom="sp16">
+                            <ReceiveAddressActions
+                                address={currentFreshAddress.address}
+                                isDeviceVerificationEnabled={!isPortfolioTrackerDevice}
+                            />
+                        </VStack>
+                    </>
+                }
+                noBottomPadding
+            >
+                <VStack marginTop="sp8" spacing="sp16" flex={1}>
+                    <ReceiveAddressCard
+                        accountKey={accountKey}
+                        address={currentFreshAddress.address}
+                        tokenContract={tokenContract}
+                    />
+                    <ReceiveDestinationTagInfo
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                    />
+                </VStack>
+            </Screen>
+        </ReceiveAddressInteractionsProvider>
     );
 };

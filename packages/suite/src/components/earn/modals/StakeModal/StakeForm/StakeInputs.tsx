@@ -1,12 +1,11 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { AMOUNT_MAX_LENGTH, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { type StakeFormState } from '@suite-common/wallet-types';
-import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
@@ -29,7 +28,7 @@ export const StakeInputs = () => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
     const locale = useSelector(selectLanguage);
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const {
         control,
@@ -51,6 +50,13 @@ export const StakeInputs = () => {
     } = useStakeFormContext();
 
     const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
+
+    const formatCryptoAmount = (amount: string) =>
+        CryptoAmountFormatter.format(amount, {
+            symbol: account.symbol,
+            isBalance: true,
+            withSymbol: false,
+        });
 
     if (!stakingLimits) {
         return null;
@@ -126,7 +132,7 @@ export const StakeInputs = () => {
         <Translation
             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
             values={{
-                amount: stakingLimits.MIN_AMOUNT_FOR_STAKING.toString(),
+                amount: formatCryptoAmount(stakingLimits.MIN_AMOUNT_FOR_STAKING.toString()),
                 networkDisplaySymbol,
             }}
         />
@@ -162,7 +168,7 @@ export const StakeInputs = () => {
                     labelLeft: <Translation id="AMOUNT" />,
                     control,
                     rules: cryptoInputRules,
-                    maxLength: formInputsMaxLength.amount,
+                    maxLength: AMOUNT_MAX_LENGTH,
                     rightContent: (
                         <Text intent="neutral" priority="secondary">
                             {networkDisplaySymbol}
@@ -180,7 +186,7 @@ export const StakeInputs = () => {
                               labelLeft: <Translation id="AMOUNT" />,
                               control,
                               rules: fiatInputRules,
-                              maxLength: formInputsMaxLength.fiat,
+                              maxLength: AMOUNT_MAX_LENGTH,
                               rightContent: (
                                   <Text intent="neutral" priority="secondary">
                                       {baseCurrencyCode.toUpperCase()}
@@ -195,13 +201,13 @@ export const StakeInputs = () => {
                 switchTranslation={{
                     fiat: (
                         <Translation
-                            id="TR_TRADING_ENTER_AMOUNT_IN"
+                            id="TR_ENTER_AMOUNT_IN"
                             values={{ currency: baseCurrencyCode.toUpperCase() }}
                         />
                     ),
                     crypto: (
                         <Translation
-                            id="TR_TRADING_ENTER_AMOUNT_IN"
+                            id="TR_ENTER_AMOUNT_IN"
                             values={{ currency: networkDisplaySymbol }}
                         />
                     ),
@@ -282,7 +288,9 @@ export const StakeInputs = () => {
                                     : 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL'
                             }
                             values={{
-                                amount: stakingLimits.MIN_FOR_WITHDRAWALS.toString(),
+                                amount: formatCryptoAmount(
+                                    stakingLimits.MIN_FOR_WITHDRAWALS.toString(),
+                                ),
                                 networkDisplaySymbol,
                             }}
                         />
@@ -298,7 +306,9 @@ export const StakeInputs = () => {
                         <Translation
                             id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                             values={{
-                                amount: stakingLimits.MIN_FOR_WITHDRAWALS.toString(),
+                                amount: formatCryptoAmount(
+                                    stakingLimits.MIN_FOR_WITHDRAWALS.toString(),
+                                ),
                                 networkDisplaySymbol,
                             }}
                         />

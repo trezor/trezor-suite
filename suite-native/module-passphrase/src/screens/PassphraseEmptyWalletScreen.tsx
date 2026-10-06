@@ -1,13 +1,14 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     cancelDiscoveryThunk,
     runDiscoveryThunk,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     Box,
     Button,
@@ -31,8 +32,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 export const PassphraseEmptyWalletScreen = () => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
     const device = useSelector(selectSelectedDevice);
 

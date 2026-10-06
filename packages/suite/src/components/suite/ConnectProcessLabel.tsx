@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { type ConnectProcessInfo } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Badge, Icon, Row, Text, Tooltip } from '@trezor/components';
 import { AppWindowIcon, WarningIcon } from '@trezor/icons';
+
 const AppIcon = styled.img`
     width: 24px;
     height: 24px;

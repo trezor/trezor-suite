@@ -1,12 +1,14 @@
-import { type AnyAction } from '@reduxjs/toolkit';
+import { type PayloadAction, type UnknownAction } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { type ThpSuiteCredentials } from '@suite-common/suite-types';
 import {
     DEVICE,
     type DeviceThpCredentialsChanged,
     type DeviceThpPairingStatusChanged,
-    UI_REQUEST,
+    UI_EVENTS,
+    UI_REQUESTS,
+    isUiEventOfType,
 } from '@trezor/connect';
 import type { ThpCredentials } from '@trezor/protocol';
 
@@ -51,7 +53,12 @@ const addCredential = (credentials: ThpSuiteCredentials[], credential: ThpCreden
         .filter(c => c.trezor_static_public_key !== credential.trezor_static_public_key)
         .concat([{ ...credential, connectionCounter: 0 }]);
 
-export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
+export type ThpReducerDeps = ActionTypesDep<'storageLoad'>;
+type StorageLoadThpAction = PayloadAction<{
+    thp?: { credentials?: ThpSuiteCredentials[] };
+}>;
+
+export const prepareThpReducer = createReducerWithExtraDeps<ThpState, ThpReducerDeps>(
     initialThpState,
     (builder, extra) =>
         builder
@@ -80,7 +87,7 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                 state.autoconnectStep = null;
             })
             .addMatcher(
-                action => action.type === UI_REQUEST.REQUEST_THP_PAIRING,
+                action => action.type === UI_REQUESTS.REQUEST_THP_PAIRING_TAG,
                 (state, action: { type: string; requestId?: string }) => {
                     state.step = 'CodeEntry';
                     state.pairingRequestId = action.requestId;
@@ -129,9 +136,9 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                 },
             )
             .addMatcher(
-                action => action.type === UI_REQUEST.REQUEST_BUTTON,
-                (state, action: AnyAction) => {
-                    const actionName: THPButtonRequestName = action.payload.name;
+                action => isUiEventOfType(action, UI_EVENTS.BUTTON_REQUEST),
+                (state, action) => {
+                    const actionName = action.payload.name as THPButtonRequestName;
                     switch (actionName) {
                         case 'thp_pairing_request':
                             state.step = 'ConfirmConnectionBeforePairing';
@@ -147,7 +154,7 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             )
             // This is the THP flow in Firmware Update
             .addMatcher(
-                action => action.type === UI_REQUEST.REQUEST_CONFIRMATION,
+                action => action.type === UI_REQUESTS.REQUEST_CONFIRMATION,
                 (state, action: { type: string; requestId?: string }) => {
                     if (state.step !== 'CodeInvalid') {
                         state.step = 'BeforeConnectionInfo';
@@ -156,8 +163,9 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                 },
             )
             .addMatcher(
-                action => action.type === extra.actionTypes.storageLoad,
-                (state, action: AnyAction) => {
+                (action: UnknownAction): action is StorageLoadThpAction =>
+                    action.type === extra.actionTypes.storageLoad,
+                (state, action) => {
                     state.credentials = action.payload.thp?.credentials ?? [];
                 },
             ),

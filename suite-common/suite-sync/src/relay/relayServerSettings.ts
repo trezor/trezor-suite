@@ -1,4 +1,4 @@
-import { yup } from '@suite-common/validators';
+import * as yup from 'yup';
 
 export type SuiteSyncServerTypeOption<T> = {
     label: T;

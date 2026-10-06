@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 import {
@@ -30,7 +31,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
         accounts,
         isDiscoveryRunning,
         timeframeHours,
-        backendSymbol: 'btc',
+        backendSymbol: asNetworkSymbol('btc'),
     });
 
     useImperativeHandle(

@@ -1,8 +1,10 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import type { SellFiatTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingAmountLimitProps,
     selectTradingSellQuotesRequest,
@@ -25,6 +27,7 @@ import {
 import { type SellFormType, type SellFormValues } from '@suite-native/trading-types';
 
 import { sellFormValidationSchema } from '../../utils/sell/sellFormValidationSchema';
+import { type TradingFormWithMetadata } from '../general/form/tradingFormTypes';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
 import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
@@ -110,10 +113,19 @@ const useSellQuoteChangeEffect = ({ control, getValues, setValue }: SellFormType
     }, [quote, isAmountInSats, symbol, getValues, setValue]);
 };
 
-const useValidations = (
-    { trigger, setValue }: SellFormType,
-    limits: TradingAmountLimitProps | undefined,
-) => {
+type UseValidationsParams = {
+    form: SellFormType;
+    limits: TradingAmountLimitProps | undefined;
+    balance: string | undefined;
+    maxSpendableAmount: string | undefined;
+};
+
+const useValidations = ({
+    form: { trigger, setValue },
+    limits,
+    balance,
+    maxSpendableAmount,
+}: UseValidationsParams) => {
     const { translate } = useTranslate();
     const quotes = useSelector(selectValidTradingSellQuotes);
     const quoteRequest = useSelector(selectTradingSellQuotesRequest);
@@ -125,18 +137,24 @@ const useValidations = (
 
     useEffect(() => {
         trigger(['cryptoStringAmount', 'fiatStringAmount']);
-    }, [limits, trigger]);
+    }, [limits, balance, maxSpendableAmount, trigger]);
 
     useEffect(() => {
         setValue('generalAlert', generalAlertMsg);
     }, [generalAlertMsg, setValue]);
 };
 
-export const useSellForm = (): SellFormType => {
+export const useSellForm = (): TradingFormWithMetadata<SellFormType> => {
     const defaultValues = useSelector(selectSellFormDefaultValues);
     const limits = useSelector(selectSellAmountLimits);
-    const { context, setBalance, setSendSymbol, setContractAddress, setAccountKey } =
-        useContextForTradingForm(limits);
+    const {
+        context,
+        setBalance,
+        setSendNetworkSymbol,
+        setSendAssetSymbol,
+        setContractAddress,
+        setAccountKey,
+    } = useContextForTradingForm(limits);
 
     const form = useForm<SellFormValues>({
         defaultValues,
@@ -145,7 +163,7 @@ export const useSellForm = (): SellFormType => {
     });
 
     const { control } = form;
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const onSendAssetCleared = useCallback(() => {
         form.setValue('cryptoStringAmount', undefined, { shouldValidate: true });
@@ -156,17 +174,23 @@ export const useSellForm = (): SellFormType => {
     useSendAccountAssetBalance({
         control,
         setBalance,
-        setSendSymbol,
+        setSendNetworkSymbol,
+        setSendAssetSymbol,
         setContractAddress,
         setAccountKey,
     });
     useSellQuotesChangeEffect(form);
     useSellQuoteChangeEffect(form);
-    useValidations(form, limits);
+    useValidations({
+        form,
+        limits,
+        balance: context.balance,
+        maxSpendableAmount: context.maxSpendableAmount,
+    });
     useCountryChangeEffect(control);
     useProviderMetadataChangeEffect(control, 'sell');
 
-    return form;
+    return { ...form, metadata: { maxSpendableAmount: context.maxSpendableAmount } };
 };
 
 export const clearSellFormQuoteData = (form: SellFormType) => {

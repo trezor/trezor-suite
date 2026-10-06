@@ -24,6 +24,7 @@ export const id = jest.fn((name: string) => ({
 
 export const object = jest.fn((_props: any) => ({
     from: jest.fn((value: any) => ({ ok: true, value })),
+    fromUnknown: jest.fn((value: any) => ({ ok: true, value })),
 }));
 export const createQueryBuilder = jest.fn(() => jest.fn(() => ({})));
 export const createIdFromString = jest.fn((str: string) => str);
@@ -38,8 +39,8 @@ export const database = jest.fn(() => ({}));
 export const column = jest.fn(() => ({}));
 export const cast = jest.fn((value: any) => value);
 export const nullOr = jest.fn((schema: any) => schema);
-export const NonEmptyString1000 = jest.fn();
-export const NonEmptyString100 = jest.fn();
+export const NonEmptyTrimmedString1000 = jest.fn();
+export const NonEmptyTrimmedString100 = jest.fn();
 export const String = jest.fn();
 export const Boolean = jest.fn();
 export const Int = jest.fn();

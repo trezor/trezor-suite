@@ -1,5 +1,6 @@
 import { selectShowConnectLogs } from '@suite/settings';
-import { type CreateLogger, initLog } from '@trezor/connect';
+import { initLog } from '@trezor/connect';
+import type { CreateLogger } from '@trezor/logger';
 
 type CreateConnectLoggerFactoryDeps = {
     getState: () => any;
@@ -11,8 +12,7 @@ export type CreateConnectLoggerFactoryDep = {
     createConnectLoggerFactory?: CreateConnectLoggerFactory;
 };
 
-export const createConnectLoggerFactory: CreateConnectLoggerFactory = ({ getState }) => {
-    const enabled = selectShowConnectLogs(getState());
-
-    return prefix => initLog(prefix, enabled);
-};
+export const createConnectLoggerFactory: CreateConnectLoggerFactory =
+    ({ getState }) =>
+    prefix =>
+        initLog(prefix, selectShowConnectLogs(getState()));

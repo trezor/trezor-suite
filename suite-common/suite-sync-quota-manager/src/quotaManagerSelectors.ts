@@ -12,6 +12,9 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<
     DeviceRootState & WithSuiteSyncQuotaManagerState
 >();
 
+export const selectSuiteSyncQuotaManager = (state: WithSuiteSyncQuotaManagerState) =>
+    state.suiteSyncQuotaManager;
+
 export const selectIsDeviceRegistered = (state: WithSuiteSyncQuotaManagerState, deviceId: string) =>
     state.suiteSyncQuotaManager.registeredDevices.find(device => device.deviceId === deviceId) !==
     undefined;
@@ -57,5 +60,5 @@ export const selectShouldDisplayOutOfQuotaAlert = createMemoizedSelector(
         (state: WithSuiteSyncQuotaManagerState & DeviceRootState) =>
             selectDeviceDismissedNoQuotaLeftWarning(state, selectDeviceId(state) ?? ''),
     ],
-    (quotaLeft, alreadyDismissed) => quotaLeft === 0 && !alreadyDismissed,
+    (quotaLeft, alreadyDismissed) => quotaLeft !== undefined && quotaLeft <= 0 && !alreadyDismissed,
 );

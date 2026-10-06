@@ -7,11 +7,6 @@ type GitHubRelease = {
     prerelease: boolean;
 };
 
-export type LatestReleases = {
-    desktop: string | null;
-    mobile: string | null;
-};
-
 const parseVersionFromTag = (tagName: string): string => {
     const withoutPrefix = tagName.startsWith('v') ? tagName.slice(1) : tagName;
 

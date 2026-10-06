@@ -1,0 +1,234 @@
+import '@suite-common/test-utils/globalOverrides';
+
+import { fireEvent, screen } from '@testing-library/react';
+
+import { initialMetadataState } from '@suite/metadata';
+import { mockAddressValidator } from '@suite-common/address/mocks';
+import { type AddressValidatorDep } from '@suite-common/networks';
+import { type WithServices } from '@suite-common/redux-utils';
+import { createSuiteSyncAddressId } from '@suite-common/suite-sync-storage';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { type Account, asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
+import { type Address } from '@trezor/blockchain-link-types';
+import { type WalletDescriptor } from '@trezor/device-utils';
+
+import { type AppState } from 'src/reducers/store';
+import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+
+import { TradingUtxoReceiveAddressModal } from './TradingUtxoReceiveAddressModal';
+import { mockInitialAppState } from '../../../../../../../../mocks/mockInitialAppState';
+import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
+
+global.ResizeObserver = class MockedResizeObserver {
+    observe = jest.fn();
+    unobserve = jest.fn();
+    disconnect = jest.fn();
+};
+
+type TranslationProps = { id: string };
+
+jest.mock('@suite/intl', () => ({
+    ...jest.requireActual('@suite/intl'),
+    Translation: ({ id }: TranslationProps) => <span data-testid={id}>{id}</span>,
+}));
+
+jest.mock('../useTradingReceiveAddressValues', () => ({
+    useTradingReceiveAddressValues: jest.fn(),
+}));
+
+jest.mock(
+    'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls',
+    () => ({
+        useReceiveAddressModalControls: () => ({
+            activeModal: 'utxoAddressModal',
+            open: jest.fn(),
+            close: jest.fn(),
+        }),
+    }),
+);
+
+const OPTION = '@trading/bitcoin-receive-address-modal/option';
+const SEARCH_INPUT = '@asset-picker/search/input';
+
+const DEVICE_SSID = 'btcWallet@deviceId:0' as const;
+const WALLET_DESCRIPTOR = 'btcWallet' as WalletDescriptor;
+const ACCOUNT_DESCRIPTOR = asAccountDescriptor('btcDescriptor');
+
+const ACCOUNT_KEY = createAccountKey({
+    accountDescriptor: ACCOUNT_DESCRIPTOR,
+    networkSymbol: asNetworkSymbol('btc'),
+    deviceStaticSessionId: DEVICE_SSID,
+});
+
+const mockAddress = (address: string, path: string, received: string): Address => ({
+    address,
+    path,
+    transfers: received === '0' ? 0 : 1,
+    balance: received,
+    sent: '0',
+    received,
+});
+
+const LABELED_USED = mockAddress('bc1qlabeledusedaddress', "m/84'/0'/0'/0/0", '100000');
+const UNLABELED_USED = mockAddress('bc1qunlabeledusedaddress', "m/84'/0'/0'/0/1", '200000');
+const LABELED_UNUSED = mockAddress('bc1qlabeledunusedaddress', "m/84'/0'/0'/0/2", '0');
+
+const USED_LABEL = 'Salary';
+const UNUSED_LABEL = 'Savings';
+
+const btcAccount = {
+    key: ACCOUNT_KEY,
+    descriptor: ACCOUNT_DESCRIPTOR,
+    deviceState: DEVICE_SSID,
+    accountType: 'normal',
+    visible: true,
+    empty: false,
+    symbol: 'btc',
+    networkType: 'bitcoin',
+    formattedBalance: '0.003',
+    addresses: {
+        used: [LABELED_USED, UNLABELED_USED],
+        unused: [LABELED_UNUSED],
+        change: [],
+    },
+} as unknown as Account;
+
+const mockSuiteSyncAddress = (address: string, label: string | null) => ({
+    id: createSuiteSyncAddressId(address, asNetworkSymbol('btc')),
+    address,
+    label,
+    accountDescriptor: ACCOUNT_DESCRIPTOR,
+    networkSymbol: 'btc' as const,
+});
+
+const buildState = () => ({
+    ...mockInitialAppState,
+    metadata: initialMetadataState,
+    device: {
+        ...mockInitialAppState.device,
+        selectedDevice: mockSuiteDevice({
+            connected: true,
+            available: true,
+            state: { staticSessionId: DEVICE_SSID },
+        }),
+    },
+    suiteSync: {
+        ...mockInitialAppState.suiteSync,
+        settings: { ...mockInitialAppState.suiteSync.settings, isSuiteSyncEnabled: true },
+    },
+    suiteSyncData: {
+        wallets: {
+            [WALLET_DESCRIPTOR]: {
+                wallet: { walletDescriptor: WALLET_DESCRIPTOR, label: null },
+                accounts: {},
+                addresses: {
+                    [LABELED_USED.address]: mockSuiteSyncAddress(LABELED_USED.address, USED_LABEL),
+                    [UNLABELED_USED.address]: mockSuiteSyncAddress(UNLABELED_USED.address, null),
+                    [LABELED_UNUSED.address]: mockSuiteSyncAddress(
+                        LABELED_UNUSED.address,
+                        UNUSED_LABEL,
+                    ),
+                },
+                outputs: {},
+            },
+        },
+    },
+    wallet: {
+        ...mockInitialAppState.wallet,
+        accounts: [btcAccount],
+        settings: initialWalletSettingsState,
+    } as any,
+});
+
+const renderModal = () => {
+    const { services } = createTestCompositionRoot<
+        WithServices<{ networks: AddressValidatorDep }>,
+        AppState
+    >({
+        preloadedState: buildState(),
+        services: () => ({ networks: { addressValidator: mockAddressValidator() } }),
+    });
+
+    return renderWithProviders(services, <TradingUtxoReceiveAddressModal />);
+};
+
+const search = (value: string) => {
+    fireEvent.change(screen.getByTestId(SEARCH_INPUT), { target: { value } });
+};
+
+const optionOf = (container: HTMLElement, { address }: Address) =>
+    container.querySelector(`[id="${address}"]`)?.closest(`[data-testid="${OPTION}"]`) ?? null;
+
+const optionWithLabel = (label: string) =>
+    screen.getByText(label).closest(`[data-testid="${OPTION}"]`);
+
+describe('TradingUtxoReceiveAddressModal', () => {
+    beforeEach(() => {
+        jest.mocked(useTradingReceiveAddressValues).mockReturnValue({
+            cryptoId: 'btc',
+            extraFieldDescription: undefined,
+            tradingReceiveAddress: {
+                selectedAccount: btcAccount,
+                form: { setValue: jest.fn() },
+                onChangeAccount: jest.fn(),
+            },
+        } as unknown as ReturnType<typeof useTradingReceiveAddressValues>);
+    });
+
+    it('renders the label of a labeled address instead of the address itself', () => {
+        const { container } = renderModal();
+
+        expect(screen.getAllByTestId(OPTION)).toHaveLength(3);
+
+        expect(optionWithLabel(USED_LABEL)).toBeInTheDocument();
+        expect(optionWithLabel(UNUSED_LABEL)).toBeInTheDocument();
+        expect(optionOf(container, LABELED_USED)).not.toBeInTheDocument();
+        expect(optionOf(container, LABELED_UNUSED)).not.toBeInTheDocument();
+    });
+
+    it('renders an unlabeled address without any label', () => {
+        const { container } = renderModal();
+
+        expect(screen.getAllByText(new RegExp(`^(${USED_LABEL}|${UNUSED_LABEL})$`))).toHaveLength(
+            2,
+        );
+        expect(optionOf(container, UNLABELED_USED)).not.toHaveTextContent(USED_LABEL);
+    });
+
+    it('filters addresses by label, case insensitively', () => {
+        renderModal();
+
+        search('salary');
+
+        expect(screen.getAllByTestId(OPTION)).toHaveLength(1);
+        expect(optionWithLabel(USED_LABEL)).toBeInTheDocument();
+    });
+
+    it('still filters addresses by address and by path', () => {
+        const { container } = renderModal();
+
+        search(UNLABELED_USED.address);
+
+        expect(screen.getAllByTestId(OPTION)).toHaveLength(1);
+        expect(optionOf(container, UNLABELED_USED)).toBeInTheDocument();
+
+        search(LABELED_UNUSED.path);
+
+        expect(screen.getAllByTestId(OPTION)).toHaveLength(1);
+        expect(optionWithLabel(UNUSED_LABEL)).toBeInTheDocument();
+    });
+
+    it('renders the empty state when nothing matches', () => {
+        renderModal();
+
+        search('no-such-address');
+
+        expect(screen.queryAllByTestId(OPTION)).toHaveLength(0);
+        expect(
+            screen.getByTestId('TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TITLE'),
+        ).toBeInTheDocument();
+    });
+});

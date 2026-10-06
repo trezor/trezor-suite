@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import {
-    type EnhancedTokenInfo,
-    type TokenManagementAction,
-} from '@suite-common/token-definitions';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { type TokenInfo, type TokenManagementAction } from '@suite-common/token-definitions';
 import { tradingThunks } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Paragraph, Table } from '@trezor/components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { TokenRow } from './TokenRow';
 import type { TokensTableType } from './types';
@@ -32,8 +29,8 @@ export const NoSearchResultsWrapped = () => (
 interface TokensTableProps {
     type?: TokensTableType;
     account: Account;
-    tokensWithBalance: EnhancedTokenInfo[];
-    tokensWithoutBalance: EnhancedTokenInfo[];
+    tokensWithBalance: TokenInfo[];
+    tokensWithoutBalance: TokenInfo[];
     network: Network;
     tokenStatusType: TokenManagementAction;
     hideRates?: boolean;
@@ -54,7 +51,7 @@ export const TokensTable = ({
     isUnverifiedTable,
     yieldOpportunities,
 }: TokensTableProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const [isZeroBalanceOpen, setIsZeroBalanceOpen] = useState(false);
 
     useEffect(() => {

@@ -1,4 +1,4 @@
-# @trezor/suite-desktop and @trezor/suite-web e2e tests
+# @suite/desktop-app and @suite/web-app e2e tests
 
 @suite/e2e uses [Playwright](https://playwright.dev/) to run e2e tests. It also uses [trezor-user-env](https://github.com/trezor/trezor-user-env) which is [daily built](https://ghcr.io/trezor/trezor-user-env) into a docker image providing all the necessary instrumentation required to run tests (bridge and emulators).
 
@@ -26,16 +26,16 @@ _Note: All paths below are relative to the root of trezor-suite repository, if n
 
 ### Desktop
 
-1. `TEST_BUILD=true yarn workspace @trezor/suite-desktop build:ui`
+1. `TEST_BUILD=true yarn workspace @suite/desktop-app build:ui`
 
-    Produces `suite-desktop/build` directory with javascript bundles & assets in production mode for the electron-renderer process.
+    Produces `desktop-app/build` directory with javascript bundles & assets in production mode for the electron-renderer process.
     TEST_BUILD env variable serves to mock bundled message-system config .
 
     _Note: This step needs to be repeated on each change in `suite` or `suite-desktop-ui` package._
 
-1. `yarn workspace @trezor/suite-desktop build:app`
+1. `yarn workspace @suite/desktop-app build:app`
 
-    Produces `suite-desktop/dist` directory with javascript bundles & assets in production mode for the electron-main process.
+    Produces `desktop-app/dist` directory with javascript bundles & assets in production mode for the electron-main process.
 
     _Note: This step needs to be repeated on each change in `connect` or `suite-desktop-core` package._
 
@@ -67,7 +67,7 @@ _Note: All paths below are relative to the root of trezor-suite repository, if n
 
 1. **To increase test timeouts** when your local run exceed 1m limit, you can specify test timeout override in `packages/suite/.env`. (UI runner --ui needs to be restarted to reflect the change in `.env`)
 
-1. **To find a breaking commit in develop** you can checkout latest develop and run `yarn workspace @trezor/suite-desktop git:bisect <last_good_commit> <desktop|web> <test_file>`
+1. **To find a breaking commit in develop** you can checkout latest develop and run `yarn workspace @suite/desktop-app git:bisect <last_good_commit> <desktop|web> <test_file>`
 
 ## Contribution
 
@@ -88,9 +88,9 @@ At the moment, there are these additional tags:
 
 - @desktopOnly
 - @webOnly
-- @nightlyOnly
+- @skipOnPR
+- @optional
 - @specificFirmware
-- @firmware-ready
 
 #### Device coverage on PR
 
@@ -108,17 +108,17 @@ Some tests are only applicable for Desktop app or Web and you can use this tag t
 
 Currently, we are also applying @webOnly as a positive filter on Web PR runs. This is done in Web PR workflow definition. Meaning, Web PR runs execute only tests with @WebOnly tag to reduce amount of test run daily and save quota on Currents, where we are paying extra for any test runs over 100 000.
 
-#### @nightlyOnly
+#### @skipOnPR
 
-Some tests should run on nighty runs only for specific reasons. This tags is used for reversed filtering in PR and release workflows definitions. This means tests with this tags will run only on nightly and canary runs.
+Tests that must never run on a PR, not even when the LLM test selector or an edited test file targets them. Typical reasons are nonce collisions when two runs overlap, or old app versions that only the deployed instances provide. The PR Playwright configs, including the spec-list (`-pr-all`) ones, filter this tag out. These tests run on nightly, canary and release runs.
+
+#### @optional
+
+Tests that are excluded from the full PR run but run on a PR when the LLM test selector recommends them or the PR edits the test file itself. Use it for low-priority slow tests or tests that depend on a flaky backend, and, when the reason is not obvious from the test itself, state it in a one-line comment above the `describe`. Only the full-run PR configs filter this tag out; nightly, canary, release and spec-list runs include it.
 
 #### @specificFirmware
 
 Some tests must run on specific Firmware version. That version is setup and defined in test. This tag lets our runner know, that this test should not be included in Canary nightly run.
-
-#### @firmware-ready
-
-This tag server for easier test quarantine. This tag si dedicated to few tests that are guarding against firmware update issues. As such those tests start failing on every firmware release until we adopt new firmware to out Trezor User Env
 
 ## Results
 

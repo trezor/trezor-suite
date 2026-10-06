@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /**
  * Seeder for Currents.dev test health-check.
  *

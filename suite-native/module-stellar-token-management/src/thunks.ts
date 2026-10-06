@@ -3,16 +3,23 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    type AccountsRootState,
+    type ComposeSendFormTransactionFeeLevelsThunkState,
+    type FeesRootState,
     type FormDraftRootState,
     composeSendFormTransactionFeeLevelsThunk,
     formDraftActions,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
     selectDeepCopyOfFormDraft,
+    updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import {
     type AccountKey,
+    type FeeInfo,
     type FormState,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
     type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
@@ -24,6 +31,11 @@ import {
 const STELLAR_TOKEN_MODULE_PREFIX = '@suite-native/stellar-token';
 
 const STELLAR_DEFAULT_FEE_STROOPS = '100';
+
+// A network with no fee data yet is converted into an empty level list, while one with data gets
+// a synthetic 'custom' level appended. Only the predefined levels can be composed with.
+const hasPredefinedFeeLevels = (feeInfo: FeeInfo | null): feeInfo is FeeInfo =>
+    !!feeInfo?.levels.some(level => level.label !== 'custom');
 
 const STELLAR_TOKEN_FORM_DRAFT_PREFIX = 'stellar-token';
 
@@ -37,20 +49,21 @@ export const getStellarTokenFormDraftKey = (accountKey: AccountKey, tokenContrac
  * Updates the selected fee level for Stellar token operations.
  * Stores the updated form draft in Redux.
  */
-export const updateStellarTokenSelectedFeeLevelThunk = createThunk(
+export type UpdateStellarTokenSelectedFeeLevelThunkState = FormDraftRootState;
+
+export const updateStellarTokenSelectedFeeLevelThunk = createThunk<
+    void,
+    UpdateSelectedFeeLevelThunkParams,
+    { state: UpdateStellarTokenSelectedFeeLevelThunkState }
+>(
     `${STELLAR_TOKEN_MODULE_PREFIX}/updateSelectedFeeLevel`,
-    (
-        { feeLevelLabel, feePerUnit, formDraftKey }: UpdateSelectedFeeLevelThunkParams,
-        { dispatch, getState },
-    ) => {
+    ({ feeLevelLabel, feePerUnit, formDraftKey }, { dispatch, getState }) => {
         if (!formDraftKey) {
             return;
         }
 
-        const formDraft = selectDeepCopyOfFormDraft(
-            getState() as FormDraftRootState,
-            formDraftKey,
-        ) as FormState | undefined;
+        const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
+            FormState | undefined;
 
         if (!formDraft) {
             return;
@@ -103,15 +116,23 @@ type ComposeStellarTrustlineFeesParams = {
     tokenContract: TokenAddress;
 };
 
+export type ComposeStellarTrustlineFeesThunkState = AccountsRootState &
+    FeesRootState &
+    ComposeSendFormTransactionFeeLevelsThunkState;
+
 /**
  * Composes fee levels for Stellar trustline operations (activation/deactivation).
  * This should be called BEFORE navigating to the fee screen to ensure feeLevels
  * are available in Redux when the screen renders.
  */
-export const composeStellarTrustlineFeesThunk = createThunk(
+export const composeStellarTrustlineFeesThunk = createThunk<
+    PrecomposedLevels | PrecomposedLevelsCardano,
+    ComposeStellarTrustlineFeesParams,
+    { rejectValue: string; state: ComposeStellarTrustlineFeesThunkState }
+>(
     `${STELLAR_TOKEN_MODULE_PREFIX}/composeTrustlineFees`,
     async (
-        { accountKey, tokenContract }: ComposeStellarTrustlineFeesParams,
+        { accountKey, tokenContract },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
@@ -119,8 +140,15 @@ export const composeStellarTrustlineFeesThunk = createThunk(
             return rejectWithValue('Account not found');
         }
 
-        const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
-        if (!feeInfo) {
+        // Fees are preloaded only for the networks enabled at app start and are not persisted, so
+        // they can be missing here. Nothing else in the trustline flow fetches them.
+        let feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
+        if (!hasPredefinedFeeLevels(feeInfo)) {
+            await dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol }));
+            feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
+        }
+
+        if (!hasPredefinedFeeLevels(feeInfo)) {
             return rejectWithValue('Fee info not available');
         }
 

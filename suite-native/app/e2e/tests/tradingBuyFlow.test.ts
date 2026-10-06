@@ -23,7 +23,7 @@ describe('Trade Buy [@noDevice]', () => {
 
     it('Basic buy for 100 PLN flow', async () => {
         await tradingBuyActions.selectReceiveAsset('BTC', undefined, 'Bitcoin');
-        await tradingBuyActions.selectBtcReceiveAccount('BTC SegWit', "m/84'/0'/0'/0/0");
+        await tradingBuyActions.selectBtcFreshAddress('BTC SegWit');
         await tradingBuyActions.selectFiatCurrency('PLN');
         await tradingBuyActions.setFiatAmount('100');
         await tradingBuyActions.selectCountry('Polan', 'Poland', 'POL');
@@ -37,10 +37,11 @@ describe('Trade Buy [@noDevice]', () => {
 
         await buyPreviewActions.expectBuyPreviewScreenToBeVisible();
         await buyPreviewActions.confirmTrade();
-        await tradingBuyActions.expectBrowserAuthTriggered();
-
-        await tradingHistoryActions.openTradeHistory();
-        await tradingHistoryActions.openTradeDetail('PLN\xa0100.00');
-        await tradingHistoryActions.assertTradeDetail('Buy', 'PLN\xa0100.00', 'BTC SegWit');
+        await tradingHistoryActions.assertTradeDetail({
+            fiatAmount: '100',
+            fiatCurrency: 'PLN',
+            receiveAccount: 'BTC SegWit',
+            receiveCryptoSymbol: 'BTC',
+        });
     }, 240_000);
 });

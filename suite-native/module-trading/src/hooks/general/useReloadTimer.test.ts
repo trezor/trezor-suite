@@ -12,8 +12,8 @@ jest.mock('@trezor/react-utils', () => ({
 }));
 
 describe('useReloadTimer', () => {
-    const renderUseReloadTimer = (initialEnabled: boolean = true) =>
-        renderHook<ReturnType<typeof useReloadTimer>, { isEnabled: boolean }>(
+    const renderUseReloadTimer = async (initialEnabled: boolean = true) =>
+        await renderHook<ReturnType<typeof useReloadTimer>, { isEnabled: boolean }>(
             ({ isEnabled }) => useReloadTimer({ isEnabled }),
             {
                 initialProps: { isEnabled: initialEnabled },
@@ -32,99 +32,99 @@ describe('useReloadTimer', () => {
         };
     });
 
-    it('should return running timer and shouldReload equal false', () => {
-        const { result } = renderUseReloadTimer();
+    it('should return running timer and shouldReload equal false', async () => {
+        const { result } = await renderUseReloadTimer();
 
         expect(result.current.shouldReload).toBe(false);
         expect(result.current.timer.stop).not.toHaveBeenCalled();
     });
 
-    it('should stop timer when reset count is equal to 40', () => {
+    it('should stop timer when reset count is equal to 40', async () => {
         mockTimerReturn.resetCount = MAX_RESET_COUNT;
 
-        const { result } = renderUseReloadTimer();
+        const { result } = await renderUseReloadTimer();
 
         expect(result.current.timer.stop).toHaveBeenCalled();
     });
 
-    it('should stop timer when reset count is greater than 40', () => {
+    it('should stop timer when reset count is greater than 40', async () => {
         mockTimerReturn.resetCount = MAX_RESET_COUNT + 1;
 
-        const { result } = renderUseReloadTimer();
+        const { result } = await renderUseReloadTimer();
 
         expect(result.current.timer.stop).toHaveBeenCalled();
     });
 
-    it('should set shouldReload to true when time spent is equal to TRADE_API_RELOAD_QUOTES_AFTER_SECONDS', () => {
+    it('should set shouldReload to true when time spent is equal to TRADE_API_RELOAD_QUOTES_AFTER_SECONDS', async () => {
         mockTimerReturn.timeSpent.seconds = TRADE_API_RELOAD_QUOTES_AFTER_SECONDS;
 
-        const { result } = renderUseReloadTimer();
+        const { result } = await renderUseReloadTimer();
 
         expect(result.current.shouldReload).toBe(true);
     });
 
-    it('should set shouldReload to true when time spent is greater than TRADE_API_RELOAD_QUOTES_AFTER_SECONDS', () => {
+    it('should set shouldReload to true when time spent is greater than TRADE_API_RELOAD_QUOTES_AFTER_SECONDS', async () => {
         mockTimerReturn.timeSpent.seconds = TRADE_API_RELOAD_QUOTES_AFTER_SECONDS + 1;
 
-        const { result } = renderUseReloadTimer();
+        const { result } = await renderUseReloadTimer();
 
         expect(result.current.shouldReload).toBe(true);
     });
 
-    it('should not call stop when isStopped is true', () => {
+    it('should not call stop when isStopped is true', async () => {
         mockTimerReturn.timeSpent.seconds = TRADE_API_RELOAD_QUOTES_AFTER_SECONDS + 1;
         mockTimerReturn.isStopped = true;
 
-        const { result } = renderUseReloadTimer();
+        const { result } = await renderUseReloadTimer();
 
         expect(result.current.shouldReload).toBe(false);
         expect(result.current.timer.stop).not.toHaveBeenCalled();
     });
 
-    it('should not call stop when isLoading is true', () => {
+    it('should not call stop when isLoading is true', async () => {
         mockTimerReturn.timeSpent.seconds = TRADE_API_RELOAD_QUOTES_AFTER_SECONDS + 1;
         mockTimerReturn.isLoading = true;
 
-        const { result } = renderUseReloadTimer();
+        const { result } = await renderUseReloadTimer();
 
         expect(result.current.shouldReload).toBe(false);
         expect(result.current.timer.stop).not.toHaveBeenCalled();
     });
 
-    it('should stop timer when isEnabled is false', () => {
-        const { result } = renderUseReloadTimer(false);
+    it('should stop timer when isEnabled is false', async () => {
+        const { result } = await renderUseReloadTimer(false);
 
         expect(result.current.timer.stop).toHaveBeenCalled();
         expect(result.current.shouldReload).toBe(false);
     });
 
-    it('should return shouldReload false when timer is not enabled even when reload time is reached', () => {
+    it('should return shouldReload false when timer is not enabled even when reload time is reached', async () => {
         mockTimerReturn.timeSpent.seconds = TRADE_API_RELOAD_QUOTES_AFTER_SECONDS + 1;
-        const { result } = renderUseReloadTimer(false);
+        const { result } = await renderUseReloadTimer(false);
 
         expect(result.current.timer.stop).toHaveBeenCalled();
         expect(result.current.shouldReload).toBe(false);
     });
 
-    it('should reset timer when enabled but stopped', () => {
+    it('should reset timer when enabled but stopped', async () => {
         mockTimerReturn.isStopped = true;
-        const { result } = renderUseReloadTimer();
+        const { result } = await renderUseReloadTimer();
 
         expect(result.current.timer.reset).toHaveBeenCalled();
     });
 
-    it('should not reset timer when isStopped and isLoading', () => {
+    it('should not reset timer when isStopped and isLoading', async () => {
         mockTimerReturn.isStopped = true;
         mockTimerReturn.isLoading = true;
-        const { result } = renderUseReloadTimer();
+        const { result } = await renderUseReloadTimer();
 
         expect(result.current.timer.reset).not.toHaveBeenCalled();
     });
 
-    it('should not reset timer when stopped and MAX_RESET_COUNT is reached', () => {
+    it('should not reset timer when stopped and MAX_RESET_COUNT is reached', async () => {
         mockTimerReturn.isStopped = true;
         mockTimerReturn.resetCount = MAX_RESET_COUNT + 1;
-        const { result } = renderUseReloadTimer();
+        const { result } = await renderUseReloadTimer();
 
         expect(result.current.timer.reset).not.toHaveBeenCalled();
     });

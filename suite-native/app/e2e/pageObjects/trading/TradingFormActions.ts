@@ -8,11 +8,11 @@ export abstract class TradingFormActions extends TradingActions {
     abstract waitForQuotesToLoad(): Promise<void>;
 
     getSearchReceiveCryptoElement() {
-        return this.getElementById('receive-asset-sheet/header/search-input');
+        return this.getElementById('receive-asset-screen/search-input');
     }
 
     getSearchSendCryptoElement() {
-        return this.getElementById('send-asset-sheet/header/search-input');
+        return this.getElementById('send-asset-screen/search-input');
     }
 
     getSearchFiatElement() {
@@ -41,6 +41,12 @@ export abstract class TradingFormActions extends TradingActions {
 
     async expectSheetHeaderTitle(title: string) {
         await waitForVisible(element(by.text(title).and(by.id('@trading/sheet-header-title'))));
+    }
+
+    async expectScreenHeaderTitle(title: string) {
+        await waitFor(element(by.id('@screen/sub-header/title')))
+            .toHaveText(title)
+            .withTimeout(this.SHORT_TIMEOUT);
     }
 
     async selectFiatCurrency(fiatCurrency: string) {
@@ -78,7 +84,7 @@ export abstract class TradingFormActions extends TradingActions {
             .withTimeout(this.SHORT_TIMEOUT);
     }
 
-    async selectReceiveAccount(accountName: string, derivationPath?: string) {
+    async selectReceiveAccount(accountName: string, shouldSelectFreshAddress = false) {
         const receiveAccountPicker = this.getElementById('receive-account');
         await waitForVisible(receiveAccountPicker, { timeout: this.SHORT_TIMEOUT });
         await receiveAccountPicker.tap();
@@ -86,9 +92,11 @@ export abstract class TradingFormActions extends TradingActions {
         await waitForVisible(by.text(accountName));
         await element(by.text(accountName)).tap();
 
-        if (derivationPath) {
-            await waitForVisible(by.text(derivationPath));
-            await element(by.text(derivationPath)).tap();
+        if (shouldSelectFreshAddress) {
+            const freshAddressMatcher = by.id('@trading/account-list/fresh-address');
+
+            await waitForVisible(freshAddressMatcher);
+            await element(freshAddressMatcher).tap();
         }
 
         await detoxExpect(this.getElementById('receive-account/selected-account')).toHaveText(
@@ -96,8 +104,8 @@ export abstract class TradingFormActions extends TradingActions {
         );
     }
 
-    async selectBtcReceiveAccount(accountName: string, derivationPath: string) {
-        await this.selectReceiveAccount(accountName, derivationPath);
+    async selectBtcFreshAddress(accountName: string) {
+        await this.selectReceiveAccount(accountName, true);
         await this.expectReceiveAccountBalance('0 BTC');
     }
 
@@ -126,6 +134,21 @@ export abstract class TradingFormActions extends TradingActions {
         return this.setAmountValue(amount, this.getSendCryptoAmountElement.bind(this));
     }
 
+    async select1stCEXProvider() {
+        const providersPicker = this.getElementById('provider-picker');
+        await waitForVisible(providersPicker, { timeout: this.SHORT_TIMEOUT });
+        await providersPicker.tap();
+
+        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
+        await this.expectSheetHeaderTitle('Providers');
+        const providerSheetMatcher = by.id('@trading/provider-sheet');
+        await element(by.id('@trading/provider-sheet/filter-tab/cex')).tap();
+        await element(by.text('Centralized exchange').withAncestor(providerSheetMatcher))
+            .atIndex(0)
+            .tap();
+        await waitForVisible(providersPicker);
+    }
+
     async viewProviders() {
         const providersPicker = this.getElementById('provider-picker');
         await waitForVisible(providersPicker, { timeout: this.SHORT_TIMEOUT });
@@ -137,15 +160,16 @@ export abstract class TradingFormActions extends TradingActions {
         await waitForVisible(providersPicker);
     }
 
-    async selectProvider(providerName: string, filter: 'DEX' | 'CEX' | 'FIXED') {
+    async selectProvider(providerName: string, filter: 'dex' | 'cex' | 'all') {
         const providersPicker = this.getElementById('provider-picker');
         await waitForVisible(providersPicker, { timeout: this.SHORT_TIMEOUT });
         await providersPicker.tap();
 
         await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
         await this.expectSheetHeaderTitle('Providers');
+        const providerSheetMatcher = by.id('@trading/provider-sheet');
         await element(by.id(`@trading/provider-sheet/filter-tab/${filter}`)).tap();
-        await element(by.text(providerName)).tap();
+        await element(by.text(providerName).withAncestor(providerSheetMatcher)).tap();
 
         await waitForVisible(providersPicker);
     }
@@ -155,7 +179,7 @@ export abstract class TradingFormActions extends TradingActions {
         await waitForVisible(receiveAssetButton, { timeout: this.SHORT_TIMEOUT });
         await receiveAssetButton.tap();
 
-        await this.expectSheetHeaderTitle('Assets');
+        await this.expectScreenHeaderTitle('You get');
 
         const searchReceiveCryptoInput = this.getSearchReceiveCryptoElement();
         await searchReceiveCryptoInput.tap();
@@ -164,11 +188,15 @@ export abstract class TradingFormActions extends TradingActions {
         await searchReceiveCryptoInput.replaceText(searchForStr);
 
         if (network) {
-            const networkFilterTab = element(
-                by.text(network).withAncestor(by.id(this.getTestId('receive-asset-sheet/header'))),
+            const networkPicker = this.getElementById('receive-asset-screen/network-picker');
+            await networkPicker.tap();
+
+            const networksSheet = by.id(
+                this.getTestId('receive-asset-screen/network-picker/networks-sheet'),
             );
-            await waitForVisible(networkFilterTab);
-            await networkFilterTab.tap();
+            const networkOption = element(by.text(network).withAncestor(networksSheet));
+            await waitForVisible(networkOption);
+            await networkOption.tap();
         }
 
         await waitForVisible(by.text(asset));
@@ -184,24 +212,29 @@ export abstract class TradingFormActions extends TradingActions {
         await waitForVisible(sendAssetButton, { timeout: this.SHORT_TIMEOUT });
         await sendAssetButton.tap();
 
-        await this.expectSheetHeaderTitle('Your assets');
+        await this.expectScreenHeaderTitle('Your assets');
 
         const searchSendCryptoInput = this.getSearchSendCryptoElement();
         await searchSendCryptoInput.tap();
         await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
         const searchForStr = searchString ?? asset;
-        await searchSendCryptoInput.replaceText(searchForStr.slice(0, -1));
+        await searchSendCryptoInput.replaceText(searchForStr);
 
         if (network) {
-            const networkFilterTab = element(
-                by.text(network).withAncestor(by.id(this.getTestId('send-asset-sheet/header'))),
+            const networkPicker = this.getElementById('send-asset-screen/network-picker');
+            await networkPicker.tap();
+
+            const networksSheet = by.id(
+                this.getTestId('send-asset-screen/network-picker/networks-sheet'),
             );
-            await waitForVisible(networkFilterTab);
-            await networkFilterTab.tap();
+            const networkOption = element(by.text(network).withAncestor(networksSheet));
+            await waitForVisible(networkOption);
+            await networkOption.tap();
         }
 
-        await waitForVisible(by.text(asset));
-        await element(by.text(asset)).tap();
+        const firstMatchingAsset = element(by.label(asset)).atIndex(0);
+        await waitForVisible(firstMatchingAsset);
+        await firstMatchingAsset.tap();
 
         await waitFor(this.getElementById('asset-send-button/symbol'))
             .toHaveText(asset)

@@ -10,14 +10,14 @@ import {
 import { clearAll } from './data/suiteSyncDataReducer';
 import { updateSuiteSyncEnabled } from './suiteSyncSlice';
 
-export type CreateTurnOffSuiteSyncDeps = {
+export type TurnOffSuiteSyncDeps = {
     getIsSuiteSyncEnabled: () => boolean;
     dispatch: Dispatch;
 } & GetAllDeviceSessionIdsDep &
     TurnOffSuiteSyncForWalletDep;
 
 export const createTurnOffSuiteSync =
-    (deps: CreateTurnOffSuiteSyncDeps): TurnOffSuiteSync =>
+    (deps: TurnOffSuiteSyncDeps): TurnOffSuiteSync =>
     async (params: { ensureSettingsPersisted?: () => Promise<void> } = {}) => {
         const isSuiteSyncEnabled = deps.getIsSuiteSyncEnabled();
 

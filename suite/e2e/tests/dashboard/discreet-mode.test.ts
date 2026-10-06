@@ -1,21 +1,26 @@
 import { Locator } from '@playwright/test';
 
 import { events } from '@suite/analytics';
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { ExtractByEventType } from '../../support/types';
 
+const btcSymbol = asNetworkSymbol('btc');
+
+type VerifyHiddenAndRevealedValueParams = {
+    locator: Locator;
+    hiddenValue?: string;
+    revealedValue?: string;
+};
+
 const verifyHiddenAndRevealedValue = async ({
     locator,
     hiddenValue = '$###',
     revealedValue = '$0.00',
-}: {
-    locator: Locator;
-    hiddenValue?: string;
-    revealedValue?: string;
-}) => {
+}: VerifyHiddenAndRevealedValueParams) => {
     await expect.soft(locator).toHaveText(hiddenValue);
     // Value is revealed on hover over text. But the locator might cover larger area then the text itself
     // Text is centered to the left, so we click on 0,0
@@ -27,7 +32,7 @@ test.describe('Discreet Mode', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ analytics, onboardingPage, settingsPage, dashboardPage }) => {
         await analytics.interceptAnalytics();
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
         await dashboardPage.navigateTo();
     });
 
@@ -39,6 +44,7 @@ test.describe('Discreet Mode', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'Verify that enabling discreet mode hides balances across the dashboard and triggers the correct analytics event.',
                 category: TestCategory.Settings,
                 priority: TestPriority.High,
+                stream: TestStream.Growth,
             }),
         },
         async ({ analytics, assetsSection, dashboardPage, walletPage }) => {
@@ -46,7 +52,7 @@ test.describe('Discreet Mode', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify account value is hidden', async () => {
                 await verifyHiddenAndRevealedValue({
-                    locator: walletPage.balanceOfAccount({ symbol: 'btc' }),
+                    locator: walletPage.balanceOfAccount({ symbol: btcSymbol }),
                     hiddenValue: '###',
                     revealedValue: '0',
                 });
@@ -54,14 +60,14 @@ test.describe('Discreet Mode', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify asset card value is hidden', async () => {
                 await verifyHiddenAndRevealedValue({
-                    locator: assetsSection.assetFiatAmount('btc'),
+                    locator: assetsSection.assetFiatAmount(btcSymbol),
                 });
             });
 
             await test.step('Verify asset row value is hidden', async () => {
                 await assetsSection.tableIcon.click();
                 await verifyHiddenAndRevealedValue({
-                    locator: assetsSection.assetFiatAmount('btc'),
+                    locator: assetsSection.assetFiatAmount(btcSymbol),
                 });
             });
 

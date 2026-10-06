@@ -1,44 +1,37 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useTimeoutFn, useUnmount } from 'react-use';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
-    type BuyTradeFinalStatus,
-    type ExchangeTradeFinalStatus,
-    type SellTradeFinalStatus,
-} from 'invity-api';
-
-import {
-    type TradingTradeStatusType,
+    TRADE_API_RELOAD_QUOTES_AFTER_SECONDS,
     type TradingTransaction,
     type TradingType,
+    isFinalStatus,
     tradingThunks,
 } from '@suite-common/trading';
 
 import { type TradingUseWatchTradeProps } from 'src/types/trading/trading';
 
-export const tradeFinalStatuses: Record<TradingType, TradingTradeStatusType[]> = {
-    buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],
-    sell: ['SUCCESS', 'ERROR', 'BLOCKED', 'CANCELLED', 'REFUNDED'] satisfies SellTradeFinalStatus[],
-    exchange: ['SUCCESS', 'ERROR', 'KYC'] satisfies ExchangeTradeFinalStatus[],
-};
-
 const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
-    trade?.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
+    trade?.data.status !== undefined && !isFinalStatus(trade.tradeType, trade.data.status);
 
 export const useTradingWatchTrade = <T extends TradingType>({
     account,
     trade,
+    refreshIntervalSeconds = TRADE_API_RELOAD_QUOTES_AFTER_SECONDS,
 }: TradingUseWatchTradeProps<T>) => {
-    const REFRESH_SECONDS = 30;
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const [refreshCount, setRefreshCount] = useState(0);
     const invokeRefresh = () => {
         if (shouldRefreshTrade(trade)) {
             setRefreshCount(prevValue => prevValue + 1);
         }
     };
-    const [, cancelRefresh, resetRefresh] = useTimeoutFn(invokeRefresh, REFRESH_SECONDS * 1000);
+    const [, cancelRefresh, resetRefresh] = useTimeoutFn(
+        invokeRefresh,
+        refreshIntervalSeconds * 1000,
+    );
 
     useUnmount(() => {
         cancelRefresh();

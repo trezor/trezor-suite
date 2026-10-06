@@ -6,7 +6,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { BRIDGE_VERSION } from './bridge';
 
-const appDir = path.join(__dirname, '../../../packages/suite-desktop');
+const appDir = path.join(__dirname, '../../../suite/desktop-app');
 const showConnectLogsArgument = '--state.suite.settings.debug.showConnectLogs=true';
 // #15670 Bug in desktop app that loglevel is ignored
 const logLevelArgument = `--log-level=${process.env.LOGLEVEL ?? 'debug'}`;
@@ -16,7 +16,7 @@ const exposeStoreArgument = '--expose-store';
 
 export type LaunchSuiteParams = {
     keepUserData?: boolean;
-    bridgeDaemon?: boolean;
+    bridgeDaemon?: 'with-ui' | 'without-ui';
     exposeConnectWs?: boolean;
     offlineMode?: boolean;
     locale?: string;
@@ -56,7 +56,9 @@ const buildArgs = (params: LaunchSuiteParams) => {
     ];
 
     if (params.bridgeDaemon) {
-        args.push('--bridge-daemon-show-ui');
+        args.push(
+            params.bridgeDaemon === 'with-ui' ? '--bridge-daemon-show-ui' : '--bridge-daemon',
+        );
     }
 
     if (params.exposeConnectWs) {

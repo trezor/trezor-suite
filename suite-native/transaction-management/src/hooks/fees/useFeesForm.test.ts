@@ -1,9 +1,11 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { type UseFeesFormProps, useFeesForm } from './useFeesForm';
 
-const ETH_ACCOUNT_KEY = mockAccountKey({ symbol: 'eth', descriptor: 'eth1' });
+const ethSymbol = asNetworkSymbol('eth');
+const ETH_ACCOUNT_KEY = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth1' });
 
 describe('useFeesForm', () => {
     const mockProps: UseFeesFormProps = {
@@ -12,8 +14,8 @@ describe('useFeesForm', () => {
         defaultFeePerUnit: '20000000000', // 20 gwei
     };
 
-    const renderUseFeesForm = (props: UseFeesFormProps = mockProps) =>
-        renderHookWithStoreProvider(() => useFeesForm(props), {
+    const renderUseFeesForm = async (props: UseFeesFormProps = mockProps) =>
+        await renderHookWithStoreProvider(() => useFeesForm(props), {
             preloadedState: {
                 wallet: {
                     fees: {},
@@ -53,7 +55,7 @@ describe('useFeesForm', () => {
                     },
                     accounts: [
                         {
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             networkType: 'ethereum',
                             key: ETH_ACCOUNT_KEY,
                             path: "m/44'/60'/0'/0/0",
@@ -69,8 +71,8 @@ describe('useFeesForm', () => {
             },
         });
 
-    it('should initialize with default values', () => {
-        const { result } = renderUseFeesForm();
+    it('should initialize with default values', async () => {
+        const { result } = await renderUseFeesForm();
 
         expect(result.current.getValues()).toEqual({
             feeLevel: 'normal',
@@ -79,38 +81,38 @@ describe('useFeesForm', () => {
         });
     });
 
-    it('should update fee level when changed', () => {
-        const { result } = renderUseFeesForm();
+    it('should update fee level when changed', async () => {
+        const { result } = await renderUseFeesForm();
 
-        act(() => {
+        await act(() => {
             result.current.setValue('feeLevel', 'high');
         });
 
         expect(result.current.getValues('feeLevel')).toBe('high');
     });
 
-    it('should update custom fee per unit when changed', () => {
-        const { result } = renderUseFeesForm();
+    it('should update custom fee per unit when changed', async () => {
+        const { result } = await renderUseFeesForm();
 
-        act(() => {
+        await act(() => {
             result.current.setValue('customFeePerUnit', '30000000000');
         });
 
         expect(result.current.getValues('customFeePerUnit')).toBe('30000000000');
     });
 
-    it('should update custom fee limit when changed', () => {
-        const { result } = renderUseFeesForm();
+    it('should update custom fee limit when changed', async () => {
+        const { result } = await renderUseFeesForm();
 
-        act(() => {
+        await act(() => {
             result.current.setValue('customFeeLimit', '21000');
         });
 
         expect(result.current.getValues('customFeeLimit')).toBe('21000');
     });
 
-    it('should handle empty fee levels without crashing', () => {
-        const { result } = renderHookWithStoreProvider(() => useFeesForm(mockProps), {
+    it('should handle empty fee levels without crashing', async () => {
+        const { result } = await renderHookWithStoreProvider(() => useFeesForm(mockProps), {
             preloadedState: {
                 wallet: {
                     fees: {},
@@ -119,7 +121,7 @@ describe('useFeesForm', () => {
                     },
                     accounts: [
                         {
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             networkType: 'ethereum',
                             key: ETH_ACCOUNT_KEY,
                             path: "m/44'/60'/0'/0/0",
@@ -139,14 +141,14 @@ describe('useFeesForm', () => {
         expect(result.current.getValues('customFeeLimit')).toBeUndefined();
     });
 
-    it('should initialize with custom default values', () => {
+    it('should initialize with custom default values', async () => {
         const customProps: UseFeesFormProps = {
             accountKey: ETH_ACCOUNT_KEY,
             defaultFeeLevel: 'high',
             defaultFeePerUnit: '15000000000',
         };
 
-        const { result } = renderUseFeesForm(customProps);
+        const { result } = await renderUseFeesForm(customProps);
 
         expect(result.current.getValues()).toEqual({
             feeLevel: 'high',

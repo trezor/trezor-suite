@@ -15,6 +15,11 @@ export type SuiteSyncStorage = {
     data: SuiteSyncStorageData;
 
     updateRelayUrl(url: string): Promise<void>;
+    /**
+     * Requests a full sync with the active relay, including previously rejected local changes.
+     * Does nothing while disconnected. Resolves when requested, not when synchronization completes.
+     */
+    forceResync(): Promise<void>;
     disconnectRelay(): Promise<void>;
     dispose(): Promise<void>;
 };

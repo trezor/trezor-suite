@@ -1,10 +1,13 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { getTronStakingRewards, isTronClaimSupported } from '@suite-common/wallet-utils';
+import {
+    getTronStakingRewards,
+    isTronClaimSupported,
+    selectHasRunningDiscovery,
+} from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -16,7 +19,7 @@ import { useTronStakeContext } from '../TronStakeContext';
 
 export const TronClaimSubmitButton = () => {
     const { device, isLocked } = useDevice();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const { translationString } = useTranslation();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { account, actions } = useTronStakeContext();

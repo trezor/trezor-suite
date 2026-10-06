@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@suite-common/platform-encryption": "workspace:*",
-        "@trezor/suite-desktop-api": "workspace:*",
+        "@suite/desktop-app-api": "workspace:*",
         "@trezor/type-utils": "workspace:*"
     }
 }

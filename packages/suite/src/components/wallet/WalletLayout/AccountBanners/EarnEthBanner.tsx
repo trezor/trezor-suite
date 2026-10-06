@@ -1,15 +1,16 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type EarnEthBannerProps = {
     networkSymbol: NetworkSymbol;
@@ -17,8 +18,7 @@ type EarnEthBannerProps = {
 };
 
 export const EarnEthBanner = ({ networkSymbol, apy }: EarnEthBannerProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { earnEthBannerClosed } = useSelector(selectFlags);
 
     const displaySymbol = getDisplaySymbol(networkSymbol);
@@ -38,7 +38,7 @@ export const EarnEthBanner = ({ networkSymbol, apy }: EarnEthBannerProps) => {
     };
 
     const goToEarnDashboard = () => {
-        dispatch(goto({ routeName: 'suite-earn' }));
+        dispatch(gotoThunk({ routeName: 'suite-earn' }));
 
         analytics.report({
             type: sharedEvents.yieldNavigateEvent.name,

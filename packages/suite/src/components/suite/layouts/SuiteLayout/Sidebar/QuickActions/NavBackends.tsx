@@ -1,21 +1,22 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { type BlockchainState } from '@suite-common/wallet-core';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { type BlockchainState, selectBlockchainState } from '@suite-common/wallet-core';
 import { Box, Column, DotIndicator, Note, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import type { CustomBackend } from 'src/types/wallet';
 
-const BackendRow = ({
-    backend: { symbol, type },
-    blockchain,
-}: {
+type BackendRowProps = {
     backend: CustomBackend;
     blockchain: BlockchainState;
-}) => {
-    const dispatch = useDispatch();
-    const chain = blockchain[symbol];
+};
+
+const BackendRow = ({ backend: { symbol, type }, blockchain }: BackendRowProps) => {
+    const { dispatch } = useServices(injectDispatch);
+    const chain = blockchain[symbol as keyof typeof blockchain];
 
     return (
         <Box
@@ -49,7 +50,7 @@ type NavBackendsProps = {
 };
 
 export const NavBackends = ({ customBackends }: NavBackendsProps) => {
-    const blockchain = useSelector(state => state.wallet.blockchain);
+    const blockchain = useSelector(selectBlockchainState);
 
     return (
         <Column gap={16} padding={4}>

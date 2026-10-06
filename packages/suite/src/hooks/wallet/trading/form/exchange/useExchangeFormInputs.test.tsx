@@ -3,14 +3,17 @@ import { useForm } from 'react-hook-form';
 import { act } from '@testing-library/react';
 import { type CryptoId } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type TradingAssetOption,
     type TradingAssetSellOption,
     type TradingExchangeFormProps,
     tradingExchangeActions,
 } from '@suite-common/trading';
+import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+
+import { type AppState } from 'src/reducers/store';
 
 import { useExchangeFormInputs } from './useExchangeFormInputs';
 
@@ -39,7 +42,9 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
-const ACCOUNT = mockWalletAccount({ symbol: 'btc', formattedBalance: '2' });
+const btcSymbol = toNetworkSymbolNonTestnet('btc');
+const ethSymbol = toNetworkSymbolNonTestnet('eth');
+const ACCOUNT = mockWalletAccount({ symbol: btcSymbol, formattedBalance: '2' });
 
 const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'bitcoin' as CryptoId,
@@ -47,11 +52,11 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     name: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: 'btc',
+    symbol: btcSymbol,
     displaySymbol: 'BTC',
     networkName: 'Bitcoin',
-    networkSymbol: 'btc',
-    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: 'btc' }),
+    networkSymbol: btcSymbol,
+    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),
 };
 
 const RECEIVE_CRYPTO_SELECT: TradingAssetOption = {
@@ -60,10 +65,10 @@ const RECEIVE_CRYPTO_SELECT: TradingAssetOption = {
     name: 'Ethereum',
     coingeckoId: 'ethereum',
     contractAddress: null,
-    symbol: 'eth',
+    symbol: ethSymbol,
     displaySymbol: 'ETH',
     networkName: 'Ethereum',
-    networkSymbol: 'eth',
+    networkSymbol: ethSymbol,
 };
 
 const DEFAULTS: TradingExchangeFormProps = {
@@ -103,7 +108,7 @@ const DEFAULTS: TradingExchangeFormProps = {
 const mockComposeRequest = jest.fn();
 
 const renderExchangeFormInputs = () => {
-    const store = configureMockStore({
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             wallet: { accounts: [ACCOUNT] },
         },
@@ -130,10 +135,12 @@ const renderExchangeFormInputs = () => {
 
             return { inputs, methods };
         },
-        { store },
+        { services },
     );
 
-    return { ...utils, store };
+    const { getActions } = services.store;
+
+    return { ...utils, getActions };
 };
 
 describe('useExchangeFormInputs', () => {
@@ -153,7 +160,7 @@ describe('useExchangeFormInputs', () => {
     });
 
     it('setAllAmount marks the max output, triggers a compose and invalidates the selected quote', () => {
-        const { result, store } = renderExchangeFormInputs();
+        const { result, getActions } = renderExchangeFormInputs();
 
         act(() => {
             result.current.inputs.setAllAmount();
@@ -163,7 +170,7 @@ describe('useExchangeFormInputs', () => {
         expect(result.current.methods.getValues('outputs.0.fiat')).toBe('');
         expect(result.current.inputs.fractionButton).toBe(1);
         expect(mockComposeRequest).toHaveBeenCalledWith('outputs.0.amount');
-        expect(store.getActions().map(action => action.type)).toContain(
+        expect(getActions().map(action => action.type)).toContain(
             tradingExchangeActions.saveSelectedQuote.type,
         );
     });

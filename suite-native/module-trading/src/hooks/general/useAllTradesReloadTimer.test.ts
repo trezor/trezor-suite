@@ -1,4 +1,7 @@
-import { type TestStore, act } from '@suite-native/test-utils-store';
+import { type Store } from '@reduxjs/toolkit';
+
+import { type TradingRootStateWithDeviceAndAccounts } from '@suite-common/trading';
+import { act } from '@suite-native/test-utils-store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     btc1NormalAccount,
@@ -8,12 +11,15 @@ import {
     getSellTrade,
     sol1normalAccount,
 } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useAllTradesReloadTimer } from './useAllTradesReloadTimer';
 import {
-    createTradingLightStore,
+    createTradingTestStore,
     renderHookWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
+
+type State = TradingRootState & TradingRootStateWithDeviceAndAccounts;
 
 // Mock the useReloadTimer hook
 jest.mock('./useReloadTimer', () => ({
@@ -42,7 +48,7 @@ describe('useAllTradesReloadTimer', () => {
     });
 
     const getInitializedStore = ({ trades = [] }: { trades?: any[] } = {}) =>
-        createTradingLightStore({
+        createTradingTestStore({
             overrides: {
                 wallet: {
                     trading: { trades },
@@ -56,10 +62,12 @@ describe('useAllTradesReloadTimer', () => {
             },
         });
 
-    const renderUseAllTradesReloadTimer = (store: TestStore) =>
-        renderHookWithTradingProvider(() => useAllTradesReloadTimer(), { store });
+    const renderUseAllTradesReloadTimer = async (store: Store<State>) =>
+        await renderHookWithTradingProvider(() => useAllTradesReloadTimer(), {
+            services: { store },
+        });
 
-    it('should enable reload timer when there are trades to watch', () => {
+    it('should enable reload timer when there are trades to watch', async () => {
         const mockTrades = [
             getBuyTrade({ status: 'SUBMITTED' }),
             getExchangeTrade({ status: 'CONVERTING' }),
@@ -78,7 +86,7 @@ describe('useAllTradesReloadTimer', () => {
         });
 
         const store = getInitializedStore({ trades: tradesWithAccounts });
-        renderUseAllTradesReloadTimer(store);
+        await renderUseAllTradesReloadTimer(store);
 
         expect(mockUseReloadTimer).toHaveBeenCalledWith({
             isEnabled: true, // Should be true when there are trades to watch
@@ -86,7 +94,7 @@ describe('useAllTradesReloadTimer', () => {
         });
     });
 
-    it('should return selected trades', () => {
+    it('should return selected trades', async () => {
         const mockTrades = [
             getBuyTrade({ status: 'SUBMITTED' }), // Should be watched
             getBuyTrade({ status: 'SUCCESS' }), // Should not be watched (final status)
@@ -100,7 +108,7 @@ describe('useAllTradesReloadTimer', () => {
         }));
 
         const store = getInitializedStore({ trades: tradesWithAccounts });
-        const { result } = renderUseAllTradesReloadTimer(store);
+        const { result } = await renderUseAllTradesReloadTimer(store);
 
         expect(result.current.tradesToWatch).toHaveLength(2);
         expect(result.current.tradesToWatch[0]?.data.status).toBe('SUBMITTED');
@@ -127,7 +135,7 @@ describe('useAllTradesReloadTimer', () => {
         }));
 
         const store = getInitializedStore({ trades: tradesWithAccounts });
-        const { result } = renderUseAllTradesReloadTimer(store);
+        const { result } = await renderUseAllTradesReloadTimer(store);
 
         // Call the refreshAllTrades function
         await act(async () => {
@@ -153,7 +161,7 @@ describe('useAllTradesReloadTimer', () => {
         ];
 
         const store = getInitializedStore({ trades: mockTrades });
-        const { result } = renderUseAllTradesReloadTimer(store);
+        const { result } = await renderUseAllTradesReloadTimer(store);
 
         await act(async () => {
             await result.current.refreshAllTrades();
@@ -178,7 +186,7 @@ describe('useAllTradesReloadTimer', () => {
         }));
 
         const store = getInitializedStore({ trades: tradesWithAccounts });
-        const { result } = renderUseAllTradesReloadTimer(store);
+        const { result } = await renderUseAllTradesReloadTimer(store);
 
         // Initially should be false
         expect(result.current.hasFetchedInitialTrades).toBe(false);
@@ -187,8 +195,7 @@ describe('useAllTradesReloadTimer', () => {
             await result.current.refreshAllTrades();
         });
 
-        // After refresh, should still be false (state is managed internally)
-        // The actual state change happens in the hook's internal state
+        expect(result.current.hasFetchedInitialTrades).toBe(true);
         expect(mockReset).toHaveBeenCalled();
     });
 
@@ -201,7 +208,7 @@ describe('useAllTradesReloadTimer', () => {
         });
 
         const store = getInitializedStore({ trades: [] });
-        const { result } = renderUseAllTradesReloadTimer(store);
+        const { result } = await renderUseAllTradesReloadTimer(store);
 
         expect(result.current.tradesToWatch).toHaveLength(0);
         expect(result.current.tradesByAccount).toHaveLength(0);
@@ -211,7 +218,7 @@ describe('useAllTradesReloadTimer', () => {
         expect(mockReset).not.toHaveBeenCalled();
     });
 
-    it('should handle trades with different trade types', () => {
+    it('should handle trades with different trade types', async () => {
         const mockTrades = [
             getBuyTrade({ status: 'SUBMITTED' }),
             getExchangeTrade({ status: 'CONVERTING' }),
@@ -224,15 +231,15 @@ describe('useAllTradesReloadTimer', () => {
         }));
 
         const store = getInitializedStore({ trades: tradesWithAccounts });
-        const { result } = renderUseAllTradesReloadTimer(store);
+        const { result } = await renderUseAllTradesReloadTimer(store);
 
         // All trades should be watched as they have non-final statuses
         expect(result.current.tradesToWatch).toHaveLength(3);
     });
 
-    it('should provide setIsFetching function', () => {
+    it('should provide setIsFetching function', async () => {
         const store = getInitializedStore();
-        const { result } = renderUseAllTradesReloadTimer(store);
+        const { result } = await renderUseAllTradesReloadTimer(store);
 
         expect(typeof result.current.setIsFetching).toBe('function');
 

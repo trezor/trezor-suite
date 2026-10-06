@@ -3,15 +3,17 @@ import { useRef } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Icon, Row, ShortcutBadge, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { commonFocusStyles, focusStyleTransition } from '@trezor/components/src/utils/utils';
 import { CaretCircleDownIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 
 import { setRecentlyConnectedDevicePath } from 'src/actions/suite/suiteActions';
-import { openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { openSwitchDeviceDialogThunk } from 'src/actions/wallet/addWalletThunk';
+import { useSelector } from 'src/hooks/suite';
 import { selectRecentlyConnectedDevice } from 'src/selectors/suite/suiteSelectors';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
@@ -64,7 +66,7 @@ const InnerContainer = styled.div<{ $isDisabled?: boolean }>`
 `;
 
 const RecentlyConnectedDeviceTooltipContent = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const recentlyConnectedDevice = useSelector(selectRecentlyConnectedDevice);
     // deviceName must stay at initial value to prevent flickering, because the tooltip disappearing animation takes some time.
@@ -72,7 +74,7 @@ const RecentlyConnectedDeviceTooltipContent = () => {
     if (deviceNameRef.current === undefined) return null;
 
     const handleClick = () => {
-        dispatch(openSwitchDeviceDialog());
+        dispatch(openSwitchDeviceDialogThunk());
         dispatch(setRecentlyConnectedDevicePath(null));
     };
 
@@ -86,10 +88,10 @@ const RecentlyConnectedDeviceTooltipContent = () => {
 export const DeviceSelector = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const recentlyConnectedDevice = useSelector(selectRecentlyConnectedDevice);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const handleSwitchDeviceClick = () => {
-        dispatch(openSwitchDeviceDialog());
+        dispatch(openSwitchDeviceDialogThunk());
         dispatch(setRecentlyConnectedDevicePath(null));
     };
 

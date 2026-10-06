@@ -1,3 +1,4 @@
 export const MESSAGE_MAGIC_HEADER_BYTE = 63;
 export const MESSAGE_HEADER_BYTE = 0x23;
 export const HEADER_SIZE = 1 + 1 + 1 + 2 + 4; // MESSAGE_MAGIC_HEADER_BYTE + MESSAGE_HEADER_BYTE + MESSAGE_HEADER_BYTE + messageType + dataLength
+export const MESSAGE_MAX_LENGTH = 16 * 1024 * 1024; // 16 MB

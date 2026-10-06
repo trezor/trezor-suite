@@ -1,16 +1,18 @@
 import { useCallback } from 'react';
 import { Platform } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { useServices } from '@suite-common/dependency-injection';
 import {
+    acquireDeviceThunk,
     selectIsAnyPhysicalDeviceConnectedViaUsb,
     selectIsDeviceAuthorized,
     selectIsDeviceThpLocked,
 } from '@suite-common/device';
-import { acquireDevice } from '@suite-common/wallet-core';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     AuthorizeDeviceStackRoutes,
     type HomeStackParamList,
@@ -27,7 +29,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useConnectDeviceHandler = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
 
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
@@ -38,7 +40,7 @@ export const useConnectDeviceHandler = () => {
 
     const onConnectDevicePress = useCallback(() => {
         if (!isDeviceAuthorized || isDeviceThpLocked) {
-            dispatch(acquireDevice({}));
+            dispatch(acquireDeviceThunk({}));
         } else if (isAnyPhysicalDeviceConnectedViaUsb || Platform.OS === 'ios') {
             // Make sure auto-connect is enabled in case some device was manually disconnected.
             dispatch(bluetoothActions.enableAutoConnect());

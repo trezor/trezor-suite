@@ -6,10 +6,10 @@ import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
+import { BannerInline, type BannerInlineProps } from '../BannerInline/BannerInline';
 import { Box } from '../Box';
-import { InlineAlertBox, type InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
+import { IconCircle, type IconCircleIntent } from '../Icon/IconCircle';
 import { Loader } from '../Loader';
-import { RoundedIcon, type RoundedIconIntent } from '../RoundedIcon';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
 import { useTapGesture } from '../useTapGesture';
@@ -23,14 +23,14 @@ export type CompactCardWithIconLayoutProps = {
     title: ReactNode;
     subtitle?: ReactNode;
     isDisabled?: boolean;
-    alertBoxProps?: InlineAlertBoxProps;
+    alertBoxProps?: BannerInlineProps;
     onPress: () => void;
     variant?: CompactCardVariant;
     borderColor?: Color | null;
 } & Omit<CardProps, 'children' | 'borderColor'>;
 
 type CardColorScheme = {
-    iconIntent: RoundedIconIntent;
+    iconIntent: IconCircleIntent;
     titleColor: Color;
     subtitleColor: Color;
     caretColor: Color;
@@ -97,7 +97,7 @@ export const CompactCardWithIconLayout = ({
                         spacing="sp12"
                         alignItems="center"
                     >
-                        <RoundedIcon intent={iconIntent} name={icon} />
+                        <IconCircle intent={iconIntent} name={icon} />
                         <VStack spacing="sp2" style={applyStyle(contentStyle)}>
                             <Text color={titleColor}>{title}</Text>
                             {subtitle && (
@@ -114,7 +114,7 @@ export const CompactCardWithIconLayout = ({
                     </HStack>
                     {alertBoxProps && (
                         <Box margin="sp4">
-                            <InlineAlertBox {...alertBoxProps} />
+                            <BannerInline {...alertBoxProps} />
                         </Box>
                     )}
                 </AnimatedContainerCard>

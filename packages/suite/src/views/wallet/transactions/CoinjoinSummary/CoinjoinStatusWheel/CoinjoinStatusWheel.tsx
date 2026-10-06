@@ -1,11 +1,12 @@
-import { selectCurrentCoinjoinWheelStates, stopCoinjoinSession } from '@suite/coinjoin';
+import { selectCurrentCoinjoinWheelStates, stopCoinjoinSessionThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
 import { StopIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 import { CoinjoinProgressWheel } from './CoinjoinProgressWheel';
 import { CoinjoinStatusMessage } from './CoinjoinStatusMessage';
@@ -19,7 +20,7 @@ export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) =>
         selectCurrentCoinjoinWheelStates,
     );
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     return (
         <Card paddingType="small" height="100%">
@@ -39,7 +40,7 @@ export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) =>
                         intent="neutral"
                         priority="secondary"
                         iconRight={StopIcon}
-                        onClick={() => dispatch(stopCoinjoinSession(accountKey))}
+                        onClick={() => dispatch(stopCoinjoinSessionThunk(accountKey))}
                         size="small"
                         margin={{ top: 8 }}
                     >

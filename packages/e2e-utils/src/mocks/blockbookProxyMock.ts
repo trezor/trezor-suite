@@ -31,6 +31,10 @@ export class BlockbookProxyMock {
         return `ws://localhost:${this.port}`;
     }
 
+    get connectedClients(): number {
+        return this.server?.clients.size ?? 0;
+    }
+
     setHandler(method: string, handler: BlockbookWsHandler) {
         this.handlers.set(method, handler);
     }

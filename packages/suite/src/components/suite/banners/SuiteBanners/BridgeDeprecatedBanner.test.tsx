@@ -8,14 +8,6 @@ jest.mock('@suite/intl', () => ({
     Translation: ({ id }: any) => id,
 }));
 
-jest.mock('@suite/router', () => ({
-    goto: () => ({ type: 'goto' }),
-}));
-
-jest.mock('src/hooks/suite', () => ({
-    useDispatch: () => () => {},
-}));
-
 jest.mock('@trezor/env-utils', () => ({
     ...jest.requireActual('@trezor/env-utils'),
     isWeb: jest.fn(() => false),

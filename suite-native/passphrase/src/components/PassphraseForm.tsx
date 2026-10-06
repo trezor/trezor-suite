@@ -1,26 +1,24 @@
 import { useRef, useState } from 'react';
 import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import {
+    PASSPHRASE_MAX_LENGTH,
     selectHasDevicePassphraseEntryCapability,
     selectSelectedDevice,
 } from '@suite-common/device';
-import {
-    type PassphraseFormValues,
-    formInputsMaxLength,
-    passphraseFormSchema,
-} from '@suite-common/validators';
-import { submitPassphrase } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { submitPassphraseThunk } from '@suite-common/wallet-core';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { selectPassphraseRequestId } from '@suite-native/device-authorization';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { type PassphraseFormValues, passphraseFormSchema } from '../passphraseSchema';
 import { EnterPassphraseOnTrezorButton } from './EnterPassphraseOnTrezorButton';
 import { NoPassphraseButton } from './NoPassphraseButton';
 
@@ -43,8 +41,7 @@ export const PassphraseForm = ({
     noPassphraseEnabled,
     onAfterSubmit,
 }: PassphraseFormProps) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const formWrapperView = useRef<View>(null);
 
     const [isInputFocused, setIsInputFocused] = useState(false);
@@ -73,7 +70,9 @@ export const PassphraseForm = ({
 
     const handleCreateHiddenWallet = handleSubmit(({ passphrase }) => {
         if (!device) return;
-        dispatch(submitPassphrase({ device, passphrase, passphraseOnDevice: false, requestId }));
+        dispatch(
+            submitPassphraseThunk({ device, passphrase, passphraseOnDevice: false, requestId }),
+        );
         // Reset values so when user comes back to this screen,
         // it's clean (for example if try again is triggered later in the flow)
         reset();
@@ -94,7 +93,7 @@ export const PassphraseForm = ({
                         <SecureTextInputField
                             label={inputLabel}
                             name="passphrase"
-                            maxLength={formInputsMaxLength.passphrase}
+                            maxLength={PASSPHRASE_MAX_LENGTH}
                             accessibilityLabel="passphrase input"
                             autoCapitalize="none"
                             onFocus={handleFocusInput}

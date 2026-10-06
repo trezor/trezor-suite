@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../connect-common" },
-        { "path": "../utils" }
+        { "path": "../utils" },
+        { "path": "../requirements" }
     ]
 }

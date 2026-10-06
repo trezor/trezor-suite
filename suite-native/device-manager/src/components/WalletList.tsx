@@ -1,12 +1,14 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     selectDeviceInstances,
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
@@ -21,7 +23,7 @@ type WalletListProps = {
 };
 
 export const WalletList = ({ onSelectDevice }: WalletListProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const devices = useSelector(selectDeviceInstances);
     const selectedDevice = useSelector(selectSelectedDevice);
     const hasNoDeviceWithEmptyPassphrase = useSelector(selectHasNoDeviceWithEmptyPassphrase);

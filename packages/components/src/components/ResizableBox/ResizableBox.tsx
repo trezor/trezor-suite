@@ -499,6 +499,7 @@ export const ResizableBox = ({
 
     return (
         <Resizers
+            data-component="ResizableBox"
             $width={collapse ? minWidth : effectiveWidth}
             $minWidth={minWidth}
             $maxWidth={maxWidth}

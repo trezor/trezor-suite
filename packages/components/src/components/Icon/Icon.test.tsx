@@ -29,6 +29,7 @@ describe('Icon', () => {
             width: '16px',
             height: '16px',
         });
+        expect(screen.getByTestId('@icon/component')).toHaveAttribute('data-icon', 'TestIcon');
         expect(icon).toHaveAttribute('width', '100%');
         expect(icon).toHaveAttribute('height', '100%');
     });

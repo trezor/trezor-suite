@@ -1,9 +1,10 @@
+import type { UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type BreakpointFlags, initialBreakpointFlags } from '@trezor/theme';
 
-import { WINDOW } from 'src/actions/suite/constants';
-import { type Action } from 'src/types/suite';
+import { updateBreakpoints, updateWindowVisibility } from 'src/actions/suite/windowActions';
 
 export interface WindowState extends BreakpointFlags {
     isVisible: boolean;
@@ -18,16 +19,12 @@ export const initialState: WindowState = {
     isVisible: true,
 };
 
-const windowReducer = (state: WindowState = initialState, action: Action): WindowState =>
+const windowReducer = (state: WindowState = initialState, action: UnknownAction): WindowState =>
     produce(state, draft => {
-        switch (action.type) {
-            case WINDOW.UPDATE_BREAKPOINTS:
-                Object.assign(draft, action.payload);
-                break;
-            case WINDOW.UPDATE_WINDOW_VISIBILITY:
-                draft.isVisible = action.payload.isVisible;
-                break;
-            // no default
+        if (updateBreakpoints.match(action)) {
+            Object.assign(draft, action.payload);
+        } else if (updateWindowVisibility.match(action)) {
+            draft.isVisible = action.payload.isVisible;
         }
     });
 
@@ -35,8 +32,9 @@ export default windowReducer;
 
 export const selectIsWindowVisible = (state: WindowRootState) => state.window.isVisible;
 
-export const selectBreakpointFlags = (state: WindowRootState): BreakpointFlags => {
-    const { isVisible, ...breakpointFlags } = state.window;
+const createMemoizedSelector = createWeakMapSelector.withTypes<WindowRootState>();
 
-    return breakpointFlags;
-};
+export const selectBreakpointFlags = createMemoizedSelector(
+    [(state: WindowRootState) => state.window],
+    ({ isVisible, ...breakpointFlags }): BreakpointFlags => breakpointFlags,
+);

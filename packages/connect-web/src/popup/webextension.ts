@@ -1,3 +1,4 @@
+import { WEBEXTENSION_SUITE_WEB_CHANNEL } from '@trezor/connect-common';
 import { type CoreEventMessage } from '@trezor/connect-common/src/events';
 import { type AbstractMessageChannel } from '@trezor/connect-common/src/messageChannel/abstract';
 import { ServiceWorkerWindowExtConnectableChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window-ext-connectable';
@@ -44,8 +45,8 @@ export class WebExtensionPopup extends Popup {
     protected createChannel(origin: string): AbstractMessageChannel<CoreEventMessage> {
         return new ServiceWorkerWindowExtConnectableChannel<CoreEventMessage>({
             channel: {
-                here: '@trezor/connect-webextension-externally-connectable',
-                peer: '@trezor/suite-web',
+                here: WEBEXTENSION_SUITE_WEB_CHANNEL.webextension,
+                peer: WEBEXTENSION_SUITE_WEB_CHANNEL.suiteWeb,
             },
             currentId: () => this.popupWindowPromise?.promise.then(tab => tab.id),
             logger: this.logger,

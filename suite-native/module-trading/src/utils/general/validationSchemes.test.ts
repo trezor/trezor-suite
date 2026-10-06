@@ -1,7 +1,7 @@
 import { useFormatters } from '@suite-common/formatters';
-import { type yup } from '@suite-common/validators';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type yup } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 import type { TradingFormContext } from '@suite-native/trading-types';
@@ -14,8 +14,8 @@ import {
 
 let formatters: ReturnType<typeof useFormatters>;
 
-beforeAll(() => {
-    const { result } = renderHookWithBasicProvider(() => useFormatters());
+beforeAll(async () => {
+    const { result } = await renderHookWithBasicProvider(() => useFormatters());
     formatters = result.current;
 });
 
@@ -25,7 +25,8 @@ const createContext = (overrides: Partial<TradingFormContext> = {}): TradingForm
         FiatAmountFormatter: formatters.BaseCurrencyAmountFormatter,
         CryptoAmountFormatter: formatters.CryptoAmountFormatter,
         convertNumberToBaseUnit: (amount: number | undefined) => amount,
-        sendSymbol: 'btc',
+        sendNetworkSymbol: asNetworkSymbol('btc'),
+        sendAssetSymbol: 'BTC',
         currency: 'usd',
         balance: undefined,
         ...overrides,
@@ -125,9 +126,9 @@ describe('validationSchemes', () => {
             ).resolves.toBeUndefined();
         });
 
-        it('skips all checks when sendSymbol is undefined', async () => {
+        it('skips all checks when sendAssetSymbol is undefined', async () => {
             const context = createContext({
-                sendSymbol: undefined,
+                sendAssetSymbol: undefined,
                 minCrypto: '10',
                 maxCrypto: '20',
                 balance: '0',
@@ -145,7 +146,7 @@ describe('validationSchemes', () => {
         });
 
         describe('min', () => {
-            const buildContext = () => createContext({ sendSymbol: 'btc', minCrypto: '10' });
+            const buildContext = () => createContext({ sendAssetSymbol: 'BTC', minCrypto: '10' });
 
             it('rejects when value is below min', async () => {
                 await expect(
@@ -171,7 +172,7 @@ describe('validationSchemes', () => {
         });
 
         describe('max', () => {
-            const buildContext = () => createContext({ sendSymbol: 'btc', maxCrypto: '100' });
+            const buildContext = () => createContext({ sendAssetSymbol: 'BTC', maxCrypto: '100' });
 
             it('rejects when value is above max', async () => {
                 await expect(
@@ -196,19 +197,92 @@ describe('validationSchemes', () => {
             });
         });
 
+        describe('token on a network with a different symbol', () => {
+            const buildContext = (overrides: Partial<TradingFormContext> = {}) =>
+                createContext({
+                    sendNetworkSymbol: asNetworkSymbol('trx'),
+                    sendAssetSymbol: 'USDT',
+                    ...overrides,
+                });
+
+            it('converts the amount using the network symbol', async () => {
+                const convertNumberToBaseUnit = jest.fn((amount: number | undefined) => amount);
+
+                await validate(
+                    sendCryptoAmountValidationSchema,
+                    5,
+                    buildContext({ convertNumberToBaseUnit }),
+                );
+
+                expect(convertNumberToBaseUnit).toHaveBeenCalledWith(5, 'trx');
+            });
+
+            it('reports min in the token symbol', async () => {
+                await expect(
+                    validate(
+                        sendCryptoAmountValidationSchema,
+                        5,
+                        buildContext({ minCrypto: '10' }),
+                    ),
+                ).rejects.toThrow(
+                    getTranslation('moduleTrading.validators.min', { min: '10 USDT' }),
+                );
+            });
+
+            it('reports max in the token symbol', async () => {
+                await expect(
+                    validate(
+                        sendCryptoAmountValidationSchema,
+                        101,
+                        buildContext({ maxCrypto: '100' }),
+                    ),
+                ).rejects.toThrow(
+                    getTranslation('moduleTrading.validators.max', { max: '100 USDT' }),
+                );
+            });
+        });
+
+        describe('token with a network symbol', () => {
+            it('formats the amount using the token symbol when a contract address is present', async () => {
+                const CryptoAmountFormatter = {
+                    format: jest.fn(() => '10 BTC'),
+                } as unknown as TradingFormContext['CryptoAmountFormatter'];
+                const context = {
+                    ...createContext({
+                        sendNetworkSymbol: asNetworkSymbol('eth'),
+                        sendAssetSymbol: 'BTC',
+                        minCrypto: '10',
+                        CryptoAmountFormatter,
+                    }),
+                    contractAddress: '0x123',
+                } as TradingFormContext;
+
+                await expect(
+                    validate(sendCryptoAmountValidationSchema, 5, context),
+                ).rejects.toThrow(
+                    getTranslation('moduleTrading.validators.min', { min: '10 BTC' }),
+                );
+
+                expect(CryptoAmountFormatter.format).toHaveBeenCalledWith('10', {
+                    symbol: 'BTC',
+                    isBalance: true,
+                });
+            });
+        });
+
         describe('balance', () => {
             it('passes when balance is undefined', async () => {
                 await expect(
                     validate(
                         sendCryptoAmountValidationSchema,
                         1000,
-                        createContext({ sendSymbol: 'btc', balance: undefined }),
+                        createContext({ sendAssetSymbol: 'BTC', balance: undefined }),
                     ),
                 ).resolves.toBe(1000);
             });
 
             it('rejects with insufficient-balance when value exceeds balance', async () => {
-                const context = createContext({ sendSymbol: 'btc', balance: '50' });
+                const context = createContext({ sendAssetSymbol: 'BTC', balance: '50' });
 
                 await expect(
                     validate(sendCryptoAmountValidationSchema, 51, context),
@@ -217,7 +291,8 @@ describe('validationSchemes', () => {
 
             it('rejects with network-reserve when value exceeds maxSpendableAmount but is within balance', async () => {
                 const context = createContext({
-                    sendSymbol: 'btc',
+                    sendAssetSymbol: 'ETH',
+                    sendNetworkSymbol: asNetworkSymbol('arb'),
                     balance: '100',
                     maxSpendableAmount: '90',
                 });
@@ -226,14 +301,15 @@ describe('validationSchemes', () => {
                     validate(sendCryptoAmountValidationSchema, 95, context),
                 ).rejects.toThrow(
                     getTranslation('moduleTrading.validators.networkReserve', {
-                        displaySymbol: 'BTC',
+                        displaySymbol: 'ETH',
                     }),
                 );
             });
 
             it('accepts when value is within maxSpendableAmount', async () => {
                 const context = createContext({
-                    sendSymbol: 'btc',
+                    sendAssetSymbol: 'BTC',
+                    sendNetworkSymbol: asNetworkSymbol('btc'),
                     balance: '100',
                     maxSpendableAmount: '90',
                 });
@@ -245,7 +321,8 @@ describe('validationSchemes', () => {
 
             it('passes when maxSpendableAmount is undefined and value is within balance', async () => {
                 const context = createContext({
-                    sendSymbol: 'btc',
+                    sendAssetSymbol: 'BTC',
+                    sendNetworkSymbol: asNetworkSymbol('btc'),
                     balance: '100',
                     maxSpendableAmount: undefined,
                 });

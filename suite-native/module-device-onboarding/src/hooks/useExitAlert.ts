@@ -1,9 +1,11 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import { useFirmware } from '@suite-native/firmware';
@@ -18,13 +20,14 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
+
 type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
     RootStackParamList
 >;
 export const useExitAlert = (handleContinueButtonPress?: () => void) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const navigation = useNavigation<NavigationProps>();
 

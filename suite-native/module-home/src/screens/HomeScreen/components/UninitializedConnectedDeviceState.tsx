@@ -59,7 +59,6 @@ export const UninitializedConnectedDeviceState = () => {
                         <Translation id="moduleHome.emptyState.uninitializedDevice.subtitle" />
                     }
                     testID="@homescreen/uninitializedConnectedDeviceText"
-                    alignSelf="stretch"
                 />
                 <Button onPress={navigateToDeviceOnboarding} style={applyStyle(buttonStyle)}>
                     <Translation id="moduleHome.emptyState.uninitializedDevice.button" />

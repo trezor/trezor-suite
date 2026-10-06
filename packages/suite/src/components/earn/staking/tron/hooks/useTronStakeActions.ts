@@ -1,13 +1,17 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
-import { TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS } from '@suite-common/wallet-constants';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
+    TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS,
     type TronFlow,
     type TronStakeError,
     type TronStakeStepId,
+    getCurrentVoteAllocations,
+    getTronStakingRewards,
+    getTronWithdrawableBalance,
     selectTronStakeSession,
     submitTronClaimThunk,
     submitTronFreezeThunk,
@@ -17,14 +21,13 @@ import {
     tronStakeActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getTronStakingRewards, getTronWithdrawableBalance } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
-import { resolveVotedRepresentativeAddress } from '../voteUtils';
 import { type useTronStakeForm } from './useTronStakeForm';
+import { getVotingDelegationAnalyticsValue, parseVoteAllocations } from '../utils/voteUtils';
 
 interface UseTronStakeActionsProps {
     account: Account;
@@ -46,9 +49,8 @@ export const useTronStakeActions = ({
     form,
     flow,
 }: UseTronStakeActionsProps): TronStakeActions => {
-    const dispatch = useDispatch();
     const { device } = useDevice();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { stats } = useTronStakingStats();
     const { step, isSubmitting, error, pendingTxid } = useSelector(state =>
         selectTronStakeSession(state, account.key, flow),
@@ -105,26 +107,32 @@ export const useTronStakeActions = ({
             case 'vote': {
                 if (isVotingDisabled) break;
 
-                const representativeAddress = resolveVotedRepresentativeAddress(
-                    form.methods.getValues(),
-                );
-                const representative = stats.data?.find(
-                    ({ address }) => address === representativeAddress,
-                );
-                const representativeName = representative?.name ?? representativeAddress;
+                const allocations = parseVoteAllocations(form.methods.getValues('voteAllocations'));
+                const votingDelegation = getVotingDelegationAnalyticsValue(allocations, stats.data);
 
-                const termsOfServiceUrl =
-                    TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS[representativeAddress];
+                const votedAddresses = getCurrentVoteAllocations(account).map(
+                    ({ address }) => address,
+                );
+                const newRepresentatives = allocations.flatMap(({ address, count }) => {
+                    const representative = stats.data?.find(
+                        candidate => candidate.address === address,
+                    );
+                    const termsOfServiceUrl = TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS[address];
+                    const isNewlyVotedFor = count > 0 && !votedAddresses.includes(address);
+
+                    return representative && termsOfServiceUrl && isNewlyVotedFor
+                        ? [{ address, name: representative.name, termsOfServiceUrl }]
+                        : [];
+                });
 
                 const requestVoteConsent =
-                    representative && termsOfServiceUrl
+                    newRepresentatives.length > 0
                         ? async () => {
                               const isConsentGiven = Boolean(
                                   await dispatch(
                                       openDeferredModal({
                                           type: 'tron-vote-consent',
-                                          representativeName,
-                                          termsOfServiceUrl,
+                                          representatives: newRepresentatives,
                                       }),
                                   ),
                               );
@@ -136,7 +144,7 @@ export const useTronStakeActions = ({
                                           action: 'cancel',
                                           step: 'stake-form-modal',
                                           networkSymbol: account.symbol,
-                                          votingDelegation: representativeAddress,
+                                          votingDelegation,
                                       },
                                   });
                               }
@@ -150,7 +158,7 @@ export const useTronStakeActions = ({
                         account,
                         device,
                         flow,
-                        representativeAddress,
+                        allocations,
                         requestVoteConsent,
                         requestPushApproval: async () =>
                             Boolean(

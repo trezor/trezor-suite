@@ -12,7 +12,7 @@ type TransactionTargetLayoutProps = {
     amount?: ReactNode;
     fiatAmount?: ReactNode;
     useHiddenPlaceholder?: boolean;
-    isPhishingTransaction?: boolean;
+    isBlurred?: boolean;
 };
 
 export const TransactionTargetLayout = ({
@@ -20,7 +20,7 @@ export const TransactionTargetLayout = ({
     amount,
     fiatAmount,
     useHiddenPlaceholder,
-    isPhishingTransaction,
+    isBlurred,
 }: TransactionTargetLayoutProps) => {
     const { isBelowTablet } = useLayoutSize();
 
@@ -39,9 +39,7 @@ export const TransactionTargetLayout = ({
     const amounts = (
         <>
             <Text {...cryptoAmountProps} align="end">
-                {amount && (
-                    <BlurWrapper $isBlurred={isPhishingTransaction ?? false}>{amount}</BlurWrapper>
-                )}
+                {amount && <BlurWrapper $isBlurred={isBlurred ?? false}>{amount}</BlurWrapper>}
             </Text>
             <Text {...commonProps} isTabular align="end">
                 {fiatAmount}

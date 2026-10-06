@@ -1,5 +1,3 @@
-import { type useDispatch } from 'react-redux';
-
 import { A } from '@mobily/ts-belt';
 import { getDefaultStore } from 'jotai';
 
@@ -11,7 +9,9 @@ import {
     fetchGraphData,
     getTimeFrameForHistoryHours,
 } from '@suite-common/graph';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { createThunk } from '@suite-common/redux-utils';
+import { type FetchTransactionsFromNowUntilTimestampThunkState } from '@suite-common/wallet-core';
 
 import { accountDetailGraphAtoms } from './accountDetailGraphAtoms';
 import { type GraphInstanceId, isPortfolioGraphInstanceId } from './graphInstances';
@@ -43,7 +43,7 @@ type FetchGraphDataToAtomsParams = {
     isElectrumBackend: boolean;
     baseCurrencyCode: FetchGraphDataParams['baseCurrencyCode'];
     forceRefetch?: boolean;
-    dispatch: ReturnType<typeof useDispatch>;
+    dispatch: Dispatch;
 };
 
 const getGraphAtomsForInstanceId = (instanceId: GraphInstanceId) => {
@@ -123,10 +123,12 @@ const fetchGraphDataToAtoms = async ({
     return { status: RefetchGraphThunkStatus.Fetched };
 };
 
+type RefetchGraphThunkState = FetchTransactionsFromNowUntilTimestampThunkState;
+
 export const refetchGraphThunk = createThunk<
     RefetchGraphThunkResult,
     RefetchGraphThunkParams,
-    { rejectValue: string }
+    { rejectValue: string; state: RefetchGraphThunkState }
 >(`${GRAPH_MODULE_PREFIX}/refetchGraph`, async (params, { dispatch, rejectWithValue }) => {
     const {
         instanceId,

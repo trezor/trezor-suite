@@ -1,15 +1,13 @@
-import type { PropsWithChildren } from 'react';
-
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { ServicesProvider } from '@suite-common/dependency-injection';
 import {
-    createNetworkModuleRepository,
-    createNetworksCompositionRoot,
+    type NetworksRootState,
+    type NetworksState,
+    networksReducer,
 } from '@suite-common/networks';
 import {
     type RenderHookOptions,
-    configureMockStore,
+    createTestCompositionRoot,
     renderHookWithStoreProvider,
 } from '@suite-common/test-utils';
 import {
@@ -45,12 +43,19 @@ export type TradingTestStateWithWalletSettings = {
     };
 };
 
-type RenderHookWithTradingStoreOptions<Props> = RenderHookOptions<Props> & {
-    preloadedState?: Partial<TradingTestStateWithWalletSettings> | Partial<TradingTestState>;
+type State = {
+    networks: NetworksState;
+    wallet: {
+        trading: TradingState;
+        settings: { localCurrency: string };
+        fiat: FiatRatesState;
+    };
 };
 
-const networkModules = createNetworksCompositionRoot();
-const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+type RenderHookWithTradingStoreOptions<Props> = RenderHookOptions<Props> & {
+    preloadedState?: (Partial<TradingTestStateWithWalletSettings> | Partial<TradingTestState>) &
+        Partial<NetworksRootState>;
+};
 
 /**
  * Creates a trading test state with proper structure.
@@ -146,7 +151,7 @@ export const createSellInfoState = (providerInfos: Record<string, any> = {}): an
  *
  * This utility automatically creates a Redux store with the trading reducer
  * and wraps the hook in a Provider. It returns the standard React Testing Library
- * hook result plus the store instance for state assertions.
+ * hook result plus the test services; assert state through `services.store`.
  *
  * @template Result - Return type of the hook
  * @template Props - Props type for the hook (for rerendering)
@@ -154,7 +159,7 @@ export const createSellInfoState = (providerInfos: Record<string, any> = {}): an
  * @param options - Rendering options
  * @param options.preloadedState - Initial Redux state for the store
  * @param options.initialProps - Initial props to pass to the hook
- * @returns Hook result with additional `store` property
+ * @returns Hook result with additional `services` property (store in `services.store`)
  *
  * @example
  * ```ts
@@ -164,7 +169,7 @@ export const createSellInfoState = (providerInfos: Record<string, any> = {}): an
  * );
  *
  * // With preloaded state
- * const { result, store } = renderHookWithTradingStore(
+ * const { result, services } = renderHookWithTradingStore(
  *   () => useProviderMetadataChangeEffect('buy', 'changenow', true),
  *   {
  *     preloadedState: createTradingTestState({
@@ -192,10 +197,11 @@ export const createSellInfoState = (providerInfos: Record<string, any> = {}): an
  */
 export const renderHookWithTradingStore = <Result, Props = unknown>(
     callback: (props: Props) => Result,
-    { preloadedState, wrapper: Wrapper, ...options }: RenderHookWithTradingStoreOptions<Props> = {},
+    { preloadedState, ...options }: RenderHookWithTradingStoreOptions<Props> = {},
 ) => {
-    const store = configureMockStore({
+    const { services } = createTestCompositionRoot<void, State>({
         reducer: combineReducers({
+            networks: networksReducer,
             wallet: combineReducers({
                 trading: tradingCommonReducer,
                 settings: (state = { localCurrency: 'usd' }) => state,
@@ -211,18 +217,11 @@ export const renderHookWithTradingStore = <Result, Props = unknown>(
         preloadedState: preloadedState || createTradingTestState(),
     });
 
-    const TradingServicesProvider = ({ children }: PropsWithChildren) => (
-        <ServicesProvider services={{ networkModuleRepository }}>
-            {Wrapper ? <Wrapper>{children}</Wrapper> : children}
-        </ServicesProvider>
-    );
-
     return {
         ...renderHookWithStoreProvider(callback, {
-            store,
-            wrapper: TradingServicesProvider,
+            services,
             ...options,
         }),
-        store,
+        services,
     };
 };

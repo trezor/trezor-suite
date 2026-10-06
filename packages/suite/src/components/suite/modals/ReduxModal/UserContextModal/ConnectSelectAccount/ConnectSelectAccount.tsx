@@ -14,6 +14,8 @@ import {
     connectPopupVerifySelectAccountThunk,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountType } from '@suite-common/wallet-config';
 import { Column, H3, Icon, Modal, Paragraph, Row, SubTabs, Text } from '@trezor/components';
 import { CheckCircleIcon } from '@trezor/icons';
@@ -22,7 +24,7 @@ import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Pagination } from 'src/components/wallet/Pagination';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { SelectAccountRow } from './SelectAccountRow';
 
@@ -36,7 +38,7 @@ const ACCOUNT_TYPE_LABELS: Partial<Record<AccountType, TranslationKey>> = {
 };
 
 export const ConnectSelectAccount = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
     const popupCall = useSelector(selectConnectPopupCall);
 

@@ -90,8 +90,13 @@ describe(matchRootPubKeyToCertificate.name, () => {
 
     matchRootPubKeyToCertificateFixtures.forEach(({ description, params, result }) => {
         it(description, async () => {
-            const { config, deviceModel, allowDebugKeys, certificates } = params;
-            const allRootPubKeys = getRootPubKeys({ config, deviceModel, allowDebugKeys });
+            const { proofType, config, deviceModel, allowDebugKeys, certificates } = params;
+            const allRootPubKeys = getRootPubKeys({
+                proofType,
+                config,
+                deviceModel,
+                allowDebugKeys,
+            });
 
             // The last certificate is the one signed by root pub key (caCer for Optiga & Tropic, deviceCert for MCU)
             const signedCertificate = certificates.at(-1);

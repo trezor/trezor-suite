@@ -2,11 +2,13 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
+import { type SignDataAndConfirmThunkState } from './signDataAndConfirmThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { accountEth } from '../../__fixtures__/utils';
 import { type TradingExchangeState } from '../../reducers/exchangeReducer';
@@ -17,7 +19,9 @@ import type { LogErrorThunkProps } from '../common/logErrorThunk';
 
 import { exchangeThunks } from './index';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 jest.mock('../common/logErrorThunk', () => ({
     logErrorThunk: (props: LogErrorThunkProps) => ({
@@ -46,8 +50,7 @@ describe('signDataAndConfirmThunk', () => {
             receiveAddress: 'receiveAddress',
             orderId: 'orderId',
         };
-        const store = configureMockStore({
-            extra: {},
+        const { store } = createTestCompositionRoot<void, SignDataAndConfirmThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -68,7 +71,7 @@ describe('signDataAndConfirmThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         const mockProcessResponseData = jest.fn();
         const mockTriggerAnalyticsTradeConfirmation = jest.fn();

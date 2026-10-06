@@ -2,13 +2,7 @@ import { memo } from 'react';
 import { Pressable } from 'react-native';
 
 import { type BackupType } from '@suite-common/suite-types';
-import {
-    Card,
-    CardDivider,
-    FullAlertBox,
-    type FullAlertBoxProps,
-    VStack,
-} from '@suite-native/atoms';
+import { BannerFull, type BannerFullProps, Card, CardDivider, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -30,7 +24,7 @@ const containerStyle = prepareNativeStyle<{ isSelected: boolean }>((utils, { isS
     borderWidth: utils.borders.widths.large,
 }));
 
-const intentByWalletBackupType: Record<BackupType, FullAlertBoxProps['intent']> = {
+const intentByWalletBackupType: Record<BackupType, BannerFullProps['intent']> = {
     'shamir-single': 'brand',
     'shamir-advanced': 'warning',
     '12-words': 'neutral',
@@ -63,7 +57,7 @@ export const WalletBackupCard = memo(
                         <CardHeader isSelected={isSelected} type={type} />
                         <CardDivider horizontalPadding={isSelected ? 'sp16' : 'sp18'} />
                         <CardContent type={type} />
-                        <FullAlertBox
+                        <BannerFull
                             intent={intentByWalletBackupType[type]}
                             title={translate(walletBackupSheetCopyByType[type].calloutLabel)}
                             onPressPrimaryButton={handleLearnMorePress}

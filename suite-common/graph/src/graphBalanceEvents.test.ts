@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type AccountBalanceHistory } from '@trezor/blockchain-link';
 
@@ -7,6 +8,8 @@ import {
     mergeGroups,
 } from './graphBalanceEvents';
 import { type BalanceMovementEvent, type GroupedBalanceMovementEvent } from './types';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 describe('formatBalanceMovementEventsAmounts', () => {
     it('should calculate received and sent values for each balance movement', () => {
@@ -221,7 +224,7 @@ describe('mergeGroups', () => {
             ],
         ];
 
-        const symbol = 'btc';
+        const symbol = btcSymbol;
 
         const expectedMergedGroups: GroupedBalanceMovementEvent[] = [
             {
@@ -258,7 +261,7 @@ describe('mergeGroups', () => {
 
     it('should handle empty groups array', () => {
         const groups: BalanceMovementEvent[][] = [];
-        const symbol = 'btc';
+        const symbol = btcSymbol;
 
         const expectedMergedGroups: GroupedBalanceMovementEvent[] = [];
 

@@ -1,24 +1,23 @@
 import type { BankAccount, CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type DesktopApiDep } from '@suite/desktop-app-api';
+import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
+import { type SuiteRouterHistoryDep } from '@suite/router';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { useTradingSellTradeActions } from './useTradingSellTradeActions';
+import { type AppState } from 'src/reducers/store';
 
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    goto: jest.fn((payload: unknown) => ({ type: '@router/goto', payload })),
-}));
+import { useTradingSellTradeActions } from './useTradingSellTradeActions';
 
 const mockLoadInitialDataThunk = jest.fn((args: unknown) =>
     Object.assign(() => Promise.resolve(), { type: '@trading/loadInitialData', args }),
 );
-
-jest.mock('@suite-common/dependency-injection', () => ({
-    ...jest.requireActual('@suite-common/dependency-injection'),
-    useServices: () => ({ analytics: { report: jest.fn() } }),
-}));
 
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),
@@ -74,7 +73,7 @@ jest.mock('@suite-common/trading', () => {
 
     return {
         ...actual,
-        selectTradingIsSlip24Allowed: () => false,
+        selectTradingIsSlip24SellAllowed: () => false,
         tradingThunks: {
             ...actual.tradingThunks,
             loadInitialDataThunk: (args: unknown) => mockLoadInitialDataThunk(args),
@@ -87,7 +86,7 @@ jest.mock('@suite-common/trading', () => {
     };
 });
 
-const ACCOUNT = mockWalletAccount({ symbol: 'btc' });
+const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
 const EURO_FIAT_CURRENCY = 'EUR' as FiatCurrencyCode;
 
@@ -150,6 +149,10 @@ const buildState = (overrides: StateOverrides = {}) => {
     };
 };
 
+type UseTradingSellTradeActionsServices = DesktopAnalyticsDep &
+    DesktopApiDep<'getHttpReceiverAddress'> &
+    SuiteRouterHistoryDep;
+
 const renderActions = (overrides?: StateOverrides) => {
     const state = buildState(overrides);
 
@@ -159,10 +162,24 @@ const renderActions = (overrides?: StateOverrides) => {
         cryptoId: BITCOIN_CRYPTO_ID,
     });
 
-    const store = configureMockStore({ preloadedState: state });
-    const { result } = renderHookWithStoreProvider(() => useTradingSellTradeActions(), { store });
+    const { services } = createTestCompositionRoot<
+        { services: UseTradingSellTradeActionsServices },
+        AppState
+    >({
+        preloadedState: state,
+        services: () => ({
+            analytics: mockDesktopAnalytics(),
+            suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate: jest.fn() },
+            desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
+        }),
+    });
+    const { result } = renderHookWithStoreProvider(() => useTradingSellTradeActions(), {
+        services,
+    });
 
-    return { store, result };
+    const { getActions } = services.store;
+
+    return { getActions, result };
 };
 
 describe('useTradingSellTradeActions', () => {
@@ -176,15 +193,15 @@ describe('useTradingSellTradeActions', () => {
 
     describe('mount is side-effect free', () => {
         it('does not dispatch anything on mount', () => {
-            const { store } = renderActions();
+            const { getActions } = renderActions();
 
-            expect(store.getActions()).toHaveLength(0);
+            expect(getActions()).toHaveLength(0);
         });
 
         it('does not redirect nor initialize even when the quotes request is missing', () => {
-            const { store } = renderActions({ quotesRequest: undefined });
+            const { getActions } = renderActions({ quotesRequest: undefined });
 
-            expect(store.getActions()).toHaveLength(0);
+            expect(getActions()).toHaveLength(0);
         });
     });
 

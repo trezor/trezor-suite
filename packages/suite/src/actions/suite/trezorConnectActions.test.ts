@@ -1,71 +1,66 @@
-import { debugInitialState } from '@suite/debug';
-import { prepareDesktopDeviceReducer } from '@suite/device';
-import { lockDevice } from '@suite/locks';
-import { suiteSettingsInitialState } from '@suite/settings';
-import { connectInitThunk } from '@suite-common/connect-init';
-import { deviceReducerInitialState } from '@suite-common/device';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import {
+    type ConnectInitThunkDeps,
+    type ConnectInitThunkState,
+    connectInitThunk,
+} from '@suite-common/connect-init';
+import {
+    mockConnectInitDeviceEventHooks,
+    mockConnectInitSettings,
+    mockConnectInitUIEventHooks,
+    mockCreateTransports,
+    mockGetDebugSettings,
+    mockGetThpSettings,
+} from '@suite-common/connect-init/mocks';
+import { mock } from '@suite-common/dependency-injection';
+import { deviceInitialState } from '@suite-common/device';
+import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { type LockDevice } from '@suite-common/suite-types';
+import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
+import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
+import { noopCreateLogger } from '@trezor/logger';
 
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { extraDependencies } from 'src/support/extraDependencies';
-
-import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
-
-const deviceReducer = prepareDesktopDeviceReducer(extraDependencies);
-
-type SuiteState = ReturnType<typeof suiteReducer>;
-type DevicesState = ReturnType<typeof deviceReducer>;
-const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesState>) => ({
-    suite: {
-        ...suiteReducer(undefined, { type: 'foo' } as any),
-        ...suite,
-    },
-    suiteSettings: suiteSettingsInitialState,
-    debug: debugInitialState,
-    device: {
-        ...deviceReducerInitialState,
-        devices: device?.devices || [],
-        isConnectionModalOpen: false,
-        defaultConnectionMode: 'cable' as 'cable' | 'bluetooth',
-    },
-    wallet: {
-        settings: {
-            enabledNetworks: [],
-        },
-    },
+const getInitialState = (): ConnectInitThunkState => ({
+    device: deviceInitialState,
+    firmware: firmwareInitialState,
     messageSystem: messageSystemInitialState,
-    firmware: { firmwareChannel: 'production' },
+    wallet: { settings: initialWalletSettingsState },
 });
 
-type State = ReturnType<typeof getInitialState>;
-const mockStore = (preloadedState: State) =>
-    configureMockStore({
-        extra: extraDependenciesDesktopMock,
-        reducer: (state = preloadedState, action) => ({
-            ...state,
-            suite: suiteReducer(state.suite, action),
-            device: deviceReducer(state.device, action),
+const createTestRoot = (lockDevice = mock<LockDevice>()) =>
+    createTestCompositionRoot<ConnectInitThunkDeps, ConnectInitThunkState>({
+        services: () => ({
+            analytics: mockDesktopAnalytics(),
+            connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
+            connectInitSettings: mockConnectInitSettings(),
+            connectInitUIEventHooks: mockConnectInitUIEventHooks(),
+            createLogger: noopCreateLogger,
+            createTransports: mockCreateTransports(),
+            getAllowPrerelease: mockGetAllowPrerelease(),
+            getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+            getDebugSettings: mockGetDebugSettings(),
+            getThpSettings: mockGetThpSettings(),
+            lockDevice,
         }),
-        preloadedState,
+        preloadedState: getInitialState(),
     });
 
 describe('TrezorConnect Actions', () => {
     it('Success', () => {
-        const state = getInitialState();
-        const store = mockStore(state);
-        expect(() => store.dispatch(connectInitThunk())).not.toThrow();
+        const { services } = createTestRoot();
+        expect(() => services.store.dispatch(connectInitThunk())).not.toThrow();
     });
 
     it('Error', async () => {
         testMocks.setTrezorConnectFixtures(() => {
             throw new Error('Iframe error');
         });
-        const state = getInitialState();
-        const store = mockStore(state);
+        const { services } = createTestRoot();
         try {
-            await store.dispatch(connectInitThunk()).unwrap();
+            await services.store.dispatch(connectInitThunk()).unwrap();
             throw new Error('Unreachable!');
         } catch (error) {
             expect(error.message).toEqual('Iframe error');
@@ -75,11 +70,10 @@ describe('TrezorConnect Actions', () => {
     it('Events', () => {
         const defaultSuiteType = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
-        const state = getInitialState();
-        const store = mockStore(state);
-        expect(() => store.dispatch(connectInitThunk())).not.toThrow();
+        const { services } = createTestRoot();
+        expect(() => services.store.dispatch(connectInitThunk())).not.toThrow();
 
-        const actions = store.getActions();
+        const actions = services.store.getActions();
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
 
         emitTestEvent(DEVICE_EVENT, { type: DEVICE_EVENT });
@@ -96,22 +90,15 @@ describe('TrezorConnect Actions', () => {
 
     it('Wrapped method', async () => {
         testMocks.setTrezorConnectFixtures();
-        const state = getInitialState();
-        const store = mockStore(state);
-        await store.dispatch(connectInitThunk());
+        const lockDevice = mock<LockDevice>();
+        const { services } = createTestRoot(lockDevice);
+        await services.store.dispatch(connectInitThunk());
         await testMocks.getTrezorConnectMock().getFeatures();
-        const actions = store.getActions();
-        // check actions in reversed order
-        expect(actions.pop()).toMatchObject({
+
+        expect(lockDevice).toHaveBeenNthCalledWith(1, true);
+        expect(lockDevice).toHaveBeenNthCalledWith(2, false);
+        expect(services.store.getActions().pop()).toMatchObject({
             type: '@suite/device/removeButtonRequests',
-        });
-        expect(actions.pop()).toEqual({
-            type: lockDevice.type,
-            payload: false,
-        });
-        expect(actions.pop()).toEqual({
-            type: lockDevice.type,
-            payload: true,
         });
     });
 });

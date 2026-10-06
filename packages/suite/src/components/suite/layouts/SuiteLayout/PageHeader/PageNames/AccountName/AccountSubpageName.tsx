@@ -1,10 +1,12 @@
 import { Translation } from '@suite/intl';
-import { goto, selectSettingsBackRoute } from '@suite/router';
+import { gotoThunk, selectSettingsBackRoute } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { AccountDetails } from './AccountDetails';
 
@@ -13,11 +15,11 @@ interface AccountSubpageNameProps {
 }
 
 export const AccountSubpageName = ({ selectedAccount }: AccountSubpageNameProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const previousRoute = useSelector(selectSettingsBackRoute);
 
     const handleBackClick = () =>
-        dispatch(goto({ routeName: previousRoute.name, params: previousRoute.params }));
+        dispatch(gotoThunk({ routeName: previousRoute.name, params: previousRoute.params }));
 
     return (
         <Row alignItems="center" gap={16}>

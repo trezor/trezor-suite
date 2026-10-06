@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Input, Row, SelectBar } from '@trezor/components';
+
 type DelimiterFormProps = {
     value?: string;
     onChange: (value?: string) => void;

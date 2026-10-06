@@ -11,12 +11,13 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.28",
+        "@react-navigation/native": "7.1.31",
         "@suite-common/assets": "workspace:*",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/fiat-services": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/networks": "workspace:*",
+        "@suite-common/react-query": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
@@ -31,12 +32,11 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/module-earn": "workspace:*",
         "@suite-native/navigation": "workspace:*",
-        "@suite-native/staking": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "date-fns": "^4.1.0",
         "react": "19.2.3",
-        "react-native": "0.85.3",
-        "react-native-reanimated": "4.3.1",
+        "react-native-reanimated": "4.5.0",
         "react-redux": "9.3.0"
     }
 }

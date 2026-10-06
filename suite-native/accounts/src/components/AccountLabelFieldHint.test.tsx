@@ -5,13 +5,13 @@ import { AccountLabelFieldHint, type AccountLabelFieldHintProps } from './Accoun
 import { useAccountLabelForm } from '../hooks/useAccountLabelForm';
 
 describe('AccountLabelFieldHint', () => {
-    const renderComponent = (props: AccountLabelFieldHintProps) =>
-        renderWithBasicProvider(<AccountLabelFieldHint {...props} />);
+    const renderComponent = async (props: AccountLabelFieldHintProps) =>
+        await renderWithBasicProvider(<AccountLabelFieldHint {...props} />);
 
-    it('should render', () => {
-        const { result } = renderHook(() => useAccountLabelForm('Account label'));
+    it('should render', async () => {
+        const { result } = await renderHook(() => useAccountLabelForm('Account label'));
 
-        const { getByText } = renderComponent({ formControl: result.current.control });
+        const { getByText } = await renderComponent({ formControl: result.current.control });
 
         expect(
             getByText(

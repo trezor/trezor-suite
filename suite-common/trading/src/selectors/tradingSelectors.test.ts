@@ -9,17 +9,21 @@ import {
     type SellFiatTrade,
 } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworksRootState } from '@suite-common/networks';
+import { mockNetworksState } from '@suite-common/networks/mocks';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
 import {
+    type TradingFormAccountRootState,
     type TradingRootStateWithDeviceAndAccounts,
     bestBuyQuotePerPaymentMethodProjection,
     bestSellQuotePerPaymentMethodProjection,
     selectDeviceHasTradingTrades,
     selectDeviceTradingTradesOrderedByDate,
+    selectGroupedExchangeQuotes,
     selectGroupedTradingExchangeQuotes,
     selectIsTradingNetworkFeeMissing,
     selectTradedAccountKeys,
@@ -42,6 +46,7 @@ import {
     selectTradingBuyQuotesByPaymentMethod,
     selectTradingBuyQuotesPerPaymentMethod,
     selectTradingBuyQuotesRequest,
+    selectTradingBuyReceiveAccount,
     selectTradingBuySelectedQuote,
     selectTradingBuySupportedCryptoIds,
     selectTradingCoinInfoByCryptoId,
@@ -69,7 +74,9 @@ import {
     selectTradingExchangeSelectedQuoteIsDex,
     selectTradingExchangeSelectedQuoteSwapSlippage,
     selectTradingExchangeSellCryptoIds,
+    selectTradingFormCryptoId,
     selectTradingIsSlip24Allowed,
+    selectTradingIsSlip24SellAllowed,
     selectTradingLastErrorMessageByTradeType,
     selectTradingModalAccountKey,
     selectTradingNativeCoinSymbolByCryptoId,
@@ -78,6 +85,7 @@ import {
     selectTradingPrefilledFromAccount,
     selectTradingProviderByNameAndTradeType,
     selectTradingProviderMetadata,
+    selectTradingProvidersByTradeType,
     selectTradingQuotesByType,
     selectTradingQuotesPerPaymentMethodByType,
     selectTradingSelectedPaymentMethodByType,
@@ -100,6 +108,7 @@ import {
     selectTradingSellSelectedQuote,
     selectTradingSellSellCryptoIds,
     selectTradingSellSupportedCryptoIds,
+    selectTradingSupportedFiatCurrenciesByTradeType,
     selectTradingSupportedSymbols,
     selectTradingSymbolAndContractAddressByCryptoId,
     selectTradingTradeByOrderId,
@@ -120,10 +129,14 @@ import { type SellInfo, sellInitialState } from '../reducers/sellReducer';
 import { type TradingRootState, initialState } from '../reducers/tradingCommonReducer';
 import type { TradingTransactionExchange, TradingTransactionSell, TradingType } from '../types';
 
-const supportedCoins: readonly NetworkSymbol[] = ['btc', 'eth', 'base'];
+const supportedCoins: readonly NetworkSymbol[] = [
+    asNetworkSymbol('btc'),
+    asNetworkSymbol('eth'),
+    asNetworkSymbol('base'),
+];
 
 describe('tradingSelectors', () => {
-    let state: TradingRootStateWithDeviceAndAccounts;
+    let state: TradingRootStateWithDeviceAndAccounts & NetworksRootState;
 
     const getBuyState = () =>
         ({
@@ -360,14 +373,14 @@ describe('tradingSelectors', () => {
                     features: {
                         major_version: 2,
                         minor_version: 12,
-                        patch_version: 1,
+                        patch_version: 5,
                     },
                 },
             },
         }) as unknown as TradingRootStateWithDeviceAndAccounts;
 
     beforeEach(() => {
-        state = getState();
+        state = { ...getState(), networks: mockNetworksState(supportedCoins) };
     });
 
     describe(selectTradingBuy.name, () => {
@@ -905,7 +918,7 @@ describe('tradingSelectors', () => {
 
     describe(selectTradingBuySupportedCryptoIds.name, () => {
         it('should select only coins presented in buyInfo and info', () => {
-            expect(selectTradingBuySupportedCryptoIds(state, supportedCoins)).toEqual([
+            expect(selectTradingBuySupportedCryptoIds(state)).toEqual([
                 'bitcoin',
                 'ethereum',
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -914,8 +927,8 @@ describe('tradingSelectors', () => {
         });
 
         it('should be stable', () => {
-            const first = selectTradingBuySupportedCryptoIds(state, supportedCoins);
-            const second = selectTradingBuySupportedCryptoIds(state, supportedCoins);
+            const first = selectTradingBuySupportedCryptoIds(state);
+            const second = selectTradingBuySupportedCryptoIds(state);
 
             expect(first).toBe(second);
         });
@@ -923,25 +936,25 @@ describe('tradingSelectors', () => {
         it('should be empty array when platforms are not set', () => {
             state.wallet.trading.info.platforms = undefined;
 
-            expect(selectTradingBuySupportedCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectTradingBuySupportedCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when supportedCryptoCurrencies are not set', () => {
             state.wallet.trading.buy.buyInfo = undefined;
 
-            expect(selectTradingBuySupportedCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
         });
     });
 
     describe(selectTradingSellSupportedCryptoIds.name, () => {
         it('should select only coins presented in sellInfo and info', () => {
-            expect(selectTradingSellSupportedCryptoIds(state, supportedCoins)).toEqual([
+            expect(selectTradingSellSupportedCryptoIds(state)).toEqual([
                 'bitcoin',
                 'ethereum',
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -950,8 +963,8 @@ describe('tradingSelectors', () => {
         });
 
         it('should be stable', () => {
-            const first = selectTradingSellSupportedCryptoIds(state, supportedCoins);
-            const second = selectTradingSellSupportedCryptoIds(state, supportedCoins);
+            const first = selectTradingSellSupportedCryptoIds(state);
+            const second = selectTradingSellSupportedCryptoIds(state);
 
             expect(first).toBe(second);
         });
@@ -959,25 +972,25 @@ describe('tradingSelectors', () => {
         it('should be empty array when platforms are not set', () => {
             state.wallet.trading.info.platforms = undefined;
 
-            expect(selectTradingSellSupportedCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingSellSupportedCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectTradingSellSupportedCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingSellSupportedCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when supportedCryptoCurrencies are not set', () => {
             state.wallet.trading.sell.sellInfo = undefined;
 
-            expect(selectTradingSellSupportedCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingSellSupportedCryptoIds(state)).toEqual([]);
         });
     });
 
     describe(selectTradingSellSellCryptoIds.name, () => {
         it('should select only coins presented in sellInfo and info', () => {
-            expect(selectTradingSellSellCryptoIds(state, supportedCoins)).toEqual([
+            expect(selectTradingSellSellCryptoIds(state)).toEqual([
                 'bitcoin',
                 'ethereum',
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -986,8 +999,8 @@ describe('tradingSelectors', () => {
         });
 
         it('should be stable', () => {
-            const first = selectTradingSellSellCryptoIds(state, supportedCoins);
-            const second = selectTradingSellSellCryptoIds(state, supportedCoins);
+            const first = selectTradingSellSellCryptoIds(state);
+            const second = selectTradingSellSellCryptoIds(state);
 
             expect(first).toBe(second);
         });
@@ -995,25 +1008,25 @@ describe('tradingSelectors', () => {
         it('should be empty array when platforms are not set', () => {
             state.wallet.trading.info.platforms = undefined;
 
-            expect(selectTradingSellSellCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectTradingSellSellCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when supportedCryptoCurrencies are not set', () => {
             state.wallet.trading.sell.sellInfo = undefined;
 
-            expect(selectTradingSellSellCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
         });
     });
 
     describe(selectTradingExchangeSellCryptoIds.name, () => {
         it('should select only coins presented in exchangeInfo and info', () => {
-            expect(selectTradingExchangeSellCryptoIds(state, supportedCoins)).toEqual([
+            expect(selectTradingExchangeSellCryptoIds(state)).toEqual([
                 'bitcoin',
                 'ethereum',
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -1022,8 +1035,8 @@ describe('tradingSelectors', () => {
         });
 
         it('should be stable', () => {
-            const first = selectTradingExchangeSellCryptoIds(state, supportedCoins);
-            const second = selectTradingExchangeSellCryptoIds(state, supportedCoins);
+            const first = selectTradingExchangeSellCryptoIds(state);
+            const second = selectTradingExchangeSellCryptoIds(state);
 
             expect(first).toBe(second);
         });
@@ -1031,30 +1044,30 @@ describe('tradingSelectors', () => {
         it('should be empty array when platforms are not set', () => {
             state.wallet.trading.info.platforms = undefined;
 
-            expect(selectTradingExchangeSellCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingExchangeSellCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectTradingExchangeSellCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingExchangeSellCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when sellCryptoIds are not set', () => {
             state.wallet.trading.exchange.exchangeInfo = undefined;
 
-            expect(selectTradingExchangeSellCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingExchangeSellCryptoIds(state)).toEqual([]);
         });
     });
 
     describe(selectTradingExchangeBuyCryptoIds.name, () => {
         it('should select only coins presented in exchangeInfo and info', () => {
-            expect(selectTradingExchangeBuyCryptoIds(state, supportedCoins)).toEqual(['bitcoin']);
+            expect(selectTradingExchangeBuyCryptoIds(state)).toEqual(['bitcoin']);
         });
 
         it('should be stable', () => {
-            const first = selectTradingExchangeBuyCryptoIds(state, supportedCoins);
-            const second = selectTradingExchangeBuyCryptoIds(state, supportedCoins);
+            const first = selectTradingExchangeBuyCryptoIds(state);
+            const second = selectTradingExchangeBuyCryptoIds(state);
 
             expect(first).toBe(second);
         });
@@ -1062,19 +1075,19 @@ describe('tradingSelectors', () => {
         it('should be empty array when platforms are not set', () => {
             state.wallet.trading.info.platforms = undefined;
 
-            expect(selectTradingExchangeBuyCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingExchangeBuyCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectTradingExchangeBuyCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingExchangeBuyCryptoIds(state)).toEqual([]);
         });
 
         it('should be empty array when buyCryptoIds are not set', () => {
             state.wallet.trading.exchange.exchangeInfo = undefined;
 
-            expect(selectTradingExchangeBuyCryptoIds(state, supportedCoins)).toEqual([]);
+            expect(selectTradingExchangeBuyCryptoIds(state)).toEqual([]);
         });
     });
 
@@ -1274,6 +1287,53 @@ describe('tradingSelectors', () => {
             expect(selectGroupedTradingExchangeQuotes(state)).toBe(
                 selectGroupedTradingExchangeQuotes(state),
             );
+        });
+    });
+
+    describe(selectGroupedExchangeQuotes.name, () => {
+        beforeEach(() => {
+            state.wallet.trading.exchange.exchangeInfo = {
+                providerInfos: {
+                    'fixed-provider': { isFixedRate: true },
+                    'float-provider': { isFixedRate: false },
+                },
+                buyCryptoIds: ['bitcoin'] as CryptoId[],
+                sellCryptoIds: ['ethereum'] as CryptoId[],
+            } as unknown as ExchangeInfo;
+            state.wallet.trading.exchange.quotes = [
+                {
+                    ...tradeApiFixtures.exchangeTrade,
+                    quoteId: 'fixed-quote',
+                    exchange: 'fixed-provider',
+                    isDex: false,
+                },
+                {
+                    ...tradeApiFixtures.exchangeTrade,
+                    quoteId: 'float-quote',
+                    exchange: 'float-provider',
+                    isDex: false,
+                },
+                {
+                    ...tradeApiFixtures.exchangeTrade,
+                    quoteId: 'dex-quote',
+                    exchange: 'dex-provider',
+                    isDex: true,
+                },
+            ];
+        });
+
+        it('should group quotes into fixed and float only, treating unrecognized providers as float', () => {
+            expect(selectGroupedExchangeQuotes(state)).toEqual({
+                fixed: [expect.objectContaining({ quoteId: 'fixed-quote' })],
+                float: [
+                    expect.objectContaining({ quoteId: 'float-quote' }),
+                    expect.objectContaining({ quoteId: 'dex-quote' }),
+                ],
+            });
+        });
+
+        it('should be stable', () => {
+            expect(selectGroupedExchangeQuotes(state)).toBe(selectGroupedExchangeQuotes(state));
         });
     });
 
@@ -1519,6 +1579,61 @@ describe('tradingSelectors', () => {
         expect(selectTradingPrefilledFromAccount(state)).toEqual({
             cryptoId: 'bitcoin',
             descriptor: 'btc-desc',
+        });
+    });
+
+    describe(selectTradingFormCryptoId.name, () => {
+        const eligibleBtc = mockWalletAccount({
+            symbol: asNetworkSymbol('btc'),
+            deviceState: accountBtc.deviceState as StaticSessionId,
+            balance: '1000000',
+            formattedBalance: '0.01',
+        });
+        const eligibleEth = mockWalletAccount({
+            symbol: asNetworkSymbol('eth'),
+            deviceState: accountEth.deviceState as StaticSessionId,
+            balance: '1000000000000000000',
+            formattedBalance: '1',
+            tokens: [],
+        });
+
+        let formState: TradingFormAccountRootState;
+
+        beforeEach(() => {
+            formState = {
+                ...state,
+                tokenDefinitions: {},
+                wallet: {
+                    ...state.wallet,
+                    accounts: [eligibleBtc, eligibleEth],
+                    trading: {
+                        ...state.wallet.trading,
+                        exchange: {
+                            ...state.wallet.trading.exchange,
+                            tradingAccountKey: eligibleBtc.key,
+                        },
+                    },
+                },
+            };
+        });
+
+        it('should ignore leftover prefilled cryptoId after prefilled.key is cleared', () => {
+            formState.wallet.trading.prefilledFromAccount = {
+                key: undefined,
+                cryptoId: 'ethereum' as CryptoId,
+            };
+
+            expect(selectTradingFormCryptoId(formState, 'exchange')).toBe('bitcoin');
+        });
+
+        it('should use prefilled cryptoId when prefilled.key matches the form account', () => {
+            formState.wallet.trading.exchange.tradingAccountKey = eligibleEth.key;
+            formState.wallet.trading.prefilledFromAccount = {
+                key: eligibleEth.key,
+                cryptoId: 'ethereum' as CryptoId,
+            };
+
+            expect(selectTradingFormCryptoId(formState, 'exchange')).toBe('ethereum');
         });
     });
 
@@ -2214,6 +2329,51 @@ describe('tradingSelectors', () => {
         });
     });
 
+    describe(selectTradingProvidersByTradeType.name, () => {
+        it.each([
+            ['buy', () => state.wallet.trading.buy.buyInfo?.providerInfos],
+            ['exchange', () => state.wallet.trading.exchange.exchangeInfo?.providerInfos],
+            ['sell', () => state.wallet.trading.sell.sellInfo?.providerInfos],
+        ] as [TradingType, () => unknown][])(
+            'should return the providers for %s',
+            (type, expected) => {
+                expect(selectTradingProvidersByTradeType(state, type)).toEqual(expected());
+            },
+        );
+
+        it('should throw an error for an invalid trade type', () => {
+            expect(() =>
+                selectTradingProvidersByTradeType(state, 'invalid' as TradingType),
+            ).toThrow('Unreachable case: ["invalid"]');
+        });
+    });
+
+    describe(selectTradingSupportedFiatCurrenciesByTradeType.name, () => {
+        it('should return the supported fiat currencies for buy', () => {
+            expect(selectTradingSupportedFiatCurrenciesByTradeType(state, 'buy')).toEqual(
+                new Set(['usd', 'eur', 'czk']),
+            );
+        });
+
+        it('should return the supported fiat currencies for sell', () => {
+            expect(selectTradingSupportedFiatCurrenciesByTradeType(state, 'sell')).toEqual(
+                new Set(['usd', 'eur', 'czk']),
+            );
+        });
+
+        it('should return undefined for exchange', () => {
+            expect(
+                selectTradingSupportedFiatCurrenciesByTradeType(state, 'exchange'),
+            ).toBeUndefined();
+        });
+
+        it('should throw an error for an invalid trade type', () => {
+            expect(() =>
+                selectTradingSupportedFiatCurrenciesByTradeType(state, 'invalid' as TradingType),
+            ).toThrow('Unreachable case: ["invalid"]');
+        });
+    });
+
     describe(selectTradingProviderByNameAndTradeType.name, () => {
         it('should return the correct provider for buy trade type', () => {
             const providerName = 'provider1';
@@ -2348,20 +2508,36 @@ describe('tradingSelectors', () => {
         ];
 
         it('should return supported symbols for buy', () => {
-            expect(selectTradingSupportedSymbols(state, 'buy', supportedCoins)).toEqual(
-                supportedSymbols,
-            );
+            expect(selectTradingSupportedSymbols(state, 'buy')).toEqual(supportedSymbols);
         });
 
         it('should return supported symbols for sell', () => {
-            expect(selectTradingSupportedSymbols(state, 'sell', supportedCoins)).toEqual(
-                supportedSymbols,
-            );
+            expect(selectTradingSupportedSymbols(state, 'sell')).toEqual(supportedSymbols);
         });
 
         it('should return supported symbols for exchange', () => {
-            expect(selectTradingSupportedSymbols(state, 'exchange', supportedCoins)).toEqual(
-                supportedSymbols,
+            expect(selectTradingSupportedSymbols(state, 'exchange')).toEqual(supportedSymbols);
+        });
+    });
+
+    describe(selectTradingBuyReceiveAccount.name, () => {
+        it('should return account for receiveAccountKey', () => {
+            state.wallet.trading.buy.receiveAccountKey = accountBtc.key;
+
+            expect(selectTradingBuyReceiveAccount(state)).toBe(accountBtc);
+        });
+
+        it('should return undefined when receiveAccountKey is not set', () => {
+            state.wallet.trading.buy.receiveAccountKey = undefined;
+
+            expect(selectTradingBuyReceiveAccount(state)).toBeUndefined();
+        });
+
+        it('should be stable', () => {
+            state.wallet.trading.buy.receiveAccountKey = accountBtc.key;
+
+            expect(selectTradingBuyReceiveAccount(state)).toBe(
+                selectTradingBuyReceiveAccount(state),
             );
         });
     });
@@ -2494,7 +2670,7 @@ describe('tradingSelectors', () => {
         it('should return false when firmware version is older than the minimum', () => {
             if (state.device.selectedDevice?.features) {
                 state.device.selectedDevice.features.minor_version = 12;
-                state.device.selectedDevice.features.patch_version = 0;
+                state.device.selectedDevice.features.patch_version = 4;
             }
             expect(selectTradingIsSlip24Allowed(state, accountBtc as any, true)).toBe(false);
         });
@@ -2526,6 +2702,36 @@ describe('tradingSelectors', () => {
             expect(
                 selectTradingIsSlip24Allowed(state, unsupportedNetworkAccount as any, true),
             ).toBe(false);
+        });
+    });
+
+    describe(selectTradingIsSlip24SellAllowed.name, () => {
+        const setFirmwareVersion = (minorVersion: number, patchVersion: number) => {
+            if (state.device.selectedDevice?.features) {
+                state.device.selectedDevice.features.minor_version = minorVersion;
+                state.device.selectedDevice.features.patch_version = patchVersion;
+            }
+        };
+
+        beforeEach(() => {
+            if (state.device.selectedDevice) {
+                state.device.selectedDevice.unavailableCapabilities = undefined;
+            }
+        });
+
+        it('should return false when firmware supports slip24 swaps but not sells', () => {
+            setFirmwareVersion(12, 6);
+            expect(selectTradingIsSlip24SellAllowed(state, accountBtc as any, true)).toBe(false);
+        });
+
+        it('should return true when firmware supports slip24 sells', () => {
+            setFirmwareVersion(13, 0);
+            expect(selectTradingIsSlip24SellAllowed(state, accountBtc as any, true)).toBe(true);
+        });
+
+        it('should return false when isSlip24Active is false', () => {
+            setFirmwareVersion(13, 0);
+            expect(selectTradingIsSlip24SellAllowed(state, accountBtc as any, false)).toBe(false);
         });
     });
 });

@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { isRejected } from '@reduxjs/toolkit';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type AccountsRootState,
@@ -40,7 +42,7 @@ type UseCustomFeeProps = {
 export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
     const debounce = useDebounce();
     const { translate } = useTranslate();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const [isErrorBoxVisible, setIsErrorBoxVisible] = useState(false);
     const [isFeeLoading, setIsFeeLoading] = useState(false);

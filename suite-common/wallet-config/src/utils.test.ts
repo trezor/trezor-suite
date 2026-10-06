@@ -1,17 +1,35 @@
-import { networks } from './networksConfig';
-import { type NetworkSymbol } from './types';
+import { type Network, asNetworkSymbol } from './networkTypes';
 import {
     filterNetworksByName,
+    getDisplaySymbol,
     getMainnets,
+    getNetworks,
     getNetworksWithMevProtection,
     getNetworksWithNativeTokenReserve,
     getTestnets,
     isAccountBasedNetwork,
     isAccountOfNetwork,
     isNetworkUsingExternalBackend,
+    isSingleAccountType,
 } from './utils';
 
-const { btc: bitcoin, eth: ethereum, test: testnet, regtest } = networks;
+// The legacy configs carry plain literal symbols; the shared Network API takes branded ones.
+const asNetwork = (network: { symbol: string }): Network =>
+    ({ ...network, symbol: asNetworkSymbol(network.symbol) }) as Network;
+
+const {
+    btc: legacyBitcoin,
+    eth: legacyEthereum,
+    test: legacyTestnet,
+    regtest: legacyRegtest,
+    sol: legacySolana,
+} = getNetworks();
+
+const bitcoin = asNetwork(legacyBitcoin);
+const ethereum = asNetwork(legacyEthereum);
+const testnet = asNetwork(legacyTestnet);
+const regtest = asNetwork(legacyRegtest);
+const solana = asNetwork(legacySolana);
 
 const mockNetworks = [bitcoin, ethereum, testnet, regtest];
 
@@ -83,48 +101,58 @@ describe(isAccountOfNetwork.name, () => {
     });
 });
 
-describe('isAccountBasedNetwork', () => {
-    it.each<NetworkSymbol>(['btc', 'ada'])('returns false for %s', symbol => {
-        expect(isAccountBasedNetwork(symbol)).toBe(false);
+describe(isSingleAccountType.name, () => {
+    it('returns true for solana root accountType', () => {
+        expect(isSingleAccountType(solana, 'root')).toBe(true);
     });
 
-    it.each<NetworkSymbol>(['eth', 'sol', 'hype'])('returns true for %s', symbol => {
-        expect(isAccountBasedNetwork(symbol)).toBe(true);
+    it.each(['normal', 'ledger'])('returns false for "%s" accountType in solana', accountType => {
+        expect(isSingleAccountType(solana, accountType)).toBe(false);
+    });
+
+    it.each(['normal', 'taproot', 'segwit', 'legacy', 'coinjoin'])(
+        'returns false for "%s" accountType in bitcoin',
+        accountType => {
+            expect(isSingleAccountType(bitcoin, accountType)).toBe(false);
+        },
+    );
+
+    it('returns false for accountType unknown to the network', () => {
+        expect(isSingleAccountType(ethereum, 'foobar')).toBe(false);
+    });
+});
+
+describe('isAccountBasedNetwork', () => {
+    it.each(['btc', 'ada'])('returns false for %s', symbol => {
+        expect(isAccountBasedNetwork(asNetworkSymbol(symbol))).toBe(false);
+    });
+
+    it.each(['eth', 'sol', 'hype'])('returns true for %s', symbol => {
+        expect(isAccountBasedNetwork(asNetworkSymbol(symbol))).toBe(true);
     });
 
     it('returns throw for unknown network type', () => {
-        expect(() => isAccountBasedNetwork('unknown' as NetworkSymbol)).toThrow();
+        expect(() => isAccountBasedNetwork(asNetworkSymbol('unknown'))).toThrow();
     });
 });
 
 describe(isNetworkUsingExternalBackend.name, () => {
-    it.each<NetworkSymbol>([
-        'bsc',
-        'pol',
-        'op',
-        'arb',
-        'base',
-        'rhc',
-        'hype',
-        'avax',
-        'sol',
-        'dsol',
-    ])('returns true for %s', symbol => {
-        expect(isNetworkUsingExternalBackend(symbol)).toBe(true);
-    });
-
-    it.each<NetworkSymbol>(['btc', 'eth', 'trx', 'xlm', 'xrp', 'ada'])(
-        'returns false for %s',
+    it.each(['bsc', 'pol', 'op', 'arb', 'base', 'rhc', 'hype', 'avax', 'sol', 'dsol'])(
+        'returns true for %s',
         symbol => {
-            expect(isNetworkUsingExternalBackend(symbol)).toBe(false);
+            expect(isNetworkUsingExternalBackend(asNetworkSymbol(symbol))).toBe(true);
         },
     );
+
+    it.each(['btc', 'eth', 'trx', 'xlm', 'xrp', 'ada'])('returns false for %s', symbol => {
+        expect(isNetworkUsingExternalBackend(asNetworkSymbol(symbol))).toBe(false);
+    });
 });
 
 describe(getNetworksWithMevProtection.name, () => {
     it('returns string with all networks with MEV protection', () => {
         expect(getNetworksWithMevProtection()).toEqual(
-            'Ethereum, BNB Smart Chain, Arbitrum One, Base',
+            'Ethereum, BNB Smart Chain, Arbitrum One, Base, Robinhood Chain',
         );
     });
 });
@@ -134,5 +162,23 @@ describe(getNetworksWithNativeTokenReserve.name, () => {
         expect(getNetworksWithNativeTokenReserve()).toEqual(
             'Base, Optimism, Robinhood Chain, Solana',
         );
+    });
+});
+
+describe(getDisplaySymbol.name, () => {
+    it('returns an empty string for an empty symbol', () => {
+        expect(getDisplaySymbol('')).toBe('');
+    });
+
+    it('returns the network display symbol for a native coin symbol', () => {
+        expect(getDisplaySymbol('eth')).toBe('ETH');
+    });
+
+    it('returns the token symbol unchanged when it also has a contract address', () => {
+        expect(getDisplaySymbol('USDC', '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48')).toBe('USDC');
+    });
+
+    it('truncates symbols longer than the maximum length', () => {
+        expect(getDisplaySymbol('SUPERLONGTOKEN')).toBe('SUPERLONGT...');
     });
 });

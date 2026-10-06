@@ -1,8 +1,9 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { UpdateState } from '@suite/desktop-update';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { UpdateState, selectDesktopUpdate } from '@suite/desktop-update';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Box, CardList, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -25,19 +26,20 @@ import {
     GuideViewWrapper,
 } from 'src/components/guide';
 import { SupportConsentPopover } from 'src/components/guide/SupportConsentPopover';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
-const StatusText = ({ id }: { id: TranslationKey }) => (
+type StatusTextProps = { id: TranslationKey };
+
+const StatusText = ({ id }: StatusTextProps) => (
     <Text typographyStyle="body-sm" intent="neutral" priority="secondary" as="div">
         <Translation id={id} />
     </Text>
 );
 
 export const SupportFeedbackSelection = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const desktopUpdate = useSelector(state => state.desktopUpdate);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const desktopUpdate = useSelector(selectDesktopUpdate);
     const device = useSelector(selectSelectedDevice);
-    const dispatch = useDispatch();
 
     const appUpToDate =
         isDesktop() &&

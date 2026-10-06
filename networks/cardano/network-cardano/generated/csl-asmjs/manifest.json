@@ -1,0 +1,17 @@
+{
+    "inputsHash": "82a81b0d4008812de15d62eae013e63a48d25042ed69ac243135d4ee68bf91a9",
+    "outputHashes": {
+        "cardano_serialization_lib.asm.js": "a169b5f79db058807da8a22cbcb7c39c7132b6f0e4f63a0e76434603dd8120b0",
+        "cardano_serialization_lib_bg.js": "d799765e83935648543e6e0c5a614d9ae0604c8d3d304647890c84c3af0829fe",
+        "cardano_serialization_lib.js": "a9a6b61fe1462b3800986cb47391b5295fed163df16e3c8b773c66a2086dd46e"
+    },
+    "binaryenVersion": "132.0.0",
+    "exportsKept": 524,
+    "exportsTotal": 2426,
+    "functions": 2293,
+    "wasmBytes": {
+        "original": 2709067,
+        "pruned": 1170232
+    },
+    "asmJsBytes": 9700739
+}

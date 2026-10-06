@@ -51,7 +51,12 @@ export const SubTabsItem = ({
     const isActive = id === activeItemId;
 
     return (
-        <Item $isActive={isActive} onClick={onClick} data-testid={dataTestId}>
+        <Item
+            $isActive={isActive}
+            onClick={onClick}
+            data-component="SubTabsItem"
+            data-testid={dataTestId}
+        >
             <Row gap={8} padding={{ vertical: 8, horizontal: 16 }}>
                 {icon && <Icon as={icon} size={mapSizeToIconSize(size)} />}
                 <Text as="div" typographyStyle={mapSizeToTypography(size)} textWrap="nowrap">

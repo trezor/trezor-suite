@@ -13,7 +13,7 @@ import { type Result, err, ok } from '@trezor/type-utils';
 import { createDeferred } from '@trezor/utils';
 
 import {
-    type CreateMigrateLabelsIfAvailableDeps,
+    type MigrateLabelsIfAvailableDeps,
     createMigrateLabelsIfAvailable,
 } from './createMigrateLabelsIfAvailable';
 import { type MigrationCounts, type MigrationError } from './legacyLabelsMigration';
@@ -42,7 +42,7 @@ describe(createMigrateLabelsIfAvailable.name, () => {
     it('dispatches migration flag and success toast after successful migration with changes', async () => {
         const device = createDevice();
         const dispatch: Dispatch = jest.fn();
-        const deps = createMockDeps<CreateMigrateLabelsIfAvailableDeps>({
+        const deps = createMockDeps<MigrateLabelsIfAvailableDeps>({
             dispatch,
             migrateLegacyLabelsToSuiteSync: () => Promise.resolve(ok({ changed: 2, skipped: 1 })),
             getIsMetadataEnabled: () => true,
@@ -80,7 +80,7 @@ describe(createMigrateLabelsIfAvailable.name, () => {
 
     it('skips migration when wallet has already been migrated', async () => {
         const dispatch: Dispatch = jest.fn();
-        const deps = createMockDeps<CreateMigrateLabelsIfAvailableDeps>({
+        const deps = createMockDeps<MigrateLabelsIfAvailableDeps>({
             dispatch,
             migrateLegacyLabelsToSuiteSync: () => Promise.resolve(ok({ changed: 2, skipped: 1 })),
             getIsMetadataEnabled: () => true,
@@ -104,7 +104,7 @@ describe(createMigrateLabelsIfAvailable.name, () => {
         const device = createDevice();
         const migration = createDeferred<Result<MigrationCounts, MigrationError>>();
         const dispatch: Dispatch = jest.fn();
-        const deps = createMockDeps<CreateMigrateLabelsIfAvailableDeps>({
+        const deps = createMockDeps<MigrateLabelsIfAvailableDeps>({
             dispatch,
             migrateLegacyLabelsToSuiteSync: () => migration.promise,
             getIsMetadataEnabled: () => true,
@@ -147,7 +147,7 @@ describe(createMigrateLabelsIfAvailable.name, () => {
         const secondDevice = createDevice(secondDeviceStaticSessionId);
         const secondMigration = createDeferred<Result<MigrationCounts, MigrationError>>();
 
-        const deps = createMockDeps<CreateMigrateLabelsIfAvailableDeps>({
+        const deps = createMockDeps<MigrateLabelsIfAvailableDeps>({
             dispatch,
             migrateLegacyLabelsToSuiteSync: selectedDevice => {
                 if (selectedDevice === firstDevice) {
@@ -204,7 +204,7 @@ describe(createMigrateLabelsIfAvailable.name, () => {
 
     it('marks wallet as migrated without showing toast when nothing changed', async () => {
         const dispatch: Dispatch = jest.fn();
-        const deps = createMockDeps<CreateMigrateLabelsIfAvailableDeps>({
+        const deps = createMockDeps<MigrateLabelsIfAvailableDeps>({
             dispatch,
             migrateLegacyLabelsToSuiteSync: () => Promise.resolve(ok({ changed: 0, skipped: 3 })),
             getIsMetadataEnabled: () => true,
@@ -230,7 +230,7 @@ describe(createMigrateLabelsIfAvailable.name, () => {
         const cause = createSuiteSyncUpdateError(new Error('migration failed'));
 
         const dispatch: Dispatch = jest.fn();
-        const deps = createMockDeps<CreateMigrateLabelsIfAvailableDeps>({
+        const deps = createMockDeps<MigrateLabelsIfAvailableDeps>({
             dispatch,
             migrateLegacyLabelsToSuiteSync: () =>
                 Promise.resolve(

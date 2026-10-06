@@ -1,38 +1,52 @@
-import type { CryptoId } from 'invity-api';
+import { decodeFunctionData, formatUnits, isHex, parseAbi, slice, toFunctionSelector } from 'viem';
 
-import { messages } from '@suite/intl';
-import { localizeNumber } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
+import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { fromGwei } from '@suite-common/wallet-utils';
+import { TestStream } from '@trezor/e2e-utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
-import {
-    getCompanyNameFromList,
-    swapQuotesEthDex,
-    swapTradeEthDex,
-    tradeEndpoint,
-} from '../../fixtures/trading';
+import { dexSwapStatusFlow } from '../../fixtures/trading/statusFlow';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
-// Expected values derived from the captured LI.FI trade fixture.
-const sendAmount = swapTradeEthDex.sendStringAmount;
-const receiveAmount = localizeNumber(swapTradeEthDex.receiveStringAmount);
-const dexProvider = getCompanyNameFromList(swapTradeEthDex.exchange, 'swapList');
+const ethSymbol = asNetworkSymbol('eth');
+
+const sendAmount = '0.02';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
-const formattedReceiveAmount = `${receiveAmount} USDC`;
-const usdcCryptoId = swapTradeEthDex.receive as CryptoId;
-const slippagePercent = `${swapTradeEthDex.swapSlippage}%`;
-const guaranteedShare = new BigNumber(100).minus(swapTradeEthDex.swapSlippage).div(100);
-const minimumReceived = new BigNumber(swapTradeEthDex.receiveStringAmount).times(guaranteedShare);
-const formattedMinimumReceived = `${localizeNumber(minimumReceived.toFixed(4))} USDC`;
-// Mocked feeLimit 21000 (eth-endpoints estimateFee) × the 1.25 DEX buffer (ETHEREUM_ADJUST_GAS_LIMIT).
-const dexGasLimit = '26250';
-// dexGasLimit × the mocked gas price.
-const dexMaximumFee = '0.00003161748342375 ETH';
-const gasLimitWithLabel = `${messages.TR_GAS_LIMIT.defaultMessage}: ${dexGasLimit}`;
-const accountLabel = 'Ethereum #1';
+const accountLabel = 'Ethereum #3';
+const usdcCryptoId = getCryptoId(ethSymbol, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+const usdcDecimals = 6;
+
+const lifiNativeToErc20Abi = parseAbi([
+    'struct SwapData { address callTo; address approveTo; address sendingAssetId; address receivingAssetId; uint256 fromAmount; bytes callData; bool requiresDeposit; }',
+    'function swapTokensMultipleV3NativeToERC20(bytes32 transactionId, string integrator, string referrer, address receiver, uint256 minAmountOut, SwapData[] swapData)',
+    'function swapTokensSingleV3NativeToERC20(bytes32 transactionId, string integrator, string referrer, address receiver, uint256 minAmountOut, SwapData swapData)',
+]);
+
+const getLifiMinAmountOut = (calldata: string | undefined) => {
+    if (!isHex(calldata)) {
+        throw new Error('The LI.FI trade has no swap calldata');
+    }
+
+    const selector = slice(calldata, 0, 4);
+    if (!lifiNativeToErc20Abi.some(entrypoint => toFunctionSelector(entrypoint) === selector)) {
+        const expectedEntrypoints = lifiNativeToErc20Abi.map(({ name }) => name).join(' or ');
+        throw new Error(
+            `The LI.FI trade calls an unexpected entrypoint ${selector}, expected ${expectedEntrypoints}. Add its signature to lifiNativeToErc20Abi.`,
+        );
+    }
+
+    const { args } = decodeFunctionData({ abi: lifiNativeToErc20Abi, data: calldata });
+
+    return formatUnits(args[4], usdcDecimals);
+};
 
 // Firmware strings on the DEX review pages.
 const deviceReview = {
     providerTitle: 'Provider',
+    // The emulator still runs the previous FW release, which renders 'LiFI Diamond'.
+    // TODO: change to 'LI.FI' once trezor-user-env ships the firmware with the renamed provider.
     providerName: 'LiFI Diamond',
     intentTitle: 'Intent',
     intentValue: 'Swap',
@@ -45,239 +59,270 @@ const deviceReview = {
     signButton: 'Hold to sign',
 };
 
-test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
-    test.use({
-        deviceSetup: {
-            mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
-        },
-    });
+test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
     test.beforeEach(
-        async ({
-            page,
-            onboardingPage,
-            dashboardPage,
-            settingsPage,
-            walletPage,
-            tradingMock,
-            blockbookMock,
-        }) => {
-            await test.step('Mock the ETH backend', async () => {
-                await onboardingPage.completeOnboarding();
-                await settingsPage.navigateTo('coins');
-                await blockbookMock.start('eth');
-                blockbookMock.updateAccountState({
-                    balance: '1000000000000000000', // 1 ETH
-                    nonce: '0',
-                    txs: 0,
-                    nonTokenTxs: 0,
-                    internalTxs: 0,
-                    transactions: [],
-                });
-                //TODO: Switch to changeNetworks once mocks are refactored
-                await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
-                await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
-            });
+        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMock }) => {
+            tradingMock.setTradeFlow('swap');
+            const ethBackend = await tradingMock.startBackend(ethSymbol);
+            await tradingMock.captureTxSimulation();
 
-            await test.step('Mock the trading API', async () => {
-                await tradingMock.routeTradeGeneralEndpoints();
-                await page.route(tradeEndpoint.swapQuotes, route => {
-                    route.fulfill({ json: swapQuotesEthDex });
-                });
-                await tradingMock.routeSwapTrade(swapTradeEthDex);
-                await page.route(tradeEndpoint.swapWatch, route => {
-                    route.fulfill({ json: { status: 'CONFIRM' } });
-                });
+            await onboardingPage.completeOnboarding();
+            await settingsPage.changeNetworks({
+                enableNetworks: [{ symbol: ethSymbol, backend: ethBackend }],
             });
-
-            await dashboardPage.navigateTo();
-            await page.discoveryShouldFinish();
-            await walletPage.openSwapTrading({ symbol: 'eth' });
+            await dashboardPage.deviceSwitchingOpenButton.click();
+            await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
+            await walletPage.openSwapTrading({ symbol: ethSymbol, atIndex: 2 });
         },
     );
 
-    test('User can swap ETH to USDC via LI.FI DEX', async ({
-        page,
-        tradingPage,
-        tradingMock,
-        devicePrompt,
-        device,
-    }) => {
-        await test.step('Fill in the Swap form (ETH -> USDC)', async () => {
-            await tradingPage.fillSwapForm({
-                amount: sendAmount,
-                sellAsset: {
-                    networkSymbol: 'eth',
-                },
-                buyAsset: {
-                    searchFilter: 'USDC',
-                    networkFilter: 'eth',
-                    assetCryptoId: usdcCryptoId,
-                },
+    test(
+        'User can swap ETH to USDC via LI.FI DEX',
+        { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
+        async ({ page, device, tradingPage, devicePrompt, tradingMock, tradingResponses }) => {
+            const dexProvider = await tradingResponses.swap.companyName('lifi');
+
+            await test.step('Fill in the Swap form (ETH -> USDC)', async () => {
+                await tradingPage.fillSwapForm({
+                    amount: sendAmount,
+                    sellAsset: { networkSymbol: ethSymbol, accountIndex: 2 },
+                    buyAsset: {
+                        searchFilter: 'USDC',
+                        networkFilter: 'eth',
+                        assetCryptoId: usdcCryptoId,
+                    },
+                });
             });
-        });
 
-        await test.step('Select the LI.FI DEX offer', async () => {
-            await tradingPage.quotes.chooseDifferentOfferIfAvailable(dexProvider);
-            await expect(tradingPage.quotes.selectedProviderName).toHaveText(dexProvider);
-            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(formattedReceiveAmount);
-            await tradingPage.swapBestOfferButton.click();
-        });
+            let reviewedGasLimit: string;
+            let maxFeePerGas: string;
+            let feeRate: string;
+            let priorityFeeRate: string;
 
-        await test.step('Verify DEX details on the Confirm & send screen', async () => {
-            await expect(tradingPage.confirmation.dexExchangeType).toHaveTranslation(
-                'TR_EXCHANGE_DEX',
-            );
-            await expect(tradingPage.confirmation.dexMaximumSlippage).toHaveText(slippagePercent);
-            await expect(tradingPage.confirmation.dexMinimumReceivedAmount).toHaveText(
-                formattedMinimumReceived,
-            );
+            await test.step('Select the LI.FI DEX offer', async () => {
+                await tradingPage.quotes.chooseDifferentOfferIfAvailable(dexProvider);
+                await expect(tradingPage.quotes.selectedProviderName).toHaveText(dexProvider);
+                await tradingPage.quotes.waitForSync();
 
-            // The fee's fiat value depends on live rates; assert only the format.
-            await expect(tradingPage.confirmation.dexNetworkFee).toHaveText(/^≈\s\$\d+\.\d{2}$/);
-            await expect(tradingPage.confirmation.provider).toHaveText(dexProvider);
-            await expect(tradingPage.confirmation.sendAccount).toHaveText(`from ${accountLabel}`);
-            await expect(tradingPage.confirmation.receiveAccount).toHaveText(`to ${accountLabel}`);
-            await expect(tradingPage.confirmation.sendCryptoAmount).toHaveText(formattedSendAmount);
-            await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
-                formattedReceiveAmount,
-            );
-        });
-
-        await test.step('Open Confirm & send modal', async () => {
-            await tradingPage.confirmation.openConfirmAndSendModal();
-        });
-
-        await test.step('Confirm the DEX transaction on device', async () => {
-            await devicePrompt.confirmOnDevicePromptIsShown();
-
-            await expect(devicePrompt.outputValueOf('recipient_name')).toHaveText(
-                deviceReview.providerName,
-            );
-            await expect(device).toShowOnDisplay({
-                T3W1: {
-                    header: { title: deviceReview.providerTitle },
-                    body: [[deviceReview.providerName]],
-                    actions: { right_button: deviceReview.confirmButton },
-                },
+                await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
+                await tradingPage.swapBestOfferButton.click();
             });
-            await devicePrompt.waitForPromptAndConfirm();
 
-            await expect(devicePrompt.outputValueOf('swap_intent')).toHaveTranslation(
-                'TR_TRADING_INTENT_SWAP',
-            );
-            await expect(device).toShowOnDisplay({
-                T3W1: {
-                    header: { title: deviceReview.intentTitle },
-                    body: [[deviceReview.intentValue]],
-                    actions: { right_button: deviceReview.confirmButton },
-                },
+            await test.step('Read the standard fee on the review step', async () => {
+                let maxFeePerGasRounded: string;
+                let maxPriorityFeePerGasRounded: string;
+                ({ maxFeePerGas, maxFeePerGasRounded, maxPriorityFeePerGasRounded } =
+                    await tradingPage.fees.getStandardFeeWorkaroundInNetworkFeeModal());
+                feeRate = `${maxFeePerGasRounded} Gwei`;
+                priorityFeeRate = `${maxPriorityFeePerGasRounded} Gwei`;
             });
-            await devicePrompt.waitForPromptAndConfirm();
 
-            await expect(devicePrompt.assetsSendCryptoAmount).toHaveText(
-                `- ${formattedSendAmount}`,
-            );
-            await expect(devicePrompt.assetsReceiveCryptoAmount).toHaveText(
-                `+ ${minimumReceived.toFixed()} USDC`,
-            );
-            // The recipient is the user's own receive address, not the LI.FI router (dexTx.to).
-            await expect(devicePrompt.assetsReceiveAddress).toHaveText(
-                swapTradeEthDex.receiveAddress,
-            );
-            await expect(device).toShowOnDisplay({
-                T3W1: {
-                    header: { title: deviceReview.contractTitle },
-                    body: [
-                        [deviceReview.sendLabel],
-                        device.wrapText(formattedSendAmount, { isAmount: true }),
-                        [deviceReview.receiveLabel],
-                        device.wrapText(`${minimumReceived.toFixed(6)} USDC`, { isAmount: true }),
-                    ],
-                    actions: { right_button: deviceReview.confirmButton },
-                },
+            // The DEX re-quotes on trade creation, so amounts come from the trade, not the offer.
+            let receiveAmount: string;
+            let formattedReceiveAmount: string;
+            let minimumReceived: BigNumber;
+            let formattedMinimumReceived: string;
+            let promptMinimumReceived: string;
+            let displayedMinimumReceived: string;
+            let slippagePercent: string;
+
+            await test.step('Verify DEX details on the Confirm & send screen', async () => {
+                const { receiveStringAmount, swapSlippage, receive, dexTx } =
+                    await tradingResponses.swap.trade();
+                receiveAmount = localizeNumber(receiveStringAmount);
+                formattedReceiveAmount = `${receiveAmount} USDC`;
+                slippagePercent = `${swapSlippage}%`;
+                const guaranteedShare = new BigNumber(100).minus(swapSlippage).div(100);
+                minimumReceived = new BigNumber(receiveStringAmount).times(guaranteedShare);
+                formattedMinimumReceived = `${localizeNumber(minimumReceived.toFixed(4))} USDC`;
+                promptMinimumReceived = `${minimumReceived.toFixed()} USDC`;
+                // The device shows LI.FI's minimum from the calldata; receive × slippage misses it by a unit.
+                displayedMinimumReceived = `${getLifiMinAmountOut(dexTx?.data)} USDC`;
+
+                await expect(tradingPage.confirmation.dexExchangeType).toHaveTranslation(
+                    'TR_EXCHANGE_DEX',
+                );
+                await expect(tradingPage.confirmation.dexMaximumSlippage).toHaveText(
+                    slippagePercent,
+                );
+                await expect(tradingPage.confirmation.dexMinimumReceivedAmount).toHaveText(
+                    formattedMinimumReceived,
+                );
+
+                // The fee's fiat value depends on live rates; assert only the format.
+                await expect(tradingPage.confirmation.dexNetworkFee).toHaveText(
+                    /^≈\s\$\d+\.\d{2}$/,
+                );
+                await expect(tradingPage.confirmation.provider).toHaveText(dexProvider);
+                await expect(tradingPage.confirmation.sendAccount).toHaveText(
+                    `from ${accountLabel}`,
+                );
+                await expect(tradingPage.confirmation.receiveAccount).toHaveText(
+                    `to ${accountLabel}`,
+                );
+                await expect(tradingPage.confirmation.sendCryptoAmount).toHaveText(
+                    formattedSendAmount,
+                );
+
+                // The subtitle appears only once the simulation settles, gating the amount assertion
+                // below on the simulated value instead of the skeleton.
+                await expect(tradingPage.confirmation.dexSimulationSubtitle).toHaveTranslation(
+                    'TR_SIMULATION_POWERED_BY',
+                    { values: { provider: 'Blockaid' } },
+                );
+                // Every re-quote refetches the simulation with a freshly credited amount, so the
+                // rendered value is compared against the last captured scan on each attempt.
+                await expect(async () => {
+                    await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
+                        `${localizeNumber(tradingMock.simulatedReceiveAmount(receive))} USDC`,
+                        { timeout: 2_000 },
+                    );
+                }).toPass({ timeout: 15_000 });
+                // The simulation credits close to what the trade promised, so the swap has no issue to
+                // resolve. Were the banner to show up, it would also replace the confirm button below.
+                await expect(tradingPage.confirmation.issueBanner).toBeHidden();
             });
-            await devicePrompt.waitForPromptAndConfirm();
 
-            await expect(devicePrompt.ethereumGasLimit).toHaveText(gasLimitWithLabel);
-            await expect(device).toShowOnDisplay({
-                T3W1: {
-                    header: { title: deviceReview.feeTitle },
-                    body: [
-                        [deviceReview.feeLabel],
-                        device.wrapText(dexMaximumFee, { isAmount: true }),
-                    ],
-                    actions: { right_button: deviceReview.signButton },
-                },
+            await test.step('Open Confirm & send modal', async () => {
+                await tradingPage.confirmation.openConfirmAndSendModal();
             });
-            await devicePrompt.waitForFinalPromptAndConfirm();
-        });
 
-        await test.step('Re-verify the fully revealed review form', async () => {
-            await expect(devicePrompt.outputValueOf('recipient_name')).toHaveText(
-                deviceReview.providerName,
-            );
-            await expect(devicePrompt.outputValueOf('swap_intent')).toHaveTranslation(
-                'TR_TRADING_INTENT_SWAP',
-            );
-            await expect(devicePrompt.assetsSendCryptoAmount).toHaveText(
-                `- ${formattedSendAmount}`,
-            );
-            await expect(devicePrompt.assetsReceiveCryptoAmount).toHaveText(
-                `+ ${minimumReceived.toFixed()} USDC`,
-            );
-            await expect(devicePrompt.assetsReceiveAddress).toHaveText(
-                swapTradeEthDex.receiveAddress,
-            );
-            await expect(devicePrompt.ethereumGasLimit).toHaveText(gasLimitWithLabel);
-        });
+            await test.step('Confirm the DEX transaction on device', async () => {
+                const { receiveAddress } = await tradingResponses.swap.trade();
 
-        await test.step('Broadcast the signed DEX transaction', async () => {
-            await page.clock.install();
-            await devicePrompt.sendButton.click();
-            await tradingPage.verifySwapToast({
-                sendAccount: accountLabel,
-                receiveAccount: accountLabel,
-                sendAmount,
-                receiveAmount,
+                await devicePrompt.confirmOnDevicePromptIsShown();
+
+                await expect(devicePrompt.outputValueOf('recipient_name')).toHaveText(dexProvider);
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: deviceReview.providerTitle },
+                        body: [[dexProvider]],
+                        actions: { right_button: deviceReview.confirmButton },
+                    },
+                });
+                await devicePrompt.waitForPromptAndConfirm();
+
+                await expect(devicePrompt.outputValueOf('swap_intent')).toHaveTranslation(
+                    'TR_TRADING_INTENT_SWAP',
+                );
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: deviceReview.intentTitle },
+                        body: [[deviceReview.intentValue]],
+                        actions: { right_button: deviceReview.confirmButton },
+                    },
+                });
+                await devicePrompt.waitForPromptAndConfirm();
+
+                await expect(devicePrompt.assetsSendCryptoAmount).toHaveText(
+                    `- ${formattedSendAmount}`,
+                );
+                await expect(devicePrompt.assetsReceiveCryptoAmount).toHaveText(
+                    `+ ${promptMinimumReceived}`,
+                );
+                // The recipient is the user's own receive address, not the LI.FI router (dexTx.to).
+                await expect(devicePrompt.assetsReceiveAddress).toHaveText(receiveAddress);
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: deviceReview.contractTitle },
+                        body: [
+                            [deviceReview.sendLabel],
+                            device.wrapText(formattedSendAmount, { isAmount: true }),
+                            [deviceReview.receiveLabel],
+                            device.wrapText(displayedMinimumReceived, { isAmount: true }),
+                        ],
+                        actions: { right_button: deviceReview.confirmButton },
+                    },
+                });
+                await devicePrompt.waitForPromptAndConfirm();
+
+                await expect(devicePrompt.header.feePerGasRate).toHaveText(feeRate);
+                await expect(devicePrompt.header.priorityFeeRate).toHaveText(priorityFeeRate);
+                reviewedGasLimit = await devicePrompt.header.gasLimitValue.innerText();
+                const maximumFeeInGwei = new BigNumber(maxFeePerGas)
+                    .times(reviewedGasLimit)
+                    .toFixed();
+                const maximumFee = `${localizeNumber(fromGwei(maximumFeeInGwei).toEther())} ETH`;
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(maximumFee);
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: deviceReview.feeTitle },
+                        body: [
+                            [deviceReview.feeLabel],
+                            device.wrapText(maximumFee, { isAmount: true }),
+                        ],
+                        actions: { right_button: deviceReview.signButton },
+                    },
+                });
+                await devicePrompt.waitForFinalPromptAndConfirm();
             });
-        });
 
-        await test.step('Wait 30s for watch refresh and status change to Processing', async () => {
-            await tradingMock.routeAndWaitForWatchResponse(tradeEndpoint.swapWatch, {
-                status: 'CONVERTING',
+            await test.step('Re-verify the fully revealed review form', async () => {
+                const { receiveAddress } = await tradingResponses.swap.trade();
+
+                await expect(devicePrompt.outputValueOf('recipient_name')).toHaveText(dexProvider);
+                await expect(devicePrompt.outputValueOf('swap_intent')).toHaveTranslation(
+                    'TR_TRADING_INTENT_SWAP',
+                );
+                await expect(devicePrompt.assetsSendCryptoAmount).toHaveText(
+                    `- ${formattedSendAmount}`,
+                );
+                await expect(devicePrompt.assetsReceiveCryptoAmount).toHaveText(
+                    `+ ${promptMinimumReceived}`,
+                );
+                await expect(devicePrompt.assetsReceiveAddress).toHaveText(receiveAddress);
+                await expect(devicePrompt.header.gasLimitValue).toHaveText(reviewedGasLimit);
             });
-            await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                'TR_TRADING_DETAIL_PROCESSING',
-                { values: { providerName: dexProvider, type: 'swap' } },
-            );
-        });
 
-        await test.step('Wait 30s for watch refresh and status change to Success', async () => {
-            await tradingMock.routeAndWaitForWatchResponse(tradeEndpoint.swapWatch, {
-                status: 'SUCCESS',
+            await test.step('Send the DEX transaction (broadcast blocked by mock)', async () => {
+                await tradingMock.setStatus('SENDING');
+                await page.clock.install();
+                await devicePrompt.sendButton.click();
+
+                const { sendStringAmount } = await tradingResponses.swap.trade();
+
+                await tradingPage.verifySwapToast({
+                    sendAccount: accountLabel,
+                    receiveAccount: accountLabel,
+                    // The toast echoes the provider's formatting of the amount, not the one we typed.
+                    sendAmount: sendStringAmount,
+                    receiveAmount,
+                });
             });
-            await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
-            );
-        });
 
-        await test.step('Verify final transaction detail values', async () => {
-            await expect(tradingPage.confirmation.sendCryptoAmount).toHaveText(formattedSendAmount);
-            await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
-                formattedReceiveAmount,
-            );
-            await expect(tradingPage.confirmation.provider).toHaveText(dexProvider);
-            await expect(tradingPage.confirmation.dexMaximumSlippage).toHaveText(slippagePercent);
-            await expect(tradingPage.confirmation.dexMinimumReceivedAmount).toHaveText(
-                formattedMinimumReceived,
-            );
-            await expect(tradingPage.confirmation.detailSendAccount).toHaveText(
-                `from ${accountLabel}`,
-            );
-            await expect(tradingPage.confirmation.detailReceiveAccount).toHaveText(
-                `to ${accountLabel}`,
-            );
-        });
-    });
+            for (const step of dexSwapStatusFlow) {
+                await test.step(`Wait for status change to ${step.status}`, async () => {
+                    await tradingMock.advanceStatus(step.status);
+                    await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                        step.translationKey,
+                        { values: step.translationValues?.(dexProvider) },
+                    );
+                });
+            }
+
+            await test.step('Verify final transaction detail values', async () => {
+                await expect(tradingPage.confirmation.sendCryptoAmount).toHaveText(
+                    formattedSendAmount,
+                );
+                await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
+                    formattedReceiveAmount,
+                );
+                await expect(tradingPage.confirmation.provider).toHaveText(dexProvider);
+                await expect(tradingPage.confirmation.dexMaximumSlippage).toHaveText(
+                    slippagePercent,
+                );
+                await expect(tradingPage.confirmation.dexMinimumReceivedAmount).toHaveText(
+                    formattedMinimumReceived,
+                );
+                await expect(tradingPage.confirmation.detailSendAccount).toHaveText(
+                    `from ${accountLabel}`,
+                );
+                await expect(tradingPage.confirmation.detailReceiveAccount).toHaveText(
+                    `to ${accountLabel}`,
+                );
+            });
+        },
+    );
 });

@@ -2,8 +2,8 @@ import Svg, { Path } from 'react-native-svg';
 
 import { type PictogramIconSvgProps } from './types';
 
-export const InfoIconSvg = ({ color }: PictogramIconSvgProps) => (
-    <Svg width={40} height={40} fill="none">
+export const InfoIconSvg = ({ color, ...props }: PictogramIconSvgProps) => (
+    <Svg width={40} height={40} viewBox="0 0 40 40" fill="none" {...props}>
         <Path
             d="M5.92 28.365c1.962 3.792 5.62 6.537 9.663 7.83 3.666 1.171 7.526 1.12 10.9-.532 3.6-1.278 6.779-3.791 8.53-7.12 3.398-6.468 2.502-15.27-3.179-20.202-5.976-5.19-15.502-5.907-21.987-1.167C3.55 11.781 2.503 21.768 5.92 28.365zm3.772-16.977c2.036-2.74 5.768-4.181 9.1-4.45 3.254-.263 6.522.463 9.303 2.178 5.469 3.372 7.269 10.141 5.32 16.067-1.322 4.018-4.642 7.068-8.565 8.485-5.469.873-11.35-.293-14.99-4.773-3.865-4.755-3.794-12.627-.168-17.507z"
             fill={color}

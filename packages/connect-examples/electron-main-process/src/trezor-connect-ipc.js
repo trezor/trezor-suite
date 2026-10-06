@@ -5,6 +5,7 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     UI_EVENT,
     UI_REQUEST,
+    UI_REQUESTS,
     UI_RESPONSE,
 } from '@trezor/connect';
 
@@ -41,16 +42,22 @@ export const initTrezorConnect = sender => {
     });
 
     // Listen to UI_EVENT
-    // most common requests
+    // fire-and-forget notifications
     TrezorConnect.on(UI_EVENT, event => {
         sender.send('trezor-connect', event);
+    });
 
-        if (event.type === UI_REQUEST.REQUEST_PIN) {
+    // Listen to UI_REQUEST
+    // most common requests that require a response
+    TrezorConnect.on(UI_REQUEST, event => {
+        sender.send('trezor-connect', event);
+
+        if (event.type === UI_REQUESTS.REQUEST_PIN) {
             // example how to respond to pin request
             TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: '1234' });
         }
 
-        if (event.type === UI_REQUEST.REQUEST_PASSPHRASE) {
+        if (event.type === UI_REQUESTS.REQUEST_PASSPHRASE) {
             if (event.payload.device.features.capabilities.includes('Capability_PassphraseEntry')) {
                 // device does support entering passphrase on device
                 // let user choose where to enter
@@ -71,7 +78,7 @@ export const initTrezorConnect = sender => {
         // getAddress from device which is not backed up
         // there is a high risk of coin loss at this point
         // warn user about it
-        if (event.type === UI_REQUEST.REQUEST_CONFIRMATION) {
+        if (event.type === UI_REQUESTS.REQUEST_CONFIRMATION) {
             // payload: true - user decides to continue anyway
             TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_CONFIRMATION, payload: true });
         }

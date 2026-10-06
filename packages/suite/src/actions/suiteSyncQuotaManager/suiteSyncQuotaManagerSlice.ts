@@ -1,10 +1,10 @@
-import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     quotaManagerInitialState,
     suiteSyncQuotaManagerReducer,
 } from '@suite-common/suite-sync-quota-manager';
 
-import { STORAGE } from '../suite/constants';
+import { storageLoad } from '../suite/storageLifecycleActions';
 
 export const suiteSyncQuotaManagerSlice = createSliceWithExtraDeps({
     name: 'suiteSyncQuotaManager',
@@ -12,21 +12,16 @@ export const suiteSyncQuotaManagerSlice = createSliceWithExtraDeps({
     reducers: {},
     extraReducers: builder => {
         builder
-            .addCase(STORAGE.LOAD, (state, action) => {
-                const actionWithPayload = action as AnyAction;
-
-                if (
-                    actionWithPayload.type === STORAGE.LOAD &&
-                    actionWithPayload.payload.suiteSyncQuotaManager
-                ) {
+            .addCase(storageLoad, (state, action) => {
+                if (action.payload.suiteSyncQuotaManager) {
                     return {
                         ...state,
-                        ...actionWithPayload.payload.suiteSyncQuotaManager,
+                        ...action.payload.suiteSyncQuotaManager,
                     };
                 }
             })
             .addDefaultCase((state, action) => {
-                suiteSyncQuotaManagerReducer(state, action as AnyAction);
+                suiteSyncQuotaManagerReducer(state, action);
             });
     },
 });

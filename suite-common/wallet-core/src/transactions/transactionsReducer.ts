@@ -1,6 +1,10 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+} from '@suite-common/redux-utils';
 import type { AccountKey } from '@suite-common/wallet-types';
 import { findTransaction } from '@suite-common/wallet-utils';
 
@@ -27,9 +31,12 @@ const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => 
     return state.transactions[accountKey];
 };
 
+export type TransactionsReducerDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadTransactions'>;
+
 export const prepareTransactionsReducer = createReducerWithExtraDeps(
     transactionsInitialState,
-    (builder, extra) => {
+    (builder, extra: TransactionsReducerDeps) => {
         builder
             .addCase(transactionsActions.resetTransaction, (state, { payload }) => {
                 const { account } = payload;

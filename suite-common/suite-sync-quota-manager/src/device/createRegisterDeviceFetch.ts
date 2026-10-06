@@ -30,11 +30,11 @@ export type RegisterDeviceFetchResult = Result<
     QuotaManagerFetchCommunicationError
 >;
 
+export type RegisterDeviceFetchDeps = QuotaManagerFetchDep;
+
 export type RegisterDeviceFetch = (
     params: RegisterDeviceFetchParams,
 ) => Promise<RegisterDeviceFetchResult>;
-
-export type RegisterDeviceFetchDeps = QuotaManagerFetchDep;
 
 export type RegisterDeviceFetchDep = {
     registerDeviceFetch: RegisterDeviceFetch;

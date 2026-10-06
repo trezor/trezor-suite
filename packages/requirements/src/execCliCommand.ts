@@ -18,14 +18,14 @@ export type ExecCliCommandParams = {
     readonly options?: ExecOptions;
 };
 
+export type ExecCliCommandDeps = {
+    readonly console: Pick<Console, 'log'>;
+};
+
 export type ExecCliCommand = (params: ExecCliCommandParams) => Promise<ExecResult>;
 
 export type ExecCliCommandDep = {
     readonly execCliCommand: ExecCliCommand;
-};
-
-export type ExecCliCommandDeps = {
-    readonly console: Pick<Console, 'log'>;
 };
 
 export const createExecCliCommand =

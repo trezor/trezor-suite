@@ -1,4 +1,5 @@
 import type { EthValidatorsQueue, StakingBatch } from '@suite-common/earn-staking-api';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import ETH_BASE_TX from '../../../fixtures/staking/eth-base-tx.json';
@@ -59,7 +60,10 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await settingsPage.changeNetworks({
             enableNetworks: [
-                { symbol: 'eth', backend: { type: 'blockbook', url: blockbookMock.url } },
+                {
+                    symbol: asNetworkSymbol('eth'),
+                    backend: { type: 'blockbook', url: blockbookMock.url },
+                },
             ],
         });
 
@@ -87,13 +91,17 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user can stake more from his Ethereum account.',
                 category: TestCategory.ETH,
                 priority: TestPriority.Critical,
-                stream: TestStream.Trends,
+                stream: TestStream.Earn,
             }),
         },
         async ({ page, device, walletPage, stakingSection, devicePrompt, blockbookMock }) => {
             await test.step('Check staking dashboard', async () => {
                 await page.clock.install();
-                await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({
+                    symbol: asNetworkSymbol('eth'),
+                    type: 'normal',
+                    atIndex: 0,
+                });
                 await stakingSection.stakingTabButton.click();
                 await stakingSection.expectStakingAmounts({
                     expected: {
@@ -109,6 +117,13 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Open and fill staking form', async () => {
                 await stakingSection.stakeMoreButton.click();
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKING_IN_A_NUTSHELL');
+                await stakingSection.continueButton.click();
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKE_TOKEN', {
+                    values: { symbol: 'ETH' },
+                });
+                await stakingSection.everstakeAcknowledgeCheckbox.click();
+                await stakingSection.confirmButton.click();
                 await expect(stakingSection.availableBalanceWithSymbol).toHaveText('1,234 ETH');
                 await stakingSection.cryptoInput.fill('0.100204158497493752');
             });

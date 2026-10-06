@@ -94,6 +94,7 @@ export const TextButton = ({
             $priority={priority}
             $isInverse={isInverse}
             $isUnderlined={isUnderlined}
+            data-component="TextButton"
             data-testid={dataTestId}
             {...buttonProps}
             {...frameProps}

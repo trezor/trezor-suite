@@ -15,7 +15,7 @@ import {
     selectTheme,
     selectTorOnionLinks,
 } from '@suite/settings';
-import { type TorRootState, selectTorState } from '@suite/tor';
+import { type TorRootState, selectIsTorEnabled } from '@suite/tor';
 import {
     type LogsApplicationInfoRootState,
     REDACTED_REPLACEMENT,
@@ -57,7 +57,7 @@ export const selectRedactedDesktopApplicationInfo = (
     autodetectLanguage: selectAutodetectLanguage(state),
     theme: selectTheme(state),
     autodetectTheme: selectAutodetectTheme(state),
-    tor: selectTorState(state).isTorEnabled,
+    tor: selectIsTorEnabled(state),
     torOnionLinks: selectTorOnionLinks(state),
     transports: selectSuiteTransports(state),
     earlyAccessProgram: selectDesktopUpdateAllowPrerelease(state),

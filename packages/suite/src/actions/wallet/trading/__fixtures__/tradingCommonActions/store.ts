@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
@@ -12,7 +13,7 @@ export const ACCOUNT: Account = {
     path: "m/84'/0'/0'",
     key: mockAccountKey({
         descriptor: 'btcDescriptor',
-        symbol: 'btc',
+        symbol: asNetworkSymbol('btc'),
         deviceStaticSessionId: '1stTestnetAddress@device_id:0',
     }),
     accountType: 'normal',

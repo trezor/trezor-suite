@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { connectPopupActions } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { CORE_CALL, CORE_CALL_CANCEL, POPUP } from '@trezor/connect';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import {
     type ConnectPopupLink,
@@ -18,7 +18,7 @@ const webChannel = {
 };
 
 export const useConnectPopupWeb = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const [incomingMessages, setIncomingMessages] = useState<ConnectPopupMessage[]>([]);
     // Start with '*' because we don't know the opener's origin yet.
     // Protocol messages sent before the first incoming message (e.g.
@@ -137,17 +137,8 @@ export const useConnectPopupWeb = () => {
                 data.type === CORE_CALL_CANCEL ||
                 data.type === CORE_CALL
             ) {
-                const normalized: ConnectPopupMessage =
-                    data.type === POPUP.HANDSHAKE
-                        ? {
-                              type: data.type,
-                              id: data.id,
-                              payload: { manifest: data.payload?.manifest },
-                              version: data.payload?.version,
-                              requestedPermissions: data.payload?.requestedPermissions,
-                          }
-                        : data;
-                setIncomingMessages(prev => [...prev, normalized]);
+                const message: ConnectPopupMessage = data;
+                setIncomingMessages(prev => [...prev, message]);
             }
         };
 

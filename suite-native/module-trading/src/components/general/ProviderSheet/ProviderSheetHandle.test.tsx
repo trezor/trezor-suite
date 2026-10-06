@@ -22,11 +22,11 @@ jest.mock('@suite-common/message-system', () => {
 });
 
 describe('ProviderSheetHandle', () => {
-    const renderProviderSheetHandle = (
+    const renderProviderSheetHandle = async (
         props: Partial<ProviderSheetHandleProps> = {},
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithTradingProvider(
+        await renderWithTradingProvider(
             <ProviderSheetHandle
                 onClose={jest.fn()}
                 shouldShowFilters={true}
@@ -34,15 +34,15 @@ describe('ProviderSheetHandle', () => {
                 setSelectedFilter={jest.fn()}
                 filterItems={[
                     {
-                        label: getTranslation('moduleTrading.providerSheet.filters.all'),
+                        label: getTranslation('moduleTrading.providerSheet.filters.allProviders'),
                         value: 'all',
                     },
                     {
-                        label: getTranslation('moduleTrading.providerSheet.filters.cex'),
+                        label: getTranslation('moduleTrading.providerSheet.filters.centralized'),
                         value: 'cex',
                     },
                     {
-                        label: getTranslation('moduleTrading.providerSheet.filters.dex'),
+                        label: getTranslation('moduleTrading.providerSheet.filters.decentralized'),
                         value: 'dex',
                     },
                 ]}
@@ -51,53 +51,61 @@ describe('ProviderSheetHandle', () => {
             { overrides },
         );
 
-    it('should render component with title and filter', () => {
-        const { getByText } = renderProviderSheetHandle({}, {});
+    it('should render component with title and filter', async () => {
+        const { getByText } = await renderProviderSheetHandle({}, {});
 
         expect(getByText(getTranslation('moduleTrading.providerSheet.title'))).toBeOnTheScreen();
         expect(
-            getByText(getTranslation('moduleTrading.providerSheet.filters.all')),
+            getByText(getTranslation('moduleTrading.providerSheet.filters.allProviders')),
         ).toBeOnTheScreen();
         expect(
-            getByText(getTranslation('moduleTrading.providerSheet.filters.cex')),
+            getByText(getTranslation('moduleTrading.providerSheet.filters.centralized')),
         ).toBeOnTheScreen();
         expect(
-            getByText(getTranslation('moduleTrading.providerSheet.filters.dex')),
+            getByText(getTranslation('moduleTrading.providerSheet.filters.decentralized')),
         ).toBeOnTheScreen();
     });
 
-    it('should not render filters when shouldShowFilters is false', () => {
-        const { getByText, queryByText } = renderProviderSheetHandle(
+    it('should not render filters when shouldShowFilters is false', async () => {
+        const { getByText, queryByText } = await renderProviderSheetHandle(
             { shouldShowFilters: false },
             {},
         );
 
         expect(getByText(getTranslation('moduleTrading.providerSheet.title'))).toBeOnTheScreen();
-        expect(queryByText(getTranslation('moduleTrading.providerSheet.filters.all'))).toBeNull();
-        expect(queryByText(getTranslation('moduleTrading.providerSheet.filters.cex'))).toBeNull();
-        expect(queryByText(getTranslation('moduleTrading.providerSheet.filters.dex'))).toBeNull();
+        expect(
+            queryByText(getTranslation('moduleTrading.providerSheet.filters.allProviders')),
+        ).toBeNull();
+        expect(
+            queryByText(getTranslation('moduleTrading.providerSheet.filters.centralized')),
+        ).toBeNull();
+        expect(
+            queryByText(getTranslation('moduleTrading.providerSheet.filters.decentralized')),
+        ).toBeNull();
     });
 
-    it('should call onClose when close button is pressed', () => {
+    it('should call onClose when close button is pressed', async () => {
         const onClose = jest.fn();
-        const { getByLabelText } = renderProviderSheetHandle({ onClose }, {});
+        const { getByLabelText } = await renderProviderSheetHandle({ onClose }, {});
 
-        fireEvent.press(getByLabelText(getTranslation('generic.buttons.close')));
+        await fireEvent.press(getByLabelText(getTranslation('generic.buttons.close')));
 
         expect(onClose).toHaveBeenCalled();
     });
 
-    it('should setSelectedFilter when filter item is pressed', () => {
+    it('should setSelectedFilter when filter item is pressed', async () => {
         const setSelectedFilter = jest.fn();
-        const { getByText } = renderProviderSheetHandle({ setSelectedFilter }, {});
+        const { getByText } = await renderProviderSheetHandle({ setSelectedFilter }, {});
 
-        fireEvent.press(getByText(getTranslation('moduleTrading.providerSheet.filters.cex')));
+        await fireEvent.press(
+            getByText(getTranslation('moduleTrading.providerSheet.filters.centralized')),
+        );
 
         expect(setSelectedFilter).toHaveBeenCalledWith('cex');
     });
 
-    it('should display context message', () => {
-        const { getByText } = renderProviderSheetHandle(
+    it('should display context message', async () => {
+        const { getByText } = await renderProviderSheetHandle(
             {},
             {
                 wallet: {

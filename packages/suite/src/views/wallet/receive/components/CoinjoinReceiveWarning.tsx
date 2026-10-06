@@ -1,13 +1,15 @@
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner, Column, H4 } from '@trezor/components';
 
 import { hideCoinjoinReceiveWarning } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const CoinjoinReceiveWarning = () => {
     const account = useSelector(selectSelectedAccount);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     if (!account) {
         return null;

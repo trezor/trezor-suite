@@ -1,4 +1,6 @@
 import { deviceInitialState } from '@suite-common/device';
+import { mockNetworksState } from '@suite-common/networks/mocks';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import {
@@ -18,6 +20,7 @@ import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 describe('ExchangeReceiveAccountCryptoBalance', () => {
     let exchangeForm: ExchangeFormType;
     const preloadedState = {
+        networks: mockNetworksState(mockGetSupportedNetworks()),
         device: deviceInitialState,
         featureFlags: {
             ...featureFlagsInitialState,
@@ -26,41 +29,41 @@ describe('ExchangeReceiveAccountCryptoBalance', () => {
         wallet: getWalletState({ tradeType: 'exchange' }),
     };
 
-    const renderExchangeForm = () => {
-        const { result } = renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderExchangeForm = async () => {
+        const { result } = await renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
         });
 
         return result.current;
     };
 
-    const renderComponent = () =>
-        renderWithStoreProvider(<ExchangeReceiveAccountCryptoBalance />, {
+    const renderComponent = async () =>
+        await renderWithStoreProvider(<ExchangeReceiveAccountCryptoBalance />, {
             preloadedState,
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
         });
 
-    beforeEach(() => {
-        exchangeForm = renderExchangeForm();
+    beforeEach(async () => {
+        exchangeForm = await renderExchangeForm();
     });
 
-    it('should use asset form field as default symbol', () => {
-        act(() => {
+    it('should use asset form field as default symbol', async () => {
+        await act(() => {
             exchangeForm.setValue('receiveAsset', btcAsset);
         });
-        const { getByTestId } = renderComponent();
+        const { getByTestId } = await renderComponent();
 
         expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:- BTC');
     });
 
-    it('should use receiveAccount form field to obtain account', () => {
-        act(() => {
+    it('should use receiveAccount form field to obtain account', async () => {
+        await act(() => {
             exchangeForm.setValue('receiveAsset', btcAsset);
         });
-        act(() => {
+        await act(() => {
             exchangeForm.setValue('receiveAccount', { account: getBtcAccount() });
         });
-        const { getByTestId } = renderComponent();
+        const { getByTestId } = await renderComponent();
 
         expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:0.01 BTC');
     });

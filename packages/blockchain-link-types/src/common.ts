@@ -1,7 +1,14 @@
 import type { SocksProxyAgentOptions } from 'socks-proxy-agent';
 
+import type {
+    StellarClaimableBalanceOffer,
+    StellarContractCallData,
+    StellarOperationType,
+} from '@trezor/network-stellar/types';
+
 import type { BaseCurrencyCode } from './baseCurrency';
 import type { TokenProtocols, TronAccountExtraData, TronChainExtraData } from './blockbook-api';
+import type { CardanoStakingInfo } from './cardano';
 
 /* Shared types — canonical definitions used by both common and backend-specific modules */
 
@@ -10,6 +17,7 @@ export interface SolanaStakingAccount {
     stake?: string;
     rentExemptReserve: string;
     voterPubkey?: string;
+    activationEpoch?: number;
 }
 
 export type TokenStandard =
@@ -26,7 +34,8 @@ export type TokenStandard =
     | 'SPL'
     | 'SPL-2022'
     | 'BLOCKFROST'
-    | 'STELLAR-CLASSIC';
+    | 'STELLAR-CLASSIC'
+    | 'STELLAR-CONTRACT';
 
 export type FiatRatesBySymbol = {
     [K in BaseCurrencyCode]?: number | undefined;
@@ -259,11 +268,13 @@ export interface Transaction {
     stellarSpecific?: {
         memo?: string;
         feeSource: string; // who paid the fee for the transaction
-        operationType?: 'changeTrust';
+        operationType?: StellarOperationType;
         changeTrust?: {
             assetCode: string;
             isRemoval: boolean;
         };
+        claimableBalanceOffer?: StellarClaimableBalanceOffer;
+        contractCall?: StellarContractCallData;
     };
     tronSpecific?: TronChainExtraData;
 }
@@ -360,23 +371,15 @@ export interface AccountInfo {
         stellarSequence?: string;
         baseReserve?: string;
         reserve?: string;
+        /**
+         * Contracts whose SEP-41 balance the node did not answer for. Absent from `tokens` because
+         * it is unknown, not because the account stopped holding them.
+         */
+        stellarUnreadableContracts?: string[];
         // blockfrost
         rewards?: string;
         // ADA
-        staking?: {
-            address: string;
-            isActive: boolean;
-            rewards: string;
-            poolId: string | null;
-            drep: {
-                drep_id: string;
-                hex: string;
-                amount: string;
-                active: boolean;
-                active_epoch: number | null;
-                has_script: boolean;
-            } | null;
-        };
+        staking?: CardanoStakingInfo;
         // SOL
         owner?: string; // The Solana program owning the account
         rent?: number; // The rent required for the account to opened

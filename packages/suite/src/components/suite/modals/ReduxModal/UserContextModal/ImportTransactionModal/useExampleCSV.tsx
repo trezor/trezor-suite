@@ -1,3 +1,4 @@
+import { selectFullSelectedAccount } from '@suite/account';
 import { useTranslation } from '@suite/intl';
 import { selectIsLabelingAvailable } from '@suite/metadata';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -5,7 +6,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { useSelector } from 'src/hooks/suite';
 
 export const useExampleCSV = (): string => {
-    const { account, network } = useSelector(state => state.wallet.selectedAccount);
+    const { account, network } = useSelector(selectFullSelectedAccount);
     const isLabelingAvailable = useSelector(selectIsLabelingAvailable);
     const { translationString } = useTranslation();
 

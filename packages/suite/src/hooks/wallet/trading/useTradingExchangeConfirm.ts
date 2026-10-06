@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingExchangeActiveTrade,
     selectTradingExchangeIsFromRedirect,
@@ -10,10 +12,10 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const useTradingExchangeConfirm = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const trade = useSelector(selectTradingExchangeActiveTrade);
     const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
@@ -26,7 +28,7 @@ export const useTradingExchangeConfirm = () => {
 
     useEffect(() => {
         if (!quotesRequest) {
-            dispatch(goto({ routeName: 'wallet-trading-exchange' }));
+            dispatch(gotoThunk({ routeName: 'wallet-trading-exchange' }));
         }
     }, [quotesRequest, dispatch]);
 

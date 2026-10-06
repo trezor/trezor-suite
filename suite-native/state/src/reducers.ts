@@ -7,18 +7,22 @@ import { prepareDeviceReducer } from '@suite-common/device';
 import { discreetModeReducer } from '@suite-common/discreet-mode';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { logsSlice } from '@suite-common/logger';
 import {
     messageSystemPersistedWhitelist,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
+import { networksReducer } from '@suite-common/networks';
+import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-device-data';
 import { prepareReceiveReducer } from '@suite-common/receive';
 import { suiteSyncDataReducer, suiteSyncReducer } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-manager';
+import type { PersistentDeviceData } from '@suite-common/suite-types';
 import { prepareThpReducer } from '@suite-common/thp';
 import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
-import { networkSymbolCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     accountsRefreshTimeReducer,
     feesReducer,
@@ -26,20 +30,19 @@ import {
     prepareAccountsReducer,
     prepareBlockchainReducer,
     prepareDiscoveryReducer,
+    prepareEarnOnboardingReducer,
     prepareExplorerReducer,
     prepareFiatRatesReducer,
     preparePhishingReducer,
     prepareStakeReducer,
+    prepareStellarContractTokensReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
-    stablecoinYieldReducer,
     walletSettingsPersistedWhitelist,
+    yieldReducer,
 } from '@suite-common/wallet-core';
-// Suite Native has circular in @suite-native/test-utils -> @suite-native/state -> ... -> @suite-native/test-utils
-// This is causing problems handling types in WalletConnect, so we import the reducer directly instead of the whole module
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { prepareWalletConnectReducer } from '@suite-common/walletconnect/src/walletConnectReducer';
-import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/banner-flags';
+import { prepareWalletConnectReducer } from '@suite-common/walletconnect';
+import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/banners';
 import { biometricsPersistWhitelist, biometricsSlice } from '@suite-native/biometrics';
 import { prepareBluetoothReducer } from '@suite-native/bluetooth';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
@@ -81,21 +84,24 @@ import { tradingInitialState, tradingSlice } from '@suite-native/trading-state';
 import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
 import { appReducer } from './appSlice';
-import { extraDependencies } from './extraDependencies';
+import { extraDependencies } from './createNativeExtraDependencies';
 import { receivePersistTransform } from './receivePersistTransform';
 
 const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 const phishingReducer = preparePhishingReducer(extraDependencies);
 const accountsReducer = prepareAccountsReducer(extraDependencies);
+const earnOnboardingReducer = prepareEarnOnboardingReducer(extraDependencies);
 const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 const blockchainReducer = prepareBlockchainReducer(extraDependencies);
 const explorerReducer = prepareExplorerReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
+const persistentDeviceDataReducer = preparePersistentDeviceDataReducer(extraDependencies);
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
+const stellarContractTokensReducer = prepareStellarContractTokensReducer(extraDependencies);
 const tradingReducer = tradingSlice.prepareReducer(extraDependencies);
 const stakeReducer = prepareStakeReducer(extraDependencies);
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
@@ -106,7 +112,9 @@ const receiveReducer = prepareReceiveReducer(extraDependencies);
 const bluetoothReducer = prepareBluetoothReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
 
-type PrepareRootReducersDeps = MMKVStorageDep;
+type PrepareRootReducersDeps = MMKVStorageDep & {
+    getSupportedNetworks: () => readonly NetworkSymbol[];
+};
 
 export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
     const appSettingsPersistedReducer = preparePersistReducer({
@@ -123,7 +131,10 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const blockchainPersistedReducer = preparePersistReducer({
         reducer: blockchainReducer,
-        persistedKeys: networkSymbolCollection,
+        // TODO(#32215): BLOCKER FOR DYNAMIC MODULE LOADING: this whitelist is captured at store
+        // initialization. Rework persistence to hydrate newly activated networks before saving
+        // and preserve data for inactive networks before modules can change at runtime.
+        persistedKeys: deps.getSupportedNetworks() as readonly LegacyNetworkSymbol[],
         key: 'blockchain',
         version: 1,
         transforms: [blockchainPersistTransform],
@@ -132,7 +143,10 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const explorerPersistedReducer = preparePersistReducer({
         reducer: explorerReducer,
-        persistedKeys: networkSymbolCollection,
+        // TODO(#32215): BLOCKER FOR DYNAMIC MODULE LOADING: this whitelist is captured at store
+        // initialization. Rework persistence to hydrate newly activated networks before saving
+        // and preserve data for inactive networks before modules can change at runtime.
+        persistedKeys: deps.getSupportedNetworks() as readonly LegacyNetworkSymbol[],
         key: 'explorer',
         version: 1,
         transforms: [explorerPersistTransform],
@@ -153,9 +167,9 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const tradingPersistedReducer = preparePersistReducer({
         reducer: tradingReducer,
-        persistedKeys: ['favouriteAssets', 'trades', 'residence', 'tradingEnvironment'],
+        persistedKeys: ['trades', 'residence', 'tradingEnvironment'],
         key: 'trading',
-        version: 3,
+        version: 4,
         migrations: {
             2: (oldState: any /* FIXME */) => {
                 if (!oldState) return oldState;
@@ -206,7 +220,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         reducer: walletSettingsReducer,
         persistedKeys: walletSettingsPersistedWhitelist,
         key: 'walletSettings',
-        version: 3,
+        version: 5,
         migrations: {
             1: initialMigrateAppSettingsAndDiscoveryConfig({
                 mmkvStorage: deps.mmkvStorage,
@@ -220,6 +234,26 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                 if (!oldState) return oldState;
                 // Remove discreetMode — it now lives in its own persist key
                 const { discreetMode: _, ...rest } = oldState;
+
+                return rest;
+            },
+            4: (oldState: any /* FIXME */) => {
+                if (!oldState) return oldState;
+
+                // hideSuspiciousTransactions changed from a single boolean to a per-network
+                // record. Mobile has no UI for it, so the stored boolean is just dropped.
+                if (typeof oldState.hideSuspiciousTransactions === 'boolean') {
+                    const { hideSuspiciousTransactions: _, ...rest } = oldState;
+
+                    return rest;
+                }
+
+                return oldState;
+            },
+            5: (oldState: any /* FIXME */) => {
+                if (!oldState) return oldState;
+
+                const { hideSuspiciousTransactions: _, ...rest } = oldState;
 
                 return rest;
             },
@@ -246,6 +280,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const walletReducers = combineReducers({
         accounts: accountsReducer,
+        earnOnboarding: earnOnboardingReducer,
         accountsRefreshTime: accountsRefreshTimeReducer,
         blockchain: blockchainPersistedReducer,
         explorer: explorerPersistedReducer,
@@ -256,15 +291,16 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         send: sendFormReducer,
         fees: feesReducer,
         stake: stakeReducer,
-        stablecoinYield: stablecoinYieldReducer,
+        stablecoinYield: yieldReducer,
         trading: tradingPersistedReducer,
         settings: walletSettingsPersistedReducer,
         formDrafts: formDraftReducer,
+        stellarContractTokens: stellarContractTokensReducer,
     });
 
     const walletPersistedReducer = preparePersistReducer({
         reducer: walletReducers,
-        persistedKeys: ['accounts', 'transactions'],
+        persistedKeys: ['accounts', 'transactions', 'stellarContractTokens'],
         key: 'wallet',
         version: 4,
         migrations: {
@@ -291,7 +327,10 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             4: (oldState: any /* FIXME */) => {
                 if (!oldState?.accounts) return oldState;
 
-                return { ...oldState, accounts: sortAccountsByCoin(oldState.accounts) };
+                return {
+                    ...oldState,
+                    accounts: sortAccountsByCoin(oldState.accounts, deps.getSupportedNetworks()),
+                };
             },
         },
         transforms: [walletStopPersistTransform],
@@ -317,7 +356,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const devicePersistedReducer = preparePersistReducer({
         reducer: deviceReducer,
-        persistedKeys: ['devices', 'persistentDeviceData'],
+        persistedKeys: ['devices'],
         key: 'devices',
         version: 5,
         transforms: [devicePersistTransform],
@@ -345,13 +384,35 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
                 return { ...oldState, devices: migratedDevices };
             },
-            5: (oldState: any /* FIXME */) => {
-                if (!oldState?.persistentDeviceData) return oldState;
-                const migratedPersistentDeviceData = backfillManualCheckResult(
-                    oldState.persistentDeviceData,
-                );
+            // v5 was deleted – it modified state.device.persistentDeviceData, which was migrated (data not explicitely deleted here).
+            // Migration 1 of the `persistentDeviceData` persist key also includes does the job of the former v5 here.
+        },
+        storage: deps.mmkvStorage,
+    });
 
-                return { ...oldState, persistentDeviceData: migratedPersistentDeviceData };
+    const persistentDeviceDataPersistedReducer = preparePersistReducer({
+        reducer: persistentDeviceDataReducer,
+        persistedKeys: ['devices'],
+        key: 'persistentDeviceData',
+        version: 1,
+        migrations: {
+            1: async (oldState: any /* FIXME */) => {
+                // persistentDeviceData used to be persisted as part of the `devices` persist key
+                const oldDevicesState = await getStoredState({
+                    key: 'devices',
+                    storage: deps.mmkvStorage,
+                });
+
+                const rawPersistentDeviceData: PersistentDeviceData[] =
+                    oldDevicesState &&
+                    typeof oldDevicesState === 'object' &&
+                    'persistentDeviceData' in oldDevicesState
+                        ? (oldDevicesState.persistentDeviceData as PersistentDeviceData[])
+                        : [];
+                // This does the job of the former v5 migration of the `devicePersistedReducer`.
+                const devices = backfillManualCheckResult(rawPersistentDeviceData);
+
+                return { ...(oldState ?? {}), devices };
             },
         },
         storage: deps.mmkvStorage,
@@ -452,6 +513,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const rootReducer = preparePersistReducer({
         reducer: combineReducers({
+            networks: networksReducer,
             analytics: analyticsPersistedReducer,
             app: appReducer,
             appSettings: appSettingsPersistedReducer,
@@ -474,6 +536,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             nativeFirmware: nativeFirmwareReducer,
             notifications: createNotificationsReducer<TxKeyPath>().reducer,
             pendingCoinVisibility: pendingCoinVisibilitySlice.reducer,
+            persistentDeviceData: persistentDeviceDataPersistedReducer,
             receive: receivePersistedReducer,
             suiteSync: suiteSyncPersistedReducer,
             suiteSyncData: suiteSyncDataReducer,
@@ -483,8 +546,10 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             walletConnect: walletConnectReducer,
             suiteSyncQuotaManager: quotaManagerPersistedReducer,
         } as const),
-        // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
-        // is accessible for transformation.
+        // Try to avoid listing reducers as persisted keys of the root reducer, rather encapsulate them as persisted reducers with their own version and migration.
+        // Note that it's impossible with a reducer of Array type, because redux-persist works only with object type reducer.
+        // 'wallet' and 'graph' need to be persisted at the top level to ensure device state is accessible for transformation.
+        // TODO maybe tokenDefinitions could be refactored?
         persistedKeys: ['wallet', 'graph', 'tokenDefinitions'],
         transforms: [
             walletPersistTransform,
@@ -568,7 +633,10 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                     ...oldState,
                     wallet: {
                         ...oldState.wallet,
-                        accounts: sortAccountsByCoin(oldState.wallet.accounts),
+                        accounts: sortAccountsByCoin(
+                            oldState.wallet.accounts,
+                            deps.getSupportedNetworks(),
+                        ),
                     },
                 };
             },

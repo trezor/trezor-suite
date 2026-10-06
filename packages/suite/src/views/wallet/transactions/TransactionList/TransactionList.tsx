@@ -1,9 +1,10 @@
-import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-
-import useDebounce from 'react-use/lib/useDebounce';
+import { type ReactElement, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { useDebounce } from 'react-use';
 
 import { Translation } from '@suite/intl';
 import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
@@ -11,7 +12,7 @@ import { Column } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { Pagination } from 'src/components/wallet';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
@@ -31,6 +32,7 @@ interface TransactionListProps {
     account: Account;
     customTotalItems?: number;
     customNoTransactions?: ReactNode;
+    customHeading?: ReactElement;
     isExportable?: boolean;
     isTxFilteringEnabled?: boolean;
     customPageFetching?: boolean;
@@ -45,6 +47,7 @@ export const TransactionList = ({
     account,
     symbol,
     customNoTransactions,
+    customHeading,
     customTotalItems,
     onPageRequested,
     isExportable = true,
@@ -52,7 +55,7 @@ export const TransactionList = ({
     customPageFetching,
 }: TransactionListProps) => {
     const anchor = useSelector(selectRouterAnchor);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const searchLabels = useSelector(state => selectAccountLabelsForSearch(state, account));
 
     const { fetchPage, fetchedAll, fetchAll } = useFetchTransactions(account, allTransactions);
@@ -159,7 +162,7 @@ export const TransactionList = ({
     return (
         <DashboardSection
             ref={sectionRef}
-            heading={<Translation id="TR_ALL_TRANSACTIONS" />}
+            heading={customHeading ?? <Translation id="TR_ALL_TRANSACTIONS" />}
             actions={
                 <TransactionListActions
                     account={account}

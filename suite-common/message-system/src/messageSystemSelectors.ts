@@ -1,6 +1,4 @@
-import { createSelector } from '@reduxjs/toolkit';
-
-import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
+import { type AnalyticsRootState, selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type Category, type Message } from '@suite-common/suite-types';
 
@@ -17,9 +15,14 @@ import {
 import { resolveMessageContent } from './messageSystemUtils';
 
 // Create app-specific selectors with correct types
-export const createMemoizedSelector = createWeakMapSelector.withTypes<MessageSystemRootState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<MessageSystemRootState>();
+const createAnalyticsMemoizedSelector = createWeakMapSelector.withTypes<
+    MessageSystemRootState & AnalyticsRootState
+>();
 
 // Basic selectors don't need memoization
+export const selectMessageSystem = (state: MessageSystemRootState) => state.messageSystem;
+
 export const selectMessageSystemConfig = (state: MessageSystemRootState) =>
     state.messageSystem.config;
 
@@ -71,13 +74,18 @@ export const selectBannerMessage = createMemoizedSelector(
 export const selectContextMessageContent = createMemoizedSelector(
     [
         selectActiveContextMessages,
-        (_state, domain: ContextDomain) => domain,
+        (_state, domain: ContextDomain | readonly ContextDomain[]) => domain,
         (_state, _domain, language: string) => language,
     ],
     (activeContextMessages, domain, language) => {
-        const message = activeContextMessages.find(({ context }) =>
-            [context?.domain].flat().includes(domain),
-        );
+        const requestedDomains = [domain].flat();
+        const message = activeContextMessages.find(({ context }) => {
+            const messageDomains = [context?.domain].flat();
+
+            return requestedDomains.some(requestedDomain =>
+                messageDomains.includes(requestedDomain),
+            );
+        });
         if (!message) return undefined;
 
         return {
@@ -250,6 +258,23 @@ export const selectAllValidExperiments = createMemoizedSelector(
     },
 );
 
+export const selectAllConfigExperiments = createMemoizedSelector([selectConfig], config =>
+    returnStableArrayIfEmpty(config?.experiments),
+);
+
+export const selectAllValidConfigExperiments = createMemoizedSelector(
+    [selectAllConfigExperiments, selectValidExperiments],
+    (experiments, validExperiments) =>
+        returnStableArrayIfEmpty(
+            experiments.filter(({ experiment }) => validExperiments.includes(experiment.id)),
+        ),
+);
+
+export const selectIsExperimentValid = createMemoizedSelector(
+    [selectValidExperiments, (_state, experimentId: string) => experimentId],
+    (validExperiments, experimentId) => validExperiments.includes(experimentId),
+);
+
 export const selectExperimentById = (id: ExperimentId) =>
     createMemoizedSelector([selectAllValidExperiments], allValidExperiments =>
         allValidExperiments.find(
@@ -257,7 +282,7 @@ export const selectExperimentById = (id: ExperimentId) =>
         ),
     );
 
-export const selectActiveExperimentsWithVariants = createSelector(
+export const selectActiveExperimentsWithVariants = createAnalyticsMemoizedSelector(
     [selectAnalyticsInstanceId, selectAllValidExperiments],
     (instanceId, experiments) =>
         returnStableArrayIfEmpty(

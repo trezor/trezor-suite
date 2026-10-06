@@ -1,0 +1,71 @@
+import { useCallback } from 'react';
+import { Share } from 'react-native';
+
+import { useServices } from '@suite-common/dependency-injection';
+import { useAlert } from '@suite-native/alerts';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { useBottomSheetModal } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
+import { ReceiveAddressVerificationSource } from '@suite-native/navigation';
+
+type UseReceiveAddressSharingParams = {
+    address: string;
+    isDeviceVerificationEnabled: boolean;
+    onVerifyAddress: (source: ReceiveAddressVerificationSource) => void;
+};
+
+export const useReceiveAddressSharing = ({
+    address,
+    isDeviceVerificationEnabled,
+    onVerifyAddress,
+}: UseReceiveAddressSharingParams) => {
+    const { analytics } = useServices(injectNativeAnalytics);
+    const {
+        bottomSheetRef: sharedAddressBottomSheetRef,
+        openModal: openSharedAddressBottomSheet,
+        closeModal: closeSharedAddressBottomSheet,
+    } = useBottomSheetModal();
+    const { translate } = useTranslate();
+    const { showAlert } = useAlert();
+
+    const handleVerifySharedAddress = useCallback(() => {
+        closeSharedAddressBottomSheet();
+        onVerifyAddress(ReceiveAddressVerificationSource.Shared);
+    }, [closeSharedAddressBottomSheet, onVerifyAddress]);
+
+    const handleShareAddress = useCallback(async () => {
+        try {
+            const { action } = await Share.share({ message: address });
+
+            if (action === Share.dismissedAction) {
+                return;
+            }
+
+            analytics.report({ type: events.receiveShareAddressEvent.name });
+
+            if (isDeviceVerificationEnabled) {
+                openSharedAddressBottomSheet();
+            }
+        } catch {
+            showAlert({
+                title: translate('generic.unknownError'),
+                pictogramVariant: 'critical',
+                primaryButtonTitle: translate('generic.buttons.close'),
+            });
+        }
+    }, [
+        address,
+        analytics,
+        isDeviceVerificationEnabled,
+        openSharedAddressBottomSheet,
+        showAlert,
+        translate,
+    ]);
+
+    return {
+        sharedAddressBottomSheetRef,
+        closeSharedAddressBottomSheet,
+        handleShareAddress,
+        handleVerifySharedAddress,
+    };
+};

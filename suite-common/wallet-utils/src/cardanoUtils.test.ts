@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO, PROTO } from '@trezor/connect';
 
 import * as fixtures from './__fixtures__/cardanoUtils';
@@ -28,7 +29,7 @@ describe('cardano utils', () => {
     });
 
     it('basic test', () => {
-        expect(getProtocolMagic('ada')).toEqual(CARDANO.PROTOCOL_MAGICS.mainnet);
+        expect(getProtocolMagic(asNetworkSymbol('ada'))).toEqual(CARDANO.PROTOCOL_MAGICS.mainnet);
 
         expect(getDerivationType('normal')).toEqual(1);
         expect(getDerivationType('legacy')).toEqual(2);

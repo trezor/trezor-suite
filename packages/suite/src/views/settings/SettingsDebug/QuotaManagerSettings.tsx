@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
 import { selectIsTorEnabled } from '@suite/tor';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     enforceQuotaManagerUpdated,
     eraseFetchedData,
@@ -16,11 +18,11 @@ import { Button, ButtonGroup, Checkbox, Code, Column, Input, Text } from '@trezo
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 export const QuotaManagerSettings = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
     const isTorEnabled = useSelector(selectIsTorEnabled);
     const quotaManagerCustomUrl = useSelector(selectQuotaManagerCustomUrl);

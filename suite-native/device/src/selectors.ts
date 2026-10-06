@@ -3,7 +3,6 @@ import { A } from '@mobily/ts-belt';
 import {
     type DeviceRootState,
     getIsDeviceIdValid,
-    selectDeviceAuthenticityByDeviceId,
     selectDeviceFirmwareVersionArray,
     selectDeviceInstances,
     selectDeviceModel,
@@ -12,9 +11,7 @@ import {
     selectIsDeviceConnected,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceInBootloader,
-    selectIsDeviceInvariabilityCheckSuccess,
     selectIsDeviceThpLocked,
-    selectIsEntropyCheckFailed,
     selectIsFirmwareAuthenticityCheckDismissed,
     selectIsUnacquiredDevice,
     selectSelectedDevice,
@@ -22,12 +19,19 @@ import {
 import {
     getFirmwareAuthenticityCheckErrors,
     getIsHardRevisionCheckError,
+    getIsRetriableRevisionCheckError,
 } from '@suite-common/firmware-authenticity';
 import {
     Feature,
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
+import {
+    type PersistentDeviceDataRootState,
+    selectDeviceAuthenticityByDeviceId,
+    selectIsDeviceInvariabilityCheckSuccess,
+    selectIsEntropyCheckFailed,
+} from '@suite-common/persistent-device-data';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type ThpRootState, selectThpAutoconnectStep } from '@suite-common/thp';
 import {
@@ -66,6 +70,7 @@ import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 import { getIsDeviceSetupSupported, isFirmwareVersionSupported } from './utils';
 
 export type NativeDeviceRootState = DeviceRootState &
+    PersistentDeviceDataRootState &
     ThpRootState &
     AccountsRootState &
     DiscoveryRootState &
@@ -181,9 +186,7 @@ export const selectHasNoDeviceWithEmptyPassphrase = createMemoizedSelector(
     deviceInstances => A.isEmpty(deviceInstances.filter(d => d.useEmptyPassphrase)),
 );
 
-type FwAuthenticityCheckState = NativeDeviceRootState &
-    FeatureFlagsRootState &
-    MessageSystemRootState;
+type FwAuthenticityCheckState = NativeDeviceRootState & MessageSystemRootState;
 /**
  * Get firmware revision check error, or null if check was successful / skipped, if the check is enabled in settings and through message system.
  */
@@ -210,6 +213,12 @@ export const selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled = (
 
     return selectFirmwareRevisionCheckErrorIfEnabled(state, device);
 };
+export const selectShouldRetryFirmwareRevisionCheckError = (
+    state: FwAuthenticityCheckState,
+): boolean =>
+    getIsRetriableRevisionCheckError(
+        selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled(state),
+    );
 
 /**
  * Determine if either of firmware authenticity checks is considered as hard failure (in order to restrict interaction with device).

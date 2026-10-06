@@ -3,11 +3,11 @@ import { type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { mediaQueries } from '@trezor/styles';
-
-import { useDispatch } from 'src/hooks/suite';
 
 const Container = styled.div`
     position: relative;
@@ -31,9 +31,9 @@ interface StakeAmountWrapperProps {
 }
 
 export const StakeAmountWrapper = ({ children }: StakeAmountWrapperProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const goToStakingTab = () =>
-        dispatch(goto({ routeName: 'wallet-staking', preserveParams: true }));
+        dispatch(gotoThunk({ routeName: 'wallet-staking', preserveParams: true }));
 
     return (
         <Tooltip

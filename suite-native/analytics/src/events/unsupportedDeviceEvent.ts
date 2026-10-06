@@ -3,10 +3,7 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import { EventType } from '../constants';
 
 type UnsupportedDeviceState =
-    | 'unsupportedFirmware'
-    | 'noSeed'
-    | 'bootloaderMode'
-    | 'noSeedWithFirmware';
+    'unsupportedFirmware' | 'noSeed' | 'bootloaderMode' | 'noSeedWithFirmware';
 
 type Attributes = {
     deviceState: AttributeDef<UnsupportedDeviceState>;

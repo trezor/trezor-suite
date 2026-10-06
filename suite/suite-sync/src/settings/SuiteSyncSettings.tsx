@@ -10,7 +10,7 @@ import {
     selectIsSuiteSyncFeatureAvailable,
     selectSuiteSyncCustomRelayUrl,
 } from '@suite-common/suite-sync';
-import { selectChangeRelayUrlDep } from '@suite-common/suite-sync-types';
+import { injectChangeRelayUrl } from '@suite-common/suite-sync-types';
 import { Button, ButtonGroup, Code, Column, Input, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
 import { type BreakpointFlags } from '@trezor/theme';
@@ -27,7 +27,7 @@ type SuiteSyncSettingsProps = {
 export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
     const [isRelayUrlLoading, setIsRelayUrlLoading] = useState(false);
 
-    const { changeRelayUrl } = useServices(selectChangeRelayUrlDep);
+    const { changeRelayUrl } = useServices(injectChangeRelayUrl);
 
     const isBelowLaptop = useSelector(selectIsBelowLaptop);
 

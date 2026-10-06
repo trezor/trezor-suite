@@ -1,6 +1,6 @@
 import { type Page } from '@playwright/test';
 
-import { createTestAnnotation } from '@trezor/e2e-utils';
+import { TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { ConnectPermissionsModal } from '../../support/pageObjects/connectPermissionsModal';
@@ -45,6 +45,7 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
         {
             annotation: createTestAnnotation({
                 testCase: 'Suite Web Connect: Happy path scenario with getAddress',
+                stream: TestStream.Connect,
             }),
         },
         async ({ page, device }) => {
@@ -92,6 +93,7 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
             annotation: createTestAnnotation({
                 testCase:
                     'Suite Web Connect: Cardano getAddress — granting the permission enables Cardano derivation (derive_cardano) end-to-end',
+                stream: TestStream.Connect,
             }),
         },
         async ({ page, device }) => {
@@ -142,6 +144,7 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
         {
             annotation: createTestAnnotation({
                 testCase: 'Suite Web Connect: Call cancelled by user',
+                stream: TestStream.Connect,
             }),
         },
         async ({ page }) => {
@@ -190,6 +193,7 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
             annotation: createTestAnnotation({
                 testCase:
                     'Suite Web Connect: Call cancelled via TrezorConnect.cancel() from the calling app',
+                stream: TestStream.Connect,
             }),
         },
         async ({ page }) => {
@@ -221,11 +225,6 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
             const response = page.getByTestId('@response');
             await expect(response).toHaveText(/success: false/);
             await expect(response).toHaveText(/Method_Interrupted/);
-
-            // The popup (suite window) should show a cancellation message.
-            await expect(suite.getByText('Request was canceled by the user')).toBeVisible({
-                timeout: 15_000,
-            });
         },
     );
 
@@ -235,6 +234,7 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
             annotation: createTestAnnotation({
                 testCase:
                     'Suite Web Connect: Closing the popup window (not close button) returns a proper error',
+                stream: TestStream.Connect,
             }),
         },
         async ({ page }) => {
@@ -267,6 +267,7 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
             annotation: createTestAnnotation({
                 testCase:
                     'Suite Web Connect: After popup is force-closed, next call should still work',
+                stream: TestStream.Connect,
             }),
         },
         async ({ page, device }) => {
@@ -320,6 +321,7 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
             annotation: createTestAnnotation({
                 testCase:
                     'Suite Web Connect: If popup is already open, it should be closed before opening a new one',
+                stream: TestStream.Connect,
             }),
         },
         async ({ page, device }) => {
@@ -380,6 +382,7 @@ test.describe('TrezorConnect popup web - no onboarding', { tag: ['@T3T1', '@webO
         {
             annotation: createTestAnnotation({
                 testCase: 'Suite Web Connect: When popup is blocked, returns popup-blocked error',
+                stream: TestStream.Connect,
             }),
         },
         async ({ page }) => {

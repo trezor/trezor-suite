@@ -1,27 +1,37 @@
-import { useDispatch } from 'react-redux';
-
 import { Address } from '@suite/address';
 import { openModal } from '@suite/modal';
-import { Link, type TextProps } from '@trezor/components';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import {
+    selectAccountByKey,
+    selectTransactionByAccountKeyAndTxid,
+} from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { Icon, Link, Row } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 
+import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 type TradingDetailTxIdProps = {
     value: string;
     account: Account;
-    intent?: TextProps['intent'];
-    priority?: TextProps['priority'];
-    isDisabled?: TextProps['isDisabled'];
+    receiveAccountKey?: AccountKey;
 };
 
 export const TradingDetailTxId = ({
     value,
     account,
-    intent,
-    priority,
-    isDisabled,
+    receiveAccountKey,
 }: TradingDetailTxIdProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
+
+    const payoutAccount = useSelector(state =>
+        receiveAccountKey && selectTransactionByAccountKeyAndTxid(state, receiveAccountKey, value)
+            ? selectAccountByKey(state, receiveAccountKey)
+            : null,
+    );
+    const txAccount = payoutAccount ?? account;
 
     return (
         <Link
@@ -30,23 +40,25 @@ export const TradingDetailTxId = ({
                     openModal({
                         type: 'transaction-detail',
                         txid: value,
-                        descriptor: account.descriptor,
-                        symbol: account.symbol,
-                        deviceState: account.deviceState,
+                        descriptor: txAccount.descriptor,
+                        symbol: txAccount.symbol,
+                        deviceState: txAccount.deviceState,
                         flow: 'detail',
                     }),
                 )
             }
         >
-            <Address
-                isTruncated
-                isChunked={false}
-                isCopyAllowed
-                value={value}
-                intent={intent}
-                priority={priority}
-                isDisabled={isDisabled}
-            />
+            <Row gap={4}>
+                <Address
+                    isTruncated
+                    isChunked={false}
+                    isCopyAllowed
+                    value={value}
+                    intent="brand"
+                    data-testid="@trading/transaction/detail/txid"
+                />
+                <Icon as={CaretRightIcon} size={16} intent="brand" />
+            </Row>
         </Link>
     );
 };

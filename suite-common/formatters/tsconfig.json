@@ -6,12 +6,14 @@
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../wallet-config" },
+        { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         {
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
 }

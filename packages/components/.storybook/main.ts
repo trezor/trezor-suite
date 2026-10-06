@@ -20,7 +20,7 @@ const config: StorybookConfig = {
 
     staticDirs: [
         '../public',
-        { from: '../../suite-data/files', to: '/static' },
+        { from: '../../../suite/app-assets/files', to: '/static' },
         { from: '../../../suite-common/flags/assets', to: '/static' },
     ],
 
@@ -61,6 +61,14 @@ const config: StorybookConfig = {
         webpackConfig.resolve!.fallback = {
             ...webpackConfig.resolve!.fallback,
             stream: require.resolve('stream-browserify'),
+        };
+
+        // Match the app build so LottieAnimation stories exercise the same light player the shipped
+        // bundle uses, instead of the full one lottie-web resolves to by default.
+        webpackConfig.resolve!.alias = {
+            ...webpackConfig.resolve!.alias,
+            'lottie-web$': require.resolve('lottie-web/build/player/lottie_light'),
+            'lottie-react$': require.resolve('lottie-react/build/index.es.js'),
         };
 
         // NOTE: remove the previous loaders from handling the svgs

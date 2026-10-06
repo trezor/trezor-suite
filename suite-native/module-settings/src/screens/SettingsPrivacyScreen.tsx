@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     Box,
     DiscreetCanvas,
@@ -19,15 +19,15 @@ import { useNativeStyles } from '@trezor/styles-native';
 
 const DiscreetTextExample = () => {
     const { utils } = useNativeStyles();
+    const { fontSize, lineHeight } = utils.typography['body-sm'];
 
     return (
-        <Box style={{ height: utils.typography['body-sm'].lineHeight }}>
+        <Box style={{ height: lineHeight, width: 30 }}>
             <DiscreetCanvas
                 text="$100"
                 color="contentSecondary"
-                width={30}
-                fontSize={utils.typography['body-sm'].fontSize}
-                height={utils.typography['body-sm'].lineHeight}
+                fontSize={fontSize}
+                lineHeight={lineHeight}
             />
         </Box>
     );
@@ -35,7 +35,7 @@ const DiscreetTextExample = () => {
 
 const DiscreetModeSwitchRow = () => {
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const handleSetDiscreetMode = (value: boolean) => {
         setIsDiscreetMode(value);
         analytics.report({
@@ -63,7 +63,7 @@ const DiscreetModeSwitchRow = () => {
 };
 
 const AnalyticsSwitchRow = () => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
 
     const handleAnalyticsChange = (isEnabled: boolean) => {

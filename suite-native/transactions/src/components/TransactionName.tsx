@@ -1,21 +1,25 @@
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
+import { getTxStakeType } from '@suite-common/wallet-core';
 import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { getTxStakeType } from '@suite-common/wallet-utils';
-import { Text } from '@suite-native/atoms';
+import { getNativeWrapTxKind, hasValueMovement } from '@suite-common/wallet-utils';
+import { Text, type TextProps } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { type NativeTypographyStyle } from '@trezor/theme';
+import {
+    type StellarOperationLabel,
+    getStellarOperationLabel,
+} from '@trezor/network-stellar/constants';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { getUnstakeTxAmount } from '../utils';
 import { UnstakeTransactionDetailTitle } from './UnstakeTransactionDetailTitle';
+import { WrapTransactionName } from './WrapTransactionName';
 
-type TransactionNameProps = {
+type TransactionNameProps = TextProps & {
     transaction: WalletAccountTransaction;
     isPending: boolean;
-    variant?: NativeTypographyStyle;
 };
 
 interface GetSelfTransactionMessageByTypeProps {
@@ -81,6 +85,22 @@ export const getTransactionName = (
     }
 };
 
+const STELLAR_OPERATION_MESSAGES: Record<StellarOperationLabel, TxKeyPath> = {
+    accountMerge: 'transactions.name.stellarAccountMerge',
+    claimableBalanceClaimed: 'transactions.name.stellarClaimableBalanceClaimed',
+    claimableBalanceCreated: 'transactions.name.stellarClaimableBalanceCreated',
+    claimableBalanceOffered: 'transactions.name.stellarClaimableBalanceOffered',
+    dataEntry: 'transactions.name.stellarDataEntry',
+    footprint: 'transactions.name.stellarFootprint',
+    liquidityPool: 'transactions.name.stellarLiquidityPool',
+    offer: 'transactions.name.stellarOffer',
+    sequenceBumped: 'transactions.name.stellarSequenceBumped',
+    setOptions: 'transactions.name.stellarSetOptions',
+    sponsorship: 'transactions.name.stellarSponsorship',
+    trustlineFlags: 'transactions.name.stellarTrustlineFlags',
+    trustlineUpdated: 'transactions.name.stellarTrustlineUpdated',
+};
+
 const getTronTransactionMessage = (transaction: WalletAccountTransaction) => {
     const contractType = transaction.tronSpecific?.contractType as TronTxContractType;
 
@@ -112,10 +132,39 @@ const getTronTransactionMessage = (transaction: WalletAccountTransaction) => {
     }
 };
 
-export const TransactionName = ({ transaction, isPending, variant }: TransactionNameProps) => {
+export const TransactionName = ({ transaction, isPending, ...textProps }: TransactionNameProps) => {
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
     const ethName = transaction.ethereumSpecific?.parsedData?.name;
+    const stellarFunctionName = transaction.stellarSpecific?.contractCall?.functionName;
+
+    if (transaction.type === 'failed') {
+        return (
+            <Text {...textProps}>
+                <Translation id="transactions.name.failed" />
+            </Text>
+        );
+    }
+
+    // WETH wrap/unwrap get their own label (with the amount) instead of the generic contract-call
+    // method name ("deposit"/"withdraw") that the indexer parses.
+    const wrapKind = getNativeWrapTxKind(transaction);
+    if (wrapKind) {
+        return <WrapTransactionName transaction={transaction} kind={wrapKind} {...textProps} />;
+    }
+
+    // With nothing moved the generic wording misleads ("Sent 0 XLM to self"), so name the operation.
+    const stellarOperationLabel =
+        transaction.stellarSpecific && !hasValueMovement(transaction)
+            ? getStellarOperationLabel(transaction.stellarSpecific)
+            : undefined;
+    if (stellarOperationLabel) {
+        return (
+            <Text {...textProps}>
+                <Translation id={STELLAR_OPERATION_MESSAGES[stellarOperationLabel]} />
+            </Text>
+        );
+    }
 
     // Stellar trustline addition/removal (short version without asset code)
     if (
@@ -123,7 +172,7 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
         transaction.stellarSpecific?.changeTrust
     ) {
         return (
-            <Text variant={variant}>
+            <Text {...textProps}>
                 {transaction.stellarSpecific.changeTrust.isRemoval ? (
                     <Translation id="transactions.name.stellarTrustlineRemoved" />
                 ) : (
@@ -147,7 +196,7 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
                 : totalVotes;
 
             return (
-                <Text variant={variant}>
+                <Text {...textProps}>
                     <Translation
                         id="transactions.name.tron.votedVotes"
                         values={{ votes: displayedVotes }}
@@ -171,14 +220,14 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
                 : formattedUnfreezeAmount;
 
             return (
-                <Text variant={variant}>
+                <Text {...textProps}>
                     <Translation id={tronTransactionMessageId} /> {displayedUnfreezeAmount}
                 </Text>
             );
         }
 
         return (
-            <Text variant={variant}>
+            <Text {...textProps}>
                 <Translation id={tronTransactionMessageId} />
             </Text>
         );
@@ -192,24 +241,26 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
             <UnstakeTransactionDetailTitle
                 unstakeAmount={unstakeAmount}
                 symbol={transaction.symbol}
-                variant={variant}
+                {...textProps}
             />
         );
     }
 
     const stakeTranslationId = stakeType ? getStakeTransactionMessage(stakeType, isPending) : null;
 
+    // `transfer` is left to the generic sent/received labels.
+    const sorobanName = stellarFunctionName === 'transfer' ? undefined : stellarFunctionName;
+
     // The contract method name (e.g. "Transfer") must not override the "self" label for
     // self-transactions, otherwise sending to your own account shows up as a generic transfer.
-    const ethNameToDisplay = transaction.type === 'self' ? undefined : ethName;
+    const contractCallName = transaction.type === 'self' ? undefined : (ethName ?? sorobanName);
 
     return (
-        <Text variant={variant}>
+        <Text {...textProps}>
             {stakeTranslationId ? (
                 <Translation id={stakeTranslationId} />
             ) : (
-                // use name of eth txns, but not for recv or sent Transfer
-                ethNameToDisplay || <Translation id={getTransactionName(transaction, isPending)} />
+                contractCallName || <Translation id={getTransactionName(transaction, isPending)} />
             )}
         </Text>
     );

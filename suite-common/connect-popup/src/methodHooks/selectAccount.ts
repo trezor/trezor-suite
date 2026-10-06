@@ -1,6 +1,12 @@
-import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    type AccountType,
+    type NetworkSymbol,
+    getNetwork,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
 import { getAvailableAccountTypes } from '@suite-common/wallet-utils';
 import { type CallMethodKeys } from '@trezor/connect';
+import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { type SelectionType } from '@trezor/connect-common/src/types/api/selectAccount';
 
 import { connectPopupActions } from '../connectPopupActions';
@@ -10,7 +16,7 @@ import {
     type SelectAccountTypeTab,
     isUtxoNetwork,
 } from '../connectPopupTypes';
-import { type PostCallHookParams } from './types';
+import { type PostCallHookParams, type PreCallHookParams } from './types';
 
 // Resolves one of the network's built-in types (bypassing the "publicly available" filter that
 // getAvailableAccountTypes applies) — an app explicitly requesting a debug-only type, e.g.
@@ -94,6 +100,22 @@ const buildOptions = (payload: Record<string, any>): SelectAccountOptions => {
     };
 };
 
+// Reject a coin Suite cannot render before the permissions modal, so the user isn't asked to grant
+// access to a coin that would only crash buildOptions afterwards. Connect's `__info` call already
+// rejected unknown/typo'd coins with Method_UnknownCoin, so a non-network symbol here is a
+// Connect-valid coin this host cannot render — hence a distinct code the caller can act on.
+const validateHook = <M extends CallMethodKeys>({
+    method,
+    payload,
+}: Pick<PreCallHookParams<M>, 'method' | 'payload'>) => {
+    if (method !== 'selectAccount') return;
+
+    const symbol = String((payload as Record<string, any>).coin).toLowerCase();
+    if (!isNetworkSymbol(symbol)) {
+        throw TypedError('Method_UnsupportedCoinForHost');
+    }
+};
+
 // Drives the `selectAccount` picker. The Connect method itself is a no-op that returns immediately,
 // so by the time this runs the call has already returned — which is what makes it safe for the
 // picker to fire nested Connect calls (deriving new indices, verifying addresses on device) without
@@ -132,4 +154,4 @@ async function postCallHook<M extends CallMethodKeys>({
     return true;
 }
 
-export const selectAccountHooks = { postCallHook };
+export const selectAccountHooks = { validateHook, postCallHook };

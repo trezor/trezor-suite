@@ -1,8 +1,6 @@
-import { useSelector } from 'react-redux';
-
 import styled from 'styled-components';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
@@ -10,13 +8,15 @@ import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
+import { useSelector } from 'src/hooks/suite';
+
 const PositionedSwitch = styled.div`
     align-self: center;
 `;
 
 export const Analytics = () => {
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     return (
         <Anchor anchorId={SettingsAnchor.Analytics}>

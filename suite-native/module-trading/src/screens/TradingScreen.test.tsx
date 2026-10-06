@@ -1,4 +1,8 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 
 import { TradingScreen } from './TradingScreen';
@@ -57,33 +61,39 @@ const overridesWithDisabledTrading: PreloadedStatePartial<TradingTestPreloadedSt
         'trading.concierge': false,
     }),
 };
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
+    analytics: mockNativeAnalytics(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
+};
 
 describe('TradingScreen', () => {
     let unmount: (() => void) | undefined;
 
-    const renderTradingScreen = (overrides?: PreloadedStatePartial<TradingTestPreloadedState>) => {
-        const result = renderWithTradingProvider(<TradingScreen />, { overrides });
+    const renderTradingScreen = async (
+        overrides?: PreloadedStatePartial<TradingTestPreloadedState>,
+    ) => {
+        const result = await renderWithTradingProvider(<TradingScreen />, { overrides, services });
 
         ({ unmount } = result);
 
         return result;
     };
 
-    afterEach(() => {
+    afterEach(async () => {
         if (unmount) {
-            unmount();
+            await unmount();
             unmount = undefined;
         }
     });
 
-    it('should render nothing when trading feature flag is not enabled', () => {
-        const { toJSON } = renderTradingScreen(overridesWithDisabledTrading);
+    it('should render nothing when trading feature flag is not enabled', async () => {
+        const { toJSON } = await renderTradingScreen(overridesWithDisabledTrading);
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render Buy form by default', () => {
-        const { getByText } = renderTradingScreen({
+    it('should render Buy form by default', async () => {
+        const { getByText } = await renderTradingScreen({
             featureFlags: createTradingFeatureFlags({}),
         });
 

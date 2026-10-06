@@ -4,10 +4,10 @@ import styled, { css } from 'styled-components';
 
 import { selectSelectedAccountKey } from '@suite/account';
 import {
+    injectSuiteRouterHistory,
     isAccountTabRoute,
     resolveEffectiveBackgroundRouteName,
     selectRoute,
-    selectSuiteRouterHistoryDep,
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectAccounts } from '@suite-common/wallet-core';
@@ -27,6 +27,7 @@ const Container = styled.div<{ $expandable?: boolean }>`
     position: sticky;
     top: 0;
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: space-between;
     width: 100%;
@@ -67,7 +68,7 @@ interface PageHeaderProps {
 export const PageHeader = ({ children, expandable }: PageHeaderProps) => {
     const selectedAccountKey = useSelector(selectSelectedAccountKey);
     const route = useSelector(selectRoute);
-    const { suiteRouterHistory } = useServices(selectSuiteRouterHistoryDep);
+    const { suiteRouterHistory } = useServices(injectSuiteRouterHistory);
     const effectiveRouteName = resolveEffectiveBackgroundRouteName(
         route,
         suiteRouterHistory.getLocation(),

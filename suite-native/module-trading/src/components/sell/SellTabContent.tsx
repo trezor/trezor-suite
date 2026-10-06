@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { ServerOffline } from '@suite-native/trading-atoms';
 
 import { SellForm } from './SellForm';
@@ -8,12 +6,11 @@ import { SellFormSkeleton } from './SellFormSkeleton';
 import { useSellData } from '../../hooks/sell/useSellData';
 
 export const SellTabContent = () => {
-    const [reloadOrdinal, setReloadOrdinal] = useState(0);
-    const { isLoading, lastLoadedTimestamp, isFullyLoaded } = useSellData(reloadOrdinal);
+    const { isLoading, lastLoadedTimestamp, isFullyLoaded, refetch } = useSellData();
     const isLoadingFinished = !isLoading && lastLoadedTimestamp > 0;
 
     if (isLoadingFinished && !isFullyLoaded) {
-        return <ServerOffline onRetryPress={() => setReloadOrdinal(n => n + 1)} />;
+        return <ServerOffline onRetryPress={refetch} />;
     }
 
     if (!isFullyLoaded) {

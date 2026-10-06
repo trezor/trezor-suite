@@ -1,9 +1,20 @@
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 
 import fixtures from './__fixtures__/deviceReducer';
 import { prepareDeviceReducer } from './deviceReducer';
 
-const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
+const deviceReducer = prepareDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
 
 type State = ReturnType<typeof deviceReducer>;
 

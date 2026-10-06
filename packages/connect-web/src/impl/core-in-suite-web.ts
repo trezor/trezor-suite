@@ -12,7 +12,8 @@ import {
     createCoreCallCancelMessage,
     normalizeCancelParams,
 } from '@trezor/connect-common/src/utils/cancelParams';
-import { type Log, initLog } from '@trezor/connect-common/src/utils/debug';
+import { initLog } from '@trezor/connect-common/src/utils/debug';
+import { type Log } from '@trezor/logger';
 
 import { getEnv } from '../connectSettings';
 import { getSuiteWebUrl } from './getSuiteWebUrl';

@@ -1,6 +1,8 @@
 import { type RefObject, useCallback, useEffect, useEffectEvent, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type HandleSellRequestThunkProps,
@@ -110,7 +112,7 @@ const useSellQuotesThunk = (
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const asset = useWatch({ control, name: 'sendAsset' });
     const symbol = getSymbolFromTradeableAsset(asset);
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>

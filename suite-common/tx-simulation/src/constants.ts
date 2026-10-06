@@ -1,4 +1,8 @@
-import { type TransactionSimulationError } from '@blockaid/client/resources/evm';
+import {
+    type InsufficientFundsErrorDetails,
+    type InvalidAddressErrorDetails,
+    type UnsupportedEip712MessageErrorDetails,
+} from './types';
 
 export const TX_SIMULATION_ERROR_CODE = {
     insufficientFunds: 'GENERAL_INSUFFICIENT_FUNDS',
@@ -6,7 +10,7 @@ export const TX_SIMULATION_ERROR_CODE = {
     unsupportedEip712Message: 'UNSUPPORTED_EIP712_MESSAGE',
 } as const satisfies Record<
     string,
-    | TransactionSimulationError.GeneralInsufficientFundsErrorDetails['code']
-    | TransactionSimulationError.GeneralInvalidAddressErrorDetails['code']
-    | TransactionSimulationError.UnsupportedEip712MessageErrorDetails['code']
+    | InsufficientFundsErrorDetails['code']
+    | InvalidAddressErrorDetails['code']
+    | UnsupportedEip712MessageErrorDetails['code']
 >;

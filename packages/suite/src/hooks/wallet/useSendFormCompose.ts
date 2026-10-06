@@ -7,11 +7,12 @@ import {
     useState,
 } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { type TranslationKey, isTranslationKey, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
@@ -40,7 +41,6 @@ type Props = UseFormReturn<FormState> & {
     updateContext: SendContextValues['updateContext'];
     setLoading: Dispatch<SetStateAction<boolean>>;
     setAmount: (index: number, amount: string) => void;
-    targetAnonymity?: number;
     prison?: Record<string, unknown>;
     setShowReserveBanner: SendContextValues['setShowReserveBanner'];
 };
@@ -67,7 +67,7 @@ export const useSendFormCompose = ({
     const [composeField, setComposeField] = useState<FieldPath<FormState> | undefined>(undefined);
     const [draftSaveRequest, setDraftSaveRequest] = useState(false);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { translationString } = useTranslation();
 
     const composeRequestID = useRef(0); // compose ID, incremented with every compose request

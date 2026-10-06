@@ -8,7 +8,9 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest:native",
+        "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
         "@suite-common/bip329": "workspace:*",
@@ -27,10 +29,10 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-file-system": "~56.0.7",
-        "expo-sharing": "~56.0.18",
+        "expo-file-system": "~57.0.1",
+        "expo-sharing": "~57.0.6",
         "react": "19.2.3",
-        "react-native": "0.85.3",
+        "react-native": "0.86.0",
         "react-redux": "9.3.0"
     }
 }

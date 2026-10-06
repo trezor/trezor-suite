@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { setIsOnboardingFeedbackBannerEnabled } from '@suite-native/banner-flags';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { setIsOnboardingFeedbackBannerEnabled } from '@suite-native/banners';
 import {
     type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
@@ -16,7 +17,7 @@ type NavigationProps = StackNavigationProps<
 >;
 
 export const useOnDeviceOnboardingFinishedNavigation = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
 
     const onDeviceOnboardingFinishedNavigation = useCallback(() => {

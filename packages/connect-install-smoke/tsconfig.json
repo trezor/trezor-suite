@@ -1,0 +1,6 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "include": ["render-package-json.ts"],
+    "references": [{ "path": "../eslint" }]
+}

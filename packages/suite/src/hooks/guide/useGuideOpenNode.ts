@@ -1,17 +1,18 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useGuide } from 'src/hooks/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectGuideIndexNode } from 'src/selectors/suite/guideSelectors';
 import { getNodeById } from 'src/utils/suite/guide';
 
 export const useGuideOpenNode = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isGuideOpen, openGuide } = useGuide();
 
-    const indexNode = useSelector(state => state.guide.indexNode);
-    const dispatch = useDispatch();
+    const indexNode = useSelector(selectGuideIndexNode);
 
     const openNodeById = (id: string) => {
         if (!indexNode) {

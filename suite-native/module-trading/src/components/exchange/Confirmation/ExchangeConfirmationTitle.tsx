@@ -5,7 +5,7 @@ import {
     AnimatedText,
     AnimatedVStack,
     Badge,
-    InlineAlertBox,
+    BannerInline,
     Text,
     VStack,
 } from '@suite-native/atoms';
@@ -59,7 +59,7 @@ export const ExchangeConfirmationTitle = ({
                     exiting={FadeOut}
                     alignSelf="stretch"
                 >
-                    <InlineAlertBox
+                    <BannerInline
                         title={<Translation id="moduleTrading.tradingConfirmationScreen.error" />}
                         intent="critical"
                     />

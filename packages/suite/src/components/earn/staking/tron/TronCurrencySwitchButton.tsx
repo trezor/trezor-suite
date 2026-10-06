@@ -28,7 +28,7 @@ export const TronCurrencySwitchButton = ({
 
     return (
         <TextButton type="button" size="small" onClick={onToggle}>
-            <Translation id="TR_EARN_ENTER_AMOUNT_IN" values={{ currency: currencySymbol }} />
+            <Translation id="TR_ENTER_AMOUNT_IN" values={{ currency: currencySymbol }} />
         </TextButton>
     );
 };

@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
     getNetwork,
@@ -13,6 +14,9 @@ import {
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import {
+    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
+    isSupportedTronStakingNetworkSymbol,
     selectAllAccountsToList,
     selectBaseCurrency,
     selectCurrentFiatRates,
@@ -24,9 +28,6 @@ import {
     BASE_CURRENCY_ZERO,
     asAmountUnit,
     getFiatRateKey,
-    isSupportedEthStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
-    isSupportedTronStakingNetworkSymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
@@ -47,7 +48,7 @@ import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
@@ -71,7 +72,7 @@ const GridWrapper = styled.div`
 
 const useAssetsFiatBalances = (
     assetsData: AssetData[],
-    accounts: { [key: string]: Account[] },
+    accounts: Partial<Record<NetworkSymbol, Account[]>>,
     localCurrency: BaseCurrencyCode,
     currentFiatRates?: RatesByKey,
 ) =>
@@ -93,8 +94,7 @@ export const AssetsView = () => {
     const { dashboardAssetsGridMode } = useSelector(selectFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isDiscoveryRunning } = useDiscovery();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const accounts = useSelector(selectAllAccountsToList);

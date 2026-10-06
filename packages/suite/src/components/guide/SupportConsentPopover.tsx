@@ -1,6 +1,6 @@
 import { type ReactNode, useState } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
@@ -11,7 +11,6 @@ import { ArrowLineUpRightIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-
 // To match the width of the trigger button in the SupportFeedbackSelection component at minimum guide width.
 const POPOVER_WIDTH = `calc(${variables.LAYOUT_SIZE.GUIDE_PANEL_DEFAULT_WIDTH}px - 33px)`;
 
@@ -23,7 +22,7 @@ export const SupportConsentPopover = ({ children }: SupportConsentPopoverProps) 
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
     const [isSystemInfoShared, setIsSystemInfoShared] = useState(isAnalyticsEnabled);
     const supportChatUrl = useSelector(state => selectSupportChatUrl(state, isSystemInfoShared));
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const handleOpenSupportChat = () => {
         analytics.report({

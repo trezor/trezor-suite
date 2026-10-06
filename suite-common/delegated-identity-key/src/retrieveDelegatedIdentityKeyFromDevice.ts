@@ -12,7 +12,7 @@ import {
     type TrezorDeviceWithState,
     asDelegatedIdentityKey,
 } from '@suite-common/suite-types';
-import type TrezorConnect from '@trezor/connect';
+import { type GetTrezorConnectDep } from '@trezor/connect-common';
 import { type Result, err, ok } from '@trezor/type-utils';
 
 export type RetrieveDelegatedIdentityKeyParams = {
@@ -22,9 +22,8 @@ export type RetrieveDelegatedIdentityKeyParams = {
     >;
 };
 
-export type RetrieveDelegatedIdentityKeyFromDeviceDeps = {
-    trezorConnect: Pick<typeof TrezorConnect, 'evoluGetDelegatedIdentityKey'>;
-};
+export type RetrieveDelegatedIdentityKeyFromDeviceDeps =
+    GetTrezorConnectDep<'evoluGetDelegatedIdentityKey'>;
 
 type RetrieveDelegatedIdentityKeyFromDevice = (
     params: RetrieveDelegatedIdentityKeyParams,
@@ -50,7 +49,7 @@ export const createRetrieveDelegatedIdentityKeyFromDevice =
             );
         }
 
-        const result = await deps.trezorConnect.evoluGetDelegatedIdentityKey({
+        const result = await deps.getTrezorConnect().evoluGetDelegatedIdentityKey({
             device: {
                 path: device.path,
                 state: device.state,

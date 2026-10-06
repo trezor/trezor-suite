@@ -1,17 +1,18 @@
 import styled from 'styled-components';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsOnboardingFeedbackBannerShown, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Box, Button, Column, H3, Illustration, Paragraph, Row } from '@trezor/components';
 import { ArrowDownIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
 import { NetworkIconSet } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const RoundedBorder = styled.div`
     padding: 4px 6px 4px 12px;
@@ -20,8 +21,7 @@ const RoundedBorder = styled.div`
 `;
 
 export const EmptyWallet = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isOnboardingFeedbackBannerShown = useSelector(selectIsOnboardingFeedbackBannerShown);
@@ -38,7 +38,7 @@ export const EmptyWallet = () => {
             type: events.dashboardReceiveModalEvent.name,
             payload: { source: 'empty-wallet' },
         });
-        dispatch(goto({ routeName: 'suite-index', params: { modal: 'receive' } }));
+        dispatch(gotoThunk({ routeName: 'suite-index', params: { modal: 'receive' } }));
     };
 
     const handleBuy = () => {
@@ -51,7 +51,7 @@ export const EmptyWallet = () => {
                 from: 'dashboard/empty-wallet',
             },
         });
-        dispatch(goto({ routeName: 'wallet-trading-buy' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));
     };
 
     return (

@@ -1,11 +1,10 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { type Route, goto } from '@suite/router';
+import { type Route, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { type IconComponent, SubTabs } from '@trezor/components';
-import { HandshakeIcon, MinusIcon, PlusIcon, RepeatIcon } from '@trezor/icons';
-
-import { useDispatch } from 'src/hooks/suite';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { Box, type IconComponent, SubTabs } from '@trezor/components';
+import { MinusIcon, PlusIcon, RepeatIcon } from '@trezor/icons';
 
 type TradingLayoutNavigationProps = {
     route?: Route['name'];
@@ -33,18 +32,13 @@ const navigationItems: NavigationItem[] = [
         icon: MinusIcon,
         translationId: 'TR_NAV_SELL',
     },
-    {
-        id: 'wallet-trading-concierge',
-        icon: HandshakeIcon,
-        translationId: 'TR_NAV_CONCIERGE',
-    },
 ];
 
 export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+
     const goToRoute = (route: Route['name']) => () => {
-        dispatch(goto({ routeName: route }));
+        dispatch(gotoThunk({ routeName: route }));
 
         switch (route) {
             case 'wallet-trading-buy':
@@ -74,31 +68,26 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
                         from: 'buy/sell',
                     },
                 });
-            case 'wallet-trading-concierge':
-                return analytics.report({
-                    type: events.tradeNavigateEvent.name,
-                    payload: {
-                        action: 'navigate',
-                        type: 'concierge',
-                        from: 'buy/sell',
-                    },
-                });
         }
     };
 
     return (
-        <SubTabs activeItemId={route} size="large">
-            {navigationItems.map(item => (
-                <SubTabs.Item
-                    key={item.id}
-                    data-testid={`@trading/menu/${item.id}`}
-                    id={item.id}
-                    icon={item.icon}
-                    onClick={goToRoute(item.id)}
-                >
-                    <Translation id={item.translationId} />
-                </SubTabs.Item>
-            ))}
-        </SubTabs>
+        <Box width="100%" maxWidth={400} margin={{ horizontal: 'auto' }}>
+            <Box padding={{ vertical: 4 }}>
+                <SubTabs activeItemId={route} size="large">
+                    {navigationItems.map(item => (
+                        <SubTabs.Item
+                            key={item.id}
+                            data-testid={`@trading/menu/${item.id}`}
+                            id={item.id}
+                            icon={item.icon}
+                            onClick={goToRoute(item.id)}
+                        >
+                            <Translation id={item.translationId} />
+                        </SubTabs.Item>
+                    ))}
+                </SubTabs>
+            </Box>
+        </Box>
     );
 };

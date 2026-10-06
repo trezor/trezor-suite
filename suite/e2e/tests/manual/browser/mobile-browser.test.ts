@@ -24,7 +24,7 @@ test.describe.skip('Mobile browser', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Wallets,
                 priority: TestPriority.Critical,
-                stream: TestStream.Foundation,
+                stream: TestStream.Growth,
                 osMatrix: [TestOsMatrix.Android],
             }),
         },

@@ -1,17 +1,22 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { getTranslation } from '@suite-native/intl';
-import { type TestStore, fireEvent } from '@suite-native/test-utils-store';
+import { fireEvent } from '@suite-native/test-utils-store';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { Header } from './Header';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
-    createTradingLightStore,
+    createTradingTestStore,
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState;
 
 describe('Header', () => {
     const getFFOverrides = (): PreloadedStatePartial<TradingTestPreloadedState> => ({
@@ -30,24 +35,26 @@ describe('Header', () => {
         return { reportMock, services };
     };
 
-    const renderHeader = (
+    const renderHeader = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = getFFOverrides(),
     ) => {
         const { reportMock, services } = setupReportMock();
 
         return {
-            renderer: renderWithTradingProvider(<Header />, { overrides, services }),
+            renderer: await renderWithTradingProvider(<Header />, { overrides, services }),
             reportMock,
         };
     };
 
-    const createTestStore = () => createTradingLightStore({ overrides: getFFOverrides() });
+    const createTestStore = () => createTradingTestStore({ overrides: getFFOverrides() });
 
-    const renderHeaderWithStore = (store: TestStore) => {
+    const renderHeaderWithStore = async (store: Store<State>) => {
         const { reportMock, services } = setupReportMock();
 
         return {
-            renderer: renderWithTradingProvider(<Header />, { services, store }),
+            renderer: await renderWithTradingProvider(<Header />, {
+                services: { ...services, store },
+            }),
             reportMock,
         };
     };
@@ -58,8 +65,8 @@ describe('Header', () => {
         { buy: false, exchange: true, sell: false },
         { buy: false, exchange: false, sell: true },
         { buy: false, exchange: false, sell: false },
-    ])('should display Buy, Swap and Sell tabs regardless of enabled flags (%o)', config => {
-        const { renderer } = renderHeader({
+    ])('should display Buy, Swap and Sell tabs regardless of enabled flags (%o)', async config => {
+        const { renderer } = await renderHeader({
             ...getFFOverrides(),
             messageSystem: mockMessageSystemStateWithFeatureFlags({
                 'trading.buy': config.buy,
@@ -79,8 +86,16 @@ describe('Header', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should display nothing when isAmountInputActive is true', () => {
-        const { renderer } = renderHeader({
+    it('should not display the Concierge tab', async () => {
+        const { renderer } = await renderHeader();
+
+        expect(
+            renderer.queryByText(getTranslation('moduleTrading.tradingScreen.tabs.concierge')),
+        ).not.toBeOnTheScreen();
+    });
+
+    it('should display nothing when isAmountInputActive is true', async () => {
+        const { renderer } = await renderHeader({
             ...getFFOverrides(),
             wallet: { trading: { isAmountInputActive: true } },
         });
@@ -88,11 +103,11 @@ describe('Header', () => {
         expect(renderer.toJSON()).toBeNull();
     });
 
-    it('should set state on tab button press', () => {
+    it('should set state on tab button press', async () => {
         const store = createTestStore();
-        const { renderer } = renderHeaderWithStore(store);
+        const { renderer } = await renderHeaderWithStore(store);
 
-        fireEvent.press(
+        await fireEvent.press(
             renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.exchange')),
         );
 
@@ -100,16 +115,16 @@ describe('Header', () => {
     });
 
     describe('analytics', () => {
-        let store: TestStore;
+        let store: Store<State>;
 
         beforeEach(() => {
             store = createTestStore();
         });
 
-        it('should report TradingNavigate event on tab change', () => {
-            const { renderer, reportMock } = renderHeaderWithStore(store);
+        it('should report TradingNavigate event on tab change', async () => {
+            const { renderer, reportMock } = await renderHeaderWithStore(store);
 
-            fireEvent.press(
+            await fireEvent.press(
                 renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.exchange')),
             );
 
@@ -123,30 +138,30 @@ describe('Header', () => {
             });
         });
 
-        it('should not report TradingNavigate event when tab was not changed', () => {
-            const { renderer, reportMock } = renderHeaderWithStore(store);
+        it('should not report TradingNavigate event when tab was not changed', async () => {
+            const { renderer, reportMock } = await renderHeaderWithStore(store);
 
-            fireEvent.press(
+            await fireEvent.press(
                 renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.exchange')),
             );
             reportMock.mockClear();
 
-            fireEvent.press(
+            await fireEvent.press(
                 renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.exchange')),
             );
 
             expect(reportMock).not.toHaveBeenCalled();
         });
 
-        it('should report TradingNavigate event when tab was changed to buy', () => {
-            const { renderer, reportMock } = renderHeaderWithStore(store);
+        it('should report TradingNavigate event when tab was changed to buy', async () => {
+            const { renderer, reportMock } = await renderHeaderWithStore(store);
 
-            fireEvent.press(
+            await fireEvent.press(
                 renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.exchange')),
             );
             reportMock.mockClear();
 
-            fireEvent.press(
+            await fireEvent.press(
                 renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.buy')),
             );
 

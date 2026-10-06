@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import {
     selectAutodetectLanguage,
     selectAutodetectTheme,
@@ -7,10 +8,11 @@ import {
     selectTheme,
     suiteSettingsActions,
 } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
-import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { getOsTheme, watchOsTheme } from 'src/utils/suite/env';
 import { getOsLocale, watchOsLocale } from 'src/utils/suite/l10n';
 
@@ -20,7 +22,7 @@ const Autodetect = () => {
     const currentTheme = useSelector(selectTheme);
     const currentLanguage = useSelector(selectLanguage);
 
-    const dispatch = useDispatch();
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
 
     const setLanguage = useCallback(
         (language: Locale) => {
@@ -52,7 +54,7 @@ const Autodetect = () => {
         desktopApi.on('theme/system-change', setTheme);
 
         return () => desktopApi.removeAllListeners('theme/system-change');
-    }, [autodetectTheme, setTheme]);
+    }, [desktopApi, autodetectTheme, setTheme]);
 
     useEffect(() => {
         if (!autodetectLanguage) return;

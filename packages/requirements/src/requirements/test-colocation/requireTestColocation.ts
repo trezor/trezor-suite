@@ -14,7 +14,7 @@ const IGNORED_DIRECTORY_NAMES = new Set([
 ]);
 
 const EXEMPT_TEST_PATH_PREFIXES = [
-    'packages/connect/e2e/',
+    'packages/connect-core/e2e/',
     'packages/request-manager/e2e/',
     'packages/transport-test/e2e/',
     'packages/trezor-user-env-link/e2e/',

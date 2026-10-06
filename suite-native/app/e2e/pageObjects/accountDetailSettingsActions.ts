@@ -1,4 +1,5 @@
 import { waitForVisible } from '../support/utils';
+
 class AccountDetailSettingsActions {
     async renameAccount({ newAccountName }: { newAccountName: string }) {
         await element(by.id('@account-detail/settings/edit-button')).tap();

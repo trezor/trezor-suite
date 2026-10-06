@@ -1,10 +1,9 @@
 import React from 'react';
-import { IntlProvider as ReactIntlProvider } from 'react-intl';
 
-import enMessages from '@suite-native/intl/translations/en-US.json';
+import { IntlProviderForTests } from '@suite-native/intl';
 
 export const intlDecorator = (Story: React.FC) => (
-    <ReactIntlProvider locale="en-US" messages={enMessages}>
+    <IntlProviderForTests>
         <Story />
-    </ReactIntlProvider>
+    </IntlProviderForTests>
 );

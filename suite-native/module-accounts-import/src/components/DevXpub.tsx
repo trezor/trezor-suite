@@ -1,6 +1,6 @@
 import { G } from '@mobily/ts-belt';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { Button, VStack } from '@suite-native/atoms';
 
 type DevXpubProps = {
@@ -9,7 +9,7 @@ type DevXpubProps = {
 };
 
 const devXpubs: Partial<Record<NetworkSymbol, string | DevXpub[]>> = {
-    btc: [
+    [asNetworkSymbol('btc')]: [
         {
             title: 'SegWit xPub',
             address:
@@ -20,14 +20,19 @@ const devXpubs: Partial<Record<NetworkSymbol, string | DevXpub[]>> = {
             address: `tr([5c9e228d/86'/0'/0']xpub6Bw885JisRbcKmowfBvMmCxaFHodKn1VpmRmctmJJoM8D4DzyP4qJv8ZdD9V9r3SSGjmK2KJEDnvLH6f1Q4HrobEvnCeKydNvf1eir3RHZk/<0;1>/*)`,
         },
     ],
-    test: 'vpub5ZjRPuuMiEQnbwEDi9jtH1FaJMajZW78uZ1t3RJXKhxyMoTnPraKwGxiDo9SguDYvSieqjoLJxW5n2t9156RR1oeqRnURuftNZTzejBc4pa',
-    regtest:
+    [asNetworkSymbol('test')]:
         'vpub5ZjRPuuMiEQnbwEDi9jtH1FaJMajZW78uZ1t3RJXKhxyMoTnPraKwGxiDo9SguDYvSieqjoLJxW5n2t9156RR1oeqRnURuftNZTzejBc4pa',
-    doge: 'dgub8sbe5Mi8LA4dXB9zPfLZW8armvaRkaqT37y6xfT1QA12ErATDf8iGEG8y7kamAnjLuEk9AMpTMMp6EK9Vjp2HHx91xdDEmWYpmD49fpoUYF',
-    ltc: 'zpub6qhzAgn63nQAJZiY829GUUb1eXFDqpLbeShTdAbTEKyZa8n2VbkLwbRhq9xqPyj5Yet5TBdbCZDgiw53NQ2qwib4mygybFq66i7ZcXUcwgU',
-    bch: 'xpub6DFYZ2FZwJHL4WULnRKTyMAaE9sM5Vi3QoWW9kYWGzR4HxDJ42Gbbdj7bpBAtATpaNeSVqSD3gdFFmZZYK9BVo96rhxPY7SWZWsfmdHpZ7e',
-    zec: 'xpub6DNsg962rV1MeqmathySUG2oKso9MfT2hMXCsMp6qemGWwD9xssVM61DfcAUUEaX2G8tjaaoKKppoKtFcSK8KVaMFHmZjAgyqod4DwXopPE',
-    eth: [
+    [asNetworkSymbol('regtest')]:
+        'vpub5ZjRPuuMiEQnbwEDi9jtH1FaJMajZW78uZ1t3RJXKhxyMoTnPraKwGxiDo9SguDYvSieqjoLJxW5n2t9156RR1oeqRnURuftNZTzejBc4pa',
+    [asNetworkSymbol('doge')]:
+        'dgub8sbe5Mi8LA4dXB9zPfLZW8armvaRkaqT37y6xfT1QA12ErATDf8iGEG8y7kamAnjLuEk9AMpTMMp6EK9Vjp2HHx91xdDEmWYpmD49fpoUYF',
+    [asNetworkSymbol('ltc')]:
+        'zpub6qhzAgn63nQAJZiY829GUUb1eXFDqpLbeShTdAbTEKyZa8n2VbkLwbRhq9xqPyj5Yet5TBdbCZDgiw53NQ2qwib4mygybFq66i7ZcXUcwgU',
+    [asNetworkSymbol('bch')]:
+        'xpub6DFYZ2FZwJHL4WULnRKTyMAaE9sM5Vi3QoWW9kYWGzR4HxDJ42Gbbdj7bpBAtATpaNeSVqSD3gdFFmZZYK9BVo96rhxPY7SWZWsfmdHpZ7e',
+    [asNetworkSymbol('zec')]:
+        'xpub6DNsg962rV1MeqmathySUG2oKso9MfT2hMXCsMp6qemGWwD9xssVM61DfcAUUEaX2G8tjaaoKKppoKtFcSK8KVaMFHmZjAgyqod4DwXopPE',
+    [asNetworkSymbol('eth')]: [
         { title: 'balance, few tokens', address: '0x62270860B9a5337e46bE8563c512c9137AFa0384' },
         {
             title: 'not zero, no tokens, staking',
@@ -42,8 +47,8 @@ const devXpubs: Partial<Record<NetworkSymbol, string | DevXpub[]>> = {
             address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
         },
     ],
-    etc: '0x500910C4c42F1F2eeAF7E36d0c6f41e0F8858d5f', // Public key, not xpub
-    ada: [
+    [asNetworkSymbol('etc')]: '0x500910C4c42F1F2eeAF7E36d0c6f41e0F8858d5f', // Public key, not xpub
+    [asNetworkSymbol('ada')]: [
         {
             title: 'No tokens',
             address:
@@ -55,16 +60,16 @@ const devXpubs: Partial<Record<NetworkSymbol, string | DevXpub[]>> = {
                 '0c8b8b13536f2e46ad2cf696dc6849e435e2da680ec9fbf00b346eed093e1b26b8584f456117cda444289858548456f3d174e3659bd8fea8fdaffe8d517dc2ce',
         },
     ],
-    txrp: 'rJX2KwzaLJDyFhhtXKi3htaLfaUH2tptEX',
-    xrp: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
-    sol: [
+    [asNetworkSymbol('txrp')]: 'rJX2KwzaLJDyFhhtXKi3htaLfaUH2tptEX',
+    [asNetworkSymbol('xrp')]: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
+    [asNetworkSymbol('sol')]: [
         { title: 'tokens', address: 'J3Zxo9RQzwdm176Qt1FZ84HCha5ftMhs8QHEAfFsn6BX' },
         { title: 'has staking', address: '3YY83cYm9BvAJP8gBwMc15t7YLne4R6cadiv2oDdaK7j' },
     ],
-    op: '0xeF3aA93917616a2B5CA152D6B7Ddd797896c6303',
-    arb: '0xeF3aA93917616a2B5CA152D6B7Ddd797896c6303',
-    base: '0xeF3aA93917616a2B5CA152D6B7Ddd797896c6303',
-    pol: '0xeF3aA93917616a2B5CA152D6B7Ddd797896c6303',
+    [asNetworkSymbol('op')]: '0xeF3aA93917616a2B5CA152D6B7Ddd797896c6303',
+    [asNetworkSymbol('arb')]: '0xeF3aA93917616a2B5CA152D6B7Ddd797896c6303',
+    [asNetworkSymbol('base')]: '0xeF3aA93917616a2B5CA152D6B7Ddd797896c6303',
+    [asNetworkSymbol('pol')]: '0xeF3aA93917616a2B5CA152D6B7Ddd797896c6303',
 };
 
 type DevXpub = {

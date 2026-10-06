@@ -1,6 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Rate, type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
@@ -19,8 +19,10 @@ import {
 // Mock crypto IDs for testing
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
 const ETHEREUM_CRYPTO_ID = 'ethereum' as CryptoId;
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
-const createMockRate = (rate: number, symbol: NetworkSymbol = 'btc'): Rate => ({
+const createMockRate = (rate: number, symbol: NetworkSymbol = btcSymbol): Rate => ({
     rate,
     lastTickerTimestamp: 1000000 as Timestamp,
     lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
@@ -33,7 +35,7 @@ const createMockRate = (rate: number, symbol: NetworkSymbol = 'btc'): Rate => ({
 
 const getPreloadedState = () => {
     const btcRate = createMockRate(50000);
-    const fiatRateKey = getFiatRateKey('btc', 'usd');
+    const fiatRateKey = getFiatRateKey(btcSymbol, 'usd');
 
     return createTestStateWithWalletSettings({
         fiat: {
@@ -111,8 +113,8 @@ describe('useTradingFiatValues', () => {
         });
 
         it('should calculate fiat value for Ethereum', () => {
-            const ethRate = createMockRate(3000, 'eth');
-            const fiatRateKey = getFiatRateKey('eth', 'eur');
+            const ethRate = createMockRate(3000, ethSymbol);
+            const fiatRateKey = getFiatRateKey(ethSymbol, 'eur');
 
             const preloadedState = createTestStateWithWalletSettings({
                 settings: {

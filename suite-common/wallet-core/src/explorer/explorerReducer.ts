@@ -1,7 +1,11 @@
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+} from '@suite-common/redux-utils';
 import {
     type Explorer,
-    type NetworkSymbol,
     getParsedExplorerUrls,
     networksCollection,
 } from '@suite-common/wallet-config';
@@ -14,13 +18,13 @@ export type ExplorerItem = {
     custom?: Explorer;
 };
 
-export type ExplorerConfig = Record<NetworkSymbol, ExplorerItem>;
+export type ExplorerConfig = Record<LegacyNetworkSymbol, ExplorerItem>;
 export type ExplorerState = { wallet: { explorer: ExplorerConfig } };
 
 const initialStatePredefined: Partial<ExplorerConfig> = {};
 
 export const explorerInitialState: ExplorerConfig = networksCollection.reduce((state, network) => {
-    state[network.symbol] = {
+    state[network.symbol as LegacyNetworkSymbol] = {
         default: getParsedExplorerUrls(network.explorer),
         custom: undefined,
     };
@@ -38,19 +42,24 @@ const normalizeExplorer = (explorer: Explorer) => {
     return explorer;
 };
 
+export type ExplorerReducerDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadExplorer'>;
+
 export const prepareExplorerReducer = createReducerWithExtraDeps(
     explorerInitialState,
-    (builder, extra) => {
+    (builder, extra: ExplorerReducerDeps) => {
         builder
             .addCase(explorerActions.setExplorer, (state, action) => {
                 const { symbol, explorer } = action.payload;
-                const defaultExplorer = state[symbol].default;
+                const defaultExplorer = state[symbol as LegacyNetworkSymbol].default;
                 const normalizedExplorer = explorer && normalizeExplorer(explorer);
                 const isDefaultExplorer = typedObjectKeys(defaultExplorer).every(
                     key => normalizedExplorer?.[key] === defaultExplorer[key],
                 );
 
-                state[symbol].custom = !isDefaultExplorer ? normalizedExplorer : undefined;
+                state[symbol as LegacyNetworkSymbol].custom = !isDefaultExplorer
+                    ? normalizedExplorer
+                    : undefined;
             })
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadExplorer);
     },

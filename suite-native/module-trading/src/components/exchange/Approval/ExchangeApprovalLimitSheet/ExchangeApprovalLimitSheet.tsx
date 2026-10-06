@@ -2,7 +2,7 @@ import { memo, useEffect } from 'react';
 
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
-import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
+import { cryptoIdToNetworkSymbolAndContractAddress, useTradingUtils } from '@suite-common/trading';
 import { BottomSheetModal, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -27,6 +27,7 @@ export const ExchangeApprovalLimitSheet = memo(
         selectedApprovalType,
         quote,
     }: ExchangeApprovalLimitSheetProps) => {
+        const { cryptoIdToCoinSymbol, cryptoIdToCoinName } = useTradingUtils();
         const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
         useEffect(
@@ -65,6 +66,11 @@ export const ExchangeApprovalLimitSheet = memo(
                         }
                         symbol={symbol}
                         contractAddress={contractAddress}
+                        tokenSymbol={
+                            quote.send
+                                ? cryptoIdToCoinSymbol(quote.send) || cryptoIdToCoinName(quote.send)
+                                : undefined
+                        }
                         isChecked={selectedApprovalType === 'MINIMAL'}
                         onChange={() => onApprovalTypeSelect('MINIMAL')}
                     />
@@ -75,6 +81,11 @@ export const ExchangeApprovalLimitSheet = memo(
                         }
                         symbol={symbol}
                         contractAddress={contractAddress}
+                        tokenSymbol={
+                            quote.send
+                                ? cryptoIdToCoinSymbol(quote.send) || cryptoIdToCoinName(quote.send)
+                                : undefined
+                        }
                         isChecked={selectedApprovalType === 'INFINITE'}
                         onChange={() => onApprovalTypeSelect('INFINITE')}
                     >

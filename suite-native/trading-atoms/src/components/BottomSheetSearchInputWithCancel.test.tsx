@@ -17,8 +17,8 @@ jest.mock('@trezor/react-utils', () => {
 });
 
 describe('SearchInputWithCancel', () => {
-    const renderSearchInputWithCancel = (props: Partial<BottomSheetSearchInputProps>) =>
-        renderWithBasicProvider(
+    const renderSearchInputWithCancel = async (props: Partial<BottomSheetSearchInputProps>) =>
+        await renderWithBasicProvider(
             <BottomSheetSearchInputWithCancel onChange={jest.fn()} {...props} />,
         );
 
@@ -28,48 +28,48 @@ describe('SearchInputWithCancel', () => {
         expect(queryByText(getTranslation('generic.buttons.cancel'))).toBeNull();
     });
 
-    it('should call onChange callback when text is typed', () => {
+    it('should call onChange callback when text is typed', async () => {
         const changeMock = jest.fn();
-        const { getByPlaceholderText } = renderSearchInputWithCancel({
+        const { getByPlaceholderText } = await renderSearchInputWithCancel({
             onChange: changeMock,
         });
 
-        fireEvent.changeText(getByPlaceholderText('Search'), 'test');
+        await fireEvent.changeText(getByPlaceholderText('Search'), 'test');
 
         expect(changeMock).toHaveBeenCalledTimes(1);
     });
 
-    it('should call onFocus and display "Cancel" button on input focus', () => {
+    it('should call onFocus and display "Cancel" button on input focus', async () => {
         const focusMock = jest.fn();
-        const { getByText, getByPlaceholderText } = renderSearchInputWithCancel({
+        const { getByText, getByPlaceholderText } = await renderSearchInputWithCancel({
             onFocus: focusMock,
         });
 
-        fireEvent(getByPlaceholderText('Search'), 'focus');
+        await fireEvent(getByPlaceholderText('Search'), 'focus');
 
         expect(getByText(getTranslation('generic.buttons.cancel'))).toBeTruthy();
         expect(focusMock).toHaveBeenCalledTimes(1);
     });
 
-    it('should call onChange with empty value on unmount', () => {
+    it('should call onChange with empty value on unmount', async () => {
         const onChangeMock = jest.fn();
-        const { unmount } = renderSearchInputWithCancel({
+        const { unmount } = await renderSearchInputWithCancel({
             onChange: onChangeMock,
         });
 
-        unmount();
+        await unmount();
 
         expect(onChangeMock).toHaveBeenCalledWith('');
     });
 
-    it('should call onChange with empty value when Cancel is pressed', () => {
+    it('should call onChange with empty value when Cancel is pressed', async () => {
         const onChangeMock = jest.fn();
-        const { getByPlaceholderText, getByText } = renderSearchInputWithCancel({
+        const { getByPlaceholderText, getByText } = await renderSearchInputWithCancel({
             onChange: onChangeMock,
         });
 
-        fireEvent(getByPlaceholderText('Search'), 'focus');
-        fireEvent.press(getByText(getTranslation('generic.buttons.cancel')));
+        await fireEvent(getByPlaceholderText('Search'), 'focus');
+        await fireEvent.press(getByText(getTranslation('generic.buttons.cancel')));
 
         expect(onChangeMock).toHaveBeenCalledWith('');
     });

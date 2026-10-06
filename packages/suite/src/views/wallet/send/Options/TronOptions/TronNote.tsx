@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     Card,
@@ -15,6 +14,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { InfoIcon, XIcon } from '@trezor/icons';
+import { TRON_NOTE_MAX_BYTES } from '@trezor/network-tron/constants';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -39,7 +39,7 @@ export const TronNote = ({ close }: TronNoteProps) => {
 
     const value = watch(inputName);
     const byteSize = Buffer.from(value || '', 'utf8').length;
-    const isTooLong = byteSize > formInputsMaxLength.tronNote;
+    const isTooLong = byteSize > TRON_NOTE_MAX_BYTES;
     const error = isTooLong ? translationString('TR_TRON_NOTE_TOO_LONG') : undefined;
 
     useEffect(() => {
@@ -93,7 +93,7 @@ export const TronNote = ({ close }: TronNoteProps) => {
                     rows={3}
                     characterCount={{
                         current: byteSize,
-                        max: formInputsMaxLength.tronNote,
+                        max: TRON_NOTE_MAX_BYTES,
                     }}
                     {...inputField}
                 />

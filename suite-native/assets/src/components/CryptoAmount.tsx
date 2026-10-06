@@ -1,9 +1,8 @@
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { CryptoAmountFormatter } from '@suite-native/formatters';
+import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
 
 import { selectAssetCryptoValue } from '../assetsSelectors';
 import { type AssetsRootState } from '../types';
@@ -16,11 +15,9 @@ export const CryptoAmount = memo(({ symbol }: CryptoAmountProps) => {
     );
 
     return (
-        <CryptoAmountFormatter
+        <CompactCryptoAmountFormatter
             value={cryptoValue}
             symbol={symbol}
-            // Every asset crypto amount is rounded to 8 decimals to prevent UI overflow.
-            decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
             testID={`@assets/cryptoAmount/${symbol}`}
         />
     );

@@ -38,6 +38,7 @@ export const CollapsibleToggle = ({
             aria-disabled={disabled}
             aria-expanded={isOpen}
             aria-controls={contentId}
+            data-component="CollapsibleToggle"
             data-testid={dataTestId}
             onClick={clickHandler}
             $disabled={disabled}

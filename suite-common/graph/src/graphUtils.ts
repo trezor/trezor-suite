@@ -8,6 +8,7 @@ import {
     subHours,
 } from 'date-fns';
 
+import { type TimestampedRates } from '@suite-common/wallet-types';
 import {
     AMOUNT_UNIT_ZERO,
     asAmountUnit,
@@ -66,6 +67,39 @@ export const getTimestampsInTimeFrame = (
     const datesInRangeUnixTime = A.map(datesInRange, date => getUnixTime(date));
 
     return datesInRangeUnixTime as number[];
+};
+
+// Blockbook drops tickers it has no rate for, so the response cannot be zipped with the request
+// by array position — it can be shorter and out of order, and each ticker carries its own
+// authoritative `ts` (the nearest stored rate, e.g. tokens only have daily rates while native
+// coins have hourly ones). Rates for all coins must also end up on the SAME timestamp grid,
+// because merging accounts sums points with equal timestamps — keying points by the ticker `ts`
+// would interleave per-coin values instead of summing them. Each requested timestamp therefore
+// gets the rates of the nearest returned ticker and keeps the requested time, deduplicated
+// because the frame end is requested twice whenever the time frame length aligns with the point
+// step, which used to double the last merged point.
+export const mapTickersToFiatRatesItems = (
+    tickers: TimestampedRates[],
+    timestamps: number[],
+): FiatRatesItem[] => {
+    const sortedTickers = tickers.toSorted((a, b) => a.ts - b.ts);
+    if (A.isEmpty(sortedTickers)) return [];
+
+    const uniqueTimestamps = [...new Set(timestamps)].toSorted((a, b) => a - b);
+
+    // Both lists are ascending, so the nearest ticker index never moves backwards.
+    let tickerIndex = 0;
+
+    return uniqueTimestamps.map(timestamp => {
+        while (tickerIndex + 1 < sortedTickers.length) {
+            const currentDistance = Math.abs(sortedTickers[tickerIndex]!.ts - timestamp);
+            const nextDistance = Math.abs(sortedTickers[tickerIndex + 1]!.ts - timestamp);
+            if (nextDistance > currentDistance) break;
+            tickerIndex += 1;
+        }
+
+        return { time: timestamp, rates: sortedTickers[tickerIndex]!.rates };
+    });
 };
 
 type MapCryptoBalanceMovementToFixedTimeFrameParams = {

@@ -1,4 +1,8 @@
 {
     "ignore-patterns": ["libDev", "lib"],
-    "ignores": ["@trezor/blockchain-link"]
+    "ignores": [
+        "@trezor/blockchain-link",
+        "// referenced as a loader string in webpack/dev.js, which depcheck cannot see",
+        "worker-loader"
+    ]
 }

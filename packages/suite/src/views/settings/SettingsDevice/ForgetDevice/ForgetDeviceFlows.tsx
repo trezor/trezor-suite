@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
-import { goto } from '@suite/router';
-
-import { unpairCurrentBondThunk } from 'src/actions/bluetooth/bluetoothEraseBondsThunk';
+import { unpairCurrentBondThunk } from '@suite/bluetooth';
+import { gotoThunk } from '@suite/router';
 
 import { ConfirmationModal } from './ConfirmationModal';
 import { OsAndTrezorCleanupModal } from './OsAndTrezorCleanupModal';
@@ -25,7 +24,7 @@ export const ImmediateForgetFlow = ({ onCancel }: ForgetFlowProps) => {
         <ConfirmationModal
             onConfirm={() => {
                 forgetDevice();
-                dispatch(goto({ routeName: 'suite-index' }));
+                dispatch(gotoThunk({ routeName: 'suite-index' }));
                 onCancel();
             }}
             onCancel={onCancel}
@@ -59,7 +58,7 @@ export const ConnectedCableForgetFlow = ({
                         deviceId,
                         toastType: 'device-forgotten',
                     });
-                    dispatch(goto({ routeName: 'suite-index' }));
+                    dispatch(gotoThunk({ routeName: 'suite-index' }));
                     onCancel();
                 }}
             />
@@ -110,7 +109,7 @@ export const ThpBtConnectedForgetFlow = ({ onCancel }: ForgetFlowProps) => {
                         skipDisconnect: true,
                         isOsUnpairingFinished: true,
                     });
-                    dispatch(goto({ routeName: 'suite-index' }));
+                    dispatch(gotoThunk({ routeName: 'suite-index' }));
                     onCancel();
                 }}
             />
@@ -166,7 +165,7 @@ export const ThpCableConnectedForgetFlow = ({ onCancel }: ForgetFlowProps) => {
                     isOsUnpairingFinished: true,
                     skipDisconnect: true,
                 });
-                dispatch(goto({ routeName: 'suite-index' }));
+                dispatch(gotoThunk({ routeName: 'suite-index' }));
                 onCancel();
             }}
         />
@@ -201,7 +200,7 @@ export const ThpBtKnownForgetFlow = ({ onCancel }: ForgetFlowProps) => {
                     toastType: 'device-forgotten',
                     isOsUnpairingFinished: true,
                 });
-                dispatch(goto({ routeName: 'suite-index' }));
+                dispatch(gotoThunk({ routeName: 'suite-index' }));
                 onCancel();
             }}
         />

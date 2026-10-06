@@ -2,13 +2,15 @@ import { useCallback } from 'react';
 
 import { setConnectionModal, useDevice } from '@suite/device';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 
 import { useModal } from 'src/components/suite/asset-picker/hooks';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const useTradingAssetPickerModal = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
     const { open, openModal: openAssetPicker, closeModal, toggleModal } = useModal();
     const hasEnabledNetworks = useSelector(selectIsAnyNetworkEnabled);

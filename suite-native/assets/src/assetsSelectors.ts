@@ -5,9 +5,11 @@ import {
     calculateAssetsPercentage,
 } from '@suite-common/assets';
 import { selectIsDeviceAuthorized } from '@suite-common/device';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    getAccountCryptoBalanceWithStaking,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectHasRunningDiscovery,
@@ -16,7 +18,6 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
-import { getAccountCryptoBalanceWithStaking } from '@suite-native/staking';
 import { BigNumber } from '@trezor/utils';
 
 import { type AssetFiatPercentage, type AssetType, type AssetsRootState } from './types';
@@ -24,12 +25,12 @@ import { type AssetFiatPercentage, type AssetType, type AssetsRootState } from '
 const createMemoizedSelector = createWeakMapSelector.withTypes<AssetsRootState>();
 
 export const selectDeviceNetworkSymbolsWithAssets = createMemoizedSelector(
-    [selectVisibleDeviceAccounts],
-    accounts => {
+    [selectVisibleDeviceAccounts, selectSupportedNetworkSymbols],
+    (accounts, supportedNetworks) => {
         const networkSymbols = new Set(accounts.map(account => account.symbol));
 
         return returnStableArrayIfEmpty(
-            networkSymbolCollection.filter(networkSymbol => networkSymbols.has(networkSymbol)),
+            supportedNetworks.filter(networkSymbol => networkSymbols.has(networkSymbol)),
         );
     },
     {

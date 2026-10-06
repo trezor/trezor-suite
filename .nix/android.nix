@@ -2,14 +2,17 @@
 
 let
   androidComposition = pkgs.androidenv.composeAndroidPackages {
-    platformVersions = [ "31" "34" "35" "36" ];
-    buildToolsVersions = [ "31.0.0" "34.0.0" "35.0.0" "36.0.0" ];
+    # 34 is the Pixel_6_API_34 emulator image; 36 is RN/Expo compileSdk.
+    platformVersions = [ "34" "36" ];
+    # 36 is RN's default; 35 is still requested by native modules (e.g. quick-crypto).
+    buildToolsVersions = [ "35.0.0" "36.0.0" ];
     includeEmulator = true;
     includeSystemImages = true;
     systemImageTypes = [ "google_apis" ];
     abiVersions = [ "x86_64" ];
     includeNDK = true;
-    ndkVersions = [ "27.1.12297006" "27.0.12077973" ];
+    # All Android modules inherit the React Native NDK version.
+    ndkVersions = [ "27.1.12297006" ];
     cmakeVersions = [ "3.22.1" ];
   };
 in
@@ -19,7 +22,7 @@ rec {
   extraPackages = [ pkgs.nix-ld pkgs.aapt ];
 
   nixLdHook = ''
-    export NIX_LD=$(nix eval --raw nixpkgs#stdenv.cc.bintools.dynamicLinker)
+    export NIX_LD="${pkgs.stdenv.cc.bintools.dynamicLinker}"
     export NIX_LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [
       pkgs.stdenv.cc.cc
       pkgs.gcc.cc.lib
@@ -73,9 +76,5 @@ rec {
 
       echo "✓ Created Android emulator device: Pixel_6_API_34"
     fi
-
-    echo "- Java $(java -version 2>&1 | head -n1)"
-    command -v adb >/dev/null 2>&1 && echo "- adb $(adb version | head -n1)" || echo "- adb not found (install SDK packages)"
-    command -v emulator >/dev/null 2>&1 && echo "- emulator $(emulator -version | head -n1)" || echo "- emulator not found"
   '';
 }

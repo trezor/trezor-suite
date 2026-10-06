@@ -7,12 +7,14 @@ import {
     connectPopupActions,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Icon, Row, Text } from '@trezor/components';
 import { CaretCircleDownIcon, PlugsIcon, WalletConnectIcon } from '@trezor/icons';
 
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { SuiteBanners } from './banners';
 
@@ -31,7 +33,7 @@ interface ConnectAppBarProps {
 
 export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
     const connectPopupCall = useSelector(selectConnectPopupCall);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const device = useSelector(selectSelectedDevice);
 
     if (!connectPopupCall || connectPopupCall.state === 'finished') return null;

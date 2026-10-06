@@ -1,13 +1,13 @@
 import { type BuyProviderInfo, type BuyTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
-import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
-import { XIcon } from '@trezor/icons';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { Button, Illustration } from '@trezor/components';
 
-import { useDispatch } from 'src/hooks/suite';
-import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderInfo';
-import { TradingDetailSupportBanner } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSupportBanner';
+import { TradingDetailTerminalDetails } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalDetails';
+import { TradingDetailTerminalState } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalState';
 
 type TradingBuyDetailPaymentFailedProps = {
     trade: BuyTrade;
@@ -18,36 +18,22 @@ export const TradingBuyDetailPaymentFailed = ({
     trade,
     provider,
 }: TradingBuyDetailPaymentFailedProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
-    const handleClick = () => dispatch(goto({ routeName: 'wallet-trading-buy' }));
+    const handleClick = () => dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));
 
     return (
-        <Column gap={24} padding={{ top: 12, bottom: 4 }}>
-            <IconCircle icon={XIcon} intent="critical" size={96} />
-            <Column>
-                <H3 data-testid="@trading/transaction/detail/status">
-                    <Translation id="TR_BUY_DETAIL_ERROR_TITLE" />
-                </H3>
-                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                    <Translation id="TR_BUY_DETAIL_ERROR_TEXT" />
-                </Paragraph>
-            </Column>
-            <Button onClick={handleClick} intent="neutral" priority="secondary">
-                <Translation id="TR_BUY_DETAIL_ERROR_BUTTON" />
-            </Button>
-            <Card>
-                <Column gap={24}>
-                    {provider && (
-                        <TradingDetailProviderInfo
-                            orderId={trade.paymentId}
-                            provider={provider}
-                            trade={trade}
-                        />
-                    )}
-                    <TradingDetailSupportBanner provider={provider} trade={trade} />
-                </Column>
-            </Card>
-        </Column>
+        <TradingDetailTerminalState
+            artwork={<Illustration name="tradeFailure" intent="critical" width={120} />}
+            title={<Translation id="TR_BUY_DETAIL_FAILED_TITLE" />}
+            description={<Translation id="TR_BUY_DETAIL_FAILED_TEXT" />}
+            action={
+                <Button onClick={handleClick} size="large">
+                    <Translation id="TR_BUY_DETAIL_FAILED_BUTTON" />
+                </Button>
+            }
+        >
+            <TradingDetailTerminalDetails provider={provider} trade={trade} />
+        </TradingDetailTerminalState>
     );
 };

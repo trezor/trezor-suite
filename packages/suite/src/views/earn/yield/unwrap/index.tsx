@@ -1,24 +1,27 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { goto } from '@suite/router';
-import { WRAPPED_NATIVE } from '@suite-common/wallet-config';
-import { isWrappedNativeToken } from '@suite-common/wallet-utils';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { getWrappedNativeToken, isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
 import { WrappedNativePageHeader } from 'src/components/earn/yield/common/WrappedNativePageHeader';
 import { UnwrapNativeToken } from 'src/components/earn/yield/unwrap/UnwrapNativeToken';
-import { useDispatch, useLayout } from 'src/hooks/suite';
+import { useLayout } from 'src/hooks/suite';
 
 import { EarnLayoutFallback } from '../../EarnLayoutFallback';
 
 export const EarnUnwrap = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { account, routeParams } = useEarnRouteAccount();
-    const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
+    const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
+    // Held here rather than in UnwrapNativeToken because useLayout renders the header outside it.
+    const [isFlowComplete, setIsFlowComplete] = useState(false);
 
     useEffect(() => {
         if (!routeParams) {
-            dispatch(goto({ routeName: 'suite-earn' }));
+            dispatch(gotoThunk({ routeName: 'suite-earn' }));
         }
     }, [dispatch, routeParams]);
 
@@ -26,8 +29,10 @@ export const EarnUnwrap = () => {
         'Earn',
         <WrappedNativePageHeader
             titleId="TR_UNWRAP_NATIVE_TOKEN"
+            flow="unwrap"
             account={account}
             contractAddress={wrappedNative?.address}
+            isFlowComplete={isFlowComplete}
         />,
     );
 
@@ -52,6 +57,7 @@ export const EarnUnwrap = () => {
             tokenDecimals={wrappedNative.decimals}
             tokenBalance={wrappedToken?.balance ?? '0'}
             tokenContractAddress={wrappedNative.address}
+            onFlowCompleteChange={setIsFlowComplete}
         />
     );
 };

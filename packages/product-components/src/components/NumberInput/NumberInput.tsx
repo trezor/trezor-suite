@@ -1,4 +1,5 @@
 import {
+    type CSSProperties,
     type ClipboardEvent,
     type FormEvent,
     type KeyboardEvent,
@@ -15,10 +16,8 @@ import {
 } from 'react-hook-form';
 
 import { type Locale } from '@suite-common/suite-types';
-// todo: scope packages should not import from scope suite-common
-import { localizeNumber } from '@suite-common/wallet-utils/src/localizeNumberUtils';
 import { Input, type InputProps } from '@trezor/components';
-import { BigNumber, getLocaleSeparators } from '@trezor/utils';
+import { BigNumber, getLocaleSeparators, localizeNumber } from '@trezor/utils';
 
 const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]+$/.test(value);
 const hasLeadingZeroes = (value: string) => /^0+(\d+\.\d*|\d+)$/.test(value);
@@ -70,13 +69,13 @@ const DECIMAL_SEPARATORS = [',', '.'];
 
 export type NumberInputProps<TFieldValues extends FieldValues> = Omit<
     InputProps,
-    'defaultValue' | 'name' | 'onChange'
+    'defaultValue' | 'name' | 'onChange' | 'style'
 > &
     Omit<UseControllerProps<TFieldValues>, 'rules'> & {
-        decimalScale?: number;
         onChange?: (value: string) => void;
         rules?: UseControllerProps['rules'];
         locale: Locale;
+        style?: CSSProperties | ((displayValue: string) => CSSProperties);
     };
 
 export const NumberInput = <TFieldValues extends FieldValues>({
@@ -86,6 +85,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
     onChange: onChangeCallback,
     defaultValue,
     locale,
+    style,
     ...props
 }: NumberInputProps<TFieldValues>) => {
     const {
@@ -483,6 +483,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
                 inputRef.current = e;
             }}
             value={displayValue}
+            style={typeof style === 'function' ? style(displayValue) : style}
             inputMode="decimal"
             onSelect={handleSelect}
             onKeyDown={handleKeyDown}

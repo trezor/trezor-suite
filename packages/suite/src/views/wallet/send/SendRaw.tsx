@@ -1,9 +1,10 @@
 import { useForm, useWatch } from 'react-hook-form';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     pushSendFormRawTransactionThunk,
     selectIsMevProtectionEnabled,
@@ -14,7 +15,7 @@ import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/co
 import { XIcon } from '@trezor/icons';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 const INPUT_NAME = 'rawTx';
@@ -35,9 +36,8 @@ export const SendRaw = ({ account }: SendRawProps) => {
             [INPUT_NAME]: '',
         },
     });
-    const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const inputValue = useWatch({ control, name: INPUT_NAME });
     const error = errors[INPUT_NAME];
     const hasError = !!error;

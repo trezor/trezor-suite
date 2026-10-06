@@ -20,6 +20,7 @@ export type ModalBackdropProps = {
     padding?: Padding;
     zIndex?: ZIndexValues;
     opaque?: boolean;
+    isContentScrollable?: boolean;
     'data-testid'?: string;
 };
 
@@ -47,6 +48,7 @@ export const ModalBackdrop = ({
     padding = 8,
     zIndex = zIndices.modal,
     opaque = false,
+    isContentScrollable = false,
     'data-testid': dataTest,
 }: ModalBackdropProps) => {
     const modalTarget = useModalTarget();
@@ -55,13 +57,19 @@ export const ModalBackdrop = ({
         // eslint-disable-next-line jsx-a11y/no-autofocus
         <FocusLock autoFocus={false}>
             <Box position={{ type: 'absolute', inset: 0 }} zIndex={zIndex}>
-                <Backdrop onMouseDown={onClick} $opaque={opaque} data-testid={dataTest}>
+                <Backdrop
+                    onMouseDown={onClick}
+                    $opaque={opaque}
+                    data-component="ModalBackdrop"
+                    data-testid={dataTest}
+                >
                     <Box padding={padding} height="100%">
                         <Column
                             alignItems={mapAlignmentToAlignItems(alignment)}
                             justifyContent={mapAlignmentToJustifyContent(alignment)}
                             gap={16}
                             height="100%"
+                            overflow={isContentScrollable ? 'hidden auto' : undefined}
                         >
                             <InnerWrapper onMouseDown={e => e.stopPropagation()}>
                                 {children}

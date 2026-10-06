@@ -1,19 +1,19 @@
 import { useRef, useState } from 'react';
 
 import { useDevice } from '@suite/device';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import { Checkbox, Input } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 export const PingDevice = () => {
     const { device, isLocked } = useDevice();
     const [isLoading, setIsLoading] = useState(false);
     const [buttonProtection, setButtonProtection] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const isDeviceLocked = isLocked();
 

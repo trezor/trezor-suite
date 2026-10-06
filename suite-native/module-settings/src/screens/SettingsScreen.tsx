@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { selectHasOnlyEmptyPortfolioTracker } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
-import { selectAreGetTrezorPromoBannersDisabled } from '@suite-native/banner-flags';
+import { selectAreGetTrezorPromoBannersDisabled } from '@suite-native/banners';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen } from '@suite-native/navigation';
 

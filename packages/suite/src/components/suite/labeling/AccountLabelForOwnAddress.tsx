@@ -1,5 +1,6 @@
 import { Address } from '@suite/address';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { findAccountsByAddress } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -13,7 +14,7 @@ type AddressLabelingProps = {
 };
 
 export const AccountLabelForOwnAddress = ({ symbol, address, knownOnly }: AddressLabelingProps) => {
-    const accounts = useSelector(state => state.wallet.accounts);
+    const accounts = useSelector(selectAccounts);
 
     if (!address || !symbol) {
         return null;

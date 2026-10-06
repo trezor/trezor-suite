@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     phishingActions,
     selectDustPhishingIsEnabled,
@@ -10,10 +12,10 @@ import {
 import { Button, Input, Row, Switch, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const DustPhishing = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const dustPhishingIsEnabled = useSelector(selectDustPhishingIsEnabled);
     const dustPhishingThreshold = useSelector(selectDustPhishingThreshold);

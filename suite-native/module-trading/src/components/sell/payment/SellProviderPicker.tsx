@@ -11,10 +11,10 @@ import {
     selectTradingSellIsLoading,
     selectTradingSellProviders,
 } from '@suite-common/trading';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { AnimatedBox } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
+import { OverviewRow, OverviewValueSkeleton, ProviderDisplay } from '@suite-native/trading-atoms';
 import {
     type TradingRootState,
     selectSellQuotesByPaymentMethod,
@@ -47,23 +47,18 @@ const SellProviderPickerRight = ({ isLoading, selectedValue }: SellProviderPicke
     const { companyName, logo } = provider;
 
     return (
-        <HStack>
-            <ProviderLogo logo={logo} />
-            <Text
-                color="contentPrimary"
-                variant="body-sm"
-                accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
-                testID={PROVIDER_PICKER_TEST_ID + '/value'}
-            >
-                {companyName}
-            </Text>
-        </HStack>
+        <ProviderDisplay
+            accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
+            logo={logo}
+            providerName={companyName}
+            testID={PROVIDER_PICKER_TEST_ID + '/value'}
+        />
     );
 };
 
 export const SellProviderPicker = () => {
     const { translate } = useTranslate();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const form = useSellFormContext();
     const providers = useSelector(selectTradingSellProviders);
     const isLoading = useSelector(selectTradingSellIsLoading);

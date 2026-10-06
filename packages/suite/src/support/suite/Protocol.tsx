@@ -1,18 +1,20 @@
 import { useCallback, useEffect } from 'react';
 
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { selectURLSearchParams } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isDesktop, isWeb } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as protocolActions from 'src/actions/suite/protocolActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const Protocol = () => {
-    const dispatch = useDispatch();
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
 
-    const handleProtocolRequest = useCallback(
+    const handleProtocolRequestThunk = useCallback(
         (uri: string) => {
-            dispatch(protocolActions.handleProtocolRequest(uri));
+            dispatch(protocolActions.handleProtocolRequestThunk(uri));
         },
         [dispatch],
     );
@@ -23,10 +25,10 @@ const Protocol = () => {
         if (searchParams) {
             const uri = searchParams.get('uri');
             if (uri) {
-                handleProtocolRequest(uri);
+                handleProtocolRequestThunk(uri);
             }
         }
-    }, [handleProtocolRequest, searchParams]);
+    }, [handleProtocolRequestThunk, searchParams]);
 
     useEffect(() => {
         processSearch();
@@ -44,11 +46,11 @@ const Protocol = () => {
         }
 
         if (isDesktop()) {
-            desktopApi.on('protocol/open', handleProtocolRequest);
+            desktopApi.on('protocol/open', handleProtocolRequestThunk);
 
             return () => desktopApi.removeAllListeners('protocol/open');
         }
-    }, [handleProtocolRequest]);
+    }, [desktopApi, handleProtocolRequestThunk]);
 
     return null;
 };

@@ -1,10 +1,14 @@
 import { Translation, type TranslationKey } from '@suite/intl';
-import { SettingsAnchor, goto } from '@suite/router';
-import { selectTorState } from '@suite/tor';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
+import { selectIsTorEnabled } from '@suite/tor';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
 import { Banner, Column } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 interface TradingUtilsTorWarningProps {
     tradingType: TradingType;
@@ -33,13 +37,20 @@ export const TradingUtilsTorWarning = ({
     noOffer,
     showButton = false,
 }: TradingUtilsTorWarningProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
-    const { isTorEnabled } = useSelector(selectTorState);
-    if (!isTorEnabled) return null;
+    const isTorEnabled = useSelector(selectIsTorEnabled);
+    const {
+        form: { state },
+    } = useTradingFormContext();
+    const quote = useTradingSelectedQuote(tradingType);
+
+    if (!isTorEnabled || quote || state.isFormLoading) {
+        return null;
+    }
 
     const handleGoToSettings = () => {
-        dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.Tor }));
+        dispatch(gotoThunk({ routeName: 'settings-index', anchor: SettingsAnchor.Tor }));
     };
 
     const translationId = getTorWarningTranslationId(tradingType, noOffer);

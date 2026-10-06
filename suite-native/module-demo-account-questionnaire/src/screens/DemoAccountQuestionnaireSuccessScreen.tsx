@@ -4,7 +4,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import {
     type DemoAccountQuestionnaireLinkKey,
     events,
-    selectNativeAnalyticsDep,
+    injectNativeAnalytics,
 } from '@suite-native/analytics';
 import { Button, PictogramTitleHeader, TextDivider, VStack } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
@@ -61,7 +61,7 @@ type NavigationProp = StackNavigationProps<
 export const DemoAccountQuestionnaireSuccessScreen = () => {
     const navigation = useNavigation<NavigationProp>();
     const openLink = useOpenLink();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const handleOpenUrl = (recommendation: Recommendation) => {
         analytics.report(
             {

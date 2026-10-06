@@ -2,9 +2,10 @@ import { useMemo, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
 import { selectSelectedAccount } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     DefinitionType,
@@ -26,7 +27,7 @@ import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useComposedLevelsPlaceholder } from 'src/hooks/wallet/form/useComposedLevelsPlaceholder';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 
@@ -48,10 +49,9 @@ type StellarManageTokenModalProps =
       };
 
 export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { mode, symbol, contractAddress, onCancel } = props;
     const tokenBalance = mode === 'deactivate' ? props.tokenBalance : undefined;
-    const dispatch = useDispatch();
     const selectedAccount = useSelector(selectSelectedAccount);
     const account = props.account ?? selectedAccount;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, symbol));

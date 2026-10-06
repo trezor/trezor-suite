@@ -29,20 +29,20 @@ const deviceWithV2RegistrationRequest = mockSuiteDevice(
 
 describe(createRegisterDevice.name, () => {
     it('registers device using challenge session and Connect signature', async () => {
+        const evoluSignRegistrationRequest = jest.fn(() =>
+            Promise.resolve(
+                ok({
+                    certificate_chain: ['device-cert', 'ca-cert'],
+                    signature: 'device-signature',
+                }),
+            ),
+        );
         const deps = createMockDeps<RegisterDeviceDeps>({
             prepareChallengeSessionFetch: () =>
                 Promise.resolve(ok({ sessionId: 'session-123', challenge: 'aa55' })),
             registerDeviceFetch: () =>
                 Promise.resolve(ok({ totalStorageSize: 5000, unspentStorageSize: 1200 })),
-            trezorConnect: {
-                evoluSignRegistrationRequest: () =>
-                    Promise.resolve(
-                        ok({
-                            certificate_chain: ['device-cert', 'ca-cert'],
-                            signature: 'device-signature',
-                        }),
-                    ),
-            },
+            getTrezorConnect: () => ({ evoluSignRegistrationRequest }),
             dispatch: jest.fn(),
         });
 
@@ -53,7 +53,7 @@ describe(createRegisterDevice.name, () => {
 
         expect(result).toEqual(ok());
         expect(deps.prepareChallengeSessionFetch).toHaveBeenCalledWith();
-        expect(deps.trezorConnect.evoluSignRegistrationRequest).toHaveBeenCalledWith({
+        expect(evoluSignRegistrationRequest).toHaveBeenCalledWith({
             challenge_from_server: 'aa55',
             size_to_acquire: DEFAULT_DEVICE_SIZE_QUOTA,
             proof_of_delegated_identity:
@@ -81,7 +81,7 @@ describe(createRegisterDevice.name, () => {
                 Promise.resolve(ok({ sessionId: 'session-123', challenge: 'aa55' })),
             registerDeviceFetch: () =>
                 Promise.resolve(ok({ totalStorageSize: 5000, unspentStorageSize: 1200 })),
-            trezorConnect: {
+            getTrezorConnect: () => ({
                 evoluSignRegistrationRequest: () =>
                     Promise.resolve(
                         ok({
@@ -90,7 +90,7 @@ describe(createRegisterDevice.name, () => {
                             rotation_index: 42,
                         }),
                     ),
-            },
+            }),
             dispatch: jest.fn(),
         });
 
@@ -113,7 +113,7 @@ describe(createRegisterDevice.name, () => {
                 Promise.resolve(ok({ sessionId: 'session-123', challenge: 'aa55' })),
             registerDeviceFetch: () =>
                 Promise.resolve(ok({ totalStorageSize: 5000, unspentStorageSize: 1200 })),
-            trezorConnect: {
+            getTrezorConnect: () => ({
                 evoluSignRegistrationRequest: () =>
                     Promise.resolve(
                         ok({
@@ -121,7 +121,7 @@ describe(createRegisterDevice.name, () => {
                             signature: 'device-signature',
                         }),
                     ),
-            },
+            }),
             dispatch: jest.fn(),
         });
 
@@ -143,9 +143,7 @@ describe(createRegisterDevice.name, () => {
             prepareChallengeSessionFetch: () =>
                 Promise.resolve(err({ type: 'HttpError', code: 500, message: 'Internal error' })),
             registerDeviceFetch: null,
-            trezorConnect: {
-                evoluSignRegistrationRequest: null,
-            },
+            getTrezorConnect: null,
             dispatch: jest.fn(),
         });
 
@@ -161,5 +159,6 @@ describe(createRegisterDevice.name, () => {
             }),
         );
         expect(deps.registerDeviceFetch).not.toHaveBeenCalled();
+        expect(deps.getTrezorConnect).not.toHaveBeenCalled();
     });
 });

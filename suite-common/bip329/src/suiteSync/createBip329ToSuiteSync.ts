@@ -3,16 +3,17 @@ import {
     type UpdateAddressLabelDep,
     type UpdateOutputLabelDep,
 } from '@suite-common/suite-sync-types';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { exhaustive, ok } from '@trezor/type-utils';
 
 export type ImportBip329ToSuiteSyncDep = {
     importBip329ToSuiteSync: ImportBip329;
 };
 
-export type ImportBip329ToSuiteSyncDeps = UpdateAddressLabelDep & UpdateOutputLabelDep;
+export type Bip329ToSuiteSyncDeps = UpdateAddressLabelDep & UpdateOutputLabelDep;
 
 export const createBip329ToSuiteSync =
-    (deps: ImportBip329ToSuiteSyncDeps): ImportBip329 =>
+    (deps: Bip329ToSuiteSyncDeps): ImportBip329 =>
     async ({ deviceStaticSessionId, accountDescriptor, bip329Labels }) => {
         for (const label of bip329Labels) {
             switch (label.type) {
@@ -27,7 +28,7 @@ export const createBip329ToSuiteSync =
                         txId,
                         txTargetId,
                         label: label.label ?? null,
-                        networkSymbol: 'btc',
+                        networkSymbol: asNetworkSymbol('btc'),
                         deviceStaticSessionId,
                         accountDescriptor,
                     });
@@ -43,7 +44,7 @@ export const createBip329ToSuiteSync =
                     const result = await deps.updateAddressLabel({
                         address: label.ref,
                         label: label.label ?? null,
-                        networkSymbol: 'btc',
+                        networkSymbol: asNetworkSymbol('btc'),
                         deviceStaticSessionId,
                         accountDescriptor,
                     });

@@ -1,4 +1,5 @@
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { notificationsActions } from './notificationsActions';
 import { createNotificationsReducer } from './notificationsReducer';
@@ -6,20 +7,19 @@ import { selectNotifications } from './notificationsSelectors';
 import { removeAccountEventsThunk } from './notificationsThunks';
 import { type NotificationsRootState, type NotificationsState } from './types';
 
+const btcSymbol = asNetworkSymbol('btc');
+
 const { reducer: notificationsReducer } = createNotificationsReducer();
 
 interface InitStoreArgs {
     preloadedState?: NotificationsRootState;
 }
 
-const initStore = ({ preloadedState }: InitStoreArgs = {}) => {
-    const store = configureMockStore({
+const initStore = ({ preloadedState }: InitStoreArgs = {}) =>
+    createTestCompositionRoot<void, NotificationsRootState>({
         reducer: { notifications: notificationsReducer },
         preloadedState,
-    });
-
-    return store;
-};
+    }).services.store;
 
 const mockedNotifications: NotificationsState = [
     {
@@ -42,9 +42,9 @@ const mockedNotifications: NotificationsState = [
         device: undefined,
         seen: false,
         type: 'tx-sent',
-        formattedAmount: '0',
+        amount: '0',
         descriptor: 'xpub',
-        symbol: 'btc',
+        symbol: btcSymbol,
         txid: 'abcd',
     },
 ];
@@ -55,9 +55,9 @@ describe('Notifications Actions', () => {
         store.dispatch(
             notificationsActions.addToast({
                 type: 'tx-sent',
-                formattedAmount: '0',
+                amount: '0',
                 descriptor: 'xpub',
-                symbol: 'btc',
+                symbol: btcSymbol,
                 txid: 'abcd',
             }),
         );
@@ -144,27 +144,27 @@ describe('Notifications Actions', () => {
                         id: 1,
                         context: 'toast',
                         type: 'tx-sent',
-                        formattedAmount: '0',
+                        amount: '0',
                         descriptor: 'xpub',
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         txid: '1',
                     },
                     {
                         id: 2,
                         context: 'event',
                         type: 'tx-confirmed',
-                        formattedAmount: '0',
+                        amount: '0',
                         descriptor: 'xpub',
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         txid: '2',
                     },
                     {
                         id: 3,
                         context: 'event',
                         type: 'tx-received',
-                        formattedAmount: '0',
+                        amount: '0',
                         descriptor: 'xpub',
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         txid: '3',
                     },
                     {

@@ -1,3 +1,6 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { TestStream } from '@trezor/e2e-utils';
+
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 import { MetadataProvider } from '../../../support/mocks/metadataMock';
@@ -5,7 +8,7 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 test.describe(
     'Metadata - switching between cloud providers',
-    { tag: ['@webOnly', '@T3W1', '@T3T1'] },
+    { tag: ['@webOnly', '@T3W1', '@T3T1', '@optional'] },
     () => {
         const dropboxLabel = 'dropbox label';
         const googleLabel = 'google label';
@@ -16,6 +19,7 @@ test.describe(
             {
                 annotation: createTestAnnotation({
                     testCase: 'Suite labeling support switching from provider to another',
+                    stream: TestStream.Wallet,
                 }),
             },
             async ({
@@ -28,7 +32,7 @@ test.describe(
             }) => {
                 await test.step('Navigate to account and verify initial state', async () => {
                     await onboardingPage.completeOnboarding();
-                    await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+                    await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
                     await metadataMock.start(MetadataProvider.DROPBOX);
                     await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
                     await walletPage.openAccount();

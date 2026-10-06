@@ -1,19 +1,25 @@
 import { ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary';
-import { useDispatch } from 'react-redux';
+
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { Error } from 'src/components/suite/Error';
-import { reportToSentry } from 'src/utils/suite/sentry';
+import { reportToSentryThunk } from 'src/utils/suite/sentry';
 
-const Fallback = ({ error }: { error: Error }) => <Error error={error.message} />;
+type FallbackProps = { error: Error };
 
-export const ErrorBoundary = ({ children }: { children: React.ReactNode }) => {
-    const dispatch = useDispatch();
+const Fallback = ({ error }: FallbackProps) => <Error error={error.message} />;
+
+type ErrorBoundaryProps = { children: React.ReactNode };
+
+export const ErrorBoundary = ({ children }: ErrorBoundaryProps) => {
+    const { dispatch } = useServices(injectDispatch);
 
     return (
         <ReactErrorBoundary
             FallbackComponent={Fallback}
             onError={error => {
-                dispatch(reportToSentry(error));
+                dispatch(reportToSentryThunk(error));
             }}
         >
             {children}

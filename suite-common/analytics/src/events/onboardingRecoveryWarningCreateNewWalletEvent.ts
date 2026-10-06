@@ -12,7 +12,10 @@ export const onboardingRecoveryWarningCreateNewWalletEvent: EventDef<
     name: EventType.OnboardingRecoveryWarningCreateNewWallet,
     descriptionTrigger:
         'User clicks Create a new wallet in the onboarding recovery source warning. Emitted by both desktop and mobile app.',
-    changelog: [{ version: '26.8.0', notes: 'added' }],
+    changelog: [
+        { version: '26.8.0', notes: 'added' },
+        { version: '26.9.0', notes: 'no longer called anywhere' },
+    ],
 
     attributes: {
         platform: {

@@ -1,5 +1,6 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type IconComponent, Toast, type ToastProps } from '@trezor/components';
 import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
 import { typedObjectKeys } from '@trezor/utils';
@@ -39,7 +40,7 @@ const transactionNotificationConfig: Record<
         amount: '4.6 ETH',
         transaction: {
             notificationType: 'tx-received',
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
         },
     },
     'tx-confirmed': {
@@ -48,7 +49,7 @@ const transactionNotificationConfig: Record<
         amount: '4.6 ETH',
         transaction: {
             notificationType: 'tx-confirmed',
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
         },
     },
     'tx-revoked': {
@@ -58,11 +59,12 @@ const transactionNotificationConfig: Record<
         amount: '',
         transaction: {
             notificationType: 'tx-revoked',
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             token: {
                 contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
                 name: 'LINK',
                 symbol: 'LINK',
+                decimals: 18,
             },
         },
     },
@@ -73,7 +75,7 @@ const transactionNotificationConfig: Record<
         amount: '101.6 SOL',
         transaction: {
             notificationType: 'tx-claimed',
-            symbol: 'sol',
+            symbol: asNetworkSymbol('sol'),
         },
     },
     'tx-unstaked': {
@@ -83,7 +85,7 @@ const transactionNotificationConfig: Record<
         amount: '4.6 ETH',
         transaction: {
             notificationType: 'tx-unstaked',
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
         },
     },
     'tx-staked': {
@@ -93,7 +95,7 @@ const transactionNotificationConfig: Record<
         amount: '4.6 ETH',
         transaction: {
             notificationType: 'tx-staked',
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
         },
     },
     'tx-approved': {
@@ -103,11 +105,12 @@ const transactionNotificationConfig: Record<
         amount: '0.46024759',
         transaction: {
             notificationType: 'tx-approved',
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             token: {
                 contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
                 name: 'LINK',
                 symbol: 'LINK',
+                decimals: 18,
             },
         },
     },
@@ -118,11 +121,12 @@ const transactionNotificationConfig: Record<
         amount: '0.46024759 LINK',
         transaction: {
             notificationType: 'tx-sent',
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             token: {
                 contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
                 name: 'LINK',
                 symbol: 'LINK',
+                decimals: 18,
             },
         },
     },
@@ -133,7 +137,7 @@ const transactionNotificationConfig: Record<
         amount: '',
         transaction: {
             notificationType: 'raw-tx-sent',
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
         },
     },
     'tx-yield-deposit': {
@@ -143,11 +147,12 @@ const transactionNotificationConfig: Record<
         amount: '150 USDC',
         transaction: {
             notificationType: 'tx-yield-deposit',
-            symbol: 'base',
+            symbol: asNetworkSymbol('base'),
             token: {
                 contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
                 name: 'USD Coin',
                 symbol: 'USDC',
+                decimals: 6,
             },
         },
     },
@@ -158,11 +163,12 @@ const transactionNotificationConfig: Record<
         amount: '150 USDC',
         transaction: {
             notificationType: 'tx-yield-withdraw',
-            symbol: 'base',
+            symbol: asNetworkSymbol('base'),
             token: {
                 contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
                 name: 'USD Coin',
                 symbol: 'USDC',
+                decimals: 6,
             },
         },
     },
@@ -173,32 +179,13 @@ const transactionNotificationConfig: Record<
         amount: '150 USDC',
         transaction: {
             notificationType: 'tx-yield-claim',
-            symbol: 'base',
+            symbol: asNetworkSymbol('base'),
             token: {
                 contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
                 name: 'USD Coin',
                 symbol: 'USDC',
+                decimals: 6,
             },
-        },
-    },
-    'tx-wrap': {
-        toastIcon: ArrowUpIcon,
-        intent: 'brand',
-        message: 'Wrap transaction from Ethereum #1 has been broadcast',
-        amount: '1.495 WETH',
-        transaction: {
-            notificationType: 'tx-wrap',
-            symbol: 'eth',
-        },
-    },
-    'tx-unwrap': {
-        toastIcon: ArrowUpIcon,
-        intent: 'brand',
-        message: 'Unwrap transaction from Ethereum #1 has been broadcast',
-        amount: '1.495 ETH',
-        transaction: {
-            notificationType: 'tx-unwrap',
-            symbol: 'eth',
         },
     },
 };
@@ -207,11 +194,12 @@ export const Default: Story = {
     args: {
         message: 'Sent from Ethereum #1',
         notificationType: 'tx-sent',
-        symbol: 'eth',
+        symbol: asNetworkSymbol('eth'),
         token: {
             contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
             name: 'LINK',
             symbol: 'LINK',
+            decimals: 18,
         },
         amount: '0.46024759 LINK',
     },

@@ -7,6 +7,9 @@ permissions:
 on:
   workflow_dispatch:
 
+env:
+  CONNECT_CLOUDFRONT_DISTRIBUTION_ID: E3LVNAOGT94E37
+
 jobs:
   rollback-connect-production:
     if: startsWith(github.ref, 'refs/heads/release/connect/')
@@ -17,7 +20,7 @@ jobs:
       LATEST_VERSION: 10
     steps:
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_connect_prod_deploy
           aws-region: eu-central-1
@@ -25,3 +28,7 @@ jobs:
       - name: Synching production bucket with rollback
         run: |
           aws s3 sync --delete s3://rollback-connect.trezor.io/${{ env.LATEST_VERSION }}/ s3://connect.trezor.io/${{ env.LATEST_VERSION }}/
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ env.CONNECT_CLOUDFRONT_DISTRIBUTION_ID }} --paths '/*'

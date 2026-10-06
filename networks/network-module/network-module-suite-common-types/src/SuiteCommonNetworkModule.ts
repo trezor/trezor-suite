@@ -1,13 +1,18 @@
+import type { NetworkSymbol } from '@trezor/network-module-types';
+
 import type { AddressValidator } from './AddressValidator';
+import type { NamedAddressResolver } from './NamedAddressResolver';
+import type { SuiteCommonNetworkConfig } from './SuiteCommonNetworkConfig';
 
-export type NetworkColor = `#${string}`;
+export type SuiteCommonNetworkModule = {
+    addressValidator: AddressValidator<NetworkSymbol>;
 
-export type SuiteCommonNetworkModule<TSymbol extends string> = {
-    addressValidator: AddressValidator<TSymbol>;
+    /** Only for networks with a name system; see `NamedAddressResolver`. */
+    namedAddressResolver?: NamedAddressResolver<NetworkSymbol>;
 
-    getSupportedNetworks: () => readonly TSymbol[];
+    getSupportedNetworks: () => readonly NetworkSymbol[];
 
-    isSupportedNetwork: (symbol: string) => symbol is TSymbol;
+    getNetworkConfig(symbol: NetworkSymbol): SuiteCommonNetworkConfig;
 
-    getNetworkColor(symbol: TSymbol): NetworkColor;
+    getAccountSyncInterval(symbol: NetworkSymbol): number;
 };

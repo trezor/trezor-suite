@@ -1,7 +1,12 @@
-import { type NetworkSymbol, networks } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    asNetworkSymbol,
+    getNetwork,
+    getNetworks,
+} from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, type BigNumberRoundingMode } from '@trezor/utils';
 
 import { AMOUNT_UNIT_ZERO, type AmountUnit, asAmountSubunit, asAmountUnit } from './AmountTypes';
 import { subunitsToUnits, unitsToSubunits } from './amountUtils';
@@ -24,7 +29,7 @@ export const getDecimalsForBaseCurrency = ({
         return 0;
     }
 
-    return code in networks ? networks[code as NetworkSymbol].decimals : 2;
+    return code in getNetworks() ? getNetwork(code as NetworkSymbol).decimals : 2;
 };
 
 type AmountToFiatCurrencyWithSatsConversionParams = {
@@ -54,7 +59,7 @@ const amountToFiatCurrencyWithSatsConversion = ({
         ? asBaseCurrencyAmount(
               unitsToSubunits({
                   value: asAmountUnit(baseCurrencyAmountUnit),
-                  symbol: 'btc',
+                  symbol: asNetworkSymbol('btc'),
               }),
           )
         : baseCurrencyAmountUnit;
@@ -104,6 +109,7 @@ type ParseBaseCurrencyToFormattedCryptoParams = {
     value: BigNumber; // Intentionally no Branded Type. We don't know if it is in Units or Sub-Units.
     rate: number;
     cryptoDecimals: number;
+    roundingMode?: BigNumberRoundingMode;
 };
 
 export const parseBaseCurrencyToFormattedCrypto = ({
@@ -112,6 +118,7 @@ export const parseBaseCurrencyToFormattedCrypto = ({
     value,
     rate,
     cryptoDecimals,
+    roundingMode,
 }: ParseBaseCurrencyToFormattedCryptoParams) => {
     // 1. When BTC is used as BaseCurrency, and we display all in Sats, we have to perform
     // the conversion from sats->btc
@@ -119,7 +126,7 @@ export const parseBaseCurrencyToFormattedCrypto = ({
         areSatsDisplayed
             ? subunitsToUnits({
                   value: asAmountSubunit(value),
-                  symbol: 'btc',
+                  symbol: asNetworkSymbol('btc'),
               })
             : value,
     );
@@ -138,5 +145,5 @@ export const parseBaseCurrencyToFormattedCrypto = ({
     // 4. We have to return this correctly rounded as this value is used in the NumberInput
     const finalValueDecimals = isCryptoInSats ? 0 : cryptoDecimals; // round units, not subunits
 
-    return valueToDisplay?.toFixed(finalValueDecimals) ?? null;
+    return valueToDisplay?.toFixed(finalValueDecimals, roundingMode) ?? null;
 };

@@ -1,194 +1,142 @@
-import { useEffect } from 'react';
-import { usePrevious } from 'react-use';
+import { type ReactNode } from 'react';
 
-import { type ExchangeTradeStatus } from 'invity-api';
-import styled from 'styled-components';
-
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { Translation, useTranslation } from '@suite/intl';
-import { goto } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
+import { useTranslation } from '@suite/intl';
 import {
     type TradingExchangeType,
     selectTradingComposedTransactionInfo,
     selectTradingDisplayComposedFee,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Box, Card, Column, StepList } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
-import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
+import { useTradingDetailMissingTradeRedirect } from 'src/hooks/wallet/trading/useTradingDetailMissingTradeRedirect';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
-import { TradingDetailHeader } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailHeader';
-import { TradingDetailStepList } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStepList';
-import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
+import { TradingDetailLayout } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailLayout';
+import { TradingDetailProcessingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProcessingStep';
+import { TradingDetailProgress } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProgress';
+import { TradingDetailSendingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSendingStep';
+import { TradingDetailTransactionIdRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTransactionIdRow';
+import {
+    getTradingDetailStepState,
+    processingHeaderMessages,
+} from 'src/views/wallet/trading/common/TradingDetail/utils';
 
-import { TradingExchangeDetailPaymentConverting } from './TradingExchangeDetailPaymentConverting';
-import { TradingExchangeDetailPaymentFailed } from './TradingExchangeDetailPaymentFailed';
 import { TradingExchangeDetailPaymentKYC } from './TradingExchangeDetailPaymentKYC';
-import { TradingExchangeDetailPaymentSending } from './TradingExchangeDetailPaymentSending';
+import { TradingExchangeDetailPaymentReturned } from './TradingExchangeDetailPaymentReturned';
 import { TradingExchangeDetailPaymentSuccessful } from './TradingExchangeDetailPaymentSuccessful';
 import { TradingExchangeDetailSidebar } from './TradingExchangeDetailSidebar';
-
-const Wrapper = styled.div`
-    ${TradingWrapper}
-`;
-
-const getTradeStatusStep = (tradeStatus: ExchangeTradeStatus) => {
-    switch (tradeStatus) {
-        case 'CONVERTING':
-            return 'converting';
-        case 'KYC':
-            return 'kyc';
-        case 'ERROR':
-            return 'error';
-        case 'SUCCESS':
-            return 'success';
-        default: {
-            if (!tradeFinalStatuses['exchange'].includes(tradeStatus)) {
-                return 'sending';
-            }
-
-            return undefined;
-        }
-    }
-};
+import {
+    type ExchangeDetailStatusStep,
+    getExchangeDetailProgress,
+    getExchangeDetailStatusStep,
+} from './utils';
 
 export const TradingExchangeDetailContent = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const accounts = useSelector(selectAccounts);
+    const composedTransaction = useSelector(selectTradingComposedTransactionInfo);
     const { trade, info } = useTradingDetailContext<TradingExchangeType>();
-    const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
     const tradeStatus = trade?.data?.status || 'CONFIRMING';
-    const previousTradeStatus = usePrevious(tradeStatus);
-    const tradeStatusStep = getTradeStatusStep(tradeStatus);
-    const composedTransaction = useSelector(selectTradingComposedTransactionInfo);
+    const tradeStatusStep = getExchangeDetailStatusStep(tradeStatus);
+    const isDex = trade?.data?.isDex;
+    const progress = getExchangeDetailProgress(tradeStatus, isDex);
 
     const exchange = trade?.data?.exchange;
     const provider = exchange ? info?.providerInfos?.[exchange] : undefined;
 
-    const networkFee = useSelector(state => selectTradingDisplayComposedFee(state, trade?.data));
+    const networkFee = useSelector(reduxState =>
+        selectTradingDisplayComposedFee(reduxState, trade?.data),
+    );
 
-    const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
-        sendAmount: trade?.data?.sendStringAmount ?? '',
-        sendCurrency: trade?.data?.send,
-        receiveAmount: trade?.data?.receiveStringAmount ?? '',
-        receiveCurrency: trade?.data?.receive,
-        networkFee,
-    };
+    const sendAccount = accounts.find(account => account.key === trade?.sendAccountKey);
+    const receiveAccount = accounts.find(account => account.key === trade?.receiveAccountKey);
 
-    useEffect(() => {
-        // if tradeStatus hasn't changed, don't send the analytics event
-        // also safeguard the initial tradeStatus change from undefined to defined
-        if (!previousTradeStatus || previousTradeStatus === tradeStatus || !tradeStatusStep) {
-            return;
-        }
+    useTradingDetailMissingTradeRedirect('exchange', trade);
 
-        analytics.report({
-            type: events.tradeStatusEvent.name,
-            payload: {
-                type: 'exchange',
-                status: tradeStatusStep,
-            },
-        });
-    }, [tradeStatus, previousTradeStatus, tradeStatusStep, analytics]);
-
-    // if trade not found, it is because user refreshed the page and stored transactionId got removed
-    // go to the default trading page, the trade is shown there in the previous trades
     if (!trade) {
-        dispatch(goto({ routeName: 'wallet-trading-exchange' }));
-
         return null;
     }
 
-    const sendAccount = accounts.find(account => account.key === trade.sendAccountKey);
-    const receiveAccount = accounts.find(account => account.key === trade.receiveAccountKey);
+    const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
+        sendAmount: trade.data.sendStringAmount ?? '',
+        sendCurrency: trade.data.send,
+        receiveAmount: trade.data.receiveStringAmount ?? '',
+        receiveCurrency: trade.data.receive,
+        networkFee,
+    };
 
     const getContent = () => {
-        switch (tradeStatusStep) {
-            case 'success':
-                return (
-                    <TradingExchangeDetailPaymentSuccessful
-                        trade={trade.data}
+        const progressContent = (
+            <TradingDetailProgress
+                {...processingHeaderMessages}
+                type={translationString('TR_TRADING_SWAP').toLowerCase()}
+            >
+                {!trade.data.isDex && (
+                    <TradingDetailSendingStep
+                        state={getTradingDetailStepState(progress, 'customerAction')}
                         account={sendAccount}
-                        provider={provider}
+                        receiveAccountKey={trade.receiveAccountKey}
+                        txId={trade.data.receiveTxHash}
+                        composedTransaction={composedTransaction}
                     />
-                );
-            case 'error':
-                return (
-                    <TradingExchangeDetailPaymentFailed
-                        trade={trade.data}
-                        account={sendAccount}
-                        provider={provider}
-                    />
-                );
-            case 'kyc':
-                return (
-                    <TradingExchangeDetailPaymentKYC
-                        trade={trade.data}
-                        account={sendAccount}
-                        provider={provider}
-                        supportUrl={provider?.supportUrl}
-                    />
-                );
-            default:
-                return (
-                    <>
-                        <TradingDetailHeader
-                            title="TR_TRADING_HEADER_PROCESSING_TITLE"
-                            description="TR_TRADING_HEADER_PROCESSING_DESCRIPTION"
-                            type={translationString('TR_TRADING_SWAP').toLowerCase()}
+                )}
+                <TradingDetailProcessingStep
+                    state={getTradingDetailStepState(progress, 'providerProcessing')}
+                    tradeType="exchange"
+                    trade={trade.data}
+                    provider={provider}
+                    isDex={trade.data.isDex}
+                >
+                    {!!trade.data.isDex && (
+                        <TradingDetailTransactionIdRow
+                            txId={trade.data.receiveTxHash}
+                            account={sendAccount}
+                            receiveAccountKey={trade.receiveAccountKey}
                         />
-                        <Box margin={{ top: 32, bottom: 12 }}>
-                            <TradingDetailStepList>
-                                {!trade.data.isDex && (
-                                    <TradingExchangeDetailPaymentSending
-                                        trade={trade.data}
-                                        account={sendAccount}
-                                        composedTransaction={composedTransaction}
-                                    />
-                                )}
-                                <TradingExchangeDetailPaymentConverting
-                                    trade={trade.data}
-                                    provider={provider}
-                                    account={trade.data.isDex ? sendAccount : undefined}
-                                    isDex={trade.data.isDex}
-                                />
-                                <StepList.Item
-                                    state="pending"
-                                    title={<Translation id="TR_EXCHANGE_COMPLETE" />}
-                                />
-                            </TradingDetailStepList>
-                        </Box>
-                    </>
-                );
-        }
+                    )}
+                </TradingDetailProcessingStep>
+            </TradingDetailProgress>
+        );
+
+        const terminalProps = {
+            trade: trade.data,
+            account: sendAccount,
+            receiveAccountKey: trade.receiveAccountKey,
+            provider,
+        };
+
+        const contentByStatusStep: Record<NonNullable<ExchangeDetailStatusStep>, ReactNode> = {
+            sending: progressContent,
+            converting: progressContent,
+            kyc: <TradingExchangeDetailPaymentKYC {...terminalProps} />,
+            success: <TradingExchangeDetailPaymentSuccessful {...terminalProps} />,
+            error: <TradingExchangeDetailPaymentReturned {...terminalProps} />,
+        };
+
+        return tradeStatusStep ? contentByStatusStep[tradeStatusStep] : progressContent;
     };
 
     return (
-        <Wrapper data-testid="@trading/transaction/detail">
-            <Column gap={20}>
-                <Card paddingType="large" data-testid="@trading/transaction/detail/status-card">
-                    {getContent()}
-                </Card>
-                <AfterTradeExperiment
-                    status={tradeStatus}
-                    type={trade.tradeType}
-                    provider={provider?.name}
-                    id={trade.data.id}
-                    quoteAmounts={quoteAmounts}
+        <TradingDetailLayout
+            tradeType="exchange"
+            tradeStatus={tradeStatus}
+            statusStep={tradeStatusStep}
+            provider={provider}
+            tradeId={trade.data.id}
+            quoteAmounts={quoteAmounts}
+            sidebar={
+                <TradingExchangeDetailSidebar
+                    sendAccount={sendAccount}
+                    receiveAccount={receiveAccount}
+                    trade={trade.data}
+                    providers={info?.providerInfos}
+                    date={trade.date}
                 />
-            </Column>
-            <TradingExchangeDetailSidebar
-                sendAccount={sendAccount}
-                receiveAccount={receiveAccount}
-                trade={trade.data}
-                providers={info?.providerInfos}
-            />
-        </Wrapper>
+            }
+        >
+            {getContent()}
+        </TradingDetailLayout>
     );
 };

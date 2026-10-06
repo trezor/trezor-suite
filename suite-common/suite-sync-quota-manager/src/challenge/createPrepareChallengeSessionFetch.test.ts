@@ -1,11 +1,11 @@
 import { ok } from '@trezor/type-utils';
 
 import { createPrepareChallengeSessionFetch } from './createPrepareChallengeSessionFetch';
-import { createPrepareChallengeSessionDepsMock } from './mocks/createPrepareChallengeSessionDepsMock';
+import { createPrepareChallengeSessionFetchDepsMock } from './mocks/createPrepareChallengeSessionFetchDepsMock';
 
 describe(createPrepareChallengeSessionFetch.name, () => {
     it('should prepare challenge unique for each session', async () => {
-        const deps = createPrepareChallengeSessionDepsMock({
+        const deps = createPrepareChallengeSessionFetchDepsMock({
             sessionIds: ['mocked-session-id', 'mocked-session-id-2'],
             quotaManagerFetchResponses: [
                 ok({

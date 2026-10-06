@@ -11,7 +11,7 @@ import {
     withFrameProps,
 } from '@trezor/components';
 import { type DeviceModelInternal } from '@trezor/device-utils';
-import { paletteV2 } from '@trezor/theme';
+import { palette } from '@trezor/theme';
 
 import { getLargeModelImagePath } from '../../utils/getModelFrontColor';
 
@@ -38,7 +38,7 @@ const GhostsContainer = styled.div``;
 
 const GhostContainer = styled.div<{ $rotate: number; $x: string; $y: string }>`
     transform: rotate(${({ $rotate }) => $rotate}deg);
-    background-color: ${paletteV2.lightRed600};
+    background-color: ${palette.lightRed600};
     border-radius: calc(infinity * 1px);
     position: absolute;
     top: ${({ $y }) => $y};

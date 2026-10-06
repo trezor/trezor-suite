@@ -1,4 +1,5 @@
 import { type SuiteSyncAccount, createSuiteSyncAccountId } from '@suite-common/suite-sync-storage';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
@@ -10,7 +11,7 @@ const WALLET_DESCRIPTOR = asWalletDescriptor('selectedWallet');
 const DEVICE_STATIC_SESSION_ID: StaticSessionId = 'selectedWallet@deviceId:0';
 
 const btcAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btcdefault'),
     deviceState: DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -18,7 +19,7 @@ const btcAccount = mockWalletAccount({
 });
 
 const ethAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor('ethdefault'),
     deviceState: DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',

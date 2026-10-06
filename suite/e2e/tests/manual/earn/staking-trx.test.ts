@@ -32,7 +32,7 @@ test.describe.skip('TRX staking', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Coins,
                 priority: TestPriority.High,
-                stream: TestStream.Wallet,
+                stream: TestStream.Earn,
             }),
         },
         async () => {},

@@ -1,15 +1,14 @@
 import React from 'react';
 
-import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount as BaseCurrencyAmountValue } from '@suite-common/wallet-types';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type FormatterProps } from '../types';
 import { AmountText } from './AmountText';
-import { EmptyAmountText } from './EmptyAmountText';
-import { useFormattedGraphHeaderValues } from '../hooks/useFormattedGraphHeaderValues';
+import { BaseCurrencyAmount, type FormattedBaseCurrencyAmount } from './BaseCurrencyAmount';
 
-type BalanceFormatterProps = FormatterProps<BaseCurrencyAmount | null> & {
+type BalanceFormatterProps = FormatterProps<BaseCurrencyAmountValue | null> & {
     isForcedDiscreetMode?: boolean;
     testID?: string;
 };
@@ -20,21 +19,20 @@ const wholeNumberStyle = prepareNativeStyle(utils => ({
     textAlign: 'center',
 }));
 
-export const BaseCurrencyAmountLargeFormatter = ({
-    value,
+type BaseCurrencyAmountLargeContentProps = FormattedBaseCurrencyAmount & {
+    isForcedDiscreetMode?: boolean;
+    testID?: string;
+};
+
+const BaseCurrencyAmountLargeContent = ({
+    currencySymbol,
+    wholeNumber,
+    decimalNumber,
+    isCryptoCurrency,
     isForcedDiscreetMode,
     testID,
-}: BalanceFormatterProps) => {
+}: BaseCurrencyAmountLargeContentProps) => {
     const { applyStyle } = useNativeStyles();
-
-    const { currencySymbol, wholeNumber, decimalNumber } = useFormattedGraphHeaderValues(
-        value?.toString(),
-    );
-
-    if (!value) return <EmptyAmountText />;
-
-    const isCrypto =
-        currencySymbol?.toLowerCase() === 'sat' || currencySymbol?.toLowerCase() === 'btc';
 
     const valueElement = (
         <Box flexDirection="row" alignItems="flex-end" flexShrink={1}>
@@ -47,10 +45,10 @@ export const BaseCurrencyAmountLargeFormatter = ({
             />
             <AmountText
                 value={decimalNumber}
-                variant={isCrypto ? 'headline-lg' : 'headline-sm'}
+                variant={isCryptoCurrency ? 'headline-lg' : 'headline-sm'}
                 isDiscreetText
                 isForcedDiscreetMode={isForcedDiscreetMode}
-                style={isCrypto ? applyStyle(wholeNumberStyle) : undefined}
+                style={isCryptoCurrency ? applyStyle(wholeNumberStyle) : undefined}
             />
         </Box>
     );
@@ -59,7 +57,7 @@ export const BaseCurrencyAmountLargeFormatter = ({
 
     return (
         <Box flexDirection="row" alignItems="flex-end" flexShrink={1} testID={testID}>
-            {isCrypto ? (
+            {isCryptoCurrency ? (
                 <HStack spacing="sp8" alignItems="flex-end">
                     {valueElement}
                     {currencyElement}
@@ -73,3 +71,19 @@ export const BaseCurrencyAmountLargeFormatter = ({
         </Box>
     );
 };
+
+export const BaseCurrencyAmountLargeFormatter = ({
+    value,
+    isForcedDiscreetMode,
+    testID,
+}: BalanceFormatterProps) => (
+    <BaseCurrencyAmount value={value}>
+        {formattedAmount => (
+            <BaseCurrencyAmountLargeContent
+                {...formattedAmount}
+                isForcedDiscreetMode={isForcedDiscreetMode}
+                testID={testID}
+            />
+        )}
+    </BaseCurrencyAmount>
+);

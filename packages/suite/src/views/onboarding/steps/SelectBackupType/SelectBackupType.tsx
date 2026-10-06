@@ -45,7 +45,9 @@ const SelectWrapper = styled.div`
     position: relative;
 `;
 
-const BackupWarning = ({ id }: { id: TranslationKey }) => (
+type BackupWarningProps = { id: TranslationKey };
+
+const BackupWarning = ({ id }: BackupWarningProps) => (
     <Banner
         intent="info"
         icon

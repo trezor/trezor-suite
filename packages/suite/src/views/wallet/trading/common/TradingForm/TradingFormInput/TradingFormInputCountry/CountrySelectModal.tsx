@@ -2,14 +2,18 @@ import { type UseFormSetValue } from 'react-hook-form';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { useGetCountryName } from '@suite/trading';
+import { useServices } from '@suite-common/dependency-injection';
 import { getCountryFlag } from '@suite-common/flags';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
     type TradingCountryOption,
+    tradingThunks,
     useCountryFilteredData,
 } from '@suite-common/trading';
-import { Column, Flag, Input, Modal, Paragraph, Row } from '@trezor/components';
+import { Column, Flag, Icon, Input, Modal, Paragraph, Row } from '@trezor/components';
+import { MagnifyingGlassIcon } from '@trezor/icons';
 import { CardList } from '@trezor/product-components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -23,7 +27,8 @@ interface CountrySelectModalProps {
 
 export const CountrySelectModal = ({ heading, onClose }: CountrySelectModalProps) => {
     const { translationString } = useTranslation();
-    const { setValue, clearQuotesAndParams } = useTradingFormContext<TradingTradeBuySellType>();
+    const { dispatch } = useServices(injectDispatch);
+    const { setValue, type } = useTradingFormContext<TradingTradeBuySellType>();
     const { filteredData, setFilterValue, filterValue } = useCountryFilteredData();
     const getCountryName = useGetCountryName();
 
@@ -31,7 +36,7 @@ export const CountrySelectModal = ({ heading, onClose }: CountrySelectModalProps
         const setValueTyped = setValue as UseFormSetValue<TradingBuySellFormProps>;
         setValueTyped(TRADING_FORM_COUNTRY_SELECT, country, { shouldDirty: true });
         setValueTyped(TRADING_FORM_COUNTRY_SUBDIVISION_SELECT, undefined, { shouldDirty: true });
-        clearQuotesAndParams();
+        dispatch(tradingThunks.clearQuotesAndParamsByTradingTypeThunk({ tradingType: type }));
         onClose();
     };
 
@@ -46,6 +51,14 @@ export const CountrySelectModal = ({ heading, onClose }: CountrySelectModalProps
                 <Input
                     onChange={ev => setFilterValue(ev.target.value)}
                     placeholder={translationString('TR_SEARCH_COUNTRY_PLACEHOLDER')}
+                    leftContent={
+                        <Icon
+                            as={MagnifyingGlassIcon}
+                            intent="neutral"
+                            priority="secondary"
+                            size={16}
+                        />
+                    }
                     onClear={() => setFilterValue('')}
                     showClearButton
                     value={filterValue}

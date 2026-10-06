@@ -2,7 +2,9 @@ import { type MouseEventHandler } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { acquireDevice } from '@suite-common/wallet-core';
+import { useServices } from '@suite-common/dependency-injection';
+import { acquireDeviceThunk } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
@@ -10,17 +12,16 @@ import {
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
     TROUBLESHOOTING_TIP_RECONNECT,
 } from 'src/components/suite/troubleshooting/tips';
-import { useDispatch } from 'src/hooks/suite';
 
 export const DeviceAcquire = () => {
     const { isLocked } = useDevice();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const isDeviceLocked = isLocked();
 
     const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
-        dispatch(acquireDevice({}));
+        dispatch(acquireDeviceThunk({}));
     };
 
     const ctaButton = (

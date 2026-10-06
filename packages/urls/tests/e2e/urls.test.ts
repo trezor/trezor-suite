@@ -6,17 +6,31 @@ import * as URLS from '../../src/urls';
  * It is run separately, see: * .github/workflows/test-urls.yml
  */
 
+/**
+ * URLs skipped entirely because they behave ambiguously: different result on CI and locally (usually because of bot detection).
+ * The test would have to accept any code, which would be a useless test.
+ * Try to keep this list at minimum!
+ */
 const skippedUrls = [
-    // TODO: it works locally but CI times out, probably cant handle the redirect or something..
+    // works locally but CI times out, probably can't handle the redirect.
     URLS.DATA_TOS_URL,
+    // blog redirects to medium.com, which returns 403 both from CI and locally running test.
+    URLS.LTC_ADDRESS_INFO_URL,
+    // returns 403 from CI, but works locally.
+    URLS.TREZOR_X_URL,
 ];
 
+/**
+ * URLs that should work in a real browser, but are untestable both locally and in CI (usually because of bot detection).
+ * Remove from the list when the URL becomes reachable and fails the test suite.
+ */
 const expectedFailingUrls = [
     // DATA_URL because it returns 404 on itself (forbidden listing)
     URLS.DATA_URL,
     // captcha, returning 403 in ci
     URLS.TREZOR_FORUM_URL,
-    URLS.IMAGE_PROXY_API_URL, // returns 'unauthorized'
+    // returns 'unauthorized'
+    URLS.IMAGE_PROXY_API_URL,
 ];
 
 // Sometimes we run test too much, I guess....

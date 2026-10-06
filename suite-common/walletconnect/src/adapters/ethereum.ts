@@ -3,26 +3,37 @@ import type { ProposalTypes } from '@walletconnect/types';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import {
+    type MevProtectionRootState,
+    selectIsMevProtectionFeatureEnabled,
+} from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
+    type TransactionsRootState,
+    type WalletSettingsRootState,
     ethereumGetCurrentNonceThunk,
     selectAccounts,
     selectIsMevProtectionEnabled,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getAccountIdentity, getMevProtectedTxData, sanitizeHex } from '@suite-common/wallet-utils';
+import {
+    fromIntegerString,
+    getAccountIdentity,
+    getMevProtectedTxData,
+    sanitizeHex,
+} from '@suite-common/wallet-utils';
 import TrezorConnect, {
     type CallMethodResponse,
     type EthereumSignTypedData,
     type EthereumSignTypedDataTypes,
 } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { isAscii, isHex, throwError } from '@trezor/utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
-import { selectSessionByTopic } from '../walletConnectReducer';
+import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
 import {
     type PendingConnectionProposalNetwork,
     type WalletConnectAdapter,
@@ -36,11 +47,30 @@ const methods = [
     'wallet_switchEthereumChain',
 ];
 
+// Connect reads these values as hex. EIP-1474 requires the 0x prefix. Reject other formats,
+// because Connect signs a decimal value as a different hex value.
+const TRANSACTION_QUANTITY_FIELDS = [
+    'gas',
+    'value',
+    'gasPrice',
+    'maxFeePerGas',
+    'maxPriorityFeePerGas',
+] as const;
+
+export type EthereumRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
+    WalletConnectStateRootState &
+    MevProtectionRootState &
+    WalletSettingsRootState &
+    TransactionsRootState;
+
+export type EthereumRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+
 const ethereumRequestThunk = createThunk<
     string | undefined,
     {
         event: WalletKitTypes.SessionRequest;
-    }
+    },
+    { state: EthereumRequestThunkState; extra: EthereumRequestThunkDeps }
 >(`${WALLETCONNECT_MODULE}/ethereumRequest`, async ({ event }, { dispatch, getState }) => {
     const device = selectSelectedDevice(getState());
     const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
@@ -136,13 +166,19 @@ const ethereumRequestThunk = createThunk<
             if (account.networkType !== 'ethereum') {
                 throw new Error('Account is not Ethereum');
             }
+            for (const field of TRANSACTION_QUANTITY_FIELDS) {
+                const value = transaction[field];
+                if (value && !isHex(value, { allowEmpty: false })) {
+                    throw new Error(`eth_sendTransaction invalid ${field}`);
+                }
+            }
             if (
                 !transaction.gasPrice &&
                 (!transaction.maxFeePerGas || !transaction.maxPriorityFeePerGas)
             ) {
                 // Fee not provided, estimate it
                 const feeLevels = await TrezorConnect.blockchainEstimateFee({
-                    coin: account.symbol,
+                    coin: asCoinSymbol(account.symbol),
                     identity: getAccountIdentity(account),
                     request: {
                         blocks: [2],
@@ -154,18 +190,24 @@ const ethereumRequestThunk = createThunk<
                 if (!feeLevels.success) {
                     throw new Error('eth_sendTransaction cannot estimate fee');
                 }
-                if (feeLevels.payload.levels[0]?.eip1559) {
-                    transaction.maxFeePerGas =
-                        feeLevels.payload.levels[0]?.eip1559?.medium?.maxFeePerGas;
-                    transaction.maxPriorityFeePerGas =
-                        feeLevels.payload.levels[0]?.eip1559?.medium?.maxPriorityFeePerGas;
+                // Fee levels are decimal strings in wei. Connect reads all values as hex.
+                const toHex = (value?: string) =>
+                    value ? fromIntegerString(value).toHex() : undefined;
+                const eip1559Fee = feeLevels.payload.levels[0]?.eip1559?.medium;
+                // Both values are optional. Use the legacy gas price if one of them is missing.
+                if (eip1559Fee?.maxFeePerGas && eip1559Fee.maxPriorityFeePerGas) {
+                    transaction.maxFeePerGas = toHex(eip1559Fee.maxFeePerGas);
+                    transaction.maxPriorityFeePerGas = toHex(eip1559Fee.maxPriorityFeePerGas);
                 } else {
-                    transaction.gasPrice = feeLevels.payload.levels[0]?.feePerUnit;
+                    transaction.gasPrice = toHex(feeLevels.payload.levels[0]?.feePerUnit);
+                    if (!transaction.gasPrice) {
+                        throw new Error('eth_sendTransaction cannot estimate fee');
+                    }
                 }
             }
             if (!transaction.gas) {
                 // Placeholder, will be replaced by estimate from TX simulation response
-                transaction.gas = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
+                transaction.gas = fromIntegerString(ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT).toHex();
             }
             if (!transaction.value) {
                 transaction.value = '0x0';
@@ -211,7 +253,7 @@ const ethereumRequestThunk = createThunk<
 
             const pushResponse = await TrezorConnect.pushTransaction({
                 tx: txData,
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
             });
             if (!pushResponse.success) {
@@ -307,6 +349,5 @@ export const ethereumAdapter = {
     namespaceId: 'eip155',
     requestThunk: ethereumRequestThunk,
     getNamespace,
-    getChainId,
     processNamespaces,
 } satisfies WalletConnectAdapter;

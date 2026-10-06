@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-mobile",
-    "version": "10.0.0-beta.1",
+    "version": "10.0.1",
     "type": "module",
     "repository": {
         "type": "git",
@@ -35,5 +35,8 @@
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
     }
 }

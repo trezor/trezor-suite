@@ -5,6 +5,7 @@
         { "path": "../address" },
         { "path": "../dependency-injection" },
         { "path": "../device" },
+        { "path": "../formatters" },
         { "path": "../geolocation" },
         { "path": "../networks" },
         { "path": "../react-query" },
@@ -14,7 +15,6 @@
         { "path": "../toast-notifications" },
         { "path": "../token-definitions" },
         { "path": "../tx-simulation" },
-        { "path": "../validators" },
         { "path": "../wallet-config" },
         { "path": "../wallet-constants" },
         { "path": "../wallet-core" },
@@ -28,6 +28,12 @@
             "path": "../../packages/connect-common"
         },
         { "path": "../../packages/env-utils" },
+        {
+            "path": "../../networks/network-module/network-module-suite-common-types"
+        },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
         {
             "path": "../../networks/solana/network-solana"
         },

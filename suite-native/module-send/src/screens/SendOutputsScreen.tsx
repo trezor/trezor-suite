@@ -4,10 +4,9 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { type SendRootState, selectSendFormDraftByKey } from '@suite-common/wallet-core';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
-import { Box, InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline, Box } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -16,11 +15,11 @@ import {
     type SendStackRoutes,
     type StackProps,
 } from '@suite-native/navigation';
-import { updateSelectedFeeLevelThunk } from '@suite-native/send';
-import { FeeSelector, selectFeeLevels } from '@suite-native/transaction-management';
+import { selectFeeLevels } from '@suite-native/transaction-management';
 
 import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 import { SwitchCoinControlButton } from '../components/CoinControl/SwitchCoinControlButton';
+import { SendFeeSection } from '../components/SendFeeSection';
 import { SendOutputFields } from '../components/SendOutputFields';
 import { SendOutputsScreenFooter } from '../components/SendOutputsScreenFooter';
 import { useSendForm } from '../hooks/useSendForm';
@@ -36,10 +35,8 @@ export const SendOutputsScreen = ({
         params;
     const sendForm = useSendForm(accountKey, tokenContract);
     const { totalSelectedAmount, selectedUtxos } = useUtxoSelection(accountKey);
-    const formDraft = useSelector((state: SendRootState) =>
-        selectSendFormDraftByKey(state, accountKey, tokenContract),
-    );
     const feeLevels = useSelector(selectFeeLevels);
+
     const isFeeReady = isFinalPrecomposedTransaction(feeLevels.normal);
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedAlert();
 
@@ -71,7 +68,14 @@ export const SendOutputsScreen = ({
         return null;
     }
 
-    const { form, handleSubmitSendForm, amount, network, feeLevelsMaxAmount } = sendForm;
+    const {
+        form,
+        handleSubmitSendForm,
+        amount,
+        network,
+        maxSpendableAmount,
+        isResolvingNamedAddress,
+    } = sendForm;
     const {
         formState: { isValid, isSubmitting },
     } = form;
@@ -93,7 +97,7 @@ export const SendOutputsScreen = ({
                         <SendOutputFields
                             accountKey={accountKey}
                             tokenContract={tokenContract}
-                            maxAmount={feeLevelsMaxAmount?.normal}
+                            maxAmount={maxSpendableAmount}
                         />
                         {network?.networkType === 'bitcoin' && (
                             <Box flexDirection="row" justifyContent="center" marginTop="sp24">
@@ -102,23 +106,15 @@ export const SendOutputsScreen = ({
                         )}
                     </Form>
                 </Box>
-                {isValid && network && (
-                    <Box marginTop="sp16">
-                        <FeeSelector
-                            accountKey={accountKey}
-                            tokenContract={tokenContract}
-                            updateThunk={updateSelectedFeeLevelThunk}
-                            selectedFee={formDraft?.selectedFee ?? 'normal'}
-                            selectedFeePerUnit={formDraft?.feePerUnit}
-                            selectedSetMaxOutputId={formDraft?.setMaxOutputId}
-                            formDraft={formDraft}
-                        />
-                    </Box>
-                )}
+                <SendFeeSection
+                    accountKey={accountKey}
+                    tokenContract={tokenContract}
+                    isFormValid={isValid}
+                />
                 {isMissingUtxos ? (
                     <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
                         <Box padding="sp16">
-                            <InlineAlertBox
+                            <BannerInline
                                 intent="warning"
                                 title={<Translation id="moduleSend.coinControl.notEnoughCoins" />}
                             />
@@ -126,7 +122,8 @@ export const SendOutputsScreen = ({
                     </Animated.View>
                 ) : (
                     isValid &&
-                    isFeeReady && (
+                    isFeeReady &&
+                    !isResolvingNamedAddress && (
                         <SendOutputsScreenFooter
                             isSubmitting={isSubmitting}
                             handleNavigateToReviewScreen={handleSubmitSendForm}

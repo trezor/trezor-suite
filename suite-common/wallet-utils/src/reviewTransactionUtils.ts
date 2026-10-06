@@ -2,22 +2,26 @@ import {
     Calldata,
     type ClearSigningCoverage,
     getEvmClearSignedSwapCoverage,
+    isEvmClearSigningTx,
 } from '@suite-common/calldata';
 import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { EARN_YIELD_CLAIM_PROVIDER, networks } from '@suite-common/wallet-config';
+import { EARN_YIELD_CLAIM_PROVIDER, getNetwork } from '@suite-common/wallet-config';
+import { WRAPPED_NATIVE_MIN_FIRMWARE } from '@suite-common/wallet-constants';
 import {
     type Account,
     type FormState,
+    type GeneralPrecomposedTransaction,
     type GeneralPrecomposedTransactionFinal,
-    type ReviewOutput,
-    type ReviewOutputState,
     type StakeFormState,
     type StakeType,
+    type TransactionReviewOutput,
+    type TransactionReviewOutputState,
     type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import type { CardanoOutput } from '@trezor/connect';
-import { getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 import { BigNumber, versionUtils } from '@trezor/utils';
 
 import { datetimeToLocktime } from './bitcoinUtils';
@@ -28,18 +32,29 @@ import {
 } from './deviceUtils';
 import { fromGwei, fromWei } from './ethConverter';
 import {
-    getEvmTransactionTextSignature,
+    getEvmTransactionPurpose,
     isEvmApprovalTx,
     isEvmYieldTxByTextSignature,
+    isUnwrapNativeTx,
+    isWrapNativeTx,
 } from './ethUtils';
-import { getStakeType } from './ethereumStakingUtils';
-import { isExchangeTradingForm } from './sendFormUtils';
+import { isCompleteTradingForm, isExchangeTradingForm } from './sendFormUtils';
+import { getStakeType } from './stakingUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
+
+/**
+ * Transactions whose steps cannot be recreated in Suite (e.g. Solana split unstakes) are not broken
+ * down into review outputs, Suite only asks the user to follow the instructions on the device.
+ */
+export const isDeviceReviewOnlyTransaction = (transaction?: GeneralPrecomposedTransaction) =>
+    transaction !== undefined &&
+    'isDeviceReviewOnly' in transaction &&
+    transaction.isDeviceReviewOnly === true;
 
 export const getTransactionReviewOutputState = (
     index: number,
     buttonRequestsCount: number,
-): ReviewOutputState => {
+): TransactionReviewOutputState => {
     if (index === buttonRequestsCount - 1) return 'active';
     if (index < buttonRequestsCount - 1) return 'success';
 
@@ -72,6 +87,16 @@ const getIsUpdatedStellarSendFlow = (device: TrezorDevice, network: Account['net
     const firmwareVersion = getFirmwareVersion(device);
 
     return versionUtils.isNewer(firmwareVersion, '2.9.0');
+};
+
+const isValidTxData = (transactionData?: string): transactionData is string => {
+    if (typeof transactionData !== 'string') {
+        return false;
+    }
+
+    const normalizedTransactionData = transactionData.trim().toLowerCase();
+
+    return normalizedTransactionData !== '' && normalizedTransactionData !== '0x';
 };
 
 const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
@@ -157,8 +182,8 @@ export const getClearSignedEvmTradingSwapCoverage = ({
     ) {
         return undefined;
     }
-    const network = networks[account.symbol];
-    if (!('chainId' in network)) {
+    const network = getNetwork(account.symbol);
+    if (network.chainId === undefined) {
         return undefined;
     }
     const to = precomposedTx.outputs.find(
@@ -177,21 +202,89 @@ export const isClearSignedEvmTradingSwapTransaction = (
     params: ClearSignedEvmTradingSwapParams,
 ): boolean => getClearSignedEvmTradingSwapCoverage(params) !== undefined;
 
+type ClearSignedWrappedNativeParams = {
+    account: Account;
+    device: TrezorDevice;
+    precomposedTx: GeneralPrecomposedTransactionFinal;
+    transactionData?: string;
+};
+
+/**
+ * Whether the device will clear-sign this transaction as a canonical WETH wrap/unwrap
+ * (deposit()/withdraw()), which it renders as provider → intent → amount → fee summary. Gated on
+ * `isEvmClearSigningTx` so a wrapped native the firmware does not clear-sign (e.g. WBNB on BSC)
+ * still falls through to the blind-signing rows.
+ *
+ * The `evmClearSigning` capability is not sufficient on its own: connect reports it from 2.12.1,
+ * while WETH gained its clear-signing definition in 2.12.4. Without the version gate a device on
+ * 2.12.1–2.12.3 would get the mirrored review while it actually blind-signs — the same
+ * modal/device mismatch this mirroring exists to remove, inverted.
+ */
+export const isClearSignedWrappedNativeTransaction = ({
+    account,
+    device,
+    precomposedTx,
+    transactionData,
+}: ClearSignedWrappedNativeParams): boolean => {
+    if (account.networkType !== 'ethereum' || !isEvmClearSigningSupportedByDevice(device)) {
+        return false;
+    }
+
+    const firmwareVersion = getFirmwareVersionArray(device);
+    if (
+        firmwareVersion === null ||
+        !versionUtils.isNewerOrEqual(firmwareVersion, WRAPPED_NATIVE_MIN_FIRMWARE)
+    ) {
+        return false;
+    }
+
+    const network = getNetwork(account.symbol);
+    if (network.chainId === undefined) {
+        return false;
+    }
+
+    const to = precomposedTx.outputs.find(
+        o => 'address' in o && typeof o.address === 'string',
+    )?.address;
+    const wrappedNativeTxParams = {
+        networkSymbol: account.symbol,
+        to,
+        data: transactionData,
+    };
+
+    return (
+        (isWrapNativeTx(wrappedNativeTxParams) || isUnwrapNativeTx(wrappedNativeTxParams)) &&
+        isEvmClearSigningTx(network.chainId, to, transactionData)
+    );
+};
+
 const constructOldFlow = ({
     precomposedTx,
     decreaseOutputId,
     account,
     precomposedForm,
     clearSignedSwapCoverage,
-}: ConstructOutputsParams): ReviewOutput[] => {
+}: ConstructOutputsParams): TransactionReviewOutput[] => {
     const isClearSignedTradingSwap = clearSignedSwapCoverage !== undefined;
-    const outputs: ReviewOutput[] = [];
+    const outputs: TransactionReviewOutput[] = [];
 
+    const isBitcoin = account.networkType === 'bitcoin';
     const isCardano = isCardanoTx(account, precomposedTx);
     const isStellar = account.networkType === 'stellar';
     const { networkType } = account;
-    const evmTxType = getEvmTransactionTextSignature(precomposedForm.transactionData);
-    const isYieldOperation = isEvmYieldTxByTextSignature(evmTxType);
+
+    const evmTxType = getEvmTransactionPurpose({
+        networkSymbol: account.symbol,
+        to: precomposedTx.outputs.find(o => 'address' in o && typeof o.address === 'string')
+            ?.address,
+        data: precomposedForm.transactionData,
+    });
+
+    const isYieldOperation =
+        isEvmYieldTxByTextSignature(evmTxType) ||
+        evmTxType === 'wrap' ||
+        evmTxType === 'unwrap' ||
+        evmTxType === 'claim';
 
     const hasDestinationTag = 'destinationTag' in precomposedForm;
 
@@ -310,7 +403,8 @@ const constructOldFlow = ({
     if (networkType === 'tron' && precomposedForm.destinationTag) {
         outputs.push({ type: 'note', value: precomposedForm.destinationTag });
     } else if (
-        precomposedForm.transactionData &&
+        !isBitcoin &&
+        isValidTxData(precomposedForm.transactionData) &&
         (!precomposedTx.token || isYieldOperation) &&
         !isClearSignedTradingSwap
     ) {
@@ -347,19 +441,22 @@ const constructNewFlow = ({
     availableRewards,
     swapSlippage,
     clearSignedSwapCoverage,
+    isClearSignedWrapUnwrap,
     isApprovalFlowSupported,
     isEvmClearSigningSupported,
     isUpdatedEthereumSendFlow,
     isUpdatedStellarSendFlow,
 }: ConstructOutputsParams & {
+    isClearSignedWrapUnwrap: boolean;
     isUpdatedEthereumSendFlow: boolean;
     isUpdatedStellarSendFlow: boolean;
     isApprovalFlowSupported: boolean;
     isEvmClearSigningSupported: boolean;
-}): ReviewOutput[] => {
+}): TransactionReviewOutput[] => {
     const isClearSignedTradingSwap = clearSignedSwapCoverage !== undefined;
-    const outputs: ReviewOutput[] = [];
+    const outputs: TransactionReviewOutput[] = [];
 
+    const isBitcoin = account.networkType === 'bitcoin';
     const isCardano = isCardanoTx(account, precomposedTx);
     const isSolana = account.networkType === 'solana';
     const isStellar = account.networkType === 'stellar';
@@ -375,7 +472,14 @@ const constructNewFlow = ({
     const hasDestinationTag = 'destinationTag' in precomposedForm;
     const trading = precomposedForm?.trading;
 
-    const evmTxType = getEvmTransactionTextSignature(precomposedForm.transactionData);
+    // Resolved from the full context rather than the calldata alone, so that the WETH
+    // deposit()/withdraw() selectors classify as wrap/unwrap instead of 'unknown'.
+    const evmTxType = getEvmTransactionPurpose({
+        networkSymbol: symbol,
+        to: precomposedTx.outputs.find(o => 'address' in o && typeof o.address === 'string')
+            ?.address,
+        data: precomposedForm.transactionData,
+    });
     const isClaimOp = evmTxType === 'claim';
     const isYieldOp = isEvmYieldTxByTextSignature(evmTxType);
     const isEvmClaimClearSign = isUpdatedEthereumSendFlow && isEvmClearSigningSupported;
@@ -386,6 +490,28 @@ const constructNewFlow = ({
         precomposedTx.outputs.forEach(o => {
             if ('address' in o && typeof o.address === 'string') {
                 outputs.push({ type: 'address', value: o.address });
+            }
+        });
+
+        return outputs;
+    }
+
+    if (isClearSignedWrapUnwrap) {
+        // The firmware walks a clear-signed wrap/unwrap through four screens — provider, intent,
+        // the amount, then the fee summary (`confirm_ethereum_clear_signing`). Mirror them 1:1
+        // (the summary is the review's own total row) so the modal's step pill tracks what is
+        // actually on the device.
+        outputs.push(
+            { type: 'recipient_name', value: getWrappedNativeSymbol(symbol) ?? '' },
+            { type: 'contract_intent', value: '' },
+        );
+
+        precomposedTx.outputs.forEach(o => {
+            if ('address' in o && typeof o.address === 'string') {
+                // Deliberately no `token`: wrapping is 1:1 and the device renders both legs with
+                // the native currency formatter, so passing the WETH token info would make an
+                // unwrap read "WETH" where the device says "ETH".
+                outputs.push({ type: 'amount', value: o.amount.toString() });
             }
         });
 
@@ -414,7 +540,7 @@ const constructNewFlow = ({
                 outputs.push({
                     type: 'amount',
                     value: o.amount.toString(),
-                    value2: networks[symbol].name,
+                    value2: getNetwork(symbol).name,
                     token: precomposedTx.token,
                 });
             }
@@ -424,21 +550,15 @@ const constructNewFlow = ({
     }
 
     if (tronStaking?.kind === 'vote') {
-        precomposedTx.outputs.forEach(o => {
-            if ('address' in o && typeof o.address === 'string') {
-                outputs.push({
-                    type: 'tron-vote',
-                    value: o.address,
-                    value2: tronStaking.votes,
-                });
-            }
+        tronStaking.allocations.forEach(({ address, votes }) => {
+            outputs.push({ type: 'tron-vote', value: address, value2: votes });
         });
 
         return outputs;
     }
 
     if (tronStaking?.kind === 'withdraw') {
-        outputs.push({ type: 'tron-withdraw', value: account.descriptor });
+        outputs.push({ type: 'tron-withdraw', value: '' });
 
         return outputs;
     }
@@ -473,16 +593,20 @@ const constructNewFlow = ({
         });
     }
 
+    const isValidTx = isValidTxData(precomposedForm.transactionData);
+
     if (isTron && precomposedForm.destinationTag) {
         outputs.push({ type: 'note', value: precomposedForm.destinationTag });
     } else if (
-        ((precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
-            (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported) ||
-            (precomposedForm.transactionData && isYieldOp && !isUpdatedEthereumSendFlow) ||
-            (precomposedForm.transactionData && isClaimOp && !isEvmClaimClearSign)) &&
+        !isBitcoin &&
+        isValidTx &&
+        ((!precomposedTx.token && !isEvmApproval) ||
+            (isEvmApproval && !isApprovalFlowSupported) ||
+            (isYieldOp && !isUpdatedEthereumSendFlow) ||
+            (isClaimOp && !isEvmClaimClearSign)) &&
         !isClearSignedTradingSwap
     ) {
-        outputs.push({ type: 'data', value: precomposedForm.transactionData });
+        outputs.push({ type: 'data', value: precomposedForm.transactionData! });
     }
 
     const isRbf = isRbfBumpFeeTransaction(precomposedTx);
@@ -545,24 +669,28 @@ const constructNewFlow = ({
         });
     } else if (
         (precomposedForm.trading?.isSlip24Active || isClearSignedTradingSwap) &&
-        isExchangeTradingForm(trading)
+        isCompleteTradingForm(trading)
     ) {
-        const recipientName = isClearSignedTradingSwap
+        const isClearSignedExchangeSwap =
+            isClearSignedTradingSwap && isExchangeTradingForm(trading);
+        const recipientName = isClearSignedExchangeSwap
             ? getClearSignedSwapRecipientName(precomposedTx, trading.recipientName)
             : trading.recipientName;
+        const isSlip24Sell = trading.isSlip24Active && trading.activeSection === 'sell';
 
-        if (recipientName) {
+        if (recipientName && !isSlip24Sell) {
             outputs.push({ type: 'recipient_name', value: recipientName });
         }
-        if (isClearSignedTradingSwap) {
+        if (isClearSignedExchangeSwap) {
             outputs.push({ type: 'swap_intent', value: 'swap' });
         }
 
-        const isPartialClearSignedSwap = clearSignedSwapCoverage === 'partial';
+        const isPartialClearSignedSwap =
+            isClearSignedExchangeSwap && clearSignedSwapCoverage === 'partial';
         // TODO: extract the receive amount directly from the actual transaction data
         // instead of deriving it from the quote and slippage.
         const slippageAdjustedReceive =
-            isClearSignedTradingSwap && swapSlippage
+            isClearSignedExchangeSwap && swapSlippage
                 ? {
                       ...trading.receive,
                       amount: new BigNumber(trading.receive.amount)
@@ -578,12 +706,19 @@ const constructNewFlow = ({
             value2: '',
             send: trading.send,
             receive,
-            receiveAddress: clearSignedSwapCoverage === 'full' ? trading.receiveAddress : undefined,
+            receiveAddress:
+                isClearSignedExchangeSwap && clearSignedSwapCoverage === 'full'
+                    ? trading.receiveAddress
+                    : undefined,
         });
+
+        if (recipientName && isSlip24Sell) {
+            outputs.push({ type: 'recipient_name', value: recipientName });
+        }
     } else {
         precomposedTx.outputs.forEach(o => {
             if (typeof o.address === 'string') {
-                const tokenOutput: ReviewOutput = {
+                const tokenOutput: TransactionReviewOutput = {
                     type: 'contract',
                     value: precomposedTx.token ? precomposedTx.token.contract : '',
                 };
@@ -600,9 +735,9 @@ const constructNewFlow = ({
                     outputs.push(tokenOutput);
                     outputs.push({ type: 'address', value: o.address });
                 } else if (
-                    !isTron &&
-                    ((precomposedForm.transactionData && !isEvmApproval) ||
-                        (isEvmApproval && !isApprovalFlowSupported))
+                    networkType === 'ethereum' &&
+                    isValidTx &&
+                    (!isEvmApproval || !isApprovalFlowSupported)
                 ) {
                     // EVM contract call
                     outputs.push({ type: 'contract', value: o.address });
@@ -643,7 +778,7 @@ const constructNewFlow = ({
             outputs.push({
                 type: 'approve_data',
                 value: evmApprovalTxData.amount.toString(),
-                value2: networks[symbol].name,
+                value2: getNetwork(symbol).name,
                 token: precomposedTx.token,
             });
         }
@@ -706,7 +841,7 @@ type ConstructTransactionReviewOutputsProps = Omit<
 export const constructTransactionReviewOutputs = ({
     device,
     ...params
-}: ConstructTransactionReviewOutputsProps): ReviewOutput[] => {
+}: ConstructTransactionReviewOutputsProps): TransactionReviewOutput[] => {
     const isUpdatedSendFlow = getIsUpdatedSendFlow(device); // >= 2.6.0
     const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(
         device,
@@ -730,6 +865,14 @@ export const constructTransactionReviewOutputs = ({
     return constructNewFlow({
         ...params,
         clearSignedSwapCoverage,
+        // Firmware that predates the updated send flow cannot clear-sign at all, so this is
+        // resolved only for the new flow.
+        isClearSignedWrapUnwrap: isClearSignedWrappedNativeTransaction({
+            account: params.account,
+            device,
+            precomposedTx: params.precomposedTx,
+            transactionData: params.precomposedForm.transactionData,
+        }),
         isUpdatedEthereumSendFlow,
         isApprovalFlowSupported: isApprovalSupported(device),
         isEvmClearSigningSupported: isEvmClearSigningSupportedByDevice(device),
@@ -746,7 +889,7 @@ export const constructTransactionReviewOutputsOptional = ({
     precomposedTx,
     vaultName,
     swapSlippage,
-}: Partial<ConstructTransactionReviewOutputsProps>): ReviewOutput[] => {
+}: Partial<ConstructTransactionReviewOutputsProps>): TransactionReviewOutput[] => {
     if (
         account === undefined ||
         device === undefined ||

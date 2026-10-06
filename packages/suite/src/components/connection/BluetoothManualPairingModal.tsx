@@ -1,15 +1,15 @@
+import { setBluetoothDeviceNeedsManualPairing } from '@suite/bluetooth';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Modal, Paragraph } from '@trezor/components';
-
-import { setBluetoothDeviceNeedsManualPairing } from 'src/actions/bluetooth//desktopBluetoothReducer';
-import { useDispatch } from 'src/hooks/suite';
 
 type BluetoothManualPairingModalProps = {
     onCancel: () => void;
 };
 
 export const BluetoothManualPairingModal = ({ onCancel }: BluetoothManualPairingModalProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const handleCancel = () => {
         dispatch(setBluetoothDeviceNeedsManualPairing(false));
         onCancel();

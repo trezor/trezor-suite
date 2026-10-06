@@ -5,6 +5,6 @@ export type TurnOffSuiteSync = (params?: {
 
 export type TurnOffSuiteSyncDep = { turnOffSuiteSync: TurnOffSuiteSync };
 
-export const selectTurnOffSuiteSyncDep = (services: any): TurnOffSuiteSyncDep => ({
+export const injectTurnOffSuiteSync = (services: any): TurnOffSuiteSyncDep => ({
     turnOffSuiteSync: services.suiteSync.turnOffSuiteSync,
 });

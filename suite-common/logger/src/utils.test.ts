@@ -1,9 +1,21 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { type DiscoveryStatus, asAccountDescriptor } from '@suite-common/wallet-types';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { accountsActions } from '@suite-common/wallet-core';
+import {
+    type Account,
+    type DiscoveryStatus,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
-import { REDACTED_REPLACEMENT, redactAccount, redactDevice, redactDiscovery } from './utils';
+import {
+    REDACTED_REPLACEMENT,
+    redactAccount,
+    redactAction,
+    redactDevice,
+    redactDiscovery,
+} from './utils';
 
 describe('logsUtils', () => {
     const account = mockWalletAccount({
@@ -11,7 +23,7 @@ describe('logsUtils', () => {
         descriptor: asAccountDescriptor(
             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
         ),
-        symbol: 'btc',
+        symbol: asNetworkSymbol('btc'),
     });
     const device = mockSuiteDevice();
 
@@ -49,6 +61,21 @@ describe('logsUtils', () => {
                     label: REDACTED_REPLACEMENT,
                 },
             });
+        });
+    });
+
+    describe('redactAction', () => {
+        it('redacts the account of an updateSelectedAccount log entry', () => {
+            const entry = {
+                datetime: 'Thu, 01 Jan 1970 00:00:00 GMT',
+                type: accountsActions.updateSelectedAccount.type,
+                payload: { account },
+            };
+
+            const redactedAccount = (redactAction(entry).payload as { account: Account }).account;
+
+            expect(redactedAccount.descriptor).toBe(REDACTED_REPLACEMENT);
+            expect(redactedAccount.deviceState).toBe(REDACTED_REPLACEMENT);
         });
     });
 

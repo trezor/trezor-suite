@@ -1,14 +1,15 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     cancelDiscoveryThunk,
     startAddWalletDiscoveryThunk,
-    switchToDuplicatedWallet,
+    switchToDuplicatedWalletThunk,
 } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 
-import { useDispatch } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
@@ -23,12 +24,12 @@ export const PassphraseDuplicateModal = ({
     device, // <- currently selected device
 }: PassphraseDuplicateModalProps) => {
     const { isLocked } = useDevice();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const isDeviceLocked = isLocked();
 
     const handleDuplicateDevicePassphrase = () => {
-        dispatch(switchToDuplicatedWallet());
+        dispatch(switchToDuplicatedWalletThunk());
     };
 
     const onTryDifferentPassphrase = () => {

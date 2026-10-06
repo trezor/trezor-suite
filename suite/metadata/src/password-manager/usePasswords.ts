@@ -1,8 +1,10 @@
 import { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type PasswordEntry } from '@suite-common/metadata-types';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
 import * as metadataPasswordsActions from '../metadataPasswordsActions';
@@ -14,7 +16,7 @@ import {
 } from '../metadataReducer';
 
 export const usePasswords = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const [providerConnecting, setProviderConnecting] = useState(false);
 
@@ -31,7 +33,7 @@ export const usePasswords = () => {
 
     const connect = () => {
         setProviderConnecting(true);
-        dispatch(metadataPasswordsActions.init()).finally(() => {
+        dispatch(metadataPasswordsActions.initThunk()).finally(() => {
             setProviderConnecting(false);
         });
     };
@@ -41,7 +43,7 @@ export const usePasswords = () => {
         if (!selectedProvider) return;
 
         dispatch(
-            metadataProviderActions.disconnectProvider({
+            metadataProviderActions.disconnectProviderThunk({
                 clientId: selectedProvider.clientId,
                 dataType: 'passwords',
                 removeMetadata: false,
@@ -52,7 +54,12 @@ export const usePasswords = () => {
     const savePasswords = (nextId: number, passwordEntry: PasswordEntry) => {
         if (!fileName || !aesKey) return;
         dispatch(
-            metadataPasswordsActions.addPasswordMetadata(nextId, passwordEntry, fileName, aesKey),
+            metadataPasswordsActions.addPasswordMetadataThunk(
+                nextId,
+                passwordEntry,
+                fileName,
+                aesKey,
+            ),
         );
     };
 
@@ -61,7 +68,7 @@ export const usePasswords = () => {
             if (!fileName || !aesKey) return;
 
             return dispatch(
-                metadataPasswordsActions.removePasswordMetadata(index, fileName, aesKey),
+                metadataPasswordsActions.removePasswordMetadataThunk(index, fileName, aesKey),
             );
         },
         [fileName, aesKey, dispatch],

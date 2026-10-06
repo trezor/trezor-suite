@@ -1,20 +1,25 @@
 import { useEffect } from 'react';
 
 import { type TranslationKey } from '@suite/intl';
-import { type EarnParams, goto } from '@suite/router';
+import { type EarnParams, gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2, useGetVaultByAddress } from '@suite-common/earn-stablecoin-api';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type EarnAnalyticsStep } from '@suite-common/suite-types/src/staking';
-import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
-import { type YieldPositionFlowType, isStablecoinYieldSupported } from '@suite-common/wallet-core';
+import { getNetworkByYieldXyzId, getNetworkOptional } from '@suite-common/wallet-config';
+import {
+    type YieldPositionFlowType,
+    getYieldVaultContractAddress,
+    isYieldSupported,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 
 import { YieldPageHeader } from 'src/components/earn';
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
-import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
+import { useLayout, useSelector } from 'src/hooks/suite';
 import { type EarnLayoutState } from 'src/types/earn/earnLayout';
 
 type EarnYieldAnalyticsStep = Extract<EarnAnalyticsStep, 'yield-deposit' | 'yield-withdraw'>;
@@ -40,7 +45,7 @@ type VaultValidationParams = {
     vault?: YieldDtoV2;
 };
 
-type VaultTokenValidationParams = VaultValidationParams & {
+type VaultAddressValidationParams = VaultValidationParams & {
     routeParams: EarnParams;
 };
 
@@ -64,22 +69,26 @@ const isVaultNetworkMismatch = ({ account, vault }: VaultValidationParams): bool
     return vaultNetwork?.symbol !== account.symbol;
 };
 
-const isVaultTokenMismatch = ({
+// The vault is looked up by the address in the route, so this only guards against a backend
+// returning something other than what was asked for.
+const isVaultAddressMismatch = ({
     account,
     routeParams,
     vault,
-}: VaultTokenValidationParams): boolean => {
-    if (!vault?.token.address) {
+}: VaultAddressValidationParams): boolean => {
+    if (!vault) {
         return false;
     }
 
-    if (!routeParams.contractAddress) {
+    const vaultAddress = getYieldVaultContractAddress(vault);
+
+    if (!vaultAddress || !routeParams.vaultAddress) {
         return true;
     }
 
     return (
-        getContractAddressForNetworkSymbol(account.symbol, vault.token.address) !==
-        getContractAddressForNetworkSymbol(account.symbol, routeParams.contractAddress)
+        getContractAddressForNetworkSymbol(account.symbol, vaultAddress) !==
+        getContractAddressForNetworkSymbol(account.symbol, routeParams.vaultAddress)
     );
 };
 
@@ -121,32 +130,46 @@ const getEarnLayoutResult = ({
         return { status: 'invalid', reason: 'network-mismatch' };
     }
 
-    if (isVaultTokenMismatch({ account, routeParams, vault })) {
-        return { status: 'invalid', reason: 'token-mismatch' };
+    if (isVaultAddressMismatch({ account, routeParams, vault })) {
+        return { status: 'invalid', reason: 'missing-vault' };
     }
 
-    if (device && !isStablecoinYieldSupported(device, type)) {
+    if (
+        device &&
+        !isYieldSupported(device, {
+            flowType: type,
+            vaultToken: { networkSymbol: account.symbol, contractAddress: vault.token.address },
+        })
+    ) {
         return { status: 'invalid', reason: 'firmware-not-supported' };
     }
 
-    return { status: 'valid', account, routeParams, vault };
+    return { status: 'valid', account, vault };
 };
 
 export const useEarnLayout = ({ type, fallbackTitleId }: UseEarnLayoutParams): EarnLayoutState => {
     const analyticsStep = getAnalyticsStep(type);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { account, routeParams } = useEarnRouteAccount();
     const selectedDevice = useSelector(selectSelectedDevice);
+    // Normalized so a hand-written URL resolves the same vault as one the app produced.
+    const vaultAddress = routeParams?.vaultAddress
+        ? getContractAddressForNetworkSymbol(routeParams.symbol, routeParams.vaultAddress)
+        : undefined;
     const {
         data: vault,
         isLoading,
         isSuccess,
         isError,
-    } = useYieldOpportunity(routeParams?.yieldId);
+    } = useGetVaultByAddress({
+        enabled: true,
+        outputToken: vaultAddress,
+        network: getNetworkOptional(routeParams?.symbol)?.yieldXyzId ?? undefined,
+    });
 
     useEffect(() => {
         if (!routeParams) {
-            dispatch(goto({ routeName: 'suite-earn' }));
+            dispatch(gotoThunk({ routeName: 'suite-earn' }));
         }
     }, [dispatch, routeParams]);
 
@@ -154,7 +177,7 @@ export const useEarnLayout = ({ type, fallbackTitleId }: UseEarnLayoutParams): E
         account,
         device: selectedDevice,
         routeParams,
-        vault,
+        vault: vault ?? undefined,
         type,
         isYieldOpportunitiesLoading: isLoading,
         isYieldOpportunitiesSuccess: isSuccess,
@@ -166,7 +189,7 @@ export const useEarnLayout = ({ type, fallbackTitleId }: UseEarnLayoutParams): E
 
     useEffect(() => {
         if (isFirmwareNotSupported) {
-            dispatch(goto({ routeName: 'suite-earn' }));
+            dispatch(gotoThunk({ routeName: 'suite-earn' }));
         }
     }, [dispatch, isFirmwareNotSupported]);
 

@@ -1,13 +1,13 @@
 import { type ReactNode } from 'react';
-import { View } from 'react-native';
+import { View, type ViewProps } from 'react-native';
 
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { Box } from '../Box';
 import { IconButton } from '../Button/IconButton';
 import { Text } from '../Text';
 import { BottomSheetGrabber } from './BottomSheetGrabber';
-import { Box } from '../Box';
 
 type BottomSheetHeaderProps = {
     title: ReactNode;
@@ -15,6 +15,7 @@ type BottomSheetHeaderProps = {
     isCloseDisplayed: boolean;
     onCloseSheet: () => void;
     scrollDivider?: ReactNode;
+    pointerEvents?: ViewProps['pointerEvents'];
 };
 
 const sheetHeaderStyle = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
@@ -24,14 +25,13 @@ const sheetHeaderStyle = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
         alignItems: isCloseDisplayed ? 'center' : 'flex-start',
         paddingHorizontal: utils.spacings.sp16,
         paddingBottom: utils.spacings.sp16,
+        gap: utils.spacings.sp16,
     }),
 );
 
-const titlesContainer = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
-    (_, { isCloseDisplayed }) => ({
-        maxWidth: isCloseDisplayed ? '70%' : '100%',
-    }),
-);
+const titlesContainer = prepareNativeStyle(_ => ({
+    flexShrink: 1,
+}));
 
 export const BottomSheetHeader = ({
     title,
@@ -39,6 +39,7 @@ export const BottomSheetHeader = ({
     isCloseDisplayed,
     onCloseSheet,
     scrollDivider,
+    pointerEvents,
 }: BottomSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
@@ -46,13 +47,13 @@ export const BottomSheetHeader = ({
     const isHeaderDisplayed = !!(title || subtitle || isCloseDisplayed);
 
     return (
-        <Box>
+        <Box pointerEvents={pointerEvents}>
             <Box marginTop="sp8" marginBottom="sp24">
                 <BottomSheetGrabber />
             </Box>
             {isHeaderDisplayed && (
                 <View style={applyStyle(sheetHeaderStyle, { isCloseDisplayed })}>
-                    <View style={applyStyle(titlesContainer, { isCloseDisplayed })}>
+                    <View style={applyStyle(titlesContainer)}>
                         {title && <Text variant="headline-sm">{title}</Text>}
                         {subtitle && (
                             <Text variant="body-sm" color="contentSecondary">

@@ -9,11 +9,13 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectRouter } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type FeeLevel } from '@trezor/connect';
 import { typography } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingRedirect } from 'src/hooks/wallet/useTradingRedirect';
 import { type Account } from 'src/types/wallet';
 
@@ -35,7 +37,7 @@ export const TradingRedirect = () => {
     } = useTradingRedirect();
     const router = useSelector(selectRouter);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         // get rid of parameters appended by some partners to url which we pass to them
@@ -47,11 +49,7 @@ export const TradingRedirect = () => {
         const indexParam: string = params[3];
         const redirectCommonParams = {
             routeType: params[0] as
-                | 'detail'
-                | 'offers'
-                | 'sell-detail'
-                | 'sell-offers'
-                | 'exchange-offers',
+                'detail' | 'offers' | 'sell-detail' | 'sell-offers' | 'exchange-offers',
             symbol: params[1] as Account['symbol'],
             accountType: params[2] as Account['accountType'],
             index: parseInt(indexParam, 10),

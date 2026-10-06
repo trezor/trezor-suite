@@ -6,7 +6,7 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { EarnScreen } from '../screens/EarnScreen';
+import { EarnScreen } from '../screens/earn/EarnScreen';
 
 const AccountsStack = createNativeStackNavigator<EarnStackParamList>();
 

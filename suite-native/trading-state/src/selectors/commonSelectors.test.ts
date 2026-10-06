@@ -2,7 +2,8 @@ import type { CryptoId } from 'invity-api';
 
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { type MessageSystemState } from '@suite-common/message-system';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworksRootState } from '@suite-common/networks';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import {
     type Action,
@@ -16,6 +17,8 @@ import {
     type TradingRootStateWithDeviceAndAccounts,
     selectTradingProviderMetadata,
 } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
@@ -28,6 +31,7 @@ import {
     getEthAccount,
     getExchangeTrade,
     getInitializedTradingState,
+    getSellTrade,
     getWalletState,
 } from '@suite-native/trading-fixtures';
 import { type TradeableAsset } from '@suite-native/trading-types';
@@ -37,7 +41,6 @@ import { BigNumber } from '@trezor/utils';
 import { type TradingRootState, tradingInitialState } from '../reducers';
 import {
     selectAccountLabelWithNetworkFallback,
-    selectAccountsWithTokensToSellSectionCondensedListByTradingType,
     selectAccountsWithTokensToSellSectionListByTradingType,
     selectActiveTradingType,
     selectAmountInBaseFiatCurrency,
@@ -50,14 +53,18 @@ import {
     selectIsTradingExchangeEnabled,
     selectIsTradingSellEnabled,
     selectIsTradingSlip24Enabled,
+    selectIsTradingTxSimulationEnabled,
     selectTradeToBeOpened,
     selectTradesToWatchByAccount,
+    selectTradingAccountKeyByOrderId,
     selectTradingEnvironment,
     selectTradingProviderConfirmationStatus,
     selectVisibleDeviceAccountsByNetworkSymbolSorted,
 } from './commonSelectors';
 
-const supportedCoins: readonly NetworkSymbol[] = ['btc', 'eth', 'base'];
+const allNetworkSymbols = mockGetSupportedNetworks();
+
+const networks = mockNetworksState(allNetworkSymbols);
 
 const actionId = 'ActionId_1';
 const contentText = 'Content Text';
@@ -84,6 +91,7 @@ const getPreloadedState = ({
     sell,
     exchange,
     concierge,
+    txSimulation,
     blacklist,
     slip24,
     residence,
@@ -93,6 +101,7 @@ const getPreloadedState = ({
     sell?: boolean;
     exchange?: boolean;
     concierge?: boolean;
+    txSimulation?: boolean;
     blacklist?: boolean;
     slip24?: boolean;
     residence?: boolean;
@@ -121,6 +130,12 @@ const getPreloadedState = ({
         features.push({
             domain: 'trading.concierge',
             flag: concierge,
+        });
+    }
+    if (txSimulation !== undefined) {
+        features.push({
+            domain: 'trading.txSimulation',
+            flag: txSimulation,
         });
     }
     if (blacklist !== undefined) {
@@ -272,43 +287,71 @@ describe('commonSelectors', () => {
         });
     });
 
+    describe('selectIsTradingTxSimulationEnabled', () => {
+        it('should be enabled when the remote feature is enabled', () => {
+            expect(
+                selectIsTradingTxSimulationEnabled(
+                    getPreloadedState({
+                        txSimulation: true,
+                    }),
+                ),
+            ).toBe(true);
+        });
+
+        it('should be disabled when the remote feature is disabled', () => {
+            expect(
+                selectIsTradingTxSimulationEnabled(
+                    getPreloadedState({
+                        txSimulation: false,
+                    }),
+                ),
+            ).toBe(false);
+        });
+
+        it('should default the remote feature to enabled', () => {
+            expect(selectIsTradingTxSimulationEnabled(getPreloadedState({}))).toBe(true);
+        });
+    });
+
     describe('selectIsTradingSlip24Enabled', () => {
         const getSlip24State = (
-            isFeatureFlagEnabled: boolean,
+            isExperimentalFeatureEnabled: boolean,
             features: object | undefined = {
                 major_version: 2,
                 minor_version: 12,
-                patch_version: 1,
+                patch_version: 5,
             },
         ) =>
             ({
                 messageSystem: messageSystemState,
-                featureFlags: {
-                    ...featureFlagsInitialState,
-                    [FeatureFlag.IsTradingSlip24Enabled]: isFeatureFlagEnabled,
+                appSettings: {
+                    ...appSettingsInitialState,
+                    experimentalFeatures: isExperimentalFeatureEnabled ? ['slip24'] : [],
                 },
                 device: { selectedDevice: { features } },
                 wallet: { trading: tradingInitialState },
             }) as any;
 
-        it('should be enabled when the feature flag is on for a supported network and firmware', () => {
-            expect(selectIsTradingSlip24Enabled(getSlip24State(true), getBtcAccount())).toBe(true);
+        it('should be enabled when the experimental feature is on for a supported network and firmware', () => {
+            expect(
+                selectIsTradingSlip24Enabled(getSlip24State(true), getBtcAccount(), 'exchange'),
+            ).toBe(true);
         });
 
         it('should be disabled when the device firmware is too old', () => {
             const state = getSlip24State(true, {
                 major_version: 2,
                 minor_version: 12,
-                patch_version: 0,
+                patch_version: 4,
             });
 
-            expect(selectIsTradingSlip24Enabled(state, getBtcAccount())).toBe(false);
+            expect(selectIsTradingSlip24Enabled(state, getBtcAccount(), 'exchange')).toBe(false);
         });
 
-        it('should be disabled when the feature flag is off', () => {
-            expect(selectIsTradingSlip24Enabled(getSlip24State(false), getBtcAccount())).toBe(
-                false,
-            );
+        it('should be disabled when the experimental feature is off', () => {
+            expect(
+                selectIsTradingSlip24Enabled(getSlip24State(false), getBtcAccount(), 'exchange'),
+            ).toBe(false);
         });
 
         it('should be disabled when the message-system feature is disabled', () => {
@@ -317,17 +360,40 @@ describe('commonSelectors', () => {
                 messageSystem: getPreloadedState({ slip24: false }).messageSystem,
             };
 
-            expect(selectIsTradingSlip24Enabled(state, getBtcAccount())).toBe(false);
+            expect(selectIsTradingSlip24Enabled(state, getBtcAccount(), 'exchange')).toBe(false);
         });
 
         it('should be disabled for an unsupported network type', () => {
-            expect(selectIsTradingSlip24Enabled(getSlip24State(true), getCardanoAccount())).toBe(
+            expect(
+                selectIsTradingSlip24Enabled(getSlip24State(true), getCardanoAccount(), 'exchange'),
+            ).toBe(false);
+        });
+
+        it('should be disabled when there is no account', () => {
+            expect(selectIsTradingSlip24Enabled(getSlip24State(true), undefined, 'exchange')).toBe(
                 false,
             );
         });
 
-        it('should be disabled when there is no account', () => {
-            expect(selectIsTradingSlip24Enabled(getSlip24State(true), undefined)).toBe(false);
+        it('should be disabled for sell when the firmware supports swap but not sell payment requests', () => {
+            const state = getSlip24State(true, {
+                major_version: 2,
+                minor_version: 12,
+                patch_version: 6,
+            });
+
+            expect(selectIsTradingSlip24Enabled(state, getBtcAccount(), 'exchange')).toBe(true);
+            expect(selectIsTradingSlip24Enabled(state, getBtcAccount(), 'sell')).toBe(false);
+        });
+
+        it('should be enabled for sell when the firmware supports sell payment requests', () => {
+            const state = getSlip24State(true, {
+                major_version: 2,
+                minor_version: 13,
+                patch_version: 0,
+            });
+
+            expect(selectIsTradingSlip24Enabled(state, getBtcAccount(), 'sell')).toBe(true);
         });
     });
 
@@ -399,6 +465,32 @@ describe('commonSelectors', () => {
             expect(selectTradeToBeOpened(getMockStateForTradeToBeOpened('order1'))).toEqual({
                 data: { orderId: 'order1' },
             });
+        });
+    });
+
+    describe('selectTradingAccountKeyByOrderId', () => {
+        const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+        const sellTrade = getSellTrade({ status: 'SEND_CRYPTO' });
+        const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
+        const state = {
+            wallet: {
+                trading: {
+                    ...tradingInitialState,
+                    trades: [buyTrade, sellTrade, exchangeTrade],
+                },
+            },
+        } as TradingRootState;
+
+        it.each([
+            [buyTrade.data.orderId, buyTrade.selectedAccountKey],
+            [sellTrade.data.orderId, sellTrade.sendAccountKey],
+            [exchangeTrade.data.orderId, exchangeTrade.sendAccountKey],
+        ])('should select the associated account for order %s', (orderId, accountKey) => {
+            expect(selectTradingAccountKeyByOrderId(state, orderId)).toBe(accountKey);
+        });
+
+        it('should return undefined for an unknown order', () => {
+            expect(selectTradingAccountKeyByOrderId(state, 'unknown-order')).toBeUndefined();
         });
     });
 
@@ -507,10 +599,11 @@ describe('commonSelectors', () => {
     });
 
     describe('selectAccountsWithTokensToSellSectionListByTradingType', () => {
-        let state: TradingRootState & AccountsRootState;
+        let state: TradingRootState & AccountsRootState & NetworksRootState;
 
         beforeEach(() => {
             state = {
+                networks,
                 wallet: getWalletState({ tradeType: 'exchange' }),
             };
         });
@@ -523,11 +616,7 @@ describe('commonSelectors', () => {
             } as any;
 
             expect(
-                selectAccountsWithTokensToSellSectionListByTradingType(
-                    stateWithDevice,
-                    'exchange',
-                    supportedCoins,
-                ),
+                selectAccountsWithTokensToSellSectionListByTradingType(stateWithDevice, 'exchange'),
             ).toEqual([]);
         });
 
@@ -541,6 +630,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                networks,
                 wallet: {
                     trading: cleanState,
                     accounts: [btcAccount],
@@ -556,7 +646,6 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
-                supportedCoins,
             );
 
             expect(result.length).toBeGreaterThan(0);
@@ -582,6 +671,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                networks,
                 wallet: {
                     trading: cleanState,
                     accounts: [zeroBalanceAccount],
@@ -594,11 +684,7 @@ describe('commonSelectors', () => {
             } as any;
 
             expect(
-                selectAccountsWithTokensToSellSectionListByTradingType(
-                    stateWithDevice,
-                    'exchange',
-                    supportedCoins,
-                ),
+                selectAccountsWithTokensToSellSectionListByTradingType(stateWithDevice, 'exchange'),
             ).toEqual([]);
         });
 
@@ -634,6 +720,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                networks,
                 featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
@@ -662,7 +749,6 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'sell',
-                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -695,6 +781,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                networks,
                 featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
@@ -720,7 +807,6 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
-                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -751,6 +837,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                networks,
                 featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
@@ -776,7 +863,6 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'sell',
-                supportedCoins,
             );
 
             expect(result).toEqual([]); // No sections with assets
@@ -805,6 +891,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                networks,
                 featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
@@ -820,7 +907,6 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
-                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -840,6 +926,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('buy');
 
             const stateWithDevice = {
+                networks,
                 featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
@@ -855,7 +942,6 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'buy',
-                supportedCoins,
             );
 
             expect(result).toEqual([]);
@@ -873,6 +959,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('sell');
 
             const stateWithDevice = {
+                networks,
                 featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
@@ -888,7 +975,6 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
-                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -907,6 +993,7 @@ describe('commonSelectors', () => {
             const testDeviceState: StaticSessionId = 'testDevice@x:0';
 
             const stateWithDevice = {
+                networks,
                 featureFlags: featureFlagsInitialState,
                 wallet: getWalletState({ tradeType: 'exchange', deviceState: testDeviceState }),
                 device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
@@ -917,7 +1004,6 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
-                supportedCoins,
             );
 
             const accountAsset = result[3]?.data[0];
@@ -940,6 +1026,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                networks,
                 wallet: {
                     trading: cleanState,
                     accounts: [cardanoAccount, btcAccount],
@@ -958,7 +1045,6 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
-                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -986,6 +1072,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                networks,
                 wallet: {
                     trading: cleanState,
                     accounts: [regtestAccount, btcAccount],
@@ -1001,7 +1088,6 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
-                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -1023,6 +1109,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                networks,
                 wallet: {
                     trading: cleanState,
                     accounts: [cardanoAccount, btcAccount],
@@ -1041,7 +1128,6 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
-                supportedCoins,
             );
 
             expect(result.length).toBe(2);
@@ -1073,6 +1159,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                networks,
                 featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
@@ -1098,7 +1185,6 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
-                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -1108,8 +1194,8 @@ describe('commonSelectors', () => {
         });
     });
 
-    describe('selectAccountsWithTokensToSellSectionCondensedListByTradingType', () => {
-        it('should group disabled tokens', () => {
+    describe('non-tradeable assets', () => {
+        it('should preserve disabled tokens', () => {
             const testDeviceState: StaticSessionId = 'testDevice@x:0';
             const ethAccount = {
                 ...getEthAccount(),
@@ -1150,6 +1236,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                networks,
                 featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
@@ -1178,21 +1265,17 @@ describe('commonSelectors', () => {
                 fiat: { rates: {}, current: 'usd' },
             } as any;
 
-            const result = selectAccountsWithTokensToSellSectionCondensedListByTradingType(
+            const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
-                supportedCoins,
             );
 
             expect(result.length).toBe(1);
             expect(result[0]?.data).toEqual([
                 expect.objectContaining({ name: 'Ethereum', isEnabled: true }),
                 expect.objectContaining({ name: 'USDC', isEnabled: true }),
-                {
-                    count: 2,
-                    name: 'non-tradeable-assets',
-                    isEnabled: false,
-                },
+                expect.objectContaining({ name: 'non tradeable token 1', isEnabled: false }),
+                expect.objectContaining({ name: 'non tradeable token 2', isEnabled: false }),
             ]);
         });
 
@@ -1219,6 +1302,7 @@ describe('commonSelectors', () => {
             const cleanState = getInitializedTradingState('exchange');
 
             const stateWithDevice = {
+                networks,
                 featureFlags: featureFlagsInitialState,
                 wallet: {
                     trading: cleanState,
@@ -1244,10 +1328,9 @@ describe('commonSelectors', () => {
                 fiat: { rates: {}, current: 'usd' },
             } as any;
 
-            const result = selectAccountsWithTokensToSellSectionCondensedListByTradingType(
+            const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
-                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -1401,6 +1484,7 @@ describe('commonSelectors', () => {
         });
 
         const getStateWithAccounts = () => ({
+            networks: mockNetworksState(allNetworkSymbols),
             wallet: {
                 ...getWalletState({ tradeType: 'exchange' }),
                 accounts: [eth1Account, btc0Account, btc1Account, btc2Account, btc3Account],
@@ -1419,7 +1503,7 @@ describe('commonSelectors', () => {
         it('should sort accounts by type', () => {
             const result = selectVisibleDeviceAccountsByNetworkSymbolSorted(
                 getStateWithAccounts(),
-                'btc',
+                asNetworkSymbol('btc'),
             );
 
             expect(result).toEqual([
@@ -1432,8 +1516,16 @@ describe('commonSelectors', () => {
         it('should be stable', () => {
             const preloadedState = getStateWithAccounts();
 
-            expect(selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc')).toBe(
-                selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc'),
+            expect(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(
+                    preloadedState,
+                    asNetworkSymbol('btc'),
+                ),
+            ).toBe(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(
+                    preloadedState,
+                    asNetworkSymbol('btc'),
+                ),
             );
         });
 
@@ -1441,8 +1533,16 @@ describe('commonSelectors', () => {
             const preloadedState = getStateWithAccounts();
             preloadedState.wallet.accounts = [];
 
-            expect(selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc')).toBe(
-                selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc'),
+            expect(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(
+                    preloadedState,
+                    asNetworkSymbol('btc'),
+                ),
+            ).toBe(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(
+                    preloadedState,
+                    asNetworkSymbol('btc'),
+                ),
             );
         });
     });

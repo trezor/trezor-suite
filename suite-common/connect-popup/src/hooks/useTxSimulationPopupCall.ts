@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
+import { isSupportedSolanaNetwork } from '@trezor/network-solana/constants';
+import { isSupportedStellarNetwork } from '@trezor/network-stellar/constants';
 
 import {
     type ConnectPopupStateRootState,
@@ -44,10 +46,39 @@ export function useTxSimulationPopupCall() {
                     sourceOrigin: source.origin,
                 };
 
+            case 'solanaSignTransaction': {
+                // The account is resolved by the method hook before the simulation is dispatched.
+                if (!account || !isSupportedSolanaNetwork(account.symbol)) {
+                    return null;
+                }
+
+                return {
+                    method,
+                    symbol: account.symbol,
+                    payload: payload as TxSimulationMethod<'solanaSignTransaction'>['payload'],
+                    fromAddress,
+                    sourceOrigin: source.origin,
+                };
+            }
+
+            case 'stellarSignTransaction': {
+                if (!account || !isSupportedStellarNetwork(account.symbol)) {
+                    return null;
+                }
+
+                return {
+                    method,
+                    symbol: account.symbol,
+                    payload: payload as TxSimulationMethod<'stellarSignTransaction'>['payload'],
+                    fromAddress,
+                    sourceOrigin: source.origin,
+                };
+            }
+
             default:
                 return null;
         }
-    }, [txSimulationPopupCall]);
+    }, [txSimulationPopupCall, account]);
 
     if (!action || !account || !txSimulationPopupCall) {
         return null;

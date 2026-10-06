@@ -1,12 +1,13 @@
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { type ExplorerItem, type ExplorerState } from './explorerReducer';
 
 export const selectNetworkExplorers = (state: ExplorerState, symbol: NetworkSymbol): ExplorerItem =>
-    state.wallet.explorer[symbol];
+    state.wallet.explorer[symbol as LegacyNetworkSymbol];
 
 export const selectNetworkExplorerType = (state: ExplorerState, symbol: NetworkSymbol) =>
-    state.wallet.explorer[symbol].custom ? 'custom' : 'default';
+    state.wallet.explorer[symbol as LegacyNetworkSymbol].custom ? 'custom' : 'default';
 
 export const selectExplorer = (
     state: ExplorerState,
@@ -16,7 +17,7 @@ export const selectExplorer = (
         return undefined;
     }
 
-    const config = state.wallet.explorer[symbol];
+    const config = state.wallet.explorer[symbol as LegacyNetworkSymbol];
 
     return config.custom ?? config.default;
 };

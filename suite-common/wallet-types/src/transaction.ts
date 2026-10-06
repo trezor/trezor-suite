@@ -1,3 +1,4 @@
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type {
@@ -40,6 +41,8 @@ export const SUITE_PRECOMPOSE_ERRORS = {
     TR_NOT_ENOUGH_SELECTED: 'TR_NOT_ENOUGH_SELECTED',
     TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING',
     TR_GENERIC_ERROR_TITLE: 'TR_GENERIC_ERROR_TITLE',
+    TR_STELLAR_SIMULATION_FAILED: 'TR_STELLAR_SIMULATION_FAILED',
+    TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE: 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
 } as const satisfies Record<string, string>;
 
 type SuitePrecomposeError = ObjectValues<typeof SUITE_PRECOMPOSE_ERRORS>;
@@ -83,6 +86,9 @@ export const asTxTargetId = (value: string) => value as TxTargetId;
 export type Output = {
     type: 'payment' | 'opreturn';
     address: string;
+    // Onchain hex address a named input (e.g. ENS) resolved to, if any. The user-typed
+    // name stays on `address`; composing/signing uses this resolved value when present.
+    resolvedAddress?: string;
     amount: string;
     fiat: string;
     currency: BaseCurrencyOption;
@@ -106,7 +112,7 @@ export interface FeeInfo {
 export type FeesStatus = 'preloaded' | 'loading' | 'loaded' | 'error';
 
 export type FeesState = {
-    [key in NetworkSymbol]?: {
+    [key in LegacyNetworkSymbol]?: {
         status: FeesStatus;
         data?: FeeInfo;
     };
@@ -156,6 +162,7 @@ type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectResponseNonFi
     accountActivationFee?: string;
     memoFee?: string;
     solanaTxMeta?: SolanaTxMeta;
+    isDeviceReviewOnly?: boolean;
 };
 
 // base of PrecomposedTransactionFinal
@@ -175,6 +182,7 @@ type PrecomposedTransactionBase = PrecomposedTransactionConnectResponseFinal & {
     maxFeePerGas?: string;
     maxPriorityFeePerGas?: string;
     solanaTxMeta?: SolanaTxMeta;
+    isDeviceReviewOnly?: boolean;
 };
 
 // base of PrecomposedTransactionFinal
@@ -195,7 +203,6 @@ export type PrecomposedTransactionFinalBumpFeeRbf = PrecomposedTransactionBase &
     feeDifference: string;
     // Native RBF is a firmware feature to recognize an RBF transaction and simplify transaction review flow.
     useNativeRbf: boolean;
-    useDecreaseOutput: boolean;
 };
 
 export type PrecomposedTransactionFinalCancelRbf = PrecomposedTransactionBase & {
@@ -210,9 +217,7 @@ export type PrecomposedTransactionFinal =
     | PrecomposedTransactionFinalCancelRbf;
 
 export type PrecomposedTransaction =
-    | PrecomposedTransactionError
-    | PrecomposedTransactionNonFinal
-    | PrecomposedTransactionFinal;
+    PrecomposedTransactionError | PrecomposedTransactionNonFinal | PrecomposedTransactionFinal;
 
 export type PrecomposedTransactionCardano =
     | PrecomposedTransactionCardanoError

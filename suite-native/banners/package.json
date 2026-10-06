@@ -1,0 +1,41 @@
+{
+    "name": "@suite-native/banners",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@react-navigation/native": "7.1.31",
+        "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/analytics": "workspace:*",
+        "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/device": "workspace:*",
+        "@suite-common/earn-stablecoin": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-native/analytics": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/icons": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/link": "workspace:*",
+        "@suite-native/module-earn": "workspace:*",
+        "@suite-native/navigation": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
+        "@trezor/urls": "workspace:*",
+        "react": "19.2.3",
+        "react-native": "0.86.0",
+        "react-native-gesture-handler": "~2.32.0",
+        "react-native-reanimated": "4.5.0",
+        "react-native-worklets": "0.10.0",
+        "react-redux": "9.3.0"
+    }
+}

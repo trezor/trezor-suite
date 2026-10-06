@@ -1,26 +1,39 @@
-import { createBitcoinSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
-import { createCardanoSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
-import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
-import { createRippleSuiteCommonNetworkModule } from '@trezor/network-ripple-suite-common';
-import { createSolanaSuiteCommonNetworkModule } from '@trezor/network-solana-suite-common';
-import { createStellarSuiteCommonNetworkModule } from '@trezor/network-stellar-suite-common';
-import { createTronSuiteCommonNetworkModule } from '@trezor/network-tron-suite-common';
+import type { Dispatch } from '@reduxjs/toolkit';
 
-import { type NetworkModules } from './NetworkModules';
+import type { NetworkSuiteCommonModuleApi } from '@trezor/network-module-suite-common-types';
 
-export const createNetworksCompositionRoot = (): NetworkModules => {
-    // When adding a new Network Module, you have to
-    //    1. register it here to have the runtime object for DI
-    //    2. and in the `NetworkModules` to have static typings right
-    const networkModules: NetworkModules = {
-        bitcoin: createBitcoinSuiteCommonNetworkModule(),
-        ethereum: createEthereumSuiteCommonNetworkModule(),
-        ripple: createRippleSuiteCommonNetworkModule(),
-        cardano: createCardanoSuiteCommonNetworkModule(),
-        solana: createSolanaSuiteCommonNetworkModule(),
-        stellar: createStellarSuiteCommonNetworkModule(),
-        tron: createTronSuiteCommonNetworkModule(),
+import { createNetworkModuleRepository } from './NetworkModuleRepository';
+import type { NetworksServices } from './NetworksServices';
+import { createAddressValidator } from './createAddressValidator';
+import { createGetAccountSyncInterval } from './createGetAccountSyncInterval';
+import { createGetNamedAddressSupport } from './createGetNamedAddressSupport';
+import { createGetNetworkConfig } from './createGetNetworkConfig';
+import { createGetNetworkConfigs } from './createGetNetworkConfigs';
+import { createLoadNetworkModules } from './createLoadNetworkModules';
+import { createNetworkModulesCompositionRoot } from './createNetworkModulesCompositionRoot';
+
+export type NetworksCompositionRootDeps = NetworkSuiteCommonModuleApi & { dispatch: Dispatch };
+
+export const createNetworksCompositionRoot = (
+    deps: NetworksCompositionRootDeps,
+): NetworksServices => {
+    const networkModules = createNetworkModulesCompositionRoot(deps);
+    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+    const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
+    const getNetworkConfigs = createGetNetworkConfigs({
+        getNetworkConfig,
+        networkModuleRepository,
+    });
+
+    return {
+        networkModuleRepository,
+        getNetworkConfig,
+        getAccountSyncInterval: createGetAccountSyncInterval({ networkModuleRepository }),
+        addressValidator: createAddressValidator({ networkModuleRepository }),
+        getNamedAddressSupport: createGetNamedAddressSupport({ networkModuleRepository }),
+        loadNetworkModules: createLoadNetworkModules({
+            dispatch: deps.dispatch,
+            getNetworkConfigs,
+        }),
     };
-
-    return networkModules;
 };

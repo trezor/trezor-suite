@@ -23,7 +23,6 @@
         "@suite/external-links": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/nfc": "workspace:*",
-        "@suite/recovery": "workspace:*",
         "@suite/router": "workspace:*",
         "@suite/settings": "workspace:*",
         "@trezor/components": "workspace:*",

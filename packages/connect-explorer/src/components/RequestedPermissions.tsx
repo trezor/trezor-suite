@@ -10,10 +10,6 @@ import {
 } from '@trezor/connect-common';
 import { PlusIcon, XIcon } from '@trezor/icons';
 
-import * as trezorConnectActions from '../actions/trezorConnectActions';
-import { useActions, useSelector } from '../hooks';
-import type { Field } from '../types';
-
 type CoinOption = CoinSymbol | '';
 
 const permissionOptions = GRANTABLE_PERMISSIONS.map(permission => ({
@@ -26,13 +22,6 @@ const coinOptions: { value: CoinOption; label: string }[] = [
     { value: NO_COIN, label: '— coin-less —' },
     ...coinSymbols.map(coin => ({ value: coin, label: coin })),
 ];
-
-// The reducer keys the change by `field.name` only; `value` carries the whole updated array.
-const asField = (value: PermissionRequest[]): Field<PermissionRequest[]> => ({
-    name: 'requestedPermissions',
-    type: 'json',
-    value,
-});
 
 const Wrapper = styled.div`
     margin: 16px 0;
@@ -52,16 +41,17 @@ const SelectWrapper = styled.div`
     min-width: 0;
 `;
 
-export const RequestedPermissions = () => {
-    const permissions = useSelector(state => state.connect?.options?.requestedPermissions) ?? [];
-    const coreMode = useSelector(state => state.connect?.options?.coreMode) ?? 'auto';
-    const isDeeplink = coreMode === 'deeplink';
-    const actions = useActions({
-        onFieldChange: trezorConnectActions.onConnectOptionChange,
-    });
+interface RequestedPermissionsProps {
+    value: PermissionRequest[];
+    onChange: (next: PermissionRequest[]) => void;
+    isDeeplink: boolean;
+}
 
-    const update = (next: PermissionRequest[]) => actions.onFieldChange(asField(next), next);
-
+export const RequestedPermissions = ({
+    value: permissions,
+    onChange: update,
+    isDeeplink,
+}: RequestedPermissionsProps) => {
     const updateAt = (index: number, patch: (p: PermissionRequest) => PermissionRequest) =>
         update(permissions.map((p, i) => (i === index ? patch(p) : p)));
 

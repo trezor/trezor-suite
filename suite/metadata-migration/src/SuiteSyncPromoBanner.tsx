@@ -12,7 +12,6 @@ import {
     selectDeviceStaticSessionId,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
     type WithSuiteSyncAndDeviceState,
     selectSuiteSyncInteraction,
@@ -22,7 +21,6 @@ import { SidebarBanner } from '@trezor/product-components';
 
 type SuiteSyncPromoBannerRootState = LegacyLabelingVisibleRootState &
     WithSuiteSyncAndDeviceState &
-    MessageSystemRootState &
     DeviceRootState;
 
 export const selectShouldShowSuiteSyncPromoBanner = (state: SuiteSyncPromoBannerRootState) => {

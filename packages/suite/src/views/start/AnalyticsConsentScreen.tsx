@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { TrezorLink } from '@suite/external-links';
 import { useServices } from '@suite-common/dependency-injection';
 import { Column } from '@trezor/components';
@@ -10,7 +10,7 @@ import { DATA_TOS_URL, DOCS_ANALYTICS_URL } from '@trezor/urls';
 import { WelcomeLayoutWithoutModalSwitcher } from '../../components/suite/layouts/WelcomeLayout/WelcomeLayoutWithoutModalSwitcher';
 
 export const AnalyticsConsentScreen = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const onConfirm = (trackingEnabled: boolean) => {
         if (trackingEnabled) {

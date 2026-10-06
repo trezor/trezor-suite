@@ -1,8 +1,10 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingSellInfo,
     selectTradingSellIsLoading,
@@ -35,7 +37,7 @@ type SellSelectQuoteReturn = {
 };
 
 export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const { control } = form;
     const { isValid } = useFormState({ control });

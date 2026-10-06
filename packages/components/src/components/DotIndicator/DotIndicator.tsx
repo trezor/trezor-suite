@@ -20,7 +20,7 @@ export type DotIndicatorProps = {
 };
 
 export const DotIndicator = ({ isActive }: DotIndicatorProps) => (
-    <Box padding={4}>
+    <Box padding={4} data-component="DotIndicator">
         <Circle $isActive={isActive} />
     </Box>
 );

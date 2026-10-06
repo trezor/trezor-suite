@@ -1,13 +1,14 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
-    "include": ["src/**/*.ts", "redux.d.ts"],
+    "include": ["src/**/*.ts"],
     "exclude": ["**/node_modules", "**/libDev"],
     "references": [
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -36,12 +37,16 @@
         { "path": "../locks" },
         { "path": "../modal" },
         { "path": "../router" },
+        { "path": "../suite-lifecycle" },
         { "path": "../tor" },
         {
             "path": "../../packages/blockchain-link"
         },
         { "path": "../../packages/coinjoin" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/ipc-proxy" },
         { "path": "../../packages/type-utils" },

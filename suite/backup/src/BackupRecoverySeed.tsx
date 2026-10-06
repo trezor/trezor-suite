@@ -1,9 +1,11 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { Anchor, SettingsAnchor, goto } from '@suite/router';
+import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_RECOVERY_SEED_URL } from '@trezor/urls';
 
@@ -12,13 +14,13 @@ interface BackupRecoverySeedProps {
 }
 
 export const BackupRecoverySeed = ({ isDeviceLocked }: BackupRecoverySeedProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const device = useSelector(selectSelectedDevice);
 
     const needsBackup = device?.features?.backup_availability === 'Required';
 
     const handleClick = () =>
-        dispatch(goto({ routeName: 'backup-index', params: { cancelable: true } }));
+        dispatch(gotoThunk({ routeName: 'backup-index', params: { cancelable: true } }));
 
     if (!needsBackup) return null;
 

@@ -2,9 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/redux-utils"
-        },
+        { "path": "../tor-types" },
         { "path": "../../packages/utils" },
         { "path": "../../packages/urls" }
     ]

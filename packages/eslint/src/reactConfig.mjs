@@ -1,3 +1,4 @@
+import { fixupConfigRules } from '@eslint/compat';
 import pluginReact from 'eslint-plugin-react';
 import pluginReactHooks from 'eslint-plugin-react-hooks';
 
@@ -9,7 +10,8 @@ import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
 /** @type {Config[]} */
 export const reactConfig = [
     // React
-    pluginReact.configs.flat.recommended,
+    // TODO: Remove the compatibility wrapper when eslint-plugin-react supports ESLint 10.
+    ...fixupConfigRules(pluginReact.configs.flat.recommended),
     {
         languageOptions: pluginReact.configs.flat.recommended.languageOptions,
         settings: { react: { version: 'detect' } },

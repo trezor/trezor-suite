@@ -1,6 +1,6 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
-import { deviceActions } from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { type EncryptedHex, type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type DelegatedIdentityKey } from '@suite-common/suite-types';
 import { exhaustive } from '@trezor/type-utils';
@@ -50,7 +50,10 @@ export const createLoadDelegatedIdentityKeyFromState =
                 case 'EncryptionUnavailable':
                 case 'DecryptionFailed': {
                     deps.dispatch(
-                        deviceActions.setDelegatedIdentityKey({ deviceId, delegatedKey: null }),
+                        persistentDeviceDataActions.setDelegatedIdentityKey({
+                            deviceId,
+                            delegatedKey: null,
+                        }),
                     );
 
                     return null;

@@ -3,13 +3,14 @@ import { useForm } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     TRADING_EXCHANGE_FORM_CEX,
     TRADING_EXCHANGE_FORM_DEX,
     type TradingAssetSellOption,
     type TradingExchangeFormProps,
 } from '@suite-common/trading';
+import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 
@@ -26,7 +27,8 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
-const ACCOUNT = mockWalletAccount({ symbol: 'btc', formattedBalance: '2' });
+const btcSymbol = toNetworkSymbolNonTestnet('btc');
+const ACCOUNT = mockWalletAccount({ symbol: btcSymbol, formattedBalance: '2' });
 
 const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'bitcoin' as CryptoId,
@@ -34,11 +36,11 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     name: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: 'btc',
+    symbol: btcSymbol,
     displaySymbol: 'BTC',
     networkName: 'Bitcoin',
-    networkSymbol: 'btc',
-    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: 'btc' }),
+    networkSymbol: btcSymbol,
+    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),
 };
 
 const DEX_QUOTE: ExchangeTrade = {
@@ -93,18 +95,20 @@ const buildDefaults = (
 
 const mockComposeRequest = jest.fn();
 
+type RenderExchangeDexQuoteParams = {
+    defaultValues: TradingExchangeFormProps;
+    dexQuotes?: ExchangeTrade[];
+    isFormLoading?: boolean;
+    isLoadingQuote?: boolean;
+};
+
 const renderExchangeDexQuote = ({
     defaultValues,
     dexQuotes = [],
     isFormLoading = false,
     isLoadingQuote = false,
-}: {
-    defaultValues: TradingExchangeFormProps;
-    dexQuotes?: ExchangeTrade[];
-    isFormLoading?: boolean;
-    isLoadingQuote?: boolean;
-}) => {
-    const store = configureMockStore();
+}: RenderExchangeDexQuoteParams) => {
+    const { services } = createTestCompositionRoot<void, unknown>({});
 
     return renderHookWithStoreProvider(
         () => {
@@ -126,7 +130,7 @@ const renderExchangeDexQuote = ({
 
             return { dex, methods };
         },
-        { store },
+        { services },
     );
 };
 

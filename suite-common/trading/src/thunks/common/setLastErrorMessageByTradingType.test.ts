@@ -1,6 +1,6 @@
 import { type ActionCreator } from '@reduxjs/toolkit';
 
-import { setLastErrorMessageByTradingType } from './setLastErrorMessageByTradingType';
+import { setLastErrorMessageByTradingTypeThunk } from './setLastErrorMessageByTradingType';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingSellActions } from '../../reducers/sellReducer';
@@ -22,7 +22,7 @@ describe('setLastErrorMessageByTradingType', () => {
     ])('should set last error message for %s', async (tradingType, expectedAction) => {
         const errorMessage = 'Test error message';
 
-        const thunk = setLastErrorMessageByTradingType({
+        const thunk = setLastErrorMessageByTradingTypeThunk({
             errorMessage,
             tradingType,
         });

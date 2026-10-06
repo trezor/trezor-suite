@@ -4,8 +4,11 @@
     "include": ["./src"],
     "references": [
         {
-            "path": "../../network-module/network-module-suite-common-types"
+            "path": "../../../packages/device-utils"
         },
-        { "path": "../../../packages/utils" }
+        { "path": "../network-cardano" },
+        {
+            "path": "../../network-module/network-module-suite-common-types"
+        }
     ]
 }

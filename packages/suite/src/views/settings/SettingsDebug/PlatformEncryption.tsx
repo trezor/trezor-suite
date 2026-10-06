@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { asEncryptedHex, selectPlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { Button, ButtonGroup, Column, Textarea } from '@trezor/components';
+import { asEncryptedHex, injectPlatformEncryption } from '@suite-common/platform-encryption';
+import { Banner, Button, ButtonGroup, Column, Textarea } from '@trezor/components';
 import { SectionItem, SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 import { type Branded } from '@trezor/type-utils';
@@ -17,7 +17,7 @@ export const PlatformEncryption = () => {
     const [plaintext, setPlaintext] = useState(asValue(''));
     const [ciphertext, setCiphertext] = useState(asEncryptedHex<Value>(''));
 
-    const { platformEncryption } = useServices(selectPlatformEncryptionDep);
+    const { platformEncryption } = useServices(injectPlatformEncryption);
 
     const encrypt = async () => {
         const result = await platformEncryption.encrypt({ value: plaintext });
@@ -43,6 +43,10 @@ export const PlatformEncryption = () => {
         <SettingsSection hasVerticalLayout={isBelowLaptop} title="Platform Encryption">
             <SectionItem>
                 <Column gap={16} flex="1">
+                    <Banner
+                        intent="info"
+                        description="Decryption is supported only for validated data types: serialized Suite Sync owner data and delegated identity keys."
+                    />
                     <Textarea
                         label="Plaintext"
                         value={plaintext}

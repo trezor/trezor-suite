@@ -11,6 +11,7 @@ type EarnYieldPotentialRewardsProps = {
     symbol: TokenSymbol;
     rewards: string;
     apy: number | null;
+    tokenDecimals: number;
     formattedAdditionalDepositAmount: string;
     displaySymbol: string;
 };
@@ -21,6 +22,7 @@ export const EarnYieldPotentialRewards = ({
     symbol,
     rewards,
     apy,
+    tokenDecimals,
     formattedAdditionalDepositAmount,
     displaySymbol,
 }: EarnYieldPotentialRewardsProps) => {
@@ -43,6 +45,7 @@ export const EarnYieldPotentialRewards = ({
                 symbol={symbol}
                 rewards={rewards}
                 apy={apy}
+                tokenDecimals={tokenDecimals}
                 intent="brand"
             />
 

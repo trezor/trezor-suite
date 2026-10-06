@@ -5,6 +5,9 @@ import { ICONS_URL_BASE } from '../../src/coinImages';
 export const PACKAGE_ROOT = resolve(__dirname, '..', '..');
 
 export const FILES_CRYPTOICONS_PATH = join(PACKAGE_ROOT, 'files', 'cryptoIcons');
+// Bundled coin discs the apps render for native coins, keyed by network symbol. Read directly
+// instead of through `src/cryptoIcons`, whose `require` calls only resolve in a bundler.
+export const CRYPTO_ICONS_SVG_PATH = join(PACKAGE_ROOT, 'cryptoAssets', 'cryptoIcons');
 export const UPDATED_ICONS_LIST_FILE = join(FILES_CRYPTOICONS_PATH, 'icons.json');
 export const UPDATED_ICONS_LIST_URL = join(ICONS_URL_BASE, 'icons.json');
 

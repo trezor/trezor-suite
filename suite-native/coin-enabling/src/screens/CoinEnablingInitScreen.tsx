@@ -1,13 +1,15 @@
 import { useCallback } from 'react';
 import { LinearTransition } from 'react-native-reanimated';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { events as commonEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { changeCoinVisibility } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AnimatedBox } from '@suite-native/atoms';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -38,8 +40,8 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const CoinEnablingInitScreen = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const navigation = useNavigation<NavigationProps>();
     useInterceptNativeNavigation();
 
@@ -68,10 +70,13 @@ export const CoinEnablingInitScreen = () => {
     const hasEnabledCoin = useHasEnabledCoin(form.control);
 
     const handleSubmit = form.handleSubmit((values: CoinEnablingFormValues) => {
-        const enabledCoins = getNetworkSymbolsFromEnabledCoins(values.enabledCoins);
+        const enabledCoins = getNetworkSymbolsFromEnabledCoins(
+            values.enabledCoins,
+            supportedNetworks,
+        );
 
         enabledCoins.forEach(symbol => {
-            dispatch(changeCoinVisibility({ symbol, shouldBeVisible: true }));
+            dispatch(changeCoinVisibilityThunk({ symbol, shouldBeVisible: true }));
         });
 
         analytics.report({

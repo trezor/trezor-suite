@@ -1,24 +1,27 @@
 export enum RootStackRoutes {
     AppTabs = 'AppTabs',
+    AccountDetailStack = 'AccountDetailStack',
+    AccountOverview = 'AccountOverview',
+    AssetsStack = 'AssetsStack',
     OnboardingStack = 'OnboardingStack',
     DeviceOnboardingStack = 'DeviceOnboardingStack',
     AccountsImport = 'AccountsImport',
     AuthorizeDeviceStack = 'AuthorizeDeviceStack',
-    AccountAssets = 'AccountAssets',
-    AccountDetail = 'AccountDetail',
-    StakingDetail = 'StakingDetail',
     StakingManagement = 'StakingManagement',
+    YieldVaultDetail = 'YieldVaultDetail',
     HowStakeWorksScreen = 'HowStakeWorksScreen',
     YieldNavigator = 'YieldNavigator',
-    YieldInsufficientBalance = 'YieldInsufficientBalance',
-    EarnForm = 'EarnForm',
+    WrappedNativeTokenNavigator = 'WrappedNativeTokenNavigator',
+    StakingForm = 'StakingForm',
     EarnConsents = 'EarnConsents',
-    EarnTransactionDataReview = 'EarnTransactionDataReview',
-    ClaimReview = 'ClaimReview',
-    ClaimTransactionDataReview = 'ClaimTransactionDataReview',
+    StakingTransactionDataReview = 'StakingTransactionDataReview',
+    StakingTransactionComplete = 'StakingTransactionComplete',
+    StakingClaimReview = 'StakingClaimReview',
     DevUtils = 'DevUtils',
     MessageSystemManager = 'MessageSystemManager',
-    AccountSettings = 'AccountSettings',
+    MessageSystemExperiments = 'MessageSystemExperiments',
+    SignAndVerify = 'SignAndVerify',
+    SignAndVerifyStack = 'SignAndVerifyStack',
     TransactionDetailStack = 'TransactionDetailStack',
     ReceiveStack = 'ReceiveStack',
     SendStack = 'SendStack',
@@ -40,17 +43,35 @@ export enum RootStackRoutes {
     StellarManageTokenStack = 'StellarManageTokenStack',
     FeatureFeedbackModal = 'FeatureFeedbackModal',
     UnstakeFlow = 'UnstakeFlow',
-    UnstakeTransactionDataReview = 'UnstakeTransactionDataReview',
     TradingExchangePreview = 'TradingExchangePreview',
     TradingExchangeApproval = 'TradingExchangeApproval',
     TradingExchangeRevoke = 'TradingExchangeRevoke',
     TradingSellPreview = 'TradingSellPreview',
+    TradingSellCompletion = 'TradingSellCompletion',
     TradingConfirming = 'TradingConfirming',
-    TradingSellOutputsReview = 'TradingSellOutputsReview',
-    TradingExchangeOutputsReview = 'TradingExchangeOutputsReview',
+    TradingSellTransactionReview = 'TradingSellTransactionReview',
+    TradingExchangeTransactionReview = 'TradingExchangeTransactionReview',
+    TradingMyAsset = 'TradingMyAsset',
+    TradingTradeableAsset = 'TradingTradeableAsset',
     ReceiveAccounts = 'ReceiveAccounts',
+    TradingReceiveAddress = 'TradingReceiveAddress',
     TradingHistory = 'TradingHistory',
+    TradingHistoryDetail = 'TradingHistoryDetail',
     TradingBuyPreview = 'TradingBuyPreview',
+    ActivityCenterStack = 'ActivityCenterStack',
+}
+
+export enum AccountDetailStackRoutes {
+    AccountDetail = 'AccountDetail',
+    AccountSettings = 'AccountSettings',
+}
+
+export enum AssetsStackRoutes {
+    AssetDetail = 'AssetDetail',
+}
+
+export enum ActivityCenterStackRoutes {
+    ActivityCenter = 'ActivityCenter',
 }
 
 export enum AppTabsRoutes {
@@ -236,6 +257,11 @@ export enum AccountsStackRoutes {
     Accounts = 'Accounts',
 }
 
+export enum SignAndVerifyStackRoutes {
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    ContinueOnTrezor = 'ContinueOnTrezor',
+}
+
 export enum EarnStackRoutes {
     Earn = 'Earn',
 }
@@ -246,16 +272,30 @@ export enum YieldStackRoutes {
     YieldClaim = 'YieldClaim',
     YieldClaimReview = 'YieldClaimReview',
     YieldClaimComplete = 'YieldClaimComplete',
+    YieldDepositWrap = 'YieldDepositWrap',
+    YieldDepositWrapReview = 'YieldDepositWrapReview',
     YieldDepositApproval = 'YieldDepositApproval',
     YieldDeposit = 'YieldDeposit',
+    YieldDepositNoBalance = 'YieldDepositNoBalance',
     YieldDepositRevoke = 'YieldDepositRevoke',
     YieldWithdraw = 'YieldWithdraw',
     YieldDepositApprovalReview = 'YieldDepositApprovalReview',
     YieldDepositRevokeReview = 'YieldDepositRevokeReview',
     YieldDepositReview = 'YieldDepositReview',
+    YieldWithdrawUnwrap = 'YieldWithdrawUnwrap',
+    YieldWithdrawUnwrapReview = 'YieldWithdrawUnwrapReview',
     YieldWithdrawReview = 'YieldWithdrawReview',
     YieldDepositComplete = 'YieldDepositComplete',
     YieldWithdrawComplete = 'YieldWithdrawComplete',
+}
+
+export enum WrappedNativeTokenStackRoutes {
+    WrapNativeToken = 'WrapNativeToken',
+    WrapNativeTokenReview = 'WrapNativeTokenReview',
+    WrapNativeTokenComplete = 'WrapNativeTokenComplete',
+    UnwrapNativeToken = 'UnwrapNativeToken',
+    UnwrapNativeTokenReview = 'UnwrapNativeTokenReview',
+    UnwrapNativeTokenComplete = 'UnwrapNativeTokenComplete',
 }
 
 export enum ReceiveStackRoutes {
@@ -269,6 +309,12 @@ export enum ReceiveStackRoutes {
 export enum ReceiveAddressVerificationSource {
     Pasted = 'pasted',
     Shared = 'shared',
+    Verified = 'verified',
+}
+
+export enum ReceiveAddressVerificationStackRoutes {
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    ContinueOnTrezor = 'ContinueOnTrezor',
 }
 
 export enum SendStackRoutes {

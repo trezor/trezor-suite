@@ -1,8 +1,8 @@
-import { useDispatch } from 'react-redux';
-
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import { useServices } from '@suite-common/dependency-injection';
+import { type Rating, buildUserFeedbackData, sendFeedbackThunk } from '@suite-common/feedback';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Text, VStack } from '@suite-native/atoms';
 import { FEEDBACK_FEATURE_CONFIGS } from '@suite-native/experimental-features';
 import { FeatureRatingForm, feedbackDismissed } from '@suite-native/feature-feedback';
@@ -17,7 +17,7 @@ import {
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.FeatureFeedbackModal>;
 
 export const FeatureFeedbackModalScreen = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation();
     const route = useRoute<RouteProps>();
     const { feature } = route.params;
@@ -34,7 +34,7 @@ export const FeatureFeedbackModalScreen = () => {
         const userData = buildUserFeedbackData();
 
         dispatch(
-            sendFeedbackAction({
+            sendFeedbackThunk({
                 type: 'SUGGESTION',
                 payload: {
                     category: 'experimental',

@@ -2,7 +2,6 @@ import {
     type BuyTrade,
     type CryptoId,
     type ExchangeProviderInfo,
-    type FiatCurrencyCode,
     type SellFiatTrade,
 } from 'invity-api';
 
@@ -15,8 +14,6 @@ import type {
     TradingProviderInfo,
     TradingSellInfoSelector,
     TradingSellType,
-    TradingStateSelector,
-    TradingTransaction,
     TradingTransactionBuy,
     TradingTransactionExchange,
     TradingTransactionSell,
@@ -43,31 +40,10 @@ export type TradingTradeInfoMapProps = {
     exchange: TradingExchangeInfoSelector;
 };
 
-export interface TradingGetTypedTradeProps {
-    trades: TradingTransaction[];
-    tradeType: TradingType;
-    transactionId: string | undefined;
-}
-
-export interface TradingGetDetailDataProps {
-    trading: TradingStateSelector;
-    tradeType: TradingType;
-    infos: {
-        buy: TradingBuyInfoSelector | undefined;
-        sell: TradingSellInfoSelector | undefined;
-        exchange: TradingExchangeInfoSelector | undefined;
-    };
-}
-
 export interface TradingUseWatchTradeProps<T extends TradingType> {
     account: Account | undefined;
     trade: TradingTradeMapProps[T] | undefined;
-}
-
-export interface TradingCryptoListProps {
-    value: CryptoId;
-    label: string; // token shortcut
-    cryptoName?: string | undefined; // full name
+    refreshIntervalSeconds?: number;
 }
 
 export type TradingCoinLogoProps = {
@@ -106,11 +82,6 @@ export type TradingGetProvidersInfoProps =
 export type TradingExchangeProvidersInfoProps = {
     [key: string]: ExchangeProviderInfo;
 };
-
-export interface TradingGetFiatCurrenciesProps {
-    supportedFiatCurrencies: Set<FiatCurrencyCode> | undefined;
-    defaultAmountsOfFiatCurrencies?: Map<FiatCurrencyCode, string>;
-}
 
 export interface TradingGetCryptoQuoteAmountProps {
     amountInCrypto?: boolean | undefined;

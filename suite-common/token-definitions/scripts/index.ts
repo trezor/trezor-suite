@@ -3,7 +3,12 @@ import fs from 'fs';
 import { join } from 'path';
 
 import { DEFINITIONS_FILENAME_SUFFIX, FILES_PATH } from './constants';
-import { buildCoinDataForPlatform, fetchAllCoins } from './utils/fetchCoins';
+import {
+    type FailedLookup,
+    type UncheckedEnrichment,
+    buildCoinDataForPlatform,
+    fetchAllCoins,
+} from './utils/fetchCoins';
 import { fetchNftData } from './utils/fetchNft';
 import { fetchVaultDefinitions } from './utils/fetchVaultDefinitions';
 import { signData } from './utils/sign';
@@ -28,6 +33,41 @@ const countRecords = (data: TokenStructure, structure: TokenStructureType) =>
     structure === TokenStructureType.SIMPLE
         ? (data as string[]).length
         : Object.keys(data as Record<string, unknown>).length;
+
+/**
+ * A token missing because its lookup failed is indistinguishable, in the published file, from a
+ * token that does not exist, so the run stops before anything is signed or uploaded. Re-running
+ * the job is cheap; a definitions file that quietly lost an asset goes unnoticed for weeks.
+ */
+const assertNoFailedLookups = (assetPlatformId: string, failedLookups: FailedLookup[]) => {
+    if (!failedLookups.length) return;
+
+    for (const { coinId, reason } of failedLookups) {
+        console.error(`Could not resolve ${coinId}: ${reason}`);
+    }
+
+    throw new Error(
+        `${failedLookups.length} contract address(es) could not be resolved for ${assetPlatformId}, refusing to publish definitions that silently omit them`,
+    );
+};
+
+// Enrichments only add fields to a record that is otherwise complete, so a failed check is
+// reported rather than fatal. Without the count, an asset nobody could verify looks exactly like
+// an asset that was checked and found unverified.
+const reportUncheckedEnrichments = (
+    assetPlatformId: string,
+    uncheckedEnrichments: UncheckedEnrichment[],
+) => {
+    if (!uncheckedEnrichments.length) return;
+
+    for (const { contractAddress, reason } of uncheckedEnrichments) {
+        console.warn(`Could not check ${contractAddress}: ${reason}`);
+    }
+
+    console.warn(
+        `${uncheckedEnrichments.length} enrichment(s) could not be checked for ${assetPlatformId}`,
+    );
+};
 
 const printSummary = (
     type: DefinitionType,
@@ -87,7 +127,14 @@ const main = async () => {
 
         for (const assetPlatformId of assetPlatformIds) {
             console.log('Building coin data for:', assetPlatformId);
-            const coinData = await buildCoinDataForPlatform(allCoins, assetPlatformId, structure);
+            const {
+                data: coinData,
+                failedLookups,
+                uncheckedEnrichments,
+            } = await buildCoinDataForPlatform(allCoins, assetPlatformId, structure);
+
+            reportUncheckedEnrichments(assetPlatformId, uncheckedEnrichments);
+            assertNoFailedLookups(assetPlatformId, failedLookups);
 
             const vaults = vaultDefinitions?.[assetPlatformId];
             if (Array.isArray(vaults) && coinData instanceof Set) {

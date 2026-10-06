@@ -4,10 +4,10 @@ import type {
     ThpCredentials,
     ThpPairingMethod,
 } from '@trezor/protocol';
+import { createTypeGuardByType } from '@trezor/type-utils';
 import type { VersionArray } from '@trezor/utils';
 
 import type { Device } from '../types/device';
-import type { MessageFactoryFn } from '../types/utils';
 
 export {
     type DecodedTrezorPushNotification,
@@ -105,28 +105,26 @@ export interface DeviceTrezorPushNotification {
 }
 
 export type DeviceEvent =
-    | {
-          type:
-              | typeof DEVICE.CONNECT
-              | typeof DEVICE.CONNECT_UNACQUIRED
-              | typeof DEVICE.CHANGED
-              | typeof DEVICE.DISCONNECT;
-          payload: Device;
-      }
+    | { type: typeof DEVICE.CONNECT; payload: Device }
+    | { type: typeof DEVICE.CONNECT_UNACQUIRED; payload: Device }
+    | { type: typeof DEVICE.CHANGED; payload: Device }
+    | { type: typeof DEVICE.DISCONNECT; payload: Device }
     | DeviceButtonRequest
     | DeviceThpCredentialsChanged
     | DeviceThpPairingStatusChanged
     | DeviceVersionChanged
     | DeviceTrezorPushNotification;
 
+export const isDeviceEventOfType = createTypeGuardByType<DeviceEvent>();
+
 export type DeviceEventMessage = DeviceEvent & { event: typeof DEVICE_EVENT };
 
-export const createDeviceMessage: MessageFactoryFn<typeof DEVICE_EVENT, DeviceEvent> = (
-    type,
-    payload,
+export const createDeviceMessage = <T extends DeviceEvent['type']>(
+    type: T,
+    payload: Extract<DeviceEvent, { type: T }>['payload'],
 ) =>
     ({
         event: DEVICE_EVENT,
         type,
         payload,
-    }) as any;
+    }) as Extract<DeviceEventMessage, { type: T }>;

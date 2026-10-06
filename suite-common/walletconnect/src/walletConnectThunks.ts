@@ -1,23 +1,25 @@
-import { type IWalletKit, WalletKit, type WalletKitTypes } from '@reown/walletkit';
-import { Core } from '@walletconnect/core';
-import {
-    buildApprovedNamespaces,
-    buildAuthObject,
-    getSdkError,
-    populateAuthPayload,
-} from '@walletconnect/utils';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { type IWalletKit, type WalletKitTypes } from '@reown/walletkit';
 
-import { events } from '@suite-common/analytics';
+import { type AnalyticsDep, events } from '@suite-common/analytics';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
-import { createThunk } from '@suite-common/redux-utils';
+import { type DeviceRootState } from '@suite-common/device';
+import { type NetworksRootState } from '@suite-common/networks';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
-import { selectAllSuccessfulAccountsToList } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
+    selectAllSuccessfulAccountsToList,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type CallMethodResponse } from '@trezor/connect';
 
 import {
+    type WalletConnectRequestThunkDeps,
+    type WalletConnectRequestThunkState,
     getAdapterByMethod,
     getAdapterByNetwork,
     getNamespaces,
@@ -25,17 +27,31 @@ import {
 } from './adapters';
 import { walletConnectActions } from './walletConnectActions';
 import { PROJECT_ID, WALLETCONNECT_METADATA, WALLETCONNECT_MODULE } from './walletConnectConstants';
-import { selectPendingProposal } from './walletConnectReducer';
+import { type WalletConnectStateRootState, selectPendingProposal } from './walletConnectReducer';
 import { type PendingConnectionProposalNetwork } from './walletConnectTypes';
 
 let walletKit: IWalletKit;
+
+type SuccessfulAccountsThunkState = AccountsRootState &
+    DeviceRootState &
+    WalletSettingsRootState &
+    NetworksRootState;
+
+type SessionAuthenticateThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
+    SuccessfulAccountsThunkState;
+
+type SessionAuthenticateThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
 const sessionAuthenticateThunk = createThunk<
     void,
     {
         event: WalletKitTypes.SessionAuthenticate;
-    }
+    },
+    { state: SessionAuthenticateThunkState; extra: SessionAuthenticateThunkDeps }
 >(`${WALLETCONNECT_MODULE}/sessionAuthenticateThunk`, async ({ event }, { getState, dispatch }) => {
+    const { buildAuthObject, getSdkError, populateAuthPayload } =
+        await import('@walletconnect/utils');
+
     // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities)
     try {
         const accounts = selectAllSuccessfulAccountsToList(getState());
@@ -116,11 +132,16 @@ const sessionAuthenticateThunk = createThunk<
     }
 });
 
+type SessionProposalThunkState = SuccessfulAccountsThunkState;
+
+type SessionProposalThunkDeps = WithServices<AnalyticsDep>;
+
 const sessionProposalThunk = createThunk<
     void,
     {
         event: WalletKitTypes.SessionProposal;
-    }
+    },
+    { state: SessionProposalThunkState; extra: SessionProposalThunkDeps }
 >(`${WALLETCONNECT_MODULE}/sessionProposalThunk`, ({ event }, { dispatch, getState, extra }) => {
     // Check supported networks
     const accounts = selectAllSuccessfulAccountsToList(getState());
@@ -147,11 +168,16 @@ const sessionProposalThunk = createThunk<
     });
 });
 
+type SessionRequestThunkState = WalletConnectRequestThunkState;
+
+type SessionRequestThunkDeps = WalletConnectRequestThunkDeps;
+
 const sessionRequestThunk = createThunk<
     void,
     {
         event: WalletKitTypes.SessionRequest;
-    }
+    },
+    { state: SessionRequestThunkState; extra: SessionRequestThunkDeps }
 >(`${WALLETCONNECT_MODULE}/sessionRequestThunk`, async ({ event }, { dispatch, extra }) => {
     try {
         const adapter = getAdapterByMethod(event.params.request.method);
@@ -160,16 +186,14 @@ const sessionRequestThunk = createThunk<
         }
 
         const result = await dispatch(adapter.requestThunk({ event }));
-        if (!result || result.error) {
-            throw result?.error || new Error('Device request failed');
-        }
+        const payload = unwrapResult(result);
 
         await walletKit.respondSessionRequest({
             topic: event.topic,
             response: {
                 id: event.id,
                 jsonrpc: '2.0',
-                result: result.payload,
+                result: payload,
             },
         });
         extra.services.analytics.report({
@@ -196,9 +220,12 @@ const sessionRequestThunk = createThunk<
 });
 
 // Selected Account was switched in Suite
+type SwitchSelectedAccountThunkState = SuccessfulAccountsThunkState;
+
 export const switchSelectedAccountThunk = createThunk<
     void,
-    { account: Account; sessionTopic: string }
+    { account: Account; sessionTopic: string },
+    { state: SwitchSelectedAccountThunkState }
 >(
     `${WALLETCONNECT_MODULE}/switchSelectedAccountThunk`,
     async ({ account, sessionTopic }, { getState }) => {
@@ -213,6 +240,8 @@ export const switchSelectedAccountThunk = createThunk<
         if (!session) {
             return console.warn(`Session with topic ${sessionTopic} not found`);
         }
+
+        const { buildApprovedNamespaces } = await import('@walletconnect/utils');
         const approvedNamespaces = buildApprovedNamespaces({
             // @ts-expect-error originally only takes proposal, but this works
             proposal: {
@@ -267,15 +296,21 @@ export const switchSelectedAccountThunk = createThunk<
     },
 );
 
+type SessionProposalApproveThunkState = SuccessfulAccountsThunkState & WalletConnectStateRootState;
+
+type SessionProposalApproveThunkDeps = WithServices<AnalyticsDep>;
+
 export const sessionProposalApproveThunk = createThunk<
     void,
     {
         eventId: number;
         selectedDefaultAccount?: Account | null;
-    }
+    },
+    { state: SessionProposalApproveThunkState; extra: SessionProposalApproveThunkDeps }
 >(
     `${WALLETCONNECT_MODULE}/sessionProposalApproveThunk`,
     async ({ eventId, selectedDefaultAccount }, { dispatch, getState, extra }) => {
+        const { getSdkError, buildApprovedNamespaces } = await import('@walletconnect/utils');
         try {
             const pendingProposal = selectPendingProposal(getState());
             if (pendingProposal?.eventId !== eventId || pendingProposal.expired) {
@@ -345,14 +380,20 @@ export const sessionProposalApproveThunk = createThunk<
     },
 );
 
+type SessionProposalRejectThunkState = WalletConnectStateRootState;
+
+type SessionProposalRejectThunkDeps = WithServices<AnalyticsDep>;
+
 export const sessionProposalRejectThunk = createThunk<
     void,
     {
         eventId: number;
-    }
+    },
+    { state: SessionProposalRejectThunkState; extra: SessionProposalRejectThunkDeps }
 >(
     `${WALLETCONNECT_MODULE}/sessionProposalRejectThunk`,
     async ({ eventId }, { getState, dispatch, extra }) => {
+        const { getSdkError } = await import('@walletconnect/utils');
         await walletKit.rejectSession({
             id: eventId,
             reason: getSdkError('USER_REJECTED'),
@@ -368,86 +409,109 @@ export const sessionProposalRejectThunk = createThunk<
     },
 );
 
-export const walletConnectInitThunk = createThunk(
-    `${WALLETCONNECT_MODULE}/walletConnectInitThunk`,
-    async (_, { dispatch, extra }) => {
-        if (walletKit) return;
+export type WalletConnectInitThunkState = SessionAuthenticateThunkState &
+    SessionProposalThunkState &
+    SessionRequestThunkState &
+    SessionProposalRejectThunkState;
 
-        const core = new Core({
-            projectId: PROJECT_ID,
-            telemetryEnabled: false,
-            logger: isDevEnv ? 'warn' : 'silent',
-        });
+export type WalletConnectInitThunkDeps = SessionAuthenticateThunkDeps &
+    SessionProposalThunkDeps &
+    SessionRequestThunkDeps &
+    SessionProposalRejectThunkDeps;
 
-        walletKit = await WalletKit.init({
-            core,
-            metadata: WALLETCONNECT_METADATA,
-        });
+export const walletConnectInitThunk = createThunk<
+    void,
+    void,
+    { state: WalletConnectInitThunkState; extra: WalletConnectInitThunkDeps }
+>(`${WALLETCONNECT_MODULE}/walletConnectInitThunk`, async (_, { dispatch, extra }) => {
+    if (walletKit) return;
 
-        walletKit.on('session_proposal', event => {
-            dispatch(sessionProposalThunk({ event }));
-        });
+    const [{ Core }, { WalletKit }] = await Promise.all([
+        import('@walletconnect/core'),
+        import('@reown/walletkit'),
+    ] as const);
 
-        walletKit.on('proposal_expire', () => {
-            dispatch(walletConnectActions.expireSessionProposal());
-        });
+    const core = new Core({
+        projectId: PROJECT_ID,
+        telemetryEnabled: false,
+        logger: isDevEnv ? 'warn' : 'silent',
+    });
 
-        walletKit.on('session_request', event => {
-            dispatch(sessionRequestThunk({ event }));
-        });
+    walletKit = await WalletKit.init({
+        core,
+        metadata: WALLETCONNECT_METADATA,
+    });
 
-        walletKit.on('session_authenticate', event => {
-            dispatch(sessionAuthenticateThunk({ event }));
-        });
+    walletKit.on('session_proposal', event => {
+        dispatch(sessionProposalThunk({ event }));
+    });
 
-        walletKit.on('session_delete', event => {
-            dispatch(walletConnectActions.removeSession({ topic: event.topic }));
-        });
+    walletKit.on('proposal_expire', () => {
+        dispatch(walletConnectActions.expireSessionProposal());
+    });
 
-        // Populate active sessions
-        const sessions = walletKit.getActiveSessions();
-        for (const topic in sessions) {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const session: (typeof sessions)[string] = sessions[topic];
-            dispatch(
-                walletConnectActions.saveSession({
-                    ...session,
-                }),
-            );
-        }
-        // Reject stale proposals
-        const proposals = walletKit.getPendingSessionProposals();
-        for (const proposal of Object.values(proposals)) {
-            dispatch(sessionProposalRejectThunk({ eventId: proposal.id }));
-        }
+    walletKit.on('session_request', event => {
+        dispatch(sessionRequestThunk({ event }));
+    });
+
+    walletKit.on('session_authenticate', event => {
+        dispatch(sessionAuthenticateThunk({ event }));
+    });
+
+    walletKit.on('session_delete', event => {
+        dispatch(walletConnectActions.removeSession({ topic: event.topic }));
+    });
+
+    // Populate active sessions
+    const sessions = walletKit.getActiveSessions();
+    for (const topic in sessions) {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const session: (typeof sessions)[string] = sessions[topic];
+        dispatch(
+            walletConnectActions.saveSession({
+                ...session,
+            }),
+        );
+    }
+    // Reject stale proposals
+    const proposals = walletKit.getPendingSessionProposals();
+    for (const proposal of Object.values(proposals)) {
+        dispatch(sessionProposalRejectThunk({ eventId: proposal.id }));
+    }
+    extra.services.analytics.report({
+        type: events.walletConnectInitEvent.name,
+    });
+});
+
+type WalletConnectPairThunkState = WalletConnectInitThunkState;
+
+type WalletConnectPairThunkDeps = WalletConnectInitThunkDeps;
+
+export const walletConnectPairThunk = createThunk<
+    void,
+    { uri: string },
+    { state: WalletConnectPairThunkState; extra: WalletConnectPairThunkDeps }
+>(`${WALLETCONNECT_MODULE}/walletConnectPairThunk`, async ({ uri }, { dispatch, extra }) => {
+    if (!walletKit) {
+        // May happen when Suite cold-starts from deeplink
+        await dispatch(walletConnectInitThunk());
+    }
+
+    try {
+        await walletKit.pair({ uri });
         extra.services.analytics.report({
-            type: events.walletConnectInitEvent.name,
+            type: events.walletConnectPairedEvent.name,
         });
-    },
-);
+    } catch {
+        throw new Error('Invalid WalletConnect URI');
+    }
+});
 
-export const walletConnectPairThunk = createThunk<void, { uri: string }>(
-    `${WALLETCONNECT_MODULE}/walletConnectPairThunk`,
-    async ({ uri }, { dispatch, extra }) => {
-        if (!walletKit) {
-            // May happen when Suite cold-starts from deeplink
-            await dispatch(walletConnectInitThunk());
-        }
-
-        try {
-            await walletKit.pair({ uri });
-            extra.services.analytics.report({
-                type: events.walletConnectPairedEvent.name,
-            });
-        } catch {
-            throw new Error('Invalid WalletConnect URI');
-        }
-    },
-);
-
-export const walletConnectDisconnectThunk = createThunk<void, { topic: string }>(
+export const walletConnectDisconnectThunk = createThunk<void, { topic: string }, void>(
     `${WALLETCONNECT_MODULE}/walletConnectDisconnectThunk`,
     async ({ topic }, { dispatch }) => {
+        const { getSdkError } = await import('@walletconnect/utils');
+
         await dispatch(walletConnectActions.removeSession({ topic }));
         await walletKit.disconnectSession({ topic, reason: getSdkError('USER_DISCONNECTED') });
     },

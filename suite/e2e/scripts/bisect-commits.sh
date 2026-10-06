@@ -39,8 +39,8 @@ echo "[bisect] Building at commit \$(git rev-parse --short HEAD)"
 
 if [ "\$TARGET" = "desktop" ]; then
   yarn install
-  yarn workspace @trezor/suite-desktop build:ui
-  yarn workspace @trezor/suite-desktop build:app
+  yarn workspace @suite/desktop-app build:ui
+  yarn workspace @suite/desktop-app build:app
 
   set +e
   yarn workspace @trezor/suite-e2e test:e2e:desktop "\$TEST_FILE"

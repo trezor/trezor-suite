@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
+import { type StakingNetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectDeviceSupportedNetworks,
     selectVisibleDeviceAccounts,
@@ -25,10 +25,10 @@ type UseStakingTableDataResult = {
 };
 
 export const useStakingTableData = (): UseStakingTableDataResult => {
-    const ethCurrentRate = useCryptoCurrentRate('eth');
-    const solCurrentRate = useCryptoCurrentRate('sol');
-    const adaCurrentRate = useCryptoCurrentRate('ada');
-    const trxCurrentRate = useCryptoCurrentRate('trx');
+    const ethCurrentRate = useCryptoCurrentRate(asNetworkSymbol('eth'));
+    const solCurrentRate = useCryptoCurrentRate(asNetworkSymbol('sol'));
+    const adaCurrentRate = useCryptoCurrentRate(asNetworkSymbol('ada'));
+    const trxCurrentRate = useCryptoCurrentRate(asNetworkSymbol('trx'));
 
     const currentRates: Record<StakingNetworkSymbol, number | undefined> = useMemo(
         () => ({
@@ -55,19 +55,19 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
 
     const ethNotActivated =
-        deviceSupportedNetworkSymbols.includes('eth') &&
+        deviceSupportedNetworkSymbols.includes(asNetworkSymbol('eth')) &&
         !stakingAccounts.some(account => account.symbol === 'eth');
 
     const solNotActivated =
-        deviceSupportedNetworkSymbols.includes('sol') &&
+        deviceSupportedNetworkSymbols.includes(asNetworkSymbol('sol')) &&
         !stakingAccounts.some(account => account.symbol === 'sol');
 
     const adaNotActivated =
-        deviceSupportedNetworkSymbols.includes('ada') &&
+        deviceSupportedNetworkSymbols.includes(asNetworkSymbol('ada')) &&
         !stakingAccounts.some(account => account.symbol === 'ada');
 
     const trxNotActivated =
-        deviceSupportedNetworkSymbols.includes('trx') &&
+        deviceSupportedNetworkSymbols.includes(asNetworkSymbol('trx')) &&
         !stakingAccounts.some(account => account.symbol === 'trx');
 
     const { displayedAccounts, isExpandable, isExpanded, toggleExpanded, hasAnyRewardsData } =

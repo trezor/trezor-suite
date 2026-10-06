@@ -1,18 +1,19 @@
 import { type CryptoId, type SellFiatTrade, type SellFiatTradeQuoteRequest } from 'invity-api';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { locksReducer } from '@suite/locks';
+import { modalReducer } from '@suite/modal';
+import { type GotoThunkDeps, routerLocationChange, routerReducer } from '@suite/router';
+import { type WithServices } from '@suite-common/redux-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { selectSellQuoteThunk } from './selectSellQuoteThunk';
-
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    goto: jest.fn((payload: unknown) => ({ type: '@router/goto', payload })),
-}));
+import { type SelectSellQuoteThunkState, selectSellQuoteThunk } from './selectSellQuoteThunk';
 
 const mockRequestSellTradeThunk = jest.fn((args: unknown) =>
     Object.assign(
@@ -31,8 +32,10 @@ jest.mock('./requestSellTradeThunk', () => ({
 
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 
+type SelectSellQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
+
 const ACCOUNT: Account = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor('0xAccount'),
 });
 
@@ -50,15 +53,19 @@ const DEFAULT_QUOTES_REQUEST: SellFiatTradeQuoteRequest = {
     amountInCrypto: false,
 };
 
+type BuildStoreParams = { quotesRequest?: SellFiatTradeQuoteRequest };
+
 const buildStore = (
     report: jest.Mock,
-    { quotesRequest }: { quotesRequest?: SellFiatTradeQuoteRequest } = {
+    { quotesRequest }: BuildStoreParams = {
         quotesRequest: DEFAULT_QUOTES_REQUEST,
     },
 ) =>
-    configureMockStore({
-        extra: { services: { analytics: mockAnalytics(report) } },
+    createTestCompositionRoot<SelectSellQuoteThunkDeps, SelectSellQuoteThunkState>({
         preloadedState: {
+            locks: locksReducer(undefined, { type: 'test-init' }),
+            modal: modalReducer(undefined, { type: 'test-init' }),
+            router: routerReducer(undefined, { type: 'test-init' }),
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
             tokenDefinitions: {},
             wallet: {
@@ -79,7 +86,15 @@ const buildStore = (
                 },
             },
         },
-    });
+        services: () => ({
+            analytics: mockAnalytics(report),
+            suiteRouterHistory: {
+                getLocation: jest.fn(),
+                navigate: jest.fn(),
+                listen: jest.fn(() => jest.fn()),
+            },
+        }),
+    }).services.store;
 
 describe('selectSellQuoteThunk', () => {
     beforeEach(() => {
@@ -137,14 +152,19 @@ describe('selectSellQuoteThunk', () => {
         expect(mockRequestSellTradeThunk).toHaveBeenCalledTimes(1);
         expect(store.getActions()).toEqual(
             expect.arrayContaining([
-                { type: '@router/goto', payload: { routeName: 'wallet-trading-sell-confirm' } },
+                expect.objectContaining({
+                    type: routerLocationChange.type,
+                    payload: expect.objectContaining({
+                        pathname: '/accounts/coinmarket/sell/confirm',
+                    }),
+                }),
                 { type: '@test/request-sell-trade' },
             ]),
         );
 
         const gotoActionIndex = store
             .getActions()
-            .findIndex(action => action.type === '@router/goto');
+            .findIndex(action => action.type === routerLocationChange.type);
         const requestActionIndex = store
             .getActions()
             .findIndex(action => action.type === '@test/request-sell-trade');

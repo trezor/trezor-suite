@@ -1,6 +1,6 @@
 {
     "name": "@trezor/transport-common",
-    "version": "10.0.0-beta.1",
+    "version": "10.0.1",
     "description": "Environment-agnostic transport abstractions: types, errors, abstract base classes, structural USB interface, sessions backend, THP, utils.",
     "license": "MIT",
     "repository": {
@@ -57,10 +57,11 @@
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
         "@types/node": "22.13.10",
-        "fast-check": "3.23.2",
+        "fast-check": "4.9.0",
         "jest": "29.7.0"
     },
     "dependencies": {
+        "@trezor/logger": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/type-utils": "workspace:*",

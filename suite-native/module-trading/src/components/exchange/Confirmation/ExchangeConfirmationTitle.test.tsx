@@ -7,11 +7,11 @@ import {
 } from './ExchangeConfirmationTitle';
 
 describe('ExchangeConfirmationTitle', () => {
-    const renderTitle = (props: ExchangeConfirmationTitleProps) =>
-        renderWithBasicProvider(<ExchangeConfirmationTitle {...props} />);
+    const renderTitle = async (props: ExchangeConfirmationTitleProps) =>
+        await renderWithBasicProvider(<ExchangeConfirmationTitle {...props} />);
 
-    it('should display approve title when flowType is approve', () => {
-        const { getByText } = renderTitle({
+    it('should display approve title when flowType is approve', async () => {
+        const { getByText } = await renderTitle({
             flowType: 'approve',
             isFailed: false,
             isPending: true,
@@ -22,16 +22,20 @@ describe('ExchangeConfirmationTitle', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should display revoke title when flowType is revoke', () => {
-        const { getByText } = renderTitle({ flowType: 'revoke', isFailed: false, isPending: true });
+    it('should display revoke title when flowType is revoke', async () => {
+        const { getByText } = await renderTitle({
+            flowType: 'revoke',
+            isFailed: false,
+            isPending: true,
+        });
 
         expect(
             getByText(getTranslation('moduleTrading.tradingConfirmationScreen.revokeTitle')),
         ).toBeOnTheScreen();
     });
 
-    it('should display revoke title when flowType is revoke-and-approve', () => {
-        const { getByText } = renderTitle({
+    it('should display revoke title when flowType is revoke-and-approve', async () => {
+        const { getByText } = await renderTitle({
             flowType: 'revoke-and-approve',
             isFailed: false,
             isPending: true,
@@ -42,8 +46,8 @@ describe('ExchangeConfirmationTitle', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should display subtitle', () => {
-        const { getByText } = renderTitle({
+    it('should display subtitle', async () => {
+        const { getByText } = await renderTitle({
             flowType: 'approve',
             isFailed: false,
             isPending: true,
@@ -54,8 +58,8 @@ describe('ExchangeConfirmationTitle', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should display pending badge when isPending', () => {
-        const { getByText } = renderTitle({
+    it('should display pending badge when isPending', async () => {
+        const { getByText } = await renderTitle({
             flowType: 'approve',
             isFailed: false,
             isPending: true,
@@ -66,8 +70,8 @@ describe('ExchangeConfirmationTitle', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should not display pending badge when isPending is false', () => {
-        const { queryByText } = renderTitle({
+    it('should not display pending badge when isPending is false', async () => {
+        const { queryByText } = await renderTitle({
             flowType: 'approve',
             isFailed: false,
             isPending: false,
@@ -78,8 +82,8 @@ describe('ExchangeConfirmationTitle', () => {
         ).not.toBeOnTheScreen();
     });
 
-    it('should display error alert when isFailed', () => {
-        const { getByText } = renderTitle({
+    it('should display error alert when isFailed', async () => {
+        const { getByText } = await renderTitle({
             flowType: 'approve',
             isFailed: true,
             isPending: false,
@@ -90,8 +94,8 @@ describe('ExchangeConfirmationTitle', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should not display pending alert when isFailed is false', () => {
-        const { queryByText } = renderTitle({
+    it('should not display pending alert when isFailed is false', async () => {
+        const { queryByText } = await renderTitle({
             flowType: 'approve',
             isFailed: false,
             isPending: false,

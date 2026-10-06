@@ -20,6 +20,7 @@ import {
     MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
     MIN_STAKE_DELEGATION,
     STAKE_ACCOUNT_V2_SIZE,
+    type SolanaNetworkSymbol,
     StakeState,
 } from '../constants';
 import type {
@@ -41,7 +42,6 @@ import type {
     StakeParams,
     StakeResponse,
     StakeStateAccount,
-    SupportedSolanaNetworkSymbols,
     UnstakeParams,
     UnstakeResponse,
 } from '../types';
@@ -64,7 +64,7 @@ import {
 const STAKE_HISTORY_ACCOUNT = address('SysvarStakeHistory1111111111111111111111111');
 const STAKE_CONFIG_ACCOUNT = address('StakeConfig11111111111111111111111111111111');
 
-/** @see {@link file://./../../../../suite-common/wallet-constants/src/stakingConstants.ts}  */
+/** @see {@link file://./../../../../suite-common/wallet-core/src/staking/shared/stakingConstants.ts}  */
 const WALLET_SDK_SOURCE = '1';
 
 export const getSolanaStakingData = async (
@@ -93,12 +93,16 @@ export const getSolanaStakingData = async (
                 if (stakingProvider === 'everstake' && !isEverStake) return;
                 if (stakingProvider === 'non-everstake' && isEverStake) return;
 
+                const activationEpoch = fields[1]?.delegation?.activationEpoch;
+
                 return {
                     rentExemptReserve: fields[0]?.rentExemptReserve.toString(),
                     stake: fields[1]?.delegation?.stake.toString(),
                     status: stakeState,
                     isEverStake,
                     voterPubkey,
+                    activationEpoch:
+                        activationEpoch !== undefined ? Number(activationEpoch) : undefined,
                 };
             }
         })
@@ -160,6 +164,7 @@ export const stake = async ({
             feeLamports: feeSummary.feeLamports,
             rentLamports: minimumRent.toString(),
             feeIncludingRentLamports,
+            hasSplitInstruction: false,
         };
 
         return {
@@ -170,6 +175,7 @@ export const stake = async ({
     } catch (error) {
         throw new Error(
             `Solana staking: staking failed - ${error instanceof Error ? error.message : serializeError(error)}`,
+            { cause: error },
         );
     }
 };
@@ -330,12 +336,14 @@ export const unstake = async ({
             feeLamports: feeSummary.feeLamports,
             rentLamports: minimumRent.toString(),
             feeIncludingRentLamports,
+            hasSplitInstruction: accountsToSplit.length > 0,
         };
 
         return { unstakeTx: transactionMessage, unstakeAmount, txMeta };
     } catch (error) {
         throw new Error(
             `Solana staking: unstaking failed - ${error instanceof Error ? error.message : serializeError(error)}`,
+            { cause: error },
         );
     }
 };
@@ -393,6 +401,7 @@ export const claim = async ({
             feeLamports: feeSummary.feeLamports,
             rentLamports: '0',
             feeIncludingRentLamports: feeSummary.feeLamports,
+            hasSplitInstruction: false,
         };
 
         return {
@@ -403,6 +412,7 @@ export const claim = async ({
     } catch (error) {
         throw new Error(
             `Solana staking: claiming failed - ${error instanceof Error ? error.message : serializeError(error)}`,
+            { cause: error },
         );
     }
 };
@@ -513,12 +523,11 @@ export const prepareClaimSolTx = async ({
     }
 };
 
-export const selectSolanaValidator = (symbol: SupportedSolanaNetworkSymbols) => {
+export const selectSolanaValidator = (symbol: SolanaNetworkSymbol): Address => {
     switch (symbol) {
         case 'dsol':
             return address(EVERSTAKE_SOLANA_DEVNET_VALIDATOR);
         case 'sol':
-        default:
             return address(EVERSTAKE_SOLANA_MAINNET_VALIDATOR);
     }
 };

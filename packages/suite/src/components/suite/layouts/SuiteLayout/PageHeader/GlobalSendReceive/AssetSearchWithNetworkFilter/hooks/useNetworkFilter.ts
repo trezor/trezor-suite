@@ -1,11 +1,13 @@
 import { type RefObject, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-import { goto, parseDashboardParams, selectRouterParams } from '@suite/router';
+import { gotoThunk, parseDashboardParams, selectRouterParams } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     globalSendReceiveFiltersActions,
     globalSendReceiveFiltersSelectors,
@@ -15,9 +17,17 @@ export interface UseNetworkFilterProps {
     modal?: NonNullable<GlobalSendReceiveType>;
     listRef: RefObject<HTMLDivElement | null>;
     resetSearch: () => void;
+    availableNetworks?: readonly NetworkSymbol[];
+    shouldResetSearchOnNetworkChange?: boolean;
 }
 
-export function useNetworkFilter({ listRef, resetSearch, modal }: UseNetworkFilterProps) {
+export function useNetworkFilter({
+    listRef,
+    resetSearch,
+    modal,
+    availableNetworks,
+    shouldResetSearchOnNetworkChange = true,
+}: UseNetworkFilterProps) {
     const routerParams = useSelector(selectRouterParams);
     const networkSymbolUrlParam = useMemo(
         () => parseDashboardParams(routerParams)?.networkSymbol,
@@ -26,33 +36,42 @@ export function useNetworkFilter({ listRef, resetSearch, modal }: UseNetworkFilt
 
     const defaultNetwork = useSelector(globalSendReceiveFiltersSelectors.selectNetworkSymbol);
     const enabledNetworks = useSelector(selectEnabledNetworks);
+    const selectableNetworks = availableNetworks ?? enabledNetworks;
     const [networkFilter, setNetworkFilter] = useState<NetworkSymbol | undefined>(defaultNetwork);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
-        // Only preselect a network from the URL if it is actually enabled, otherwise the list shows
-        // "no accounts" under a filter the user never chose (e.g. send/sol while Solana is disabled).
+        // Only preselect a network from the URL when it is available in the current picker,
+        // otherwise the list is hidden behind a filter the user never chose.
         if (
             networkSymbolUrlParam &&
             defaultNetwork === undefined &&
-            enabledNetworks.includes(networkSymbolUrlParam)
+            selectableNetworks.includes(networkSymbolUrlParam)
         ) {
             setNetworkFilter(networkSymbolUrlParam);
         }
-    }, [networkSymbolUrlParam, defaultNetwork, enabledNetworks]);
+    }, [networkSymbolUrlParam, defaultNetwork, selectableNetworks]);
+
+    useEffect(() => {
+        if (networkFilter && !selectableNetworks.includes(networkFilter)) {
+            setNetworkFilter(undefined);
+        }
+    }, [networkFilter, selectableNetworks]);
 
     useEffect(() => {
         if (networkFilter === defaultNetwork) {
             return;
         }
 
-        resetSearch();
+        if (shouldResetSearchOnNetworkChange) {
+            resetSearch();
+        }
 
         dispatch(globalSendReceiveFiltersActions.setNetworkSymbol(networkFilter));
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'suite-index',
                 params: {
                     modal,
@@ -64,7 +83,15 @@ export function useNetworkFilter({ listRef, resetSearch, modal }: UseNetworkFilt
         requestAnimationFrame(() => {
             listRef.current?.scrollTo({ top: 0, behavior: 'instant' });
         });
-    }, [defaultNetwork, dispatch, listRef, networkFilter, resetSearch, modal]);
+    }, [
+        defaultNetwork,
+        dispatch,
+        listRef,
+        networkFilter,
+        resetSearch,
+        modal,
+        shouldResetSearchOnNetworkChange,
+    ]);
 
     return [networkFilter, setNetworkFilter] as const;
 }

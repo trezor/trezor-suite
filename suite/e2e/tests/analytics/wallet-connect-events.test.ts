@@ -1,9 +1,10 @@
 import { EventType } from '@suite-common/analytics/src/constants';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/walletConnectFixtures';
 
-test.describe('Analytics Events - WalletConnect', { tag: ['@T3W1', '@nightlyOnly'] }, () => {
+test.describe('Analytics Events - WalletConnect', { tag: ['@T3W1', '@optional'] }, () => {
     let wcUri: string;
 
     const BASE_WC_EVENTS = [EventType.WalletConnectPaired, EventType.WalletConnectProposal];
@@ -18,7 +19,7 @@ test.describe('Analytics Events - WalletConnect', { tag: ['@T3W1', '@nightlyOnly
         await test.step('Onboarding', async () => {
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: ['eth', 'ada'],
+                enableNetworks: [asNetworkSymbol('eth'), asNetworkSymbol('ada')],
             });
         });
     });
@@ -31,7 +32,7 @@ test.describe('Analytics Events - WalletConnect', { tag: ['@T3W1', '@nightlyOnly
                 testCase: `Verify that the ${EventType.WalletConnectInit} event is triggered automatically when the application starts`,
                 category: TestCategory.General,
                 priority: TestPriority.Medium,
-                stream: TestStream.Foundation,
+                stream: TestStream.Growth,
             }),
         },
         async ({ analyticsHelper, page }) => {
@@ -58,7 +59,7 @@ test.describe('Analytics Events - WalletConnect', { tag: ['@T3W1', '@nightlyOnly
                 testCase: `Verify that ${EventType.WalletConnectProposalApproved} and related events are logged when the user confirms a WalletConnect proposal`,
                 category: TestCategory.General,
                 priority: TestPriority.Medium,
-                stream: TestStream.Foundation,
+                stream: TestStream.Growth,
             }),
         },
         async ({ settingsPage, analyticsHelper }) => {
@@ -94,7 +95,7 @@ test.describe('Analytics Events - WalletConnect', { tag: ['@T3W1', '@nightlyOnly
                 testCase: `Verify that ${EventType.WalletConnectProposalRejected} is logged when the user cancel a WalletConnect proposal`,
                 category: TestCategory.General,
                 priority: TestPriority.Medium,
-                stream: TestStream.Foundation,
+                stream: TestStream.Growth,
             }),
         },
         async ({ settingsPage, analyticsHelper }) => {

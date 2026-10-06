@@ -1,4 +1,4 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
@@ -12,12 +12,9 @@ import {
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type YieldFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    getApyPercent,
-    isStakingNetworkType,
-    isWrappedNativeToken,
-} from '@suite-common/wallet-utils';
+import { getApyPercent, isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';
 import {
@@ -45,7 +42,7 @@ export const YieldEarnInANutshellModal = ({
     actionType,
     yieldContext,
 }: YieldEarnInANutshellModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const { handleAction, onCancelClick } = useEarnInANutshell({
         flow: EarnFlow.Yield,

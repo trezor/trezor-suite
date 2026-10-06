@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
+import { selectBestEnabledYieldVault } from '@suite-common/earn-stablecoin';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { type EnhancedTokenInfo } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     getYieldVaultForOutputToken,
@@ -12,14 +12,13 @@ import { getApyPercent } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { exhaustive } from '@trezor/type-utils';
 
-import { getBestEnabledYieldVault } from 'src/components/earn/utils/yieldVaultUtils';
 import { useSelector } from 'src/hooks/suite';
 
 import type { TokensTableType } from '../types';
 
 type UseTokenYieldBadgeParams = {
     networkSymbol: NetworkSymbol;
-    token: EnhancedTokenInfo;
+    token: TokenInfo;
     accountTokens: TokenInfo[] | undefined;
     type: TokensTableType;
     yieldOpportunities?: YieldDtoV2[];
@@ -83,7 +82,7 @@ export const useTokenYieldBadge = ({
     // A vault the user already deposited into states the rate they actually earn, so it
     // outranks a higher-paying one they have not touched.
     const bestEnabledVault = useSelector(state =>
-        getBestEnabledYieldVault(
+        selectBestEnabledYieldVault(
             state,
             vaultsWithPosition.length > 0 ? vaultsWithPosition : matchedVaults,
         ),

@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -28,7 +28,7 @@ export const useChangeDeviceName = () => {
     const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProps>();
     const device = useSelector(selectSelectedDevice);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const form = useForm({
         validation: deviceNameFormValidationSchema(translate),
         defaultValues: {

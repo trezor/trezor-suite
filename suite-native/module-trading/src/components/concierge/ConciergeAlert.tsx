@@ -5,7 +5,7 @@ import {
     getOtcProvidersByCountry,
     useFetchOtc,
 } from '@suite-common/trading';
-import { FullAlertBox } from '@suite-native/atoms';
+import { BannerFull } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
@@ -79,7 +79,7 @@ export const ConciergeAlert = ({ tradingType }: Props) => {
     }
 
     return (
-        <FullAlertBox
+        <BannerFull
             iconName="handshake"
             title={alertTitle}
             intent="info"

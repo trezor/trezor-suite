@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { CryptoId } from 'invity-api';
 
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import {
     tradingBuyActions,
     tradingExchangeActions,
@@ -28,7 +28,9 @@ describe('tradingSlice', () => {
     let tradingReducer: ReturnType<typeof tradingSlice.prepareReducer>;
 
     beforeEach(() => {
-        tradingReducer = tradingSlice.prepareReducer(extraDependenciesCommonMock);
+        tradingReducer = tradingSlice.prepareReducer({
+            actionTypes: { storageLoad: mockActionType('storageLoad') },
+        });
     });
 
     afterEach(() => {
@@ -43,7 +45,6 @@ describe('tradingSlice', () => {
 
             expect(state).toEqual(
                 expect.objectContaining({
-                    favouriteAssets: {},
                     tradingEnvironment: 'production',
                     isAmountInputActive: false,
                     activeTradingType: undefined,
@@ -337,6 +338,50 @@ describe('tradingSlice', () => {
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
             expect(state.sell.tradingAccountKey).toBeUndefined();
+        });
+    });
+
+    describe('setReceiveAccount', () => {
+        it('should set the complete buy receive account selection', () => {
+            const accountKey = mockAccountKey({ descriptor: 'buyAccount' });
+
+            const state = tradingReducer(
+                undefined,
+                tradingActions.setReceiveAccount({
+                    tradingType: 'buy',
+                    accountKey,
+                    address: 'buyAddress',
+                }),
+            );
+
+            expect(state.buy.tradingAccountKey).toBe(accountKey);
+            expect(state.buy.receiveAccountKey).toBe(accountKey);
+            expect(state.buy.receiveAddress).toBe('buyAddress');
+        });
+
+        it('should set the complete exchange receive account selection', () => {
+            const accountKey = mockAccountKey({ descriptor: 'exchangeReceiveAccount' });
+            const tradingAccountKey = mockAccountKey({ descriptor: 'exchangeSendAccount' });
+            const prevState: TradingState = {
+                ...tradingInitialState,
+                exchange: {
+                    ...tradingInitialState.exchange,
+                    tradingAccountKey,
+                },
+            };
+
+            const state = tradingReducer(
+                prevState,
+                tradingActions.setReceiveAccount({
+                    tradingType: 'exchange',
+                    accountKey,
+                    address: 'exchangeAddress',
+                }),
+            );
+
+            expect(state.exchange.tradingAccountKey).toBe(tradingAccountKey);
+            expect(state.exchange.receiveAccountKey).toBe(accountKey);
+            expect(state.exchange.receiveAddress).toBe('exchangeAddress');
         });
     });
 

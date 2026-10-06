@@ -24,6 +24,8 @@ export type EvoluConsoleDeps = {
     updateRelayConnectionStatus: UpdateRelayConnectionStatus;
 };
 
+type EvoluConsole = Console;
+
 const isEvoluWebSocketEventName = (value: unknown): value is EvoluWebSocketEventName =>
     typeof value === 'string' && isArrayMember(value, evoluWebSocketEventNames);
 
@@ -33,7 +35,7 @@ const getErrorMessage = (value: unknown): string | undefined => {
     return JSON.stringify(value);
 };
 
-export const createEvoluConsole = (deps: EvoluConsoleDeps): Console => {
+export const createEvoluConsole = (deps: EvoluConsoleDeps): EvoluConsole => {
     const evoluConsoleStoreOutput = createConsoleStoreOutput();
     const console = createConsole({
         level: 'debug',

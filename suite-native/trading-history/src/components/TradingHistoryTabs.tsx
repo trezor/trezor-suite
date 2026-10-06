@@ -1,6 +1,7 @@
 import { type TradingType } from '@suite-common/trading';
-import { type SubTabItem, SubTabs } from '@suite-native/atoms';
+import { EdgeFades, type SubTabItem, SubTabs } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useNativeStyles } from '@trezor/styles-native';
 
 export type TradingHistoryFilter = TradingType | 'all';
 
@@ -35,12 +36,20 @@ const items: SubTabItem<TradingHistoryFilter>[] = [
     },
 ];
 
-export const TradingHistoryTabs = ({ value, onChange }: TradingHistoryTabsProps) => (
-    <SubTabs
-        items={items}
-        onChange={onChange}
-        size="large"
-        testID="@trading/history/tabs"
-        value={value}
-    />
-);
+export const TradingHistoryTabs = ({ value, onChange }: TradingHistoryTabsProps) => {
+    const { utils } = useNativeStyles();
+
+    return (
+        <>
+            <SubTabs
+                items={items}
+                onChange={onChange}
+                paddingHorizontal="sp16"
+                size="large"
+                testID="@trading/history/tabs"
+                value={value}
+            />
+            <EdgeFades direction="horizontal" startSize={utils.spacings.sp20} />
+        </>
+    );
+};

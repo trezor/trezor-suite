@@ -5,7 +5,7 @@ import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { Box, Button, Card, HStack, VStack } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -53,7 +53,7 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
                                     variant="body-md"
                                     isDiscreetText={false}
                                 />
-                                <CryptoAmountFormatter
+                                <ExactCryptoAmountFormatter
                                     value={customFeeTransaction?.fee}
                                     symbol={symbol}
                                     isBalance={false}

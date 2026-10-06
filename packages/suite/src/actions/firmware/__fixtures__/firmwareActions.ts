@@ -1,6 +1,6 @@
-import { firmwareActions, firmwareUpdate } from '@suite-common/firmware';
+import { firmwareActions, firmwareUpdateThunk } from '@suite-common/firmware';
 import { mockGetFirmwareReleaseConfigInfo, mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { FirmwareType, UI_REQUEST } from '@trezor/connect';
+import { FirmwareType, UI_EVENTS } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 const bootloaderDevice = mockSuiteDevice({ mode: 'bootloader', connected: true });
@@ -42,7 +42,7 @@ const firmwareUpdateResponsePayload = {
 export const actions = [
     {
         description: 'Success T2T1',
-        action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
+        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
         mocks: {
             connect: {
                 success: true,
@@ -54,7 +54,6 @@ export const actions = [
                 devices: [bootloaderDevice],
                 selectedDevice: bootloaderDevice,
             },
-            suite: {},
         },
         result: {
             actions: [
@@ -68,7 +67,7 @@ export const actions = [
     },
     {
         description: 'Success T2T1 - install Bitcoin-only firmware',
-        action: () => firmwareUpdate({ firmwareType: FirmwareType.BitcoinOnly }),
+        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.BitcoinOnly }),
         mocks: {
             connect: {
                 success: true,
@@ -80,7 +79,6 @@ export const actions = [
                 devices: [bootloaderDevice],
                 selectedDevice: bootloaderDevice,
             },
-            suite: {},
         },
         result: {
             actions: [
@@ -94,7 +92,7 @@ export const actions = [
     },
     {
         description: 'Success T1B1 (with intermediary)',
-        action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
+        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
         mocks: {
             connect: {
                 success: true,
@@ -106,7 +104,6 @@ export const actions = [
                 selectedDevice: bootloaderDeviceNeedsIntermediary,
                 devices: [bootloaderDeviceNeedsIntermediary],
             },
-            suite: {},
         },
         result: {
             actions: [
@@ -123,7 +120,7 @@ export const actions = [
     },
     {
         description: 'Success T1B1 (without intermediary)',
-        action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
+        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
         mocks: {
             connect: {
                 success: true,
@@ -135,7 +132,6 @@ export const actions = [
                 selectedDevice: bootloaderDeviceNoIntermediaryT1,
                 devices: [bootloaderDeviceNoIntermediaryT1],
             },
-            suite: {},
         },
         result: {
             actions: [
@@ -152,12 +148,11 @@ export const actions = [
     },
     {
         description: 'Errors for missing device',
-        action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
+        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
                 selectedDevice: undefined,
             },
-            suite: {},
         },
         result: {
             state: { firmware: { status: 'error' } },
@@ -165,13 +160,12 @@ export const actions = [
     },
     {
         description: 'FirmwareUpdate call to connect errors',
-        action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
+        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
                 selectedDevice: bootloaderDevice,
                 devices: [bootloaderDevice],
             },
-            suite: {},
         },
         mocks: {
             connect: {
@@ -189,7 +183,7 @@ export const actions = [
                 { type: firmwareActions.setStatus.type, payload: 'error' },
                 { type: firmwareActions.setFirmwareUpdateError.type, payload: 'foo' },
                 {
-                    type: firmwareUpdate.rejected.type,
+                    type: firmwareUpdateThunk.rejected.type,
                     payload: {
                         device: bootloaderDevice,
                         error: 'foo',
@@ -202,13 +196,12 @@ export const actions = [
     },
     {
         description: 'FirmwareUpdate call to connect errors due to cancelling on device',
-        action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
+        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
                 selectedDevice: bootloaderDevice,
                 devices: [bootloaderDevice],
             },
-            suite: {},
         },
         mocks: {
             connect: {
@@ -229,7 +222,7 @@ export const actions = [
                     payload: 'Firmware install failed',
                 },
                 {
-                    type: firmwareUpdate.rejected.type,
+                    type: firmwareUpdateThunk.rejected.type,
                     payload: {
                         device: bootloaderDevice,
                         error: 'Firmware install failed',
@@ -252,10 +245,10 @@ export const actions = [
 // various cases to test reducer through actions
 export const reducerActions = [
     {
-        description: 'UI_REQUEST.FIRMWARE_PROGRESS',
+        description: 'UI_EVENTS.FIRMWARE_PROGRESS',
         initialState: {},
         action: {
-            type: UI_REQUEST.FIRMWARE_PROGRESS,
+            type: UI_EVENTS.FIRMWARE_PROGRESS,
             payload: {
                 operation: 'flashing',
                 progress: 50,

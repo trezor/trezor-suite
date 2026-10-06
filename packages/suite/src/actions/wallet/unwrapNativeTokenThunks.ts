@@ -1,16 +1,23 @@
 import { openDeferredModal } from '@suite/modal';
-import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
+import { type AnalyticsDep, events } from '@suite-common/analytics';
+import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    type ComposeYieldUnwrapTransactionThunkState,
     type YieldFlowDisplayToken,
     type YieldWithdrawFlowType,
     composeYieldUnwrapTransactionThunk,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
-import { sendYieldTransaction } from './stablecoin-yield/signingHelpers';
+import {
+    type SendYieldTransactionDeps,
+    type SendYieldTransactionState,
+    getYieldSubmitErrorAnalyticsMessage,
+    sendYieldTransaction,
+} from './stablecoin-yield/signingHelpers';
 
 const UNWRAP_NATIVE_TOKEN_PREFIX = '@wallet/unwrap-native-token';
 
@@ -21,21 +28,64 @@ type UnwrapNativeTokenPayload = {
     yieldFlow?: {
         flowKey: string;
         flowType: YieldWithdrawFlowType;
+        vaultId?: string;
     };
 };
 
-export const submitUnwrapNativeTokenThunk = createThunk(
+type SubmitUnwrapNativeTokenThunkState = ComposeYieldUnwrapTransactionThunkState &
+    SendYieldTransactionState;
+
+type SubmitUnwrapNativeTokenThunkDeps = SendYieldTransactionDeps & {
+    services: AnalyticsDep;
+};
+
+export const submitUnwrapNativeTokenThunk = createThunk<
+    { txid: string; fee: string } | undefined,
+    UnwrapNativeTokenPayload,
+    { state: SubmitUnwrapNativeTokenThunkState; extra: SubmitUnwrapNativeTokenThunkDeps }
+>(
     `${UNWRAP_NATIVE_TOKEN_PREFIX}/submit`,
-    async (
-        { account, token, unwrapAmount, yieldFlow }: UnwrapNativeTokenPayload,
-        { dispatch, getState },
-    ) => {
+    async ({ account, token, unwrapAmount, yieldFlow }, { dispatch, getState, extra }) => {
+        // An in-flow unwrap belongs to the withdraw funnel, so its failures are reported there
+        // rather than as a standalone yield/unwrap. Only the broadcast unwrap transaction is
+        // resolved by `useYieldPendingTransactionTracking`, so these pre-broadcast failures are the
+        // withdraw event's only view of them and cannot double-count. The `unwrap-` prefix keeps
+        // them apart from failures of the withdraw transaction itself.
+        const reportError = (errorMessage: string) => {
+            if (yieldFlow) {
+                extra.services.analytics.report({
+                    type: events.yieldWithdrawEvent.name,
+                    payload: {
+                        type: 'error',
+                        action: 'continue',
+                        operation: yieldFlow.flowType,
+                        networkSymbol: account.symbol,
+                        vaultId: yieldFlow.vaultId,
+                        errorMessage: `unwrap-${errorMessage}`,
+                    },
+                });
+
+                return;
+            }
+
+            extra.services.analytics.report({
+                type: events.yieldUnwrapEvent.name,
+                payload: {
+                    type: 'error',
+                    action: 'continue',
+                    networkSymbol: account.symbol,
+                    errorMessage,
+                },
+            });
+        };
+
         try {
             const result = await dispatch(
                 composeYieldUnwrapTransactionThunk({ account, token, unwrapAmount }),
             ).unwrap();
 
             if (result.type === 'error') {
+                reportError(result.reason);
                 dispatch(
                     notificationsActions.addToast({
                         type: 'sign-tx-error',
@@ -57,7 +107,22 @@ export const submitUnwrapNativeTokenThunk = createThunk(
                 }),
             );
 
-            if (userAcceptedTxSimulation?.value === false) {
+            if (userAcceptedTxSimulation === undefined) {
+                return undefined;
+            }
+
+            if (!yieldFlow) {
+                extra.services.analytics.report({
+                    type: events.yieldUnwrapEvent.name,
+                    payload: {
+                        type: 'tx-simulation-modal',
+                        action: userAcceptedTxSimulation.value === false ? 'cancel' : 'continue',
+                        networkSymbol: account.symbol,
+                    },
+                });
+            }
+
+            if (userAcceptedTxSimulation.value === false) {
                 return undefined;
             }
 
@@ -70,22 +135,38 @@ export const submitUnwrapNativeTokenThunk = createThunk(
                 flowType: yieldFlow?.flowType ?? 'withdraw',
                 dispatch,
                 getState,
-                selectedFee: userAcceptedTxSimulation?.selectedFee ?? null,
+                selectedFee: userAcceptedTxSimulation.selectedFee,
             });
 
-            userAcceptedTxSimulation?.resolve();
+            userAcceptedTxSimulation.resolve();
 
-            if (!sendResult) {
+            // Unlike the main yield transactions, a cancelled unwrap is reported: the unwrap-step
+            // failure values documented on the withdraw event include user rejections.
+            if (sendResult.status === 'cancelled') {
+                reportError('submit-failed');
+
                 return undefined;
+            }
+
+            if (!yieldFlow) {
+                extra.services.analytics.report({
+                    type: events.yieldUnwrapEvent.name,
+                    payload: {
+                        type: 'sent',
+                        action: 'continue',
+                        networkSymbol: account.symbol,
+                    },
+                });
             }
 
             dispatch(
                 notificationsActions.addToast({
                     type: 'tx-unwrap',
+                    isYieldFlowStep: !!yieldFlow,
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                     txid: sendResult.txid,
-                    formattedAmount: unwrapAmount,
+                    amount: unwrapAmount,
                     metadata: {
                         send: {
                             symbol: account.symbol,
@@ -103,9 +184,10 @@ export const submitUnwrapNativeTokenThunk = createThunk(
                 }),
             );
 
-            return sendResult;
+            return { txid: sendResult.txid, fee: sendResult.fee };
         } catch (error) {
             console.error(error);
+            reportError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',

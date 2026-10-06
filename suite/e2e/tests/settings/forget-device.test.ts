@@ -1,9 +1,9 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Device Settings - Forget TS7', { tag: ['@T3W1'] }, () => {
+test.describe('Device Settings - Forget TS7', { tag: ['@T3W1', '@optional'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('device');
@@ -232,7 +232,11 @@ test.describe('Device Settings - Forget TS7', { tag: ['@T3W1'] }, () => {
             }),
         },
         async ({ page, settingsPage }) => {
-            const coins: NetworkSymbol[] = ['eth', 'ada', 'sol'];
+            const coins: NetworkSymbol[] = [
+                asNetworkSymbol('eth'),
+                asNetworkSymbol('ada'),
+                asNetworkSymbol('sol'),
+            ];
 
             await test.step('Enable few coins', async () => {
                 await settingsPage.changeNetworks({
@@ -256,7 +260,7 @@ test.describe('Device Settings - Forget TS7', { tag: ['@T3W1'] }, () => {
     );
 });
 
-test.describe('Device Settings - Forget TS5', { tag: ['@T3T1'] }, () => {
+test.describe('Device Settings - Forget TS5', { tag: ['@T3T1', '@optional'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('device');

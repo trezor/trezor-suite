@@ -1,12 +1,8 @@
-import { useSelector } from 'react-redux';
+import { useSelector as useReduxSelector } from 'react-redux';
 
 import isEqualWith from 'lodash/isEqualWith';
 
-export const useSelectorDeepComparison: typeof useSelector = selector =>
-    useSelector(selector, (a, b) => {
-        const result = isEqualWith(a, b);
+export const useSelectorDeepComparison: typeof useReduxSelector = selector =>
+    useReduxSelector(selector, isEqualWith);
 
-        return result;
-    });
-
-useSelectorDeepComparison.withTypes = useSelector.withTypes;
+useSelectorDeepComparison.withTypes = useReduxSelector.withTypes;

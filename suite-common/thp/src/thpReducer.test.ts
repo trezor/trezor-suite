@@ -1,20 +1,26 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { mockConnectDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { DEVICE, createDeviceMessage } from '@trezor/connect';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { DEVICE, type DeviceEventMessage, createDeviceMessage } from '@trezor/connect';
 
 import { createCredential, createDeviceThp } from '../mocks';
 import { thpActions } from './thpActions';
 import { type ThpState, prepareThpReducer } from './thpReducer';
 import {
+    type ThpRootState,
     selectThpAutoconnectStep,
     selectThpCredentials,
     selectThpLastCode,
     selectThpStep,
 } from './thpSelectors';
 
-const thpReduce = prepareThpReducer(extraDependenciesCommonMock);
+const thpReduce = prepareThpReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+
+const reducer = combineReducers({ thp: thpReduce });
 
 const initialState: ThpState = {
     step: null,
@@ -27,13 +33,15 @@ const credential1 = createCredential({ credential: '1' });
 const credential2 = createCredential({ credential: '2' });
 const credential3 = createCredential({ credential: '3' });
 
+const createDeviceAction = (...args: Parameters<typeof createDeviceMessage>) =>
+    createDeviceMessage(...args) as DeviceEventMessage & UnknownAction; // cast to UnknownAction to satisfy the reducer type
+
 describe('thpReducer', () => {
     test('finishThpFlow', () => {
-        const store = configureMockStore({
-            extra: {},
-            reducer: combineReducers({ thp: thpReduce }),
+        const { store } = createTestCompositionRoot<void, ThpRootState>({
+            reducer,
             preloadedState: { thp: { ...initialState, step: 'ConfirmOnlyConnection' } },
-        });
+        }).services;
 
         store.dispatch(thpActions.finishThpFlow());
 
@@ -51,8 +59,8 @@ describe('thpReducer', () => {
             ['finished (connection counter incremented, autoconnect set)', 2, 3, 'AutoconnectInfo'],
             ['finished (connection counter not changed)', 3, 3, null],
         ])('%s', (_, initialCounter, expectedCounter, expectedAutoconnectStep) => {
-            const store = configureMockStore({
-                reducer: combineReducers({ thp: thpReduce }),
+            const { store } = createTestCompositionRoot<void, ThpRootState>({
+                reducer,
                 preloadedState: {
                     thp: {
                         ...initialState,
@@ -64,10 +72,10 @@ describe('thpReducer', () => {
                         ],
                     },
                 },
-            });
+            }).services;
 
             store.dispatch(
-                createDeviceMessage(DEVICE.THP_PAIRING_STATUS_CHANGED, {
+                createDeviceAction(DEVICE.THP_PAIRING_STATUS_CHANGED, {
                     device,
                     status: 'finished',
                 }),
@@ -84,15 +92,15 @@ describe('thpReducer', () => {
         });
 
         test('canceled', () => {
-            const store = configureMockStore({
-                reducer: combineReducers({ thp: thpReduce }),
+            const { store } = createTestCompositionRoot<void, ThpRootState>({
+                reducer,
                 preloadedState: {
                     thp: { ...initialState, step: 'ConfirmOnlyConnection', lastThpCode: '1234' },
                 },
-            });
+            }).services;
 
             store.dispatch(
-                createDeviceMessage(DEVICE.THP_PAIRING_STATUS_CHANGED, {
+                createDeviceAction(DEVICE.THP_PAIRING_STATUS_CHANGED, {
                     device,
                     status: 'canceled',
                 }),
@@ -104,15 +112,15 @@ describe('thpReducer', () => {
         });
 
         test('failed', () => {
-            const store = configureMockStore({
-                reducer: combineReducers({ thp: thpReduce }),
+            const { store } = createTestCompositionRoot<void, ThpRootState>({
+                reducer,
                 preloadedState: {
                     thp: { ...initialState, step: 'ConfirmOnlyConnection', lastThpCode: '1234' },
                 },
-            });
+            }).services;
 
             store.dispatch(
-                createDeviceMessage(DEVICE.THP_PAIRING_STATUS_CHANGED, {
+                createDeviceAction(DEVICE.THP_PAIRING_STATUS_CHANGED, {
                     device,
                     status: 'failed',
                     message: 'foo',
@@ -125,15 +133,15 @@ describe('thpReducer', () => {
         });
 
         test('invalid-tag', () => {
-            const store = configureMockStore({
-                reducer: combineReducers({ thp: thpReduce }),
+            const { store } = createTestCompositionRoot<void, ThpRootState>({
+                reducer,
                 preloadedState: {
                     thp: initialState,
                 },
-            });
+            }).services;
 
             store.dispatch(
-                createDeviceMessage(DEVICE.THP_PAIRING_STATUS_CHANGED, {
+                createDeviceAction(DEVICE.THP_PAIRING_STATUS_CHANGED, {
                     device,
                     status: 'invalid-tag',
                     tag: '1234',
@@ -147,16 +155,15 @@ describe('thpReducer', () => {
     });
 
     it('filters out the credentials to be removed', () => {
-        const store = configureMockStore({
-            extra: {},
-            reducer: combineReducers({ thp: thpReduce }),
+        const { store } = createTestCompositionRoot<void, ThpRootState>({
+            reducer,
             preloadedState: {
                 thp: {
                     ...initialState,
                     credentials: [credential1, credential2],
                 },
             },
-        });
+        }).services;
 
         expect(store.getState().thp.credentials.map(it => it.credential)).toEqual(['1', '2']);
 

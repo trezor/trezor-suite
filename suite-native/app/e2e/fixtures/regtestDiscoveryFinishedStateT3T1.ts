@@ -261,12 +261,12 @@ export const regtestDiscoveryFinishedStateT3T1: PreloadedState = {
                     evolu: 'update-required',
                 },
                 availableTranslations: {
-                    'cs-CZ': 'firmware/translations/t3t1/translation-T3T1-cs-CZ-2.9.0.bin',
-                    'de-DE': 'firmware/translations/t3t1/translation-T3T1-de-DE-2.9.0.bin',
-                    'es-ES': 'firmware/translations/t3t1/translation-T3T1-es-ES-2.9.0.bin',
-                    'fr-FR': 'firmware/translations/t3t1/translation-T3T1-fr-FR-2.9.0.bin',
-                    'it-IT': 'firmware/translations/t3t1/translation-T3T1-it-IT-2.9.0.bin',
-                    'pt-BR': 'firmware/translations/t3t1/translation-T3T1-pt-BR-2.9.0.bin',
+                    'cs-CZ': { status: 'beta' },
+                    'de-DE': { status: 'beta' },
+                    'es-ES': { status: 'beta' },
+                    'fr-FR': { status: 'beta' },
+                    'it-IT': { status: 'beta' },
+                    'pt-BR': { status: 'beta' },
                 },
                 authenticityChecks: {
                     firmwareRevision: {

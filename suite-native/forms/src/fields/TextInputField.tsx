@@ -1,5 +1,7 @@
 import { forwardRef } from 'react';
 
+import { type RequireOneOrNone } from 'type-fest';
+
 import {
     Input,
     type InputLabelVariantProps,
@@ -9,6 +11,7 @@ import {
     type InputWrapperProps,
 } from '@suite-native/atoms';
 
+import { CopyButton } from '../components/CopyButton';
 import { useField } from '../hooks/useField';
 import { type FieldName } from '../types';
 
@@ -18,14 +21,18 @@ type AllowedTextInputFieldProps = Omit<
 >;
 type AllowedInputWrapperProps = Pick<InputWrapperProps, 'hint'>;
 
-export type FieldProps = AllowedTextInputFieldProps &
-    AllowedInputWrapperProps &
-    InputLabelVariantProps & {
-        name: FieldName;
-        onBlur?: () => void;
-        defaultValue?: string;
-        valueTransformer?: (value: string) => string;
-    };
+export type FieldProps = RequireOneOrNone<
+    AllowedTextInputFieldProps &
+        AllowedInputWrapperProps &
+        InputLabelVariantProps & {
+            name: FieldName;
+            onBlur?: () => void;
+            defaultValue?: string;
+            valueTransformer?: (value: string) => string;
+            showCopyButton?: boolean;
+        },
+    'rightIcon' | 'showCopyButton'
+>;
 
 export const TextInputField = forwardRef<InputType, FieldProps>(
     (
@@ -33,12 +40,15 @@ export const TextInputField = forwardRef<InputType, FieldProps>(
             name,
             hint,
             label,
+            readOnly,
             placeholder,
             onBlur,
             valueTransformer,
             onChangeText,
             defaultValue = '',
             labelType = 'innerLabel',
+            rightIcon,
+            showCopyButton = false,
             ...otherProps
         },
         ref,
@@ -69,11 +79,15 @@ export const TextInputField = forwardRef<InputType, FieldProps>(
                 <Input
                     {...otherProps}
                     {...innerLabelOrPlaceholderProps}
+                    ref={ref}
+                    // Forces a native layout reset of multiline read-only inputs after form is cleared.
+                    key={readOnly && !value ? 'read-only-empty' : null}
                     onBlur={handleOnBlur}
                     onChangeText={handleOnChange}
                     value={value}
+                    readOnly={readOnly}
                     hasError={hasError}
-                    ref={ref}
+                    rightIcon={showCopyButton ? <CopyButton value={value} /> : rightIcon}
                 />
             </InputWrapper>
         );

@@ -2,7 +2,7 @@ import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-fla
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { act, fireEvent } from '@suite-native/test-utils-store';
-import { mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtures';
+import { btcAsset, mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import {
@@ -27,11 +27,11 @@ describe('ExchangeReceiveAmountInput', () => {
         },
     };
 
-    const renderExchangeReceiveAmountInput = (
+    const renderExchangeReceiveAmountInput = async (
         props: Partial<ExchangeReceiveAmountInputProps> = {},
         extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithTradingProvider(
+        await renderWithTradingProvider(
             <ExchangeReceiveAmountInput showAssetsSheet={jest.fn()} {...props} />,
             {
                 tradeType: 'exchange',
@@ -40,40 +40,47 @@ describe('ExchangeReceiveAmountInput', () => {
             },
         );
 
-    beforeEach(() => {
-        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+    beforeEach(async () => {
+        const { result } = await renderHookWithTradingProvider(() => useExchangeForm(), {
             tradeType: 'exchange',
             overrides: baseOverrides,
         });
         form = result.current;
     });
 
-    it('should render receiveCryptoAmount form value', () => {
-        act(() => {
+    it('should render receiveCryptoAmount form value', async () => {
+        await act(() => {
+            form.setValue('sendAsset', btcAsset);
             form.setValue('receiveAsset', usdcAsset);
-            form.setValue('quote', mercuryoFixedWorstQuote);
+            form.setValue('quote', {
+                ...mercuryoFixedWorstQuote,
+                send: btcAsset.cryptoId,
+                receive: usdcAsset.cryptoId,
+            });
         });
 
-        const { getByLabelText } = renderExchangeReceiveAmountInput();
+        const { getByLabelText } = await renderExchangeReceiveAmountInput();
 
         expect(
             getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
         ).toHaveDisplayValue('0.00083554');
     });
 
-    it('should call showAssetsSheet callback on press', () => {
+    it('should call showAssetsSheet callback on press', async () => {
         const showAssetsSheetMock = jest.fn();
-        const { getByLabelText } = renderExchangeReceiveAmountInput({
+        const { getByLabelText } = await renderExchangeReceiveAmountInput({
             showAssetsSheet: showAssetsSheetMock,
         });
 
-        fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')));
+        await fireEvent.press(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        );
 
         expect(showAssetsSheetMock).toHaveBeenCalled();
     });
 
-    it('should display loading skeleton when quotes are being fetched', () => {
-        const { getByLabelText } = renderExchangeReceiveAmountInput(
+    it('should display loading skeleton when quotes are being fetched', async () => {
+        const { getByLabelText } = await renderExchangeReceiveAmountInput(
             {},
             { wallet: { trading: { exchange: { isLoading: true } } } },
         );

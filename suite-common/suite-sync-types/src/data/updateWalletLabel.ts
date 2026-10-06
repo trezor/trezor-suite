@@ -16,7 +16,7 @@ export type UpdateWalletLabel = (
 
 export type UpdateWalletLabelDep = { updateWalletLabel: UpdateWalletLabel };
 
-export const selectUpdateWalletLabelDep = (services: any): UpdateWalletLabelDep => ({
+export const injectUpdateWalletLabel = (services: any): UpdateWalletLabelDep => ({
     updateWalletLabel: services.suiteSync.labeling.updateWalletLabel,
 });
 

@@ -1,7 +1,8 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
@@ -22,7 +23,7 @@ export const TransactionReviewModalExchange = ({
     isRbfConfirmedError,
     precomposedForm,
 }: TransactionReviewModalExchangeProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { sendTransaction } = useTradingExchangeTradeActions();
 
     if (!precomposedForm) {

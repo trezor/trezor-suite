@@ -8,7 +8,7 @@ import {
 } from 'invity-api';
 
 import { type AccountKey, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { type CardanoOutput, type FeeLevel, type PROTO } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
 
 import { type TradingTransaction, type TradingType, type TradingVerifiedAddress } from '../types';
 import { type TradingBuyState, buyInitialState } from './buyReducer';
@@ -16,11 +16,7 @@ import { TRADING_PREFIX } from '../constants';
 import { type TradingExchangeState, exchangeInitialState } from './exchangeReducer';
 import { type TradingSellState, sellInitialState } from './sellReducer';
 
-type TradingComposedTransactionInfoOutputs = {
-    outputs?: PROTO.TxOutputType[] | CardanoOutput[];
-};
-
-export interface TradingComposedTransactionInfo {
+export type TradingComposedTransactionInfo = {
     composed?: Pick<
         PrecomposedTransactionFinal,
         | 'fee'
@@ -30,31 +26,32 @@ export interface TradingComposedTransactionInfo {
         | 'maxFeePerGas'
         | 'maxPriorityFeePerGas'
         | 'token'
-    > &
-        TradingComposedTransactionInfoOutputs;
+        | 'accountActivationFee'
+    >;
     selectedFee?: FeeLevel['label'];
-}
+};
 
-export interface TradingInfo {
+export type TradingInfo = {
     platforms?: Platforms;
     coins?: Coins;
-}
+    config?: InfoResponse['config'];
+};
 
-export interface TradingPrefilledFromAccount {
+export type TradingPrefilledFromAccount = {
     cryptoId: CryptoId | undefined;
     key: AccountKey | undefined;
-}
+};
 
 // Maximum number of refetch attempts before the interval automatically stops
 export const REFETCH_QUOTES_MAX_COUNT = 40;
 
-export interface QuoteRefetchingState {
+export type QuoteRefetchingState = {
     remainingRefetches: number;
     lastFetchTimestamp: number | undefined;
     status: 'running' | 'stopped';
-}
+};
 
-export interface TradingState {
+export type TradingState = {
     info: TradingInfo;
     buy: TradingBuyState;
     exchange: TradingExchangeState;
@@ -69,9 +66,8 @@ export interface TradingState {
     prefilledFromAccount: TradingPrefilledFromAccount;
     verifiedAddress: TradingVerifiedAddress;
     currentProviderMetadata?: ProviderMetadata;
-    favouriteAssets: Partial<Record<string, true>>;
     quoteRefetchingState: QuoteRefetchingState;
-}
+};
 
 export type TradingRootState = {
     wallet: {
@@ -99,7 +95,6 @@ export const initialState: TradingState = {
         key: undefined,
     },
     verifiedAddress: undefined,
-    favouriteAssets: {},
     quoteRefetchingState: {
         remainingRefetches: REFETCH_QUOTES_MAX_COUNT,
         lastFetchTimestamp: undefined,
@@ -111,26 +106,10 @@ const tradingCommonSlice = createSlice({
     name: TRADING_PREFIX,
     initialState,
     reducers: {
-        addTradeableAssetToFavourites: (
-            state: TradingState,
-            { payload }: PayloadAction<CryptoId>,
-        ) => {
-            if (!state.favouriteAssets) {
-                state.favouriteAssets = {};
-            }
-            state.favouriteAssets[payload] = true;
-        },
-        removeTradeableAssetFromFavourites: (
-            state: TradingState,
-            { payload }: PayloadAction<CryptoId>,
-        ) => {
-            if (state.favouriteAssets) {
-                delete state.favouriteAssets[payload];
-            }
-        },
         saveInfo(state: TradingState, action: PayloadAction<InfoResponse>) {
             state.info.coins = action.payload.coins;
             state.info.platforms = action.payload.platforms;
+            state.info.config = action.payload.config;
         },
         saveComposedTransactionInfo(
             state: TradingState,
@@ -159,6 +138,9 @@ const tradingCommonSlice = createSlice({
         ) {
             state.isLoading = action.payload.isLoading;
             state.lastLoadedTimestamp = action.payload.lastLoadedTimestamp ?? 0;
+        },
+        invalidateCatalog(state: TradingState) {
+            state.lastLoadedTimestamp = 0;
         },
         setTradingActiveSection(state: TradingState, action: PayloadAction<TradingType>) {
             state.activeSection = action.payload;

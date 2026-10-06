@@ -12,8 +12,8 @@ jest.mock('../../../hooks/buy/useBuyPreviewFlow', () => ({
 describe('BuyPreviewContinueButton', () => {
     const mockUseBuyPreviewFlow = jest.mocked(useBuyPreviewFlow);
 
-    const renderBuyPreviewContinueButton = (companyName = 'MoonPay') =>
-        renderWithTradingProvider(<BuyPreviewContinueButton companyName={companyName} />, {
+    const renderBuyPreviewContinueButton = async (companyName = 'MoonPay') =>
+        await renderWithTradingProvider(<BuyPreviewContinueButton companyName={companyName} />, {
             tradeType: 'buy',
         });
 
@@ -29,13 +29,13 @@ describe('BuyPreviewContinueButton', () => {
         });
     });
 
-    it('renders button with company name', () => {
-        const { getByText } = renderBuyPreviewContinueButton();
+    it('renders button with company name', async () => {
+        const { getByText } = await renderBuyPreviewContinueButton();
 
         expect(getByText(buttonText)).toBeOnTheScreen();
     });
 
-    it('calls confirmTrade when button is pressed and canProceed is true', () => {
+    it('calls confirmTrade when button is pressed and canProceed is true', async () => {
         const confirmTradeMock = jest.fn();
         mockUseBuyPreviewFlow.mockReturnValue({
             confirmTrade: confirmTradeMock,
@@ -43,14 +43,14 @@ describe('BuyPreviewContinueButton', () => {
             isLoading: false,
         });
 
-        const { getByText } = renderBuyPreviewContinueButton();
+        const { getByText } = await renderBuyPreviewContinueButton();
 
-        fireEvent.press(getByText(buttonText));
+        await fireEvent.press(getByText(buttonText));
 
         expect(confirmTradeMock).toHaveBeenCalledTimes(1);
     });
 
-    it('does not call confirmTrade when button canProceed is false', () => {
+    it('does not call confirmTrade when button canProceed is false', async () => {
         const confirmTradeMock = jest.fn();
         mockUseBuyPreviewFlow.mockReturnValue({
             confirmTrade: confirmTradeMock,
@@ -58,14 +58,14 @@ describe('BuyPreviewContinueButton', () => {
             isLoading: false,
         });
 
-        const { getByText } = renderBuyPreviewContinueButton();
+        const { getByText } = await renderBuyPreviewContinueButton();
 
-        fireEvent.press(getByText(buttonText));
+        await fireEvent.press(getByText(buttonText));
 
         expect(confirmTradeMock).not.toHaveBeenCalled();
     });
 
-    it('does not call confirmTrade while loading', () => {
+    it('does not call confirmTrade while loading', async () => {
         const confirmTradeMock = jest.fn();
         mockUseBuyPreviewFlow.mockReturnValue({
             confirmTrade: confirmTradeMock,
@@ -73,9 +73,9 @@ describe('BuyPreviewContinueButton', () => {
             isLoading: true,
         });
 
-        const { getByText } = renderBuyPreviewContinueButton();
+        const { getByText } = await renderBuyPreviewContinueButton();
 
-        fireEvent.press(getByText(buttonText));
+        await fireEvent.press(getByText(buttonText));
 
         expect(confirmTradeMock).not.toHaveBeenCalled();
     });

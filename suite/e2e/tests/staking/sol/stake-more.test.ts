@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import solSimulateStakeMoreTransaction from '../../../fixtures/staking/sol-simulate-stake-more-transaction.json';
@@ -22,13 +23,16 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
     });
 
     test.beforeEach(async ({ onboardingPage, settingsPage, solanaStakingMock }) => {
-        solanaStakingMock.setupStakedAccount();
-        solanaStakingMock.setEpoch(solStakingAccountSecond.activationEpoch);
+        await solanaStakingMock.setupStakedAccount();
+        await solanaStakingMock.setEpoch(solStakingAccountSecond.activationEpoch);
         solanaStakingMock.setSimulatedTransaction(solSimulateStakeMoreTransaction);
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
             enableNetworks: [
-                { symbol: 'sol', backend: { type: 'solana', url: solanaStakingMock.url } },
+                {
+                    symbol: asNetworkSymbol('sol'),
+                    backend: { type: 'solana', url: solanaStakingMock.url },
+                },
             ],
         });
     });
@@ -40,13 +44,17 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user can stake more from his Solana account.',
                 category: TestCategory.Solana,
                 priority: TestPriority.Critical,
-                stream: TestStream.Trends,
+                stream: TestStream.Earn,
             }),
         },
         async ({ page, device, walletPage, stakingSection, devicePrompt, solanaStakingMock }) => {
             await test.step('Check staking dashboard', async () => {
                 await page.clock.install();
-                await walletPage.openAccount({ symbol: 'sol', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({
+                    symbol: asNetworkSymbol('sol'),
+                    type: 'normal',
+                    atIndex: 0,
+                });
                 await stakingSection.stakingTabButton.click();
                 await stakingSection.expectStakingAmounts({
                     expected: {
@@ -62,6 +70,13 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Open and fill staking form', async () => {
                 await stakingSection.stakeMoreButton.click();
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKING_IN_A_NUTSHELL');
+                await stakingSection.continueButton.click();
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKE_TOKEN', {
+                    values: { symbol: 'SOL' },
+                });
+                await stakingSection.everstakeAcknowledgeCheckbox.click();
+                await stakingSection.confirmButton.click();
                 await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKE_TOKEN', {
                     values: { symbol: 'SOL' },
                 });
@@ -145,7 +160,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Wait an epoch and amount moved from pending to staked', async () => {
-                solanaStakingMock.advanceEpoch();
+                await solanaStakingMock.advanceEpoch();
                 await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
                 await stakingSection.expectStakingAmounts({
                     expected: {

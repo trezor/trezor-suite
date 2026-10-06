@@ -1,33 +1,27 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { TrezorLink } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectRecoveryWordRequestInputType } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
 import {
-    isStandardRecoveryDisabled,
+    type RecoveryInputType,
+    isRecoveryInputTypeDisabled,
     recoverDeviceThunk,
     recoveryActions,
     selectRecoveryError,
     selectRecoveryStatus,
     selectWordsCount,
 } from '@suite/recovery';
-import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
 import { Badge, Banner, Column } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 
-import {
-    addPath,
-    goToNextStep,
-    goToPreviousStep,
-    updateAnalytics,
-} from 'src/actions/onboarding/onboardingActions';
+import { goToNextStepThunk, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
-import * as STEP from 'src/constants/onboarding/steps';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import RecoveryStepBox from './RecoveryStepBox';
 
@@ -37,8 +31,7 @@ export const RecoveryStep = () => {
     const error = useSelector(selectRecoveryError);
     const wordsCount = useSelector(selectWordsCount);
     const recoveryWordRequestInputType = useSelector(selectRecoveryWordRequestInputType);
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     if (!device?.features) {
         return null;
@@ -48,17 +41,6 @@ export const RecoveryStep = () => {
     const subheadingKey: TranslationKey = isDeviceWithButtonOnlyNoTouchscreen(deviceModelInternal)
         ? 'TR_RECOVER_SUBHEADING_BUTTONS'
         : 'TR_RECOVER_SUBHEADING_TOUCH';
-
-    const handleCreateWallet = () => {
-        analytics.report({
-            type: events.onboardingRecoveryWarningCreateNewWalletEvent.name,
-            payload: { platform: 'desktop' },
-        });
-        dispatch(goToPreviousStep());
-        dispatch(addPath(STEP.PATH_CREATE));
-        dispatch(goToNextStep());
-        dispatch(updateAnalytics({ seed: 'create' }));
-    };
 
     if (status === 'initial') {
         // 1. step where users chooses number of words in case of T1B1.
@@ -81,14 +63,14 @@ export const RecoveryStep = () => {
                             dispatch(recoveryActions.setWordsCount(number));
                             // For T1B1 with 12 or 18 words, skip recovery type selection and use Advanced recovery
                             // For 24 words, show the recovery type selection
-                            const shouldSkipSelection = isStandardRecoveryDisabled(
+                            const shouldSkipSelection = isRecoveryInputTypeDisabled(
                                 deviceModelInternal,
                                 number,
                                 'standard',
                             );
 
                             if (shouldSkipSelection) {
-                                dispatch(recoveryActions.setAdvancedRecovery(true));
+                                dispatch(recoveryActions.setRecoveryInputType('advanced'));
                                 dispatch(updateAnalytics({ recoveryType: 'advanced' }));
                                 dispatch(recoverDeviceThunk());
                             } else {
@@ -125,14 +107,6 @@ export const RecoveryStep = () => {
                     icon
                     title={<Translation id="TR_RECOVERY_SOURCE_WARNING_TITLE" />}
                     description={<Translation id="TR_RECOVERY_SOURCE_WARNING_DESCRIPTION" />}
-                    rightContent={
-                        <Banner.Button
-                            data-testid="@onboarding/recovery/create-wallet-button"
-                            onClick={handleCreateWallet}
-                        >
-                            <Translation id="TR_NEW_WALLET" />
-                        </Banner.Button>
-                    }
                 />
             </RecoveryStepBox>
         );
@@ -140,8 +114,8 @@ export const RecoveryStep = () => {
 
     if (status === 'select-recovery-type') {
         // 2. step: Standard recovery (user enters recovery seed word by word on host) or Advanced recovery (user types words on a device)
-        const handleSelect = (type: 'standard' | 'advanced') => {
-            dispatch(recoveryActions.setAdvancedRecovery(type === 'advanced'));
+        const handleSelect = (type: RecoveryInputType) => {
+            dispatch(recoveryActions.setRecoveryInputType(type));
             dispatch(updateAnalytics({ recoveryType: type }));
             dispatch(recoverDeviceThunk());
         };
@@ -250,7 +224,7 @@ export const RecoveryStep = () => {
 
     if (device?.mode === 'normal') {
         // Ready to continue to the next step
-        const handleClick = () => dispatch(goToNextStep('set-pin'));
+        const handleClick = () => dispatch(goToNextStepThunk('set-pin'));
 
         return (
             <RecoveryStepBox

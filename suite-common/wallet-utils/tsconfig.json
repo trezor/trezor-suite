@@ -5,8 +5,8 @@
     "references": [
         { "path": "../address" },
         { "path": "../calldata" },
-        { "path": "../earn-staking-api" },
         { "path": "../fiat-services" },
+        { "path": "../legacy-network-config" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
@@ -21,8 +21,14 @@
             "path": "../../packages/blockchain-link-utils"
         },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/crypto-utils" },
         { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
         {
             "path": "../../networks/solana/network-solana"
         },

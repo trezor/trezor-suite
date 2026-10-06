@@ -1,5 +1,4 @@
 import { FormProvider } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import { type CryptoId } from 'invity-api';
 
@@ -26,6 +25,7 @@ import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
+import { useSelector } from 'src/hooks/suite';
 import { useAllowanceModal } from 'src/hooks/wallet/allowance';
 
 import {
@@ -207,7 +207,7 @@ export const RevokeModal = (props: RevokeModalProps) => {
 
                     <Card>
                         <Fees
-                            label="TR_TX_FEE"
+                            label="TR_NETWORK_FEE"
                             feeInfo={feeInfo}
                             account={account}
                             composedLevels={composedLevels}

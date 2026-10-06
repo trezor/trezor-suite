@@ -1,11 +1,13 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { firmwareActions, selectUseDevkit } from '@suite-common/firmware';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const Devkit = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const useDevkit = useSelector(selectUseDevkit);
 
     const onChangeRegularCheck = () => {

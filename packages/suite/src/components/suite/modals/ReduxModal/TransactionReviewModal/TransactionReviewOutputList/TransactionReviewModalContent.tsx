@@ -14,8 +14,10 @@ import {
 } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
+    getDecreaseOutputId,
     getStakeType,
     getTxValidityTimeoutInMs,
+    isDeviceReviewOnlyTransaction,
     isRbfBumpFeeTransaction,
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
@@ -26,6 +28,7 @@ import { useSelector } from 'src/hooks/suite';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../../UserContextModal/TxDetailModal/ReplaceByFeeFailedOriginalTxConfirmed';
 import { TransactionReviewDetails } from '../TransactionReviewDetails';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList';
+import { TransactionReviewFollowDevice } from '../TransactionReviewFollowDevice';
 
 type TransactionReviewModalContentProps = {
     account: Account;
@@ -69,10 +72,7 @@ export const TransactionReviewModalContent = ({
     const isBumpFeeRbfAction =
         precomposedTx !== undefined && isRbfBumpFeeTransaction(precomposedTx);
 
-    const decreaseOutputId =
-        isBumpFeeRbfAction && precomposedTx.useNativeRbf
-            ? precomposedForm?.setMaxOutputId
-            : undefined;
+    const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
     const buttonRequestsCount = useSelector((state: DeviceRootState) =>
         selectSendFormReviewButtonRequestsCount(state, symbol, decreaseOutputId),
@@ -106,6 +106,10 @@ export const TransactionReviewModalContent = ({
 
     if (areDetailsVisible) {
         return <TransactionReviewDetails tx={precomposedTx} txHash={serializedTx?.tx} />;
+    }
+
+    if (isDeviceReviewOnlyTransaction(precomposedTx)) {
+        return <TransactionReviewFollowDevice isSigned={!!serializedTx} />;
     }
 
     if (isRbfConfirmedError && isRbfTransaction(precomposedTx)) {

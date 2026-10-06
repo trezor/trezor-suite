@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import { type TradingType, tradingThunks } from '@suite-common/trading';
 
@@ -12,7 +13,7 @@ import { useBrowserStateChangeCallbacks } from './useBrowserStateChangeCallbacks
 // We do this because Detox does not support interaction with a Web browser.
 
 export const useBrowserAuth = (tradingType: TradingType | undefined): BrowserAuthRet => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { handleBrowserClosed, handleBrowserOpened } =
         useBrowserStateChangeCallbacks(tradingType);
 
@@ -23,12 +24,14 @@ export const useBrowserAuth = (tradingType: TradingType | undefined): BrowserAut
         handleBrowserClosed();
 
         dispatch(
-            tradingThunks.setLastErrorMessageByTradingType({
+            tradingThunks.setLastErrorMessageByTradingTypeThunk({
                 // This string is targeted in E2E tests. Be careful when changing it, and update the tests if needed.
                 errorMessage: 'E2E: Browser auth simulated',
                 tradingType,
             }),
         );
+
+        return Promise.resolve();
     }, [dispatch, handleBrowserClosed, handleBrowserOpened, tradingType]);
 
     return {

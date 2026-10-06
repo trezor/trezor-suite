@@ -1,11 +1,4 @@
 export type { AddressType } from '@trezor/network-module-suite-common-types';
-export {
-    createAddressValidator,
-    selectAddressValidatorDep,
-    type AddressValidator,
-    type AddressValidatorDep,
-    type AddressValidatorDeps,
-} from './AddressValidator';
 export { autocorrectAddress, type AddressCorrection } from './autocorrectAddress';
 export { hasBitcoinCashAddressPrefix } from './hasBitcoinCashAddressPrefix';
 export { isAddressDeprecated } from './isAddressDeprecated';

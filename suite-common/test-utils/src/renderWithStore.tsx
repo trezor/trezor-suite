@@ -3,19 +3,26 @@ import { Provider } from 'react-redux';
 import { type Store } from '@reduxjs/toolkit';
 import { type RenderHookOptions, renderHook } from '@testing-library/react';
 
-export type TestStore = Store;
+import { ServicesProvider } from '@suite-common/dependency-injection';
 
-type RenderHookOptionsExtended<Props> = RenderHookOptions<Props> & {
-    store: TestStore;
+type RenderHookOptionsExtended<
+    Props,
+    Services extends { store: Store },
+> = RenderHookOptions<Props> & {
+    services: Services;
 };
 
-export const renderHookWithStoreProvider = <Result, Props>(
+export const renderHookWithStoreProvider = <Result, Props, Services extends { store: Store }>(
     callback: (props: Props) => Result,
-    { wrapper: Wrapper, store, ...options }: RenderHookOptionsExtended<Props>,
+    { wrapper: Wrapper, services, ...options }: RenderHookOptionsExtended<Props, Services>,
 ) =>
     renderHook(callback, {
         wrapper: ({ children }) => (
-            <Provider store={store}>{Wrapper ? <Wrapper>{children}</Wrapper> : children}</Provider>
+            <Provider store={services.store}>
+                <ServicesProvider services={services}>
+                    {Wrapper ? <Wrapper>{children}</Wrapper> : children}
+                </ServicesProvider>
+            </Provider>
         ),
         ...options,
     });

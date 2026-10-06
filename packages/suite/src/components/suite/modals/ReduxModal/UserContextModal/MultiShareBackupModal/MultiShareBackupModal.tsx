@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { isAdditionalShamirBackupInProgress } from '@suite/recovery';
+import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Modal, type ModalProps } from '@trezor/components';
@@ -29,7 +29,7 @@ type MultiShareBackupModalProps = {
 type StepConfig = Partial<ModalProps>;
 
 export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const device = useSelector(selectSelectedDevice);
 
     const isInBackupMode =

@@ -8,8 +8,10 @@ import {
     type FiatCurrencyCode,
 } from 'invity-api';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
+import { type SelectBuyQuoteThunkState } from './selectBuyQuoteThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/buyUtils';
 import { type BuyInfo, type TradingBuyState } from '../../reducers/buyReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
@@ -20,7 +22,9 @@ import type { LogErrorThunkProps } from '../common/logErrorThunk';
 
 import { buyThunks } from './index';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 jest.mock('../common/logErrorThunk', () => ({
     logErrorThunk: (props: LogErrorThunkProps) => ({
@@ -106,8 +110,7 @@ describe('selectBuyQuoteThunk', () => {
     };
 
     const getMocks = (initialBuyState?: Partial<TradingBuyState>) => {
-        const store = configureMockStore({
-            extra: {},
+        const { store } = createTestCompositionRoot<void, SelectBuyQuoteThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -124,7 +127,7 @@ describe('selectBuyQuoteThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         const mockNextStep = jest.fn();
         const mockLoginRequest = jest.fn();

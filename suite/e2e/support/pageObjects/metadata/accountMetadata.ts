@@ -3,6 +3,14 @@ import { expect } from '@playwright/test';
 import { MetadataBase } from './metadataBase';
 import { step } from '../../common';
 
+type ChangeLabelParams = {
+    accountId: string;
+    label: string;
+    confirmSuiteSync?: boolean;
+};
+
+type RemoveLabelParams = { accountId: string };
+
 export class AccountMetadata extends MetadataBase {
     readonly editLabelButton = (accountId: string) =>
         this.accountLabel(accountId).getByTestId(this.editButtonId);
@@ -18,15 +26,7 @@ export class AccountMetadata extends MetadataBase {
     }
 
     @step()
-    async changeLabel({
-        accountId,
-        label,
-        confirmSuiteSync,
-    }: {
-        accountId: string;
-        label: string;
-        confirmSuiteSync?: boolean;
-    }) {
+    async changeLabel({ accountId, label, confirmSuiteSync }: ChangeLabelParams) {
         await this.clickEditLabelButton(accountId);
         await this.fillLabelInput(label, { useButton: true });
         if (confirmSuiteSync) {
@@ -36,7 +36,7 @@ export class AccountMetadata extends MetadataBase {
     }
 
     @step()
-    async removeLabel({ accountId }: { accountId: string }) {
+    async removeLabel({ accountId }: RemoveLabelParams) {
         await this.page.resetMousePosition();
         await expect(this.accountLabel(accountId)).toHaveText(/[A-Za-z]+/);
         await this.accountLabel(accountId).hover();

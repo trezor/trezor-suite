@@ -1,9 +1,9 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { suiteForgetDeviceThunk } from 'src/actions/suite/suiteForgetDeviceThunk';
-import { useDispatch } from 'src/hooks/suite';
 
 /**
  * Hook that wraps `forgetDeviceThunk` with toast and analytics.
@@ -11,8 +11,15 @@ import { useDispatch } from 'src/hooks/suite';
  * is no longer available (e.g. after disconnect).
  */
 export const useForgetDevice = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+
+    type ForgetDeviceParams = {
+        skipToggleModalConnection?: boolean;
+        isOsUnpairingFinished?: boolean;
+        skipDisconnect?: boolean;
+        deviceId?: string;
+        toastType?: 'device-forgotten' | null;
+    };
 
     const forgetDevice = async ({
         skipToggleModalConnection,
@@ -20,13 +27,7 @@ export const useForgetDevice = () => {
         skipDisconnect,
         deviceId,
         toastType = 'device-forgotten',
-    }: {
-        skipToggleModalConnection?: boolean;
-        isOsUnpairingFinished?: boolean;
-        skipDisconnect?: boolean;
-        deviceId?: string;
-        toastType?: 'device-forgotten' | null;
-    } = {}) => {
+    }: ForgetDeviceParams = {}) => {
         await dispatch(
             suiteForgetDeviceThunk({
                 skipToggleModalConnection: Boolean(skipToggleModalConnection),

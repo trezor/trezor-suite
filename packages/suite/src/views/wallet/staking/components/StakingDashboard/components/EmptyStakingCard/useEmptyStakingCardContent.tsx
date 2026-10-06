@@ -1,10 +1,11 @@
 import { type ReactNode } from 'react';
 
-import { type DesktopAnalyticsDep, events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { type Dispatch, injectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
 import { type IconComponent, Tooltip } from '@trezor/components';
@@ -19,7 +20,6 @@ import {
 } from '@trezor/icons';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
-import { useDispatch } from 'src/hooks/suite';
 
 import { type EmptyStakingCardData } from './useEmptyStakingCardData';
 
@@ -48,7 +48,7 @@ export interface EmptyStakingCardContent {
 
 interface UseNetworkContentProps {
     data: EmptyStakingCardData;
-    dispatch: ReturnType<typeof useDispatch>;
+    dispatch: Dispatch;
 }
 
 const getTronContent = ({
@@ -92,7 +92,7 @@ const getTronContent = ({
         if (!account || isStartStakingDisabled) return;
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-tron-stake',
                 params: {
                     symbol: account.symbol,
@@ -131,10 +131,10 @@ const getCardanoContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
 
     const text =
         !hasEnoughBalanceForStaking || !hasPotentialRewards ? (
-            <Translation id="TR_STAKING_CARD_TEXT_EMPTY" values={{ displaySymbol }} />
+            <Translation id="TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY" values={{ displaySymbol }} />
         ) : (
             <Translation
-                id="TR_STAKING_CARD_TEXT_EMPTY"
+                id="TR_STAKING_CARD_TEXT_FUNDS_STAY"
                 values={{ potentialRewards, displaySymbol }}
             />
         );
@@ -214,10 +214,10 @@ const getDefaultContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
 
     const text =
         !hasEnoughBalanceForStaking || !hasPotentialRewards ? (
-            <Translation id="TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY" values={{ displaySymbol }} />
+            <Translation id="TR_STAKING_CARD_TEXT_EMPTY" values={{ displaySymbol }} />
         ) : (
             <Translation
-                id="TR_STAKING_CARD_TEXT_FUNDS_STAY"
+                id="TR_STAKING_CARD_TEXT_EMPTY"
                 values={{ potentialRewards, displaySymbol }}
             />
         );
@@ -290,8 +290,7 @@ export const useStakingCardContent = ({
     variant,
     data,
 }: UseStakingCardContentProps): EmptyStakingCardContent => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     switch (variant) {
         case 'tron':

@@ -1,3 +1,32 @@
+# 10.0.0
+
+- npm-prerelease: @trezor/env-utils 10.0.0-beta.3 (2c12a036e8)
+- npm-prerelease: @trezor/env-utils 10.0.0-beta.2 (909b2a746c)
+- chore(message-system): add a warning about ES256 deviation (9aab48ce81)
+- chore(connect): bump version to 10.0.0-beta.1 (aaac2abdea)
+- test(env-utils): co-locate test (8ccdfd2738)
+- chore(connect): publish files as js and ts, not mjs and mts (25f0ed758f)
+- chore: bump typescript to 6.0.3 (5d20986f2a)
+- chore(scripts): rename libESM to lib (f046a3fd2b)
+- chore(scripts): remove cjs support in replace-imports.sh (a1059cd8a3)
+- chore(jest): wire JestCustomEnv into all node-env packages (775a942d1f)
+- chore(connect): drop redundant publishConfig.type in ESM packages (af2b73c765)
+- chore: tsconfig formatting (8c60ca008d)
+- chore(connect): support top-level module type in ESM packages (9aebe9cfb0)
+- feat(connect): drop CommonJS output across connect ecosystem (b99609bfb8)
+- chore(tests): migrate web packages to @swc/jest (15192f30ee)
+- chore: remove npmPublishAccess fields from package.json (743d2836de)
+- fix: add missing ESM builds (974a6e2d22)
+- refactor: replace custom eslint script with nx one (ad87eac457)
+- chore: add type keyword to all types in imports and exports (47c184a859)
+- chore: remove unused `prepublishOnly` script (0056cb62fa)
+- chore(env-utils): move ua-parser-js dependency to suite (2cc57efc87)
+- chore(connect-data): move firmware public key from env-utils (e2404a99b6)
+- chore: bump tsx version (98321960e2)
+- npm-prerelease: set all @trezor/connect dependencies to 10.0.0-alpha.1 (ab01b2d889)
+- chore(npm): remove prepublish.js (7559f035c3)
+- chore(npm): start publishing source maps (36f6e9692d)
+
 # 1.5.0
 
 - npm-prerelease: @trezor/env-utils 1.5.0-beta.2 (2fa7e2306c)

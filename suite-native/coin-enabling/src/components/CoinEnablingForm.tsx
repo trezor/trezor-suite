@@ -1,13 +1,14 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { networkSymbolCollection } from '@suite-common/wallet-config';
-import { changeCoinVisibility } from '@suite-common/wallet-core';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -25,10 +26,11 @@ type CoinEnablingFormProps = {
 };
 
 export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
-    const dispatch = useDispatch();
+    const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
+
     const navigation = useNavigation();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
     const { showAlert } = useAlert();
 
@@ -53,8 +55,11 @@ export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
     });
 
     const handleSubmit = form.handleSubmit((values: CoinEnablingFormValues) => {
-        const enabledCoins = getNetworkSymbolsFromEnabledCoins(values.enabledCoins);
-        const changedCoins = networkSymbolCollection.filter(
+        const enabledCoins = getNetworkSymbolsFromEnabledCoins(
+            values.enabledCoins,
+            allNetworkSymbols,
+        );
+        const changedCoins = allNetworkSymbols.filter(
             symbol => enabledNetworkSymbols.includes(symbol) !== enabledCoins.includes(symbol),
         );
 
@@ -62,7 +67,7 @@ export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
 
         changedCoins.forEach(symbol => {
             const isEnabled = enabledCoins.includes(symbol);
-            dispatch(changeCoinVisibility({ symbol, shouldBeVisible: isEnabled }));
+            dispatch(changeCoinVisibilityThunk({ symbol, shouldBeVisible: isEnabled }));
 
             analytics.report({
                 type: events.settingsChangeCoinEnabledEvent.name,

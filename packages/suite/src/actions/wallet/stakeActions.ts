@@ -1,14 +1,36 @@
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
+import { type ThunkDispatch } from 'redux-thunk';
+
+import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
+import {
+    type DesktopAnalyticsDep,
+    type StakingCardanoPoolDelegationPayload,
+    events,
+} from '@suite/analytics';
 import { closeModal, openDeferredModal, openModal, preserveModal } from '@suite/modal';
-import { selectSelectedDevice } from '@suite-common/device';
-import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import {
+    type MevProtectionRootState,
+    selectIsMevProtectionFeatureEnabled,
+} from '@suite-common/mev';
+import { type WithServices } from '@suite-common/redux-utils';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    type BlockchainRootState,
+    type EthereumGetCurrentNonceThunkState,
+    type ReplaceTransactionThunkState,
+    type StakeRootState,
+    type SyncAccountsWithBlockchainThunkDeps,
+    type SyncAccountsWithBlockchainThunkState,
+    type WalletSettingsRootState,
     addFakePendingCardanoTxThunk,
+    isSupportedAdaStakingNetworkSymbol,
+    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
     replaceTransactionThunk,
     selectIsMevProtectionEnabled,
+    selectStake,
     stakeActions,
     syncAccountsWithBlockchainThunk,
 } from '@suite-common/wallet-core';
@@ -23,25 +45,25 @@ import {
 import {
     formatNetworkAmount,
     getMevProtectedTxData,
+    isCardanoTx,
     isRbfBumpFeeTransaction,
-    isSupportedAdaStakingNetworkSymbol,
-    isSupportedEthStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
-
-import { type Dispatch, type GetState } from 'src/types/suite';
 
 import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
 import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
 
+type ComposeTransactionThunkState = BlockchainRootState & SelectedAccountRootState & StakeRootState;
+
 export const composeTransaction =
-    (formValues: StakeFormState, formState: ComposeActionContext) => (dispatch: Dispatch) => {
+    (formValues: StakeFormState, formState: ComposeActionContext) =>
+    (dispatch: ThunkDispatch<ComposeTransactionThunkState, unknown, UnknownAction>) => {
         const { account } = formState;
 
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
@@ -49,20 +71,23 @@ export const composeTransaction =
         }
 
         if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
-            return dispatch(stakeFormSolanaActions.composeTransaction(formValues, formState));
+            return dispatch(stakeFormSolanaActions.composeTransactionThunk(formValues, formState));
         }
 
         if (isSupportedAdaStakingNetworkSymbol(account.symbol)) {
-            return dispatch(stakeFormCardanoActions.composeTransaction(formValues, formState));
+            return dispatch(stakeFormCardanoActions.composeTransactionThunk(formValues, formState));
         }
 
         return Promise.resolve(undefined);
     };
 
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
-export const cancelSignTx =
-    (isSuccessTx?: boolean, account?: Account) => (dispatch: Dispatch, getState: GetState) => {
-        const { serializedTx, precomposedForm } = getState().wallet.stake;
+type CancelSignTxThunkState = StakeRootState;
+
+export const cancelSignTxThunk =
+    (isSuccessTx?: boolean, account?: Account) =>
+    (dispatch: Dispatch<UnknownAction>, getState: () => CancelSignTxThunkState) => {
+        const { serializedTx, precomposedForm } = selectStake(getState());
         dispatch(stakeActions.requestSignTransaction());
         dispatch(stakeActions.requestPushTransaction());
         // if transaction is not signed yet interrupt signing in TrezorConnect
@@ -87,12 +112,27 @@ export const cancelSignTx =
         }
     };
 
+type PushTransactionThunkState = DeviceRootState &
+    MevProtectionRootState &
+    ReplaceTransactionThunkState &
+    SelectedAccountRootState &
+    StakeRootState &
+    SyncAccountsWithBlockchainThunkState &
+    WalletSettingsRootState;
+
+type PushTransactionThunkDeps = WithServices<DesktopAnalyticsDep> &
+    SyncAccountsWithBlockchainThunkDeps;
+
 // private, called from signTransaction only
-const pushTransaction =
-    (stakeType: StakeType) =>
-    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
-        const { serializedTx, precomposedTx } = getState().wallet.stake;
-        const { account } = getState().wallet.selectedAccount;
+const pushTransactionThunk =
+    (stakeType: StakeType, cardanoPoolDelegation?: StakingCardanoPoolDelegationPayload) =>
+    async (
+        dispatch: ThunkDispatch<PushTransactionThunkState, PushTransactionThunkDeps, UnknownAction>,
+        getState: () => PushTransactionThunkState,
+        extra: PushTransactionThunkDeps,
+    ) => {
+        const { serializedTx, precomposedTx } = selectStake(getState());
+        const account = selectSelectedAccount(getState());
         const device = selectSelectedDevice(getState());
         const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
         const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
@@ -107,7 +147,7 @@ const pushTransaction =
 
         const sentTx = await TrezorConnect.pushTransaction({
             tx: txData,
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
         });
 
@@ -118,18 +158,25 @@ const pushTransaction =
             .minus(precomposedTx.fee)
             .toString();
 
-        // get total amount without fee
-        const formattedAmount = formatNetworkAmount(spentWithoutFee, account.symbol, true, false);
+        // The total amount without the fee, in main units.
+        const amount = formatNetworkAmount(spentWithoutFee, account.symbol);
 
         if (sentTx.success) {
             const { txid } = sentTx.payload;
             const notificationPayload = {
-                formattedAmount,
+                amount,
                 device,
                 descriptor: account.descriptor,
                 symbol: account.symbol,
                 txid,
             };
+
+            if (cardanoPoolDelegation) {
+                extra.services.analytics.report({
+                    type: events.stakingCardanoPoolDelegationEvent.name,
+                    payload: cardanoPoolDelegation,
+                });
+            }
 
             if (stakeType === 'stake') {
                 dispatch(
@@ -168,7 +215,7 @@ const pushTransaction =
                 );
             }
 
-            if (account.networkType === 'cardano') {
+            if (isCardanoTx(account, precomposedTx)) {
                 const base = { withdrawal: undefined, deposit: undefined };
                 let cardanoSpecific: WalletAccountTransaction['cardanoSpecific'];
 
@@ -196,10 +243,14 @@ const pushTransaction =
                     }),
                 );
 
-                asTypedDesktopAnalytics(extra.services.analytics).report({
+                extra.services.analytics.report({
                     type: events.stakingConfirmEvent.name,
                     payload: { action: stakeType, networkSymbol: account.symbol },
                 });
+
+                // The confirmed selection is spent by this transaction; keeping it would let it
+                // reach the next plan composed for this account.
+                dispatch(stakeActions.clearAccountVotingDelegation());
             }
 
             // notification from the backend may be delayed.
@@ -217,23 +268,37 @@ const pushTransaction =
                 }),
             );
 
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.stakingConfirmEvent.name,
                 payload: { action: stakeType, networkSymbol: account.symbol, success: false },
             });
         }
 
-        dispatch(cancelSignTx(sentTx.success, account));
+        dispatch(cancelSignTxThunk(sentTx.success, account));
 
         // resolve sign process
         return sentTx;
     };
 
-export const signTransaction =
+type SignTransactionThunkState = DeviceRootState &
+    EthereumGetCurrentNonceThunkState &
+    MevProtectionRootState &
+    ReplaceTransactionThunkState &
+    SelectedAccountRootState &
+    StakeRootState &
+    SyncAccountsWithBlockchainThunkState &
+    WalletSettingsRootState;
+
+type SignTransactionThunkDeps = PushTransactionThunkDeps;
+
+export const signTransactionThunk =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (
+        dispatch: ThunkDispatch<SignTransactionThunkState, SignTransactionThunkDeps, UnknownAction>,
+        getState: () => SignTransactionThunkState,
+    ) => {
         const device = selectSelectedDevice(getState());
-        const { account } = getState().wallet.selectedAccount;
+        const account = selectSelectedAccount(getState());
 
         if (!device || !account) return;
 
@@ -250,7 +315,7 @@ export const signTransaction =
         );
 
         // TransactionReviewModal has 2 steps: signing and pushing
-        // TrezorConnect emits UI.CLOSE_UI.WINDOW after the signing process
+        // TrezorConnect emits UI_EVENTS.CLOSE_UI_WINDOW after the signing process
         // this action is blocked by preserveModal()
         dispatch(preserveModal());
 
@@ -258,27 +323,35 @@ export const signTransaction =
         let serializedTx: undefined | string | Err<SerializedError>;
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
             serializedTx = await dispatch(
-                stakeFormEthereumActions.signTransaction(formValues, enhancedTxInfo),
+                stakeFormEthereumActions.signTransactionThunk(formValues, enhancedTxInfo),
             );
         }
 
         if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
             serializedTx = await dispatch(
-                stakeFormSolanaActions.signTransaction(formValues, enhancedTxInfo),
+                stakeFormSolanaActions.signTransactionThunk(formValues, enhancedTxInfo),
             );
         }
 
+        let cardanoPoolDelegation: StakingCardanoPoolDelegationPayload | undefined;
         if (isSupportedAdaStakingNetworkSymbol(account.symbol)) {
-            serializedTx = await dispatch(
-                stakeFormCardanoActions.signTransaction(formValues, enhancedTxInfo),
+            const signResult = await dispatch(
+                stakeFormCardanoActions.signTransactionThunk(formValues, enhancedTxInfo),
             );
+
+            if (signResult && 'serializedTx' in signResult) {
+                serializedTx = signResult.serializedTx;
+                cardanoPoolDelegation = signResult.poolDelegation;
+            } else {
+                serializedTx = signResult;
+            }
         }
 
         if (typeof serializedTx !== 'string') {
             if (serializedTx?.error?.message === 'tx-timeout') {
                 return;
             }
-            // close modal manually since UI.CLOSE_UI.WINDOW was blocked
+            // close modal manually since UI_EVENTS.CLOSE_UI_WINDOW was blocked
             dispatch(closeModal());
 
             const { stakeType } = formValues;
@@ -305,13 +378,13 @@ export const signTransaction =
         );
 
         if (account?.networkType === 'cardano') {
-            return dispatch(pushTransaction(formValues.stakeType));
+            return dispatch(pushTransactionThunk(formValues.stakeType, cardanoPoolDelegation));
         }
 
         // Open a deferred modal and get the decision
         const decision = await dispatch(openDeferredModal({ type: 'review-transaction' }));
         if (decision) {
             // push tx to the network
-            return dispatch(pushTransaction(formValues.stakeType));
+            return dispatch(pushTransactionThunk(formValues.stakeType));
         }
     };

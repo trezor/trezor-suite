@@ -3,10 +3,7 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import { EventType } from '../constants';
 
 type DeviceManagerAction =
-    | 'deviceItem'
-    | 'portfolioTracker'
-    | 'connectDeviceButton'
-    | 'deviceSettings';
+    'deviceItem' | 'portfolioTracker' | 'connectDeviceButton' | 'deviceSettings';
 
 type Attributes = {
     action: AttributeDef<DeviceManagerAction>;

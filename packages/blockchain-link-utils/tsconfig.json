@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../blockchain-link-types" },
         { "path": "../env-utils" },
         {
             "path": "../../networks/ripple/network-ripple"
@@ -13,7 +14,6 @@
             "path": "../../networks/stellar/network-stellar"
         },
         { "path": "../utils" },
-        { "path": "../blockchain-link-types" },
         { "path": "../eslint" },
         { "path": "../type-utils" }
     ]

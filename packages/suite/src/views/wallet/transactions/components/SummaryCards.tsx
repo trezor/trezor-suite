@@ -51,7 +51,9 @@ const DateWrapper = styled.span`
     white-space: nowrap;
 `;
 
-const NumberOfTransactions = ({ value }: { value: number }) => (
+type NumberOfTransactionsProps = { value: number };
+
+const NumberOfTransactions = ({ value }: NumberOfTransactionsProps) => (
     <Translation
         id="TR_N_TRANSACTIONS"
         values={{ value: useShouldRedactNumbers() ? DISCREET_PLACEHOLDER : value }}
@@ -74,7 +76,7 @@ export const SummaryCards = ({
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
 
     // Aggregate values from shown graph data.
-    const txsFromData = data.reduce((acc, d) => (acc += d.txs), 0);
+    const txsFromData = data.reduce((acc, d) => acc + d.txs, 0);
     // only fall back to account.history.total before graph data has loaded.
     const numOfTransactions = isGraphDataLoaded
         ? txsFromData

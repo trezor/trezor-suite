@@ -1,6 +1,6 @@
 import { Translation, type TranslationKey } from '@suite/intl';
+import { getResourceGain } from '@suite-common/wallet-core';
 import { type TronResourceType } from '@suite-common/wallet-types';
-import { getResourceGain } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
@@ -10,7 +10,7 @@ import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmoun
 
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
-import { formatApr, resolveVotedRepresentativeAddress } from '../voteUtils';
+import { formatApr, getWeightedApr, parseVoteAllocations } from '../utils/voteUtils';
 
 const RESOURCE_LABEL: Record<TronResourceType, TranslationKey> = {
     bandwidth: 'TR_EARN_TRON_BANDWIDTH',
@@ -24,8 +24,10 @@ export const TronStakeSummaryCard = () => {
     const tronResources = account.networkType === 'tron' ? account.misc.tronResources : undefined;
     const gain = getResourceGain(amount, resourceType, tronResources);
 
-    const votedAddress = resolveVotedRepresentativeAddress(form.methods.getValues());
-    const apr = (representatives.data ?? []).find(({ address }) => address === votedAddress)?.apr;
+    const apr = getWeightedApr({
+        allocations: parseVoteAllocations(form.methods.getValues('voteAllocations')),
+        representatives: representatives.data,
+    });
 
     return (
         <Card type="contrast" paddingType="none">

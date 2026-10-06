@@ -1,18 +1,22 @@
 import { useMemo } from 'react';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Tooltip } from '@trezor/components';
+import type { NetworkSymbol } from '@trezor/network-module-types';
 
+import { useNetworkDisplaySelector } from '../../network-display/NetworkDisplayProvider';
+import { selectNetworkOptions } from '../../network-display/networkDisplaySelectors';
+import { getNetworkIcons } from '../../utils/getNetworkIcons';
 import { type CommonIconSetProps, IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
-import { TokenIcon } from '../TokenIcon/TokenIcon';
 
 export type NetworkIconSetProps = CommonIconSetProps & {
-    networks: NetworkSymbol[];
+    networks?: readonly NetworkSymbol[];
+    isToken?: boolean;
     hasTooltip?: boolean;
 };
 
 export const NetworkIconSet = ({
     networks,
+    isToken = true,
     size,
     gap,
     maxVisibleIcons = 3,
@@ -21,20 +25,27 @@ export const NetworkIconSet = ({
     isReversed = true,
     hasTooltip = false,
 }: NetworkIconSetProps) => {
-    const { length } = networks;
+    const networkOptions = useNetworkDisplaySelector(state =>
+        selectNetworkOptions(state, networks),
+    );
+    const { length } = networkOptions;
 
     const visibleContent = useMemo(() => {
         const visibleNetworks =
-            maxVisibleIcons !== null ? networks.slice(0, maxVisibleIcons) : networks;
+            maxVisibleIcons !== null ? networkOptions.slice(0, maxVisibleIcons) : networkOptions;
 
-        return visibleNetworks.map(network => (
-            <IconWrapper key={network} $size={size} $gap={gap} $length={length}>
-                <Tooltip content={getNetwork(network).name} isActive={hasTooltip}>
-                    <TokenIcon size={size} symbol={network} />
+        return getNetworkIcons({
+            networks: visibleNetworks,
+            iconSize: size,
+            isToken,
+        }).map(({ symbol, name, icon }) => (
+            <IconWrapper key={symbol} $size={size} $gap={gap} $length={length}>
+                <Tooltip content={name} isActive={hasTooltip}>
+                    {icon}
                 </Tooltip>
             </IconWrapper>
         ));
-    }, [networks, maxVisibleIcons, size, gap, length, hasTooltip]);
+    }, [networkOptions, isToken, maxVisibleIcons, size, gap, length, hasTooltip]);
 
     return (
         <IconSetBase

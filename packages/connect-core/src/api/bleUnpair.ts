@@ -1,0 +1,49 @@
+import { type PermissionRequest, UI_EVENTS } from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { Assert } from '@trezor/schema-utils';
+import { TRANSPORT_ERROR } from '@trezor/transport-common';
+
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
+
+export default class BleUnpair extends AbstractMethod<'bleUnpair', PROTO.BleUnpair> {
+    constructor(message: MethodMessage<'bleUnpair'>) {
+        const { payload } = message;
+
+        Assert(PROTO.BleUnpair, payload);
+
+        const params = { all: payload.all };
+
+        super(message, params);
+        this.allowDeviceMode = [UI_EVENTS.DEVICE_NOT_INITIALIZED, UI_EVENTS.DEVICE_SEEDLESS];
+        this.useDeviceState = false;
+    }
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
+    }
+
+    async run() {
+        const cmd = this.getDevice().getCommands();
+        // unpair current bluetooth connection session or all known sessions
+        try {
+            const response = await cmd.typedCall('BleUnpair', 'Success', this.params);
+
+            return response.message;
+        } catch (error) {
+            // bluetooth race condition between DeviceList disconnect event and transport read error
+            // this method is either interrupted from the core as result of disconnect event, TrezorConnect call respond before we gets here
+            // or fails here with transport read/write error
+            // in both cases Device_Disconnected error should be handled as "expected success"
+            if (
+                this.getDevice().descriptor.apiType === 'bluetooth' &&
+                error.message === TRANSPORT_ERROR.INTERFACE_DATA_TRANSFER
+            ) {
+                // typed error is considered as "method failed successfully"
+                throw ERRORS.TypedError('Device_Disconnected');
+            }
+
+            throw error;
+        }
+    }
+}

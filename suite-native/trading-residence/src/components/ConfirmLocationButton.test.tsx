@@ -1,12 +1,13 @@
 import { type ReactNode, useEffect, useState } from 'react';
 
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { useFormContext } from '@suite-native/forms';
 import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     createLightStore,
     createStaticReducer,
     fireEvent,
@@ -18,6 +19,7 @@ import {
     selectTradingResidenceCountry,
     selectTradingResidenceCountrySubdivision,
 } from '@suite-native/trading-state';
+import { type TradingResidenceRootState } from '@suite-native/trading-types';
 
 import { ConfirmLocationButton, type ConfirmLocationButtonProps } from './ConfirmLocationButton';
 import { type TradingLocationFormValues } from '../types/tradingLocationForm';
@@ -25,11 +27,9 @@ import { CountrySubdivisionPicker } from './CountrySheet/CountrySubdivisionPicke
 import { CountrySubdivisionPickerControlsContext } from './CountrySheet/CountrySubdivisionPickerControlsContext';
 import { LocationForm } from './LocationForm';
 
-const mockAnalyticsReport = jest.fn();
+type State = TradingResidenceRootState;
 
-jest.mock('../hooks/useCountrySelectionAnalyticsReport', () => ({
-    useCountrySelectionAnalyticsReport: () => mockAnalyticsReport,
-}));
+const mockAnalyticsReport = jest.fn();
 
 const ConfirmLocationButtonWithChangedCountry = () => {
     const { setValue } = useFormContext<TradingLocationFormValues>();
@@ -101,12 +101,12 @@ const LocationFormWithCountrySubdivisionPickerControls = ({
 };
 
 describe('ConfirmLocationButton', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
-    const renderConfirmLocationButton = (props: Partial<ConfirmLocationButtonProps>) =>
-        renderWithStoreProvider(<ConfirmLocationButton afterConfirm={jest.fn} {...props} />, {
+    const renderConfirmLocationButton = async (props: Partial<ConfirmLocationButtonProps>) =>
+        await renderWithStoreProvider(<ConfirmLocationButton afterConfirm={jest.fn} {...props} />, {
             wrapper: LocationForm,
-            store,
+            services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
         });
 
     beforeEach(() => {
@@ -124,11 +124,11 @@ describe('ConfirmLocationButton', () => {
         });
     });
 
-    it('should set location and call afterConfirmMock on press', () => {
+    it('should set location and call afterConfirmMock on press', async () => {
         const afterConfirmMock = jest.fn();
 
-        const { getByText } = renderConfirmLocationButton({ afterConfirm: afterConfirmMock });
-        fireEvent.press(
+        const { getByText } = await renderConfirmLocationButton({ afterConfirm: afterConfirmMock });
+        await fireEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.confirmButton')),
         );
 
@@ -138,37 +138,46 @@ describe('ConfirmLocationButton', () => {
         expect(afterConfirmMock).toHaveBeenCalled();
     });
 
-    it('should log submitDefault event on press', () => {
-        const { getByText } = renderConfirmLocationButton({});
-        fireEvent.press(
+    it('should log submitDefault event on press', async () => {
+        const { getByText } = await renderConfirmLocationButton({});
+        await fireEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.confirmButton')),
         );
 
         expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
-        expect(mockAnalyticsReport).toHaveBeenCalledWith('submitDefault');
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.tradingCountrySelectionEvent.name,
+            payload: expect.objectContaining({ action: 'submitDefault' }),
+        });
     });
 
-    it('should log submitCustom when selected value does not match the default one', () => {
-        const { getByText } = renderWithStoreProvider(<ConfirmLocationButtonWithChangedCountry />, {
-            wrapper: LocationForm,
-            store,
-        });
+    it('should log submitCustom when selected value does not match the default one', async () => {
+        const { getByText } = await renderWithStoreProvider(
+            <ConfirmLocationButtonWithChangedCountry />,
+            {
+                wrapper: LocationForm,
+                services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
+            },
+        );
 
-        fireEvent.press(
+        await fireEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.confirmButton')),
         );
 
         expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
-        expect(mockAnalyticsReport).toHaveBeenCalledWith('submitCustom');
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.tradingCountrySelectionEvent.name,
+            payload: expect.objectContaining({ action: 'submitCustom' }),
+        });
     });
 
     it('should open subdivision picker and not confirm when subdivision is required but missing', async () => {
         const afterConfirmMock = jest.fn();
-        const { getByText, queryByText } = renderWithStoreProvider(
+        const { getByText, queryByText } = await renderWithStoreProvider(
             <ConfirmLocationButtonWithUSCountry afterConfirm={afterConfirmMock} />,
             {
                 wrapper: LocationFormWithCountrySubdivisionPickerControls,
-                store,
+                services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
             },
         );
 
@@ -189,9 +198,9 @@ describe('ConfirmLocationButton', () => {
         expect(afterConfirmMock).not.toHaveBeenCalled();
     });
 
-    it('should persist subdivision when required subdivision is selected', () => {
+    it('should persist subdivision when required subdivision is selected', async () => {
         const afterConfirmMock = jest.fn();
-        const { getByText } = renderWithStoreProvider(
+        const { getByText } = await renderWithStoreProvider(
             <ConfirmLocationButtonWithUSCountry
                 afterConfirm={afterConfirmMock}
                 countrySubdivision={{
@@ -202,11 +211,11 @@ describe('ConfirmLocationButton', () => {
             />,
             {
                 wrapper: LocationFormWithCountrySubdivisionPickerControls,
-                store,
+                services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
             },
         );
 
-        fireEvent.press(
+        await fireEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.confirmButton')),
         );
 

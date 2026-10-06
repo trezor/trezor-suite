@@ -1,8 +1,7 @@
 import { Translation } from '@suite/intl';
-import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { useFormatters } from '@suite-common/formatters';
+import { type YieldFlowCompleteRewardItem } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount, toTokenSymbol } from '@suite-common/wallet-types';
-import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -10,10 +9,10 @@ import { YieldFlowComplete } from './YieldFlowComplete';
 import { YieldRewardItem } from './YieldRewardItem';
 
 type YieldFlowCompleteClaimProps = {
-    accountRewards: YieldAccountRewards;
+    rewards: YieldFlowCompleteRewardItem[];
 };
 
-export const YieldFlowCompleteClaim = ({ accountRewards }: YieldFlowCompleteClaimProps) => {
+export const YieldFlowCompleteClaim = ({ rewards }: YieldFlowCompleteClaimProps) => {
     const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
     return (
@@ -24,39 +23,32 @@ export const YieldFlowCompleteClaim = ({ accountRewards }: YieldFlowCompleteClai
         >
             <Column gap={16} padding={{ vertical: 16, horizontal: 20 }}>
                 <Text typographyStyle="body-md">
-                    <Translation id="TR_STAKE_REWARDS" />
+                    <Translation id="TR_EARN_YIELD_BONUS_REWARDS" />
                 </Text>
 
-                <Column gap={16}>
-                    {accountRewards.rewards.map((reward, index) => {
-                        const claimableUnits = subunitsToUnits({
-                            value: asAmountSubunit(new BigNumber(reward.claimable)),
-                            decimals: reward.token.decimals,
+                <Column gap={16} data-testid="@yield/flow-complete/rewards-list">
+                    {rewards.map((reward, index) => {
+                        const formattedAmount = CryptoAmountFormatter.format(reward.value, {
+                            symbol: toTokenSymbol(reward.token.symbol),
+                            withSymbol: false,
+                            isBalance: true,
+                            maxDisplayedDecimals: reward.token.decimals,
+                            isEllipsisAppended: false,
                         });
-                        const formattedAmount = CryptoAmountFormatter.format(
-                            claimableUnits.toString(),
-                            {
-                                symbol: toTokenSymbol(reward.token.symbol),
-                                withSymbol: false,
-                                isBalance: true,
-                                maxDisplayedDecimals: reward.token.decimals,
-                                isEllipsisAppended: false,
-                            },
-                        );
-                        const formattedFiatAmount = reward.fiat.claimable
+                        const formattedFiatAmount = reward.fiatValue
                             ? BaseCurrencyAmountFormatter.format(
-                                  asBaseCurrencyAmount(new BigNumber(reward.fiat.claimable)),
+                                  asBaseCurrencyAmount(new BigNumber(reward.fiatValue)),
                               )
                             : null;
 
                         return (
                             <YieldRewardItem
-                                key={`${reward.token.address}:${index}`}
+                                key={`${reward.token.contractAddress}:${index}`}
                                 formattedAmount={formattedAmount}
                                 formattedFiatAmount={formattedFiatAmount}
                                 tokenSymbol={reward.token.symbol}
-                                tokenAddress={reward.token.address}
-                                networkSymbol={accountRewards.account.symbol}
+                                tokenAddress={reward.token.contractAddress}
+                                networkSymbol={reward.token.networkSymbol}
                             />
                         );
                     })}

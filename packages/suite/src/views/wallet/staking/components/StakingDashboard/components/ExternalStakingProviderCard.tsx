@@ -35,7 +35,14 @@ export const ExternalStakingProviderCard = ({
                         values={{
                             amount: totalStakedInUnits,
                             displaySymbol,
-                            fiat: <BaseCurrencyValue amount={totalStakedInUnits} symbol={symbol} />,
+                            fiat: (
+                                <span data-testid="@wallet/staking/outside-staking-card/fiat">
+                                    <BaseCurrencyValue
+                                        amount={totalStakedInUnits}
+                                        symbol={symbol}
+                                    />
+                                </span>
+                            ),
                         }}
                     />
                 }

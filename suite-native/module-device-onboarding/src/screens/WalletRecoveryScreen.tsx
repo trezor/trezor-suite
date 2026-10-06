@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ContinueOnTrezorScreenContent, recoverWalletThunk } from '@suite-native/device';
 import {
     type DeviceOnboardingStackParamList,
@@ -14,7 +15,7 @@ import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboar
 export const WalletRecoveryScreen = ({
     navigation,
 }: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.WalletRecovery>) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const handleRecoverWallet = useCallback(async () => {

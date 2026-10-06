@@ -1,8 +1,12 @@
 import type { AccountAddresses } from '@trezor/blockchain-link';
 import type { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import type { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
+import type {
+    ComposeOutput as ComposeOutputBase,
+    TransactionInputOutputSortingStrategy,
+} from '@trezor/utxo-lib';
 
 import type { AccountTransaction } from '../../account';
 import { type CoinSymbol, CoinSymbolParam } from '../../coinInfo';
@@ -18,6 +22,7 @@ export const SignMessage = Type.Object({
     message: Type.String(),
     hex: Type.Optional(Type.Boolean()),
     no_script_type: Type.Optional(Type.Boolean()),
+    scriptType: Type.Optional(PROTO.InternalInputScriptType),
 });
 
 // signTransaction
@@ -121,3 +126,20 @@ export const VerifyMessage = Type.Object({
     coin: CoinSymbolParam(),
     hex: Type.Optional(Type.Boolean()),
 });
+
+// composeTransaction
+
+// for convenience ComposeOutput `type: "payment"` field is not required by @trezor/connect api
+type ComposeOutputPayment = Omit<Extract<ComposeOutputBase, { type: 'payment' }>, 'type'> & {
+    type?: 'payment';
+};
+
+export type ComposeOutput = Exclude<ComposeOutputBase, { type: 'payment' }> | ComposeOutputPayment;
+
+export type ComposeParams = {
+    outputs: ComposeOutput[];
+    coin: CoinSymbol;
+    sequence?: number;
+    baseFee?: number;
+    sortingStrategy?: TransactionInputOutputSortingStrategy;
+};

@@ -2,17 +2,18 @@ import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
+import { yup } from '@suite/forms';
 import { type TranslationFunction, useTranslation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { yup } from '@suite-common/validators';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isAscii } from '@trezor/utils';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const changeDeviceLabelSchema = (t: TranslationFunction) =>
     yup.object({
@@ -42,10 +43,9 @@ export const useChangeDeviceLabel = (): {
     >;
     handleSubmit: (onSuccess?: () => void) => void;
 } => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { translationString } = useTranslation();
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
-    const dispatch = useDispatch();
 
     const form = useForm({
         resolver: yupResolver(changeDeviceLabelSchema(translationString)),
@@ -60,7 +60,7 @@ export const useChangeDeviceLabel = (): {
     const currentLabel = useWatch({ control, name: 'deviceLabel' });
 
     const onSubmit = form.handleSubmit(({ deviceLabel }) => {
-        dispatch(applySettings({ label: deviceLabel }));
+        dispatch(applySettingsThunk({ label: deviceLabel }));
         analytics.report({
             type: events.settingsDeviceChangeLabelEvent.name,
         });

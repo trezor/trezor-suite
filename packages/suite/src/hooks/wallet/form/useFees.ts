@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type FeeInfo,
     type FormState,
@@ -10,7 +12,6 @@ import {
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';
 
-import { useDispatch } from 'src/hooks/suite';
 import { type SendContextValues } from 'src/types/wallet/sendForm';
 
 export type FeesFormValues = Pick<
@@ -23,7 +24,6 @@ export type FeesFormValues = Pick<
     | 'feePerUnit'
     | 'maxPriorityFeePerGas'
     | 'maxFeePerGas'
-    | 'baseFeePerGas'
 >;
 
 interface Props<TFieldValues extends FeesFormValues> extends UseFormReturn<TFieldValues> {
@@ -45,7 +45,7 @@ export const useFees = <TFieldValues extends FeesFormValues>({
     formState: { errors },
     ...props
 }: Props<TFieldValues>) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     // local references
     const selectedFeeRef = useRef(defaultValue);

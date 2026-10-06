@@ -1,25 +1,33 @@
 import { useEffect, useRef } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { getYieldFlowStepSequence, splitYieldPendingTransaction } from '@suite-common/wallet-core';
+import {
+    getYieldFlowStepSequence,
+    getYieldWithdrawInputToken,
+    splitYieldPendingTransaction,
+    useFetchFees,
+} from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
+import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
 import { useYieldWithdrawContext } from './useYieldWithdrawContext';
 import { YieldActionStep } from '../common/YieldActionStep';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
+import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowCompleteWithdraw } from '../common/YieldFlowCompleteWithdraw';
 import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { YieldUnwrapStep } from '../common/YieldUnwrapStep';
 
 export const YieldWithdrawForm = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const {
         account,
@@ -29,13 +37,8 @@ export const YieldWithdrawForm = () => {
         maxAmount,
         errorMessage,
         pendingTransaction,
-        isAmountEmpty,
-        isAmountTooHigh,
-        isAmountInvalidDecimals,
+        amountIssues,
         isSubmittingAction,
-        inputTokenSymbol,
-        otherUnitTokenSymbol,
-        canToggleWithdrawUnit,
         flowType,
         completedInput,
         completedOutput,
@@ -43,12 +46,22 @@ export const YieldWithdrawForm = () => {
         isMaxWithdrawInfoVisible,
         toggleWithdrawFlowType,
         submitAction,
-        setAmountInput,
         submitUnwrap,
         skipUnwrap,
         openPendingTransaction,
+        fiatToggle,
+        setMaxAmount,
         flow,
     } = useYieldWithdrawContext();
+
+    const isRefetchDisabled = useIsFeeRefetchDisabled();
+    useFetchFees({ networkSymbol: account.symbol, isRefetchDisabled });
+
+    const {
+        isDisabled: isUnwrapDisabled,
+        content: unwrapDisabledContent,
+        variant: unwrapDisabledVariant,
+    } = useMessageSystemWrappedNative('unwrap');
 
     const { actionPendingTransaction: withdrawPendingTransaction } = splitYieldPendingTransaction(
         pendingTransaction,
@@ -56,13 +69,35 @@ export const YieldWithdrawForm = () => {
     );
     const unwrapPendingTransaction =
         pendingTransaction?.type === 'unwrap' ? pendingTransaction : undefined;
-    const withdrawInputUnit = flowType === 'redeem' ? 'shares' : 'asset';
+    const isSharesInput = flowType === 'redeem';
+    const withdrawInputUnit = isSharesInput ? 'shares' : 'asset';
+    const inputTokenSymbol = getYieldWithdrawInputToken({
+        flowData: { account, vault, token, receiptToken },
+        flowType,
+    }).symbol;
+    const otherUnitTokenSymbol = isSharesInput ? token.symbol : receiptToken.symbol;
+    const isAmountTooHigh = amountIssues.includes('amount-too-high');
+    const isAmountInvalidDecimals = amountIssues.includes('amount-invalid-decimals');
+    const hasBlockingAmountIssue = amountIssues.length > 0;
 
     const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+    const withdrawActionToken = flowType === 'redeem' ? receiptToken : token;
+    // Approximate fiat value shown under the amount input, from the token's own rate.
+    const actionApproxFiat = {
+        symbol: withdrawActionToken.networkSymbol,
+        tokenContractAddress: withdrawActionToken.contractAddress,
+    };
+    const unwrapApproxFiat = {
+        symbol: token.networkSymbol,
+        tokenContractAddress: token.contractAddress,
+    };
     const sequence = getYieldFlowStepSequence({
         flowType,
         isWrappedNativeVault: flow.isWrappedNativeVault,
     });
+
+    const shouldCheckWithdrawAmount = !isAmountInvalidDecimals && !withdrawPendingTransaction;
+    const shouldCheckUnwrapAmount = !isAmountInvalidDecimals && !unwrapPendingTransaction;
 
     const handleOnWithdraw = () => {
         const apyBreakdown = getApyBreakdown(vault.rewardRate?.components);
@@ -74,6 +109,7 @@ export const YieldWithdrawForm = () => {
                 action: 'continue',
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
+                wrappedNative: flow.isWrappedNativeVault,
                 ...(apyBreakdown && { apyBreakdown }),
             },
         });
@@ -130,7 +166,7 @@ export const YieldWithdrawForm = () => {
     // Fire once per form mount when the user first hits the insufficient-funds banner
     // (no actionable button on this banner, so impression is the only signal available).
     const hasFiredInsufficientFundsRef = useRef(false);
-    const showsInsufficientFunds = !isAmountInvalidDecimals && isAmountTooHigh;
+    const showsInsufficientFunds = shouldCheckWithdrawAmount && isAmountTooHigh;
 
     useEffect(() => {
         if (!showsInsufficientFunds || hasFiredInsufficientFundsRef.current) {
@@ -163,14 +199,15 @@ export const YieldWithdrawForm = () => {
     };
 
     const getWithdrawWarning = () => {
-        if (!isAmountInvalidDecimals && isAmountTooHigh) {
-            return <YieldActionStepWarning isInsufficientFunds={isAmountTooHigh} />;
+        if (shouldCheckWithdrawAmount && isAmountTooHigh) {
+            return <YieldActionStepWarning isInsufficientFunds />;
         }
 
         if (isMaxWithdrawInfoVisible) {
             return (
                 <Banner
                     intent="info"
+                    data-testid="@yield/form/max-withdraw-info"
                     description={
                         <Translation
                             id="TR_EARN_YIELD_MAX_WITHDRAW_INFO"
@@ -190,7 +227,7 @@ export const YieldWithdrawForm = () => {
                 {flow.currentStep !== 'complete' && (
                     <>
                         <Text typographyStyle="headline-md">
-                            <Translation id="TR_EARN_YIELD_WITHDRAW" />
+                            <Translation id="TR_EARN_YIELD_WITHDRAW_TITLE" />
                         </Text>
 
                         {errorMessage && (
@@ -212,7 +249,8 @@ export const YieldWithdrawForm = () => {
                             content: () => (
                                 <YieldActionStep
                                     flowType={flowType}
-                                    token={flowType === 'redeem' ? receiptToken : token}
+                                    token={withdrawActionToken}
+                                    approxFiat={actionApproxFiat}
                                     summaryValue={
                                         <FormattedCryptoAmount
                                             value={maxAmount}
@@ -221,16 +259,16 @@ export const YieldWithdrawForm = () => {
                                     }
                                     warning={getWithdrawWarning()}
                                     isDisabled={
-                                        isAmountEmpty ||
-                                        isAmountTooHigh ||
-                                        isAmountInvalidDecimals ||
+                                        hasBlockingAmountIssue ||
                                         isSubmittingAction ||
                                         !!withdrawPendingTransaction
                                     }
                                     isPending={isSubmittingAction}
                                     pendingTransaction={withdrawPendingTransaction}
                                     unitToggle={
-                                        canToggleWithdrawUnit
+                                        // Switching flow mid-submit can dispose its session before
+                                        // the pending transaction is stored.
+                                        !isSubmittingAction
                                             ? {
                                                   otherTokenSymbol: otherUnitTokenSymbol,
                                                   onClick: handleToggleWithdrawInputUnit,
@@ -259,26 +297,39 @@ export const YieldWithdrawForm = () => {
                                     }}
                                 />
                             ),
+                            // Unwrapping may be disabled remotely; skipping it stays available so the
+                            // user can finish the flow and keep the wrapped token.
                             content: () => (
-                                <YieldUnwrapStep
-                                    tokenSymbol={token.symbol}
-                                    tokenDecimals={token.decimals}
-                                    tokenBalance={token.balance}
-                                    onMaxClick={() => setAmountInput(token.balance)}
-                                    isSubmitting={isSubmittingAction}
-                                    isSubmitDisabled={
-                                        isAmountEmpty || isAmountTooHigh || isAmountInvalidDecimals
-                                    }
-                                    warning={
-                                        !isAmountInvalidDecimals && isAmountTooHigh ? (
-                                            <YieldActionStepWarning isInsufficientFunds />
-                                        ) : undefined
-                                    }
-                                    pendingTransaction={unwrapPendingTransaction}
-                                    onSubmit={handleOnUnwrap}
-                                    onSkip={handleOnSkipUnwrap}
-                                    onPendingTxClick={openPendingTransaction}
-                                />
+                                <Column gap={16}>
+                                    {isUnwrapDisabled && (
+                                        <YieldDisabledBanner
+                                            type="unwrap"
+                                            content={unwrapDisabledContent}
+                                            variant={unwrapDisabledVariant}
+                                        />
+                                    )}
+                                    <YieldUnwrapStep
+                                        tokenSymbol={token.symbol}
+                                        tokenDecimals={token.decimals}
+                                        tokenBalance={token.balance}
+                                        approxFiat={unwrapApproxFiat}
+                                        fiatToggle={fiatToggle}
+                                        onMaxClick={() => setMaxAmount(token.balance)}
+                                        isSubmitting={isSubmittingAction}
+                                        isSubmitDisabled={
+                                            isUnwrapDisabled || hasBlockingAmountIssue
+                                        }
+                                        warning={
+                                            shouldCheckUnwrapAmount && isAmountTooHigh ? (
+                                                <YieldActionStepWarning isInsufficientFunds />
+                                            ) : undefined
+                                        }
+                                        pendingTransaction={unwrapPendingTransaction}
+                                        onSubmit={handleOnUnwrap}
+                                        onSkip={handleOnSkipUnwrap}
+                                        onPendingTxClick={openPendingTransaction}
+                                    />
+                                </Column>
                             ),
                         },
                         complete: {

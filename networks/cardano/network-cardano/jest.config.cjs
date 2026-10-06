@@ -6,6 +6,8 @@
  */
 const baseConfig = require('../../../jest.config.base');
 
+// Coin-selection tests run against both the WASM build (desktop) and the asm.js build (mobile).
 module.exports = {
     ...baseConfig,
+    projects: [{ ...baseConfig, displayName: 'wasm' }, '<rootDir>/jest.config.asmjs.cjs'],
 };

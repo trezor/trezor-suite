@@ -30,7 +30,7 @@ You most probably do not want to use this function directly.
 - **IntlProvider**: For internationalization support. Uses `en` locale by default with empty messages for tests.
 - **ConnectedThemeProvider**: For theme support.
 - **ResponsiveContextProvider**: For responsive design support.
-- **SuiteServicesProvider**: With `extraDependenciesDesktopMock.services`.
+- **SuiteServicesProvider**: With services explicitly supplied by the test when needed.
 - **MockedFormatterProvider**: For currency and number formatting in tests.
 
 #### Usage example

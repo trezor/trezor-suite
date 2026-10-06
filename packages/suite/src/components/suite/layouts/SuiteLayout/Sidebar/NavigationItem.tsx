@@ -3,7 +3,9 @@ import { type MouseEvent } from 'react';
 import styled, { css } from 'styled-components';
 
 import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
-import { type Route, goto, selectRouteName } from '@suite/router';
+import { type Route, gotoThunk, selectRouteName } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Badge,
     Icon,
@@ -19,7 +21,7 @@ import {
 } from '@trezor/components';
 import { commonFocusStyles } from '@trezor/components/src/utils/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 const Container = styled.button<{ $isActive?: boolean }>`
@@ -63,7 +65,6 @@ export type NavigationItemProps = {
     hasNewContentIndicator?: boolean;
     isNewContentIndicatorAnimated?: boolean;
     'data-testid'?: string;
-    className?: string;
     values?: ExtendedMessageDescriptor['values'];
     onClick?: () => void;
     shortcut?: ShortcutBadgeProps['shortcut'];
@@ -93,7 +94,7 @@ const NavItem = ({
     shortcut,
 }: NavigationItemProps) => {
     const activeRoute = useSelector(selectRouteName);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const handleClick = (e: MouseEvent) => {
         e.stopPropagation();
@@ -102,7 +103,7 @@ const NavItem = ({
 
         if (goToRoute !== undefined) {
             dispatch(
-                goto({
+                gotoThunk({
                     routeName: goToRoute,
                     ...(preserveParams === true ? { preserveParams } : undefined),
                 }),
@@ -118,7 +119,7 @@ const NavItem = ({
     const isNewContentDotShown =
         expanded !== true && hasNewContentIndicator === true && hasIndicator !== true;
     const isIconIndicatorShown = hasIndicator === true || isNewContentDotShown;
-    const iconIndicatorIntent = hasIndicator === true ? 'critical' : 'accentViolet';
+    const iconIndicatorIntent = hasIndicator === true ? 'critical' : 'explore';
     const navigationItemTestId = dataTest || `@suite/menu/${goToRoute}`;
 
     return (
@@ -183,7 +184,7 @@ const NavItem = ({
                         {isNewContentBadgeShown && (
                             <Badge
                                 size="medium"
-                                intent="accentViolet"
+                                intent="explore"
                                 isAnimated={isNewContentIndicatorAnimated}
                                 data-testid={`${navigationItemTestId}/new-content-indicator`}
                             >

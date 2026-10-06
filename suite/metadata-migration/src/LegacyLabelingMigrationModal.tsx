@@ -1,13 +1,10 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
-import type { ThunkDispatch } from 'redux-thunk';
+import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import {
     MetadataProviderSelectionModal,
-    type MetadataRootState,
-    connectProvider,
+    connectProviderThunk,
     metadataActions,
     metadataLabelingActions,
     selectSelectedProviderForLabels,
@@ -15,13 +12,13 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
-import { type AnyAction, type ExtraDependencies } from '@suite-common/redux-utils';
-import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { injectEnsureWalletSuiteSyncOn } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
 
-import { selectMetadataMigrationDep } from './createMetadataMigrationCompositionRoot';
+import { injectMetadataMigration } from './createMetadataMigrationCompositionRoot';
 import type { MigrationError } from './legacyLabelsMigration';
 import { isMigratableDevice } from './migrationUtils';
 
@@ -34,16 +31,16 @@ type LegacyLabelingMigrationModalProps = {
     }) => void;
 };
 
-type MetadataDispatch = ThunkDispatch<MetadataRootState, ExtraDependencies, AnyAction>;
-
 export const LegacyLabelingMigrationModal = ({
     onCancel,
     onFinish,
     onSuiteSyncError,
 }: LegacyLabelingMigrationModalProps) => {
-    const dispatch = useDispatch<MetadataDispatch>();
-    const { migrateLegacyLabelsToSuiteSync } = useServices(selectMetadataMigrationDep);
-    const { ensureWalletSuiteSyncOn } = useServices(selectEnsureWalletSuiteSyncOnDep);
+    const { migrateLegacyLabelsToSuiteSync, dispatch } = useServices(
+        injectMetadataMigration,
+        injectDispatch,
+    );
+    const { ensureWalletSuiteSyncOn } = useServices(injectEnsureWalletSuiteSyncOn);
     const selectedProvider = useSelector(selectSelectedProviderForLabels);
     const selectedDevice = useSelector(selectSelectedDevice);
     const [providerLoading, setProviderLoading] = useState<MetadataProviderType | null>(null);
@@ -64,7 +61,7 @@ export const LegacyLabelingMigrationModal = ({
         const isProviderAlreadyConnected = selectedProvider?.type === providerType;
 
         if (!isProviderAlreadyConnected) {
-            const providerConnected = await dispatch(connectProvider({ type: providerType }));
+            const providerConnected = await dispatch(connectProviderThunk({ type: providerType }));
 
             if (providerConnected === 'window closed') {
                 setProviderLoading(null);
@@ -88,7 +85,7 @@ export const LegacyLabelingMigrationModal = ({
         }
 
         const initialized = await dispatch(
-            metadataLabelingActions.init(true, selectedDevice.state.staticSessionId),
+            metadataLabelingActions.initThunk(true, selectedDevice.state.staticSessionId),
         );
 
         if (!initialized) {

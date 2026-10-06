@@ -18,41 +18,46 @@ import { useLocationForm } from './useLocationForm';
 import { type TradingLocationFormType } from '../types/tradingLocationForm';
 
 describe('useFormCountryCode', () => {
-    const renderLocationForm = () =>
-        renderHookWithStoreProvider(() => useLocationForm(), {
-            store: createLightStore({
-                reducer: {
-                    locale: localeReducer,
-                    wallet: combineReducers({
-                        settings: createStaticReducer(initialWalletSettingsState),
-                        trading: combineReducers({
-                            residence: residenceReducer,
+    const renderLocationForm = async () =>
+        await renderHookWithStoreProvider(() => useLocationForm(), {
+            services: {
+                store: createLightStore({
+                    reducer: {
+                        locale: localeReducer,
+                        wallet: combineReducers({
+                            settings: createStaticReducer(initialWalletSettingsState),
+                            trading: combineReducers({
+                                residence: residenceReducer,
+                            }),
                         }),
-                    }),
-                },
-            }),
+                    },
+                }),
+            },
         });
 
-    const renderUseFormCountryCode = (locationForm: TradingLocationFormType) =>
-        renderHookWithBasicProvider(() => useFormCountryCode(), {
+    const renderUseFormCountryCode = async (locationForm: TradingLocationFormType) =>
+        await renderHookWithBasicProvider(() => useFormCountryCode(), {
             wrapper: ({ children }) => <Form form={locationForm}>{children}</Form>,
         });
 
-    it.each<TradingCountryCode>(['US', 'unknown'])('should reflect country for %s', country => {
-        const { result: formResult } = renderLocationForm();
+    it.each<TradingCountryCode>(['US', 'unknown'])(
+        'should reflect country for %s',
+        async country => {
+            const { result: formResult } = await renderLocationForm();
 
-        act(() => {
-            formResult.current.setValue('country', {
-                value: country,
-                codeAlpha3: 'USA',
-                flag: 'Flag',
-                name: 'Country long name',
-                label: 'Country label',
-                shortLabel: 'Short label',
+            await act(() => {
+                formResult.current.setValue('country', {
+                    value: country,
+                    codeAlpha3: 'USA',
+                    flag: 'Flag',
+                    name: 'Country long name',
+                    label: 'Country label',
+                    shortLabel: 'Short label',
+                });
             });
-        });
-        const { result } = renderUseFormCountryCode(formResult.current);
+            const { result } = await renderUseFormCountryCode(formResult.current);
 
-        expect(result.current).toEqual(country);
-    });
+            expect(result.current).toEqual(country);
+        },
+    );
 });

@@ -8,6 +8,7 @@
     "scripts": {
         "nfts": "yarn g:tsx ./scripts/index.ts nft",
         "coins": "yarn g:tsx ./scripts/index.ts coin",
+        "ranked": "yarn g:tsx ./scripts/ranked.ts",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest",
@@ -16,6 +17,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
@@ -28,9 +30,11 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
+        "@suite-common/http-client": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "ajv": "^8.20.0",
         "jws": "^4.0.1",
-        "toml": "^4.1.2"
+        "toml": "^4.1.2",
+        "zod": "4.6.5"
     }
 }

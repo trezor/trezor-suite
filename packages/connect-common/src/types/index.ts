@@ -5,6 +5,12 @@ export * from './definitions';
 export * from './device';
 export * from './fees';
 export type * from './firmware';
+export type {
+    GetTrezorConnect,
+    GetTrezorConnectDep,
+    GetTrezorConnectPrivileged,
+    GetTrezorConnectPrivilegedDep,
+} from './getTrezorConnect';
 export * from './method';
 export * from './params';
 export * from './settings';
@@ -22,8 +28,8 @@ export * from './api/tron/common';
 export * from './api/nostr/common';
 
 // types used in @trezor/suite. if you need a type, reexport it from ./api/<method>
+export type { ComposePsbtParams, ComposePsbtResult } from './api/bitcoin/composePsbt';
 export type {
-    ComposeOutput,
     PrecomposeResultError,
     PrecomposeResultNonFinal,
     PrecomposeResultFinal,

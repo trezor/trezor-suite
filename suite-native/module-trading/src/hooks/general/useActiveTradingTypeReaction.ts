@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import { selectEnabledTradingTypes, tradingActions } from '@suite-native/trading-state';
 
 export const useActiveTradingTypeReaction = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const enabledTradingTypes = useSelector(selectEnabledTradingTypes);
     const { params } = useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.Trading>>();
     const tradingType = params?.tradingType;

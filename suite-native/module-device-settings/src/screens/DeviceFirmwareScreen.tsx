@@ -24,6 +24,8 @@ import {
     type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 
+import { useFirmwareLanguage } from '../hooks/useFirmwareLanguage';
+
 export const DeviceFirmwareScreen = ({
     navigation,
     route: { params },
@@ -35,6 +37,7 @@ export const DeviceFirmwareScreen = ({
     const { showAlert } = useAlert();
     const { openModal: openCheckBackupModal, bottomSheetRef, closeModal } = useBottomSheetModal();
     const { navigateToCheckBackup } = useNavigateToCheckBackup();
+    const { changeFirmwareLanguage } = useFirmwareLanguage();
 
     const isFirmwareUpgradable = useSelector(selectIsFirmwareUpgradable);
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
@@ -102,7 +105,7 @@ export const DeviceFirmwareScreen = ({
                         </Button>
                     )}
                 </FirmwareVersionCard>
-                <FirmwareLanguageCard />
+                <FirmwareLanguageCard onChange={changeFirmwareLanguage} />
             </VStack>
             <ConfirmBottomSheet
                 ref={bottomSheetRef}

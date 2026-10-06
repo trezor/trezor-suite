@@ -1,8 +1,6 @@
 import { G } from '@mobily/ts-belt';
 import * as semver from 'semver';
 
-import { type AnyAction } from '@suite-common/redux-utils';
-import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     getDeviceInternalModel,
     getDeviceLanguage,
@@ -13,7 +11,7 @@ import {
 import type { AnalyticsNativeEvents } from '@suite-native/analytics';
 import { events } from '@suite-native/analytics';
 import { type Analytics } from '@trezor/analytics-uploader';
-import { type Device, type DeviceEvent } from '@trezor/connect';
+import { type Device } from '@trezor/connect';
 import {
     DeviceModelInternal,
     getFirmwareVersionArray,
@@ -49,11 +47,6 @@ export const isFirmwareVersionSupported = (
     return semver.satisfies(versionString, `>=${minimalVersionString}`);
 };
 
-export const isDeviceEventAction = <T extends DeviceEvent['type']>(
-    action: AnyAction,
-    actionType: T,
-): action is { type: T; payload: Device } => action.type === actionType;
-
 export const getIsDeviceSetupSupported = (model: DeviceModelInternal) => {
     // Exhaustive check for case that new model is introduced later it won't be forgotten.
     switch (model) {
@@ -72,7 +65,7 @@ export const getIsDeviceSetupSupported = (model: DeviceModelInternal) => {
 };
 
 export const reportDeviceConnectionAnalytics = (
-    device: TrezorDevice,
+    device: Device,
     analytics: Analytics<AnalyticsNativeEvents>,
 ) => {
     analytics.report({

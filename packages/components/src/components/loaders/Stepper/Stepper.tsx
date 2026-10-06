@@ -36,5 +36,9 @@ export const Stepper = ({ step, total, maxWidth = 200 }: StepperProps) => {
             return <Step key={`${index}`} $isActive={isActive} />;
         });
 
-    return <Container $maxWidth={maxWidth}>{steps}</Container>;
+    return (
+        <Container data-component="Stepper" $maxWidth={maxWidth}>
+            {steps}
+        </Container>
+    );
 };

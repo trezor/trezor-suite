@@ -2,13 +2,17 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { debugInitialState } from '@suite/debug';
 import { locksReducer } from '@suite/locks';
+import { modalReducer } from '@suite/modal';
+import { routerLocationChange, routerReducer } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { torReducer } from '@suite/tor';
+import { networksReducer } from '@suite-common/networks';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type SuiteSyncDataState, type SuiteSyncState } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type Network, getNetwork } from '@suite-common/wallet-config';
+import { type Network, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
     accountsActions,
@@ -22,18 +26,17 @@ import {
     type SendFormDraftKey,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
-import {
-    mockWalletAccount,
-    networkSpecificDefaultEthereum,
-    networkSpecificDefaultRipple,
-} from '@suite-common/wallet-types/mocks';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
 import { type DeepPartial } from '@trezor/type-utils';
 
 import { type AppState } from 'src/reducers/store';
-import { extraDependencies } from 'src/support/extraDependencies';
+import protocolReducer from 'src/reducers/suite/protocolReducer';
 
-const sendFormReducer = prepareSendFormReducer(extraDependencies);
+const sendFormReducer = prepareSendFormReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadFormDrafts: mockReducer() },
+});
 
 const UTXO = {
     '00': testMocks.getUtxo({
@@ -79,7 +82,7 @@ const UTXO = {
 export const BTC_ACCOUNT: Omit<SelectedAccountStatus, 'network'> & { network: Partial<Network> } = {
     status: 'loaded',
     account: mockWalletAccount({
-        symbol: 'btc',
+        symbol: asNetworkSymbol('btc'),
         descriptor: asAccountDescriptor('xpub'),
         deviceState: '1stTestnetAddress@device_id:0',
         addresses: {
@@ -143,45 +146,44 @@ export const BTC_ACCOUNT: Omit<SelectedAccountStatus, 'network'> & { network: Pa
         formattedBalance: '1000 BTC',
         utxo: Object.values(UTXO),
     }),
-    network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8, features: ['rbf'] },
+    network: {
+        networkType: 'bitcoin',
+        symbol: asNetworkSymbol('btc'),
+        decimals: 8,
+        features: ['rbf'],
+    },
 };
 
 export const ETH_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
     status: 'loaded',
-    account: mockWalletAccount(
-        {
-            symbol: 'eth',
-            descriptor: asAccountDescriptor('0xdB09b793984B862C430b64B9ed53AcF867cC041F'),
-            deviceState: '1stTestnetAddress@device_id:0',
-            balance: '10000000000000000000', // 10 ETH
-            availableBalance: '10000000000000000000', // 10 ETH
-            tokens: [
-                {
-                    standard: 'ERC20',
-                    contract: '0xABCD',
-                    symbol: '0xABCD',
-                    decimals: 3,
-                    balance: '1',
-                },
-            ],
-        },
-        networkSpecificDefaultEthereum,
-    ),
+    account: mockWalletAccount({
+        symbol: asNetworkSymbol('eth'),
+        descriptor: asAccountDescriptor('0xdB09b793984B862C430b64B9ed53AcF867cC041F'),
+        deviceState: '1stTestnetAddress@device_id:0',
+        balance: '10000000000000000000', // 10 ETH
+        availableBalance: '10000000000000000000', // 10 ETH
+        tokens: [
+            {
+                standard: 'ERC20',
+                contract: '0xABCD',
+                symbol: '0xABCD',
+                decimals: 3,
+                balance: '1',
+            },
+        ],
+    }),
     network: { networkType: 'ethereum', symbol: 'eth', decimals: 18, chainId: 1 },
 };
 
 export const XRP_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
     status: 'loaded',
-    account: mockWalletAccount(
-        {
-            symbol: 'xrp',
-            descriptor: asAccountDescriptor('rAPERVgXZavGgiGv6xBgtiZurirW2yAmY'),
-            deviceState: '1stTestnetAddress@device_id:0',
-            balance: '100000000', // 100 XRP
-            availableBalance: '100000000', // 100 XRP
-        },
-        networkSpecificDefaultRipple,
-    ),
+    account: mockWalletAccount({
+        symbol: asNetworkSymbol('xrp'),
+        descriptor: asAccountDescriptor('rAPERVgXZavGgiGv6xBgtiZurirW2yAmY'),
+        deviceState: '1stTestnetAddress@device_id:0',
+        balance: '100000000', // 100 XRP
+        availableBalance: '100000000', // 100 XRP
+    }),
     network: { networkType: 'ripple', symbol: 'xrp', decimals: 6 },
 };
 
@@ -278,6 +280,7 @@ const DEFAULT_FEES: FeesState = {
 // Todo: Replace `any` with an accurate type.
 export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEES) =>
     combineReducers({
+        networks: networksReducer,
         suite: createReducer(
             {
                 online: true,
@@ -416,7 +419,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
                 () => ({}),
             ),
         }),
-        protocol: createReducer({ sendForm: {} }, () => ({})),
+        protocol: protocolReducer,
         messageSystem: createReducer(
             {
                 validMessages: {
@@ -436,8 +439,8 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             { enabled: false, providers: [], selectedProvider: {} },
             () => ({}),
         ),
-        router: createReducer({}, () => ({})),
-        modal: createReducer({}, () => ({})),
+        router: (state = routerReducer(undefined, { type: 'test-init' })) => state,
+        modal: modalReducer,
         suiteSyncData: createReducer(
             {
                 wallets: {},
@@ -1386,48 +1389,6 @@ export const setMax: any[] = [
     },
 ];
 
-export const amountChange = [
-    {
-        description: 'Amount to Fiat calculation',
-        // input amount
-        // input amount with error
-        // change currency
-    },
-    {
-        description: 'Amount with error',
-        // input amount
-        // input amount with error
-        // change currency
-    },
-    {
-        description: 'Amount to Fiat calculation then Amount with error',
-        // input amount
-        // input amount with error
-        // change currency
-    },
-    {
-        description: 'Fiat to Amount calculation',
-        // input fiat
-        // input fiat with error
-        // change currency
-    },
-    {
-        description: 'Fiat with error',
-        // input fiat
-        // input fiat with error
-        // change currency
-    },
-    {
-        description: 'Fiat to Amount calculation then Fiat with error',
-        // input fiat
-        // input fiat with error
-        // change currency
-    },
-    {
-        description: 'Eth transaction with data (default amount set to 0)',
-    },
-];
-
 const getComposeResponse = (resp?: any) => ({
     success: true,
     payload: [
@@ -1483,10 +1444,11 @@ export const signAndPush: SignAndPush[] = [
             actions: [
                 {
                     type: notificationsActions.addToast.type,
-                    payload: { type: 'tx-sent', formattedAmount: '1 ETH' }, // BUG ?
+                    payload: { type: 'tx-sent', amount: '1' },
                 },
                 {
-                    type: 'mock-redirect',
+                    type: routerLocationChange.type,
+                    payload: { pathname: '/accounts' },
                 },
             ],
         },
@@ -1538,10 +1500,11 @@ export const signAndPush: SignAndPush[] = [
             actions: [
                 {
                     type: notificationsActions.addToast.type,
-                    payload: { type: 'tx-sent', formattedAmount: '1 XRP' },
+                    payload: { type: 'tx-sent', amount: '1' },
                 },
                 {
-                    type: 'mock-redirect',
+                    type: routerLocationChange.type,
+                    payload: { pathname: '/accounts' },
                 },
             ],
         },
@@ -1640,63 +1603,66 @@ export const signAndPush: SignAndPush[] = [
             actions: [
                 {
                     type: notificationsActions.addToast.type,
-                    payload: { type: 'tx-sent', formattedAmount: '24.999999 BTC' },
+                    payload: { type: 'tx-sent', amount: '24.999999' },
                 },
                 {
                     type: accountsActions.updateAccount.type,
                     payload: {
-                        // reduced balance
-                        availableBalance: '97800000000',
-                        formattedBalance: '978',
-                        utxo: [
-                            // new utxos created by this tx
-                            {
-                                address: '1-change',
-                                amount: '100000000',
-                                vout: 4,
-                                txid: 'txid',
-                                blockHeight: 0,
-                                confirmations: 0,
-                                path: "m/44'/0'/0'/1/0",
-                            },
-                            {
-                                address: '2-used',
-                                amount: '100000000',
-                                vout: 3,
-                                txid: 'txid',
-                                blockHeight: 0,
-                                confirmations: 0,
-                                path: "m/44'/0'/0'/0/1",
-                            },
-                            {
-                                address: '1-unused',
-                                amount: '100000000',
-                                vout: 2,
-                                txid: 'txid',
-                                blockHeight: 0,
-                                confirmations: 0,
-                                path: "m/44'/0'/0'/0/2",
-                            },
-                            {
-                                address: '2-change',
-                                amount: '10000000000',
-                                vout: 0,
-                                txid: 'txid',
-                                blockHeight: 0,
-                                confirmations: 0,
-                                path: "m/44'/0'/0'/1/1",
-                            },
-                            // old utxo without used "utxoC"
-                            UTXO['00'],
-                            UTXO.AA,
-                            UTXO.BB,
-                            UTXO.DD,
-                            UTXO.EE,
-                        ],
+                        account: {
+                            // reduced balance
+                            availableBalance: '97800000000',
+                            formattedBalance: '978',
+                            utxo: [
+                                // new utxos created by this tx
+                                {
+                                    address: '1-change',
+                                    amount: '100000000',
+                                    vout: 4,
+                                    txid: 'txid',
+                                    blockHeight: 0,
+                                    confirmations: 0,
+                                    path: "m/44'/0'/0'/1/0",
+                                },
+                                {
+                                    address: '2-used',
+                                    amount: '100000000',
+                                    vout: 3,
+                                    txid: 'txid',
+                                    blockHeight: 0,
+                                    confirmations: 0,
+                                    path: "m/44'/0'/0'/0/1",
+                                },
+                                {
+                                    address: '1-unused',
+                                    amount: '100000000',
+                                    vout: 2,
+                                    txid: 'txid',
+                                    blockHeight: 0,
+                                    confirmations: 0,
+                                    path: "m/44'/0'/0'/0/2",
+                                },
+                                {
+                                    address: '2-change',
+                                    amount: '10000000000',
+                                    vout: 0,
+                                    txid: 'txid',
+                                    blockHeight: 0,
+                                    confirmations: 0,
+                                    path: "m/44'/0'/0'/1/1",
+                                },
+                                // old utxo without used "utxoC"
+                                UTXO['00'],
+                                UTXO.AA,
+                                UTXO.BB,
+                                UTXO.DD,
+                                UTXO.EE,
+                            ],
+                        },
                     },
                 },
                 {
-                    type: 'mock-redirect',
+                    type: routerLocationChange.type,
+                    payload: { pathname: '/accounts' },
                 },
             ],
         },

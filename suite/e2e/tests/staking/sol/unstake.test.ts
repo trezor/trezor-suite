@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import solSimulateClaimTransaction from '../../../fixtures/staking/sol-simulate-claim-transaction.json';
@@ -24,12 +25,15 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
     });
 
     test.beforeEach(async ({ onboardingPage, settingsPage, solanaStakingMock }) => {
-        solanaStakingMock.setupStakedAccount();
+        await solanaStakingMock.setupStakedAccount();
         solanaStakingMock.setSimulatedTransaction(solSimulateUnstakeTransaction);
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
             enableNetworks: [
-                { symbol: 'sol', backend: { type: 'solana', url: solanaStakingMock.url } },
+                {
+                    symbol: asNetworkSymbol('sol'),
+                    backend: { type: 'solana', url: solanaStakingMock.url },
+                },
             ],
         });
     });
@@ -41,13 +45,17 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user can unstake and claim to his Solana account.',
                 category: TestCategory.Solana,
                 priority: TestPriority.Critical,
-                stream: TestStream.Trends,
+                stream: TestStream.Earn,
             }),
         },
         async ({ page, device, walletPage, stakingSection, devicePrompt, solanaStakingMock }) => {
             await test.step('Check staking dashboard', async () => {
                 await page.clock.install();
-                await walletPage.openAccount({ symbol: 'sol', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({
+                    symbol: asNetworkSymbol('sol'),
+                    type: 'normal',
+                    atIndex: 0,
+                });
                 await stakingSection.stakingTabButton.click();
                 await stakingSection.expectStakingAmounts({
                     expected: {
@@ -119,7 +127,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     account: 'Solana #1',
                     amount: stakedAmountFormatted,
                 });
-                solanaStakingMock.setupUnstakingAccount();
+                await solanaStakingMock.setupUnstakingAccount();
                 await stakingSection.expectStakingAmounts({
                     expected: {
                         pending: 'hidden',
@@ -136,7 +144,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             solanaStakingMock.setSimulatedTransaction(solSimulateClaimTransaction);
 
             await test.step('Wait few epochs for claim to be available', async () => {
-                solanaStakingMock.advanceEpoch();
+                await solanaStakingMock.advanceEpoch();
                 await stakingSection.expectStakingAmounts({
                     expected: {
                         pending: 'hidden',
@@ -210,7 +218,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Verify dashboard is back to initial state', async () => {
-                solanaStakingMock.advanceEpoch();
+                await solanaStakingMock.advanceEpoch();
                 await expect(async () => {
                     await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
                     await expect(stakingSection.stakingEmptyCard).toBeVisible();

@@ -21,25 +21,27 @@ describe('useAvailableScreenSquare', () => {
             nativeEvent: { layout: { height, width, x: 0, y: 0 } },
         }) as LayoutChangeEvent;
 
-    const renderUseAvailableScreenSpace = (maximumSize = MAXIMUM_SIZE) =>
-        renderHookWithBasicProvider(() => useAvailableScreenSquare(MINIMUM_SIZE, maximumSize));
+    const renderUseAvailableScreenSpace = async (maximumSize = MAXIMUM_SIZE) =>
+        await renderHookWithBasicProvider(() =>
+            useAvailableScreenSquare(MINIMUM_SIZE, maximumSize),
+        );
 
-    it('should return MAXIMUM_SIZE when totalAvailableHeight is larger than MAXIMUM_SIZE', () => {
+    it('should return MAXIMUM_SIZE when totalAvailableHeight is larger than MAXIMUM_SIZE', async () => {
         // totalAvailableHeight = 1334 - 100 = 1234 which is > MAXIMUM_SIZE = 300
 
-        const { result } = renderUseAvailableScreenSpace();
+        const { result } = await renderUseAvailableScreenSpace();
 
         expect(result.current.squareSize).toBe(MAXIMUM_SIZE);
     });
 
-    it('should return total available height when it is between MINIMUM_SIZE and MAXIMUM_SIZE', () => {
+    it('should return total available height when it is between MINIMUM_SIZE and MAXIMUM_SIZE', async () => {
         // contentHeight = 1000 => totalAvailableHeight = 1334 - 100 - 1000 = 234
         // 234 > 50 (MINIMUM_SIZE) && 234 < 300 (MAXIMUM_SIZE)
         const contentHeight = 1000;
 
-        const { result } = renderUseAvailableScreenSpace();
+        const { result } = await renderUseAvailableScreenSpace();
 
-        act(() => {
+        await act(() => {
             result.current.handleContentLayout(mockLayoutEvent(contentHeight));
         });
 
@@ -48,22 +50,22 @@ describe('useAvailableScreenSquare', () => {
         expect(result.current.squareSize).toBe(expectedHeight);
     });
 
-    it('should return MINIMUM_SIZE when totalAvailableHeight is below MINIMUM_SIZE', () => {
+    it('should return MINIMUM_SIZE when totalAvailableHeight is below MINIMUM_SIZE', async () => {
         // contentHeight = 1185 => totalAvailableHeight = 1334 - 100 - 1185 = 49 which is < 50 (MINIMUM_SIZE)
         const contentHeight = 1185;
 
-        const { result } = renderUseAvailableScreenSpace();
+        const { result } = await renderUseAvailableScreenSpace();
 
-        act(() => {
+        await act(() => {
             result.current.handleContentLayout(mockLayoutEvent(contentHeight));
         });
 
         expect(result.current.squareSize).toBe(MINIMUM_SIZE);
     });
 
-    it('should cap squareSize to totalAvailableWidth when height exceeds it', () => {
+    it('should cap squareSize to totalAvailableWidth when height exceeds it', async () => {
         // MAXIMUM_SIZE = 800 > totalAvailableWidth = 730 => squareSize should be 730
-        const { result } = renderUseAvailableScreenSpace(800);
+        const { result } = await renderUseAvailableScreenSpace(800);
 
         expect(result.current.squareSize).toBe(MOCKED_SCREEN_WIDTH - HORIZONTAL_MARGIN);
     });

@@ -209,12 +209,97 @@ const disableAccountsThunk = createThunk(
 ```tsx
 await TrezorConnect.init({
     ...connectInitSettings,
-    pendingTransportEvent: selectIsPendingTransportEvent(getState()),
+    debug: selectIsDebug(getState()),
 });
 ```
 
 - For async thunks, try to make use of the [lifecycle actions](https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions) whenever it makes sense. For example, when you have an async thunk that fetches something and saves in state. If fetching was not successful, you can explicitly modify the slice state in a relevant way: add an error message, change some status or reset the state (if business logic deems no data better than not-up-to-date data)
 - When using async thunks in effects, cancel the action by calling the [abort() method](https://redux-toolkit.js.org/api/createAsyncThunk#canceling-while-running) in effect cleanup.
+
+### State and dependency contracts
+
+A thunk must describe only the state and injected dependencies that it actually uses. This keeps
+the thunk reusable in every application whose store satisfies that small contract and lets tests
+provide only the relevant state and dependencies.
+
+- Declare a named `<ThunkName>State` type next to every thunk that calls `getState()`. Build it from
+  the smallest domain root-state types accepted by the selectors that the thunk calls. Do not use a
+  full application state or infer the state contract with `Parameters<typeof selector>[0]`.
+- Declare a named `<ThunkName>Deps` type next to every thunk that reads `extra`. Reuse domain-owned
+  dependency contracts and combine them with intersections (`&`) instead of repeating their shape.
+- A parent thunk must include the state and dependency contracts required by every child thunk it
+  dispatches. The parent's store and dependency object must be able to run the whole dispatched
+  chain, not only the first function.
+- Pass `{ state: <ThunkName>State; extra: <ThunkName>Deps }` as the third `createThunk` generic. Omit
+  whichever property the thunk does not need.
+- Pass explicit `void` as the third generic when a thunk needs neither state nor injected
+  dependencies. This is a compile-time guard against accidentally starting to use either one.
+- Let the `createThunk` payload generic type the callback argument. Do not repeat the payload type on
+  a destructured callback parameter.
+- Do not use `ExtraDependencies`, `CustomThunkAPI`, `as any`, or a full dependency mock as a shortcut
+  in feature code or tests.
+
+```ts
+type RefreshAccountThunkState = AccountsRootState & WalletSettingsRootState;
+type RefreshAccountThunkDeps = AnalyticsDep & RefreshAccountTokensThunkDeps;
+
+export const refreshAccountThunk = createThunk<
+    void,
+    RefreshAccountParams,
+    { state: RefreshAccountThunkState; extra: RefreshAccountThunkDeps }
+>(`${actionPrefix}/refreshAccount`, async ({ accountKey }, { dispatch, getState, extra }) => {
+    // The implementation can use only the contract declared above.
+});
+
+export const closeDialogThunk = createThunk<void, CloseDialogParams, void>(
+    `${actionPrefix}/closeDialog`,
+    ({ dialogId }, { dispatch }) => {
+        dispatch(closeDialog(dialogId));
+    },
+);
+```
+
+### Test at the correct boundary
+
+Follow the full [`@suite-common/test-utils` guide](../../docs/tests/suite-common-test-utils.md).
+
+Unit-test a thunk as a function. Redux thunk middleware ultimately calls a thunk with three
+arguments: `dispatch`, `getState`, and `extra`, so a unit test can provide those arguments directly.
+Do not create a store or an application root merely to obtain them.
+
+Use `createMockDispatch` from `@suite-common/redux-utils/mocks`. It stores every plain dispatched
+action in an array and recursively executes function actions with the same test dependencies. Build
+`getState` and `extra` from the thunk's exported contracts, and keep the fixture local to the test:
+
+```ts
+const state: XyzThunkState = {
+    // Only the state required by xyzThunk.
+};
+const extra: XyzThunkDeps = {
+    services: {
+        // Only the services required by xyzThunk.
+    },
+};
+const getState = () => state;
+const { actions, dispatch } = createMockDispatch({ getState, extra });
+
+await xyzThunk()(dispatch, getState, extra);
+
+expect(extra.services.someService).toHaveBeenCalled();
+expect(actions).toEqual([
+    expect.objectContaining({ type: xyzThunk.pending.type }),
+    expect.objectContaining({ type: xyzThunk.fulfilled.type }),
+]);
+```
+
+Use `createTestCompositionRoot` only when the test intentionally covers Redux integration and
+should verify the resulting state or rendered UI. The underlying `createTestStore` is internal to
+`@suite-common/test-utils`; tests always compose through `createTestCompositionRoot`.
+
+### Composition roots
+
+Composition roots must be synchronous. They construct and wire services; asynchronous startup
+belongs in services that are called after composition is complete.
 
 ## Middlewares
 

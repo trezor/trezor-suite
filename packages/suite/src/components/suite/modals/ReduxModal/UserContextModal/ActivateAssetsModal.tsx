@@ -5,9 +5,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { selectIsActivateAssetsBannerClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { preserveModal, removePreserveModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    changeCoinVisibility,
+    changeCoinVisibilityThunk,
     selectEnabledNetworks,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
@@ -16,7 +18,7 @@ import { InfoIcon } from '@trezor/icons';
 
 import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from 'src/hooks/suite';
 
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 
@@ -42,7 +44,7 @@ type ActivateAssetsModalProps = {
 };
 
 export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const isActivateAssetsBannerClosed = useSelector(selectIsActivateAssetsBannerClosed);
     const { supportedMainnets } = useNetworkSupport();
@@ -90,10 +92,10 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
         const toDisable = enabledNetworks.filter(symbol => !pendingNetworks.includes(symbol));
 
         toEnable.forEach(symbol =>
-            dispatch(changeCoinVisibility({ symbol, shouldBeVisible: true })),
+            dispatch(changeCoinVisibilityThunk({ symbol, shouldBeVisible: true })),
         );
         toDisable.forEach(symbol =>
-            dispatch(changeCoinVisibility({ symbol, shouldBeVisible: false })),
+            dispatch(changeCoinVisibilityThunk({ symbol, shouldBeVisible: false })),
         );
 
         if (toEnable.length > 0) {

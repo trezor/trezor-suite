@@ -1,10 +1,12 @@
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
+import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { type TradingSellInfoSelector } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { buildSellReturnUrl } from './buildSellReturnUrl';
+import { type BuildSellReturnUrlParams, buildSellReturnUrl } from './buildSellReturnUrl';
 
 const mockCreateQuoteLink = jest.fn((..._args: unknown[]) => Promise.resolve('https://return.url'));
 jest.mock('src/utils/wallet/trading/sellUtils', () => ({
@@ -13,7 +15,7 @@ jest.mock('src/utils/wallet/trading/sellUtils', () => ({
 }));
 
 const ACCOUNT: Account = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btcAccount'),
 });
 
@@ -40,7 +42,8 @@ const COMPOSED_INFO = { selectedFee: 'normal' as const, composed: undefined };
 const sellInfoWith = (flow: string): TradingSellInfoSelector =>
     ({ providerInfos: { cexdirect: { flow } } }) as unknown as TradingSellInfoSelector;
 
-const PARAMS = {
+const PARAMS: BuildSellReturnUrlParams = {
+    desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
     quote: QUOTE,
     sellInfo: sellInfoWith('PAYMENT_GATE'),
     quotesRequest: QUOTES_REQUEST,
@@ -58,6 +61,7 @@ describe('buildSellReturnUrl', () => {
 
         expect(returnUrl).toBe('https://return.url');
         expect(mockCreateQuoteLink).toHaveBeenCalledWith(
+            { desktopApi: PARAMS.desktopApi },
             expect.objectContaining({
                 country: 'DE',
                 fiatCurrency: 'EUR',
@@ -74,6 +78,7 @@ describe('buildSellReturnUrl', () => {
         await buildSellReturnUrl({ ...PARAMS, sellInfo: sellInfoWith('DEFAULT') });
 
         expect(mockCreateQuoteLink).toHaveBeenCalledWith(
+            { desktopApi: PARAMS.desktopApi },
             expect.objectContaining({
                 country: 'DE',
                 fiatCurrency: 'EUR',

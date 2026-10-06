@@ -1,17 +1,19 @@
 import { useMemo } from 'react';
 
 import { selectEarnYieldWorkerBaseUrl, suiteSettingsActions } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type EarnYieldWorkerBaseUrl,
     earnYieldWorkerBaseUrl,
     earnYieldWorkerBaseUrls,
 } from '@suite-common/earn-stablecoin-api';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const EarnApi = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const storedValue = useSelector(selectEarnYieldWorkerBaseUrl);
     const options = useMemo(
         () =>

@@ -46,9 +46,11 @@ __pycache__/
 screenshots
 test-results
 playwright-report
-packages/e2e-utils/src/fixBot/reports/
+packages/e2e-utils/src/llmTestFixer/reports/
+packages/e2e-utils/src/llmExploratoryTester/reports/
 suite-native/app/.metadata/
 suite-native/app/artifacts/
+suite-native/app/crash-reports/
 
 # build outputs
 lib
@@ -92,6 +94,7 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
+/.air/worktree.json
 
 # scan temporary files
 **/android/fastlane/test_output
@@ -132,10 +135,10 @@ local.properties
 !.yarn/sdks
 !.yarn/versions
 
-# @trezor/suite-data
-packages/suite-data/files/browser-detection
-packages/suite-data/files/guide
-packages/suite-data/files/translations/master.json
+# @suite/app-assets
+suite/app-assets/files/browser-detection
+suite/app-assets/files/guide
+suite/app-assets/files/translations/master.json
 
 # @trezor/connect-explorer
 **/build-webextension/**

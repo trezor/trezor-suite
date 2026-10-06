@@ -1,11 +1,16 @@
-import React from 'react';
-
 import { Translation } from '@suite/intl';
-import { getDaysToAddToPoolInitial } from '@suite-common/staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { CARDANO_ACTIVATION_PERIOD_DAYS, CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
-import { selectEthValidatorsQueue, selectPoolStatsApy } from '@suite-common/wallet-core';
+import {
+    CARDANO_ACTIVATION_PERIOD_MAX_DAYS,
+    CARDANO_ACTIVATION_PERIOD_MIN_DAYS,
+    CARDANO_EPOCH_DAYS,
+} from '@suite-common/wallet-constants';
+import {
+    getDaysToAddToPoolInitial,
+    selectEthereumValidatorsQueue,
+    selectPoolStatsApy,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { StepList } from '@trezor/components';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
@@ -42,6 +47,13 @@ const StakingSignRow = ({ flow }: Pick<EarnStakingRowsProps, 'flow'>) => (
     />
 );
 
+const ApproximateApy = ({ apy }: Pick<EarnStakingRowsProps, 'apy'>) =>
+    apy === null ? (
+        <Translation id="TR_EARN_APY_N_A" />
+    ) : (
+        <Translation id="TR_EARN_APY_APPROX" values={{ apyPercent: formatApyValue(apy) }} />
+    );
+
 const EthereumStakingRows = ({
     flow,
     displaySymbol,
@@ -70,14 +82,7 @@ const EthereumStakingRows = ({
         <EarnInfoRow
             heading={<Translation id="TR_EARN_REWARDS_WEEKLY" />}
             subheading={<Translation id="TR_EARN_REWARDS_ARE_RESTAKED" />}
-            content={{
-                text: (
-                    <Translation
-                        id="TR_EARN_APY_APPROX"
-                        values={{ apyPercent: formatApyValue(apy) }}
-                    />
-                ),
-            }}
+            content={{ text: <ApproximateApy apy={apy} /> }}
         />
     </>
 );
@@ -102,14 +107,7 @@ const SolanaStakingRows = ({ flow, displaySymbol, apy }: EarnStakingRowsProps) =
                 <Translation id="TR_EARN_REWARDS_EVERY" values={{ days: SOLANA_EPOCH_DAYS }} />
             }
             subheading={<Translation id="TR_EARN_REWARDS_ARE_RESTAKED" />}
-            content={{
-                text: (
-                    <Translation
-                        id="TR_EARN_APY_APPROX"
-                        values={{ apyPercent: formatApyValue(apy) }}
-                    />
-                ),
-            }}
+            content={{ text: <ApproximateApy apy={apy} /> }}
         />
     </>
 );
@@ -125,15 +123,17 @@ const CardanoStakingRows = ({ flow, apy }: EarnStakingRowsProps) => (
                             ? 'TR_EARN_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER'
                             : 'TR_EARN_ENTER_ACTIVATION_PERIOD'
                     }
-                    values={{ days: CARDANO_ACTIVATION_PERIOD_DAYS }}
                 />
             }
             subheading={<Translation id="TR_EARN_TIME_TO_START_EARNING" />}
             content={{
                 text: (
                     <Translation
-                        id="TR_EARN_APPROXIMATE_DAYS"
-                        values={{ count: CARDANO_ACTIVATION_PERIOD_DAYS }}
+                        id="TR_EARN_APPROXIMATE_DAYS_RANGE"
+                        values={{
+                            minDays: CARDANO_ACTIVATION_PERIOD_MIN_DAYS,
+                            maxDays: CARDANO_ACTIVATION_PERIOD_MAX_DAYS,
+                        }}
                     />
                 ),
             }}
@@ -150,20 +150,13 @@ const CardanoStakingRows = ({ flow, apy }: EarnStakingRowsProps) => (
                 />
             }
             subheading={<Translation id="TR_EARN_REWARDS_ARE_RESTAKED" />}
-            content={{
-                text: (
-                    <Translation
-                        id="TR_EARN_APY_APPROX"
-                        values={{ apyPercent: formatApyValue(apy) }}
-                    />
-                ),
-            }}
+            content={{ text: <ApproximateApy apy={apy} /> }}
         />
     </>
 );
 
 export const EarnStakingInfo = ({ account, flow }: EarnStakingInfoProps) => {
-    const validatorsQueue = useSelector(selectEthValidatorsQueue);
+    const validatorsQueue = useSelector(selectEthereumValidatorsQueue);
 
     const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
 

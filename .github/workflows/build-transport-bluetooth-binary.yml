@@ -13,13 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           lfs: true
-          submodules: true
 
       - name: Setup Docker
-        uses: docker/setup-docker-action@0234bb73ccb40f0c430b795634f9247e2b5c2d23 # v5
+        uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5
 
       - name: Build transport-bluetooth binary
         working-directory: packages/transport-bluetooth
@@ -29,7 +28,7 @@ jobs:
           touch build/index.html
           docker build . -f ./scripts/Dockerfile -t trezor-bluetooth-image --build-arg BUILD_VERSION_TAG=$BUILD_VERSION_TAG
           docker create --name trezor-bluetooth-container trezor-bluetooth-image
-          docker cp trezor-bluetooth-container:/output/. ../suite-data/files/bin/bluetooth
+          docker cp trezor-bluetooth-container:/output/. ../../suite/app-assets/files/bin/bluetooth
           docker rm trezor-bluetooth-container
           docker rmi trezor-bluetooth-image
 
@@ -38,7 +37,7 @@ jobs:
         with:
           name: transport-bluetooth-binaries-${{ github.sha }}
           path: |
-            packages/suite-data/files/bin/bluetooth
+            suite/app-assets/files/bin/bluetooth
 
       - name: Generate GitHub App token
         if: inputs.create-pull-request == true

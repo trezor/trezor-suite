@@ -42,7 +42,12 @@ export const HDNodeResponse = Type.Intersect([
     }),
 ]);
 
-export declare function getPublicKey(params: Params<GetPublicKey>): Response<HDNodeResponse>;
+// Internal flag set by Suite for connect 9.x host apps; restores the v9 btc fallback (see getPublicKey api).
+export type GetPublicKeyV9Compat = { _v9_compat?: boolean };
+
 export declare function getPublicKey(
-    params: BundledParams<GetPublicKey>,
+    params: Params<GetPublicKey> & GetPublicKeyV9Compat,
+): Response<HDNodeResponse>;
+export declare function getPublicKey(
+    params: BundledParams<GetPublicKey> & GetPublicKeyV9Compat,
 ): Response<HDNodeResponse[]>;

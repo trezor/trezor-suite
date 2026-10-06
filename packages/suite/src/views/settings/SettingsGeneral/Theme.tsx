@@ -1,13 +1,14 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectAutodetectTheme, selectThemeSettings, suiteSettingsActions } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { type ThemeColorVariant } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { getOsTheme } from 'src/utils/suite/env';
 
 type ThemeColorVariantWithSystem = ThemeColorVariant | 'system';
@@ -45,16 +46,21 @@ const useThemeOptions = () => {
 };
 
 export const Theme = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { desktopApi, analytics, dispatch } = useServices(
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectDesktopApi,
+    );
     const theme = useSelector(selectThemeSettings);
     const autodetectTheme = useSelector(selectAutodetectTheme);
-    const dispatch = useDispatch();
     const { optionGroups, getOption } = useThemeOptions();
 
     const themeVariant = autodetectTheme ? 'system' : theme.variant;
     const selectedValue = getOption(themeVariant === 'light' ? 'standard' : themeVariant);
 
-    const onChange = ({ value }: { value: ThemeColorVariantWithSystem }) => {
+    type OnChangeParams = { value: ThemeColorVariantWithSystem };
+
+    const onChange = ({ value }: OnChangeParams) => {
         // Inconsistency between types (standard = light)
         const themeValue = value === 'standard' ? 'light' : value;
 

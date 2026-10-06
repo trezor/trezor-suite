@@ -43,8 +43,9 @@ export const TokenInfoCard = ({
                         <VStack spacing="sp8" alignItems="flex-end">
                             <HStack alignItems="center" spacing="sp8">
                                 <TokenIcon
-                                    symbol="xlm"
+                                    networkSymbol="xlm"
                                     contractAddress={iconContractAddress}
+                                    tokenSymbol={tokenName}
                                     size="extraSmall"
                                 />
                                 <Text variant="body-md">{tokenName}</Text>

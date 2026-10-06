@@ -9,15 +9,14 @@ type sizeMapArgs = {
     $size: BulletSize;
 };
 
-export const mapSizeToDimension = ({ $size }: sizeMapArgs): IconCircleSize => {
-    const sizeMap: Record<BulletSize, IconCircleSize> = {
-        small: 16,
-        medium: 24,
-        large: 32,
-    };
+const sizeMap = {
+    small: 16,
+    medium: 24,
+    large: 32,
+} as const satisfies Record<BulletSize, IconCircleSize>;
 
-    return sizeMap[$size];
-};
+export const mapSizeToDimension = ({ $size }: sizeMapArgs): (typeof sizeMap)[BulletSize] =>
+    sizeMap[$size];
 
 export const mapSizeToCounterTypographyStyle = ({ $size }: sizeMapArgs): TypographyStyle => {
     const typographyStyleMap: Record<BulletSize, TypographyStyle> = {

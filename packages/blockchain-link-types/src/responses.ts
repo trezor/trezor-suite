@@ -160,12 +160,9 @@ export interface PushTransaction {
     payload: string;
 }
 
-export interface ValidateEvmRpc {
-    type: typeof RESPONSES.VALIDATE_EVM_RPC;
-    payload: {
-        valid: boolean;
-        actualChainId?: number;
-    };
+export interface GetEvmChainId {
+    type: typeof RESPONSES.GET_EVM_CHAIN_ID;
+    payload: number;
 }
 
 export interface GetContractInfo {
@@ -202,5 +199,5 @@ export type Response =
     | ChannelMessage<Unsubscribe>
     | ChannelMessage<Notification>
     | ChannelMessage<PushTransaction>
-    | ChannelMessage<ValidateEvmRpc>
+    | ChannelMessage<GetEvmChainId>
     | ChannelMessage<GetContractInfo>;

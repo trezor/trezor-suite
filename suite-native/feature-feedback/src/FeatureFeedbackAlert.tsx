@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { type NavigationProp, useNavigation } from '@react-navigation/native';
 
-import { AnimatedFullAlertBox } from '@suite-native/atoms';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { AnimatedBannerFull } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import { type ExperimentalFeature } from '@suite-native/settings';
@@ -19,7 +20,7 @@ export const FeatureFeedbackAlert = ({
     pendingFeature,
     featureTitleKey,
 }: FeatureFeedbackAlertProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const handleRate = useCallback(() => {
@@ -33,7 +34,7 @@ export const FeatureFeedbackAlert = ({
     };
 
     return (
-        <AnimatedFullAlertBox
+        <AnimatedBannerFull
             marginHorizontal="sp16"
             iconName="smiley"
             title={

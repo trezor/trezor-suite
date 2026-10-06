@@ -4,6 +4,8 @@ import styled from 'styled-components';
 
 import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { filterAndCategorizeUtxos } from '@suite-common/transaction-search';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
@@ -25,7 +27,7 @@ import { CaretUpIcon, InfoIcon, ShieldCheckIcon, ShieldWarningIcon } from '@trez
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { Pagination } from 'src/components/wallet';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
@@ -68,7 +70,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     } = useSendFormContext();
     const { outputLabels } = useSelector(state => selectAccountLabelsForSearch(state, account));
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 

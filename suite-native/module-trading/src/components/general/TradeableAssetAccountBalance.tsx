@@ -1,11 +1,14 @@
 import { useSelector } from 'react-redux';
 
-import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { isSendingEvmNativeToken } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, HStack, Text } from '@suite-native/atoms';
-import { CryptoAmountFormatter, TokenAmountFormatter } from '@suite-native/formatters';
+import {
+    CompactCryptoAmountFormatter,
+    CompactTokenAmountFormatter,
+    asDecimalTokenAmount,
+} from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 import { type TradeableAsset } from '@suite-native/trading-types';
@@ -19,6 +22,7 @@ export type TradeableAssetAccountBalanceProps = {
 type TokenBalanceProps = {
     accountKey: Account['key'];
     tokenAddress: TokenAddress;
+    tokenDecimals?: number;
     symbol: string;
     testID?: string;
 };
@@ -29,14 +33,25 @@ type AssetBalanceProps = {
     testID?: string;
 };
 
-const TokenBalance = ({ accountKey, tokenAddress, symbol, testID }: TokenBalanceProps) => {
+const TokenBalance = ({
+    accountKey,
+    tokenAddress,
+    tokenDecimals,
+    symbol,
+    testID,
+}: TokenBalanceProps) => {
     const balance = useSelector(
         (state: TokensRootState) =>
             selectAccountTokenBalance(state, accountKey, tokenAddress) ?? '0',
     );
 
     return (
-        <TokenAmountFormatter value={balance} tokenSymbol={symbol as TokenSymbol} testID={testID} />
+        <CompactTokenAmountFormatter
+            value={asDecimalTokenAmount(balance)}
+            tokenSymbol={symbol as TokenSymbol}
+            tokenDecimals={tokenDecimals}
+            testID={testID}
+        />
     );
 };
 
@@ -53,14 +68,13 @@ const AssetBalance = ({ account, asset, testID }: AssetBalanceProps) => {
                     symbol={symbol}
                     accountKey={accountKey}
                     tokenAddress={tokenAddress}
+                    tokenDecimals={asset.decimals}
                     testID={testID}
                 />
             ) : (
-                <CryptoAmountFormatter
+                <CompactCryptoAmountFormatter
                     value={formattedBalance}
                     symbol={symbol as NetworkSymbol}
-                    isBalance={true}
-                    decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
                     testID={testID}
                 />
             )}

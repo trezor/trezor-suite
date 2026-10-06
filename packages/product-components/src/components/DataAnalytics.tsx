@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { Button, Card, Center, Column, Icon, List, Row, Switch, Text } from '@trezor/components';
 import { BugIcon, EyeSlashIcon } from '@trezor/icons';
+
 type DataAnalyticsProps = {
     onConfirm: (trackingEnabled: boolean) => void;
     analyticsLink?: (chunks: ReactNode[]) => JSX.Element;

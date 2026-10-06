@@ -1,33 +1,35 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Store, combineReducers } from '@reduxjs/toolkit';
 
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type TradingType } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type TestStore,
     act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { selectTradingProviderConfirmationStatus, tradingSlice } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    selectTradingProviderConfirmationStatus,
+    tradingSlice,
+} from '@suite-native/trading-state';
 
 import { useBrowserStateChangeCallbacks } from './useBrowserStateChangeCallbacks';
 
-const mockReportToAnalytics = jest.fn();
+type State = TradingRootState;
 
-jest.mock('@suite-native/trading-analytics', () => ({
-    ...jest.requireActual('@suite-native/trading-analytics'),
-    useTradingAnalyticReportCallback: () => mockReportToAnalytics,
-}));
+const mockAnalyticsReport = jest.fn();
 
 describe('useBrowserStateChangeCallbacks', () => {
-    let store: TestStore;
+    let store: Store<State>;
 
-    const renderUseBrowserwStateChangeCallbacks = (tradingType: TradingType | undefined) =>
-        renderHookWithStoreProvider(() => useBrowserStateChangeCallbacks(tradingType), {
-            store,
+    const renderUseBrowserwStateChangeCallbacks = async (tradingType: TradingType | undefined) =>
+        await renderHookWithStoreProvider(() => useBrowserStateChangeCallbacks(tradingType), {
+            services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
         });
 
     beforeEach(() => {
@@ -37,39 +39,44 @@ describe('useBrowserStateChangeCallbacks', () => {
                 locale: localeReducer,
                 wallet: combineReducers({
                     settings: createStaticReducer(initialWalletSettingsState),
-                    trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+                    trading: tradingSlice.prepareReducer({
+                        actionTypes: { storageLoad: mockActionType('storageLoad') },
+                    }),
                 }),
             },
         });
     });
 
     describe('handleBrowserOpened', () => {
-        it('should set correct confirmation status', () => {
-            const { result } = renderUseBrowserwStateChangeCallbacks('sell');
+        it('should set correct confirmation status', async () => {
+            const { result } = await renderUseBrowserwStateChangeCallbacks('sell');
 
-            act(() => {
+            await act(() => {
                 result.current.handleBrowserOpened();
             });
 
             expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
         });
 
-        it('should report browser open to analytics', () => {
-            const { result } = renderUseBrowserwStateChangeCallbacks('sell');
+        it('should report browser open to analytics', async () => {
+            const { result } = await renderUseBrowserwStateChangeCallbacks('sell');
 
-            act(() => {
+            await act(() => {
                 result.current.handleBrowserOpened();
             });
 
-            expect(mockReportToAnalytics).toHaveBeenCalledWith('webview', 'visit');
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.tradingSellEvent.name,
+                payload: expect.objectContaining({ step: 'webview', action: 'visit' }),
+            });
         });
     });
 
     describe('handleBrowserClosed', () => {
-        it('should set correct confirmation status', () => {
-            const { result } = renderUseBrowserwStateChangeCallbacks('sell');
+        it('should set correct confirmation status', async () => {
+            const { result } = await renderUseBrowserwStateChangeCallbacks('sell');
 
-            act(() => {
+            await act(() => {
                 result.current.handleBrowserOpened();
                 result.current.handleBrowserClosed();
             });
@@ -81,10 +88,10 @@ describe('useBrowserStateChangeCallbacks', () => {
     });
 
     describe('handleBrowserSuccess', () => {
-        it('should set correct confirmation status', () => {
-            const { result } = renderUseBrowserwStateChangeCallbacks('sell');
+        it('should set correct confirmation status', async () => {
+            const { result } = await renderUseBrowserwStateChangeCallbacks('sell');
 
-            act(() => {
+            await act(() => {
                 result.current.handleBrowserOpened();
                 result.current.handleBrowserSuccess();
             });
@@ -97,12 +104,12 @@ describe('useBrowserStateChangeCallbacks', () => {
 
     it.each<TradingType>(['buy', 'exchange'])(
         'should not dispatch confirmation status change for tradingType [%s]',
-        tradingType => {
-            const { result } = renderUseBrowserwStateChangeCallbacks(tradingType);
+        async tradingType => {
+            const { result } = await renderUseBrowserwStateChangeCallbacks(tradingType);
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
-            act(() => {
+            await act(() => {
                 result.current.handleBrowserOpened();
                 result.current.handleBrowserClosed();
                 result.current.handleBrowserSuccess();
@@ -110,17 +117,23 @@ describe('useBrowserStateChangeCallbacks', () => {
 
             expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('inactive');
             expect(dispatchSpy).not.toHaveBeenCalled();
-            // note that analytics event should be still reported
-            expect(mockReportToAnalytics).toHaveBeenCalledWith('webview', 'visit');
+            if (tradingType === 'exchange') {
+                expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                    type: events.tradingExchangeEvent.name,
+                    payload: expect.objectContaining({ step: 'webview', action: 'visit' }),
+                });
+            } else {
+                expect(mockAnalyticsReport).not.toHaveBeenCalled();
+            }
         },
     );
 
-    it('should do nothing when trading type is undefined', () => {
-        const { result } = renderUseBrowserwStateChangeCallbacks(undefined);
+    it('should do nothing when trading type is undefined', async () => {
+        const { result } = await renderUseBrowserwStateChangeCallbacks(undefined);
 
         const dispatchSpy = jest.spyOn(store, 'dispatch');
 
-        act(() => {
+        await act(() => {
             result.current.handleBrowserOpened();
             result.current.handleBrowserClosed();
             result.current.handleBrowserSuccess();
@@ -128,6 +141,6 @@ describe('useBrowserStateChangeCallbacks', () => {
 
         expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('inactive');
         expect(dispatchSpy).not.toHaveBeenCalled();
-        expect(mockReportToAnalytics).not.toHaveBeenCalled();
+        expect(mockAnalyticsReport).not.toHaveBeenCalled();
     });
 });

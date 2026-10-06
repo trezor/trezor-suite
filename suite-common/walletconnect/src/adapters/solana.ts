@@ -6,13 +6,13 @@ import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { selectAccounts } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
 import { type Result } from '@trezor/type-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
-import { selectSessionByTopic } from '../walletConnectReducer';
+import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
 import {
     type PendingConnectionProposalNetwork,
     type WalletConnectAdapter,
@@ -28,7 +28,12 @@ const methods = [
     'solana_signMessage',
 ];
 
-const solanaSignTransaction = createThunk<
+type SolanaSignTransactionThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
+    AccountsRootState;
+
+type SolanaSignTransactionThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+
+const solanaSignTransactionThunk = createThunk<
     { signature: string; transaction: string },
     {
         session: WalletConnectSession;
@@ -36,7 +41,8 @@ const solanaSignTransaction = createThunk<
         feePayer?: string;
         origin: string;
         isDevnet: boolean;
-    }
+    },
+    { state: SolanaSignTransactionThunkState; extra: SolanaSignTransactionThunkDeps }
 >(
     `${WALLETCONNECT_MODULE}/solanaSignTransaction`,
     async ({ session, transaction, feePayer, origin, isDevnet }, { dispatch, getState }) => {
@@ -105,11 +111,16 @@ const solanaSignTransaction = createThunk<
     },
 );
 
+export type SolanaRequestThunkState = SolanaSignTransactionThunkState & WalletConnectStateRootState;
+
+export type SolanaRequestThunkDeps = SolanaSignTransactionThunkDeps;
+
 const solanaRequestThunk = createThunk<
     { pubkey: string }[] | { signature: string } | undefined,
     {
         event: WalletKitTypes.SessionRequest;
-    }
+    },
+    { state: SolanaRequestThunkState; extra: SolanaRequestThunkDeps }
 >(`${WALLETCONNECT_MODULE}/solanaRequest`, async ({ event }, { dispatch, getState }) => {
     const session = selectSessionByTopic(getState(), event.topic);
     if (!session) {
@@ -131,7 +142,7 @@ const solanaRequestThunk = createThunk<
             const { origin } = event.verifyContext.verified;
 
             const response = await dispatch(
-                solanaSignTransaction({ session, transaction, feePayer, origin, isDevnet }),
+                solanaSignTransactionThunk({ session, transaction, feePayer, origin, isDevnet }),
             ).unwrap();
 
             const signature = base58.encode(Buffer.from(response.signature, 'hex'));
@@ -143,7 +154,7 @@ const solanaRequestThunk = createThunk<
             const { origin } = event.verifyContext.verified;
 
             const signResponse = await dispatch(
-                solanaSignTransaction({ session, transaction, origin, isDevnet }),
+                solanaSignTransactionThunk({ session, transaction, origin, isDevnet }),
             ).unwrap();
 
             const pushResponse = await TrezorConnect.pushTransaction({
@@ -250,7 +261,6 @@ export const solanaAdapter = {
     networkType: 'solana',
     namespaceId: 'solana',
     requestThunk: solanaRequestThunk,
-    getChainId,
     getNamespace,
     processNamespaces,
 } satisfies WalletConnectAdapter;

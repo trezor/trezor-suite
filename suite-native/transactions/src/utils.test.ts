@@ -7,6 +7,7 @@ import {
 } from './__fixtures__/transactions';
 import { type VinVoutAddress } from './types';
 import {
+    getNextRequestedTransactionCount,
     groupTargetOutputs,
     mapTransactionInputsOutputsToAddresses,
     sortTargetAddressesToBeginning,
@@ -245,5 +246,21 @@ describe(groupTargetOutputs.name, () => {
         };
         const result = groupTargetOutputs([noAmount, makeSimpleTarget('500', 1)]);
         expect(result[0]).toMatchObject({ type: 'target', payload: { amount: '500' } });
+    });
+});
+
+describe(getNextRequestedTransactionCount.name, () => {
+    test.each`
+        scenario                             | requestedCount | visibleCount | pageSize | expected
+        ${'no matching transfers yet'}       | ${25}          | ${0}         | ${25}    | ${50}
+        ${'partially filled requested page'} | ${50}          | ${10}        | ${25}    | ${75}
+        ${'another press before data loads'} | ${75}          | ${10}        | ${25}    | ${100}
+        ${'full visible page'}               | ${25}          | ${25}        | ${25}    | ${50}
+        ${'cached transfers beyond target'}  | ${25}          | ${60}        | ${25}    | ${85}
+        ${'network with smaller page size'}  | ${4}           | ${1}         | ${4}     | ${8}
+    `('$scenario', ({ requestedCount, visibleCount, pageSize, expected }) => {
+        expect(getNextRequestedTransactionCount({ requestedCount, visibleCount, pageSize })).toBe(
+            expected,
+        );
     });
 });

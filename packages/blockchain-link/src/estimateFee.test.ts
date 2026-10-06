@@ -40,5 +40,31 @@ allTestWorkers.forEach(instance => {
                 }
             });
         });
+
+        // trezor/blockbook#1639: the privatePending hint must reach the WS request verbatim.
+        if (instance.name === 'blockbook') {
+            it('forwards the estimateFee privatePending hint verbatim to the backend', async () => {
+                server.setFixtures([
+                    { method: 'estimateFee', response: { data: [{ feePerUnit: '1000' }] } },
+                ]);
+                const received = new Promise<any>(resolve =>
+                    server.once('blockbook_estimateFee', resolve),
+                );
+
+                await blockchain.estimateFee({
+                    blocks: [1],
+                    specific: {
+                        from: '0xdead',
+                        privatePending: { nonces: [41, 42], txids: ['0xaa', '0xbb'] },
+                    },
+                });
+
+                const request = await received;
+                expect(request.params.specific.privatePending).toEqual({
+                    nonces: [41, 42],
+                    txids: ['0xaa', '0xbb'],
+                });
+            });
+        }
     });
 });

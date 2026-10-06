@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
@@ -22,6 +22,7 @@ import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 import { AnimationCard } from './AnimationCard';
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
+
 type DontSeeYourTrezorModalProps = {
     onClose: () => void;
 };
@@ -34,7 +35,7 @@ const commonCableTips = [
 ];
 
 export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const {
         isBluetoothMode,
         toggleShouldPairAgain,

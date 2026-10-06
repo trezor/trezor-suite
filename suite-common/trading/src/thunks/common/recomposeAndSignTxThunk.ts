@@ -1,32 +1,29 @@
-import { isRejectedWithValue } from '@reduxjs/toolkit';
+import { isRejected } from '@reduxjs/toolkit';
 
-import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
-import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import {
-    composeSendFormTransactionFeeLevelsThunk,
-    selectConvertedNetworkFeeInfo,
-} from '@suite-common/wallet-core';
-import {
-    type Account,
-    type FormOptions,
-    type FormState,
-    type FormStateTrading,
-} from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
-    isEvmApprovalTx,
-    isExchangeTradingForm,
+    isCompleteTradingForm,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
+import { type Ok } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { createPaymentRequestsThunk } from './createPaymentRequestsThunk';
+import {
+    type ComposeTradingTransactionThunkProps,
+    type ComposeTradingTransactionThunkState,
+    composeTradingTransactionThunk,
+} from './composeTradingTransactionThunk';
+import {
+    type CreatePaymentRequestsThunkState,
+    createPaymentRequestsThunk,
+} from './createPaymentRequestsThunk';
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import {
     selectTradingComposedTransactionInfo,
     selectTradingIsSlip24Allowed,
+    selectTradingIsSlip24SellAllowed,
 } from '../../selectors/tradingSelectors';
 import type {
     TradingFulfillValue,
@@ -34,21 +31,12 @@ import type {
     TradingSignAndPushSendFormTransactionProps,
 } from '../../types';
 
-export type RecomposeAndSignTxThunkProps = {
-    account: Account;
-    address: string;
-    amount: string;
-    destinationTag?: string;
-    transactionData?: string;
-    recalculateCustomLimit?: boolean;
-    ethereumAdjustGasLimit?: string;
-    setMaxOutputId?: number | undefined;
+export type RecomposeAndSignTxThunkProps = ComposeTradingTransactionThunkProps & {
     /**
      * Indicates whether SLIP24 is active for the transaction.
      * Important: should not be used for DEX trades.
      */
     isSlip24Active?: boolean;
-    tradingFormState: FormStateTrading;
 
     signAndPushSendFormTransaction: ({
         formState,
@@ -68,11 +56,15 @@ export type RecomposeAndSignTxThunkProps = {
  * 3. Signs the transaction and pushes it to the blockchain.
  * 4. Handles errors gracefully and provides detailed error messages.
  */
+export type RecomposeAndSignTxThunkState = ComposeTradingTransactionThunkState &
+    CreatePaymentRequestsThunkState;
+
 export const recomposeAndSignTxThunk = createThunk<
-    TradingFulfillValue,
+    Ok<{ txid: string }>,
     RecomposeAndSignTxThunkProps,
     {
         rejectValue: TradingSendRejectedProps;
+        state: RecomposeAndSignTxThunkState;
     }
 >(
     `${TRADING_THUNK_PREFIX}/recomposeAndSignTx`,
@@ -89,140 +81,40 @@ export const recomposeAndSignTxThunk = createThunk<
             isSlip24Active = false,
             tradingFormState,
             signAndPushSendFormTransaction,
-        }: RecomposeAndSignTxThunkProps,
+        },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
-        const { composed, selectedFee } = selectTradingComposedTransactionInfo(getState());
-        const options: FormOptions[] = ['broadcast'];
-        const network = getNetwork(account.symbol);
-        const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
-        const device = selectSelectedDevice(getState());
+        const { composed } = selectTradingComposedTransactionInfo(getState());
 
-        const isPaymentRequestsAllowed = selectTradingIsSlip24Allowed(
-            getState(),
-            account,
-            isSlip24Active,
-        );
+        const isPaymentRequestsAllowed =
+            tradingFormState.activeSection === 'sell'
+                ? selectTradingIsSlip24SellAllowed(getState(), account, isSlip24Active)
+                : selectTradingIsSlip24Allowed(getState(), account, isSlip24Active);
 
-        if (!composed || !feeInfo) {
-            return rejectWithValue({
-                type: 'sign-tx-error',
-                error: {
-                    id: 'TR_TRADING_MISSING_COMPOSED_DATA',
-                },
-            });
-        }
-
-        // Token is being used for approval transactions unless on firmware < 2.9.0.
-        // Otherwise if transactionData is present, token is not used as details are in the transactionData.
-        const shouldIncludeToken =
-            !transactionData ||
-            (isApprovalFlowSupported(device) && isEvmApprovalTx(transactionData));
-
-        // prepare the fee levels, set custom values from composed
-        // WORKAROUND: sendFormEthereumActions and sendFormRippleActions use form outputs instead of composed transaction data
-        const formState: FormState = {
-            ...DEFAULT_VALUES,
-            outputs: [
-                {
-                    ...DEFAULT_PAYMENT,
-                    address,
-                    amount,
-                    currency: DEFAULT_PAYMENT.currency,
-                    token: shouldIncludeToken ? (composed.token?.contract ?? null) : null,
-                },
-            ],
-            setMaxOutputId: !composed.token?.contract ? setMaxOutputId : undefined,
-            selectedFee,
-            feePerUnit: composed.feePerByte,
-            feeLimit: composed.feeLimit ?? '',
-            estimatedFeeLimit: composed.estimatedFeeLimit,
-            maxFeePerGas: composed.maxFeePerGas,
-            maxPriorityFeePerGas: composed.maxPriorityFeePerGas,
-            options,
-            destinationTag,
-            transactionData,
-            ethereumAdjustGasLimit,
-            selectedUtxos: [],
-            trading: tradingFormState,
-        };
-
-        // prepare form state for composeAction
-        const composeContext = { account, network, feeInfo };
-
-        // recalculateCustomLimit is used in case of custom fee level, when we want to keep the feePerUnit defined by the user
-        // but recompute the feeLimit based on a different transaction data (for example from transactionData)
-        if (recalculateCustomLimit && selectedFee === 'custom') {
-            const normalLevels = await dispatch(
-                composeSendFormTransactionFeeLevelsThunk({
-                    formState: { ...formState, selectedFee: 'normal' },
-                    composeContext,
-                }),
-            ).unwrap();
-
-            if (normalLevels?.normal?.type !== 'final' || !normalLevels.normal.feeLimit) {
-                const error: TradingSendRejectedProps['error'] =
-                    normalLevels?.normal?.type === 'error' && normalLevels?.normal?.errorMessage
-                        ? {
-                              id: normalLevels.normal.errorMessage.id,
-                              values: normalLevels.normal.errorMessage.values,
-                          }
-                        : {
-                              id: 'TR_TRADING_MISSING_FEE_LEVEL',
-                          };
-
-                return rejectWithValue({
-                    type: 'sign-tx-error',
-                    error,
-                });
-            }
-
-            formState.feeLimit = BigNumber.max(
-                formState.feeLimit || '0',
-                normalLevels.normal.feeLimit,
-            ).toString();
-        }
-
-        // compose transaction again to recalculate fees based on real account values
-        const composedLevels = await dispatch(
-            composeSendFormTransactionFeeLevelsThunk({
-                formState,
-                composeContext,
+        const composeResult = await dispatch(
+            composeTradingTransactionThunk({
+                account,
+                address,
+                amount,
+                destinationTag,
+                transactionData,
+                recalculateCustomLimit,
+                ethereumAdjustGasLimit,
+                setMaxOutputId,
+                tradingFormState,
             }),
         );
 
-        if (!selectedFee || isRejectedWithValue(composedLevels)) {
-            return rejectWithValue({
-                type: 'sign-tx-error',
-                error: {
-                    id: 'TR_TRADING_MISSING_FEE_LEVEL',
+        if (isRejected(composeTradingTransactionThunk)(composeResult)) {
+            return rejectWithValue(
+                composeResult.payload ?? {
+                    type: 'sign-tx-error',
+                    error: { id: 'TR_TRADING_CANNOT_CREATE_TRANSACTION' },
                 },
-            });
+            );
         }
 
-        const precomposedToSign = composedLevels.payload[selectedFee];
-
-        if (precomposedToSign?.type !== 'final') {
-            const error: TradingSendRejectedProps['error'] =
-                precomposedToSign?.type === 'error' && precomposedToSign.errorMessage
-                    ? {
-                          id: precomposedToSign.errorMessage.id,
-                          values: precomposedToSign.errorMessage.values,
-                      }
-                    : {
-                          id: 'TR_TRADING_CANNOT_CREATE_TRANSACTION',
-                      };
-
-            return rejectWithValue({
-                type: 'sign-tx-error',
-                error,
-            });
-        }
-
-        // Tron fee limit is SUN and recipient-dependent — use the recomposed (real recipient) estimate.
-        if (network.networkType === 'tron') {
-            formState.feeLimit = precomposedToSign.estimatedFeeLimit ?? precomposedToSign.fee ?? '';
-        }
+        const { formState, precomposedTransaction: precomposedToSign } = composeResult.payload;
 
         /*
             SLIP-24 to achieve the consistent trade data
@@ -232,17 +124,22 @@ export const recomposeAndSignTxThunk = createThunk<
             ensure that the payment requests are created with the correct amount.
         */
         const { outputs: precomposedOutputs } = precomposedToSign;
-        const isTradedWholeBalance = precomposedOutputs.length === 1; // sending whole balance
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstPrecomposedOutput: (typeof precomposedOutputs)[number] = precomposedOutputs[0];
-        const sendAmount = isTradedWholeBalance
-            ? firstPrecomposedOutput.amount.toString()
-            : undefined;
+        const paymentOutput =
+            precomposedOutputs.find(output => 'address' in output && output.address === address) ??
+            precomposedOutputs.find(output => 'address' in output);
+        // Send-max is `setMaxOutputId`; `length === 1` still covers SLIP-24 CEX with no change.
+        // Amount must come from the trade payment output, not OP_RETURN or change.
+        const isTradedWholeBalance =
+            typeof setMaxOutputId === 'number' || precomposedOutputs.length === 1;
+        const sendAmount =
+            isTradedWholeBalance && paymentOutput?.amount !== undefined
+                ? paymentOutput.amount.toString()
+                : undefined;
         const formattedMaxAmount = sendAmount
             ? subunitsToUnits({
                   value: asAmountSubunit(new BigNumber(sendAmount)),
                   symbol: account.symbol,
-                  ...(composed.token?.decimals
+                  ...(composed?.token?.decimals
                       ? { decimals: composed.token?.decimals }
                       : undefined),
               }).toString()
@@ -252,7 +149,7 @@ export const recomposeAndSignTxThunk = createThunk<
             ...formState,
             trading: {
                 ...tradingFormState,
-                ...(isPaymentRequestsAllowed && isExchangeTradingForm(tradingFormState)
+                ...(isPaymentRequestsAllowed && isCompleteTradingForm(tradingFormState)
                     ? {
                           send: {
                               ...tradingFormState.send,
@@ -281,6 +178,23 @@ export const recomposeAndSignTxThunk = createThunk<
             selectedAccount: account,
             paymentRequests,
         });
+
+        if (!resultOfSignedTransaction) {
+            return rejectWithValue({
+                type: 'sign-cancelled',
+                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+            });
+        }
+
+        if (!resultOfSignedTransaction.success) {
+            return rejectWithValue({
+                type:
+                    resultOfSignedTransaction.error.code === 'sign-transaction-timeout'
+                        ? 'sign-transaction-timeout'
+                        : 'sign-tx-error',
+                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+            });
+        }
 
         return fulfillWithValue(resultOfSignedTransaction);
     },

@@ -79,7 +79,7 @@ const StyledMarkdown = styled.div`
 `;
 
 export const Markdown = (options: Readonly<Options>) => (
-    <StyledMarkdown>
+    <StyledMarkdown data-component="Markdown">
         <ReactMarkdown {...options}></ReactMarkdown>
     </StyledMarkdown>
 );

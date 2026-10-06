@@ -1,12 +1,12 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { switchToDuplicatedWallet } from '@suite-common/wallet-core';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { switchToDuplicatedWalletThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -25,15 +25,14 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const PassphraseDuplicateAlert = ({ children }: { children: React.ReactNode }) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const { translate } = useTranslate();
 
     const navigation = useNavigation<NavigationProp>();
     const { showAlert } = useAlert();
 
     const handleDuplicateDevicePassphrase = useCallback(() => {
-        dispatch(switchToDuplicatedWallet());
+        dispatch(switchToDuplicatedWalletThunk());
 
         navigation.popTo(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,

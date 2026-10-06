@@ -1,23 +1,20 @@
 import { type Bip329Dep } from '@suite-common/bip329-types';
 
 import { type GetIsSuiteSyncEnabledDep, createBip329 } from './createBip329';
+import { type LegacyToBip329Deps, createLegacyToBip329 } from './legacy/createLegacyToBip329';
 import {
-    type GetLegacyAccountLabelsDep,
-    createLegacyToBip329,
-} from './legacy/createLegacyToBip329';
-import {
-    type ImportBip329ToSuiteSyncDeps,
+    type Bip329ToSuiteSyncDeps,
     createBip329ToSuiteSync,
 } from './suiteSync/createBip329ToSuiteSync';
 import {
-    type GetAllLabelsForAccountDeps,
+    type SuiteSyncToBip329Deps,
     createSuiteSyncToBip329,
 } from './suiteSync/createSuiteSyncToBip329';
 
 type CreateBip329CompositionRootDeps = GetIsSuiteSyncEnabledDep &
-    GetLegacyAccountLabelsDep &
-    GetAllLabelsForAccountDeps &
-    ImportBip329ToSuiteSyncDeps;
+    LegacyToBip329Deps &
+    SuiteSyncToBip329Deps &
+    Bip329ToSuiteSyncDeps;
 
 export const createBip329CompositionRoot = (deps: CreateBip329CompositionRootDeps): Bip329Dep => {
     const legacyToBip329 = createLegacyToBip329({

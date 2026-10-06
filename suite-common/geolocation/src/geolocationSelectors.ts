@@ -1,6 +1,6 @@
 import { type GeolocationState } from './geolocationReducer';
 
-type GeolocationRootState = {
+export type GeolocationRootState = {
     geolocation: GeolocationState;
 };
 

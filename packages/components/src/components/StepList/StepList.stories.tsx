@@ -20,7 +20,7 @@ export const StepList: StoryObj<typeof StepListComponent> = {
                 Lorem ipsum odor amet, consectetuer adipiscing elit. Rutrum varius aptent sapien at
                 facilisis consectetur aliquam blandit.
             </StepListComponent.Item>
-            <StepListComponent.Item title="Dolor sit" state="active">
+            <StepListComponent.Item title="Dolor sit" state="active" isLoading>
                 Diam sociosqu mi nisl duis aliquet faucibus venenatis nullam. Leo lobortis semper
                 himenaeos cras facilisi ac consectetur. Netus vestibulum praesent feugiat nam
                 potenti cursus.

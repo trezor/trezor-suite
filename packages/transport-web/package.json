@@ -1,6 +1,6 @@
 {
     "name": "@trezor/transport-web",
-    "version": "10.0.0-beta.1",
+    "version": "10.0.1",
     "description": "Browser-only transports for @trezor/connect: WebUSB and SharedWorker-backed sessions backend.",
     "license": "MIT",
     "repository": {
@@ -41,7 +41,7 @@
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
-        "@types/sharedworker": "^0.0.223"
+        "@types/sharedworker": "^0.0.229"
     },
     "dependencies": {
         "@trezor/transport-common": "workspace:*"

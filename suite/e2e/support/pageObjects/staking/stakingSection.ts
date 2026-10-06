@@ -4,8 +4,26 @@ import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
 import { RewardsList } from './rewardList';
-import { step } from '../../common';
+import { step, toCompactAmountWithSymbol } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
+
+const fiatAmountRegex = /^\$\d{1,3}(,\d{3})*\.\d{2}$/;
+
+type VerifyStakingToastParams = {
+    type: 'staked' | 'unstaked' | 'claimed';
+    account: string;
+    amount: string;
+};
+
+type ExpectStakingAmountsParams = {
+    expected: {
+        pending: string | 'hidden';
+        staked: string | 'hidden';
+        rewards: string | 'hidden';
+        unstaking: string | 'hidden';
+    };
+    options?: { fastForward?: string; timeout?: number };
+};
 
 export class StakingSection {
     readonly rewardList: RewardsList;
@@ -16,6 +34,9 @@ export class StakingSection {
     readonly stakingTabButton: Locator;
     readonly stakingDashboardCard: Locator;
     readonly stakingEmptyCard: Locator;
+    readonly externalStakingCard: Locator;
+    readonly externalStakingCardFiat: Locator;
+    readonly rewardsWarningBanner: Locator;
     readonly pendingAmount: Locator;
     readonly stakedAmount: Locator;
     readonly rewardsAmount: Locator;
@@ -77,6 +98,11 @@ export class StakingSection {
         this.stakingTabButton = this.page.getByTestId('@wallet/menu/staking');
         this.stakingDashboardCard = this.page.getByTestId('@wallet/staking/card');
         this.stakingEmptyCard = this.page.getByTestId('@wallet/staking/empty-card');
+        this.externalStakingCard = this.page.getByTestId('@wallet/staking/outside-staking-card');
+        this.externalStakingCardFiat = this.page.getByTestId(
+            '@wallet/staking/outside-staking-card/fiat',
+        );
+        this.rewardsWarningBanner = this.page.getByTestId('@wallet/staking/rewards-warning');
         this.pendingAmount = this.page.getByTestId('@account/staking/pending');
         this.stakedAmount = this.page.getByTestId('@account/staking/staked');
         this.rewardsAmount = this.page.getByTestId('@account/staking/rewards');
@@ -161,15 +187,7 @@ export class StakingSection {
      * @param params.amount - The expected amount with symbol (e.g., '0.1 SOL')
      */
     @step()
-    async verifyStakingToast({
-        type,
-        account,
-        amount,
-    }: {
-        type: 'staked' | 'unstaked' | 'claimed';
-        account: string;
-        amount: string;
-    }) {
+    async verifyStakingToast({ type, account, amount }: VerifyStakingToastParams) {
         const toasts = {
             staked: {
                 messageLocator: this.stakedToastMessage,
@@ -192,7 +210,30 @@ export class StakingSection {
         await expect(toast.messageLocator).toHaveTranslation(toast.translationKey, {
             values: { account },
         });
-        await expect(toast.amountLocator).toHaveText(amount);
+        // The toast shows compact amounts, so the exact values the callers pass are reduced
+        // here rather than in each of them.
+        await expect(toast.amountLocator).toHaveText(toCompactAmountWithSymbol(amount));
+    }
+
+    @step()
+    async expectExternalStakingCard({
+        amount,
+        displaySymbol,
+    }: {
+        amount: string;
+        displaySymbol: string;
+    }) {
+        await expect(this.externalStakingCard).toContainTranslation(
+            'TR_OUTSIDE_STAKING_CARD_TITLE',
+        );
+        await expect(this.externalStakingCardFiat).toHaveText(fiatAmountRegex);
+        const fiat = await this.externalStakingCardFiat.innerText();
+        await expect(this.externalStakingCard).toContainTranslation(
+            'TR_OUTSIDE_STAKING_CARD_TEXT',
+            {
+                values: { amount, displaySymbol, fiat },
+            },
+        );
     }
 
     @step()
@@ -234,18 +275,7 @@ export class StakingSection {
     }
 
     @step()
-    async expectStakingAmounts({
-        expected,
-        options,
-    }: {
-        expected: {
-            pending: string | 'hidden';
-            staked: string | 'hidden';
-            rewards: string | 'hidden';
-            unstaking: string | 'hidden';
-        };
-        options?: { fastForward?: string; timeout?: number };
-    }) {
+    async expectStakingAmounts({ expected, options }: ExpectStakingAmountsParams) {
         await expect(async () => {
             if (options?.fastForward) {
                 await this.page.clock.fastForward(options.fastForward);

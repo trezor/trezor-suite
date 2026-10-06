@@ -15,10 +15,10 @@
         {
             "path": "../../suite-common/suite-constants"
         },
-        { "path": "../../suite-common/thp" },
         {
-            "path": "../../suite-common/validators"
+            "path": "../../suite-common/suite-types"
         },
+        { "path": "../../suite-common/thp" },
         {
             "path": "../../suite-common/wallet-core"
         },
@@ -28,6 +28,7 @@
         { "path": "../bluetooth" },
         { "path": "../device" },
         { "path": "../device-authorization" },
+        { "path": "../device-mutex" },
         { "path": "../firmware" },
         { "path": "../forms" },
         { "path": "../helpers" },

@@ -3,7 +3,7 @@ import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
 import { CoinSymbolParam } from '../../coinInfo';
-import { PublicKey } from '../../params';
+import { DerivationPath, PublicKey } from '../../params';
 
 // solanaGetPublicKey
 
@@ -107,4 +107,20 @@ export const SolanaComposedTransaction = Type.Object({
         newAccountProgramName: Type.Optional(SolanaProgramName),
         tokenAccountInfo: Type.Optional(SolanaTxTokenAccountInfo),
     }),
+});
+
+// solanaSignMessage
+
+export type SolanaSignMessage = Static<typeof SolanaSignMessage>;
+export const SolanaSignMessage = Type.Object({
+    path: DerivationPath,
+    message: Type.String(),
+    signers: Type.Optional(Type.Array(Type.String())),
+    chunkify: Type.Optional(Type.Boolean()),
+});
+
+export type SolanaSignedMessage = Static<typeof SolanaSignedMessage>;
+export const SolanaSignedMessage = Type.Object({
+    signature: Type.String(),
+    signedData: Type.Optional(Type.String()),
 });

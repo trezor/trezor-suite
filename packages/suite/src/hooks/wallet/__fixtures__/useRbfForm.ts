@@ -1,4 +1,5 @@
 import { type CoinjoinState } from '@suite/coinjoin';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type ChainedTransactions,
     type FeesState,
@@ -118,7 +119,7 @@ type HackedTxType = WalletAccountTransactionWithRequiredRbfParams & {
 };
 
 const PREPARE_TX = (params: Partial<HackedTxType['rbfParams']> = {}): HackedTxType => ({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     rbfParams: {
         txid: 'ABCD',
         utxo: [
@@ -246,10 +247,10 @@ export const composeAndSign: ComposeAndSignFixture[] = [
             },
         },
         chainedTxs: {
-            own: [{ symbol: 'btc', ...txDummyData, txid: 'aaaa', fee: '500' }],
+            own: [{ symbol: asNetworkSymbol('btc'), ...txDummyData, txid: 'aaaa', fee: '500' }],
             others: [
-                { symbol: 'btc', ...txDummyData, txid: 'bbbb', fee: '500' },
-                { symbol: 'btc', ...txDummyData, txid: 'cccc', fee: '5000' },
+                { symbol: asNetworkSymbol('btc'), ...txDummyData, txid: 'bbbb', fee: '500' },
+                { symbol: asNetworkSymbol('btc'), ...txDummyData, txid: 'cccc', fee: '5000' },
             ],
         },
         tx: PREPARE_TX({

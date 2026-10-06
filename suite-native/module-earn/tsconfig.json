@@ -6,7 +6,6 @@
         {
             "path": "../../suite-common/analytics"
         },
-        { "path": "../../suite-common/calldata" },
         {
             "path": "../../suite-common/dependency-injection"
         },
@@ -20,6 +19,7 @@
         {
             "path": "../../suite-common/earn-staking-api"
         },
+        { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/formatters"
         },
@@ -35,7 +35,6 @@
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite-common/schemas" },
-        { "path": "../../suite-common/staking" },
         {
             "path": "../../suite-common/suite-types"
         },
@@ -43,7 +42,7 @@
             "path": "../../suite-common/test-utils"
         },
         {
-            "path": "../../suite-common/validators"
+            "path": "../../suite-common/token-definitions"
         },
         {
             "path": "../../suite-common/wallet-config"
@@ -66,28 +65,41 @@
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../confirm-on-trezor" },
+        { "path": "../device" },
+        { "path": "../device-authorization" },
         { "path": "../device-manager" },
         { "path": "../device-mutex" },
+        { "path": "../feedback-form" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../message-system" },
         { "path": "../navigation" },
+        { "path": "../scrollview" },
         { "path": "../settings" },
-        { "path": "../staking" },
+        { "path": "../storage" },
         { "path": "../test-utils" },
-        { "path": "../test-utils-store" },
+        { "path": "../tokens" },
+        { "path": "../trading-state" },
         { "path": "../transaction-management" },
+        { "path": "../transaction-review" },
         { "path": "../transactions" },
         { "path": "../tx-simulation" },
         {
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
         {
             "path": "../../networks/network-module/network-module-suite-common-types"
         },
@@ -102,6 +114,7 @@
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
+        { "path": "../test-utils-store" },
         { "path": "../../packages/requirements" }
     ]
 }

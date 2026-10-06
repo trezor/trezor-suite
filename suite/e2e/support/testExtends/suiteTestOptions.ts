@@ -9,4 +9,5 @@ export type SuiteTestOptions = {
     target: PlaywrightTarget;
     model: Model | undefined;
     firmwareVersion: string | undefined;
+    webClipboardRead: boolean;
 };

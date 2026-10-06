@@ -1,16 +1,19 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import {
-    configureMockStore,
-    extraDependenciesCommonMock,
-    renderHookWithStoreProvider,
-} from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
-import { type MessageSystemState } from './messageSystemTypes';
+import { type MessageSystemRootState, type MessageSystemState } from './messageSystemTypes';
 import { useMessageSystemStaking } from './useMessageSystemStaking';
 
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const ethSymbol = asNetworkSymbol('eth');
+const adaSymbol = asNetworkSymbol('ada');
+
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 const stateWithDisabledFeatures = {
     ...messageSystemInitialState,
@@ -63,24 +66,23 @@ const stateWithDisabledFeatures = {
     },
 } as unknown as MessageSystemState;
 
-const createStore = (state: MessageSystemState = stateWithDisabledFeatures) =>
-    configureMockStore({
-        extra: {},
+const createTestServices = (state: MessageSystemState = stateWithDisabledFeatures) =>
+    createTestCompositionRoot<void, MessageSystemRootState>({
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: { messageSystem: state } as { messageSystem: MessageSystemState },
-    });
+    }).services;
 
 const renderHook = (
     networkSymbol: Parameters<typeof useMessageSystemStaking>[0]['networkSymbol'],
     locale = 'en',
 ) =>
     renderHookWithStoreProvider(() => useMessageSystemStaking({ networkSymbol, locale }), {
-        store: createStore(),
+        services: createTestServices(),
     });
 
 describe('useMessageSystemStaking', () => {
     it('returns disabled states and messages when features are disabled', () => {
-        const { result } = renderHook('eth');
+        const { result } = renderHook(ethSymbol);
 
         expect(result.current).toMatchObject({
             isStakingDisabled: true,
@@ -93,7 +95,7 @@ describe('useMessageSystemStaking', () => {
     });
 
     it('returns disabled state and message for ada change-delegate (vote) feature', () => {
-        const { result } = renderHook('ada');
+        const { result } = renderHook(adaSymbol);
 
         expect(result.current).toMatchObject({
             isVotingDisabled: true,
@@ -102,19 +104,19 @@ describe('useMessageSystemStaking', () => {
     });
 
     it('returns undefined voting state for networks without a vote feature key', () => {
-        const { result } = renderHook('eth');
+        const { result } = renderHook(ethSymbol);
 
         expect(result.current.isVotingDisabled).toBeUndefined();
         expect(result.current.votingMessageContent).toBeUndefined();
     });
 
     it('returns localized message content', () => {
-        const { result } = renderHook('eth', 'cs');
+        const { result } = renderHook(ethSymbol, 'cs');
 
         expect(result.current.stakingMessageContent).toBe('Staking vypnutý');
     });
 
-    it.each([undefined, null, 'btc' as const])(
+    it.each([undefined, null, asNetworkSymbol('btc')])(
         'returns undefined for unsupported networkSymbol: %s',
         networkSymbol => {
             const { result } = renderHook(networkSymbol);
@@ -126,10 +128,14 @@ describe('useMessageSystemStaking', () => {
     );
 
     it('returns not disabled when no feature messages configured', () => {
-        const store = createStore(messageSystemInitialState);
+        const services = createTestServices(messageSystemInitialState);
         const { result } = renderHookWithStoreProvider(
-            () => useMessageSystemStaking({ networkSymbol: 'eth', locale: 'en' }),
-            { store },
+            () =>
+                useMessageSystemStaking({
+                    networkSymbol: ethSymbol,
+                    locale: 'en',
+                }),
+            { services },
         );
 
         expect(result.current).toMatchObject({

@@ -5,7 +5,7 @@ export const BannerButton = ({ children, intent, size = 'small', ...rest }: Butt
     const { intent: bannerIntent } = useBannerContext();
 
     return (
-        <Button intent={intent ?? bannerIntent} size={size} {...rest}>
+        <Button intent={intent ?? bannerIntent} size={size} {...rest} data-component="BannerButton">
             {children}
         </Button>
     );

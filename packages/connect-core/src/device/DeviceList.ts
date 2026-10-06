@@ -1,0 +1,331 @@
+// original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
+
+import { DEVICE, asDeviceUniquePath } from '@trezor/connect-common';
+import type {
+    ConnectSettings,
+    DecodedTrezorPushNotification,
+    DeviceUniquePath,
+    StaticSessionId,
+    TransportError,
+    TransportInfo,
+} from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import { parseStaticSessionId } from '@trezor/device-utils';
+import type { CreateLogger } from '@trezor/logger';
+import {
+    type Descriptor,
+    TRANSPORT,
+    type Transport,
+    type ApiType as TransportApiType,
+} from '@trezor/transport-common';
+import {
+    TypedEmitter,
+    arrayDistinct,
+    getSynchronize,
+    isNotUndefined,
+    resolveAfter,
+    typedObjectKeys,
+} from '@trezor/utils';
+
+import { Device } from './Device';
+import { createTransportList } from './TransportList';
+import { TransportManager } from './TransportManager';
+import { trezorPushNotificationHandler } from './workflow/trezorPushNotification';
+
+// TODO probably scheduled for deletion, given that priority is now always 2
+const createAuthPenaltyManager = (priority = 2) => {
+    const penalizedDevices: { [deviceID: string]: number } = {};
+
+    const get = () =>
+        100 * priority +
+        Object.keys(penalizedDevices).reduce((penalty, key) => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const devicePenalty: number = penalizedDevices[key];
+
+            return Math.max(penalty, devicePenalty);
+        }, 0);
+
+    const add = (device: Device) => {
+        if (!device.isInitialized() || device.isBootloader() || !device.features.device_id) return;
+        const deviceID = device.features.device_id;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const currentPenalty: number = penalizedDevices[deviceID];
+        const penalty = currentPenalty ? currentPenalty + 500 : 2000;
+        penalizedDevices[deviceID] = Math.min(penalty, 5000);
+    };
+
+    const remove = (device: Device) => {
+        if (!device.isInitialized() || device.isBootloader() || !device.features.device_id) return;
+        const deviceID = device.features.device_id;
+        delete penalizedDevices[deviceID];
+    };
+
+    return { get, add, remove };
+};
+
+const getTransportInfo = (transport: Transport, descriptors?: Descriptor[]): TransportInfo => ({
+    apiType: transport.apiType,
+    type: transport.name,
+    version: transport.version,
+    initialDeviceCount: descriptors?.length,
+});
+
+interface DeviceListEvents {
+    [TRANSPORT.START]: TransportInfo;
+    [TRANSPORT.ERROR]: TransportError;
+    [DEVICE.CONNECT]: Device;
+    [DEVICE.CONNECT_UNACQUIRED]: Device;
+    [DEVICE.TREZOR_PUSH_NOTIFICATION]: DecodedTrezorPushNotification & { device: Device };
+    [DEVICE.DISCONNECT]: Device;
+    [DEVICE.CHANGED]: Device;
+}
+
+export interface IDeviceList {
+    isConnected(): this is DeviceList;
+    addAuthPenalty: DeviceList['addAuthPenalty'];
+    removeAuthPenalty: DeviceList['removeAuthPenalty'];
+    on: DeviceList['on'];
+    once: DeviceList['once'];
+    init: DeviceList['init'];
+    dispose: DeviceList['dispose'];
+}
+
+export const assertDeviceListConnected: (
+    deviceList: IDeviceList,
+) => asserts deviceList is DeviceList = deviceList => {
+    if (!deviceList.isConnected()) {
+        throw ERRORS.TypedError('Transport_Missing');
+    }
+};
+
+type ConstructorParams = {
+    createLogger: CreateLogger;
+};
+type InitParams = Pick<ConnectSettings, 'transports'>;
+
+export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDeviceList {
+    private readonly transportManagers: Partial<Record<TransportApiType, TransportManager>> = {};
+
+    // array of transport that might be used in this environment
+    private transports: Transport[] = [];
+    private devices: Device[] = [];
+    private deviceCounter = Date.now();
+
+    private readonly handshakeLock;
+    private readonly authPenaltyManager;
+    private readonly createLogger: CreateLogger;
+
+    private getConnectedTransports() {
+        return Object.values(this.transportManagers)
+            .map(manager => manager.get())
+            .filter(isNotUndefined);
+    }
+
+    isConnected(): this is DeviceList {
+        return !!this.getConnectedTransports().length;
+    }
+
+    constructor({ createLogger }: ConstructorParams) {
+        super();
+
+        this.createLogger = createLogger;
+        this.handshakeLock = getSynchronize();
+        this.authPenaltyManager = createAuthPenaltyManager();
+    }
+
+    private getSimilarDevices(device: Device) {
+        return this.devices.filter(d => {
+            // ignore devices from the same transport
+            if (d.descriptor.apiType === device.transport.apiType) {
+                return false;
+            }
+            // in firmware mode usb.serialNumber === Features.device_id
+            // in bootloader mode usb.serialNumber is unknown (string of zeroes)
+            if (device.descriptor.id && d.features?.device_id === device.descriptor.id) {
+                return true;
+            }
+            if (device.descriptor.model && d.descriptor.model === device.descriptor.model) {
+                return true;
+            }
+
+            return false;
+        });
+    }
+
+    private async onDeviceConnected(descriptor: Descriptor, transport: Transport) {
+        const id = (this.deviceCounter++).toString(16).slice(-8);
+        const device = new Device({
+            id: asDeviceUniquePath(id),
+            transport,
+            descriptor,
+            createLogger: this.createLogger,
+        });
+
+        const similarUsedDevices = this.getSimilarDevices(device).some(
+            d => d.isUsed() || d.getBusy() === 'rebooting',
+        );
+        if (!similarUsedDevices) {
+            const penalty = this.authPenaltyManager.get();
+            const stillConnected = await this.handshakeLock(() =>
+                resolveAfter(penalty && penalty + 501).then(() => device.handshake()),
+            );
+
+            if (!stillConnected) {
+                return;
+            }
+        }
+
+        if (descriptor.id && descriptor.apiType === 'bluetooth') {
+            transport.subscribe({
+                path: device.descriptor.id,
+                channels: ['battery-level', 'trezor-push-notification'],
+            });
+        }
+
+        this.devices.push(device);
+
+        device.lifecycle.on(DEVICE.CONNECT, () => this.emit(DEVICE.CONNECT, device));
+        device.lifecycle.on(DEVICE.CHANGED, () => this.emit(DEVICE.CHANGED, device));
+        device.lifecycle.on(DEVICE.CONNECT_UNACQUIRED, () =>
+            this.emit(DEVICE.CONNECT_UNACQUIRED, device),
+        );
+        device.lifecycle.on(DEVICE.TREZOR_PUSH_NOTIFICATION, payload => {
+            this.emit(DEVICE.TREZOR_PUSH_NOTIFICATION, {
+                device,
+                ...payload,
+            });
+        });
+        device.lifecycle.on(DEVICE.DISCONNECT, () => {
+            device.lifecycle.removeAllListeners();
+            this.authPenaltyManager.remove(device);
+            const index = this.devices.indexOf(device);
+            if (index >= 0) this.devices.splice(index, 1);
+            this.emit(DEVICE.DISCONNECT, device);
+        });
+
+        this.emit(device.isUnacquired() ? DEVICE.CONNECT_UNACQUIRED : DEVICE.CONNECT, device);
+    }
+
+    private onPushNotification(event: { id: string; data: number[] }) {
+        const device = this.devices.find(d => d.descriptor.id === event.id);
+        if (device) {
+            trezorPushNotificationHandler({ device, message: event.data }).catch(error => {
+                console.error('Error handling Trezor Push Notification', error);
+            });
+        }
+    }
+
+    private onBatteryLevel(event: { id: string; data: number[] }) {
+        const device = this.devices.find(d => d.descriptor.id === event.id);
+        device?.updateFeature('soc', event.data[0]);
+    }
+
+    private getOrCreateTransportManager(apiType: TransportApiType) {
+        if (!this.transportManagers[apiType]) {
+            const manager = new TransportManager();
+            manager.on(TRANSPORT.START, this.onTransportStarted.bind(this));
+            manager.on(TRANSPORT.ERROR, error => this.emit(TRANSPORT.ERROR, { apiType, error }));
+            this.transportManagers[apiType] = manager;
+        }
+
+        return this.transportManagers[apiType];
+    }
+
+    async init({ transports }: InitParams = {}) {
+        // throws when unknown transport is requested, in that case nothing is changed
+        this.transports = createTransportList(this.transports, transports);
+
+        const promises = this.transports
+            .map(t => t.apiType)
+            .concat(typedObjectKeys(this.transportManagers))
+            .filter(arrayDistinct)
+            .map(apiType =>
+                this.getOrCreateTransportManager(apiType).init({
+                    transports: this.transports.filter(t => t.apiType === apiType),
+                }),
+            );
+
+        await Promise.all(promises);
+    }
+
+    private onTransportStarted(transport: Transport, descriptors: Descriptor[]) {
+        /**
+         * listen to change of descriptors reported by @trezor/transport
+         * we can say that this part lets connect know about
+         * "external activities with trezor devices" such as device was connected/disconnected
+         * or it was acquired or released by another application.
+         * releasing/acquiring device by this application is not solved here but directly
+         * where transport.acquire, transport.release is called
+         */
+        transport.on(TRANSPORT.DEVICE_CONNECTED, d => this.onDeviceConnected(d, transport));
+        transport.on(TRANSPORT.TREZOR_PUSH_NOTIFICATION, this.onPushNotification.bind(this));
+        transport.on(TRANSPORT.BATTERY_LEVEL, this.onBatteryLevel.bind(this));
+
+        this.emit(TRANSPORT.START, getTransportInfo(transport, descriptors));
+
+        transport.handleDescriptorsChange(descriptors);
+        transport.listen();
+    }
+
+    getDeviceCount() {
+        return this.devices.length;
+    }
+
+    getPrioritizedDevices() {
+        return [...this.devices].sort(
+            (a, b) =>
+                // USB transport is prioritized over Bluetooth
+                (a.descriptor.apiType === 'bluetooth' ? 1 : 0) -
+                (b.descriptor.apiType === 'bluetooth' ? 1 : 0),
+        );
+    }
+
+    getAllDevices() {
+        return this.getPrioritizedDevices() as readonly Device[];
+    }
+
+    getOnlyDevice(apiType?: Descriptor['apiType']): Device | undefined {
+        const devices = apiType
+            ? this.devices.filter(d => d.descriptor.apiType === apiType)
+            : this.devices;
+
+        return devices.length === 1 ? devices[0] : undefined;
+    }
+
+    getDeviceByPath(path: DeviceUniquePath): Device | undefined {
+        return this.getPrioritizedDevices().find(d => d.getUniquePath() === path);
+    }
+
+    getDeviceByStaticState(state: StaticSessionId): Device | undefined {
+        const { deviceId } = parseStaticSessionId(state);
+
+        return this.getPrioritizedDevices().find(d => d.features?.device_id === deviceId);
+    }
+
+    async dispose() {
+        this.removeAllListeners();
+
+        const promises = Object.values(this.transportManagers).map(manager => manager.dispose());
+
+        await Promise.all(promises);
+    }
+
+    async enumerate() {
+        const promises = this.getConnectedTransports().map(async transport => {
+            const res = await transport.enumerate();
+            if (res.success) {
+                transport.handleDescriptorsChange(res.payload);
+            }
+        });
+
+        await Promise.all(promises);
+    }
+
+    addAuthPenalty(device: Device) {
+        return this.authPenaltyManager.add(device);
+    }
+
+    removeAuthPenalty(device: Device) {
+        return this.authPenaltyManager.remove(device);
+    }
+}

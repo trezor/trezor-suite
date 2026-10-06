@@ -29,37 +29,37 @@ const services: NativeAnalyticsDep = {
 describe('SellProviderPicker', () => {
     let form: SellFormType;
 
-    const renderSellProviderPicker = (
+    const renderSellProviderPicker = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithStoreProvider(<SellProviderPicker />, {
+        await renderWithStoreProvider(<SellProviderPicker />, {
             preloadedState: createTradingPreloadedState({ tradeType: 'sell', overrides }),
             services,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         jest.clearAllMocks();
 
-        const { result } = renderHookWithStoreProvider(() => useSellForm(), {
+        const { result } = await renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState: createTradingPreloadedState({ tradeType: 'sell' }),
             services,
         });
         form = result.current;
     });
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('should render nothing when no quotes are loaded', () => {
-        const { toJSON } = renderSellProviderPicker();
+    it('should render nothing when no quotes are loaded', async () => {
+        const { toJSON } = await renderSellProviderPicker();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render loading skeleton when no quotes are loaded and new quotes are loading', () => {
-        const { getByLabelText } = renderSellProviderPicker({
+    it('should render loading skeleton when no quotes are loaded and new quotes are loading', async () => {
+        const { getByLabelText } = await renderSellProviderPicker({
             wallet: { trading: { sell: { isLoading: true } } },
         });
 
@@ -73,14 +73,14 @@ describe('SellProviderPicker', () => {
             wallet: { trading: { sell: { quotes: sellQuotes } } },
         };
 
-        beforeEach(() => {
-            act(() => {
+        beforeEach(async () => {
+            await act(() => {
                 form.setValue('quote', banxaCreditCardSellQuote);
             });
         });
 
-        it('should render loading skeleton when quotes are loaded and new quotes are loading', () => {
-            const { getByLabelText } = renderSellProviderPicker({
+        it('should render loading skeleton when quotes are loaded and new quotes are loading', async () => {
+            const { getByLabelText } = await renderSellProviderPicker({
                 wallet: { trading: { sell: { quotes: sellQuotes, isLoading: true } } },
             });
 
@@ -89,19 +89,21 @@ describe('SellProviderPicker', () => {
             ).toBeOnTheScreen();
         });
 
-        it('should render selected payment provider', () => {
-            const { getByLabelText } = renderSellProviderPicker(withQuotes);
+        it('should render selected payment provider', async () => {
+            const { getByLabelText } = await renderSellProviderPicker(withQuotes);
 
             expect(
                 getByLabelText(getTranslation('moduleTrading.tradingScreen.selectedProvider')),
             ).toHaveTextContent('Banxa');
         });
 
-        it('should allow to select provider', () => {
-            const { getByText, getByLabelText } = renderSellProviderPicker(withQuotes);
+        it('should allow to select provider', async () => {
+            const { getByText, getByLabelText } = await renderSellProviderPicker(withQuotes);
 
-            fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.provider')));
-            fireEvent.press(getByText('MoonPay'));
+            await fireEvent.press(
+                getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+            );
+            await fireEvent.press(getByText('MoonPay'));
 
             expect(
                 getByLabelText(getTranslation('moduleTrading.tradingScreen.selectedProvider')),
@@ -113,11 +115,13 @@ describe('SellProviderPicker', () => {
                 reportMock.mockClear();
             });
 
-            it('should fire analytics event on provider select', () => {
-                const { getByText } = renderSellProviderPicker(withQuotes);
+            it('should fire analytics event on provider select', async () => {
+                const { getByText } = await renderSellProviderPicker(withQuotes);
 
-                fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.provider')));
-                fireEvent.press(getByText('MoonPay'));
+                await fireEvent.press(
+                    getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+                );
+                await fireEvent.press(getByText('MoonPay'));
 
                 expect(reportMock).toHaveBeenCalledTimes(2);
                 expect(reportMock).toHaveBeenCalledWith({
@@ -135,11 +139,11 @@ describe('SellProviderPicker', () => {
                 });
             });
 
-            it('should not fire analytics event when same provider is selected', () => {
-                const { getAllByText } = renderSellProviderPicker(withQuotes);
+            it('should not fire analytics event when same provider is selected', async () => {
+                const { getAllByText } = await renderSellProviderPicker(withQuotes);
 
-                fireEvent.press(getIndexOrThrow(getAllByText('Banxa'), 0));
-                fireEvent.press(getIndexOrThrow(getAllByText('Banxa'), 1));
+                await fireEvent.press(getIndexOrThrow(getAllByText('Banxa'), 0));
+                await fireEvent.press(getIndexOrThrow(getAllByText('Banxa'), 1));
 
                 expect(reportMock).toHaveBeenCalledTimes(1);
                 expect(reportMock).toHaveBeenCalledWith({
@@ -150,12 +154,14 @@ describe('SellProviderPicker', () => {
                 });
             });
 
-            it('should not call analytics when user tries to open sheet while quotes are loading', () => {
-                const { getByText } = renderSellProviderPicker({
+            it('should not call analytics when user tries to open sheet while quotes are loading', async () => {
+                const { getByText } = await renderSellProviderPicker({
                     wallet: { trading: { sell: { quotes: sellQuotes, isLoading: true } } },
                 });
 
-                fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.provider')));
+                await fireEvent.press(
+                    getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+                );
 
                 expect(reportMock).not.toHaveBeenCalled();
             });

@@ -7,6 +7,7 @@
         "@trezor/connect-webextension",
         "@trezor/crypto-utils",
         "@trezor/device-utils",
+        "@trezor/logger",
         "@trezor/protobuf",
         "@trezor/protocol",
         "@trezor/schema-utils",

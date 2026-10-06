@@ -1,4 +1,4 @@
-import { getNetwork, networks } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { type HistoricRates, type TickerId } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
@@ -54,13 +54,13 @@ const buildCoinUrls = async (ticker: TickerId) => {
         return [];
     }
 
-    let baseId = coingeckoId;
+    let baseId: string = coingeckoId;
     if (networkType === 'ethereum') {
         if (ticker.tokenAddress) {
             // token on network -> network coingecko id
             baseId = coingeckoId;
         } else if (settlementLayer) {
-            baseId = networks[settlementLayer]?.coingeckoId ?? coingeckoId;
+            baseId = getNetwork(settlementLayer)?.coingeckoId ?? coingeckoId;
         } else {
             // native token on network -> native token coingecko id
             if (!tradeCryptoId) {
@@ -85,7 +85,13 @@ const buildCoinUrls = async (ticker: TickerId) => {
     }
 
     if (networkType === 'stellar') {
-        const { computeSorobanAssetContractId } = await stellar();
+        const { computeSorobanAssetContractId, isValidContractId } = await stellar();
+
+        // A native SEP-41 token has no classic `CODE-ISSUER` form.
+        if (isValidContractId(ticker.tokenAddress)) {
+            return [`${baseUrl}/contract/${ticker.tokenAddress}`];
+        }
+
         const { assetCode, assetIsuer, sorobanAssetContractId } = computeSorobanAssetContractId(
             ticker.tokenAddress,
         );

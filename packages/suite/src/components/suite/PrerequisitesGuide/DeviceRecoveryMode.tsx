@@ -3,16 +3,18 @@ import { type MouseEventHandler } from 'react';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { TrezorBodyIcon } from '@trezor/icons';
 
-import { recoveryRerun } from 'src/actions/onboarding/onboardingActions';
+import { rerunRecoveryThunk } from 'src/actions/onboarding/onboardingActions';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const DeviceRecoveryMode = () => {
     const recoveryStatus = useSelector(selectRecoveryStatus);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const { isLocked } = useDevice();
 
@@ -22,7 +24,7 @@ export const DeviceRecoveryMode = () => {
 
     const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
-        dispatch(recoveryRerun());
+        dispatch(rerunRecoveryThunk());
     };
 
     return (

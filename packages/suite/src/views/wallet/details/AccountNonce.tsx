@@ -1,8 +1,7 @@
 import { Translation } from '@suite/intl';
+import { useEvmNonceInfo } from '@suite-common/wallet-core';
 import { type AccountWithNetworkType } from '@suite-common/wallet-types';
 import { Paragraph, Skeleton } from '@trezor/components';
-
-import { useEvmNonceInfo } from 'src/hooks/wallet/useEvmNonceInfo';
 
 type AccountNonceProps = {
     account: AccountWithNetworkType<'ethereum'>;

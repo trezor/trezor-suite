@@ -1,5 +1,7 @@
 import { useRoute } from '@react-navigation/native';
 
+import { mockAddressValidator } from '@suite-common/address/mocks';
+import { type AddressValidatorDep } from '@suite-common/networks';
 import { useAlert } from '@suite-native/alerts';
 import { Form, useWatch } from '@suite-native/forms';
 import { act, renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
@@ -63,6 +65,13 @@ const mockedUseAlert = useAlert as jest.MockedFunction<any>;
 const mockedUseWatch = useWatch as unknown as jest.Mock;
 
 const getAccountInfoSpy = jest.spyOn(TrezorConnect, 'getAccountInfo');
+const services: { networks: AddressValidatorDep } = {
+    networks: {
+        addressValidator: mockAddressValidator({
+            isAddressValid: address => address !== eoaAddressChecksumInvalid,
+        }),
+    },
+};
 
 describe('useAddressValidationAlerts', () => {
     let mockShowAlert: jest.Mock;
@@ -92,10 +101,11 @@ describe('useAddressValidationAlerts', () => {
         preloadedState: Record<string, unknown> = defaultPreloadedState,
         { inputIndex = 0 } = {},
     ) => {
-        const result = renderHookWithStoreProvider(
+        const result = await renderHookWithStoreProvider(
             () => useAddressValidationAlerts({ inputIndex }),
             {
                 preloadedState,
+                services,
                 wrapper: ({ children }) => (
                     <Form form={{ setValue: mockSetValue } as any}>{children}</Form>
                 ),
@@ -198,7 +208,7 @@ describe('useAddressValidationAlerts', () => {
 
             // Simulate user clicking the primary button
             const alertCall = mockShowAlert.mock.calls[0][0];
-            act(() => {
+            await act(() => {
                 alertCall.onPressPrimaryButton();
             });
 
@@ -296,7 +306,7 @@ describe('useAddressValidationAlerts', () => {
 
             mockShowAlert.mockClear();
 
-            rerender({});
+            await rerender({});
 
             expect(mockShowAlert).not.toHaveBeenCalled();
         });

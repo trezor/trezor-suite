@@ -7,7 +7,7 @@
         },
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/validators"
+            "path": "../../suite-common/redux-utils"
         },
         {
             "path": "../../suite-common/wallet-core"

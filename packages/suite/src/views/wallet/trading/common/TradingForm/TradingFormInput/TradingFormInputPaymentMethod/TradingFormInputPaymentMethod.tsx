@@ -22,17 +22,19 @@ import { type TradingFormInputDefaultProps } from 'src/types/trading/tradingForm
 
 import { PaymentMethodModal } from './PaymentMethodModal';
 
+type TradingFormInputPaymentMethodValueContentProps = {
+    isFormLoading: boolean;
+    hasPaymentMethods: boolean;
+    displayLabel: ReactNode;
+    paymentMethod: TradingPaymentMethodProps;
+};
+
 const TradingFormInputPaymentMethodValueContent = ({
     isFormLoading,
     hasPaymentMethods,
     displayLabel,
     paymentMethod,
-}: {
-    isFormLoading: boolean;
-    hasPaymentMethods: boolean;
-    displayLabel: ReactNode;
-    paymentMethod: TradingPaymentMethodProps;
-}) => {
+}: TradingFormInputPaymentMethodValueContentProps) => {
     if (isFormLoading) {
         return <Skeleton animate />;
     }
@@ -72,8 +74,7 @@ export const TradingFormInputPaymentMethod = ({
     const options = useSelector(state => selectTradingPaymentMethodsByType(state, type));
 
     const paymentMethod = useWatch({ name: TRADING_FORM_PAYMENT_METHOD_SELECT }) as
-        | TradingPaymentMethodListProps
-        | undefined;
+        TradingPaymentMethodListProps | undefined;
     const hasPaymentMethods = options.length > 0;
 
     const selectedOption = useSelector(state =>

@@ -1,7 +1,7 @@
 import { type CryptoId } from 'invity-api';
 import { combineReducers } from 'redux';
 
-import { selectedAccountReducer } from '@suite/account';
+import { type SelectedAccountState, selectedAccountReducer } from '@suite/account';
 import { MODAL_CONTEXT_NONE, type State as ModalState, modalReducer } from '@suite/modal';
 import {
     type LocationChangePayload,
@@ -10,7 +10,8 @@ import {
     routerLocationChange,
     routerReducer,
 } from '@suite/router';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type TradingState,
     initialState,
@@ -19,7 +20,8 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { prepareAccountsReducer } from '@suite-common/wallet-core';
+import { type AccountsState, prepareAccountsReducer } from '@suite-common/wallet-core';
+import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import { type AccountKey, type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
@@ -41,8 +43,24 @@ jest.mock('@suite-common/trading', () => {
     };
 });
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
-const accountsReducer = prepareAccountsReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const accountsReducer = prepareAccountsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    actions: { setAccountAddMetadata: mockSetAccountAddMetadata() },
+    reducers: { storageLoadAccounts: mockReducer() },
+});
+type StoreState = {
+    wallet: {
+        trading: TradingState;
+        selectedAccount: SelectedAccountState;
+        accounts: AccountsState;
+    };
+    suite: SuiteState;
+    router: RouterState;
+    modal: ModalState;
+};
 const accounts = [ACCOUNT];
 
 interface Args {
@@ -65,7 +83,18 @@ const getRequiredRoute = <TName extends NonNullable<LocationChangePayload['route
     return route as Extract<NonNullable<LocationChangePayload['route']>, { name: TName }>;
 };
 
-const getInitialState = ({ trading, selectedAccount, router }: Args = {}) => ({
+type State = {
+    wallet: {
+        trading: Partial<TradingState>;
+        selectedAccount: SelectedAccountStatus;
+        accounts: AccountsState;
+    };
+    suite: { settings: { debug: { tradeServerEnvironment: 'dev' } } };
+    router: RouterState;
+    modal: ModalState;
+};
+
+const getInitialState = ({ trading, selectedAccount, router }: Args = {}): State => ({
     wallet: {
         trading: trading ?? {
             isLoading: false,
@@ -90,14 +119,11 @@ const getInitialState = ({ trading, selectedAccount, router }: Args = {}) => ({
     modal: modalReducer({ context: MODAL_CONTEXT_NONE }, { type: 'init' }),
 });
 
-type State = ReturnType<typeof getInitialState>;
-
 const initStore = (state: State) => {
     const { settings } = state.suite;
     const { trading, selectedAccount } = state.wallet;
 
-    const store = configureMockStore({
-        extra: {},
+    return createTestCompositionRoot<void, StoreState>({
         reducer: combineReducers({
             wallet: combineReducers({
                 trading: tradingReducer,
@@ -124,9 +150,7 @@ const initStore = (state: State) => {
             modal: state.modal ? { ...state.modal } : {},
         },
         middleware: [tradingMiddleware],
-    });
-
-    return store;
+    }).services.store;
 };
 
 describe('tradingMiddleware', () => {

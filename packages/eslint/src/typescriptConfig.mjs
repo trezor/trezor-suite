@@ -1,6 +1,7 @@
 import tseslint from 'typescript-eslint';
 
 import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
+import { allRoots } from './workspaceRoots.mjs';
 
 // Deny importing from build artifact directories — consumers should resolve
 // through the package root, not from `lib/` or `libDev/`.
@@ -10,9 +11,28 @@ const buildArtifactPatterns = {
         'Import from the package root instead. Deep paths into "lib/" or "libDev/" target build artifacts that may not exist or may diverge from the workspace source.',
 };
 
+// Bare network packages expose sectioned entry points. Type contracts and Suite layer packages
+// keep root imports; a dash in a network name alone does not exempt a bare package.
 const networksPackagePattern = {
-    regex: '^@trezor/network-[a-z]+$',
+    regex: '^@trezor/(?![^/]*-(?:types|suite(?:-common|-native)?)$)network-[^/]+$',
     message: 'Import from /constants, /runtime or /types subpath.',
+};
+
+// Network packages are a reusable layer: the apps are built on top of them, never the other way
+// round. Of the workspace scopes only `@trezor/*` is below them, so it is the only one they may
+// depend on. Anything an app owns reaches a network module through dependency injection instead.
+const networksAppScopePattern = {
+    group: [
+        '@suite/**',
+        '@suite-common/**',
+        '@suite-native/**',
+        // TODO(#32493): the last two app-scoped dependencies left under networks/. `calldata` is a
+        // `@trezor/*`-level library sitting in the wrong folder; the `mock` helper is test-only.
+        '!@suite-common/calldata',
+        '!@suite-common/dependency-injection',
+    ],
+    message:
+        'Network packages may only depend on @trezor/* workspace packages. Take anything an app owns as an injected dependency instead.',
 };
 
 // Deep-path imports that bypass the public barrels of the connect-tier packages.
@@ -47,6 +67,16 @@ const suiteInternalPatterns = {
         '@suite-common/* and @suite-native/* packages are private to the suite apps and must not be imported by other workspace packages.',
 };
 
+/*
+ Currently only relevant in @suite/desktop-app-main, but if the ipcMain import is to be used elsewhere,
+ the wrapper shall be extracted and this should still be a global rule.
+*/
+const electronIpcMainRestrictedImport = {
+    name: 'electron',
+    importNames: ['ipcMain'],
+    message: 'Use the local ipcMain wrapper instead.',
+};
+
 export const restrictedImportsPatterns = [
     buildArtifactPatterns,
     suiteInternalPatterns,
@@ -71,7 +101,12 @@ export const typescriptConfig = [
             '@typescript-eslint/no-restricted-imports': [
                 'error',
                 {
-                    paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
+                    paths: [
+                        { name: '.' },
+                        { name: '..' },
+                        { name: '../..' },
+                        electronIpcMainRestrictedImport,
+                    ],
                     patterns: [
                         buildArtifactPatterns,
                         networksPackagePattern,
@@ -104,14 +139,46 @@ export const typescriptConfig = [
         },
     },
     {
-        // restrict import of suite-common and suite-native packages outside of suite
-        files: ['packages/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
-        ignores: ['packages/suite*/**/*'],
+        files: [`${allRoots.networks}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
         rules: {
             '@typescript-eslint/no-restricted-imports': [
                 'error',
                 {
-                    paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
+                    paths: [
+                        { name: '.' },
+                        { name: '..' },
+                        { name: '../..' },
+                        electronIpcMainRestrictedImport,
+                    ],
+                    patterns: [
+                        buildArtifactPatterns,
+                        networksAppScopePattern,
+                        networksPackagePattern,
+                        ...connectDeepImportPatterns,
+                        {
+                            regex: '^@trezor/connect(?!-common(?:/|$))',
+                            message:
+                                'Network modules must receive Connect through dependency injection. Import contracts from @trezor/connect-common.',
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+    {
+        // restrict import of suite-common and suite-native packages outside of suite
+        files: [`${allRoots.packages}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
+        ignores: [`${allRoots.packages}/suite*/**/*`],
+        rules: {
+            '@typescript-eslint/no-restricted-imports': [
+                'error',
+                {
+                    paths: [
+                        { name: '.' },
+                        { name: '..' },
+                        { name: '../..' },
+                        electronIpcMainRestrictedImport,
+                    ],
                     patterns: restrictedImportsPatterns,
                 },
             ],
@@ -142,6 +209,10 @@ export const typescriptConfig = [
             // Known limitation: the rule mis-reports some load-bearing widening assertions
             // (removing them breaks tsc); such spots carry a scoped disable with a justification.
             '@typescript-eslint/no-unnecessary-type-assertion': ['error'],
+
+            // Type-checked rule; the src override is the only block with type info. Prefer
+            // startsWith/endsWith over indexOf(x) === 0, slice(-1) === c and /^x/.test().
+            '@typescript-eslint/prefer-string-starts-ends-with': ['error'],
         },
     },
     {

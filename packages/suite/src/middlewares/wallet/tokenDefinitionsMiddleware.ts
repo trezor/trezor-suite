@@ -1,36 +1,47 @@
+import { type PayloadActionCreator, type UnknownAction } from '@reduxjs/toolkit';
+
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import {
+    type TokenDefinitionsRootState,
     getSupportedDefinitionTypes,
     getTokenDefinitionThunk,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-const CHANGE_NETWORKS = '@wallet-settings/change-networks'; // from walletSettings.ts
+type TokenDefinitionsMiddlewareState = TokenDefinitionsRootState;
 
-export const prepareTokenDefinitionsMiddleware = createMiddlewareWithExtraDeps(
-    (action, { dispatch, next, getState }) => {
-        next(action);
+export type TokenDefinitionsMiddlewareDeps = {
+    actions: {
+        changeNetworks: Pick<PayloadActionCreator<{ enabledNetworks: NetworkSymbol[] }>, 'match'>;
+    };
+};
 
-        if (action.type === CHANGE_NETWORKS) {
-            action.payload.forEach((symbol: NetworkSymbol) => {
-                const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
+export const prepareTokenDefinitionsMiddleware = createMiddlewareWithExtraDeps<
+    TokenDefinitionsMiddlewareDeps,
+    UnknownAction,
+    TokenDefinitionsMiddlewareState
+>((action, { dispatch, next, getState, extra }) => {
+    next(action);
 
-                if (!tokenDefinitions) {
-                    const definitionTypes = getSupportedDefinitionTypes(symbol);
+    if (extra.actions.changeNetworks.match(action)) {
+        action.payload.enabledNetworks.forEach(symbol => {
+            const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 
-                    definitionTypes.forEach(type => {
-                        dispatch(
-                            getTokenDefinitionThunk({
-                                symbol,
-                                type,
-                            }),
-                        );
-                    });
-                }
-            });
-        }
+            if (!tokenDefinitions) {
+                const definitionTypes = getSupportedDefinitionTypes(symbol);
 
-        return action;
-    },
-);
+                definitionTypes.forEach(type => {
+                    dispatch(
+                        getTokenDefinitionThunk({
+                            symbol,
+                            type,
+                        }),
+                    );
+                });
+            }
+        });
+    }
+
+    return action;
+});

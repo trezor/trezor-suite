@@ -4,8 +4,11 @@
     "include": ["./src"],
     "references": [
         {
+            "path": "../../../packages/device-utils"
+        },
+        {
             "path": "../../network-module/network-module-suite-common-types"
         },
-        { "path": "../../../packages/utils" }
+        { "path": "../network-solana" }
     ]
 }

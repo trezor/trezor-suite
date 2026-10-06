@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { type TradingType, cryptoIdToSymbol } from '@suite-common/trading';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { type TradingType, cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { type FieldValues, type Path, type UseFormReturn } from '@suite-native/forms';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
@@ -25,7 +25,6 @@ type UseTradeableAssetChangeConfig<TFieldValues extends FieldValues> = {
     selectedValue: TradeableAsset | undefined;
     setSelectedValue: (asset: TradeableAsset) => void;
     analyticsParameter: TradingParameter;
-    amountField?: string;
     getAssetChangedAction: () => UnknownAction;
     getAssetTokenChangedAction?: () => UnknownAction;
     getSetTradingAccountKeyAction?: (accountKey: AccountKey) => UnknownAction;
@@ -42,14 +41,12 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
     selectedValue,
     setSelectedValue,
     analyticsParameter,
-    amountField,
     getAssetChangedAction,
     getAssetTokenChangedAction,
     getSetTradingAccountKeyAction,
     collision,
 }: UseTradeableAssetChangeConfig<TFieldValues>) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const { setValue, getValues } = form;
 
     const reportParameterChanged = useCallback(
@@ -86,18 +83,14 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
             }
 
             const isTokenChange =
-                cryptoIdToSymbol(selectedValue?.cryptoId) === cryptoIdToSymbol(asset.cryptoId);
+                cryptoIdToNetworkSymbol(selectedValue?.cryptoId) ===
+                cryptoIdToNetworkSymbol(asset.cryptoId);
 
             setSelectedValue(asset);
 
-            if (amountField) {
-                clearField(amountField, true);
-            }
-
             const counterpartAsset = collision
                 ? (getValues(collision.counterpartAssetField as Path<TFieldValues>) as
-                      | TradeableAsset
-                      | undefined)
+                      TradeableAsset | undefined)
                 : undefined;
 
             if (collision && asset.cryptoId === counterpartAsset?.cryptoId) {
@@ -127,7 +120,6 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
             setSelectedValue,
             getValues,
             clearField,
-            amountField,
             collision,
             analyticsParameter,
             getAssetChangedAction,

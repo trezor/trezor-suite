@@ -1,4 +1,8 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
 
@@ -7,6 +11,15 @@ import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 let mockIsDeviceInViewOnlyMode = false;
 let mockIsPortfolioTrackerDevice = false;
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
+    analytics: mockNativeAnalytics(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
+};
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useRoute: () => ({ params: {} }),
+}));
 
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
@@ -28,9 +41,10 @@ jest.mock('../concierge/ConciergeAlert', () => ({
 
 describe('SellTab', () => {
     const renderSellTab = async (overrides: Record<string, unknown> = {}) => {
-        const result = renderWithTradingProvider(<SellTab />, {
-            tradeType: 'sell',
+        const result = await renderWithTradingProvider(<SellTab />, {
             overrides,
+            services,
+            tradeType: 'sell',
         });
 
         // wait for form reactions to run

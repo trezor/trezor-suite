@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountDescriptor,
@@ -8,10 +7,11 @@ import {
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { Box, InlineAlertBox, type InlineAlertBoxProps, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { VStack } from '@suite-native/atoms';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 import { ReceiveAddressDetails } from './ReceiveAddressDetails';
+import { ReceiveAddressInfo } from './ReceiveAddressInfo';
 
 type ReceiveAddressCardProps = {
     accountKey: AccountKey;
@@ -24,6 +24,9 @@ export const ReceiveAddressCard = ({
     address,
     tokenContract,
 }: ReceiveAddressCardProps) => {
+    const token = useSelector((state: TokensRootState) =>
+        selectAccountTokenInfo(state, accountKey, tokenContract),
+    );
     const accountDescriptor = useSelector((state: AccountsRootState) =>
         selectAccountDescriptor(state, accountKey),
     );
@@ -38,34 +41,7 @@ export const ReceiveAddressCard = ({
         return null;
     }
 
-    const { name: networkName } = getNetwork(symbol);
     const isTokenAddress = tokenContract !== undefined;
-
-    const getCardAlertProps = (): InlineAlertBoxProps | undefined => {
-        if (symbol === 'ada') {
-            return {
-                title: (
-                    <Translation id="moduleReceive.receiveAddressCard.alert.longCardanoAddress" />
-                ),
-                intent: 'info',
-            };
-        }
-        if (isTokenAddress) {
-            return {
-                title: (
-                    <Translation
-                        id="moduleReceive.receiveAddressCard.alert.token"
-                        values={{ networkName }}
-                    />
-                ),
-                intent: 'info',
-            };
-        }
-
-        return undefined;
-    };
-
-    const cardAlertProps = getCardAlertProps();
 
     return (
         <VStack spacing="sp16" flex={1}>
@@ -75,13 +51,10 @@ export const ReceiveAddressCard = ({
                 deviceStaticSessionId={deviceStaticSessionId}
                 networkSymbol={symbol}
                 tokenContract={tokenContract}
+                tokenSymbol={token?.symbol || token?.name}
                 showLabelEdit={!isTokenAddress}
             />
-            {cardAlertProps && (
-                <Box marginBottom="sp4">
-                    <InlineAlertBox {...cardAlertProps} />
-                </Box>
-            )}
+            <ReceiveAddressInfo networkSymbol={symbol} isTokenAddress={isTokenAddress} />
         </VStack>
     );
 };

@@ -1,5 +1,6 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import type { AccountTable } from '@suite-common/suite-sync-storage';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { ok } from '@trezor/type-utils';
@@ -9,6 +10,7 @@ import { createSuiteSyncStorageMock } from '../../../../mocks/mockCreateSuiteSyn
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3' as const;
 const accountDescriptor = asAccountDescriptor('accountDescriptor');
+const btcSymbol = asNetworkSymbol('btc');
 
 describe(createWriteAccountLabel.name, () => {
     it('writes account label to storage, reports analytics and propagates the result', () => {
@@ -30,7 +32,7 @@ describe(createWriteAccountLabel.name, () => {
                 deviceStaticSessionId,
                 accountKey: createAccountKey({
                     accountDescriptor,
-                    networkSymbol: 'btc',
+                    networkSymbol: btcSymbol,
                     deviceStaticSessionId,
                 }),
                 label: 'New Account Label',
@@ -39,7 +41,7 @@ describe(createWriteAccountLabel.name, () => {
 
         expect(storage.data.accounts.update).toHaveBeenCalledWith({
             accountDescriptor,
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
             label: 'New Account Label',
         });
         expect(report).toHaveBeenCalledWith(

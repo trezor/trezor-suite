@@ -1,22 +1,22 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
-import {
-    type TestStore,
-    renderWithStoreProvider,
-    userEvent,
-    within,
-} from '@suite-native/test-utils-store';
+import { renderWithStoreProvider, userEvent, within } from '@suite-native/test-utils-store';
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { LimitPicker } from './LimitPicker';
-import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState;
 
 describe('LimitPicker', () => {
-    let store: TestStore;
+    let store: Store<State>;
     const mockOnApprovalTypeChange = jest.fn();
 
-    const renderLimitPicker = () =>
-        renderWithStoreProvider(
+    const renderLimitPicker = async () =>
+        await renderWithStoreProvider(
             <LimitPicker
                 onApprovalTypeChange={approvalType => {
                     mockOnApprovalTypeChange(approvalType);
@@ -29,7 +29,7 @@ describe('LimitPicker', () => {
                     );
                 }}
             />,
-            { store },
+            { services: { store } },
         );
 
     beforeEach(() => {
@@ -37,7 +37,7 @@ describe('LimitPicker', () => {
 
         const quote = { ...mercuryoFixedWorstQuote, approvalStringAmount: '100' };
 
-        store = createTradingLightStore({
+        store = createTradingTestStore({
             tradeType: 'exchange',
             overrides: {
                 wallet: {
@@ -52,8 +52,8 @@ describe('LimitPicker', () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(quote));
     });
 
-    it('should render limit by default', () => {
-        const { getByTestId } = renderLimitPicker();
+    it('should render limit by default', async () => {
+        const { getByTestId } = await renderLimitPicker();
 
         const picker = getByTestId('ExchangeApproval/LimitPicker');
 
@@ -66,7 +66,7 @@ describe('LimitPicker', () => {
     });
 
     it('should render Unlimited when selected by user', async () => {
-        const { getByTestId } = renderLimitPicker();
+        const { getByTestId } = await renderLimitPicker();
 
         const picker = getByTestId('ExchangeApproval/LimitPicker');
         const sheet = getByTestId('ExchangeApproval/LimitSheet');
@@ -102,7 +102,7 @@ describe('LimitPicker', () => {
     });
 
     it('should update limit when users selects new value', async () => {
-        const { getByTestId } = renderLimitPicker();
+        const { getByTestId } = await renderLimitPicker();
 
         const picker = getByTestId('ExchangeApproval/LimitPicker');
         const sheet = getByTestId('ExchangeApproval/LimitSheet');
@@ -122,10 +122,10 @@ describe('LimitPicker', () => {
         );
     });
 
-    it('should render nothing without quote', () => {
+    it('should render nothing without quote', async () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-        const { toJSON } = renderLimitPicker();
+        const { toJSON } = await renderLimitPicker();
 
         expect(toJSON()).toBeNull();
     });

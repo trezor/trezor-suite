@@ -1,10 +1,10 @@
 import type { FeedbackCategory } from '@suite-common/feedback';
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Bug report forms', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Bug report forms', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
 
     test(
@@ -14,6 +14,7 @@ test.describe('Bug report forms', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user can send a bug report.',
                 category: TestCategory.SuiteGuide,
                 priority: TestPriority.Medium,
+                stream: TestStream.Growth,
             }),
         },
         async ({ page, guidePanel }) => {

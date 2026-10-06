@@ -3,6 +3,7 @@ export {
     type AnalyticsRootState,
     analyticsInitialState,
     prepareAnalyticsReducer,
+    selectAnalytics,
     selectAnalyticsInstanceId,
     selectAnalyticsSessionId,
     selectIsAnalyticsConfirmed,

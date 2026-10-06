@@ -1,5 +1,5 @@
-import { type Protocol } from '@suite-common/suite-constants';
-import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+import type { NetworkSymbol } from '@suite-common/networks';
+import { type Protocol, asProtocol } from '@trezor/network-module-suite-common-types';
 import { err, ok } from '@trezor/type-utils';
 import { safeParseUrl } from '@trezor/utils';
 
@@ -7,13 +7,15 @@ import { parseBip321Uri } from './parseBip321Uri';
 import { type Erc681TransferInfo, parseErc681TransferUri } from './parseErc681TransferUri';
 import { type ErcTransferUriInfo, type TransferUriResult } from './transferUtils';
 
+export type FindNetworkSymbolForProtocol = (protocol: Protocol) => NetworkSymbol | null;
+
 const erc681ToTransferUriInfo = (
     erc681: Erc681TransferInfo,
     scheme: Protocol,
 ): ErcTransferUriInfo => ({
     format: 'erc681',
     // Prefer the network resolved from the @chainId; otherwise keep the URI scheme.
-    scheme: erc681.networkSymbol ?? scheme,
+    scheme: erc681.networkSymbol ? asProtocol(erc681.networkSymbol) : scheme,
     networkSymbol: erc681.networkSymbol,
     address: erc681.recipientAddress,
     token: erc681.contractAddress,
@@ -28,12 +30,15 @@ const erc681ToTransferUriInfo = (
  * recipient rather than the contract address; everything else is handled as a
  * BIP-321 / BIP-21 URI.
  */
-export const parseTransferUri = (uri: string): TransferUriResult => {
+export const parseTransferUri = (
+    uri: string,
+    findNetworkSymbolForProtocol: FindNetworkSymbolForProtocol,
+): TransferUriResult => {
     const url = safeParseUrl(uri);
     if (!url) return err({ type: 'INVALID_URI' });
 
-    const scheme = url.protocol.slice(0, -1) as Protocol;
-    if (!getNetworkSymbolForProtocol(scheme)) {
+    const scheme = asProtocol(url.protocol.slice(0, -1));
+    if (!findNetworkSymbolForProtocol(scheme)) {
         return err({ type: 'UNKNOWN_SCHEME', scheme });
     }
 

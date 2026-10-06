@@ -14,8 +14,8 @@ const mockCloseModal = jest.fn();
 describe('HowTradingWorksSheet', () => {
     const mockOpenLink = jest.spyOn(Linking, 'openURL');
 
-    const renderHowTradingWorksSheet = () =>
-        renderWithBasicProvider(
+    const renderHowTradingWorksSheet = async () =>
+        await renderWithBasicProvider(
             <HowTradingWorksSheet
                 ref={createRef<BottomSheetModalMethods>()}
                 closeModal={mockCloseModal}
@@ -27,7 +27,7 @@ describe('HowTradingWorksSheet', () => {
     });
 
     it('should open links on press', async () => {
-        const { getByText } = renderHowTradingWorksSheet();
+        const { getByText } = await renderHowTradingWorksSheet();
 
         await userEvent.press(
             getByText(
@@ -46,7 +46,7 @@ describe('HowTradingWorksSheet', () => {
     });
 
     it('should close sheet on got it button press', async () => {
-        const { getByText } = renderHowTradingWorksSheet();
+        const { getByText } = await renderHowTradingWorksSheet();
 
         await userEvent.press(getByText(getTranslation('generic.buttons.gotIt')));
 

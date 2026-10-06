@@ -11,6 +11,7 @@ import {
     Text,
     type TextProps,
 } from '@trezor/components';
+
 const Container = styled.span<{ $isAction?: boolean }>`
     width: stretch;
     ${({ $isAction }) =>

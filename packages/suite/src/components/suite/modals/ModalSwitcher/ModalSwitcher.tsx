@@ -3,10 +3,12 @@ import {
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
 } from '@suite/suite-sync';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModalManager';
 import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 
 import { ForegroundAppModal } from './ForegroundAppModal';
@@ -15,7 +17,9 @@ import { ReduxModal } from '../ReduxModal/ReduxModal';
 
 type ModalParams = ReturnType<typeof usePreferredModal>;
 
-const Inner = ({ modal }: { modal: ModalParams }) => {
+type InnerProps = { modal: ModalParams };
+
+const Inner = ({ modal }: InnerProps) => {
     switch (modal.type) {
         case 'redux-modal':
             return <ReduxModal {...modal.payload} />;
@@ -27,7 +31,7 @@ const Inner = ({ modal }: { modal: ModalParams }) => {
 /** Displays whichever redux modal or foreground app should be displayed */
 export const ModalSwitcher = () => {
     const modal = usePreferredModal();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const deviceStaticSessionId = useSelector(selectShowEnableSuiteSyncModal);
 
     // For foreground apps, we have to NOT render the other modals.

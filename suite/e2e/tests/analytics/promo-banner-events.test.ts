@@ -1,21 +1,22 @@
 import { EventType } from '@suite/analytics/src/constants';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
+import type { DashboardBannerType } from '@trezor/suite';
 
 import { isDesktopProject } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
-import { PromoBannerType } from '../../support/pageObjects/dashboardPage';
 
-test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@nightlyOnly'] }, () => {
+test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@optional'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('application');
         await settingsPage.toggleDebugModeInSettings();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
         await settingsPage.navigateTo('debug');
     });
 
     // --- Promo Banner Events ---
-    const bannerTypes: PromoBannerType[] = ['tex', 'ts7'];
+    const bannerTypes: DashboardBannerType[] = ['ts7'];
 
     for (const bannerType of bannerTypes) {
         test(
@@ -25,10 +26,10 @@ test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@nightlyOnly'
                     testCase: `Verify that the ${EventType.PromoDashboardBanner} event is logged for ${bannerType.toUpperCase()} when navigating from the dashboard promo banner`,
                     category: TestCategory.General,
                     priority: TestPriority.Medium,
-                    stream: TestStream.Foundation,
+                    stream: TestStream.Growth,
                 }),
             },
-            async ({ analyticsHelper, dashboardPage, settingsPage, page, target }) => {
+            async ({ analyticsHelper, dashboardPage, promoBanner, settingsPage, page, target }) => {
                 await test.step('Add dashboard promo banner', async () => {
                     await settingsPage.debugTab.addBanner(bannerType);
                 });
@@ -50,7 +51,7 @@ test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@nightlyOnly'
 
                     if (isDesktopProject(target)) {
                         // Perform the action
-                        await dashboardPage.promoBannerButton(bannerType).click();
+                        await promoBanner.promoCTAButton(bannerType).click();
 
                         // Await the listeners
                         payload = await analyticsPromise;
@@ -62,7 +63,7 @@ test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@nightlyOnly'
                          */
                         const pagePromise = page.context().waitForEvent('page');
                         // Perform the action
-                        await dashboardPage.promoBannerButton(bannerType).click();
+                        await promoBanner.promoCTAButton(bannerType).click();
 
                         // Await the listeners
                         const [analyticsPayload, newPage] = await Promise.all([

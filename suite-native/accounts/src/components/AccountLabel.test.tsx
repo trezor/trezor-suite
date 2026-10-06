@@ -3,6 +3,7 @@ import { type StateFromReducersMapObject, combineReducers } from '@reduxjs/toolk
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -17,11 +18,14 @@ import type { StaticSessionId } from '@trezor/connect';
 
 import { AccountLabel, type AccountLabelPropsWithAccount } from './AccountLabel';
 
+const ethSymbol = asNetworkSymbol('eth');
+const btcSymbol = asNetworkSymbol('btc');
+
 const MOCK_ACCOUNT_DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
 
 describe('AccountLabel', () => {
     const ethAccount = mockWalletAccount({
-        symbol: 'eth',
+        symbol: ethSymbol,
         accountLabel: 'ETH Account #1',
         deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
 
@@ -31,7 +35,7 @@ describe('AccountLabel', () => {
     });
 
     const ethLedgerAccount = mockWalletAccount({
-        symbol: 'eth',
+        symbol: ethSymbol,
         accountLabel: 'ETH Ledger Account',
         deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
 
@@ -54,27 +58,29 @@ describe('AccountLabel', () => {
         }),
     } as const;
 
-    const renderAccountLabel = (props: AccountLabelPropsWithAccount) =>
-        renderWithStoreProvider(<AccountLabel {...props} />, {
-            store: createLightStore({
-                reducer,
-                preloadedState: {
-                    wallet: {
-                        settings: initialWalletSettingsState,
-                        accounts,
-                    },
-                } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
-            }),
+    const renderAccountLabel = async (props: AccountLabelPropsWithAccount) =>
+        await renderWithStoreProvider(<AccountLabel {...props} />, {
+            services: {
+                store: createLightStore({
+                    reducer,
+                    preloadedState: {
+                        wallet: {
+                            settings: initialWalletSettingsState,
+                            accounts,
+                        },
+                    } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
+                }),
+            },
         });
 
-    it('should render account label when account is provided', () => {
-        const { getByText } = renderAccountLabel({ account: ethAccount });
+    it('should render account label when account is provided', async () => {
+        const { getByText } = await renderAccountLabel({ account: ethAccount });
 
         expect(getByText('ETH Account #1')).toBeOnTheScreen();
     });
 
-    it('should render account label when descriptors are provided', () => {
-        const { getByText } = renderAccountLabel({
+    it('should render account label when descriptors are provided', async () => {
+        const { getByText } = await renderAccountLabel({
             deviceStaticSessionId: ethAccount.deviceState,
             networkSymbol: ethAccount.symbol,
             accountDescriptor: ethAccount.descriptor,
@@ -83,18 +89,18 @@ describe('AccountLabel', () => {
         expect(getByText('ETH Account #1')).toBeOnTheScreen();
     });
 
-    it('should render nothing when accountLabel is not found', () => {
-        const { toJSON } = renderAccountLabel({
+    it('should render nothing when accountLabel is not found', async () => {
+        const { toJSON } = await renderAccountLabel({
             deviceStaticSessionId: ethAccount.deviceState,
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
             accountDescriptor: ethAccount.descriptor,
         });
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should propagate text props', () => {
-        const { getByText } = renderAccountLabel({
+    it('should propagate text props', async () => {
+        const { getByText } = await renderAccountLabel({
             account: ethAccount,
             accessibilityLabel: 'ACCESSIBILITY_LABEL',
         });
@@ -102,8 +108,8 @@ describe('AccountLabel', () => {
         expect(getByText('ETH Account #1')).toHaveProp('accessibilityLabel', 'ACCESSIBILITY_LABEL');
     });
 
-    it('should render account type badge when showAccountTypeBadge is set', () => {
-        const { getByText } = renderAccountLabel({
+    it('should render account type badge when showAccountTypeBadge is set', async () => {
+        const { getByText } = await renderAccountLabel({
             account: ethLedgerAccount,
             showAccountTypeBadge: true,
         });
@@ -112,8 +118,8 @@ describe('AccountLabel', () => {
         expect(getByText('Ledger')).toBeOnTheScreen();
     });
 
-    it('should render account type badge for the descriptor variant when showAccountTypeBadge is set', () => {
-        const { getByText } = renderAccountLabel({
+    it('should render account type badge for the descriptor variant when showAccountTypeBadge is set', async () => {
+        const { getByText } = await renderAccountLabel({
             deviceStaticSessionId: ethLedgerAccount.deviceState,
             networkSymbol: ethLedgerAccount.symbol,
             accountDescriptor: ethLedgerAccount.descriptor,
@@ -124,8 +130,8 @@ describe('AccountLabel', () => {
         expect(getByText('Ledger')).toBeOnTheScreen();
     });
 
-    it('should not render account type badge when showAccountTypeBadge is not set', () => {
-        const { getByText, queryByText } = renderAccountLabel({ account: ethLedgerAccount });
+    it('should not render account type badge when showAccountTypeBadge is not set', async () => {
+        const { getByText, queryByText } = await renderAccountLabel({ account: ethLedgerAccount });
 
         expect(getByText('ETH Ledger Account')).toBeOnTheScreen();
         expect(queryByText('Ledger')).not.toBeOnTheScreen();

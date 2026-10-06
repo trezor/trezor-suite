@@ -7,6 +7,13 @@
         { "path": "../wallet-constants" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ],
     "include": [".", "**/*.json"]

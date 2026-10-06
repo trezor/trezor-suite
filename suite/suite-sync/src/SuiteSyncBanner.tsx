@@ -1,16 +1,17 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     selectHasDeviceSuiteSyncError,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
+import { injectEnsureWalletSuiteSyncOn } from '@suite-common/suite-sync-types';
 import { Banner } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 import { XIcon } from '@trezor/icons';
@@ -27,9 +28,10 @@ type SuiteSyncBannerProps = {
 };
 
 export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps) => {
-    const dispatch = useDispatch();
-
-    const { ensureWalletSuiteSyncOn } = useServices(selectEnsureWalletSuiteSyncOnDep);
+    const { ensureWalletSuiteSyncOn, dispatch } = useServices(
+        injectEnsureWalletSuiteSyncOn,
+        injectDispatch,
+    );
 
     const hasSuiteSyncError = useSelector((state: WithSuiteSyncAndDeviceState) =>
         selectHasDeviceSuiteSyncError(state, deviceStaticSessionId),
@@ -106,7 +108,7 @@ export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps)
                             <Banner.Button
                                 onClick={() =>
                                     dispatch(
-                                        goto({
+                                        gotoThunk({
                                             routeName: 'firmware-index',
                                             params: { cancelable: true },
                                         }),

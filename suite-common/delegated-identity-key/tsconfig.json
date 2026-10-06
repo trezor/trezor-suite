@@ -7,9 +7,13 @@
         },
         { "path": "../dependency-injection" },
         { "path": "../device" },
+        { "path": "../persistent-device-data" },
         { "path": "../platform-encryption" },
         { "path": "../suite-types" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]

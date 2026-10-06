@@ -1,12 +1,10 @@
-import { selectModalType } from '@suite/modal';
+import { toggleTorThunk } from '@suite/tor-desktop';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { toggleTor } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-
 export const Tor = () => {
-    const modalType = useSelector(selectModalType);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     return (
         <>
@@ -19,7 +17,7 @@ export const Tor = () => {
                     <ActionButton
                         intent="critical"
                         onClick={() => {
-                            dispatch(toggleTor(false, modalType));
+                            dispatch(toggleTorThunk(false));
                         }}
                     >
                         Stop Tor

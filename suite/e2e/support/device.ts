@@ -15,12 +15,20 @@ import {
     parseDisplayContent,
 } from './helpers/displayContentNormalizedParser';
 
+const THP_PAIRING_CODE_LENGTH = 6;
+const THP_PAIRING_CODE_REGEX = new RegExp(`(\\d\\s*){${THP_PAIRING_CODE_LENGTH}}$`);
+
 const EMULATOR_CENTER_COORDINATES: Record<Model, { x: number; y: number }> = {
     [Model.T3T1]: { x: 125, y: 150 },
     [Model.T3W1]: { x: 200, y: 480 },
     [Model.T1B1]: { x: 0, y: 0 },
     [Model.T2T1]: { x: 0, y: 0 },
     [Model.T3B1]: { x: 0, y: 0 },
+};
+
+type OpenFeeInfoParams = {
+    buttonIndexT3W1?: number;
+    buttonIndexT3T1?: number;
 };
 
 export class DeviceFixture {
@@ -117,20 +125,37 @@ export class DeviceFixture {
 
     @step()
     async getTHPPairingCode(): Promise<string[]> {
-        const screenContent = await TrezorUserEnvLink.getScreenContent();
-        const screenContentBody = screenContent.body as string;
+        let code: string[] = [];
 
-        return (
-            screenContentBody
-                .match(/(\d\s*){6}$/)?.[0]
-                .replace(/\s+/g, '')
-                .split('') ?? []
-        );
+        // the device renders the code only once it completes the THP handshake, which lags the host-side confirmation
+        await expect(async () => {
+            const screenContentBody = (await TrezorUserEnvLink.getScreenContent()).body as string;
+            const pairingCode = screenContentBody.match(THP_PAIRING_CODE_REGEX)?.[0];
+
+            if (!pairingCode) {
+                throw new Error(
+                    `expected a ${THP_PAIRING_CODE_LENGTH}-digit THP pairing code on the device display, got: ${screenContentBody}`,
+                );
+            }
+
+            code = pairingCode.replace(/\s+/g, '').split('');
+        }).toPass({ timeout: 10_000 });
+
+        return code;
     }
 
     @step()
     async getDebugState() {
         return await TrezorUserEnvLink.getDebugState();
+    }
+
+    // Call with the bridge stopped: both use the emulator UDP port and a collision hangs tenv.
+    @step()
+    async getFirmwareVersion() {
+        const { major_version, minor_version, patch_version } =
+            await TrezorUserEnvLink.getFeatures();
+
+        return `${major_version}.${minor_version}.${patch_version}`;
     }
 
     @step()
@@ -163,7 +188,7 @@ export class DeviceFixture {
             raw = JSON.parse(debugState.tokens.join(''));
         } catch (error) {
             throw new Error(`Failed to parse display content JSON: ${debugState.tokens.join('')}`, {
-                cause: error as Error,
+                cause: error,
             });
         }
 
@@ -250,13 +275,7 @@ export class DeviceFixture {
     };
 
     @step()
-    async openFeeInfo({
-        buttonIndexT3W1 = 1,
-        buttonIndexT3T1 = 1,
-    }: {
-        buttonIndexT3W1?: number;
-        buttonIndexT3T1?: number;
-    } = {}) {
+    async openFeeInfo({ buttonIndexT3W1 = 1, buttonIndexT3T1 = 1 }: OpenFeeInfoParams = {}) {
         const EMULATOR_BURGER_MENU_COORDINATES: Record<Model, { x: number; y: number }> = {
             [Model.T3T1]: { x: 200, y: 20 },
             [Model.T3W1]: { x: 300, y: 20 },
@@ -277,16 +296,10 @@ export class DeviceFixture {
 
     @step()
     async expectToContainOnDisplay(expectedText: string) {
-        await expect(async () => {
-            const displayBodyContent = (await this.getDisplayContent()).body;
-            const flattenedLines = displayBodyContent.map(line => line.join(' '));
-            const found = flattenedLines.some(line => line.includes(expectedText));
-
-            if (!found) {
-                throw new Error(
-                    `Expected text "${expectedText}" not found on the device display. Actual display text:\n"${JSON.stringify(flattenedLines, null, 2)}"`,
-                );
-            }
-        }).toPass({ timeout: 5_000 });
+        await expect
+            .poll(async () => (await TrezorUserEnvLink.getScreenContent()).body as string, {
+                message: `Expected text "${expectedText}" on the device display`,
+            })
+            .toContain(expectedText);
     }
 }

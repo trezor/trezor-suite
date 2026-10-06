@@ -57,4 +57,4 @@ Navigate to `about:preferences#general` and scroll to `Applications`. Find handl
 
 ### Desktop app - macOS
 
-Delete desktop app and use terminal `open -a Xcode ~/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure.plist`. Find and delete `bitcoin` and other coin handlers. If it still wants to open a desktop app. Find all occurrences of `Trezor Suite.app` and delete them, even the `.dmg` files in `suite-desktop/build-electron`.
+Delete desktop app and use terminal `open -a Xcode ~/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure.plist`. Find and delete `bitcoin` and other coin handlers. If it still wants to open a desktop app. Find all occurrences of `Trezor Suite.app` and delete them, even the `.dmg` files in `desktop-app/build-electron`.

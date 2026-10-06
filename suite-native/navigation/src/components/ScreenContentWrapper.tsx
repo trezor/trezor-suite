@@ -1,4 +1,4 @@
-import React, { type ReactNode, useEffect, useRef } from 'react';
+import React, { type ReactNode, useRef } from 'react';
 import { type ScrollViewProps } from 'react-native';
 import {
     KeyboardAwareScrollView,
@@ -20,7 +20,6 @@ type ScreenContentProps = {
     focusedInputBottomOffset?: number;
     isDynamicHeader?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
-    shouldKeepScrolledToEnd?: boolean;
 };
 
 const screenContentWrapperStyle = prepareNativeStyle(() => ({ flexGrow: 1 }));
@@ -32,21 +31,12 @@ export const ScreenContentWrapper = ({
     focusedInputBottomOffset,
     refreshControl,
     isDynamicHeader = false,
-    shouldKeepScrolledToEnd = false,
 }: ScreenContentProps) => {
     const scrollViewRef = useRef<KeyboardAwareScrollViewRef | null>(null);
     const { applyStyle } = useNativeStyles();
 
     const { scrollDivider, handleScroll } = useScrollDivider();
     const { handleDynamicHeaderScroll } = useDynamicHeader();
-
-    const scrollToEnd = () => scrollViewRef.current?.scrollToEnd({ animated: false });
-
-    useEffect(() => {
-        if (shouldKeepScrolledToEnd) {
-            scrollToEnd();
-        }
-    }, [shouldKeepScrolledToEnd]);
 
     const scrollHandler = (() => {
         if (hasHeader && isDynamicHeader) {
@@ -73,9 +63,6 @@ export const ScreenContentWrapper = ({
                 contentInsetAdjustmentBehavior="never"
                 contentContainerStyle={applyStyle(screenContentWrapperStyle)}
                 onScroll={scrollHandler}
-                // Keeps the end of the content visible even when its height settles in several
-                // layout passes (e.g. a review CTA appearing while output items collapse).
-                onContentSizeChange={shouldKeepScrolledToEnd ? scrollToEnd : undefined}
                 testID="@screen/mainScrollView"
             >
                 <ScrollViewContext.Provider value={scrollViewRef}>

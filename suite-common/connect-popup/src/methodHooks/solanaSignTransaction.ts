@@ -1,3 +1,5 @@
+import { selectSelectedDevice } from '@suite-common/device';
+import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     accountsActions,
@@ -5,11 +7,13 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import TrezorConnect from '@trezor/connect';
 import type { CallMethodKeys, SolanaSignTransaction } from '@trezor/connect';
 import { getSerializedPath, validatePath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { connectPopupActions } from '../connectPopupActions';
+import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
 import { createPlaceholderAccount } from './utils';
 
@@ -21,9 +25,10 @@ const preCallHook = async <M extends CallMethodKeys>({
     getState,
     dispatch,
     txSigningPrecomposed,
+    source,
 }: PreCallHookParams<M>) => {
     try {
-        if (method === 'solanaSignTransaction' && txSigningPrecomposed) {
+        if (method === 'solanaSignTransaction') {
             const typedPayload = payload as any as SolanaSignTransaction;
             const path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
             const network = getNetwork(typedPayload.additionalInfo?.isDevnet ? 'dsol' : 'sol');
@@ -35,9 +40,15 @@ const preCallHook = async <M extends CallMethodKeys>({
             );
             if (!selectedAccount) {
                 // Create a new placeholder account
-                const createdAccount = await dispatch(createPlaceholderAccount(network, path));
-                temporaryAccounts.push(createdAccount.payload);
-                selectedAccount = createdAccount.payload;
+                const createdAccount = await dispatch(
+                    createPlaceholderAccount(
+                        network,
+                        path,
+                        selectSupportedNetworkSymbols(getState()),
+                    ),
+                );
+                temporaryAccounts.push(createdAccount.payload.account);
+                selectedAccount = createdAccount.payload.account;
             }
             if (!selectedAccount) {
                 throw new Error('Selected account is missing'); // Should not happen
@@ -47,26 +58,57 @@ const preCallHook = async <M extends CallMethodKeys>({
                     selectedAccountKey: selectedAccount.key,
                 }),
             );
-            dispatch(
-                sendFormActions.storePrecomposedTransaction({
-                    formState: {
-                        // Can be left empty, not used in tx review modal
-                        outputs: [],
-                        feeLimit: '',
-                        feePerUnit: '',
-                        selectedUtxos: [],
-                        isCoinControlEnabled: false,
-                        hasCoinControlBeenOpened: false,
-                        options: [],
-                        selectedFee: 'custom',
+            // Connect only precomposes when it can decode the message; the simulation does not
+            // depend on it, so a WalletConnect call still gets scanned without one.
+            if (txSigningPrecomposed) {
+                dispatch(
+                    sendFormActions.storePrecomposedTransaction({
+                        formState: {
+                            // Can be left empty, not used in tx review modal
+                            outputs: [],
+                            feeLimit: '',
+                            feePerUnit: '',
+                            selectedUtxos: [],
+                            isCoinControlEnabled: false,
+                            hasCoinControlBeenOpened: false,
+                            options: [],
+                            selectedFee: 'custom',
+                        },
+                        precomposedTransaction: txSigningPrecomposed,
+                    }),
+                );
+            }
+
+            if (source.type !== 'desktop-ws' && source.type !== 'web') {
+                // Display simulation
+                const device = selectSelectedDevice(getState());
+                if (!device) throw new Error('No device selected');
+                const accountAddress = await TrezorConnect.solanaGetAddress({
+                    path: typedPayload.path,
+                    device: {
+                        path: device.path,
+                        instance: device.instance,
+                        state: device.state,
+                        useEmptyPassphrase: device.useEmptyPassphrase,
                     },
-                    precomposedTransaction: txSigningPrecomposed,
-                }),
-            );
+                    showOnTrezor: false,
+                });
+                if (!accountAddress.success) throw new Error(accountAddress.error.message);
+                dispatch(
+                    connectPopupActions.txSimulation({
+                        fromAddress: accountAddress.payload.address,
+                    }),
+                );
+                await getPermissionDeferred(true).promise;
+            }
         }
     } catch (error) {
         // If an error occurs it's not a problem, we just fall back to generic UI
         console.error(`Error in Connect Popup ${method} hook:`, error);
+        if (error.code === 'Method_Cancel') {
+            // User cancelled the operation
+            throw error;
+        }
     }
 };
 

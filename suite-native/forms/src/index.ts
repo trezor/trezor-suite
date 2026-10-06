@@ -1,3 +1,4 @@
+export * from './fields/SelectField';
 export * from './fields/TextInputField';
 export * from './fields/SecureTextInputField';
 export * from './Form';
@@ -6,3 +7,4 @@ export * from './hooks/useForm';
 export * from './hooks/useFormContext';
 export * from './hooks/useField';
 export * from './components/FormSubmitButton';
+export { yup } from './yup';

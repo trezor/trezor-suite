@@ -146,7 +146,6 @@ export function p2tr(a: Payment, opts?: PaymentOpts): Payment {
         if (a.pubkey) {
             const pkh = tapTweakPubkey(liftX(a.pubkey)).pubkey;
             if (hash.length > 0 && !hash.equals(pkh)) throw new TypeError('Hash mismatch');
-            else hash = pkh;
             if (!ecc.isPoint(Buffer.concat([EVEN_Y_COORD_PREFIX, liftX(a.pubkey)])))
                 throw new TypeError('Invalid pubkey for p2tr');
         }

@@ -1,3 +1,7 @@
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -24,6 +28,17 @@ jest.mock('../../hooks/general/useFocusedValueWatch', () =>
     jest.requireActual('../../hooks/general/useFocusedValueWatch'),
 );
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({ navigate: jest.fn(), setParams: jest.fn() }),
+    useRoute: () => ({ params: {} }),
+}));
+
+const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
+    analytics: mockNativeAnalytics(),
+    networks: { networkModuleRepository: mockNetworkModuleRepository() },
+};
+
 describe('ExchangeForm', () => {
     let form: ExchangeFormType;
     const defaultPreloadedState = createTradingPreloadedState({
@@ -33,14 +48,16 @@ describe('ExchangeForm', () => {
         },
     });
 
-    const renderForm = () =>
-        renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderForm = async () =>
+        await renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState: defaultPreloadedState,
+            services,
         });
 
-    const renderExchangeForm = () =>
-        renderWithStoreProvider(<ExchangeForm />, {
+    const renderExchangeForm = async () =>
+        await renderWithStoreProvider(<ExchangeForm />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            services,
             preloadedState: {
                 ...defaultPreloadedState,
                 wallet: {
@@ -50,17 +67,17 @@ describe('ExchangeForm', () => {
             },
         });
 
-    beforeEach(() => {
-        const { result } = renderForm();
+    beforeEach(async () => {
+        const { result } = await renderForm();
         form = result.current;
     });
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('should render form', () => {
-        const { getByText, queryByText } = renderExchangeForm();
+    it('should render form', async () => {
+        const { getByText, queryByText } = await renderExchangeForm();
 
         expect(
             getByText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
@@ -72,14 +89,14 @@ describe('ExchangeForm', () => {
     });
 
     describe('with receive asset selected', () => {
-        beforeEach(() => {
-            act(() => {
+        beforeEach(async () => {
+            await act(() => {
                 form.setValue('receiveAsset', btcAsset);
             });
         });
 
-        it('should display Receive account picker', () => {
-            const { getByText, queryByText } = renderExchangeForm();
+        it('should display Receive account picker', async () => {
+            const { getByText, queryByText } = await renderExchangeForm();
 
             expect(
                 getByText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
@@ -90,11 +107,11 @@ describe('ExchangeForm', () => {
             ).toBeOnTheScreen();
         });
 
-        it('should display Done button when any input is active', () => {
-            act(() => {
+        it('should display Done button when any input is active', async () => {
+            await act(() => {
                 form.setValue('focusedValue', 'sendCryptoAmount');
             });
-            const { getByText, queryByText } = renderExchangeForm();
+            const { getByText, queryByText } = await renderExchangeForm();
 
             expect(
                 getByText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
@@ -106,14 +123,14 @@ describe('ExchangeForm', () => {
         });
 
         describe('with quote selected', () => {
-            beforeEach(() => {
-                act(() => {
+            beforeEach(async () => {
+                await act(() => {
                     form.setValue('quote', mercuryoFixedWorstQuote);
                 });
             });
 
-            it('should display provider', () => {
-                const { getByText } = renderExchangeForm();
+            it('should display provider', async () => {
+                const { getByText } = await renderExchangeForm();
 
                 expect(
                     getByText(getTranslation('moduleTrading.tradingScreen.provider')),

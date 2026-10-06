@@ -353,7 +353,7 @@ export const Range = ({
     );
 
     return (
-        <StyledRange $fill={fill}>
+        <StyledRange $fill={fill} data-component="Range">
             <Input
                 {...props}
                 type="range"

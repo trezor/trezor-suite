@@ -10,6 +10,7 @@ import {
     type UpdateOutputLabelDep,
     type UpdateWalletLabelDep,
 } from '@suite-common/suite-sync-types';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
@@ -20,11 +21,13 @@ import {
     createDangerouslyWipeAllLabelsFromWallet,
 } from './createDangerouslyWipeAllLabelsFromWallet';
 
+const btcSymbol = asNetworkSymbol('btc');
+
 const walletDescriptor = asWalletDescriptor('wallet1');
 const deviceStaticSessionId: StaticSessionId = 'wallet1@device:0';
 
 const account = mockWalletAccount({
-    symbol: 'btc',
+    symbol: btcSymbol,
     deviceState: deviceStaticSessionId,
     descriptor: asAccountDescriptor('account1'),
 });
@@ -39,7 +42,7 @@ const createDeps = ({
     UpdateAddressLabelDep &
     UpdateOutputLabelDep): DangerouslyWipeAllLabelsFromWalletDeps => {
     const otherWalletAccount = mockWalletAccount({
-        symbol: 'btc',
+        symbol: btcSymbol,
         deviceState: 'wallet2@device:0',
         descriptor: asAccountDescriptor('account2'),
     });
@@ -54,18 +57,18 @@ const createDeps = ({
                 accountDescriptor === account.descriptor
                     ? [
                           {
-                              id: createSuiteSyncAddressId('bc1address', 'btc'),
+                              id: createSuiteSyncAddressId('bc1address', btcSymbol),
                               address: 'bc1address',
                               label: 'Address label',
                               accountDescriptor: account.descriptor,
-                              networkSymbol: 'btc',
+                              networkSymbol: btcSymbol,
                           },
                           {
-                              id: createSuiteSyncAddressId('bc1empty', 'btc'),
+                              id: createSuiteSyncAddressId('bc1empty', btcSymbol),
                               address: 'bc1empty',
                               label: null,
                               accountDescriptor: account.descriptor,
-                              networkSymbol: 'btc',
+                              networkSymbol: btcSymbol,
                           },
                       ]
                     : [],
@@ -78,7 +81,7 @@ const createDeps = ({
                               txTargetId: '0',
                               label: 'Output label',
                               accountDescriptor: account.descriptor,
-                              networkSymbol: 'btc',
+                              networkSymbol: btcSymbol,
                           },
                           {
                               id: createSuiteSyncOutputId('tx-id-2', '1'),
@@ -86,7 +89,7 @@ const createDeps = ({
                               txTargetId: '1',
                               label: null,
                               accountDescriptor: account.descriptor,
-                              networkSymbol: 'btc',
+                              networkSymbol: btcSymbol,
                           },
                       ]
                     : [],
@@ -130,7 +133,7 @@ describe(createDangerouslyWipeAllLabelsFromWallet.name, () => {
             address: 'bc1address',
             label: null,
             accountDescriptor: account.descriptor,
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
         });
         expect(updateOutputLabel).toHaveBeenCalledWith({
             deviceStaticSessionId,
@@ -138,7 +141,7 @@ describe(createDangerouslyWipeAllLabelsFromWallet.name, () => {
             txTargetId: '0',
             label: null,
             accountDescriptor: account.descriptor,
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
         });
         expect(updateAccountLabel).toHaveBeenCalledTimes(1);
         expect(updateAddressLabel).toHaveBeenCalledTimes(1);

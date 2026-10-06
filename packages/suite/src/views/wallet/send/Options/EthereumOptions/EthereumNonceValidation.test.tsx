@@ -5,17 +5,18 @@ import { useForm } from 'react-hook-form';
 import { act, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { SendContext } from 'src/hooks/wallet/useSendForm';
+import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { EthereumNonce } from './EthereumNonce';
-import { extraDependenciesDesktopMock } from '../../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
-const ethAccount = mockWalletAccount({ symbol: 'eth' }) as any;
+const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as any;
 
 type Props = { displayNonce?: string; confirmedNonce?: string };
 
@@ -62,15 +63,19 @@ const Harness = ({ displayNonce, confirmedNonce }: Props) => {
     );
 };
 
-// Pending tx occupying nonce 6 (gas in Wei), the replacement target for the fee-bump button.
+// Pending tx occupying nonce 6 (gas in Wei), the replacement target for the fee-bump button. The
+// account's own txs are recognized by authorship (an input belonging to the account), not by `type`
+// — see isSignedByAccount — so `details.vin` has to say the account signed it.
 const pendingAtNonce6 = {
     type: 'sent',
     blockHeight: 0,
+    descriptor: ethAccount.descriptor,
+    details: { vin: [{ n: 0, isAddress: true, isAccountOwned: true }] },
     ethereumSpecific: { nonce: 6, maxFeePerGas: '50000000000', maxPriorityFeePerGas: '5000000000' },
 } as any;
 
 const render = (props: Props) => {
-    const store = configureMockStore({
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -83,11 +88,7 @@ const render = (props: Props) => {
         },
     });
 
-    return renderWithProviders(
-        store,
-        extraDependenciesDesktopMock.services,
-        <Harness {...props} />,
-    );
+    return renderWithProviders(services, <Harness {...props} />);
 };
 
 const typeNonce = async (text: string) => {

@@ -11,7 +11,6 @@ import { EarnProviderConsentModalLayout } from './components/EarnProviderConsent
 import { StakingProviderConsentBanners } from './components/StakingProviderConsentBanners';
 import { useEarnProviderConsentActions } from './hooks/useEarnProviderConsentActions';
 import { getEarnProviderName } from '../../utils/getEarnProviderName';
-import { VotingDelegations } from '../shared/VotingDelegations/VotingDelegations';
 
 interface UpdateEarnProviderConsentModalProps {
     account: Account;
@@ -29,7 +28,7 @@ export const UpdateEarnProviderConsentModal = ({
     const { proceedToEarnFlow, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.UpdateProvider,
         onCancel,
-        includeVotingDelegation: true,
+        provider,
         account,
         networkSymbol: account.symbol,
         yieldContext,
@@ -58,9 +57,6 @@ export const UpdateEarnProviderConsentModal = ({
             }
             onConfirm={proceedToEarnFlow}
             onCancel={onCancelClick}
-            networkType={account.networkType}
-        >
-            <VotingDelegations account={account} />
-        </EarnProviderConsentModalLayout>
+        />
     );
 };

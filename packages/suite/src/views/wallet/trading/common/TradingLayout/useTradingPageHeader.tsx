@@ -1,17 +1,21 @@
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { type Route, goto, selectRouteName, selectSettingsBackRoute } from '@suite/router';
+import { type Route, gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectTradingActiveSection } from '@suite-common/trading';
 import { Box, Button, IconButton, Row } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
-import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
+import { useLayout, useSelector } from 'src/hooks/suite';
+import { TradingTransactionsExportButton } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsExportButton';
 
 import {
     getBackRoute,
     getTradingHeaderTitle,
     isTradingTopLevelRoute,
+    isTradingTransactionsRoute,
 } from './tradingPageHeaderUtils';
 
 type TradingPageHeaderProps = {
@@ -19,15 +23,16 @@ type TradingPageHeaderProps = {
 };
 
 const TradingPageHeader = ({ title }: TradingPageHeaderProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const currentRouteName = useSelector(selectRouteName);
     const previousRoute = useSelector(selectSettingsBackRoute);
     const activeSection = useSelector(selectTradingActiveSection);
 
     const isTopLevelRoute = isTradingTopLevelRoute(currentRouteName);
+    const isTransactionsRoute = isTradingTransactionsRoute(currentRouteName);
 
     const goToRoute = (route: Route['name']) => () => {
-        dispatch(goto({ routeName: route, preserveParams: true }));
+        dispatch(gotoThunk({ routeName: route, preserveParams: true }));
     };
 
     return (
@@ -60,6 +65,11 @@ const TradingPageHeader = ({ title }: TradingPageHeaderProps) => {
                         >
                             <Translation id="TR_TRADING_LAST_TRANSACTIONS" />
                         </Button>
+                    </Box>
+                )}
+                {isTransactionsRoute && (
+                    <Box margin={{ left: 'auto' }}>
+                        <TradingTransactionsExportButton />
                     </Box>
                 )}
             </Row>

@@ -2,15 +2,15 @@ import { type JSX } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { H3, IconButton, Paragraph } from '@trezor/components';
 import { ArrowLeftIcon, XIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 
 import { close } from 'src/actions/suite/guideActions';
-import { useDispatch } from 'src/hooks/suite';
 
 const HeaderWrapper = styled.div<{
     $noLabel?: boolean;
@@ -37,8 +37,7 @@ interface GuideHeaderProps {
 }
 
 export const GuideHeader = ({ back, label }: GuideHeaderProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const goBack = () => {
         back?.();

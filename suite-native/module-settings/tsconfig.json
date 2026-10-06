@@ -18,6 +18,9 @@
         { "path": "../../suite-common/logger" },
         { "path": "../../suite-common/mev" },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-constants"
         },
         {
@@ -31,9 +34,6 @@
         },
         { "path": "../../suite-common/support" },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -45,12 +45,13 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../banner-flags" },
+        { "path": "../banners" },
         { "path": "../biometrics" },
         { "path": "../coin-enabling" },
-        { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-manager" },
+        { "path": "../experimental-features" },
+        { "path": "../feature-feedback" },
         { "path": "../forms" },
         { "path": "../helpers" },
         { "path": "../icons" },

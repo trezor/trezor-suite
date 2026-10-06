@@ -24,7 +24,11 @@ export const RevokeLimitInfoRow = () => {
 
     const { send, preapprovedStringAmount } = quote;
     const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(send);
-    const { decimals } = findToken(sendAccount?.tokens, contractAddress) ?? {};
+    const {
+        decimals,
+        symbol: tokenSymbol,
+        name: tokenName,
+    } = findToken(sendAccount?.tokens, contractAddress) ?? {};
 
     const showUnlimitedAllowanceLabel =
         preapprovedStringAmount &&
@@ -39,8 +43,9 @@ export const RevokeLimitInfoRow = () => {
             <HStack alignItems="center">
                 {!!network?.symbol && (
                     <TokenIcon
-                        symbol={network.symbol}
+                        networkSymbol={network.symbol}
                         contractAddress={contractAddress}
+                        tokenSymbol={tokenSymbol || tokenName}
                         size="extraSmall"
                     />
                 )}

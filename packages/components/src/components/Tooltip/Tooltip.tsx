@@ -117,7 +117,7 @@ export const Tooltip = ({
             disableFlip={disableFlip}
         >
             <TooltipTrigger>
-                <Content as={as} {...frameProps}>
+                <Content as={as} data-component="Tooltip" {...frameProps}>
                     {children}
                     {hasIcon && isActive && <Icon as={QuestionIcon} size={16} />}
                 </Content>

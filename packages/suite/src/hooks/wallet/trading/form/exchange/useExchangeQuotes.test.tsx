@@ -1,9 +1,13 @@
-import { type Resolver, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type AddressValidatorDep } from '@suite-common/networks';
+import { type WithServices } from '@suite-common/redux-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     TRADING_EXCHANGE_FORM_CEX,
     TRADING_EXCHANGE_FORM_DEX,
@@ -11,10 +15,20 @@ import {
     type TradingAssetSellOption,
     type TradingExchangeFormProps,
 } from '@suite-common/trading';
-import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    type Network,
+    type NetworkSymbol,
+    getNetwork,
+    toNetworkSymbolNonTestnet,
+} from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
+import { type AppState } from 'src/reducers/store';
+
 import { useExchangeQuotes } from './useExchangeQuotes';
+
+const btcSymbol = toNetworkSymbolNonTestnet('btc');
+const ethSymbol = toNetworkSymbolNonTestnet('eth');
 
 const QUOTES: ExchangeTrade[] = [
     { exchange: 'provider-1', send: 'bitcoin' as CryptoId, receive: 'ethereum' as CryptoId },
@@ -34,14 +48,6 @@ const mockAddressValidator = {
 
 let mockDexQuotes: ExchangeTrade[] = [];
 let mockCexQuotes: ExchangeTrade[] = [];
-
-jest.mock('@suite-common/dependency-injection', () => ({
-    ...jest.requireActual('@suite-common/dependency-injection'),
-    useServices: () => ({
-        addressValidator: mockAddressValidator,
-        analytics: { report: jest.fn() },
-    }),
-}));
 
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
@@ -71,11 +77,11 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     name: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: 'btc',
+    symbol: btcSymbol,
     displaySymbol: 'BTC',
     networkName: 'Bitcoin',
-    networkSymbol: 'btc',
-    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: 'btc' }),
+    networkSymbol: btcSymbol,
+    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),
 };
 
 const RECEIVE_CRYPTO_SELECT: TradingAssetOption = {
@@ -84,10 +90,10 @@ const RECEIVE_CRYPTO_SELECT: TradingAssetOption = {
     name: 'Ethereum',
     coingeckoId: 'ethereum',
     contractAddress: null,
-    symbol: 'eth',
+    symbol: ethSymbol,
     displaySymbol: 'ETH',
     networkName: 'Ethereum',
-    networkSymbol: 'eth',
+    networkSymbol: ethSymbol,
 };
 
 const VALID_DEFAULTS: TradingExchangeFormProps = {
@@ -139,13 +145,15 @@ const renderExchangeQuotes = (
         receiveAddress?: string;
         receiveAccountKey?: ReturnType<typeof mockAccountKey>;
         receiveAccountSymbol?: NetworkSymbol;
-        resolver?: Resolver<TradingExchangeFormProps>;
     } = {},
 ) => {
-    const { receiveAddress, receiveAccountKey, receiveAccountSymbol, resolver } = options;
-    const network = 'network' in options ? options.network : getNetwork('btc');
-
-    const store = configureMockStore({
+    const { receiveAddress, receiveAccountKey, receiveAccountSymbol } = options;
+    const network = 'network' in options ? options.network : getNetwork(btcSymbol);
+    const report = jest.fn();
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep & { networks: AddressValidatorDep }>,
+        AppState
+    >({
         preloadedState: {
             wallet: {
                 trading: {
@@ -153,14 +161,17 @@ const renderExchangeQuotes = (
                 },
             },
         },
+        services: () => ({
+            networks: { addressValidator: mockAddressValidator },
+            analytics: mockDesktopAnalytics(report),
+        }),
     });
 
-    return renderHookWithStoreProvider(
+    const rendered = renderHookWithStoreProvider(
         ({ currentNetwork, currentReceiveAccountKey }) => {
             const methods = useForm<TradingExchangeFormProps>({
                 mode: 'onChange',
                 defaultValues,
-                resolver,
             });
 
             const quotes = useExchangeQuotes({
@@ -176,13 +187,15 @@ const renderExchangeQuotes = (
             return { methods, quotes };
         },
         {
-            store,
+            services,
             initialProps: {
                 currentNetwork: network,
                 currentReceiveAccountKey: receiveAccountKey,
             },
         },
     );
+
+    return { ...rendered, report };
 };
 
 describe('useExchangeQuotes', () => {
@@ -212,19 +225,25 @@ describe('useExchangeQuotes', () => {
         );
     });
 
-    it('does not fetch while the form is invalid', async () => {
-        const invalidResolver: Resolver<TradingExchangeFormProps> = () => ({
-            values: {},
-            errors: { feePerUnit: { type: 'manual', message: 'invalid' } },
+    it('reports the input the amount was entered in with the received quotes', async () => {
+        const { result, report } = renderExchangeQuotes(VALID_DEFAULTS, {
+            receiveAddress: '0xreceive',
         });
-        const { result } = renderExchangeQuotes(VALID_DEFAULTS, { resolver: invalidResolver });
 
-        await act(async () => {
-            await result.current.methods.trigger();
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+
+        act(() => {
+            result.current.methods.setValue('amountInputSource', 'fraction');
+            result.current.methods.setValue('outputs.0.amount', '0.5');
         });
-        await wait(700);
 
-        expect(mockHandleRequest).not.toHaveBeenCalled();
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
+        await waitFor(() =>
+            expect(report).toHaveBeenLastCalledWith({
+                type: events.tradeReceivedQuotesEvent.name,
+                payload: { type: 'exchange', count: QUOTES.length, input: 'fraction' },
+            }),
+        );
     });
 
     it('clears the selected quote when the receive crypto changes', async () => {
@@ -245,8 +264,8 @@ describe('useExchangeQuotes', () => {
     it('does not dispatch a quotes request while the receive identity is incoherent (#28143/#30213)', async () => {
         const { result } = renderExchangeQuotes(VALID_DEFAULTS, {
             receiveAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: 'eth' }),
-            receiveAccountSymbol: 'eth',
+            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: ethSymbol }),
+            receiveAccountSymbol: ethSymbol,
         });
 
         await act(async () => {
@@ -282,8 +301,8 @@ describe('useExchangeQuotes', () => {
 
         const { result } = renderExchangeQuotes(VALID_DEFAULTS, {
             receiveAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: 'eth' }),
-            receiveAccountSymbol: 'eth',
+            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: ethSymbol }),
+            receiveAccountSymbol: ethSymbol,
         });
 
         await act(async () => {
@@ -308,8 +327,8 @@ describe('useExchangeQuotes', () => {
     it('clears the selected quote and refetches when only the receive account changes', async () => {
         const { result, rerender } = renderExchangeQuotes(VALID_DEFAULTS, {
             receiveAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: 'eth' }),
-            receiveAccountSymbol: 'eth',
+            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: ethSymbol }),
+            receiveAccountSymbol: ethSymbol,
         });
 
         await act(async () => {
@@ -321,10 +340,10 @@ describe('useExchangeQuotes', () => {
         mockSaveSelectedQuote.mockClear();
 
         rerender({
-            currentNetwork: getNetwork('btc'),
+            currentNetwork: getNetwork(btcSymbol),
             currentReceiveAccountKey: mockAccountKey({
                 descriptor: 'receiveaccount2',
-                symbol: 'eth',
+                symbol: ethSymbol,
             }),
         });
 
@@ -347,7 +366,7 @@ describe('useExchangeQuotes', () => {
         expect(mockHandleRequest).not.toHaveBeenCalled();
 
         rerender({
-            currentNetwork: getNetwork('btc'),
+            currentNetwork: getNetwork(btcSymbol),
             currentReceiveAccountKey: undefined,
         });
 

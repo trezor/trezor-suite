@@ -1,4 +1,4 @@
-import { yup } from '@suite-common/validators';
+import { yup } from '@suite/forms';
 import {
     type AccountType,
     type NetworkSymbol,
@@ -25,8 +25,7 @@ const earnParamsSchema = yup.object({
     symbol: yup.mixed<NetworkSymbol>().required(),
     accountIndex: yup.number().required(),
     accountType: yup.mixed<AccountType>().oneOf(accountTypes).required(),
-    yieldId: yup.string().default('no-yield-id'),
-    contractAddress: yup.string().notRequired(),
+    vaultAddress: yup.string().optional(),
 });
 
 export type EarnParams = yup.InferType<typeof earnParamsSchema>;
@@ -54,37 +53,28 @@ export function parseDashboardParams(params: unknown): DashboardParams | undefin
     }
 }
 
-export const decodeEarnRouteParams = ({
-    rawYieldId,
-    rawContractAddress,
-}: {
-    rawYieldId?: string;
-    rawContractAddress?: string;
-}) => {
-    try {
-        const yieldId = rawYieldId ? decodeURIComponent(rawYieldId) : undefined;
-        const contractAddress = rawContractAddress
-            ? decodeURIComponent(rawContractAddress)
-            : undefined;
-
-        return {
-            yieldId,
-            contractAddress,
-        };
-    } catch {
-        return;
+export const decodeEarnVaultAddress = (rawVaultAddress?: string): string | undefined => {
+    if (!rawVaultAddress) {
+        return undefined;
     }
+
+    try {
+        return decodeURIComponent(rawVaultAddress);
+    } catch {
+        return undefined;
+    }
+};
+type ValidateAccountRouteParamsParams = {
+    symbol?: string;
+    index?: string;
+    rawAccountType?: string;
 };
 
 export const validateAccountRouteParams = ({
     symbol,
     index,
     rawAccountType,
-}: {
-    symbol?: string;
-    index?: string;
-    rawAccountType?: string;
-}): CommonWalletParams => {
+}: ValidateAccountRouteParamsParams): CommonWalletParams => {
     if (!index) return;
 
     const network = getNetworkOptional(symbol);

@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect } from 'react';
 
 import { setConnectionModal, useDevice } from '@suite/device';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingType,
     type TradingUseDetailOutputProps,
@@ -9,7 +11,6 @@ import {
 } from '@suite-common/trading';
 import { throwError } from '@trezor/utils';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import type { TradingDetailContextValues } from 'src/types/trading/tradingDetail';
@@ -26,7 +27,7 @@ export const useTradingDetail = <T extends TradingType>(
     const { tradeType } = props;
     const { account } = useTradingFormAccount(tradeType);
     const { device } = useDevice();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const result = useTradingDetailCommon<T>({ tradeType });
 

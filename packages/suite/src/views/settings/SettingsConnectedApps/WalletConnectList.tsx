@@ -1,5 +1,7 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getSessionNetworks,
     selectSessions,
@@ -14,10 +16,10 @@ import {
 } from '@trezor/icons';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const WalletConnectList = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const sessions = useSelector(selectSessions);
 
     if (sessions.length === 0) {

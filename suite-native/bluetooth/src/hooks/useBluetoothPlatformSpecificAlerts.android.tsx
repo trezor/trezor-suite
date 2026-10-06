@@ -1,11 +1,12 @@
 // This is Android version, see the file name.
 
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 
@@ -14,7 +15,7 @@ import { useBluetoothSettings } from './useBluetoothSettings';
 export const useBluetoothPlatformSpecificAlerts = () => {
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation();
 
     const { openBluetoothSettings } = useBluetoothSettings();

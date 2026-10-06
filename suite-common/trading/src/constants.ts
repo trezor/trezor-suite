@@ -1,6 +1,6 @@
 import { type SellFiatFlowType } from 'invity-api';
 
-import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
+import { type NetworkType, asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { getRandomAccountDescriptor } from './utils/apiKeyUtils';
 
@@ -15,7 +15,7 @@ export const TRADING_BUY_THUNK_PREFIX = `${TRADING_BUY_PREFIX}/thunk`;
 export const TRADING_EXCHANGE_THUNK_PREFIX = `${TRADING_EXCHANGE_PREFIX}/thunk`;
 export const TRADING_SELL_THUNK_PREFIX = `${TRADING_SELL_PREFIX}/thunk`;
 
-export const TRADING_DEFAULT_CRYPTO_CURRENCY = 'btc' satisfies NetworkSymbol;
+export const TRADING_DEFAULT_CRYPTO_CURRENCY = asNetworkSymbol('btc');
 export const TRADING_DEFAULT_PAYMENT_METHOD = 'creditCard' as const;
 export const TRADING_DEFAULT_SELL_FLOWS: SellFiatFlowType[] = ['BANK_ACCOUNT', 'PAYMENT_GATE'];
 export const TRADING_SLIP24_SUPPORTED_NETWORK_TYPES: NetworkType[] = [
@@ -26,7 +26,8 @@ export const TRADING_SLIP24_SUPPORTED_NETWORK_TYPES: NetworkType[] = [
     'ripple',
 ];
 
-export const TRADING_SLIP24_MIN_FIRMWARE_VERSION = '2.12.1';
+export const TRADING_SLIP24_MIN_FIRMWARE_VERSION = '2.12.5';
+export const TRADING_SLIP24_SELL_MIN_FIRMWARE_VERSION = '2.13.0';
 
 export const TRADING_EXCHANGE_RATE = 'rateType';
 export const TRADING_EXCHANGE_RATE_FIXED = 'fixed';
@@ -42,6 +43,7 @@ export const TRADING_FORM_OUTPUT_ADDRESS = 'outputs.0.address';
 export const TRADING_FORM_OUTPUT_FIAT = 'outputs.0.fiat';
 export const TRADING_FORM_OUTPUT_CURRENCY = 'outputs.0.currency';
 export const TRADING_FORM_OUTPUT_MAX = 'setMaxOutputId';
+export const TRADING_FORM_FEE_PER_UNIT = 'feePerUnit';
 
 export const TRADING_FORM_FIAT_INPUT = 'fiatInput';
 export const TRADING_FORM_FIAT_CURRENCY_SELECT = 'currencySelect';
@@ -52,6 +54,17 @@ export const TRADING_FORM_COUNTRY_SUBDIVISION_SELECT = 'countrySubdivisionSelect
 export const TRADING_FORM_PAYMENT_METHOD_SELECT = 'paymentMethod';
 export const TRADING_FORM_PROVIDER_SELECT = 'provider';
 export const TRADING_FORM_AMOUNT_IN_CRYPTO = 'amountInCrypto';
+export const TRADING_FORM_AMOUNT_INPUT_SOURCE = 'amountInputSource';
+
+export const TRADING_FORM_OUTPUT_AMOUNT_FIELDS = [
+    TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_FIAT,
+] as const;
+
+export const TRADING_FORM_INPUT_AMOUNT_FIELDS = [
+    TRADING_FORM_CRYPTO_INPUT,
+    TRADING_FORM_FIAT_INPUT,
+] as const;
 
 export const TRADING_EXCHANGE_FROM_ADDRESS = 'fromAddress';
 

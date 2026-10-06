@@ -1,16 +1,20 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { type TronFlow } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Column, IconCircle, Text } from '@trezor/components';
 import { CheckIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite';
+import { EarnFlowFeedbackCard } from 'src/components/earn/common/EarnFlowFeedbackCard';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 interface TronStakeCompleteProps {
     account: Account;
+    flow: TronFlow;
     heading: ReactNode;
     description: ReactNode;
     children: ReactNode;
@@ -18,16 +22,17 @@ interface TronStakeCompleteProps {
 
 export const TronStakeComplete = ({
     account,
+    flow,
     heading,
     description,
     children,
 }: TronStakeCompleteProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { isBelowMobile } = useLayoutSize();
 
     const handleBackToOverview = () =>
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'wallet-staking',
                 params: {
                     symbol: account.symbol,
@@ -53,6 +58,13 @@ export const TronStakeComplete = ({
             <Button intent="neutral" priority="secondary" onClick={handleBackToOverview}>
                 <Translation id="TR_EARN_YIELD_BACK_TO_OVERVIEW" />
             </Button>
+
+            <EarnFlowFeedbackCard
+                featureTitleId="TR_EARN_STAKING_DASHBOARD_TITLE"
+                analyticsCategory="staking"
+                context={`tron-${flow}`}
+                feature="staking"
+            />
         </Column>
     );
 };

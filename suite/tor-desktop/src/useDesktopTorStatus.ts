@@ -1,0 +1,84 @@
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
+import {
+    type BootstrapTorEvent,
+    type TorStatusEvent,
+    injectDesktopApi,
+} from '@suite/desktop-app-api';
+import { TorStatus, selectIsTorEnabling, selectTorBootstrap, torActions } from '@suite/tor';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { addToastOnceThunk } from '@suite-common/toast-notifications';
+import { isDesktop } from '@trezor/env-utils';
+
+import { setTorBootstrapSlowThunk } from './bootstrap/setTorBootstrapSlowThunk';
+import { setTorBootstrapThunk } from './bootstrap/setTorBootstrapThunk';
+
+type UseDesktopTorStatusParams = {
+    onStatusChange: (params: { status: TorStatus }) => void;
+};
+
+// On desktop the Tor daemon is controlled locally; status and bootstrap progress
+// arrive as events from the desktop process via `desktopApi`.
+export const useDesktopTorStatus = ({ onStatusChange }: UseDesktopTorStatusParams) => {
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
+    const torBootstrap = useSelector(selectTorBootstrap);
+    const isTorEnabling = useSelector(selectIsTorEnabling);
+
+    useEffect(() => {
+        if (!isDesktop()) {
+            return;
+        }
+
+        desktopApi.on('tor/status', (newStatus: TorStatusEvent) => {
+            const { type } = newStatus;
+            dispatch(torActions.setTorStatus(type));
+            onStatusChange({ status: type });
+
+            if (type === TorStatus.Slow) {
+                dispatch(addToastOnceThunk({ type: 'tor-is-slow' }));
+            }
+        });
+
+        if (!isTorEnabling) {
+            desktopApi.getTorStatus();
+        }
+
+        return () => desktopApi.removeAllListeners('tor/status');
+    }, [desktopApi, dispatch, onStatusChange, torBootstrap, isTorEnabling]);
+
+    useEffect(() => {
+        if (!isDesktop()) {
+            return;
+        }
+
+        desktopApi.on('tor/bootstrap', (bootstrapEvent: BootstrapTorEvent) => {
+            if (bootstrapEvent.type === 'slow') {
+                dispatch(setTorBootstrapSlowThunk(true));
+            }
+
+            if (bootstrapEvent.type === 'progress') {
+                dispatch(
+                    setTorBootstrapThunk({
+                        current: bootstrapEvent.progress.current,
+                        total: bootstrapEvent.progress.total,
+                    }),
+                );
+
+                if (bootstrapEvent.progress.current === bootstrapEvent.progress.total) {
+                    dispatch(torActions.setTorStatus(TorStatus.Enabled));
+                    onStatusChange({ status: TorStatus.Enabled });
+                } else {
+                    if (!isTorEnabling) {
+                        dispatch(torActions.setTorStatus(TorStatus.Enabling));
+                    }
+
+                    onStatusChange({ status: TorStatus.Enabling });
+                }
+            }
+        });
+
+        return () => desktopApi.removeAllListeners('tor/bootstrap');
+    }, [desktopApi, dispatch, onStatusChange, torBootstrap, isTorEnabling]);
+};

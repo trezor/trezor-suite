@@ -1,4 +1,4 @@
-import type { BundleProgress, DeviceUniquePath, StaticSessionId } from '@trezor/connect';
+import type { DeviceUniquePath, StaticSessionId, UiEventBundleProgress } from '@trezor/connect';
 
 type CommonDiscoveryStatus = {
     isAddingHiddenWallet?: boolean; // to control visibility of special loader
@@ -30,8 +30,8 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
           }
         | {
               status: 'progress';
-              total: BundleProgress<any>['payload']['total'];
-              progress: BundleProgress<any>['payload']['progress'];
+              total: UiEventBundleProgress<any>['payload']['total'];
+              progress: UiEventBundleProgress<any>['payload']['progress'];
           }
         | {
               status: 'confirm-empty-passphrase';

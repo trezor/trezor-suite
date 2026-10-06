@@ -2,13 +2,19 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
-import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type SuiteRouterHistoryDep } from '@suite/router';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
+import { createTestCompositionRoot, initPreloadedState } from '@suite-common/test-utils';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { type ServerInfo } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 
 import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
 import { ReplaceTxButton } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ReplaceTxButton';
+import { type AppState } from 'src/reducers/store';
 import {
     actionSequence,
     findByTestId,
@@ -18,7 +24,6 @@ import {
 
 import * as fixtures from './__fixtures__/useRbfForm';
 import { RbfContext, useRbf, useRbfContext } from './useRbfForm';
-import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
 
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();
@@ -28,11 +33,6 @@ global.ResizeObserver = class MockedResizeObserver {
 
 // do not mock
 jest.unmock('@trezor/connect');
-
-jest.mock('@suite/router', () => ({
-    ...jest.requireActual('@suite/router'),
-    goto: () => ({ type: 'mock-redirect' }),
-}));
 
 // !!! Must be a stable reference, else it will break some hooks / memoization and causes inf. re-renders
 const translationStringMock = (id: string) => id;
@@ -107,37 +107,16 @@ jest.mock('@trezor/blockchain-link', () => {
     };
 });
 
-type RootReducerState = ReturnType<ReturnType<typeof fixtures.getRootReducer>>;
-
-interface Args {
-    send?: Partial<RootReducerState['wallet']['send']>;
-    fees?: any;
-    selectedAccount?: any;
-    coinjoin?: any;
-}
-
-const initStore = ({ send, fees, selectedAccount, coinjoin }: Args = {}) => {
-    const rootReducer = fixtures.getRootReducer(selectedAccount, fees);
-
-    return configureMockStore({
-        reducer: rootReducer,
-        preloadedState: initPreloadedState({
-            rootReducer,
-            partialState: {
-                wallet: { send, coinjoin },
-            },
-        }),
-    });
-};
-
 interface TestCallback {
     getContextValues?: () => any;
 }
 
+type ComponentProps = { callback: TestCallback };
+
 // component rendered inside of SendIndex
 // callback prop is an object passed from single test case
 // getContextValues returns actual state of SendFormContext
-const Component = ({ callback }: { callback: TestCallback }) => {
+const Component = ({ callback }: ComponentProps) => {
     const values = useRbfContext();
     // eslint-disable-next-line react-hooks/immutability
     callback.getContextValues = () => values;
@@ -148,8 +127,6 @@ const Component = ({ callback }: { callback: TestCallback }) => {
 describe('useRbfForm hook', () => {
     beforeAll(async () => {
         await TrezorConnect.init({
-            transportReconnect: false,
-            pendingTransportEvent: false,
             manifest: {
                 email: 'info@trezor.io',
                 appName: 'Trezor Connect Tests',
@@ -167,7 +144,23 @@ describe('useRbfForm hook', () => {
 
     fixtures.composeAndSign.forEach(f => {
         it(`composeAndSign: ${f.description}`, async () => {
-            const store = initStore(f.store);
+            const rootReducer = fixtures.getRootReducer(f.store.selectedAccount, f.store.fees);
+            const { services } = createTestCompositionRoot<
+                WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep>,
+                AppState
+            >({
+                reducer: rootReducer,
+                preloadedState: initPreloadedState({
+                    rootReducer,
+                    partialState: {
+                        wallet: { coinjoin: f.store.coinjoin },
+                    },
+                }),
+                services: () => ({
+                    analytics: mockDesktopAnalytics(),
+                    suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate: jest.fn() },
+                }),
+            });
             const callback: TestCallback = {};
 
             const TestComponent = () => {
@@ -188,11 +181,7 @@ describe('useRbfForm hook', () => {
                 );
             };
 
-            const { unmount } = renderWithProviders(
-                store,
-                extraDependenciesDesktopMock.services,
-                <TestComponent />,
-            );
+            const { unmount } = renderWithProviders(services, <TestComponent />);
 
             const composeTransactionSpy = jest.spyOn(TrezorConnect, 'composeTransaction');
 

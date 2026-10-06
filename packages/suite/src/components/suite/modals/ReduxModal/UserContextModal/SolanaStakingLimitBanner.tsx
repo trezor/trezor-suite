@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectBlockchainState } from '@suite-common/wallet-core';
-import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';
 import {
     type SolanaStakingLimit,
     estimateSolanaStakingLimit,
-    formatNetworkAmount,
     getOutputTxAmount,
     getSolanaDeactivatedRentReserves,
-} from '@suite-common/wallet-utils';
+    selectBlockchainUrlBySymbol,
+} from '@suite-common/wallet-core';
+import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
+
+import { useSelector } from 'src/hooks/suite';
 
 interface SolanaStakingLimitBannerProps {
     account: Account;
@@ -29,11 +30,9 @@ export const SolanaStakingLimitBanner = ({
     composedLevels,
     type,
 }: SolanaStakingLimitBannerProps) => {
-    const blockchain = useSelector(selectBlockchainState);
+    const blockchainUrl = useSelector(state => selectBlockchainUrlBySymbol(state, account.symbol));
 
     const [limit, setLimit] = useState<SolanaStakingLimit>(NO_LIMIT);
-
-    const selectedBlockchain = blockchain[account.symbol];
 
     useEffect(() => {
         if (account.networkType !== 'solana') {
@@ -41,14 +40,14 @@ export const SolanaStakingLimitBanner = ({
         }
 
         const outputTxAmount = getOutputTxAmount(composedLevels);
-        if (!outputTxAmount || !selectedBlockchain?.url) return;
+        if (!outputTxAmount || !blockchainUrl) return;
 
         let isActive = true;
 
         estimateSolanaStakingLimit({
             descriptor: account.descriptor,
             deactivatedRentReserves: getSolanaDeactivatedRentReserves(account),
-            blockchainUrl: selectedBlockchain.url,
+            blockchainUrl,
             userAgent: `Trezor Suite ${getSuiteVersion()}`,
             type,
             outputAmount: outputTxAmount.toString(),
@@ -67,7 +66,7 @@ export const SolanaStakingLimitBanner = ({
         return () => {
             isActive = false;
         };
-    }, [account, composedLevels, selectedBlockchain?.url, type]);
+    }, [account, composedLevels, blockchainUrl, type]);
 
     if (!limit.isLimitExceeded) return null;
 

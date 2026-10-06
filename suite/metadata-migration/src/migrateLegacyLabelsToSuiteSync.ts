@@ -20,11 +20,6 @@ import type {
 } from './legacyLabelsMigration';
 import { createAccountLabelsParams } from './migrationUtils';
 
-export type MigrateLegacyLabelsToSuiteSync = (
-    selectedDevice: TrezorDeviceWithState,
-    storage: SuiteSyncStorage,
-) => Promise<Result<MigrationCounts, MigrationError>>;
-
 export type MigrateLegacyLabelsToSuiteSyncDeps = {
     getAccountsByDeviceState: GetAccountsByDeviceState;
     getLegacyAccountLabels: GetLegacyAccountLabels;
@@ -33,6 +28,11 @@ export type MigrateLegacyLabelsToSuiteSyncDeps = {
     MigrateAccountLabelsDep &
     MigrateAddressLabelsDep &
     MigrateOutputLabelsDep;
+
+export type MigrateLegacyLabelsToSuiteSync = (
+    selectedDevice: TrezorDeviceWithState,
+    storage: SuiteSyncStorage,
+) => Promise<Result<MigrationCounts, MigrationError>>;
 
 export const createMigrateLegacyLabelsToSuiteSync =
     (deps: MigrateLegacyLabelsToSuiteSyncDeps): MigrateLegacyLabelsToSuiteSync =>

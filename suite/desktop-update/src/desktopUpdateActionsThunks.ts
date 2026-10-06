@@ -1,10 +1,9 @@
-import { type AnyAction } from 'redux';
-import { type ThunkDispatch } from 'redux-thunk';
+import { type Dispatch } from 'redux';
 
-import { AppUpdateEventStatus, asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { AppUpdateEventStatus, type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type DesktopApiDep, type UpdateInfo } from '@suite/desktop-app-api';
+import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
 
 import { getAppUpdatePayload } from './appUpdateAnalytics';
 import {
@@ -13,11 +12,13 @@ import {
     desktopUpdateActions,
 } from './desktopUpdateReducer';
 
-type Dispatch = ThunkDispatch<DesktopUpdateRootState, ExtraDependencies, AnyAction>;
-type GetState = () => DesktopUpdateRootState;
+type AvailableThunkState = DesktopUpdateRootState;
+
+type AvailableThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const availableThunk =
-    (info: UpdateInfo) => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+    (info: UpdateInfo) =>
+    (dispatch: Dispatch, getState: () => AvailableThunkState, extra: AvailableThunkDeps) => {
         // eslint-disable-next-line no-restricted-syntax
         const { allowPrerelease } = getState().desktopUpdate;
 
@@ -26,7 +27,7 @@ export const availableThunk =
             earlyAccessProgram: allowPrerelease,
             updateInfo: info,
         });
-        asTypedDesktopAnalytics(extra.services.analytics).report({
+        extra.services.analytics.report({
             type: events.appUpdateEvent.name,
             payload,
         });
@@ -42,8 +43,12 @@ export const notAvailableThunk = (info: UpdateInfo) => (dispatch: Dispatch) => {
     dispatch(desktopUpdateActions.notAvailable(info));
 };
 
+type DownloadThunkState = DesktopUpdateRootState;
+
+type DownloadThunkDeps = WithServices<DesktopAnalyticsDep>;
+
 export const downloadThunk =
-    () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+    () => (dispatch: Dispatch, getState: () => DownloadThunkState, extra: DownloadThunkDeps) => {
         // eslint-disable-next-line no-restricted-syntax
         const { latest, allowPrerelease } = getState().desktopUpdate;
 
@@ -52,7 +57,7 @@ export const downloadThunk =
             earlyAccessProgram: allowPrerelease,
             updateInfo: latest,
         });
-        asTypedDesktopAnalytics(extra.services.analytics).report({
+        extra.services.analytics.report({
             type: events.appUpdateEvent.name,
             payload,
         });
@@ -60,8 +65,13 @@ export const downloadThunk =
         dispatch(desktopUpdateActions.download());
     };
 
+type ReadyThunkState = DesktopUpdateRootState;
+
+type ReadyThunkDeps = WithServices<DesktopAnalyticsDep>;
+
 export const readyThunk =
-    (info: UpdateInfo) => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+    (info: UpdateInfo) =>
+    (dispatch: Dispatch, getState: () => ReadyThunkState, extra: ReadyThunkDeps) => {
         // eslint-disable-next-line no-restricted-syntax
         const { latest, allowPrerelease } = getState().desktopUpdate;
 
@@ -72,7 +82,7 @@ export const readyThunk =
             earlyAccessProgram: allowPrerelease,
             updateInfo: latest,
         });
-        asTypedDesktopAnalytics(extra.services.analytics).report({
+        extra.services.analytics.report({
             type: events.appUpdateEvent.name,
             payload,
         });
@@ -80,9 +90,17 @@ export const readyThunk =
         dispatch(desktopUpdateActions.ready(info));
     };
 
+type InstallUpdateThunkState = DesktopUpdateRootState;
+
+type InstallUpdateThunkDeps = WithServices<
+    DesktopAnalyticsDep & DesktopApiDep<'installUpdate' | 'setAutoInstallOnAppQuit'>
+>;
+
+type InstallUpdateThunkParams = { installNow: boolean };
+
 export const installUpdateThunk =
-    ({ installNow }: { installNow: boolean }) =>
-    (_: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+    ({ installNow }: InstallUpdateThunkParams) =>
+    (_: Dispatch, getState: () => InstallUpdateThunkState, extra: InstallUpdateThunkDeps) => {
         // eslint-disable-next-line no-restricted-syntax
         const { desktopUpdate } = getState();
 
@@ -95,23 +113,27 @@ export const installUpdateThunk =
             isAutoUpdated: desktopUpdate.isAutomaticUpdateEnabled,
         });
 
-        asTypedDesktopAnalytics(extra.services.analytics).report({
+        extra.services.analytics.report({
             type: events.appUpdateEvent.name,
             payload,
         });
 
         // auto-updater is by default configured to update on quit 'autoUpdater.autoInstallOnAppQuit = true'
         if (installNow) {
-            desktopApi.installUpdate();
+            extra.services.desktopApi.installUpdate();
         } else {
             // To make sure, the update is installed on quit as it may have been disabled
             // by switching off the auto-update (silent-update)
-            desktopApi.setAutoInstallOnAppQuit();
+            extra.services.desktopApi.setAutoInstallOnAppQuit();
         }
     };
 
+type ErrorThunkState = DesktopUpdateRootState;
+
+type ErrorThunkDeps = WithServices<DesktopAnalyticsDep>;
+
 export const errorThunk =
-    () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+    () => (dispatch: Dispatch, getState: () => ErrorThunkState, extra: ErrorThunkDeps) => {
         // eslint-disable-next-line no-restricted-syntax
         const { state, latest, allowPrerelease } = getState().desktopUpdate;
 
@@ -124,7 +146,7 @@ export const errorThunk =
                 earlyAccessProgram: allowPrerelease,
                 updateInfo: latest,
             });
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.appUpdateEvent.name,
                 payload,
             });

@@ -1,14 +1,13 @@
-import { useDispatch } from 'react-redux';
-
+/**
+ * @jest-environment jsdom
+ */
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TickerId, toTokenAddress } from '@suite-common/wallet-types';
 
 import { updateFiatRatesThunk } from './fiatRatesThunks';
 import { useMissingRateTickersQuery } from './useMissingRateTickersQuery';
-
-jest.mock('react-redux', () => ({
-    useDispatch: jest.fn(),
-}));
 
 jest.mock('@suite-common/react-query', () => ({
     commonQueryKeys: {
@@ -28,30 +27,47 @@ jest.mock('./fiatRatesThunks', () => ({
     })),
 }));
 
-const mockUseDispatch = jest.mocked(useDispatch);
 const mockUseQuery = jest.mocked(useQuery);
 const mockMissingRateTickersQueryKey = jest.mocked(commonQueryKeys.missingRateTickers);
 const mockUpdateFiatRatesThunk = jest.mocked(updateFiatRatesThunk);
 
 const missingRateTickers: TickerId[] = [
     {
-        symbol: 'eth',
+        symbol: asNetworkSymbol('eth'),
         tokenAddress: toTokenAddress('0x0000000000000000000000000000000000000001'),
     },
 ];
 
+const renderUseMissingRateTickersQuery = (dispatch = jest.fn()) => {
+    const { services } = createTestCompositionRoot<void, unknown>({ preloadedState: {} });
+    services.store.dispatch = dispatch;
+
+    return renderHookWithStoreProvider(
+        () =>
+            useMissingRateTickersQuery({
+                missingRateTickers,
+                baseCurrencyCode: 'usd',
+            }),
+        { services },
+    );
+};
+
 describe('useMissingRateTickersQuery', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-
-        mockUseDispatch.mockReturnValue(jest.fn());
     });
 
     it('disables the query when there are no missing rate tickers', () => {
-        useMissingRateTickersQuery({
-            missingRateTickers: [],
-            baseCurrencyCode: 'usd',
-        });
+        const { services } = createTestCompositionRoot<void, unknown>({ preloadedState: {} });
+
+        renderHookWithStoreProvider(
+            () =>
+                useMissingRateTickersQuery({
+                    missingRateTickers: [],
+                    baseCurrencyCode: 'usd',
+                }),
+            { services },
+        );
 
         expect(mockMissingRateTickersQueryKey).toHaveBeenCalledWith([], 'usd');
         expect(mockUseQuery).toHaveBeenCalledWith(expect.objectContaining({ enabled: false }));
@@ -61,16 +77,10 @@ describe('useMissingRateTickersQuery', () => {
         const unwrap = jest.fn().mockResolvedValue(undefined);
         const dispatch = jest.fn(() => ({ unwrap }));
 
-        mockUseDispatch.mockReturnValue(dispatch);
-
-        useMissingRateTickersQuery({
-            missingRateTickers,
-            baseCurrencyCode: 'usd',
-        });
+        renderUseMissingRateTickersQuery(dispatch);
 
         const queryParams = mockUseQuery.mock.calls[mockUseQuery.mock.calls.length - 1]?.[0] as
-            | { queryFn: () => Promise<unknown> }
-            | undefined;
+            { queryFn: () => Promise<unknown> } | undefined;
 
         expect(mockUseQuery).toHaveBeenCalledWith(expect.objectContaining({ enabled: true }));
         await queryParams?.queryFn();

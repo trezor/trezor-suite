@@ -1,7 +1,7 @@
 import { exhaustive } from '@trezor/type-utils';
 import { isUrlWithQuery, parseElectrumUrl } from '@trezor/utils';
 
-import type { NetworkSymbol, ServerType } from './types';
+import type { NetworkSymbol, ServerType } from './networkTypes';
 
 export const getServerAddressExample = (networkSymbol: NetworkSymbol, serverType: ServerType) => {
     switch (serverType) {

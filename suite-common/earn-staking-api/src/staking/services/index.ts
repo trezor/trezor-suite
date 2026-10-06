@@ -1,8 +1,8 @@
 import { createHttpClient } from '@suite-common/http-client';
 
+import { resilientStakingBatchResponse } from './resilientStakingBatchResponse';
 import {
     reportStakingTxIdsResponse,
-    stakingBatchResponse,
     stakingCardanoPoolsResponse,
     stakingEthereumValidatorsQueueResponse,
     stakingSolanaRewardsHistoryResponse,
@@ -40,7 +40,8 @@ export const getStakingBatch: (
     options?: RequestOptions & { params?: StakingBatchRequestParams },
 ) => Promise<StakingBatch> = earnHttpClient('/', {
     method: 'GET',
-    schema: stakingBatchResponse,
+    schema: resilientStakingBatchResponse,
+    timeout: 60_000,
 });
 
 export const getStakingStats: (
@@ -95,4 +96,5 @@ export const reportStakingTxIds: (
     method: 'POST',
     schema: reportStakingTxIdsResponse,
     timeout: 60_000,
+    reject: response => !response.ok,
 });

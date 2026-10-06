@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Badge, Row } from '@trezor/components';
+
 type DebugOnlyBadgeProps = {
     children?: ReactNode;
 };

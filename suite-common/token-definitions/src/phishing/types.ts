@@ -35,7 +35,8 @@ export type PhishingDetectorId =
     | 'UNKNOWN_TX'
     | 'DUST_AMOUNT'
     | 'ZERO_AMOUNT'
-    | 'TRC10_TRANSFER';
+    | 'TRC10_TRANSFER'
+    | 'UNSOLICITED_ASSET_OFFER';
 
 export type PhishingDetector = {
     id: PhishingDetectorId;

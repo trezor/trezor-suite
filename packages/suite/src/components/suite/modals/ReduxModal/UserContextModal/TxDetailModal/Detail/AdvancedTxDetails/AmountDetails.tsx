@@ -27,6 +27,8 @@ import { AmountComponent } from 'src/components/wallet/AmountComponent';
 import { useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
+import { HistoricRateChange } from './HistoricRateChange';
+
 type AmountDetailsProps = {
     tx: WalletAccountTransaction;
     isTestnet: boolean;
@@ -45,10 +47,8 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
 
     const fee = formatNetworkAmount(tx.fee, tx.symbol);
     const amount = new BigNumber(formatNetworkAmount(tx.amount, tx.symbol));
-    const displayAmount = tx.blockHash ? amount : amount.minus(fee);
     const cardanoWithdrawal = formatCardanoWithdrawal(tx);
     const cardanoDeposit = formatCardanoDeposit(tx);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const txSignature = tx.ethereumSpecific?.parsedData?.methodId;
     const isStakeType = isStakeTypeTx(txSignature) || tx?.solanaSpecific?.stakeOperation?.type; // ethereum or solana staking tx
@@ -65,6 +65,14 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
 
         return amount.isNegative() ? 'negative' : 'positive';
     };
+
+    const nativeRateChange = tx.blockTime ? (
+        <HistoricRateChange
+            symbol={tx.symbol}
+            historicRate={historicRate}
+            historicTimestamp={tx.blockTime as Timestamp}
+        />
+    ) : null;
 
     return (
         <Table hasBorders={false} isRowHighlightedOnHover={false} typographyStyle="body-sm">
@@ -96,6 +104,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 }}
                             />
                         </Table.Cell>
+                        <Table.Cell />
                     </Table.Row>
                 </Table.Header>
             )}
@@ -114,7 +123,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <Table.Cell align="end">
                                 <Text intent="neutral">
                                     <FormattedCryptoAmount
-                                        value={displayAmount.abs().toString()}
+                                        value={amount.abs().toString()}
                                         symbol={tx.symbol}
                                         signValue={getAmountSignValue()}
                                     />
@@ -123,7 +132,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <Table.Cell align="end">
                                 <Text intent="neutral">
                                     <BaseCurrencyValue
-                                        amount={displayAmount.abs().toString()}
+                                        amount={amount.abs().toString()}
                                         symbol={tx.symbol}
                                         historicRate={historicRate}
                                         useHistoricRate
@@ -133,11 +142,12 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <Table.Cell align="end">
                                 <Text intent="neutral">
                                     <BaseCurrencyValue
-                                        amount={displayAmount.abs().toString()}
+                                        amount={amount.abs().toString()}
                                         symbol={tx.symbol}
                                     />
                                 </Text>
                             </Table.Cell>
+                            <Table.Cell align="end">{nativeRateChange}</Table.Cell>
                         </Table.Row>
                     )}
                 {tx.internalTransfers.map((transfer, i) => (
@@ -176,6 +186,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 />
                             </Text>
                         </Table.Cell>
+                        <Table.Cell align="end">{nativeRateChange}</Table.Cell>
                     </Table.Row>
                 ))}
                 {tx.type !== 'self' &&
@@ -206,6 +217,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                     <Text intent="neutral">
                                         <AmountComponent
                                             transfer={transfer}
+                                            networkSymbol={tx.symbol}
                                             withLink={true}
                                             withSign={true}
                                             alignMultitoken="flex-start"
@@ -214,33 +226,40 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                     </Text>
                                 </Table.Cell>
                                 <Table.Cell align="end">
-                                    {selectedAccount.account && (
-                                        <Text intent="neutral">
-                                            <BaseCurrencyValue
-                                                amount={convertAmountSubunitsToUnits(
-                                                    transfer.amount,
-                                                    transfer.decimals,
-                                                )}
-                                                symbol={selectedAccount.account?.symbol}
-                                                tokenAddress={transfer.contract as TokenAddress}
-                                                historicRate={historicTokenRate}
-                                                useHistoricRate
-                                            />
-                                        </Text>
-                                    )}
+                                    <Text intent="neutral">
+                                        <BaseCurrencyValue
+                                            amount={convertAmountSubunitsToUnits(
+                                                transfer.amount,
+                                                transfer.decimals,
+                                            )}
+                                            symbol={tx.symbol}
+                                            tokenAddress={transfer.contract as TokenAddress}
+                                            historicRate={historicTokenRate}
+                                            useHistoricRate
+                                        />
+                                    </Text>
                                 </Table.Cell>
                                 <Table.Cell align="end">
-                                    {selectedAccount.account && (
-                                        <Text intent="neutral">
-                                            <BaseCurrencyValue
-                                                amount={convertAmountSubunitsToUnits(
-                                                    transfer.amount,
-                                                    transfer.decimals,
-                                                )}
-                                                symbol={selectedAccount.account.symbol}
-                                                tokenAddress={transfer.contract as TokenAddress}
-                                            />
-                                        </Text>
+                                    <Text intent="neutral">
+                                        <BaseCurrencyValue
+                                            amount={convertAmountSubunitsToUnits(
+                                                transfer.amount,
+                                                transfer.decimals,
+                                            )}
+                                            symbol={tx.symbol}
+                                            tokenAddress={transfer.contract as TokenAddress}
+                                        />
+                                    </Text>
+                                </Table.Cell>
+                                <Table.Cell align="end">
+                                    {tx.blockTime && (
+                                        <HistoricRateChange
+                                            symbol={tx.symbol}
+                                            historicRate={historicTokenRate}
+                                            historicTimestamp={tx.blockTime as Timestamp}
+                                            tokenAddress={transfer.contract as TokenAddress}
+                                            displaySymbol={transfer.symbol}
+                                        />
                                     )}
                                 </Table.Cell>
                             </Table.Row>
@@ -277,6 +296,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <BaseCurrencyValue amount={cardanoWithdrawal} symbol={tx.symbol} />
                             </Text>
                         </Table.Cell>
+                        <Table.Cell align="end">{nativeRateChange}</Table.Cell>
                     </Table.Row>
                 )}
                 {cardanoDeposit && (
@@ -310,6 +330,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <BaseCurrencyValue amount={cardanoDeposit} symbol={tx.symbol} />
                             </Text>
                         </Table.Cell>
+                        <Table.Cell align="end">{nativeRateChange}</Table.Cell>
                     </Table.Row>
                 )}
                 {/* TX FEE */}
@@ -344,6 +365,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <BaseCurrencyValue amount={fee} symbol={tx.symbol} />
                             </Text>
                         </Table.Cell>
+                        <Table.Cell align="end">{nativeRateChange}</Table.Cell>
                     </Table.Row>
                 )}
             </Table.Body>

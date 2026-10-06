@@ -9,14 +9,14 @@ jest.mock('@suite-native/trading-state', () => ({
 }));
 
 describe('GeneralSettings', () => {
-    const renderGeneralSettings = () => renderWithStoreProvider(<GeneralSettings />);
+    const renderGeneralSettings = async () => await renderWithStoreProvider(<GeneralSettings />);
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should render trading settings button', () => {
-        const { getByTestId } = renderGeneralSettings();
+    it('should render trading settings button', async () => {
+        const { getByTestId } = await renderGeneralSettings();
 
         expect(getByTestId('@settings/trading')).toBeOnTheScreen();
     });

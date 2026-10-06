@@ -1,18 +1,14 @@
+import { type AsyncThunk } from '@reduxjs/toolkit';
 import { type WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
 
-import { type SuiteCompatibleThunk } from '@suite-common/redux-utils';
-import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 export interface WalletConnectAdapter {
     networkType: string;
     namespaceId: string;
     methods: string[];
-    requestThunk: SuiteCompatibleThunk<{
-        event: WalletKitTypes.SessionRequest;
-    }>;
-    getChainId: (network: Network) => string[];
+    requestThunk: AsyncThunk<any, { event: WalletKitTypes.SessionRequest }, any>;
     getNamespace: (accounts: Account[]) => Record<string, WalletConnectNamespace>;
     processNamespaces: (
         accounts: Account[],
@@ -32,21 +28,12 @@ export interface WalletConnectNamespace {
 export interface WalletConnectSession {
     topic: string;
     validation?: 'VALID' | 'INVALID' | 'UNKNOWN';
-    pairingTopic: string;
-    expiry: number;
-    acknowledged: boolean;
     namespaces: Record<string, Partial<WalletConnectNamespace>>;
-    requiredNamespaces: ProposalTypes.RequiredNamespaces;
-    optionalNamespaces: ProposalTypes.OptionalNamespaces;
-    sessionProperties?: ProposalTypes.SessionProperties;
     peer: {
-        publicKey: string;
         metadata: {
             name: string;
-            description: string;
             url: string;
             icons: string[];
-            verifyUrl?: string;
         };
     };
     lastAccount?: Account;
@@ -65,7 +52,6 @@ export interface PendingConnectionProposal {
     params: ProposalTypes.Struct;
     origin: string;
     validation: 'UNKNOWN' | 'VALID' | 'INVALID';
-    verifyUrl: string;
     isScam?: boolean;
     expired: boolean;
     networks: PendingConnectionProposalNetwork[];

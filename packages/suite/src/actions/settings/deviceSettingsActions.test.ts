@@ -1,55 +1,53 @@
-import { prepareSuiteSettingsReducer, suiteSettingsInitialState } from '@suite/settings';
-import { deviceActions } from '@suite-common/device';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore, filterThunkActionTypes } from '@suite-common/test-utils';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { initialDesktopBluetoothState } from '@suite/bluetooth';
+import { openModal } from '@suite/modal';
+import { suiteSettingsInitialState } from '@suite/settings';
+import { mockForgetBluetoothDevice } from '@suite-common/bluetooth/mocks';
+import { deviceActions, deviceInitialState } from '@suite-common/device';
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
+import { mockReportSecurityCheck, mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { createTestCompositionRoot, filterThunkActionTypes } from '@suite-common/test-utils';
+import { type ForgetDevicePersistentDataThunkState } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { extraDependencies } from 'src/support/extraDependencies';
-
 import fixtures, {
+    type DeviceSettingsActionsTestDeps,
     type DeviceSettingsFixtureState,
     deviceReducer,
 } from './__fixtures__/deviceSettingsActions';
-import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
+import { type ResetDeviceThunkState } from './deviceSettingsActions';
 
 const DEVICE = mockSuiteDevice({ path: '1', connected: true });
-const suiteSettingsReducer = prepareSuiteSettingsReducer(extraDependencies);
+type State = ForgetDevicePersistentDataThunkState & ResetDeviceThunkState;
 
-const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
-    suite: {
-        ...suiteReducer(undefined, { type: '@suite/init' }),
-    },
-    suiteSettings: {
-        ...suiteSettingsInitialState,
-        ...state.suiteSettings,
-    },
+const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}): State => ({
+    suiteSettings: suiteSettingsInitialState,
     device: {
+        ...deviceInitialState,
         devices: state.device?.devices ?? [DEVICE],
         selectedDevice: state.device?.selectedDevice ?? DEVICE,
-        persistentDeviceData: [],
-        isConnectionModalOpen: false,
     },
-    wallet: {
-        settings: initialWalletSettingsState,
+    persistentDeviceData: persistentDeviceDataInitialState,
+    messageSystem: {
+        ...messageSystemInitialState,
+        validMessages: { ...messageSystemInitialState.validMessages, feature: [] },
     },
-    router: {},
-    messageSystem: { validMessages: { feature: [] } },
-    bluetooth: { knownDevices: [] },
+    bluetooth: { ...initialDesktopBluetoothState, knownDevices: [] },
 });
 
-const mockStore = (preloadedState: DeviceSettingsFixtureState) =>
-    configureMockStore({
-        extra: extraDependenciesDesktopMock,
+const mockStore = (preloadedState: State) =>
+    createTestCompositionRoot<DeviceSettingsActionsTestDeps, State>({
+        extra: {
+            actions: { openModal },
+            thunks: { forgetBluetoothDevice: mockForgetBluetoothDevice() },
+        },
         reducer: (state = preloadedState, action) => ({
             ...state,
-            suite: suiteReducer(state.suite, action),
-            suiteSettings: suiteSettingsReducer(state.suiteSettings, action),
             device: deviceReducer(state.device, action),
         }),
         preloadedState,
-    });
+        services: () => ({ reportSecurityCheck: mockReportSecurityCheck() }),
+    }).services.store;
 
 describe('DeviceSettings Actions', () => {
     fixtures.forEach(f => {

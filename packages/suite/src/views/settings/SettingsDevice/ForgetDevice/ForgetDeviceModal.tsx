@@ -1,7 +1,8 @@
 import { useRef } from 'react';
 
 import { selectKnownDeviceByDeviceId } from '@suite-common/bluetooth/src/bluetoothSelectors';
-import { selectPersistentDeviceDataById, selectSelectedDevice } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device';
+import { selectPersistentDeviceDataById } from '@suite-common/persistent-device-data';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getIsDeviceConnectedViaBluetooth, getIsThpDevice } from '@suite-common/suite-utils';
 import { exhaustive } from '@trezor/type-utils';
@@ -34,9 +35,11 @@ type ForgetDeviceState =
     | 'thp-bt-known'
     | 'thp-disconnected';
 
+type ResolveForgetDeviceStateParams = { hasBluetoothCredentials: boolean };
+
 const resolveForgetDeviceState = (
     device: TrezorDevice,
-    { hasBluetoothCredentials }: { hasBluetoothCredentials: boolean },
+    { hasBluetoothCredentials }: ResolveForgetDeviceStateParams,
 ): ForgetDeviceState => {
     const isThp = getIsThpDevice(device);
 
@@ -59,7 +62,9 @@ const resolveForgetDeviceState = (
     return 'thp-disconnected';
 };
 
-export const ForgetDeviceModal = ({ onCancel }: { onCancel: () => void }) => {
+type ForgetDeviceModalProps = { onCancel: () => void };
+
+export const ForgetDeviceModal = ({ onCancel }: ForgetDeviceModalProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const persistentData = useSelector(state =>
         selectPersistentDeviceDataById(state, selectedDevice?.id),

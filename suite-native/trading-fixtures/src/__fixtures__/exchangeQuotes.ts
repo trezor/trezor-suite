@@ -79,6 +79,21 @@ export const mercuryoDexQuote: ExchangeTrade = {
     swapSlippage: '1',
 };
 
+export const oneInchFusionQuote: ExchangeTrade = {
+    exchange: '1inchfusion',
+    fee: 'UNKNOWN',
+    max: 'NONE',
+    isDex: true,
+    min: 0,
+    orderId: 'e4f036c7-a459-4c22-8b45-2c65a7f2e5a9',
+    quoteId: '1inch-fusion',
+    rate: 0.0000082,
+    receive: 'bitcoin' as CryptoId,
+    receiveStringAmount: '0.00082',
+    send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
+    sendStringAmount: '100',
+};
+
 export const oneInchFusionPlusWithoutEip712SignDataQuote: ExchangeTrade = {
     exchange: '1inchfusionplus',
     fee: 'UNKNOWN',

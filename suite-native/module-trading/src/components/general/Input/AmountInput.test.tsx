@@ -1,11 +1,16 @@
-import { fireEvent, renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
-import { paletteV2 } from '@trezor/theme';
+import { fireEvent, renderWithBasicProvider, screen, userEvent } from '@suite-native/test-utils';
+import { palette } from '@trezor/theme';
 
-import { AMOUNT_INPUT_TEST_ID, AmountInput, type AmountInputProps } from './AmountInput';
+import {
+    AMOUNT_INPUT_CONTENT_TEST_ID,
+    AMOUNT_INPUT_TEST_ID,
+    AmountInput,
+    type AmountInputProps,
+} from './AmountInput';
 
 describe('AmountInput', () => {
-    const renderAmountInput = (props: Partial<AmountInputProps>) =>
-        renderWithBasicProvider(
+    const renderAmountInput = async (props: Partial<AmountInputProps>) =>
+        await renderWithBasicProvider(
             <AmountInput
                 inputTransformer={v => v}
                 onChangeText={jest.fn()}
@@ -14,9 +19,21 @@ describe('AmountInput', () => {
             />,
         );
 
+    type ExpectedTextMetrics = { fontSize: number; lineHeight: number };
+
+    const expectTextMetrics = (
+        element: ReturnType<typeof screen.getByLabelText>,
+        { fontSize, lineHeight }: ExpectedTextMetrics,
+    ) => {
+        expect(element).toHaveStyle({ fontSize });
+        expect(screen.getByTestId(AMOUNT_INPUT_CONTENT_TEST_ID)).toHaveStyle({
+            minHeight: lineHeight,
+        });
+    };
+
     it('should respect maxLength property', async () => {
         const changeTextMock = jest.fn();
-        const { getByLabelText } = renderAmountInput({
+        const { getByLabelText } = await renderAmountInput({
             maxLength: 5,
             onChangeText: changeTextMock,
         });
@@ -28,7 +45,7 @@ describe('AmountInput', () => {
     });
 
     it('should have no limit by default', async () => {
-        const { getByLabelText } = renderAmountInput({});
+        const { getByLabelText } = await renderAmountInput({});
 
         await userEvent.type(
             getByLabelText('INPUT'),
@@ -42,7 +59,7 @@ describe('AmountInput', () => {
 
     it('should call onChangeText with undefined instead of empty text', async () => {
         const changeTextMock = jest.fn();
-        const { getByLabelText } = renderAmountInput({ onChangeText: changeTextMock });
+        const { getByLabelText } = await renderAmountInput({ onChangeText: changeTextMock });
         const input = getByLabelText('INPUT');
         await userEvent.type(input, '1234567890');
 
@@ -52,35 +69,39 @@ describe('AmountInput', () => {
         expect(changeTextMock).toHaveBeenLastCalledWith(undefined);
     });
 
-    it('should have default color for valid input value', () => {
-        const { getByLabelText } = renderAmountInput({ value: '1' });
+    it('should have default color for valid input value', async () => {
+        const { getByLabelText } = await renderAmountInput({ value: '1' });
 
-        expect(getByLabelText('INPUT')).toHaveStyle({ color: paletteV2.lightCoolGreyAlpha900 });
+        expect(getByLabelText('INPUT')).toHaveStyle({ color: palette.lightCoolGreyAlpha900 });
     });
 
-    it('should have alert color for invalid input value', () => {
-        const { getByLabelText } = renderAmountInput({ value: '1', hasError: true });
+    it('should have alert color for invalid input value', async () => {
+        const { getByLabelText } = await renderAmountInput({ value: '1', hasError: true });
 
-        expect(getByLabelText('INPUT')).toHaveStyle({ color: paletteV2.lightRed700 });
+        expect(getByLabelText('INPUT')).toHaveStyle({ color: palette.lightRed700 });
     });
 
-    it('should have font size of 34 before layout events', () => {
-        const { getByLabelText } = renderAmountInput({});
+    it('should have font size of 34 before layout events', async () => {
+        const { getByLabelText } = await renderAmountInput({});
 
-        expect(getByLabelText('INPUT')).toHaveStyle({ fontSize: 34, lineHeight: 41 });
+        expectTextMetrics(getByLabelText('INPUT'), { fontSize: 34, lineHeight: 41 });
     });
 
     describe('font size scaling on content change', () => {
-        let input: ReturnType<ReturnType<typeof renderAmountInput>['getByLabelText']>;
-        let box: ReturnType<ReturnType<typeof renderAmountInput>['getByTestId']>;
+        let input: ReturnType<Awaited<ReturnType<typeof renderAmountInput>>['getByLabelText']>;
+        let box: ReturnType<Awaited<ReturnType<typeof renderAmountInput>>['getByTestId']>;
+        let content: ReturnType<Awaited<ReturnType<typeof renderAmountInput>>['getByTestId']>;
 
-        beforeEach(() => {
-            const { getByLabelText, getByTestId } = renderAmountInput({ value: '1234567890' });
+        beforeEach(async () => {
+            const { getByLabelText, getByTestId } = await renderAmountInput({
+                value: '1234567890',
+            });
             input = getByLabelText('INPUT');
             box = getByTestId(AMOUNT_INPUT_TEST_ID);
+            content = getByTestId(AMOUNT_INPUT_CONTENT_TEST_ID);
 
             // Simulate initial layout event
-            fireEvent(box, 'layout', {
+            await fireEvent(box, 'layout', {
                 nativeEvent: {
                     layout: {
                         width: 120,
@@ -90,7 +111,7 @@ describe('AmountInput', () => {
         });
 
         it('should have font size of 34 after initial layout events', () => {
-            expect(input).toHaveStyle({ fontSize: 34, lineHeight: 41 });
+            expectTextMetrics(input, { fontSize: 34, lineHeight: 41 });
         });
 
         it.each([
@@ -100,8 +121,8 @@ describe('AmountInput', () => {
             [250, 17, 20],
         ])(
             'should downscale font when not enough space is available for content with width %i',
-            (contentWidth, expectedFontSize, expectedLineHeight) => {
-                fireEvent(input, 'layout', {
+            async (contentWidth, expectedFontSize, expectedLineHeight) => {
+                await fireEvent(content, 'layout', {
                     nativeEvent: {
                         layout: {
                             width: contentWidth,
@@ -109,7 +130,7 @@ describe('AmountInput', () => {
                     },
                 });
 
-                expect(input).toHaveStyle({
+                expectTextMetrics(input, {
                     fontSize: expectedFontSize,
                     lineHeight: expectedLineHeight,
                 });
@@ -122,15 +143,15 @@ describe('AmountInput', () => {
             [10, 34, 41],
         ])(
             'should upscale font when enough space is available for content with width %i',
-            (contentWidth, expectedFontSize, expectedLineHeight) => {
-                fireEvent(input, 'layout', {
+            async (contentWidth, expectedFontSize, expectedLineHeight) => {
+                await fireEvent(content, 'layout', {
                     nativeEvent: {
                         layout: {
                             width: 200,
                         },
                     },
                 });
-                fireEvent(input, 'layout', {
+                await fireEvent(content, 'layout', {
                     nativeEvent: {
                         layout: {
                             width: contentWidth,
@@ -138,7 +159,7 @@ describe('AmountInput', () => {
                     },
                 });
 
-                expect(input).toHaveStyle({
+                expectTextMetrics(input, {
                     fontSize: expectedFontSize,
                     lineHeight: expectedLineHeight,
                 });
@@ -147,15 +168,15 @@ describe('AmountInput', () => {
 
         it.each([100, 80])(
             'should not upscale until hysteresis is reached for content with width %i',
-            contentWidth => {
-                fireEvent(input, 'layout', {
+            async contentWidth => {
+                await fireEvent(content, 'layout', {
                     nativeEvent: {
                         layout: {
                             width: 200,
                         },
                     },
                 });
-                fireEvent(input, 'layout', {
+                await fireEvent(content, 'layout', {
                     nativeEvent: {
                         layout: {
                             width: contentWidth,
@@ -163,15 +184,12 @@ describe('AmountInput', () => {
                     },
                 });
 
-                expect(input).toHaveStyle({
-                    fontSize: 17,
-                    lineHeight: 20,
-                });
+                expectTextMetrics(input, { fontSize: 17, lineHeight: 20 });
             },
         );
 
-        it('should not divide by zero', () => {
-            fireEvent(input, 'layout', {
+        it('should not divide by zero', async () => {
+            await fireEvent(content, 'layout', {
                 nativeEvent: {
                     layout: {
                         width: 0,
@@ -179,14 +197,11 @@ describe('AmountInput', () => {
                 },
             });
 
-            expect(input).toHaveStyle({
-                fontSize: 34,
-                lineHeight: 41,
-            });
+            expectTextMetrics(input, { fontSize: 34, lineHeight: 41 });
         });
 
-        it('should use full sized font when available space is equal zero', () => {
-            fireEvent(box, 'layout', {
+        it('should use full sized font when available space is equal zero', async () => {
+            await fireEvent(box, 'layout', {
                 nativeEvent: {
                     layout: {
                         width: 0,
@@ -194,10 +209,7 @@ describe('AmountInput', () => {
                 },
             });
 
-            expect(input).toHaveStyle({
-                fontSize: 34,
-                lineHeight: 41,
-            });
+            expectTextMetrics(input, { fontSize: 34, lineHeight: 41 });
         });
     });
 
@@ -209,7 +221,7 @@ describe('AmountInput', () => {
         });
 
         it('should not limit input value when property is not set', async () => {
-            const { getByLabelText } = renderAmountInput({ onChangeText });
+            const { getByLabelText } = await renderAmountInput({ onChangeText });
 
             await userEvent.type(getByLabelText('INPUT'), '1234567890.123456789');
 
@@ -217,7 +229,7 @@ describe('AmountInput', () => {
         });
 
         it('should truncate decimals exceeding specified limit', async () => {
-            const { getByLabelText } = renderAmountInput({ onChangeText, maxDecimals: 3 });
+            const { getByLabelText } = await renderAmountInput({ onChangeText, maxDecimals: 3 });
 
             await userEvent.type(getByLabelText('INPUT'), '1234567890.123456789');
 
@@ -225,7 +237,7 @@ describe('AmountInput', () => {
         });
 
         it('should truncate zero decimals exceeding specified limit', async () => {
-            const { getByLabelText } = renderAmountInput({ onChangeText, maxDecimals: 3 });
+            const { getByLabelText } = await renderAmountInput({ onChangeText, maxDecimals: 3 });
 
             await userEvent.type(getByLabelText('INPUT'), '1234567890.100000000');
 
@@ -235,7 +247,7 @@ describe('AmountInput', () => {
         it.each(['0', '123456', '0.1', '12345.789'])(
             'should do nothing when number of decimals is not exceeding limit, case [%s]',
             async typedValue => {
-                const { getByLabelText } = renderAmountInput({
+                const { getByLabelText } = await renderAmountInput({
                     onChangeText,
                     maxDecimals: 3,
                 });
@@ -248,8 +260,8 @@ describe('AmountInput', () => {
     });
 
     describe('isLoading property', () => {
-        it('should not display input and should display skeleton instead', () => {
-            const { getByTestId, queryByLabelText } = renderAmountInput({
+        it('should not display input and should display skeleton instead', async () => {
+            const { getByTestId, queryByLabelText } = await renderAmountInput({
                 isLoading: true,
                 loadingAccessibilityLabel: 'LOADING',
             });

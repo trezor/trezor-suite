@@ -1,0 +1,138 @@
+// origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetPublicKey.js
+
+import type { BitcoinNetworkInfo, PermissionRequest } from '@trezor/connect-common';
+import {
+    Bundle,
+    GetPublicKey as GetPublicKeySchema,
+    UI_EVENTS,
+    createUiEventMessage,
+} from '@trezor/connect-common';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { Assert } from '@trezor/schema-utils';
+
+import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
+import { getBitcoinNetwork, getBitcoinNetworkOrThrow } from '../data/coinInfo';
+import { bundlify, validateCoinPath } from './common/paramsValidator';
+import { getPublicKeyLabel } from '../utils/accountUtils';
+import { validatePath } from '../utils/pathUtils';
+
+type Params = {
+    proto: PROTO.GetPublicKey;
+    coinInfo: BitcoinNetworkInfo;
+    suppressBackupWarning?: boolean;
+    unlockPath?: PROTO.UnlockPath;
+};
+
+export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[]> {
+    constructor(message: MethodMessage<'getPublicKey'>) {
+        const { hasBundle, payload } = bundlify(message.payload);
+
+        // validate bundle type
+        Assert(Bundle(GetPublicKeySchema), payload);
+
+        // Flag set by Suite for connect 9.x host apps (see connect-popup `getPublicKeyV9Compat`);
+        // restores the v9 fallback to btc for non-bitcoin coins/paths that connect 10 rejects.
+        const v9Compat = !!message.payload._v9_compat;
+
+        const params = payload.bundle.map(batch => {
+            let coinInfo: BitcoinNetworkInfo | undefined;
+            if (batch.coin) {
+                coinInfo = getBitcoinNetwork(batch.coin);
+            }
+
+            const address_n = validatePath(batch.path, coinInfo ? 3 : 0);
+            if (coinInfo && !batch.crossChain) {
+                validateCoinPath(address_n, coinInfo);
+            } else if (!coinInfo) {
+                // Coin omitted or not bitcoin-like: derive the network from the path. Connect 10
+                // rejects an unresolved path; the v9 flag falls back to btc instead (as v9 did).
+                if (v9Compat) {
+                    coinInfo = getBitcoinNetwork(address_n) ?? getBitcoinNetworkOrThrow('btc');
+                } else {
+                    coinInfo = getBitcoinNetworkOrThrow(address_n);
+                }
+            }
+
+            const proto = {
+                address_n,
+                coin_name: coinInfo.name,
+                show_display: batch.showOnTrezor,
+                script_type: batch.scriptType,
+                ignore_xpub_magic: batch.ignoreXpubMagic,
+                ecdsa_curve_name: batch.ecdsaCurveName,
+            };
+
+            return {
+                proto,
+                coinInfo,
+                unlockPath: batch.unlockPath,
+                suppressBackupWarning: batch.suppressBackupWarning,
+            };
+        });
+
+        super(message, params);
+
+        this.requiredFirmwareCoins = params.map(({ coinInfo }) => coinInfo);
+        this.hasBundle = hasBundle;
+        this.confirmMissingBackup = !this.params.every(
+            batch => batch.suppressBackupWarning || !batch.proto.show_display,
+        );
+    }
+
+    hasBundle?: boolean;
+
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
+    }
+
+    get info() {
+        return 'Export public key';
+    }
+
+    get confirmation() {
+        if (this.params.length > 1) {
+            return {
+                view: 'export-xpub' as const,
+                label: 'Export multiple public keys',
+            };
+        }
+        const { params } = this;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof params)[number] = params[0];
+
+        return {
+            view: 'export-xpub' as const,
+            label: getPublicKeyLabel(first.proto.address_n, first.coinInfo),
+        };
+    }
+
+    async run({ sendCoreMessage }: MethodContext) {
+        const responses: MethodReturnType<typeof this.name> = [];
+        const cmd = this.getDevice().getCommands();
+        for (let i = 0; i < this.params.length; i++) {
+            const { params } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const batch: (typeof params)[number] = params[i];
+            const { coinInfo, unlockPath, proto } = batch;
+            const response = await cmd.getHDNode(proto, { coinInfo, unlockPath });
+            responses.push(response);
+
+            if (this.hasBundle) {
+                // send progress
+                sendCoreMessage(
+                    createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, {
+                        total: this.params.length,
+                        progress: i,
+                        response,
+                    }),
+                );
+            }
+        }
+
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof responses)[number] = responses[0];
+
+        return this.hasBundle ? responses : first;
+    }
+}

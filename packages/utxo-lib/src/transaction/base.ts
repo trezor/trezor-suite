@@ -33,7 +33,6 @@ export const EMPTY_SCRIPT = Buffer.allocUnsafe(0);
 export interface TxOutput {
     script: Buffer;
     value: string;
-    decredVersion?: number;
 }
 
 export interface TxInput {
@@ -42,13 +41,6 @@ export interface TxInput {
     script: Buffer;
     sequence: number;
     witness: Buffer[];
-    decredTree?: number;
-    decredWitness?: {
-        value: string;
-        height: number;
-        blockIndex: number;
-        script: Buffer;
-    };
 }
 
 export type TransactionOptions = {
@@ -64,9 +56,9 @@ export class TransactionBase<S = undefined> {
     specific: S | undefined;
 
     network: Network;
-    type: number | undefined; // Dash, Decred, Zcash
+    type: number | undefined; // Zcash
     timestamp: number | undefined; // Verge
-    expiry: number | undefined; // Decred, Zcash. Block height after which this transactions will expire, or 0 to disable expiry
+    expiry: number | undefined; // Zcash. Block height after which this transactions will expire, or 0 to disable expiry
 
     constructor(options: TransactionOptions & { txSpecific?: S }) {
         this.network = options.network || BITCOIN_NETWORK;

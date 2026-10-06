@@ -1,9 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type SellFiatTrade, type SellFiatTradeResponse } from 'invity-api';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 
+import { type HandleSellTradeThunkState } from './handleSellTradeThunk';
 import { handleSellTradeThunk } from './handleSellTradeThunk';
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingSellState } from '../../reducers/sellReducer';
@@ -12,7 +14,9 @@ import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import { tradeApi } from '../../tradeApi';
 import type { LogErrorThunkProps } from '../common/logErrorThunk';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 jest.mock('../common/logErrorThunk', () => ({
     logErrorThunk: (props: LogErrorThunkProps) => ({
@@ -40,8 +44,7 @@ describe('handleSellTradeThunk', () => {
     tradeApi.createApiKey = () => {};
 
     const getMocks = (initialSellState?: Partial<TradingSellState>) => {
-        const store = configureMockStore({
-            extra: {},
+        const { store } = createTestCompositionRoot<void, HandleSellTradeThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -68,7 +71,7 @@ describe('handleSellTradeThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         const mockProcessResponseData = jest.fn();
         const account = accountBtc as Account;

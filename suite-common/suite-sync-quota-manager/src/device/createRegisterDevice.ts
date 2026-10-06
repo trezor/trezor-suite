@@ -1,18 +1,17 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
 import {
     getProofOfDelegatedIdentity,
     getPublicIdentityKeyFromDelegatedKey,
 } from '@suite-common/delegated-identity-key';
 import { type ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
 import { DeviceError } from '@suite-common/device';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { type QuotaManagerCommunicationFailedErrType } from '@suite-common/suite-sync-types';
 import {
     type DelegatedIdentityKey,
     type DeviceErrorType,
     type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import { type TrezorConnectCallable } from '@trezor/connect';
+import { type GetTrezorConnectDep } from '@trezor/connect-common';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 import { versionUtils } from '@trezor/utils';
@@ -43,8 +42,8 @@ export type RegisterDevice = (
 
 export type RegisterDeviceDeps = {
     dispatch: Dispatch;
-    trezorConnect: Pick<TrezorConnectCallable, 'evoluSignRegistrationRequest'>;
-} & RegisterDeviceFetchDep &
+} & GetTrezorConnectDep<'evoluSignRegistrationRequest'> &
+    RegisterDeviceFetchDep &
     PrepareChallengeSessionFetchDep;
 
 export type RegisterDeviceDep = {
@@ -87,11 +86,13 @@ export const createRegisterDevice =
             return proofOfDelegatedIdentity;
         }
 
-        const registrationRequestResult = await deps.trezorConnect.evoluSignRegistrationRequest({
-            challenge_from_server: sessionChallenge.payload.challenge,
-            size_to_acquire: DEFAULT_DEVICE_SIZE_QUOTA,
-            proof_of_delegated_identity: proofOfDelegatedIdentity.payload,
-        });
+        const registrationRequestResult = await deps
+            .getTrezorConnect()
+            .evoluSignRegistrationRequest({
+                challenge_from_server: sessionChallenge.payload.challenge,
+                size_to_acquire: DEFAULT_DEVICE_SIZE_QUOTA,
+                proof_of_delegated_identity: proofOfDelegatedIdentity.payload,
+            });
 
         if (!registrationRequestResult.success) {
             return err(DeviceError(registrationRequestResult.error.message));

@@ -1,15 +1,15 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type Action } from '@suite-common/suite-types';
 import {
     act,
-    configureMockStore,
-    extraDependenciesCommonMock,
+    createTestCompositionRoot,
     renderHookWithStoreProvider,
 } from '@suite-common/test-utils';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
-import { type MessageSystemState } from './messageSystemTypes';
+import { type MessageSystemRootState, type MessageSystemState } from './messageSystemTypes';
 import { getDefaultActionByCategory } from './messageSystemUtils';
 import { useMessageSystemMessageForm } from './useMessageSystemMessageForm';
 
@@ -21,11 +21,12 @@ if (typeof globalThis.crypto.randomUUID !== 'function') {
     });
 }
 
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
-const createStore = (actions: Action[] = []) =>
-    configureMockStore({
-        extra: {},
+const createTestServices = (actions: Action[] = []) =>
+    createTestCompositionRoot<void, MessageSystemRootState>({
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: {
             messageSystem: {
@@ -39,10 +40,10 @@ const createStore = (actions: Action[] = []) =>
                 },
             } as unknown as MessageSystemState,
         },
-    });
+    }).services;
 
-const renderForm = (store = createStore()) =>
-    renderHookWithStoreProvider(() => useMessageSystemMessageForm(), { store });
+const renderForm = (services = createTestServices()) =>
+    renderHookWithStoreProvider(() => useMessageSystemMessageForm(), { services });
 
 describe('useMessageSystemMessageForm', () => {
     it('initializes with a valid banner preset', () => {
@@ -91,7 +92,7 @@ describe('useMessageSystemMessageForm', () => {
 
     it('rejects a duplicate message id', () => {
         const existing = getDefaultActionByCategory('banner');
-        const { result } = renderForm(createStore([existing]));
+        const { result } = renderForm(createTestServices([existing]));
 
         const duplicate = getDefaultActionByCategory('banner');
         duplicate.message.id = existing.message.id;

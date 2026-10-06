@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
     analyticsActions,
@@ -6,10 +6,11 @@ import {
     selectIsAnalyticsEnabled,
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
-import { yup } from '@suite-common/validators';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { analytics } from '@suite-native/analytics';
 import { Badge, Button, Card, CheckBox, Divider, HStack, Text, VStack } from '@suite-native/atoms';
-import { Form, TextInputField, useForm } from '@suite-native/forms';
+import { Form, TextInputField, useForm, yup } from '@suite-native/forms';
 import { useToast } from '@suite-native/toasts';
 
 const DEFAULT_CUSTOM_URL = '';
@@ -26,7 +27,7 @@ export const AnalyticsLogging = () => {
     const customUrl = useSelector(selectCustomAnalyticsUrl);
     const loggerEnabled = useSelector(selectLoggerEnabled);
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { showToast } = useToast();
 
     const form = useForm<FormValues>({

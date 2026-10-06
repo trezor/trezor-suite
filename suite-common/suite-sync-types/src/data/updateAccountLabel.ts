@@ -18,7 +18,7 @@ export type UpdateAccountLabel = (
 
 export type UpdateAccountLabelDep = { updateAccountLabel: UpdateAccountLabel };
 
-export const selectUpdateAccountLabelDep = (services: any): UpdateAccountLabelDep => ({
+export const injectUpdateAccountLabel = (services: any): UpdateAccountLabelDep => ({
     updateAccountLabel: services.suiteSync.labeling.updateAccountLabel,
 });
 

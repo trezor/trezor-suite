@@ -4,10 +4,10 @@ import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';
-import { isInteger, localizeNumber } from '@suite-common/wallet-utils';
+import { isInteger } from '@suite-common/wallet-utils';
 import { Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';

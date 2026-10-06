@@ -1,3 +1,5 @@
+import type { StakingBatch } from '@suite-common/earn-staking-api';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
@@ -5,11 +7,15 @@ import { toADA } from '../../../support/common';
 import { expect, test } from '../../../support/fixtures';
 import { ADA_MOCKED_ACCOUNT } from '../../../support/mocks/ada-endpoints';
 
+const adaSymbol = asNetworkSymbol('ada');
+
 // mocked and expected values
 const startingBalance = Number(ADA_MOCKED_ACCOUNT.balance);
 const startingBalanceFormatted = toADA(startingBalance);
 const EXPECTED_CARDANO_POOL_ID = 'pool1k2qhlrrweu8fecd4hx4hn22lv00nrd3rjdxj6durax7m78q7ynu';
-const feeAmount = 177601; // mocked 44 lovelace/byte
+// Mocked 44 lovelace/byte; the vote delegation certificate carries the predefined abstain
+// DRep, which is 30 bytes smaller than a key-hash DRep.
+const feeAmount = 176281;
 const finalBalance =
     startingBalance - feeAmount - Number(CARDANO_STAKING_REGISTRATION_DEPOSIT) * 1_000_000;
 const finalBalanceFormatted = toADA(finalBalance);
@@ -19,17 +25,19 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test.beforeEach(async ({ page, onboardingPage, settingsPage, blockbookMock }) => {
         await test.step('Mock Cardano pool address', async () => {
-            await page.route(/\/staking\/v1\/\?networks=/, async route => {
-                const response = await route.fetch();
-                const body = await response.json();
-                const adaData = body.data?.find(
-                    (item: { symbol: string }) => item.symbol === 'ada',
-                );
-                if (adaData) {
-                    adaData.pools = [{ apy: 3.9, saturation: 50, id: EXPECTED_CARDANO_POOL_ID }];
-                }
-                await route.fulfill({ body: JSON.stringify(body) });
-            });
+            await page.route(/\/staking\/v1\/\?networks=/, route =>
+                route.fulfill({
+                    json: {
+                        data: [
+                            {
+                                symbol: 'ada',
+                                pools: [{ apy: 3.9, saturation: 50, id: EXPECTED_CARDANO_POOL_ID }],
+                            },
+                        ],
+                        errors: [],
+                    } satisfies StakingBatch,
+                }),
+            );
         });
 
         await onboardingPage.completeOnboarding();
@@ -40,7 +48,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await settingsPage.changeNetworks({
                 enableNetworks: [
-                    { symbol: 'ada', backend: { type: 'blockfrost', url: blockbookMock.url } },
+                    { symbol: adaSymbol, backend: { type: 'blockfrost', url: blockbookMock.url } },
                 ],
             });
         });
@@ -53,7 +61,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user can stake from his Cardano account.',
                 category: TestCategory.Staking,
                 priority: TestPriority.Critical,
-                stream: TestStream.Trends,
+                stream: TestStream.Earn,
             }),
         },
         async ({
@@ -63,11 +71,11 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             walletPage,
             feeSection,
             stakingSection,
-            yieldNutshellModal,
+            earnNutshellModal,
             blockbookMock,
         }) => {
             const stakingAccountItemInLeftSection = walletPage.accountButton({
-                symbol: 'ada',
+                symbol: adaSymbol,
                 type: 'normal',
                 atIndex: 0,
                 subAccount: 'staking',
@@ -75,21 +83,22 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify inactive staking account', async () => {
                 await page.clock.install();
-                await walletPage.openAccount({ symbol: 'ada', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: adaSymbol, type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
+                await expect(stakingSection.startStakingButton).toBeVisible();
+                await expect(walletPage.topPanelBalanceWithSymbol).toHaveText(
+                    startingBalanceFormatted,
+                );
                 await expect(walletPage.discoveryWarning).toBeHidden();
                 await expect(stakingSection.claimRewardsButton).toBeHidden();
                 await expect(stakingSection.unstakeToClaimButton).toBeHidden();
                 await expect(stakingAccountItemInLeftSection).toBeHidden();
-                await expect(walletPage.topPanelBalanceWithSymbol).toHaveText(
-                    startingBalanceFormatted,
-                );
             });
 
             await test.step('Initiate staking flow', async () => {
                 await stakingSection.startStakingButton.click();
                 await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKING_IN_A_NUTSHELL');
-                await expect(yieldNutshellModal.modalContainer).toContainTranslation(
+                await expect(earnNutshellModal.modalContainer).toContainTranslation(
                     'TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE',
                     {
                         values: { networkDisplaySymbol: 'ADA' },
@@ -165,6 +174,8 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                             ['Vote', '\n', 'delegation'],
                             ['For account #1'],
                             ["m/1852'/1815'/", '\n', "0'/2/0"],
+                            ['Delegating to'],
+                            ['Always Abstain'],
                         ],
                         actions: { right_button: 'Confirm' },
                     },
@@ -174,21 +185,9 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                             ['Vote delegation'],
                             ['For account #1'],
                             ["m/1852'/1815'/0'/2", '\n', '/0'],
+                            ['Delegating to'],
+                            ['Always Abstain'],
                         ],
-                    },
-                });
-
-                await devicePrompt.waitForPromptAndClick();
-                await expect(device).toShowOnDisplay({
-                    T3W1: {
-                        header: { title: 'Confirm transaction' },
-                        body: [
-                            ['Delegating to key hash'],
-                            device.wrapText(
-                                'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs',
-                            ),
-                        ],
-                        actions: { right_button: 'Confirm' },
                     },
                 });
 

@@ -1,11 +1,12 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
-import { changeCoinVisibility } from '@suite-common/wallet-core';
+import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
 import { PlusIcon, WarningIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
-import { useDispatch } from 'src/hooks/suite';
 
 interface AccountNotEnabledProps {
     network: Network;
@@ -16,11 +17,11 @@ interface AccountNotEnabledProps {
  * see: @wallet-actions/selectedAccountActions
  */
 export const AccountNotEnabled = ({ network }: AccountNotEnabledProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { isLocked } = useDevice();
 
     const handleClick = () =>
-        dispatch(changeCoinVisibility({ symbol: network.symbol, shouldBeVisible: true }));
+        dispatch(changeCoinVisibilityThunk({ symbol: network.symbol, shouldBeVisible: true }));
 
     return (
         <AccountExceptionLayout

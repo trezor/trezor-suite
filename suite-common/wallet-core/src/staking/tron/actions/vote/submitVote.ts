@@ -1,0 +1,239 @@
+import { captureException, withScope } from '@sentry/core';
+
+import { createThunk } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { getAccountIdentity } from '@suite-common/wallet-utils';
+import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
+
+import { type VoteThunkArguments, composeTronVoteFeeLevelsThunk } from './composeVote';
+import { buildVoteContract, buildVoteReviewForm } from './voteContract';
+import {
+    type AddFakePendingTronTxThunkState,
+    addFakePendingTronTxThunk,
+} from '../../../../transactions/transactionsThunks';
+import { TRON_STAKE_MODULE } from '../../shared/constants';
+import { reportTronVoteTxId } from '../../shared/reportTronVoteTxId';
+import { signTronContract } from '../../shared/signTronContract';
+import { tronStakeActions } from '../../tronStakingReducer';
+import { type TronFlow } from '../../tronStakingTypes';
+
+interface SubmitVoteThunkArguments extends VoteThunkArguments {
+    device: TrezorDevice;
+    flow: TronFlow;
+    requestVoteConsent?: () => Promise<boolean>;
+    requestPushApproval: () => Promise<boolean>;
+    onSigningStart?: () => void;
+    onSettled?: () => void;
+}
+
+type SubmitTronVoteThunkState = AddFakePendingTronTxThunkState;
+
+export const submitTronVoteThunk = createThunk<
+    void,
+    SubmitVoteThunkArguments,
+    { state: SubmitTronVoteThunkState }
+>(
+    `${TRON_STAKE_MODULE}/submitTronVoteThunk`,
+    async (
+        {
+            account,
+            device,
+            flow,
+            allocations,
+            requestVoteConsent,
+            requestPushApproval,
+            onSigningStart,
+            onSettled,
+        },
+        { dispatch },
+    ) => {
+        const { key: accountKey } = account;
+
+        if (requestVoteConsent) {
+            const isConsentGiven = await requestVoteConsent();
+
+            if (!isConsentGiven) {
+                return;
+            }
+        }
+
+        if (account.symbol !== 'trx') {
+            dispatch(
+                tronStakeActions.submitFinished({
+                    accountKey,
+                    flow,
+                    error: {
+                        kind: 'compose-failed',
+                        message: 'TRON voting is supported only for TRX mainnet accounts.',
+                    },
+                }),
+            );
+
+            return;
+        }
+
+        const votedAllocations = allocations.filter(({ count }) => count > 0);
+        const contract = buildVoteContract(account, votedAllocations);
+
+        if (!contract) {
+            dispatch(
+                tronStakeActions.submitFinished({
+                    accountKey,
+                    flow,
+                    error: { kind: 'compose-failed', message: 'Invalid vote allocation.' },
+                }),
+            );
+
+            return;
+        }
+
+        dispatch(tronStakeActions.submitStarted({ accountKey, flow }));
+
+        try {
+            const composed = await dispatch(
+                composeTronVoteFeeLevelsThunk({ account, allocations: votedAllocations }),
+            )
+                .unwrap()
+                .catch(() => undefined);
+            const precomposedTx = composed?.normal?.type === 'final' ? composed.normal : undefined;
+
+            if (!precomposedTx) {
+                dispatch(
+                    tronStakeActions.submitFinished({
+                        accountKey,
+                        flow,
+                        error: { kind: 'compose-failed' },
+                    }),
+                );
+
+                return;
+            }
+
+            dispatch(
+                tronStakeActions.storePrecomposedTransaction({
+                    precomposedTx,
+                    precomposedForm: buildVoteReviewForm(votedAllocations),
+                    accountKey,
+                }),
+            );
+
+            onSigningStart?.();
+
+            const signResult = await signTronContract({ account, device, contract });
+
+            if ('error' in signResult) {
+                dispatch(
+                    tronStakeActions.submitFinished({ accountKey, flow, error: signResult.error }),
+                );
+
+                return;
+            }
+
+            dispatch(
+                tronStakeActions.storeSignedTransaction({
+                    serializedTx: { tx: signResult.serializedTx, symbol: account.symbol },
+                }),
+            );
+
+            const isPushApproved = await requestPushApproval();
+
+            if (!isPushApproved) {
+                dispatch(
+                    tronStakeActions.submitFinished({
+                        accountKey,
+                        flow,
+                        error: { kind: 'cancelled' },
+                    }),
+                );
+
+                return;
+            }
+
+            const isReported = await reportTronVoteTxId(signResult.txid);
+
+            if (!isReported) {
+                dispatch(
+                    tronStakeActions.submitFinished({
+                        accountKey,
+                        flow,
+                        error: { kind: 'report-failed' },
+                    }),
+                );
+
+                return;
+            }
+
+            const pushResult = await TrezorConnect.pushTransaction({
+                tx: signResult.serializedTx,
+                coin: asCoinSymbol(account.symbol),
+                identity: getAccountIdentity(account),
+            });
+
+            if (!pushResult.success) {
+                withScope(scope => {
+                    scope.setTag('error.code', 'tron_staking_broadcast_failed_after_report');
+                    scope.setTag('error.kind', 'vote');
+                    scope.setTag('network.symbol', account.symbol);
+                    scope.setExtra('errorMessage', pushResult.error.message);
+                    captureException(
+                        new Error('TRON vote broadcast failed after successful txid report.'),
+                    );
+                });
+
+                dispatch(
+                    tronStakeActions.submitFinished({
+                        accountKey,
+                        flow,
+                        error: { kind: 'broadcast-failed', message: pushResult.error.message },
+                    }),
+                );
+
+                return;
+            }
+
+            const { txid } = pushResult.payload;
+
+            if (txid !== signResult.txid) {
+                withScope(scope => {
+                    scope.setLevel('fatal');
+                    scope.setTag('error.code', 'tron_staking_broadcast_txid_mismatch');
+                    scope.setTag('error.kind', 'vote');
+                    scope.setTag('network.symbol', account.symbol);
+                    captureException(
+                        new Error(
+                            'TRON vote broadcast txid differs from the reported signed txid.',
+                        ),
+                    );
+                });
+            }
+
+            dispatch(
+                addFakePendingTronTxThunk({
+                    account,
+                    txid,
+                    amount: '0',
+                    fee: precomposedTx.fee ?? '0',
+                    type: 'self',
+                    target: {
+                        addresses: votedAllocations.map(({ address }) => address),
+                        amount: '0',
+                    },
+                    tronSpecific: {
+                        contractType: 'VoteWitnessContract',
+                        operation: 'vote',
+                        votes: votedAllocations.map(({ address, count }) => ({
+                            address,
+                            count: String(count),
+                        })),
+                    },
+                }),
+            );
+
+            dispatch(tronStakeActions.submitFinished({ accountKey, flow, txid }));
+        } finally {
+            onSettled?.();
+            dispatch(tronStakeActions.discardTransaction());
+        }
+    },
+);

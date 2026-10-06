@@ -2,7 +2,10 @@ import { A, pipe } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import {
+    type TokenDefinitionsRootState,
+    selectIsSpecificCoinDefinitionKnown,
+} from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -10,11 +13,13 @@ import {
     selectAccountByKey,
     selectAccountStakeTypeTransactions,
     selectAccountTransactions,
+    selectAccountYieldTypeTransactions,
     selectAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import {
     type AccountKey,
+    type WalletAccountTransaction as CommonWalletAccountTransaction,
     type TokenAddress,
     type TokenInfoBranded,
     type TokenSymbol,
@@ -97,40 +102,48 @@ export const selectAccountTokenDecimals = createMemoizedSelector(
     },
 );
 
+export const selectIsUnrecognizedToken = (
+    state: TokenDefinitionsRootState & AccountsRootState,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+): boolean => {
+    if (!tokenContract) return false;
+    const account = selectAccountByKey(state, accountKey);
+    if (!account) return false;
+
+    return !selectIsSpecificCoinDefinitionKnown(state, account.symbol, tokenContract);
+};
+
+const mapTransactionsWithTypedTokenTransfers = (
+    transactions: readonly CommonWalletAccountTransaction[],
+): WalletAccountTransaction[] =>
+    pipe(
+        transactions,
+        A.map(transaction => ({
+            ...transaction,
+            tokens: pipe(
+                transaction?.tokens ?? [],
+                A.map((tokenTransfer: TokenTransfer) => ({
+                    ...tokenTransfer,
+                    symbol: tokenTransfer.symbol,
+                })),
+            ) as TypedTokenTransfer[],
+        })),
+    ) as WalletAccountTransaction[];
+
 export const selectAccountTransactionsWithTokenTransfers = createMemoizedSelector(
     [selectAccountTransactions],
-    (transactions): WalletAccountTransaction[] =>
-        pipe(
-            transactions,
-            A.map(transaction => ({
-                ...transaction,
-                tokens: pipe(
-                    transaction?.tokens ?? [],
-                    A.map((tokenTransfer: TokenTransfer) => ({
-                        ...tokenTransfer,
-                        symbol: tokenTransfer.symbol,
-                    })),
-                ) as TypedTokenTransfer[],
-            })),
-        ) as WalletAccountTransaction[],
+    mapTransactionsWithTypedTokenTransfers,
 );
 
 export const selectAccountStakeTypeTransactionsWithTokenTransfers = createMemoizedSelector(
     [selectAccountStakeTypeTransactions],
-    (transactions): WalletAccountTransaction[] =>
-        pipe(
-            transactions,
-            A.map(transaction => ({
-                ...transaction,
-                tokens: pipe(
-                    transaction?.tokens ?? [],
-                    A.map((tokenTransfer: TokenTransfer) => ({
-                        ...tokenTransfer,
-                        symbol: tokenTransfer.symbol,
-                    })),
-                ) as TypedTokenTransfer[],
-            })),
-        ) as WalletAccountTransaction[],
+    mapTransactionsWithTypedTokenTransfers,
+);
+
+export const selectAccountYieldTypeTransactionsWithTokenTransfers = createMemoizedSelector(
+    [selectAccountYieldTypeTransactions],
+    mapTransactionsWithTypedTokenTransfers,
 );
 
 export const selectHasDeviceAnyTokensForNetwork = (

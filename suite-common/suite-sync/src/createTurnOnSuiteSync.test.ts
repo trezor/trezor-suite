@@ -1,12 +1,10 @@
-import type { Dispatch } from '@reduxjs/toolkit';
-
-import { createMockDeps, mock } from '@suite-common/dependency-injection';
+import { createMockDeps } from '@suite-common/dependency-injection';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { SuiteSyncUnavailableOnDeviceError } from './createEnsureSuiteSyncKeys';
-import { type CreateTurnOnSuiteSyncDeps, createTurnOnSuiteSync } from './createTurnOnSuiteSync';
+import { type TurnOnSuiteSyncDeps, createTurnOnSuiteSync } from './createTurnOnSuiteSync';
 import type { GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSessionId';
 import { setSuiteSyncError, updateSuiteSyncEnabled } from './suiteSyncSlice';
 import { createSuiteSyncStorageMock } from '../mocks/mockCreateSuiteSyncStorage';
@@ -22,9 +20,9 @@ const createConnectedDevice = () =>
 
 describe(createTurnOnSuiteSync.name, () => {
     it('returns ok early when suite sync is already enabled', async () => {
-        const deps = createMockDeps<CreateTurnOnSuiteSyncDeps>({
+        const deps = createMockDeps<TurnOnSuiteSyncDeps>({
             getIsSuiteSyncEnabled: () => true,
-            dispatch: mock<Dispatch>(() => {}),
+            dispatch: jest.fn(),
             ensureWalletSuiteSyncOn: () => Promise.resolve(ok(createSuiteSyncStorageMock())),
             getDeviceForStaticSessionId: () => createConnectedDevice(),
         });
@@ -40,9 +38,9 @@ describe(createTurnOnSuiteSync.name, () => {
     it('enables suite sync and ensures wallet sync when deviceStaticSessionId is provided', async () => {
         const storage = createSuiteSyncStorageMock();
 
-        const deps = createMockDeps<CreateTurnOnSuiteSyncDeps>({
+        const deps = createMockDeps<TurnOnSuiteSyncDeps>({
             getIsSuiteSyncEnabled: () => false,
-            dispatch: mock<Dispatch>(() => {}),
+            dispatch: jest.fn(),
             ensureWalletSuiteSyncOn: () => Promise.resolve(ok(storage)),
             getDeviceForStaticSessionId: () => createConnectedDevice(),
         });
@@ -59,9 +57,9 @@ describe(createTurnOnSuiteSync.name, () => {
     });
 
     it('enables suite sync without calling ensureWalletSuiteSyncOn when deviceStaticSessionId is undefined', async () => {
-        const deps = createMockDeps<CreateTurnOnSuiteSyncDeps>({
+        const deps = createMockDeps<TurnOnSuiteSyncDeps>({
             getIsSuiteSyncEnabled: () => false,
-            dispatch: mock<Dispatch>(() => {}),
+            dispatch: jest.fn(),
             ensureWalletSuiteSyncOn: () => Promise.resolve(ok(createSuiteSyncStorageMock())),
             getDeviceForStaticSessionId: () => createConnectedDevice(),
         });
@@ -75,9 +73,9 @@ describe(createTurnOnSuiteSync.name, () => {
     });
 
     it('enables suite sync and dispatches DeviceError when remembered device is disconnected', async () => {
-        const deps = createMockDeps<CreateTurnOnSuiteSyncDeps & GetDeviceForStaticSessionIdDep>({
+        const deps = createMockDeps<TurnOnSuiteSyncDeps & GetDeviceForStaticSessionIdDep>({
             getIsSuiteSyncEnabled: () => false,
-            dispatch: mock<Dispatch>(() => {}),
+            dispatch: jest.fn(),
             ensureWalletSuiteSyncOn: () => Promise.resolve(ok(createSuiteSyncStorageMock())),
             getDeviceForStaticSessionId: () =>
                 mockSuiteDevice({
@@ -103,9 +101,9 @@ describe(createTurnOnSuiteSync.name, () => {
     it('returns ensureWalletSuiteSyncOn error when it fails', async () => {
         const ensureWalletSuiteSyncOnResult = err(SuiteSyncUnavailableOnDeviceError());
 
-        const deps = createMockDeps<CreateTurnOnSuiteSyncDeps>({
+        const deps = createMockDeps<TurnOnSuiteSyncDeps>({
             getIsSuiteSyncEnabled: () => false,
-            dispatch: mock<Dispatch>(() => {}),
+            dispatch: jest.fn(),
             ensureWalletSuiteSyncOn: () => Promise.resolve(ensureWalletSuiteSyncOnResult),
             getDeviceForStaticSessionId: () => createConnectedDevice(),
         });

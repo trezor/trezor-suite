@@ -1,11 +1,12 @@
 import { selectSelectedAccount } from '@suite/account';
-import { stopCoinjoinSession } from '@suite/coinjoin';
+import { stopCoinjoinSessionThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { ArrowsInIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 type CancelCoinjoinModalProps = {
     onClose: () => void;
@@ -14,7 +15,7 @@ type CancelCoinjoinModalProps = {
 export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
     const account = useSelector(selectSelectedAccount);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     if (!account) {
         return null;
@@ -30,7 +31,7 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
                 <>
                     <Modal.Button
                         onClick={() => {
-                            dispatch(stopCoinjoinSession(account.key));
+                            dispatch(stopCoinjoinSessionThunk(account.key));
                             onClose();
                         }}
                     >

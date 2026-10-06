@@ -1,6 +1,10 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
-import { type EncryptableBranded, asEncryptedHex } from '@suite-common/platform-encryption';
+import {
+    type EncryptParams,
+    type EncryptableBranded,
+    asEncryptedHex,
+} from '@suite-common/platform-encryption';
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { ok } from '@trezor/type-utils';
 
@@ -11,9 +15,13 @@ describe(createSaveDelegatedIdentityKey.name, () => {
         const actions: UnknownAction[] = [];
 
         const saveDelegatedIdentityKey = createSaveDelegatedIdentityKey({
-            dispatch: (action: any) => actions.push(action),
+            dispatch: (action: any) => {
+                actions.push(action);
+
+                return action;
+            },
             platformEncryption: {
-                encrypt: <T extends EncryptableBranded>({ value }: { value: T }) =>
+                encrypt: <T extends EncryptableBranded>({ value }: EncryptParams<T>) =>
                     Promise.resolve(ok(asEncryptedHex<T>(`${value}-<encrypted>`))),
                 decrypt: () => {
                     throw new Error('Not expected!');
@@ -29,7 +37,7 @@ describe(createSaveDelegatedIdentityKey.name, () => {
         expect(actions).toStrictEqual([
             {
                 payload: { delegatedKey: 'delegatedKey-<encrypted>', deviceId: 'device-123' },
-                type: '@suite/device/setDelegatedIdentityKey',
+                type: '@suite/persistent-device-data/setDelegatedIdentityKey',
             },
         ]);
     });

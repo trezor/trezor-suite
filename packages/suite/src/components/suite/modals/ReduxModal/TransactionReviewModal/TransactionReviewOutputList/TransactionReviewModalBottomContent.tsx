@@ -1,19 +1,18 @@
-import { useDispatch, useSelector } from 'react-redux';
-
 import {
     type TransactionCreatedEventAction,
     events,
-    selectDesktopAnalyticsDep,
+    injectDesktopAnalytics,
 } from '@suite/analytics';
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Account,
     type FormState,
     type RbfTransactionType,
-    type ReviewOutput,
+    type TransactionReviewOutput,
     type TronStakingFormState,
 } from '@suite-common/wallet-types';
 import {
@@ -25,6 +24,8 @@ import { type StakeType } from '@trezor/blockchain-link-types';
 import { Modal } from '@trezor/components';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { type Deferred } from '@trezor/utils';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { type TxInfoState, getTxType, hasTxValidityExpired } from '../utils';
 
@@ -57,7 +58,7 @@ type TransactionReviewModalBottomContentProps = {
     isRbfConfirmedError?: boolean;
     account: Account;
     precomposedForm: FormState;
-    outputs: ReviewOutput[];
+    outputs: TransactionReviewOutput[];
 };
 
 export const TransactionReviewModalBottomContent = ({
@@ -75,8 +76,7 @@ export const TransactionReviewModalBottomContent = ({
     precomposedForm,
     outputs,
 }: TransactionReviewModalBottomContentProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const connectPopupCall = useSelector(selectConnectPopupCall);
     const { precomposedTx, serializedTx } = txInfoState;
 
@@ -100,8 +100,8 @@ export const TransactionReviewModalBottomContent = ({
                 action,
                 symbol,
                 tokens: outputs
-                    .filter((output: ReviewOutput) => output.token?.symbol)
-                    .map((output: ReviewOutput) => output.token?.symbol)
+                    .filter((output: TransactionReviewOutput) => output.token?.symbol)
+                    .map((output: TransactionReviewOutput) => output.token?.symbol)
                     .join(','),
                 outputsCount: precomposedForm.outputs.length,
                 broadcast: isBroadcastEnabled,
@@ -143,8 +143,8 @@ export const TransactionReviewModalBottomContent = ({
         }
     };
 
-    const handleCopy = () => {
-        const result = copyToClipboard(serializedTx!.tx);
+    const handleCopy = async () => {
+        const result = await copyToClipboard(serializedTx!.tx);
 
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));

@@ -13,7 +13,6 @@ import { type themeOptionsSchema } from '../schema';
 
 type ThemeSwitchProps = {
     lite?: boolean;
-    className?: string;
 };
 
 type ThemeOptions = z.infer<typeof themeOptionsSchema>;

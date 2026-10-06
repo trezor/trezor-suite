@@ -1,16 +1,17 @@
-import { SettingsAnchor, goto } from '@suite/router';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { resetProtocol } from 'src/actions/suite/protocolActions';
 import type { NotificationRendererProps } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
 
 export const AutoEjectRenderer = ({ render: View, notification }: NotificationRendererProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
-    const onCancel = () => dispatch(resetProtocol);
+    const onCancel = () => dispatch(resetProtocol());
 
     const handleActionClick = () => {
-        dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.AutoEject }));
+        dispatch(gotoThunk({ routeName: 'settings-index', anchor: SettingsAnchor.AutoEject }));
     };
 
     return (

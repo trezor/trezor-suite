@@ -7,11 +7,16 @@ import { type ProviderConfirmationStatus } from '@suite-native/trading-types';
 
 import { useDispatchProviderConfirmationStatus } from './useDispatchProviderConfirmationStatus';
 
-const FAIL_CONFIRMATION_TIMEOUT_MS = 30_000;
+const FAIL_CONFIRMATION_TIMEOUT_MS = 85_000;
 
 const STATUSES_TRIGGERING_TIMEOUT: ProviderConfirmationStatus[] = [
     'window_closed_with_success',
     'window_closed_incomplete',
+];
+
+const STATUSES_ALLOWING_CONFIRMATION_SUCCESS: ProviderConfirmationStatus[] = [
+    ...STATUSES_TRIGGERING_TIMEOUT,
+    'confirmation_failed',
 ];
 
 export const useProviderConfirmationStatus = () => {
@@ -27,10 +32,10 @@ export const useProviderConfirmationStatus = () => {
     );
 
     useEffect(() => {
-        if (isTradeConfirmed) {
+        if (isTradeConfirmed && STATUSES_ALLOWING_CONFIRMATION_SUCCESS.includes(currentStatus)) {
             dispatchProviderConfirmationStatus('confirmation_success');
         }
-    }, [isTradeConfirmed, dispatchProviderConfirmationStatus]);
+    }, [currentStatus, isTradeConfirmed, dispatchProviderConfirmationStatus]);
 
     useEffect(() => {
         if (STATUSES_TRIGGERING_TIMEOUT.includes(currentStatus)) {

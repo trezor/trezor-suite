@@ -1,9 +1,11 @@
-import { type ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
     BottomSheetBackdrop,
+    BottomSheetFooter,
+    type BottomSheetFooterProps,
     type BottomSheetHandleProps,
     BottomSheetModal,
     useBottomSheetScrollableCreator,
@@ -11,6 +13,10 @@ import {
 import { FlashList, type FlashListProps, type FlashListRef } from '@shopify/flash-list';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { Box } from '../Box';
+import { EdgeFades } from '../EdgeFades';
+import { useBottomSheetInteractionGate } from './hooks/useBottomSheetInteractionGate';
 
 type FlashListRenderItem<TItem> = NonNullable<FlashListProps<TItem>['renderItem']>;
 type FlashListRenderItemInfo<TItem> = Parameters<FlashListRenderItem<TItem>>[0];
@@ -23,7 +29,15 @@ export type BottomSheetFlashListHandleProps = BottomSheetHandleProps & {
     closeSheet: BottomSheetFlashListControls['closeSheet'];
 };
 
+const EDGE_FADE_START_SIZE = 20;
+const EDGE_FADE_END_SIZE = 220;
+
+const MAX_HEIGHT_RATIO = 0.9;
+const MIN_HEIGHT_RATIO = 0.4;
+
 export type BottomSheetFlashListProps<TItem> = {
+    showEdgeFades?: boolean;
+    footer?: ReactNode;
     isVisible: boolean;
     onClose: (shouldHideKeyboard?: boolean) => void;
     title?: ReactNode;
@@ -46,13 +60,19 @@ const bottomSheetStyle = prepareNativeStyle(utils => ({
 
 const sheetContentContainerStyle = prepareNativeStyle<{
     insetBottom: number;
-}>((utils, { insetBottom }) => ({
+    isSheetSettled: boolean;
+}>((utils, { insetBottom, isSheetSettled }) => ({
     paddingBottom: insetBottom + utils.spacings.sp16,
     paddingHorizontal: utils.spacings.sp16,
+    pointerEvents: isSheetSettled ? 'auto' : 'none',
 }));
 
 const handleStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.borderNeutral,
+}));
+
+const footerStyle = prepareNativeStyle(({ colors }) => ({
+    backgroundColor: colors.surfaceFillPage,
 }));
 
 const WindowOverlay = ({ children }: { children: ReactNode }) => (
@@ -66,15 +86,21 @@ export const BottomSheetFlashList = <TItem,>({
     subtitle,
     estimatedListHeight = 0,
     handleComponent,
+    footer,
     scrollResetKey,
     renderItem,
+    contentContainerStyle,
+    showEdgeFades,
     ...flashListProps
 }: BottomSheetFlashListProps<TItem>) => {
     const { applyStyle } = useNativeStyles();
     const { bottom: insetBottom } = useSafeAreaInsets();
+    const { height: windowHeight } = useWindowDimensions();
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
     const flashListRef = useRef<FlashListRef<TItem>>(null);
+    const { animatedIndex, isSheetSettled } = useBottomSheetInteractionGate();
+    const [footerHeight, setFooterHeight] = useState(0);
 
     // Imperative scroll reset.
     useEffect(() => {
@@ -92,12 +118,19 @@ export const BottomSheetFlashList = <TItem,>({
     }, [onClose]);
 
     const renderHandleComponent = useCallback(
-        (props: BottomSheetHandleProps) =>
-            handleComponent?.({
+        (props: BottomSheetHandleProps) => {
+            const handle = handleComponent?.({
                 ...props,
                 closeSheet: dismissSheet,
-            }) ?? undefined,
-        [dismissSheet, handleComponent],
+            });
+
+            if (handle === undefined || handle === null) {
+                return undefined;
+            }
+
+            return <Box pointerEvents={isSheetSettled ? 'auto' : 'none'}>{handle}</Box>;
+        },
+        [dismissSheet, handleComponent, isSheetSettled],
     );
 
     const renderFlashListItem = useCallback(
@@ -105,8 +138,26 @@ export const BottomSheetFlashList = <TItem,>({
         [renderItem, dismissSheet],
     );
 
-    const maxHeight = Dimensions.get('window').height * 0.9;
-    const minHeight = Math.max(Dimensions.get('window').height * 0.4, estimatedListHeight);
+    const renderFooter = useCallback(
+        ({ animatedFooterPosition }: BottomSheetFooterProps) => (
+            <BottomSheetFooter
+                animatedFooterPosition={animatedFooterPosition}
+                bottomInset={insetBottom}
+                style={applyStyle(footerStyle)}
+            >
+                <Box
+                    onLayout={e => setFooterHeight(e.nativeEvent.layout.height)}
+                    pointerEvents={isSheetSettled ? 'auto' : 'none'}
+                >
+                    {footer}
+                </Box>
+            </BottomSheetFooter>
+        ),
+        [applyStyle, footer, insetBottom, isSheetSettled],
+    );
+
+    const maxHeight = windowHeight * MAX_HEIGHT_RATIO;
+    const minHeight = Math.max(windowHeight * MIN_HEIGHT_RATIO, estimatedListHeight);
     // minHeight can be higher than maxHeight because of estimatedListHeight, but it must be capped by maxHeight
     const snapPoints = useMemo(() => [Math.min(minHeight, maxHeight)], [minHeight, maxHeight]);
 
@@ -123,9 +174,11 @@ export const BottomSheetFlashList = <TItem,>({
     return (
         <BottomSheetModal
             ref={bottomSheetModalRef}
+            animatedIndex={animatedIndex}
             snapPoints={snapPoints}
             maxDynamicContentSize={maxHeight}
             enableDynamicSizing={false}
+            footerComponent={footer ? renderFooter : undefined}
             onDismiss={handleDismiss}
             backdropComponent={props => (
                 <BottomSheetBackdrop
@@ -148,11 +201,22 @@ export const BottomSheetFlashList = <TItem,>({
                 maintainVisibleContentPosition={{ disabled: true }}
                 renderScrollComponent={BottomSheetListScrollComponent}
                 renderItem={renderFlashListItem}
-                contentContainerStyle={applyStyle(sheetContentContainerStyle, {
-                    insetBottom,
-                })}
+                contentContainerStyle={[
+                    contentContainerStyle,
+                    applyStyle(sheetContentContainerStyle, {
+                        insetBottom: footer ? footerHeight + insetBottom : insetBottom,
+                        isSheetSettled,
+                    }),
+                ]}
                 {...flashListProps}
             />
+            {showEdgeFades && (
+                <EdgeFades
+                    direction="vertical"
+                    startSize={EDGE_FADE_START_SIZE}
+                    endSize={EDGE_FADE_END_SIZE}
+                />
+            )}
         </BottomSheetModal>
     );
 };

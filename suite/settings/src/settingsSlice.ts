@@ -1,14 +1,18 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
+import { type SuiteThemeVariant } from '@suite/desktop-app-api';
 import type { ExperimentalFeature } from '@suite/experimental';
 import { type EarnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-defs';
 import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createSliceWithExtraDeps,
+} from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import type { TradeServerEnvironment } from '@suite-common/trading';
 import type { DefinitionsChannel } from '@trezor/connect-common';
 import { isWeb } from '@trezor/env-utils';
-import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { SIDEBAR_WIDTH_NUMERIC } from './suiteConstants';
 
@@ -16,10 +20,7 @@ import { SIDEBAR_WIDTH_NUMERIC } from './suiteConstants';
  * String identifiers used by the debug transport switcher UI.
  */
 export type DebugTransport =
-    | 'BridgeTransport'
-    | 'NodeUsbTransport'
-    | 'UdpTransport'
-    | 'WebUsbTransport';
+    'BridgeTransport' | 'NodeUsbTransport' | 'UdpTransport' | 'WebUsbTransport';
 
 export interface DebugModeOptions {
     tradeServerEnvironment?: TradeServerEnvironment;
@@ -31,6 +32,7 @@ export interface DebugModeOptions {
     definitionsChannel?: DefinitionsChannel;
     isN4w1BackupEnabled: boolean;
     showTranslationKeys: boolean;
+    isAppsEmbeddingEnabled: boolean;
 }
 
 export interface AutodetectSettings {
@@ -68,6 +70,9 @@ export type SuiteSettingsRootState = {
     suiteSettings: SuiteSettingsState;
 };
 
+export type SuiteSettingsSliceDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadSuiteSettings'>;
+
 export const suiteSettingsInitialState: SuiteSettingsState = {
     theme: {
         variant: 'light',
@@ -91,6 +96,7 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
         showConnectLogs: false,
         isN4w1BackupEnabled: false,
         showTranslationKeys: false,
+        isAppsEmbeddingEnabled: false,
     },
     autodetect: {
         language: true,
@@ -193,7 +199,7 @@ const suiteSettingsSlice = createSliceWithExtraDeps({
             state.enabledSecurityChecks.deviceMeta = payload;
         },
     },
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: SuiteSettingsSliceDeps) => {
         builder.addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadSuiteSettings);
     },
 });

@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
+import { getTronPendingUnstakeBalance, getUnstakingPeriodInDays } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getTronPendingUnstakeBalance, getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 import { Box, Card, Column, Row, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

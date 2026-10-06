@@ -9,8 +9,10 @@ import {
 } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
-import { goto } from '@suite/router';
-import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { useExcludedUtxos } from '@suite-common/transaction-search';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -31,7 +33,8 @@ import {
     saveSendFormDraftThunk,
     signAndPushSendFormTransactionThunk,
 } from 'src/actions/wallet/send/sendFormThunks';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectProtocol } from 'src/selectors/suite/protocolSelectors';
 import { type AppState } from 'src/types/suite';
 import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
 
@@ -53,7 +56,6 @@ export interface SendFormProps {
     localCurrency: BaseCurrencyCode;
     fees: AppState['wallet']['fees'];
     online: boolean;
-    sendRaw?: boolean;
     metadataEnabled: boolean;
     targetAnonymity?: number;
     prison?: Record<string, unknown>;
@@ -107,12 +109,12 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // private variables, used inside sendForm hook
     const draft = useRef<FormState | undefined>(undefined);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const { localCurrencyOption } = state;
 
     const { symbol, networkType } = state.account;
-    const rawFeeInfo = props.fees[symbol]?.data;
+    const rawFeeInfo = props.fees[symbol as keyof typeof props.fees]?.data;
     const feeInfo = useMemo(
         () =>
             getConvertedOrDefaultFeeInfo({
@@ -266,9 +268,9 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     // get response from TransactionReviewModal
     const sign = useCallback(async () => {
-        const formState = getValues();
+        const currentFormState = getValues();
         const precomposedTransaction = composedLevels
-            ? composedLevels[formState.selectedFee || 'normal']
+            ? composedLevels[currentFormState.selectedFee || 'normal']
             : undefined;
         if (precomposedTransaction?.type === 'final') {
             // sign workflow in Actions:
@@ -276,7 +278,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             setLoading(true);
             const result = await dispatch(
                 signAndPushSendFormTransactionThunk({
-                    formState,
+                    formState: currentFormState,
                     precomposedTransaction,
                     selectedAccount: selectedAccount.account,
                 }),
@@ -285,19 +287,22 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             setLoading(false);
             if (result?.success) {
                 resetContext();
-                dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
+                dispatch(gotoThunk({ routeName: 'wallet-index', preserveParams: true }));
             }
         }
     }, [getValues, composedLevels, dispatch, resetContext, selectedAccount.account]);
 
-    const protocol = useSelector(state => state.protocol);
+    const protocol = useSelector(selectProtocol);
+    const protocolNetworkSymbol = useSelector(state =>
+        selectNetworkSymbolForProtocol(state, protocol.sendForm.scheme),
+    );
 
     // fill form using data from URI protocol handler e.g. 'bitcoin:address?amount=0.01'
     useEffect(() => {
         if (
             protocol.sendForm.shouldFill &&
             protocol.sendForm.scheme &&
-            selectedAccount.network.symbol === getNetworkSymbolForProtocol(protocol.sendForm.scheme)
+            selectedAccount.network.symbol === protocolNetworkSymbol
         ) {
             reset(getLoadedValues());
             // for now we always fill only first output
@@ -342,6 +347,12 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                 }, 0);
             }
 
+            if (protocol.sendForm.label) {
+                setValue(`outputs.${outputIndex}.label`, protocol.sendForm.label, {
+                    shouldDirty: true,
+                });
+            }
+
             dispatch(fillSendForm(false));
             dispatch(resetProtocol());
             composeRequest();
@@ -359,6 +370,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         reset,
         getLoadedValues,
         trigger,
+        protocolNetworkSymbol,
     ]);
 
     // load draft from reducer and reset current form values, this should be only called once on mount
@@ -378,14 +390,14 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             protocol.sendForm.shouldFill &&
             protocol.sendForm.scheme &&
             protocol.sendForm.address &&
-            selectedAccount.network.symbol ===
-                getNetworkSymbolForProtocol(protocol.sendForm.scheme);
+            selectedAccount.network.symbol === protocolNetworkSymbol;
 
         if (!shouldFillFromProtocol) {
             loadDraftValues();
         }
 
         // composeDraft is excluded because its reference changes with each feeInfo update.
+        // Protocol changes are handled above and must not reload a saved draft after the URI is cleared.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, getLoadedValues, reset]);
 

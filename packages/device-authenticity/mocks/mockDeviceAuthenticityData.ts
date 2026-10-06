@@ -83,6 +83,7 @@ export const BLACKLIST_CONFIG: DeviceAuthenticityBlacklistConfig = {
 };
 
 export const defaultOptigaProps: VerifyAuthenticityProofParams = {
+    proofType: 'optiga',
     certificates: [DEVICE_CERT_OPTIGA, CA_CERT_OPTIGA],
     signature: SIGNATURE_OPTIGA,
     signedData: prepareDeviceAuthenticityData({ payload: Buffer.from(CHALLENGE, 'hex') }),
@@ -93,6 +94,7 @@ export const defaultOptigaProps: VerifyAuthenticityProofParams = {
 
 export const defaultTropicProps: VerifyAuthenticityProofParams = {
     ...defaultOptigaProps,
+    proofType: 'tropic',
     certificates: [DEVICE_CERT_TROPIC, CA_CERT_TROPIC],
     signature: SIGNATURE_TROPIC,
     deviceModel: 'T3W1',
@@ -100,6 +102,7 @@ export const defaultTropicProps: VerifyAuthenticityProofParams = {
 
 export const defaultMCUProps: VerifyAuthenticityProofParams = {
     ...defaultTropicProps,
+    proofType: 'mcu',
     certificates: [DEVICE_CERT_MCU],
     signature: SIGNATURE_MCU,
 };

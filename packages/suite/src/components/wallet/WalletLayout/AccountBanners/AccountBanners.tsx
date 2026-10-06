@@ -1,11 +1,12 @@
 import { ContextMessage } from '@suite/message-system';
+import { selectRouter } from '@suite/router';
 import { Context } from '@suite-common/message-system';
 import {
     isSupportedAdaStakingNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     isSupportedTronStakingNetworkSymbol,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -28,7 +29,7 @@ type AccountBannersProps = {
 };
 
 export const AccountBanners = ({ account }: AccountBannersProps) => {
-    const { route } = useSelector(state => state.router);
+    const { route } = useSelector(selectRouter);
 
     return (
         <Column gap={12}>
@@ -64,7 +65,12 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
             {account?.networkType === 'stellar' && <StellarLimitedHistoryBanner />}
             {account?.symbol && <StakingBanner account={account} />}
             {account?.symbol && account?.accountType && (
-                <ContextMessage context={Context.getAccount(account.symbol, account.accountType)} />
+                <ContextMessage
+                    context={[
+                        Context.getAccount(account.symbol),
+                        Context.getAccount(account.symbol, account.accountType),
+                    ]}
+                />
             )}
         </Column>
     );

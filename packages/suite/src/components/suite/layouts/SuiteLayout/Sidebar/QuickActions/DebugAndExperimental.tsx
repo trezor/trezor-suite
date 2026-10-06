@@ -1,12 +1,15 @@
 import { selectIsDebugModeActive } from '@suite/debug';
+import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
-import { SettingsAnchor, goto } from '@suite/router';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectIsExperimentalEnabled } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Column, Icon } from '@trezor/components';
 import { AtomIcon, CheckIcon, DotOutlineFilledIcon, StarFourIcon } from '@trezor/icons';
 import { QuickActionButton, TooltipRow } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type DebugAndExperimentalTooltipProps = {
     isDebugMode: boolean;
@@ -54,15 +57,15 @@ const DebugAndExperimentalTooltip = ({
 );
 
 export const DebugAndExperimental = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
-    const isEapEnabled = useSelector(state => state.desktopUpdate.allowPrerelease);
+    const isEapEnabled = useSelector(selectDesktopUpdateAllowPrerelease);
     const isExperimental = useSelector(selectIsExperimentalEnabled);
     const isDebug = useSelector(selectIsDebugModeActive);
     const position = { type: 'absolute', top: 0, left: 0 } as const;
 
     const handleEapClick = () => {
-        dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.EarlyAccess }));
+        dispatch(gotoThunk({ routeName: 'settings-index', anchor: SettingsAnchor.EarlyAccess }));
     };
 
     if (!isEapEnabled && !isExperimental && !isDebug) return null;

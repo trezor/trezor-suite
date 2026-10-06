@@ -1,8 +1,4 @@
-import {
-    type EnhancedTokenInfo,
-    type TokenDefinition,
-    type TokenDefinitionsState,
-} from '@suite-common/token-definitions';
+import { type TokenDefinition, type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenInfo } from '@trezor/connect';
 
@@ -10,8 +6,8 @@ export const getTokensFixtures = [
     {
         testName: 'tokens with definitions and balance',
         tokens: [
-            { contract: '0x1', balance: '100' } as EnhancedTokenInfo,
-            { contract: '0x2', balance: '200' } as EnhancedTokenInfo,
+            { contract: '0x1', balance: '100' } as TokenInfo,
+            { contract: '0x2', balance: '200' } as TokenInfo,
         ],
         symbol: 'eth' as const,
         coinDefinitions: {
@@ -24,8 +20,8 @@ export const getTokensFixtures = [
         searchQuery: '',
         result: {
             shownWithBalance: [
-                { contract: '0x1', balance: '100' } as EnhancedTokenInfo,
-                { contract: '0x2', balance: '200' } as EnhancedTokenInfo,
+                { contract: '0x1', balance: '100' } as TokenInfo,
+                { contract: '0x2', balance: '200' } as TokenInfo,
             ],
             shownWithoutBalance: [],
             hiddenWithBalance: [],
@@ -37,9 +33,9 @@ export const getTokensFixtures = [
     {
         testName: 'hidden token with legit tokens',
         tokens: [
-            { contract: '0x1', balance: '100' } as EnhancedTokenInfo,
-            { contract: '0x2', balance: '200' } as EnhancedTokenInfo,
-            { contract: '0x3', balance: '0' } as EnhancedTokenInfo,
+            { contract: '0x1', balance: '100' } as TokenInfo,
+            { contract: '0x2', balance: '200' } as TokenInfo,
+            { contract: '0x3', balance: '0' } as TokenInfo,
         ],
         symbol: 'eth' as const,
         coinDefinitions: {
@@ -51,9 +47,9 @@ export const getTokensFixtures = [
         } as TokenDefinition,
         searchQuery: '',
         result: {
-            shownWithBalance: [{ contract: '0x1', balance: '100' } as EnhancedTokenInfo],
-            shownWithoutBalance: [{ contract: '0x3', balance: '0' } as EnhancedTokenInfo],
-            hiddenWithBalance: [{ contract: '0x2', balance: '200' } as EnhancedTokenInfo],
+            shownWithBalance: [{ contract: '0x1', balance: '100' } as TokenInfo],
+            shownWithoutBalance: [{ contract: '0x3', balance: '0' } as TokenInfo],
+            hiddenWithBalance: [{ contract: '0x2', balance: '200' } as TokenInfo],
             hiddenWithoutBalance: [],
             unverifiedWithBalance: [],
             unverifiedWithoutBalance: [],
@@ -62,9 +58,9 @@ export const getTokensFixtures = [
     {
         testName: 'unverified tokens with legit token',
         tokens: [
-            { contract: '0x1', balance: '100' } as EnhancedTokenInfo,
-            { contract: '0x2', balance: '200' } as EnhancedTokenInfo,
-            { contract: '0x3', balance: '0' } as EnhancedTokenInfo,
+            { contract: '0x1', balance: '100' } as TokenInfo,
+            { contract: '0x2', balance: '200' } as TokenInfo,
+            { contract: '0x3', balance: '0' } as TokenInfo,
         ],
         symbol: 'eth' as const,
         coinDefinitions: {
@@ -76,22 +72,22 @@ export const getTokensFixtures = [
         } as TokenDefinition,
         searchQuery: '',
         result: {
-            shownWithBalance: [{ contract: '0x1', balance: '100' } as EnhancedTokenInfo],
+            shownWithBalance: [{ contract: '0x1', balance: '100' } as TokenInfo],
             shownWithoutBalance: [],
             hiddenWithBalance: [],
             hiddenWithoutBalance: [],
-            unverifiedWithBalance: [{ contract: '0x2', balance: '200' } as EnhancedTokenInfo],
-            unverifiedWithoutBalance: [{ contract: '0x3', balance: '0' } as EnhancedTokenInfo],
+            unverifiedWithBalance: [{ contract: '0x2', balance: '200' } as TokenInfo],
+            unverifiedWithoutBalance: [{ contract: '0x3', balance: '0' } as TokenInfo],
         },
     },
     {
         testName: 'mix of shown, hidden, and unverified tokens',
         tokens: [
-            { contract: '0x1', balance: '100' } as EnhancedTokenInfo,
-            { contract: '0x2', balance: '200' } as EnhancedTokenInfo,
-            { contract: '0x3', balance: '300' } as EnhancedTokenInfo,
-            { contract: '0x4', balance: '0' } as EnhancedTokenInfo,
-            { contract: '0x5', balance: '0' } as EnhancedTokenInfo,
+            { contract: '0x1', balance: '100' } as TokenInfo,
+            { contract: '0x2', balance: '200' } as TokenInfo,
+            { contract: '0x3', balance: '300' } as TokenInfo,
+            { contract: '0x4', balance: '0' } as TokenInfo,
+            { contract: '0x5', balance: '0' } as TokenInfo,
         ],
         symbol: 'eth' as const,
         coinDefinitions: {
@@ -104,25 +100,25 @@ export const getTokensFixtures = [
         searchQuery: '',
         result: {
             shownWithBalance: [
-                { contract: '0x1', balance: '100' } as EnhancedTokenInfo,
-                { contract: '0x3', balance: '300' } as EnhancedTokenInfo,
+                { contract: '0x1', balance: '100' } as TokenInfo,
+                { contract: '0x3', balance: '300' } as TokenInfo,
             ],
             shownWithoutBalance: [],
-            hiddenWithBalance: [{ contract: '0x2', balance: '200' } as EnhancedTokenInfo],
+            hiddenWithBalance: [{ contract: '0x2', balance: '200' } as TokenInfo],
             hiddenWithoutBalance: [],
             unverifiedWithBalance: [],
             unverifiedWithoutBalance: [
-                { contract: '0x4', balance: '0' } as EnhancedTokenInfo,
-                { contract: '0x5', balance: '0' } as EnhancedTokenInfo,
+                { contract: '0x4', balance: '0' } as TokenInfo,
+                { contract: '0x5', balance: '0' } as TokenInfo,
             ],
         },
     },
     {
         testName: 'legitokens search',
         tokens: [
-            { contract: '0x1', balance: '100', symbol: 'ABC' } as EnhancedTokenInfo,
-            { contract: '0x2', balance: '200', symbol: 'DEF' } as EnhancedTokenInfo,
-            { contract: '0x3', balance: '0', symbol: 'GHI' } as EnhancedTokenInfo,
+            { contract: '0x1', balance: '100', symbol: 'ABC' } as TokenInfo,
+            { contract: '0x2', balance: '200', symbol: 'DEF' } as TokenInfo,
+            { contract: '0x3', balance: '0', symbol: 'GHI' } as TokenInfo,
         ],
         symbol: 'eth' as const,
         coinDefinitions: {
@@ -134,9 +130,7 @@ export const getTokensFixtures = [
         } as TokenDefinition,
         searchQuery: 'AB',
         result: {
-            shownWithBalance: [
-                { contract: '0x1', balance: '100', symbol: 'ABC' } as EnhancedTokenInfo,
-            ],
+            shownWithBalance: [{ contract: '0x1', balance: '100', symbol: 'ABC' } as TokenInfo],
             shownWithoutBalance: [],
             hiddenWithBalance: [],
             hiddenWithoutBalance: [],

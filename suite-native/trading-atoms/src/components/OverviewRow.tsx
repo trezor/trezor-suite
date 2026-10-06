@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
-import { Box, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import { BannerInline, Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -71,7 +71,7 @@ export const OverviewRow = ({
                 </HStack>
                 {warning && (
                     <Box paddingHorizontal="sp16" paddingBottom="sp12">
-                        <InlineAlertBox
+                        <BannerInline
                             intent="warning"
                             title={warning}
                             accessibilityHint={translate('generic.warning')}

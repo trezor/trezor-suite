@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 
 import { FeeLabelTranslation } from './FeeLabelTranslation';
@@ -37,7 +37,7 @@ export const FeeSummaryRow = ({
         </VStack>
         <HStack alignItems="center" spacing="sp8">
             <VStack alignItems="flex-end" spacing="sp2">
-                <CryptoAmountFormatter
+                <ExactCryptoAmountFormatter
                     variant="body-sm"
                     color="contentPrimary"
                     value={fee}

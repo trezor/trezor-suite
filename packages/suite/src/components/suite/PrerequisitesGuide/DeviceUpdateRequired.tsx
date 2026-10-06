@@ -1,19 +1,20 @@
 import { type MouseEventHandler } from 'react';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { ArrowsClockwiseIcon } from '@trezor/icons';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
-import { useDispatch } from 'src/hooks/suite';
 
 export const DeviceUpdateRequired = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
-        dispatch(goto({ routeName: 'firmware-index' }));
+        dispatch(gotoThunk({ routeName: 'firmware-index' }));
     };
 
     return (

@@ -1,9 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 
+import { type ConfirmExchangeTradeThunkState } from './confirmExchangeTradeThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingExchangeState } from '../../reducers/exchangeReducer';
@@ -15,7 +17,9 @@ import type { LogErrorThunkProps } from '../common/logErrorThunk';
 
 import { exchangeThunks } from './index';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 jest.mock('../common/logErrorThunk', () => ({
     logErrorThunk: (props: LogErrorThunkProps) => ({
@@ -42,8 +46,7 @@ describe('confirmExchangeTradeThunk', () => {
             send: quoteNotTyped.send as CryptoId,
             receive: quoteNotTyped.receive as CryptoId,
         };
-        const store = configureMockStore({
-            extra: {},
+        const { store } = createTestCompositionRoot<void, ConfirmExchangeTradeThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -67,7 +70,7 @@ describe('confirmExchangeTradeThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         const mockProcessResponseData = jest.fn();
         const mockTriggerAnalyticsTradeConfirmation = jest.fn();
@@ -600,6 +603,53 @@ describe('confirmExchangeTradeThunk', () => {
         expect(!!response).toBeTruthy();
     });
 
+    it('should preserve DEX fields omitted by the provider response', async () => {
+        const {
+            store,
+            returnUrl,
+            receiveAddress,
+            account,
+            trade,
+            mockProcessResponseData,
+            mockNextStep,
+            mockTriggerAnalyticsTradeConfirmation,
+        } = getMocks();
+        const dexTrade: ExchangeTrade = {
+            ...trade,
+            isDex: true,
+            receiveTxHash: 'dex-swap-hash',
+        };
+        const tradeResponse: ExchangeTrade = {
+            status: 'CONFIRMING',
+            orderId: 'orderId',
+        };
+
+        tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
+
+        await store
+            .dispatch(
+                exchangeThunks.confirmTradeThunk({
+                    returnUrl,
+                    receiveAddress,
+                    account,
+                    trade: dexTrade,
+                    nextStep: mockNextStep,
+                    triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                    processResponseData: mockProcessResponseData,
+                }),
+            )
+            .unwrap();
+
+        expect(store.getState().wallet.trading.trades).toEqual([
+            expect.objectContaining({
+                data: expect.objectContaining({
+                    isDex: true,
+                    receiveTxHash: 'dex-swap-hash',
+                }),
+            }),
+        ]);
+    });
+
     describe('should return true from confirmation for trade, which is in to confirm state from dex and request approval transaction', () => {
         it('when trade.approvalType is ZERO', async () => {
             const {
@@ -813,6 +863,106 @@ describe('confirmExchangeTradeThunk', () => {
             key: mockResponse.orderId,
         });
         expect(!!response).toBeTruthy();
+    });
+
+    it('should keep existing DEX trade.fromAddress when quotesRequest.fromAddress is also set', async () => {
+        const {
+            store,
+            returnUrl,
+            receiveAddress,
+            account,
+            trade,
+            mockProcessResponseData,
+            mockNextStep,
+            mockTriggerAnalyticsTradeConfirmation,
+        } = getMocks({
+            quotesRequest: {
+                send: 'litecoin' as CryptoId,
+                receive: 'bitcoin' as CryptoId,
+                sendStringAmount: '12',
+                dex: 'enable',
+                fromAddress: 'quote-request-from-address',
+            },
+        });
+
+        const doExchangeTradeSpy = jest.fn().mockResolvedValue({
+            ...trade,
+            status: 'CONFIRM',
+            orderId: 'orderId',
+            isDex: true,
+        } as ExchangeTrade);
+        tradeApi.doExchangeTrade = doExchangeTradeSpy;
+
+        await store
+            .dispatch(
+                exchangeThunks.confirmTradeThunk({
+                    returnUrl,
+                    receiveAddress,
+                    account,
+                    trade: { ...trade, isDex: true, fromAddress: 'fromAddress' },
+                    nextStep: mockNextStep,
+                    triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                    processResponseData: mockProcessResponseData,
+                }),
+            )
+            .unwrap();
+
+        expect(doExchangeTradeSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                trade: expect.objectContaining({ fromAddress: 'fromAddress' }),
+            }),
+            expect.anything(),
+        );
+    });
+
+    it('should use quotesRequest.fromAddress when DEX trade.fromAddress is missing', async () => {
+        const {
+            store,
+            returnUrl,
+            receiveAddress,
+            account,
+            trade,
+            mockProcessResponseData,
+            mockNextStep,
+            mockTriggerAnalyticsTradeConfirmation,
+        } = getMocks({
+            quotesRequest: {
+                send: 'litecoin' as CryptoId,
+                receive: 'bitcoin' as CryptoId,
+                sendStringAmount: '12',
+                dex: 'enable',
+                fromAddress: 'quote-request-from-address',
+            },
+        });
+
+        const doExchangeTradeSpy = jest.fn().mockResolvedValue({
+            ...trade,
+            status: 'CONFIRM',
+            orderId: 'orderId',
+            isDex: true,
+        } as ExchangeTrade);
+        tradeApi.doExchangeTrade = doExchangeTradeSpy;
+
+        await store
+            .dispatch(
+                exchangeThunks.confirmTradeThunk({
+                    returnUrl,
+                    receiveAddress,
+                    account,
+                    trade: { ...trade, isDex: true, fromAddress: undefined },
+                    nextStep: mockNextStep,
+                    triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                    processResponseData: mockProcessResponseData,
+                }),
+            )
+            .unwrap();
+
+        expect(doExchangeTradeSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                trade: expect.objectContaining({ fromAddress: 'quote-request-from-address' }),
+            }),
+            expect.anything(),
+        );
     });
 
     it('should return true from confirmation for trade, set trade, transactionId and call processResponseData when status CONFIRMING or SUCCESS', async () => {

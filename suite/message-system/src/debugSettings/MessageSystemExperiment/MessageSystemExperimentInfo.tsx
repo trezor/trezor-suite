@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type ExperimentsItemType,
     buildExperimentGroupRanges,
     getInclusionFromInstanceId,
     messageSystemActions,
 } from '@suite-common/message-system';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Column, Icon, InfoItem, Range } from '@trezor/components';
 import {
     ArrowCounterClockwiseIcon,
@@ -16,6 +17,7 @@ import {
     UsersIcon,
 } from '@trezor/icons';
 import { useDebounce } from '@trezor/react-utils';
+
 type MessageSystemExperimentInfoProps = {
     experiment: ExperimentsItemType;
     assignedGroup?: ExperimentsItemType['groups'][number];
@@ -31,7 +33,7 @@ export const MessageSystemExperimentInfo = ({
     instanceId,
     inclusionOverride,
 }: MessageSystemExperimentInfoProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const debounce = useDebounce();
     const [localInclusion, setLocalInclusion] = useState<number | null>(null);
 

@@ -22,9 +22,10 @@ import type { telemetryGet } from './telemetryGet';
 import type { thpGetCredentials } from './thpGetCredentials';
 import type { thpRemoveCredentials } from './thpRemoveCredentials';
 import type { wipeDevice } from './wipeDevice';
+import { TrezorConnectEvolu } from '../evolu';
 
 // Device configuration, firmware, security, and hardware control
-export const TrezorConnectManagement = Type.Object({
+const TrezorConnectManagementBase = Type.Object({
     getFirmwareHash: Type.Unsafe<typeof getFirmwareHash>(),
     resetDevice: Type.Unsafe<typeof resetDevice>(),
     loadDevice: Type.Unsafe<typeof loadDevice>(),
@@ -47,4 +48,11 @@ export const TrezorConnectManagement = Type.Object({
     getNonce: Type.Unsafe<typeof getNonce>(),
     getSettings: Type.Unsafe<typeof getSettings>(),
 });
+
+// Evolu identity operations export secret key material, so they belong to the privileged tier and
+// are folded in here to keep them out of the public API (`Omit<Callable, keyof Management>`).
+export const TrezorConnectManagement = Type.Composite([
+    TrezorConnectManagementBase,
+    TrezorConnectEvolu,
+]);
 export type TrezorConnectManagement = Static<typeof TrezorConnectManagement>;

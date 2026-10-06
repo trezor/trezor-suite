@@ -10,7 +10,7 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     AnimatedVStack,
     Button,
@@ -20,9 +20,10 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import {
+    NoDevicePromoBanner,
     selectAreGetTrezorPromoBannersDisabled,
     selectIsGetTrezorBannerClosed,
-} from '@suite-native/banner-flags';
+} from '@suite-native/banners';
 import { useConnectDeviceHandler } from '@suite-native/device';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {
@@ -36,7 +37,6 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { GetTrezorCard } from './GetTrezorCard';
 import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
 
 const platformSpecificTitle: TxKeyPath = Platform.select({
@@ -73,7 +73,7 @@ type SecondaryCardConfig = {
 };
 
 export const EmptyPortfolioCrossroads = () => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const navigation = useNavigation<NavigationProps>();
     const { applyStyle } = useNativeStyles();
 
@@ -148,7 +148,7 @@ export const EmptyPortfolioCrossroads = () => {
             </Animated.View>
             {!isGetTrezorBannerClosed && !areGetTrezorPromoBannersDisabled && (
                 <Animated.View exiting={FadeOut}>
-                    <GetTrezorCard />
+                    <NoDevicePromoBanner />
                 </Animated.View>
             )}
             <Animated.View layout={LinearTransition} style={applyStyle(cardFlexStyle, { flex: 1 })}>

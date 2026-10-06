@@ -1,16 +1,18 @@
-import { type MiddlewareAPI } from 'redux';
+import { type UnknownAction } from '@reduxjs/toolkit';
+import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { selectIsRouterLocked } from '@suite/locks';
 import {
-    closeModalApp,
-    goto,
+    closeModalAppThunk,
+    gotoThunk,
     selectRouteName,
     selectRouterApp,
     selectRouterParams,
 } from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { type Dispatch } from '@suite-common/redux-utils';
 
-import { type Action, type AppState, type Dispatch, type TrezorDevice } from 'src/types/suite';
+import { type AppState, type TrezorDevice } from 'src/types/suite';
 
 const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: TrezorDevice) => {
     // no device, no redirect
@@ -28,15 +30,15 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
 
     // device is not initialized, redirect to onboarding
     if (device.mode === 'initialize') {
-        dispatch(goto({ routeName: 'suite-start' }));
+        dispatch(gotoThunk({ routeName: 'suite-start' }));
     }
     // firmware none (T2T1) or unknown (T1B1) indicates freshly unpacked device
     if (device.mode === 'bootloader' && device.features?.firmware_present === false) {
-        dispatch(goto({ routeName: 'suite-start' }));
+        dispatch(gotoThunk({ routeName: 'suite-start' }));
     }
     // device firmware update required, redirect to "firmware update"
     else if (device.firmware === 'required') {
-        dispatch(goto({ routeName: 'firmware-index' }));
+        dispatch(gotoThunk({ routeName: 'firmware-index' }));
     }
 
     const selected = selectSelectedDevice(state);
@@ -50,7 +52,7 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
     ) {
         const routeName = selectRouteName(state);
         if (routeName) {
-            dispatch(goto({ routeName }));
+            dispatch(gotoThunk({ routeName }));
         }
     }
 };
@@ -59,8 +61,8 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
  */
 const redirect =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
-    (next: Dispatch) =>
-    (action: Action): Action => {
+    (next: ReduxDispatch<UnknownAction>) =>
+    (action: UnknownAction): UnknownAction => {
         const isRouterLocked = selectIsRouterLocked(api.getState());
 
         if (isRouterLocked) {
@@ -71,7 +73,7 @@ const redirect =
                 !action.payload &&
                 selectRouterApp(api.getState()) === 'switch-device'
             ) {
-                api.dispatch(closeModalApp());
+                api.dispatch(closeModalAppThunk());
             }
 
             return action;

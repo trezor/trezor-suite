@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import {
     selectAccountTransactionsWithNulls,
     selectIsLoadingAccountTransactions,
@@ -35,7 +36,7 @@ const Layout = ({ selectedAccount, children }: LayoutProps) => (
 );
 
 export const Transactions = () => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
     const transactionsIsLoading = useSelector(state =>
         selectIsLoadingAccountTransactions(state, selectedAccount.account?.key || null),
     );

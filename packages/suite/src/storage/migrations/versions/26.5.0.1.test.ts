@@ -1,6 +1,6 @@
-import '@suite-common/test-utils/globalOverrides';
-import { type IDBPDatabase, deleteDB, openDB } from 'idb';
+import { type IDBPDatabase, openDB } from 'idb';
 
+import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
@@ -19,8 +19,8 @@ const runMigration = () =>
     });
 
 describe('migration 26.5.0.1', () => {
-    beforeEach(async () => {
-        await deleteDB(DB_NAME);
+    beforeEach(() => {
+        installFakeIndexedDb();
     });
 
     test('migrates addressDisplayType from suiteSettings to walletSettings', async () => {

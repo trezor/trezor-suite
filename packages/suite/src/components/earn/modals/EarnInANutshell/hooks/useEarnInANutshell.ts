@@ -1,18 +1,22 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     EarnFlow,
     type EarnModalAction,
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
-import { selectEthValidatorsQueue, selectPoolStatsApy } from '@suite-common/wallet-core';
+import {
+    getUnstakingPeriodInDays,
+    selectEthereumValidatorsQueue,
+    selectPoolStatsApy,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 interface UseEarnInANutshellProps {
     flow: EarnFlow;
@@ -31,12 +35,11 @@ export const useEarnInANutshell = ({
     actionType = 'continue',
     yieldContext,
 }: UseEarnInANutshellProps) => {
-    const validatorsQueueData = useSelector(selectEthValidatorsQueue);
+    const validatorsQueueData = useSelector(selectEthereumValidatorsQueue);
     const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
     const unstakingPeriod = getUnstakingPeriodInDays(account.networkType, validatorsQueueData);
 
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const handleAction = () => {
         onCancel();

@@ -83,6 +83,7 @@ export const TableCell = ({
             $padding={padding ?? defaultPadding}
             $maxWidth={maxWidth}
             $hasBorder={hasBorders}
+            data-component="TableCell"
             data-testid={dataTestId}
         >
             <Text

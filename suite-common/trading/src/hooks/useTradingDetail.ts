@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { useSelector } from './useSelector';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
+
+import { type TradingRootState } from '../reducers/tradingCommonReducer';
 import { selectTradingDetailData } from '../selectors/tradingSelectors';
 import { tradingThunks } from '../thunks/common';
 import { type TradingType } from '../types';
@@ -15,14 +18,14 @@ import type {
 export const useTradingDetailData = <T extends TradingType>(
     tradeType: TradingType,
 ): TradingUseDetailOutputWithoutAccountProps<T> => {
-    const { info, transactionId, trade } = useSelector(state =>
+    const { info, transactionId, trade } = useSelector((state: TradingRootState) =>
         selectTradingDetailData(state, tradeType),
     ) as {
         info: TradingTradeInfoMapProps[T] | undefined;
         transactionId: string | undefined;
         trade: TradingTradeTransactionMapProps[T] | undefined;
     };
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: tradeType }));

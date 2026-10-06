@@ -3,7 +3,9 @@ import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type SelectedAccountLoaded, type StellarTokenInfo } from '@suite-common/wallet-types';
 import { getStellarInactiveTokens } from '@suite-common/wallet-utils';
@@ -12,7 +14,6 @@ import { TokenIcon } from '@trezor/product-components';
 
 import { Loading } from 'src/components/suite';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
-import { useDispatch } from 'src/hooks/suite';
 
 import { NoTokens } from '../common/NoTokens';
 import { NoSearchResultsWrapped } from '../common/TokensTable/TokensTable';
@@ -36,7 +37,7 @@ interface InactiveTokensTableProps {
 }
 
 export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTokensTableProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { account } = selectedAccount;
     const [tokenToActivate, setTokenToActivate] = useState<StellarTokenInfo | null>(null);
 

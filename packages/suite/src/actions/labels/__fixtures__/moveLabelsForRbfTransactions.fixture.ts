@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TransactionsRootState } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
@@ -6,7 +7,7 @@ import { accountReceivingCoins, accountSpendingCoins } from './moveLabelsForRbfA
 export const originalTransactionSpendAccount: WalletAccountTransaction = {
     descriptor: accountSpendingCoins.descriptor,
     deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0',
-    symbol: 'regtest',
+    symbol: asNetworkSymbol('regtest'),
     type: 'sent',
     txid: '4ec6d03abb2e3e52a50301ee353621cbda13d7a6cb57bc8f373519af5b25026b(originalTransaction)',
     blockTime: 1702460477,
@@ -98,7 +99,7 @@ export const transactionSendingCoinsReplacement: WalletAccountTransaction = {
 export const originalTransactionReceivingAccount: WalletAccountTransaction = {
     descriptor: accountReceivingCoins.descriptor,
     deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0',
-    symbol: 'regtest',
+    symbol: asNetworkSymbol('regtest'),
     type: 'recv',
     txid: '4ec6d03abb2e3e52a50301ee353621cbda13d7a6cb57bc8f373519af5b25026b(originalTransaction)',
     blockTime: 1702460477,
@@ -185,7 +186,7 @@ export const originalTransactionReceivingAccount: WalletAccountTransaction = {
 export const chainSpendingReceivedCoins: WalletAccountTransaction = {
     descriptor: accountReceivingCoins.descriptor,
     deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0',
-    symbol: 'regtest',
+    symbol: asNetworkSymbol('regtest'),
     type: 'self',
     txid: '46c84bcd1ef55ea64dab2853e577dffb26f31022fbf49c18981f2c186a3a2d80(chainSpendingReceivedCoins)',
     blockTime: 1702460477,

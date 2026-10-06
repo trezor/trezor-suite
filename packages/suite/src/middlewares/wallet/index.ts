@@ -3,34 +3,49 @@ import type { MiddlewareAPI } from 'redux';
 import { coinjoinMiddleware } from '@suite/coinjoin';
 import { prepareDiscoveryMiddleware } from '@suite/discovery';
 import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
-import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
     prepareAccountsMiddleware,
     prepareBlockchainMiddleware,
+    prepareBlockchainSubscriptionMiddleware,
     prepareFiatRatesMiddleware,
     prepareStakeMiddleware,
 } from '@suite-common/wallet-core';
-import { prepareWalletConnectMiddleware } from '@suite-common/walletconnect';
+import {
+    type WalletConnectMiddlewareDeps,
+    prepareWalletConnectMiddleware,
+} from '@suite-common/walletconnect';
+
+import { type DbDep } from 'src/storage/createDb';
 
 import graphMiddleware from './graphMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
-import { storageMiddleware } from './storageMiddleware';
-import { prepareTokenDefinitionsMiddleware } from './tokenDefinitionsMiddleware';
+import { prepareStorageMiddleware } from './storageMiddleware';
+import {
+    type TokenDefinitionsMiddlewareDeps,
+    prepareTokenDefinitionsMiddleware,
+} from './tokenDefinitionsMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
 import walletMiddleware from './walletMiddleware';
 
+export type GetWalletMiddlewaresDeps = WalletConnectMiddlewareDeps &
+    TokenDefinitionsMiddlewareDeps & {
+        services: SuiteSyncDep & DbDep;
+    };
+
 export const getWalletMiddlewares = (
-    getExtra: () => ExtraDependencies | null,
+    getExtra: () => GetWalletMiddlewaresDeps | null,
 ): ((api: MiddlewareAPI) => any)[] => [
     prepareBlockchainMiddleware(getExtra),
+    prepareBlockchainSubscriptionMiddleware(getExtra),
     prepareAccountsMiddleware(getExtra),
     walletMiddleware,
     prepareDiscoveryMiddleware(getExtra),
     prepareFiatRatesMiddleware(getExtra),
     prepareTokenDefinitionsMiddleware(getExtra),
     prepareStakeMiddleware(getExtra),
-    storageMiddleware,
+    prepareStorageMiddleware(getExtra),
     graphMiddleware,
     tradingMiddleware,
     coinjoinMiddleware,

@@ -13,14 +13,14 @@ describe('KycPolicyWarning', () => {
         },
         {
             kycPolicyType: 'KYC-norefund' as const,
-            expected: 'KYC is only required in exceptional cases. It may be needed for refunds.',
+            expected: 'KYC may be required in exceptional cases.',
         },
         {
             kycPolicyType: 'KYC-yesrefund' as const,
-            expected: "KYC is only required in exceptional cases. It's not needed for refunds.",
+            expected: 'KYC may be required in exceptional cases.',
         },
-    ])('renders correct translation for $kycPolicyType', ({ kycPolicyType, expected }) => {
-        const { getByText } = renderWithBasicProvider(
+    ])('renders correct translation for $kycPolicyType', async ({ kycPolicyType, expected }) => {
+        const { getByText } = await renderWithBasicProvider(
             <Text>
                 <KycPolicyWarning kycPolicyType={kycPolicyType} />
             </Text>,
@@ -33,8 +33,8 @@ describe('KycPolicyWarning', () => {
         { kycPolicyType: 'noKYC' as const },
         { kycPolicyType: undefined },
         { kycPolicyType: 'UNKNOWN_TYPE' as ExchangeKYCType },
-    ])('renders nothing for $kycPolicyType', ({ kycPolicyType }) => {
-        const { queryByText } = renderWithBasicProvider(
+    ])('renders nothing for $kycPolicyType', async ({ kycPolicyType }) => {
+        const { queryByText } = await renderWithBasicProvider(
             <Text>
                 <KycPolicyWarning kycPolicyType={kycPolicyType} />
             </Text>,

@@ -2,6 +2,7 @@ import React from 'react';
 import { Text } from 'react-native';
 
 import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { mercuryoDexQuote } from '@suite-native/trading-fixtures';
@@ -9,7 +10,7 @@ import { mercuryoDexQuote } from '@suite-native/trading-fixtures';
 import { TradeInfo } from './TradeInfo';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
-const btc1AccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1' });
+const btc1AccountKey = mockAccountKey({ symbol: asNetworkSymbol('btc'), descriptor: 'btc1' });
 
 // Mock FeeSelector to avoid deep dependency chain (useFeesManagement, etc.)
 const mockFeeSelectorProps = jest.fn();
@@ -29,25 +30,25 @@ describe('TradeInfo', () => {
         tradingType: 'exchange' as TradingExchangeType | TradingSellType,
     };
 
-    const renderTradeInfo = (props = {}) => {
+    const renderTradeInfo = async (props = {}) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return renderWithTradingProvider(<TradeInfo {...finalProps} />);
+        return await renderWithTradingProvider(<TradeInfo {...finalProps} />);
     };
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should render provider', () => {
-        const { getByText } = renderTradeInfo();
+    it('should render provider', async () => {
+        const { getByText } = await renderTradeInfo();
 
         expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
-    it('should pass correct props to FeeSelector', () => {
-        renderTradeInfo();
+    it('should pass correct props to FeeSelector', async () => {
+        await renderTradeInfo();
 
         expect(mockFeeSelectorProps).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -58,8 +59,8 @@ describe('TradeInfo', () => {
         );
     });
 
-    it('should render children', () => {
-        const { getByText } = renderTradeInfo({
+    it('should render children', async () => {
+        const { getByText } = await renderTradeInfo({
             children: <Text>child content</Text>,
         });
 

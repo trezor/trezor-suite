@@ -1,5 +1,7 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     enforceQuotaManagerUpdated,
     eraseFetchedData,
@@ -9,13 +11,12 @@ import {
     selectRegisteredDevices,
     updateQuotaManagerBaseUrl,
 } from '@suite-common/suite-sync-quota-manager';
-import { yup } from '@suite-common/validators';
 import { Box, Button, Card, HStack, Switch, Text, VStack } from '@suite-native/atoms';
-import { Form, TextInputField, useForm } from '@suite-native/forms';
+import { Form, TextInputField, useForm, yup } from '@suite-native/forms';
 import { useToast } from '@suite-native/toasts';
 
 export const SuiteSyncQuotaManager = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { showToast } = useToast();
 
     const quotaManagerCustomUrl = useSelector(selectQuotaManagerCustomUrl);

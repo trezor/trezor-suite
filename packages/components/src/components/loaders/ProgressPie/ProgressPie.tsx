@@ -57,6 +57,7 @@ export const ProgressPie = ({
 
     return (
         <Container
+            data-component="ProgressPie"
             $size={size}
             $valueInPercents={valueInPercents}
             $backgroundColor={backgroundColor}

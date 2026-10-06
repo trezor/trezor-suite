@@ -10,10 +10,10 @@ import {
 } from '../../../test-utils/tradingTestUtils';
 
 describe('RevokeLimitInfoRow', () => {
-    const renderRevokeLimitInfoRow = (
+    const renderRevokeLimitInfoRow = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithTradingProvider(<RevokeLimitInfoRow />, {
+        await renderWithTradingProvider(<RevokeLimitInfoRow />, {
             tradeType: 'exchange',
             overrides,
         });
@@ -32,26 +32,26 @@ describe('RevokeLimitInfoRow', () => {
         },
     };
 
-    it('should render that new limit is 0', () => {
-        const { getByText } = renderRevokeLimitInfoRow(withPreselectedQuote);
+    it('should render that new limit is 0', async () => {
+        const { getByText } = await renderRevokeLimitInfoRow(withPreselectedQuote);
 
         expect(getByText('0 USDC')).toBeOnTheScreen();
     });
 
-    it('should display preapprovedStringAmount', () => {
-        const { getByText } = renderRevokeLimitInfoRow(withPreselectedQuote);
+    it('should display preapprovedStringAmount', async () => {
+        const { getByText } = await renderRevokeLimitInfoRow(withPreselectedQuote);
 
         expect(getByText('100 USDC')).toBeOnTheScreen();
     });
 
-    it('should use token decimals to detect unlimited allowance', () => {
+    it('should use token decimals to detect unlimited allowance', async () => {
         const amountUnlimitedOnlyWithEthDecimals = new BigNumber(UINT256_MAX)
             .dividedBy(2)
             .shiftedBy(-18)
             .integerValue(BigNumber.ROUND_CEIL)
             .toFixed();
 
-        const { queryByText } = renderRevokeLimitInfoRow({
+        const { queryByText } = await renderRevokeLimitInfoRow({
             wallet: {
                 trading: {
                     exchange: {
@@ -68,8 +68,8 @@ describe('RevokeLimitInfoRow', () => {
         expect(queryByText('Unlimited USDC')).toBeNull();
     });
 
-    it('should render nothing when no quote is set', () => {
-        const { toJSON } = renderRevokeLimitInfoRow();
+    it('should render nothing when no quote is set', async () => {
+        const { toJSON } = await renderRevokeLimitInfoRow();
 
         expect(toJSON()).toBeNull();
     });

@@ -1,13 +1,17 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { tradingExchangeActions } from '@suite-common/trading';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { type UseFormReturn } from '@suite-native/forms';
-import { type TestStore, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { btcAsset, ethAsset, getBtcAccount, usdcAsset } from '@suite-native/trading-fixtures';
-import { buyActions, exchangeActions } from '@suite-native/trading-state';
+import { type TradingRootState, buyActions, exchangeActions } from '@suite-native/trading-state';
 
 import { useTradeableAssetChange } from './useTradeableAssetChange';
-import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
+import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+type State = TradingRootState;
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep = {
@@ -27,21 +31,21 @@ const createMockForm = (counterpartAsset?: unknown): MockForm => ({
 });
 
 describe('useTradeableAssetChange', () => {
-    let store: TestStore;
+    let store: Store<State>;
     let setSelectedValue: jest.Mock;
 
     beforeEach(() => {
         reportMock.mockClear();
-        store = createTradingLightStore({ tradeType: 'exchange' });
+        store = createTradingTestStore({ tradeType: 'exchange' });
         setSelectedValue = jest.fn();
     });
 
-    const renderChangeAsset = (
+    const renderChangeAsset = async (
         config: Omit<Partial<Parameters<typeof useTradeableAssetChange>[0]>, 'form'> & {
             form: MockForm;
         },
     ) => {
-        const { result } = renderHookWithStoreProvider(
+        const { result } = await renderHookWithStoreProvider(
             () =>
                 useTradeableAssetChange({
                     tradingType: 'exchange',
@@ -52,15 +56,15 @@ describe('useTradeableAssetChange', () => {
                     ...config,
                     form: config.form as unknown as UseFormReturn<never>,
                 }),
-            { store, services },
+            { services: { ...services, store } },
         );
 
         return result.current;
     };
 
-    it('should not apply any change effects when the selected asset is unchanged (dedup guard)', () => {
+    it('should not apply any change effects when the selected asset is unchanged (dedup guard)', async () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const changeAsset = renderChangeAsset({
+        const changeAsset = await renderChangeAsset({
             form: createMockForm(),
             selectedValue: btcAsset,
         });
@@ -72,9 +76,9 @@ describe('useTradeableAssetChange', () => {
         expect(reportMock).not.toHaveBeenCalled();
     });
 
-    it('should still set the trading account key before the dedup guard returns', () => {
+    it('should still set the trading account key before the dedup guard returns', async () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const changeAsset = renderChangeAsset({
+        const changeAsset = await renderChangeAsset({
             form: createMockForm(),
             selectedValue: btcAsset,
             getSetTradingAccountKeyAction: tradingExchangeActions.setTradingAccountKey,
@@ -88,13 +92,12 @@ describe('useTradeableAssetChange', () => {
         expect(setSelectedValue).not.toHaveBeenCalled();
     });
 
-    it('should clear the amount and dispatch the base action on a cross-network change', () => {
+    it('should keep the amount and dispatch the base action on a cross-network change', async () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         const form = createMockForm();
-        const changeAsset = renderChangeAsset({
+        const changeAsset = await renderChangeAsset({
             form,
             selectedValue: btcAsset,
-            amountField: 'sendCryptoAmount',
             getAssetChangedAction: exchangeActions.sendAssetChanged,
             getAssetTokenChangedAction: exchangeActions.receiveTokenChanged,
         });
@@ -102,16 +105,14 @@ describe('useTradeableAssetChange', () => {
         changeAsset(usdcAsset);
 
         expect(setSelectedValue).toHaveBeenCalledWith(usdcAsset);
-        expect(form.setValue).toHaveBeenCalledWith('sendCryptoAmount', undefined, {
-            shouldValidate: true,
-        });
+        expect(form.setValue).not.toHaveBeenCalled();
         expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.sendAssetChanged());
         expect(dispatchSpy).not.toHaveBeenCalledWith(exchangeActions.receiveTokenChanged());
     });
 
-    it('should dispatch the token action when the network symbol is unchanged', () => {
+    it('should dispatch the token action when the network symbol is unchanged', async () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const changeAsset = renderChangeAsset({
+        const changeAsset = await renderChangeAsset({
             form: createMockForm(),
             tradingType: 'buy',
             selectedValue: ethAsset,
@@ -126,8 +127,8 @@ describe('useTradeableAssetChange', () => {
         expect(dispatchSpy).not.toHaveBeenCalledWith(buyActions.assetChanged());
     });
 
-    it('should not report analytics when shouldReportAnalytics is false', () => {
-        const changeAsset = renderChangeAsset({
+    it('should not report analytics when shouldReportAnalytics is false', async () => {
+        const changeAsset = await renderChangeAsset({
             form: createMockForm(),
             selectedValue: btcAsset,
         });
@@ -138,10 +139,10 @@ describe('useTradeableAssetChange', () => {
         expect(reportMock).not.toHaveBeenCalled();
     });
 
-    it('should clear the counterpart asset and dispatch its action on collision', () => {
+    it('should clear the counterpart asset and dispatch its action on collision', async () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         const form = createMockForm(usdcAsset);
-        const changeAsset = renderChangeAsset({
+        const changeAsset = await renderChangeAsset({
             form,
             selectedValue: btcAsset,
             analyticsParameter: 'cryptoFrom',
@@ -163,10 +164,10 @@ describe('useTradeableAssetChange', () => {
         });
     });
 
-    it('should clear the counterpart amount without a counterpart action when omitted', () => {
+    it('should clear the counterpart amount without a counterpart action when omitted', async () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         const form = createMockForm(usdcAsset);
-        const changeAsset = renderChangeAsset({
+        const changeAsset = await renderChangeAsset({
             form,
             selectedValue: btcAsset,
             analyticsParameter: 'cryptoTo',

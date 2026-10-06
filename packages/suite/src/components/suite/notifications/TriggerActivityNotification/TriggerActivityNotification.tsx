@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { AUTH_DEVICE, notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -8,10 +10,8 @@ import { Checkbox, Column, Select } from '@trezor/components';
 import { DEVICE } from '@trezor/connect';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch } from 'src/hooks/suite';
-
 const MOCK_TX = {
-    formattedAmount: '0.05',
+    amount: '0.05',
     descriptor: 'debug-descriptor',
     symbol: 'btc' as NetworkSymbol,
     txid: 'debug-txid',
@@ -158,7 +158,7 @@ const PRESETS: Preset[] = [
 const options = PRESETS.map(({ value, label }) => ({ value, label }));
 
 export const TriggerActivityNotification = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
     const [selectedValue, setSelectedValue] = useState<string>(PRESETS[0]?.value ?? '');
     const [addAsUnseen, setAddAsUnseen] = useState(true);
@@ -196,15 +196,21 @@ export const TriggerActivityNotification = () => {
                         value={selectedOption}
                         options={options}
                         onChange={(option: { value: string }) => setSelectedValue(option.value)}
+                        data-testid="@activity/debug/preset-select"
                     />
                     <Checkbox
                         isChecked={addAsUnseen}
                         labelAlignment="end"
                         onChange={() => setAddAsUnseen(prev => !prev)}
+                        data-testid="@activity/debug/unseen-checkbox"
                     >
                         <TextColumn description="Add as unseen (new)" />
                     </Checkbox>
-                    <ActionButton intent="brand" onClick={handleAdd}>
+                    <ActionButton
+                        intent="brand"
+                        onClick={handleAdd}
+                        data-testid="@activity/debug/add-button"
+                    >
                         Add activity
                     </ActionButton>
                 </Column>

@@ -3,7 +3,7 @@ import { FlatList } from 'react-native-gesture-handler';
 
 import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { type Color, type NativeTypographyStyle } from '@trezor/theme';
+import { type Color, type NativeSpacing, type NativeTypographyStyle } from '@trezor/theme';
 
 import { PressableOpacity } from './Pressable';
 import { Text } from './Text';
@@ -16,11 +16,13 @@ export type SubTabItem<TValue> = {
     value: TValue;
     icon?: IconName;
     testID?: string;
+    accessory?: ReactNode;
 };
 
 export type SubTabsProps<TValue> = {
     items: SubTabItem<TValue>[];
     onChange: (value: TValue) => void;
+    paddingHorizontal?: NativeSpacing;
     value?: TValue;
     size?: SubTabsSize;
     keyExtractor?: (item: SubTabItem<TValue>) => string;
@@ -39,6 +41,10 @@ type SubTabStyleProps = {
     size: SubTabsSize;
 };
 
+type TabsStyleProps = {
+    paddingHorizontal?: NativeSpacing;
+};
+
 const typographyBySize = {
     normal: 'body-sm',
     large: 'body-md',
@@ -49,9 +55,10 @@ const iconSizeBySize = {
     large: 24,
 } as const satisfies Record<SubTabsSize, number>;
 
-const tabsStyle = prepareNativeStyle(({ spacings }) => ({
-    gap: spacings.sp12,
-    paddingHorizontal: spacings.sp16,
+const tabsStyle = prepareNativeStyle<TabsStyleProps>((utils, { paddingHorizontal }) => ({
+    gap: utils.spacings.sp12,
+    paddingHorizontal: paddingHorizontal ? utils.spacings[paddingHorizontal] : undefined,
+    paddingBottom: utils.spacings.sp2, // To prevent bottom shadow cutoff.
 }));
 
 const tabStyle = prepareNativeStyle<SubTabStyleProps>((utils, { isActive, size }) => ({
@@ -117,6 +124,7 @@ const SubTab = ({ isActive, item, onPress, size }: SubTabProps) => {
             >
                 {item.label}
             </Text>
+            {item.accessory}
         </PressableOpacity>
     );
 };
@@ -125,6 +133,7 @@ export const SubTabs = <TValue,>({
     items,
     keyExtractor = item => String(item.value),
     onChange,
+    paddingHorizontal,
     size = 'normal',
     testID,
     value,
@@ -151,7 +160,7 @@ export const SubTabs = <TValue,>({
             ref={listRef}
             accessibilityRole="tablist"
             accessible={true}
-            contentContainerStyle={applyStyle(tabsStyle)}
+            contentContainerStyle={applyStyle(tabsStyle, { paddingHorizontal })}
             data={items}
             extraData={{ size, value }}
             horizontal={true}

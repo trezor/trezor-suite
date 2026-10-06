@@ -1,9 +1,12 @@
 import styled from 'styled-components';
 
+import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
-import { goto, selectRouteName } from '@suite/router';
+import { gotoThunk, selectRouteName } from '@suite/router';
 import { isBech32AddressUppercase } from '@suite-common/address';
-import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type NetworkSymbol,
@@ -17,7 +20,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
 import type { NotificationRendererProps } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { ConditionalActionRenderer } from './ConditionalActionRenderer';
@@ -32,18 +35,19 @@ export const CoinProtocolRenderer = ({
     render,
     notification,
 }: NotificationRendererProps<'coin-scheme-protocol'>) => {
-    const dispatch = useDispatch();
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const { dispatch } = useServices(injectDispatch);
+    const selectedAccount = useSelector(selectSelectedAccount);
     const routeName = useSelector(selectRouteName);
 
-    const networkSymbol = getNetworkSymbolForProtocol(notification.scheme) ?? null;
+    const networkSymbol = useSelector(state =>
+        selectNetworkSymbolForProtocol(state, notification.scheme),
+    );
     const displaySymbol = networkSymbol && getNetworkDisplaySymbol(networkSymbol);
     const networkName = networkSymbol && getNetworkDisplaySymbolName(networkSymbol);
     const networkAccounts = useSelector(state =>
         selectDeviceAccountsByNetworkSymbol(state, networkSymbol),
     ).filter(a => new BigNumber(a.balance).gt(0));
-    const isOnSendPage =
-        routeName === 'wallet-send' && selectedAccount?.network?.symbol === networkSymbol;
+    const isOnSendPage = routeName === 'wallet-send' && selectedAccount?.symbol === networkSymbol;
 
     const onCancel = (reset: boolean = true) => {
         dispatch(notificationsActions.close(notification.id));
@@ -62,7 +66,7 @@ export const CoinProtocolRenderer = ({
                 const firstAccount = networkAccounts[0];
                 if (networkAccounts.length === 1 && firstAccount) {
                     dispatch(
-                        goto({
+                        gotoThunk({
                             routeName: 'wallet-send',
                             params: {
                                 symbol: firstAccount.symbol,
@@ -74,7 +78,7 @@ export const CoinProtocolRenderer = ({
                 } else {
                     dispatch(globalSendReceiveFiltersActions.setNetworkSymbol(networkSymbol));
                     dispatch(
-                        goto({
+                        gotoThunk({
                             routeName: 'suite-index',
                             params: {
                                 modal: 'send',

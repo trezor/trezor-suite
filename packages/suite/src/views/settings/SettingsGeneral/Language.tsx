@@ -1,18 +1,19 @@
 import { useMemo } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectAutodetectLanguage, selectLanguage, suiteSettingsActions } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { LANGUAGES, type Locale, type LocaleInfo } from '@suite-common/suite-types';
 import { getPlatformLanguages } from '@trezor/env-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { CROWDIN_URL } from '@trezor/urls';
 import { typedObjectEntries } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { getOsLocale } from 'src/utils/suite/l10n';
 
 const onlyOfficial = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
@@ -60,10 +61,9 @@ const useLanguageOptions = () => {
 };
 
 export const Language = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const language = useSelector(selectLanguage);
     const autodetectLanguage = useSelector(selectAutodetectLanguage);
-    const dispatch = useDispatch();
 
     const { options, systemOption } = useLanguageOptions();
 
@@ -75,7 +75,9 @@ export const Language = () => {
               label: LANGUAGES[language].name,
           };
 
-    const onChange = ({ value }: { value: Locale | 'system' }) => {
+    type OnChangeParams = { value: Locale | 'system' };
+
+    const onChange = ({ value }: OnChangeParams) => {
         analytics.report({
             type: events.settingsGeneralChangeLanguageEvent.name,
             payload: {

@@ -12,13 +12,7 @@ import type { RouterApp } from './routerApps';
 export const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 export const modalAppParams = ['cancelable', 'variant'] as const;
 export const dashboardParams = ['modal', 'networkSymbol'] as const;
-export const earnParams = [
-    'symbol',
-    'accountIndex',
-    'accountType',
-    'yieldId',
-    'contractAddress',
-] as const;
+export const earnParams = ['symbol', 'accountIndex', 'accountType', 'vaultAddress'] as const;
 
 // Do not export, only for type-checking `routes` itself, instead use the inferred `Route` in @suite/router.
 type RouteDefinition = {
@@ -123,6 +117,11 @@ export const routes = [
         pattern: '/earn/tron/claim',
         app: 'earn-staking',
         params: earnParams,
+    },
+    {
+        name: 'apps-embedding-index',
+        pattern: '/apps-embedding',
+        app: 'apps-embedding',
     },
     {
         name: 'suite-version',

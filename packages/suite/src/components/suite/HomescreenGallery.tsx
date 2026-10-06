@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
 import { useDevice } from '@suite/device';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Grid } from '@trezor/components';
 import {
     DeviceModelInternal,
@@ -11,9 +13,8 @@ import { resolveStaticPath } from '@trezor/env-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 import { getDefaultHomeScreenImage, getHomescreens } from 'src/constants/suite/homescreens';
-import { useDispatch } from 'src/hooks/suite';
 import { imagePathToHex } from 'src/utils/suite/homescreen';
 
 type HomescreensType = ReturnType<typeof getHomescreens>;
@@ -48,7 +49,7 @@ type HomescreenGalleryProps = {
 };
 
 export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
     const { device, isLocked } = useDevice();
 
     const deviceModelInternal = device?.features?.internal_model;
@@ -72,13 +73,13 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
                 fwVersion !== null && versionUtils.isNewerOrEqual(fwVersion, '2.9.0');
 
             dispatch(
-                applySettings(
+                applySettingsThunk(
                     supportsHomescreenLength ? { homescreen_length: 0 } : { homescreen: '' },
                 ),
             );
         } else {
             const hex = await imagePathToHex(imagePath, deviceModelInternal);
-            dispatch(applySettings({ homescreen: hex }));
+            dispatch(applySettingsThunk({ homescreen: hex }));
         }
 
         onConfirm?.();

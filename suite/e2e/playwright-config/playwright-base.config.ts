@@ -52,8 +52,15 @@ export const baseConfig: PlaywrightTestConfig = defineConfig<
                         ] as ReporterDescription,
                     ]
                   : []),
+              // A no-op unless a perf-measured test ran.
+              [path.join(__dirname, '../performance/perfReporter.ts')] as ReporterDescription,
           ] // CI run
-        : [['list'], ['html', { open: 'never' }]], // Local run or Fix Agent CI run
+        : [
+              ['list'],
+              ['html', { open: 'never' }],
+              // A no-op unless a perf-measured test ran.
+              [path.join(__dirname, '../performance/perfReporter.ts')] as ReporterDescription,
+          ], // Local run or Fix Agent CI run
     timeout: getTimeout(),
     outputDir: path.join(__dirname, '../test-results'),
 });

@@ -39,15 +39,12 @@ describe('Trade Exchange [@androidOnly]', () => {
 
     // Skipping due to emulator crash
     describe('with device disconnected [@T3T1]', () => {
-        beforeAll(() => {
+        beforeEach(async () => {
             if (!passphrase) {
                 throw new Error(
                     'TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE environment variable is required',
                 );
             }
-        });
-
-        beforeEach(async () => {
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
@@ -61,7 +58,7 @@ describe('Trade Exchange [@androidOnly]', () => {
         });
 
         it('should request trezor connect before preview', async () => {
-            await tradingExchangeActions.selectSendAsset('USDC');
+            await tradingExchangeActions.selectSendAsset('USDC', undefined, 'USD Coin');
             await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum', 'Tether');
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
             await tradingExchangeActions.setSendCryptoAmount('10');
@@ -80,15 +77,12 @@ describe('Trade Exchange [@androidOnly]', () => {
 
     // Skipping due to emulator crash
     describe('with device connected [@T3T1]', () => {
-        beforeAll(() => {
+        beforeEach(async () => {
             if (!passphrase) {
                 throw new Error(
                     'TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE environment variable is required',
                 );
             }
-        });
-
-        beforeEach(async () => {
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
@@ -100,13 +94,13 @@ describe('Trade Exchange [@androidOnly]', () => {
         });
 
         it('Basic exchange USDC to USDT', async () => {
-            await tradingExchangeActions.selectSendAsset('USDC');
+            await tradingExchangeActions.selectSendAsset('USDC', undefined, 'USD Coin');
             await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum', 'Tether');
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
             await tradingExchangeActions.setSendCryptoAmount('10');
 
             await tradingExchangeActions.viewHowTradingWorks();
-            await tradingExchangeActions.viewProviders();
+            await tradingExchangeActions.select1stCEXProvider();
             await tradingExchangeActions.expectValidExchangeForm();
 
             await tradingExchangeActions.confirmTradingForm();

@@ -2,6 +2,7 @@ import { Calldata } from '@suite-common/calldata';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { asAmountSubunit } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
 const ALLOWANCE_FETCH_TIMEOUT_MS = 15_000;
@@ -27,7 +28,7 @@ export const fetchAllowance = async ({
 
     const response = await Promise.race([
         TrezorConnect.blockchainEvmRpcCall({
-            coin,
+            coin: asCoinSymbol(coin),
             from: owner,
             to: tokenContractAddress,
             data: allowanceCalldata.data,

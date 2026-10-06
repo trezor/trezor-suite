@@ -1,6 +1,8 @@
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceProtectedByPassphrase } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     CardList,
@@ -14,7 +16,7 @@ import { isDesktop } from '@trezor/env-utils';
 
 import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type ShortcutKeys = ShortcutBadgeProps['shortcut'];
 type TranslationId = Parameters<typeof Translation>[0]['id'];
@@ -218,7 +220,7 @@ const ShortcutSectionBlock = ({ titleId, items }: ShortcutSection) => (
 export const GuideShortcuts = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const isPassphraseProtectionEnabled = useSelector(selectIsDeviceProtectedByPassphrase);
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     const goBack = () => dispatch(setView('GUIDE_DEFAULT'));
 

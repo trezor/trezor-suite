@@ -1,8 +1,12 @@
-import { current, isAnyOf } from '@reduxjs/toolkit';
+import { type ActionCreatorWithPreparedPayload, current, isAnyOf } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { networks } from '@suite-common/wallet-config';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+} from '@suite-common/redux-utils';
+import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { accountEqualTo, compareAccountsByCoin, enhanceHistory } from '@suite-common/wallet-utils';
 import { typedObjectKeys } from '@trezor/utils';
@@ -45,11 +49,17 @@ const isUnchangedAccount = (prev: Account, next: Account) => {
     );
 };
 
-const update = (state: Account[], account: Account) => {
+type UpdateOptions = {
+    /** Set by discovery, which reports the chain alone and must not drop locally tracked tokens. */
+    isTokenTrackingBlind?: boolean;
+};
+
+const update = (state: Account[], account: Account, options: UpdateOptions = {}) => {
     const accountIndex = state.findIndex(accountEqualTo(account));
     const prev = state[accountIndex];
 
     if (prev) {
+        const prevUnwrapped = current(prev);
         const next: Account = {
             ...account,
             // remove "transactions" field, they are stored in "transactionReducer"
@@ -61,10 +71,42 @@ const update = (state: Account[], account: Account) => {
             delete next.marker;
         }
 
+        // A contract the node would not answer for is not one the account stopped holding, so its
+        // last known balance is kept rather than the token disappearing until a refresh succeeds.
+        const unreadableContracts = new Set(
+            next.networkType === 'stellar' ? (next.misc.stellarUnreadableContracts ?? []) : [],
+        );
+
+        // Locally tracked tokens must survive an update built from an older account snapshot
+        // (e.g. a concurrent sync). A wrapped-native (WETH) balance exists only as a local entry:
+        // wrapping emits no ERC-20 Transfer, so the backend never reports the token on its own.
+        // Only a blind update may keep a contract token, or removing one would never take effect.
+        const keepsLocalTokens =
+            next.networkType === 'ethereum' ||
+            (next.networkType === 'stellar' &&
+                (!!options.isTokenTrackingBlind || unreadableContracts.size > 0));
+
+        if (keepsLocalTokens && prevUnwrapped.tokens?.length) {
+            const nextContracts = new Set(next.tokens?.map(token => token.contract.toLowerCase()));
+            const locallyTrackedTokens = prevUnwrapped.tokens.filter(
+                token =>
+                    !nextContracts.has(token.contract.toLowerCase()) &&
+                    // A classic trustline the chain stopped reporting is genuinely closed.
+                    (next.networkType !== 'stellar' ||
+                        (token.standard === 'STELLAR-CONTRACT' &&
+                            (!!options.isTokenTrackingBlind ||
+                                unreadableContracts.has(token.contract)))),
+            );
+
+            if (locallyTrackedTokens.length > 0) {
+                next.tokens = (next.tokens ?? []).concat(locallyTrackedTokens);
+            }
+        }
+
         // Skip the write when nothing changed, so the entity reference (and the components subscribed
         // to it) stay stable. current() unwraps the immer draft, otherwise reads of nested fields
         // return proxies and the reference compare would never match.
-        if (isUnchangedAccount(current(prev), next)) return;
+        if (isUnchangedAccount(prevUnwrapped, next)) return;
 
         state[accountIndex] = next;
     } else {
@@ -92,32 +134,42 @@ const setMetadata = (state: Account[], account: Account) => {
     state[index].metadata = account.metadata;
 };
 
+export type AccountsReducerDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadAccounts'> & {
+        actions: {
+            setAccountAddMetadata: ActionCreatorWithPreparedPayload<[Account], Account>;
+        };
+    };
+
 export const prepareAccountsReducer = createReducerWithExtraDeps(
     accountsInitialState,
-    (builder, extra) => {
+    (builder, extra: AccountsReducerDeps) => {
         builder
             .addCase(accountsActions.removeAccount, (state, action) => {
                 remove(state, action.payload);
             })
             .addCase(accountsActions.createAccount, (state, action) => {
-                const { symbol, index } = action.payload;
-                const networkName = networks[symbol].name;
-                const accountLabel = action.payload.accountLabel ?? `${networkName} #${index + 1}`;
+                const { account: accountPayload, supportedNetworks } = action.payload;
+                const { symbol, index } = accountPayload;
+                const networkName = getNetwork(symbol).name;
+                const accountLabel = accountPayload.accountLabel ?? `${networkName} #${index + 1}`;
                 // remove "transactions" field, they are stored in "transactionReducer"
-                const history = enhanceHistory(action.payload.history);
+                const history = enhanceHistory(accountPayload.history);
 
-                const account = { ...action.payload, accountLabel, history };
+                const account = { ...accountPayload, accountLabel, history };
 
                 if (state.some(accountEqualTo(account))) {
                     console.warn(
                         // do not log the whole account: descriptor/addresses/balance are confidential and would leak into Sentry breadcrumbs
                         `Duplicated account found, updating instead (symbol: ${account.symbol}, type: ${account.accountType}, index: ${account.index})`,
                     );
-                    update(state, account);
+                    // Discovery does not carry the Soroban watch list.
+                    update(state, account, { isTokenTrackingBlind: true });
                 } else {
                     // Keep the state sorted by coin so that consumers get the canonical order for free.
                     const insertAtIndex = state.findIndex(
-                        existingAccount => compareAccountsByCoin(account, existingAccount) < 0,
+                        existingAccount =>
+                            compareAccountsByCoin(account, existingAccount, supportedNetworks) < 0,
                     );
 
                     if (insertAtIndex === -1) {
@@ -128,7 +180,14 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(accountsActions.updateAccount, (state, action) => {
-                update(state, action.payload);
+                update(state, action.payload.account);
+            })
+            .addCase(accountsActions.addAccountTokens, (state, action) => {
+                const { accountKey, tokens } = action.payload;
+                const accountByAccountKey = state.find(account => account.key === accountKey);
+                if (accountByAccountKey) {
+                    accountByAccountKey.tokens = (accountByAccountKey.tokens ?? []).concat(tokens);
+                }
             })
             .addCase(accountsActions.renameAccount, (state, action) => {
                 const { accountKey, accountLabel } = action.payload;
@@ -136,7 +195,7 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 if (accountByAccountKey) accountByAccountKey.accountLabel = accountLabel;
             })
             .addCase(accountsActions.changeAccountVisibility, (state, action) => {
-                update(state, action.payload);
+                update(state, action.payload.account);
             })
             .addCase(accountsActions.startCoinjoinAccountSync, (state, action) => {
                 const account = state.find(findCoinjoinAccount(action.payload.accountKey));

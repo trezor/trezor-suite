@@ -1,13 +1,20 @@
 import { type CryptoId, type ExchangeTrade, type ExchangeTradeQuoteRequest } from 'invity-api';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { type GotoThunkDeps } from '@suite/router';
+import { type WithServices } from '@suite-common/redux-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { selectExchangeQuoteThunk } from './selectExchangeQuoteThunk';
+import {
+    type SelectExchangeQuoteThunkState,
+    selectExchangeQuoteThunk,
+} from './selectExchangeQuoteThunk';
 
 const mockSelectQuoteThunk = jest.fn((args: unknown) =>
     Object.assign(
@@ -30,8 +37,10 @@ jest.mock('@suite-common/trading', () => ({
 
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 
+type SelectExchangeQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
+
 const ACCOUNT: Account = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor('0xAccount'),
 });
 
@@ -49,14 +58,15 @@ const DEFAULT_QUOTES_REQUEST: ExchangeTradeQuoteRequest = {
     sendStringAmount: '1',
 };
 
+type BuildStoreParams = { quotesRequest?: ExchangeTradeQuoteRequest };
+
 const buildStore = (
     report: jest.Mock,
-    { quotesRequest }: { quotesRequest?: ExchangeTradeQuoteRequest } = {
+    { quotesRequest }: BuildStoreParams = {
         quotesRequest: DEFAULT_QUOTES_REQUEST,
     },
 ) =>
-    configureMockStore({
-        extra: { services: { analytics: mockAnalytics(report) } },
+    createTestCompositionRoot<SelectExchangeQuoteThunkDeps, SelectExchangeQuoteThunkState>({
         preloadedState: {
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
             tokenDefinitions: {},
@@ -81,7 +91,15 @@ const buildStore = (
                 },
             },
         },
-    });
+        services: () => ({
+            analytics: mockAnalytics(report),
+            suiteRouterHistory: {
+                getLocation: jest.fn(),
+                navigate: jest.fn(),
+                listen: jest.fn(() => jest.fn()),
+            },
+        }),
+    }).services.store;
 
 describe('selectExchangeQuoteThunk', () => {
     beforeEach(() => {

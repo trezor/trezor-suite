@@ -1,17 +1,19 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     selectIsDeviceBackedUp,
     selectSelectedDevice,
     selectSelectedDeviceLabelOrName,
 } from '@suite-common/device';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
 import { PrerequisitesGuide } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type StepCheckSeedProps = {
     deviceWillBeWiped: boolean;
@@ -36,7 +38,7 @@ export const StepCheckSeed = ({
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
 
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
     if (!device?.connected || !device?.features) {
         return <PrerequisitesGuide />;
@@ -124,7 +126,7 @@ export const StepCheckSeed = ({
                         onClick={() => {
                             resetReducer();
                             dispatch(
-                                goto({
+                                gotoThunk({
                                     routeName: isDeviceBackedUp ? 'recovery-index' : 'backup-index',
                                 }),
                             );

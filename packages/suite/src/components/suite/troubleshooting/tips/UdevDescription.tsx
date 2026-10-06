@@ -1,13 +1,13 @@
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
-
-import { useDispatch } from 'src/hooks/suite';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 export const UdevDescription = () => {
-    const dispatch = useDispatch();
+    const { dispatch } = useServices(injectDispatch);
 
-    const handleClick = () => dispatch(goto({ routeName: 'suite-udev' }));
+    const handleClick = () => dispatch(gotoThunk({ routeName: 'suite-udev' }));
 
     return (
         <div data-testid="@connect-device-prompt/unreadable-udev">

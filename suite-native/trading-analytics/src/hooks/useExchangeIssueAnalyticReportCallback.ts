@@ -1,11 +1,7 @@
 import { useCallback } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import {
-    type TradingExchangeIssue,
-    events,
-    selectNativeAnalyticsDep,
-} from '@suite-native/analytics';
+import { type TradingExchangeIssue, events, injectNativeAnalytics } from '@suite-native/analytics';
 
 export type TradingExchangeIssueAnalyticReportCallback = (
     issue: TradingExchangeIssue,
@@ -14,7 +10,7 @@ export type TradingExchangeIssueAnalyticReportCallback = (
 
 export const useExchangeIssueAnalyticReportCallback =
     (): TradingExchangeIssueAnalyticReportCallback => {
-        const { analytics } = useServices(selectNativeAnalyticsDep);
+        const { analytics } = useServices(injectNativeAnalytics);
 
         return useCallback(
             (issue: TradingExchangeIssue, isSimulation: boolean) => {

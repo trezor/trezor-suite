@@ -2,9 +2,9 @@ import { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 
 import {
     AnimatedBox,
+    BannerInline,
     BottomSheetModal,
     Button,
-    InlineAlertBox,
     Text,
     VStack,
     useBottomSheetModal,
@@ -39,7 +39,7 @@ export const DoNotCloseAppBottomSheetTrigger = ({
                     exiting={FadeOutDown}
                     style={applyStyle(triggerStyle)}
                 >
-                    <InlineAlertBox
+                    <BannerInline
                         intent="info"
                         title={
                             <Translation id="firmware.firmwareUpdateProgress.doNotCloseApp.alertBox.title" />

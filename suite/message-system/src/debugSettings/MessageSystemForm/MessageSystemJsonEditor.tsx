@@ -4,6 +4,7 @@ import { type ValidateError } from '@suite-common/message-system';
 import { Button, Column, Icon, Row, Text, Textarea } from '@trezor/components';
 import { CheckCircleFilledIcon, XCircleFilledIcon } from '@trezor/icons';
 import { useTextareaCursorPosition } from '@trezor/react-utils';
+
 const ErrorContainer = styled.div`
     max-height: 16rem;
     overflow-y: scroll;

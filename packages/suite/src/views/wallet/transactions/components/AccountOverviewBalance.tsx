@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectBaseCurrency } from '@suite-common/wallet-core';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Column, Icon, Paragraph, Row, Skeleton, Text } from '@trezor/components';
@@ -113,7 +113,10 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
                 <Row gap={4}>
                     <Icon as={InfoIcon} size={16} intent="neutral" priority="secondary" />
                     <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
-                        <Translation id={balanceExcludesTranslationId} />
+                        <Translation
+                            id={balanceExcludesTranslationId}
+                            values={{ networkDisplaySymbol: getNetworkDisplaySymbol(symbol) }}
+                        />
                     </Paragraph>
                 </Row>
             )}

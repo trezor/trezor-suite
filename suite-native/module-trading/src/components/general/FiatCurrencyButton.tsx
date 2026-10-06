@@ -1,9 +1,6 @@
-import { Pressable } from 'react-native';
-
 import type { FiatCurrencyCode } from 'invity-api';
 
-import { Text, buttonSizeToDimensionsMap } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
+import { Button, HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { FiatCurrencyIcon } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -14,15 +11,8 @@ export type FiatCurrencyButtonProps = {
     testID?: string;
 };
 
-const buttonStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
-    ...buttonSizeToDimensionsMap.medium,
-    gap: spacings.sp8,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.elementFillNeutralSofter,
-    borderColor: colors.elementBorderNeutralSofter,
-    borderWidth: borders.widths.small,
+const buttonStyle = prepareNativeStyle(({ spacings }) => ({
+    height: spacings.sp40,
 }));
 
 export const FiatCurrencyButton = ({ currency, onPress, testID }: FiatCurrencyButtonProps) => {
@@ -33,19 +23,24 @@ export const FiatCurrencyButton = ({ currency, onPress, testID }: FiatCurrencyBu
     const tickerTestID = testID ? `${testID}/ticker` : undefined;
 
     return (
-        <Pressable
+        <Button
             onPress={onPress}
-            style={applyStyle(buttonStyle)}
-            accessible
+            size="medium"
+            intent="neutral"
+            priority="secondary"
+            iconRight="caretDown"
+            shouldWrapChildrenInText={false}
             accessibilityRole="button"
             accessibilityLabel={translate('moduleTrading.selectFiat.buttonTitle')}
             testID={testID}
+            style={applyStyle(buttonStyle)}
         >
-            <FiatCurrencyIcon size="extraSmall" value={currency} />
-            <Text variant="body-sm-strong" color="contentPrimary" testID={tickerTestID}>
-                {displayCurrency}
-            </Text>
-            <Icon name="caretDown" color="contentPrimary" size="medium" />
-        </Pressable>
+            <HStack alignItems="center" spacing="sp8">
+                <FiatCurrencyIcon size="extraSmall" value={currency} />
+                <Text variant="body-sm-strong" color="contentPrimary" testID={tickerTestID}>
+                    {displayCurrency}
+                </Text>
+            </HStack>
+        </Button>
     );
 };
