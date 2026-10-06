@@ -211,6 +211,9 @@ export const connectPopupDeeplinkThunk = createThunk<
         return;
     }
 
+    // Before the call starts, because a call that ends before its first await, such as a declined
+    // call, is answered right away.
+    const callDeferred = getPopupCallDeferred(true);
     dispatch(
         connectPopupCallThunk({
             source: {
@@ -226,7 +229,7 @@ export const connectPopupDeeplinkThunk = createThunk<
             payload,
         }),
     );
-    const response = await getPopupCallDeferred(true).promise;
+    const response = await callDeferred.promise;
     callbackUrl.searchParams.set('response', JSON.stringify(response));
     dispatch(
         connectPopupActions.deeplinkCallback({
