@@ -40,8 +40,7 @@ const appSlice = createSlice({
                 },
             )
             .addCase(postOnboardingInitThunk.rejected, (state: AppState) => {
-                state.postOnboardingInitializationStatus =
-                    PostOnboardingInitializationStatus.Error;
+                state.postOnboardingInitializationStatus = PostOnboardingInitializationStatus.Error;
             })
             .addCase(applicationInitThunk.fulfilled, (state: AppState) => {
                 state.isAppReady = true;
