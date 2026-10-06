@@ -9575,19 +9575,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@simple-git/args-pathspec@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@simple-git/args-pathspec@npm:1.0.3"
-  checksum: 10/74bcc00123cd0da800fc5a6417f83f2f4fce66eb38749efc2ca3b6e4c431c6edaabe80c5834714c155f6ba07582069b182420eda27a601353fb5a3b48917d7e0
+"@simple-git/args-pathspec@npm:1.0.4, @simple-git/args-pathspec@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@simple-git/args-pathspec@npm:1.0.4"
+  checksum: 10/9d46cc712a7edd138a792be083e77c4843d8424165d02fddee2cdbb69d42b824f0a93fec5d0a37b2b78f6199f69e6686271fd9a5ae6dcb06df92588ff50ae659
   languageName: node
   linkType: hard
 
-"@simple-git/argv-parser@npm:^1.1.0":
-  version: 1.1.1
-  resolution: "@simple-git/argv-parser@npm:1.1.1"
+"@simple-git/argv-parser@npm:2.0.1":
+  version: 2.0.1
+  resolution: "@simple-git/argv-parser@npm:2.0.1"
   dependencies:
-    "@simple-git/args-pathspec": "npm:^1.0.3"
-  checksum: 10/89f49ee1e9a936318d443a21b04fa8adcd7a3fa4d2d9ebc947d6d4f347d65db5fbcfec37f3d75711f2724d7886506f3003144735e244e1eea6badef58696d99f
+    "@simple-git/args-pathspec": "npm:^1.0.4"
+  checksum: 10/9070117b85a33ec76994327ca3284c7ad3b107148dc78420588b032053e144d5591f25b5d26a31313440001ff4778ebfa44fe5d7c84e6281307ebb7ce1b3de03
   languageName: node
   linkType: hard
 
@@ -15945,7 +15945,7 @@ __metadata:
     fs-extra: "npm:^11.3.1"
     postcss-loader: "npm:^8.2.0"
     semver: "npm:^7.7.1"
-    simple-git: "npm:^3.36.0"
+    simple-git: "npm:^4.0.2"
     style-loader: "npm:^4.0.0"
     ts-node: "npm:^10.9.2"
     tsx: "npm:^4.21.0"
@@ -45145,16 +45145,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-git@npm:^3.36.0":
-  version: 3.36.0
-  resolution: "simple-git@npm:3.36.0"
+"simple-git@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "simple-git@npm:4.0.2"
   dependencies:
     "@kwsites/file-exists": "npm:^1.1.1"
     "@kwsites/promise-deferred": "npm:^1.1.1"
-    "@simple-git/args-pathspec": "npm:^1.0.3"
-    "@simple-git/argv-parser": "npm:^1.1.0"
+    "@simple-git/args-pathspec": "npm:1.0.4"
+    "@simple-git/argv-parser": "npm:2.0.1"
     debug: "npm:^4.4.0"
-  checksum: 10/79a745464798bce17fc5c286ff4a44ba07d368a745d03d31f3c3cef51bd63b98dc29e72f55dda087b64e5db90e5e9f91a7429543ddf08d105d9a069c525e6818
+  checksum: 10/fd41d812c3a489520fcb9c5e517cf62cdef7d93b414880cafee1541ea914d51914262ddeb5b219f28a45c0641bcee673569132bb12b2880cc5a75c857bdd30e6
   languageName: node
   linkType: hard
 
