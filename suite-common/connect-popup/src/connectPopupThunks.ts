@@ -49,7 +49,7 @@ import {
     type SelectAccountCandidate,
     isUtxoNetwork,
 } from './connectPopupTypes';
-import { getConnectV9Deeplink } from './connectV9';
+import { getConnectAnalyticsNpmVersion, getConnectV9Deeplink } from './connectV9';
 import {
     cleanupAllTemporaryAccounts,
     compatibilityHooks,
@@ -265,7 +265,7 @@ export const connectPopupCallInnerThunk = createThunk<
                     appName: source.manifest.appName,
                     appUrl: source.manifest.appUrl,
                     appEmail: source.manifest.email,
-                    npmVersion: source.manifest.npmVersion,
+                    npmVersion: getConnectAnalyticsNpmVersion(source),
                     connectionType: source.type,
                     origin: source.origin,
                     paramNames: getCallParamNames(params.payload),
@@ -299,7 +299,7 @@ export const connectPopupCallInnerThunk = createThunk<
                     appName: source.manifest.appName,
                     appUrl: source.manifest.appUrl,
                     appEmail: source.manifest.email,
-                    npmVersion: source.manifest.npmVersion,
+                    npmVersion: getConnectAnalyticsNpmVersion(source),
                     connectionType: source.type,
                     paramNames: getCallParamNames(params.payload),
                 },
