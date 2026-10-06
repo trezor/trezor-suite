@@ -7,6 +7,7 @@ import {
     CALL_SOURCE_DESKTOP_WS,
     CALL_SOURCE_MCP,
     CALL_SOURCE_WALLETCONNECT,
+    type ConnectCallSource,
     UNKNOWN_PROCESS,
 } from './connectPopupTypes';
 
@@ -86,5 +87,52 @@ describe('storageLoad', () => {
         expect(
             loadApps({ ...app, type: CALL_SOURCE_WALLETCONNECT, process: undefined }).permissions,
         ).toEqual([]);
+    });
+});
+
+describe('refuseConnectV9Call', () => {
+    const { allowedPermissions: _allowedPermissions, ...appSource } = app;
+
+    const refuseCall = (
+        state: ReturnType<typeof connectPopupReducer>,
+        source: ConnectCallSource,
+        method: 'getAddress' | 'getPublicKey' = 'getAddress',
+    ) =>
+        connectPopupReducer(
+            state,
+            connectPopupActions.refuseConnectV9Call({
+                method,
+                payload: {},
+                source,
+                error: { code: 'Method_NotAllowed', message: 'Update to Connect 10.' },
+            }),
+        );
+
+    it('shows the first declined call of an app', () => {
+        expect(refuseCall(connectPopupInitialState, appSource).activeCall).toMatchObject({
+            state: 'call-error',
+            method: 'getAddress',
+            error: { message: 'Update to Connect 10.' },
+        });
+    });
+
+    it('declines the next call of the same app without showing it again', () => {
+        const state = refuseCall(
+            refuseCall(connectPopupInitialState, appSource),
+            appSource,
+            'getPublicKey',
+        );
+
+        expect(state.activeCall).toMatchObject({ method: 'getAddress' });
+    });
+
+    it('declines a call of an app whose error has been closed without showing it', () => {
+        const shown = refuseCall(connectPopupInitialState, appSource);
+        const closed = connectPopupReducer(
+            connectPopupReducer(shown, connectPopupActions.finishCall()),
+            connectPopupActions.clearCall(),
+        );
+
+        expect(refuseCall(closed, appSource).activeCall).toBeUndefined();
     });
 });

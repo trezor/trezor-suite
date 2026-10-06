@@ -143,6 +143,7 @@ export const Feature = {
     referAFriend: 'referAFriend',
     connectV9: {
         warning: 'connect.v9.warning',
+        refuse: 'connect.v9.refuse',
     },
 
     // Feature flags implemented only for mobile app
