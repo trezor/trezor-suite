@@ -61,12 +61,9 @@ pub async fn try_to_subscribe(ctx: &ConnectDeviceContext) -> Result<(), Platform
 
     let subscription_device = peripheral.clone();
     let start = tokio::time::Instant::now();
-    let timeout = Duration::from_millis(ctx.params.timeout as u64);
-    let timeout = if timeout.is_zero() {
-        DEFAULT_PAIRING_TIMEOUT
-    } else {
-        timeout
-    };
+    // The caller may extend the pairing timeout but not shorten it: a subscription
+    // that runs out of time marks the device as `PairingError`.
+    let timeout = Duration::from_millis(ctx.params.timeout as u64).max(DEFAULT_PAIRING_TIMEOUT);
 
     let subscription_task = tokio::spawn(async move {
         let mut tries = 0;
