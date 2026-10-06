@@ -857,11 +857,9 @@ export const setMax: any[] = [
         finalResult: {
             composeTransactionCalls: 1,
             composeTransactionParams: {
-                account: {
-                    // only utxos with enough anonymity are used in TrezorConnect.composeTransaction
-                    // see sendFormBitcoinActions
-                    utxo: [UTXO.BB, UTXO.DD],
-                },
+                // only utxos with enough anonymity are used in TrezorConnect.composeTransaction
+                // see sendFormBitcoinThunks
+                utxo: [UTXO.BB, UTXO.DD],
             },
         },
     },
