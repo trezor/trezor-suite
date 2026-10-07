@@ -119,6 +119,13 @@ export const useDeviceAuthenticityCheck = () => {
         [reportCheckResult, showToast, translate],
     );
 
+    const goBackIfPossible = useCallback(() => {
+        // The check may run on a screen with no previous route (e.g. the first screen of the root stack)
+        if (navigation.canGoBack()) {
+            navigation.goBack();
+        }
+    }, [navigation]);
+
     const handleError = useCallback(
         (error: string, errorCode?: string) => {
             if (isDeviceBootloaderUnlocked) {
@@ -138,7 +145,7 @@ export const useDeviceAuthenticityCheck = () => {
             switch (errorCode) {
                 case 'Failure_ActionCancelled':
                 case 'Failure_PinCancelled': // PIN entry cancelled on T3T1
-                    navigation.goBack();
+                    goBackIfPossible();
                     showToast({
                         intent: 'info',
                         message: translate('moduleDeviceSettings.authenticity.toast.canceled'),
@@ -146,7 +153,7 @@ export const useDeviceAuthenticityCheck = () => {
                     reportCheckResult('cancelled');
                     break;
                 default:
-                    navigation.goBack();
+                    goBackIfPossible();
                     showToast({
                         intent: 'critical',
                         message: translate('moduleDeviceSettings.authenticity.toast.error', {
@@ -156,7 +163,7 @@ export const useDeviceAuthenticityCheck = () => {
                     reportCheckResult('failed', error);
             }
         },
-        [isDeviceBootloaderUnlocked, navigation, reportCheckResult, showToast, translate],
+        [goBackIfPossible, isDeviceBootloaderUnlocked, reportCheckResult, showToast, translate],
     );
 
     const checkDeviceAuthenticity = useCallback(
