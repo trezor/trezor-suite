@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { KeyboardEvents } from 'react-native-keyboard-controller';
 
-export const useIsKeyboardShown = () => {
+import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
+
+export const useIsBottomInsetApplicable = () => {
     const [isKeyboardShown, setIsKeyboardShown] = useState(false);
 
     useEffect(() => {
@@ -19,5 +21,5 @@ export const useIsKeyboardShown = () => {
         };
     }, []);
 
-    return isKeyboardShown;
+    return !useContext(BottomTabBarHeightContext) && !isKeyboardShown;
 };
