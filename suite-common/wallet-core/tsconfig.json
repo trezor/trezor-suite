@@ -74,6 +74,9 @@
         {
             "path": "../../networks/tron/network-tron"
         },
+        {
+            "path": "../../networks/tron/network-tron-suite-common"
+        },
         { "path": "../../packages/protobuf" },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/type-utils" },

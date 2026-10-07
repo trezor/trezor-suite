@@ -1,46 +1,15 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type ResponseTypes, type TronAccountExtraData } from '@trezor/blockchain-link-types';
-import {
-    TRON_BANDWIDTH_SUN_PRICE,
-    TRON_CREATE_ACCOUNT_FEE_SUN,
-} from '@trezor/network-tron/constants';
+import { TRON_BANDWIDTH_SUN_PRICE } from '@trezor/network-tron/constants';
+import { computeBandwidthFeeLevel } from '@trezor/network-tron-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { asAmountSubunit } from './AmountTypes';
 import { subunitsToUnits } from './amountUtils';
 
 export type TronFeeLevel = ResponseTypes.EstimateFee['payload'][number];
-type ComputeBandwidthFeeLevelParams = {
-    availableStakedBandwidth: number;
-    availableFreeBandwidth: number;
-    bytes: number;
-    isNewAccount?: boolean;
-};
-
-export const computeBandwidthFeeLevel = ({
-    availableStakedBandwidth,
-    availableFreeBandwidth,
-    bytes,
-    isNewAccount = false,
-}: ComputeBandwidthFeeLevelParams): TronFeeLevel => {
-    if (isNewAccount) {
-        const feeInSun = availableStakedBandwidth < bytes ? TRON_CREATE_ACCOUNT_FEE_SUN : 0;
-
-        return {
-            feePerTx: String(feeInSun),
-            feePerUnit: String(TRON_BANDWIDTH_SUN_PRICE),
-        };
-    }
-
-    const availableBandwidth = Math.max(availableStakedBandwidth, availableFreeBandwidth);
-    const feeInSun = availableBandwidth < bytes ? bytes * TRON_BANDWIDTH_SUN_PRICE : 0;
-
-    return {
-        feePerTx: String(feeInSun),
-        feePerUnit: String(TRON_BANDWIDTH_SUN_PRICE),
-    };
-};
+export { computeBandwidthFeeLevel };
 
 export type TronFeeBreakdown = {
     trxBurned: BigNumber;

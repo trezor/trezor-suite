@@ -9,18 +9,33 @@ const blockchainGetCurrentFiatRates = jest.fn();
 const fetchCoinGeckoCurrentRate = jest.fn();
 const fetchCoinGeckoHistoricRates = jest.fn();
 const blockchainGetFiatRatesForTimestamps = jest.fn();
+const pushTransaction = jest.fn();
 
 const deps: TronChainNetworkDeps = {
     getTrezorConnect: () => ({
         getAccountInfo,
         blockchainGetCurrentFiatRates,
         blockchainGetFiatRatesForTimestamps,
+        blockchainEstimateFee: jest.fn(),
+        blockchainGetInfo: jest.fn(),
+        tronComposeTransaction: jest.fn(),
+        tronSignTransaction: jest.fn(),
+        pushTransaction,
     }),
     fetchCoinGeckoCurrentRate,
     fetchCoinGeckoHistoricRates,
 };
 
 const trx = asNetworkSymbol('trx');
+const sendAccount = {
+    descriptor: 'TAddress',
+    path: "m/44'/195'/0'/0/0",
+    accountType: 'normal',
+    deviceState: 'wallet-identity',
+    balance: '0',
+    availableBalance: '0',
+    formattedBalance: '0',
+} as const;
 const network = createTronChainNetwork(deps)({
     symbol: trx,
     backend: { type: 'blockbook', urls: [] },
@@ -132,5 +147,32 @@ describe('createTronChainNetwork', () => {
         expect(blockchainGetFiatRatesForTimestamps).toHaveBeenCalledWith(
             expect.objectContaining({ coin: 'trx', token: 'TUsdt' }),
         );
+    });
+
+    it('broadcasts without the wallet connection identity, as Tron backends keep none', async () => {
+        pushTransaction.mockResolvedValue({ success: true, payload: { txid: 'tx' } });
+
+        await network.send?.push({
+            account: { ...sendAccount, symbol: trx },
+            serializedTx: 'signed',
+            isMevProtectionEnabled: true,
+        });
+
+        expect(pushTransaction).toHaveBeenCalledWith({
+            tx: 'signed',
+            coin: 'trx',
+            identity: undefined,
+        });
+    });
+
+    it('refuses to send for an account of another network', async () => {
+        await expect(
+            network.send?.push({
+                account: { ...sendAccount, symbol: asNetworkSymbol('eth') },
+                serializedTx: 'signed',
+                isMevProtectionEnabled: true,
+            }),
+        ).rejects.toMatchObject({ code: 'symbol-mismatch' });
+        expect(pushTransaction).not.toHaveBeenCalled();
     });
 });

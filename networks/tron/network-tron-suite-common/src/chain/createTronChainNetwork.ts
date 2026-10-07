@@ -16,12 +16,14 @@ import {
 import { isSupportedTronNetwork } from '@trezor/network-tron-types';
 
 import { getAccountSyncInterval, getNetworkConfig } from '../networkConfig';
+import { type TronChainSendDeps, createTronChainSend } from './send/createTronChainSend';
 
 export type TronChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
     FetchConnectCurrentFiatRateDeps &
     FetchConnectTransactionsDeps &
-    FetchConnectHistoricFiatRatesDeps;
+    FetchConnectHistoricFiatRatesDeps &
+    TronChainSendDeps;
 
 /**
  * Tron network served by Blockbook, which also quotes the coin and its TRC10/TRC20 tokens.
@@ -33,6 +35,7 @@ export const createTronChainNetwork = (deps: TronChainNetworkDeps): CreateChainN
     const fetchConnectHistoricRates = createFetchConnectHistoricFiatRates(deps);
     const fetchTokens = createFetchConnectTokens(deps);
     const fetchConnectFiatRate = createFetchConnectCurrentFiatRate(deps);
+    const createSend = createTronChainSend(deps);
 
     return params => {
         const config = readChainNetworkConfig(
@@ -78,6 +81,7 @@ export const createTronChainNetwork = (deps: TronChainNetworkDeps): CreateChainN
                 useStellarContractTokens: false,
             },
             fetchHistoricFiatRates: config.hasFiatRate ? fetchHistoricRates : null,
+            send: createSend(params.symbol),
         });
     };
 };

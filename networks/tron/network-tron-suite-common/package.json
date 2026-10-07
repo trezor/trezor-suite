@@ -14,12 +14,14 @@
     "dependencies": {
         "@noble/hashes": "^2.0.1",
         "@scure/base": "^2.0.0",
+        "@suite-common/calldata": "workspace:*",
+        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
         "@trezor/network-tron": "workspace:*",
-        "@trezor/network-tron-types": "workspace:*"
-    },
-    "devDependencies": {
-        "@trezor/network-module-types": "workspace:*"
+        "@trezor/network-tron-types": "workspace:*",
+        "@trezor/utils": "workspace:*"
     }
 }

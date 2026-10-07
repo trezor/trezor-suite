@@ -62,6 +62,7 @@
         "@trezor/network-solana-types": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
         "@trezor/network-tron": "workspace:*",
+        "@trezor/network-tron-suite-common": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",

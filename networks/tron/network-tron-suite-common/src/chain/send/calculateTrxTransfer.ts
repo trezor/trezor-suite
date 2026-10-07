@@ -1,5 +1,9 @@
-import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
-import { calculateMax, calculateTotal } from '@suite-common/wallet-utils';
+import {
+    type ExternalOutput,
+    type PrecomposedTransaction,
+    calculateMax,
+    calculateTotal,
+} from '@trezor/network-module-suite-common-types';
 import { TRON_ACCOUNT_ACTIVATION_FEE_SUN, TRON_MEMO_FEE_SUN } from '@trezor/network-tron/constants';
 import { BigNumber } from '@trezor/utils';
 

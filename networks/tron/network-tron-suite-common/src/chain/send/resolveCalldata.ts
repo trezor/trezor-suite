@@ -1,5 +1,5 @@
 import { Calldata } from '@suite-common/calldata';
-import { type TokenInfo } from '@trezor/connect';
+import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
 type CalldataResult = { data: string } | { data: null } | { error: string };

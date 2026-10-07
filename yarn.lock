@@ -12332,6 +12332,7 @@ __metadata:
     "@trezor/network-solana-types": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
     "@trezor/network-tron": "workspace:*"
+    "@trezor/network-tron-suite-common": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -12394,6 +12395,7 @@ __metadata:
     "@trezor/network-solana": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
     "@trezor/network-tron": "workspace:*"
+    "@trezor/network-tron-suite-common": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -18638,11 +18640,15 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
+    "@suite-common/calldata": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/network-tron": "workspace:*"
     "@trezor/network-tron-types": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
