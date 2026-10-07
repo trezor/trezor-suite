@@ -78,12 +78,20 @@ pub async fn open_device(
     // websocket connection is closed. The previous per-connection watcher
     // leaked the task and its BLE subscription whenever any other client was
     // still connected (https://github.com/trezor/trezor-suite/issues/31948).
-    manager.register_notification_stream(
-        broadcast.get_peer().to_string(),
-        id,
-        characteristic,
-        stream_task,
-    );
+    let registered = manager
+        .register_notification_stream(
+            broadcast.get_peer().to_string(),
+            id,
+            characteristic,
+            stream_task,
+        )
+        .await;
+
+    if !registered {
+        // This connection was closed while the characteristics were being
+        // discovered, the stream is already aborted and unsubscribed.
+        return Err(MethodError::Adapter(AdapterError::ClientDisconnected));
+    }
 
     Ok(WsResponsePayload::Success { success: true })
 }
