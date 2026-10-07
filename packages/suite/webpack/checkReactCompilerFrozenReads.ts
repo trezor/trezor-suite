@@ -21,11 +21,16 @@ const readSnapshot = () => {
 };
 
 /**
- * Fails the build on the two things the React Compiler has actually got wrong here — a
- * `react-hook-form` accessor read during render, and an impure render-scoped value captured by a
- * cached closure — and on any drift in the set of files it refuses to compile. See
- * `reactCompilerFrozenReads.ts` for why nothing else in the repository can catch any of them, and
- * `plans/react-compiler-rollout.md` for the rollout this gate belongs to.
+ * Fails the build on the four things the React Compiler won't catch, and would result in runtime
+ * code bugs:
+ * - `react-hook-form` accessor read during render
+ * - a cached spread of `useForm()`'s return value with no `formState` in its key
+ * - a cached read of form state react-hook-form edits in place
+ * - an impure render-scoped value captured by a cached closure
+ * Files excluded from compilation are listed in a snapshot; the script fails if there is a drift
+ * from the snapshot.
+ * Run locally with `--update-snapshot` param to update the snapshot.
+ * See `reactCompilerFrozenReads.ts` for why nothing else in the repository can catch any of them.
  *
  * Deliberately not a jest test: Nx would key a cached pass on `@trezor/suite`'s dependency graph,
  * and `REACT_COMPILER_PATHS` (all of `suite-common`) reaches beyond it.
