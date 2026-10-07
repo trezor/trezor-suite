@@ -151,11 +151,11 @@ impl AdapterManager {
         let state = match adapter.adapter_state().await {
             Ok(state) => state,
             Err(err) => {
-                info!("Adapter state error {:?}", err);
+                info!("Adapter state error {err:?}");
                 return None;
             }
         };
-        info!("Adapter found with state {:?}", state);
+        info!("Adapter found with state {state:?}");
 
         self.set_adapter_state(AdapterState::from(state.clone()))
             .await;
@@ -179,8 +179,8 @@ impl AdapterManager {
         *adp = Some(adapter.clone());
         drop(adp); // unlock for start_events_stream
 
-        if let Err(e) = self.start_events_stream().await {
-            info!("Failed to start_events_stream: {:?}", e);
+        if let Err(err) = self.start_events_stream().await {
+            info!("Failed to start_events_stream: {err:?}");
 
             return None;
         }
@@ -206,9 +206,9 @@ impl AdapterManager {
                     None
                 }
             },
-            Err(error) => {
-                info!("Adapter error {:?}", error);
-                match error.to_string().as_str() {
+            Err(err) => {
+                info!("Adapter error {err:?}");
+                match err.to_string().as_str() {
                     "Permission denied" => {
                         // macos: CBManagerAuthorization(2) > PermissionDenied
                         self.set_adapter_state(AdapterState::PermissionDenied).await;
@@ -514,13 +514,13 @@ impl AdapterManager {
             while let Some(event) = events.next().await {
                 match event {
                     CentralEvent::StateUpdate(state) => {
-                        info!("CentralEvent::StateUpdate {:?}", state);
+                        info!("CentralEvent::StateUpdate {state:?}");
                         self_ref.set_adapter_state(AdapterState::from(state)).await;
                         self_ref.dispatch_adapter_event().await;
                     }
                     CentralEvent::DeviceDiscovered(id) => {
                         if let Some(device) = utils::scan_filter(&adapter, &id).await {
-                            info!("DeviceDiscovered {:?} : {:?}", id, device);
+                            info!("DeviceDiscovered {id:?} : {device:?}");
                             if let Ok(device) = self_ref.add_device(&id).await {
                                 if let Ok(devices) = self_ref.prune_devices(device).await {
                                     self_ref
@@ -547,7 +547,7 @@ impl AdapterManager {
                             };
 
                             if emit_update {
-                                info!("DeviceUpdated {:?} : {:?}", id, device);
+                                info!("DeviceUpdated {id:?} : {device:?}");
                                 let devices = self_ref.get_devices().await;
                                 self_ref
                                     .dispatch_notification(NotificationEvent::DeviceUpdated {
@@ -568,7 +568,7 @@ impl AdapterManager {
                             .await;
 
                         if let Some(mut device) = self_ref.get_device(&id).await {
-                            info!("DeviceDisconnected: {:?} : {:?}", id, device);
+                            info!("DeviceDisconnected: {id:?} : {device:?}");
 
                             self_ref
                                 .send_to_listeners(ChannelMessage::Abort(
@@ -604,7 +604,7 @@ impl AdapterManager {
                     // CentralEvent::DeviceConnected fires up too early. Device may be connected but in pairing process
                     CentralEvent::DeviceConnected(id) => {
                         if let Some(device) = self_ref.get_device(&id).await {
-                            info!("DeviceConnected: {:?} : {:?}", id, device);
+                            info!("DeviceConnected: {id:?} : {device:?}");
                             if let DeviceConnectionStatus::Disconnected =
                                 device.get_connection_status()
                             {
