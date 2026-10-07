@@ -6,7 +6,10 @@ import {
 } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 
-export type TxInfoState = SendState | StakeState | YieldTxReviewState | TronStakeTxReviewState;
+import { type SendSession } from 'src/support/chainSend/SendSessionContext';
+
+export type TxInfoState =
+    SendState | SendSession | StakeState | YieldTxReviewState | TronStakeTxReviewState;
 
 export const isStakeState = (state: TxInfoState): state is StakeState => 'data' in state;
 

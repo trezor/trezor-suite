@@ -1,3 +1,5 @@
+import { type PropsWithChildren } from 'react';
+
 import type { BankAccount, CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
@@ -6,6 +8,7 @@ import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { QueryClient, QueryClientProvider } from '@suite-common/react-query';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
@@ -14,6 +17,15 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type AppState } from 'src/reducers/store';
 
 import { useTradingSellTradeActions } from './useTradingSellTradeActions';
+
+// Signing and broadcasting run through mutations, which need a query client.
+const createQueryClientWrapper = () => {
+    const queryClient = new QueryClient();
+
+    return ({ children }: PropsWithChildren) => (
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+};
 
 const mockLoadInitialDataThunk = jest.fn((args: unknown) =>
     Object.assign(() => Promise.resolve(), { type: '@trading/loadInitialData', args }),
@@ -175,6 +187,7 @@ const renderActions = (overrides?: StateOverrides) => {
     });
     const { result } = renderHookWithStoreProvider(() => useTradingSellTradeActions(), {
         services,
+        wrapper: createQueryClientWrapper(),
     });
 
     const { getActions } = services.store;

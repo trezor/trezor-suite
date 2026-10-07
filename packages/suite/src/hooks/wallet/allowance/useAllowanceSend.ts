@@ -6,11 +6,9 @@ import {
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
-import { injectDispatch } from '@trezor/redux-utils';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { useSignAndPushTransaction } from 'src/hooks/wallet/chainSend/useSignAndPushTransaction';
 
 interface UseAllowanceSendParams {
     account: Account;
@@ -22,7 +20,7 @@ interface SendParams {
 }
 
 export const useAllowanceSend = ({ account, methods }: UseAllowanceSendParams) => {
-    const { dispatch } = useServices(injectDispatch);
+    const signAndPushTransaction = useSignAndPushTransaction();
     const methodsRef = useCurrentRef(methods);
     const accountRef = useCurrentRef(account);
 
@@ -30,31 +28,23 @@ export const useAllowanceSend = ({ account, methods }: UseAllowanceSendParams) =
         async ({ composedTransaction }: SendParams): Promise<{ txid: string } | null> => {
             const formState: FormState = methodsRef.current.getValues();
 
-            const result = await dispatch(
-                signAndPushSendFormTransactionThunk({
-                    formState,
-                    precomposedTransaction: composedTransaction,
-                    selectedAccount: accountRef.current,
-                }),
-            ).unwrap();
+            const result = await signAndPushTransaction({
+                formState,
+                precomposedTransaction: composedTransaction,
+                selectedAccount: accountRef.current,
+            });
 
             if (!result) {
                 return null;
             }
 
-            const { payload } = result;
-
-            if ('txid' in payload) {
-                return { txid: payload.txid };
+            if (result.success) {
+                return { txid: result.payload.txid };
             }
 
-            if ('error' in payload) {
-                throw new Error(payload.error);
-            }
-
-            return null;
+            throw new Error(result.error.message);
         },
-        [dispatch, methodsRef, accountRef],
+        [signAndPushTransaction, methodsRef, accountRef],
     );
 
     return { send };

@@ -3,12 +3,8 @@ import { useForm, useWatch } from 'react-hook-form';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import {
-    pushSendFormRawTransactionThunk,
-    selectIsMevProtectionEnabled,
-    sendFormActions,
-} from '@suite-common/wallet-core';
-import { isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { selectIsMevProtectionEnabled, sendFormActions } from '@suite-common/wallet-core';
+import { isHexValid } from '@suite-common/wallet-utils';
 import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';
@@ -16,6 +12,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { useSelector } from 'src/hooks/suite';
+import { usePushRawTransaction } from 'src/hooks/wallet/chainSend/usePushRawTransaction';
 import { type Account } from 'src/types/wallet';
 
 const INPUT_NAME = 'rawTx';
@@ -38,6 +35,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
     });
     const { translationString } = useTranslation();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const pushRawTransaction = usePushRawTransaction();
     const inputValue = useWatch({ control, name: INPUT_NAME });
     const error = errors[INPUT_NAME];
     const hasError = !!error;
@@ -55,15 +53,11 @@ export const SendRaw = ({ account }: SendRawProps) => {
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
     const send = async () => {
-        const result = await dispatch(
-            pushSendFormRawTransactionThunk({
-                tx: inputValue,
-                symbol: account.symbol,
-                descriptor: account.descriptor,
-                identity: tryGetAccountIdentity(account),
-                isMevProtectionEnabled: isMevProtectionEnabled && isMevProtectionFeatureEnabled,
-            }),
-        ).unwrap();
+        const result = await pushRawTransaction({
+            account,
+            tx: inputValue,
+            isMevProtectionEnabled: isMevProtectionEnabled && isMevProtectionFeatureEnabled,
+        });
 
         if (result) {
             setValue(INPUT_NAME, '');

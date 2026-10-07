@@ -5,6 +5,7 @@ import { ReactQueryProvider } from '@suite-common/react-query/react';
 import { SelectCacheProvider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
+import { SendSessionProvider } from 'src/support/chainSend/SendSessionProvider';
 import Autodetect from 'src/support/suite/Autodetect';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 import { ErrorBoundary } from 'src/support/suite/ErrorBoundary';
@@ -44,7 +45,7 @@ export const Main = ({ trafficLightOffset, children }: MainProps) => {
                             <ConnectedIntlProvider>
                                 <SelectCacheProvider>
                                     <ConnectedFormatterProvider>
-                                        {children}
+                                        <SendSessionProvider>{children}</SendSessionProvider>
                                     </ConnectedFormatterProvider>
                                 </SelectCacheProvider>
                             </ConnectedIntlProvider>

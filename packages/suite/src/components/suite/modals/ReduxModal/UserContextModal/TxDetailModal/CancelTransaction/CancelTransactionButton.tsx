@@ -4,10 +4,8 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
 import { Modal } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { useSignAndPushTransaction } from 'src/hooks/wallet/chainSend/useSignAndPushTransaction';
 import { useCancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
 
 type CancelTransactionButtonProps = {
@@ -19,7 +17,7 @@ export const CancelTransactionButton = ({ account, onSuccess }: CancelTransactio
     const { device, isLocked } = useDevice();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const { dispatch } = useServices(injectDispatch);
+    const signAndPushTransaction = useSignAndPushTransaction();
     const { composedCancelTx, cancelFormState } = useCancelTxContext();
 
     const handleCancelTx = async () => {
@@ -27,13 +25,11 @@ export const CancelTransactionButton = ({ account, onSuccess }: CancelTransactio
 
         setIsSubmitting(true);
         try {
-            const result = await dispatch(
-                signAndPushSendFormTransactionThunk({
-                    formState: cancelFormState,
-                    precomposedTransaction: composedCancelTx,
-                    selectedAccount: account,
-                }),
-            ).unwrap();
+            const result = await signAndPushTransaction({
+                formState: cancelFormState,
+                precomposedTransaction: composedCancelTx,
+                selectedAccount: account,
+            });
 
             if (result?.success) {
                 onSuccess?.();

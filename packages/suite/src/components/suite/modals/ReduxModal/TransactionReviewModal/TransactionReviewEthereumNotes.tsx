@@ -12,6 +12,7 @@ import { CheckCircleIcon, GasPumpIcon } from '@trezor/icons';
 
 import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
 import { useSelector } from 'src/hooks/suite';
+import { type SendSession, useSendSession } from 'src/support/chainSend/SendSessionContext';
 import { type AppState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 
@@ -25,10 +26,12 @@ type TransactionReviewEthereumNotesProps = {
 // nonce resolved for one flow can never leak into another's review (each flow only sets its own
 // state). Every flow resolves the exact signed-with nonce before the device button-request fires,
 // so it's normally set by the time this modal renders; the Note simply doesn't render until then.
-const selectReviewEthereumNonce = (state: AppState) => {
+const selectReviewEthereumNonce = (state: AppState, session: SendSession | undefined) => {
     if (selectTronStakeTxReview(state).precomposedTx) return undefined; // TRON has no EVM nonce
     const yieldTxReview = selectYieldTxReview(state);
     if (yieldTxReview.precomposedTx) return yieldTxReview.precomposedForm?.ethereumNonce;
+    // A send signed through its chain network keeps its nonce in the send session.
+    if (session) return session.resolvedEthereumNonce ?? session.precomposedForm.ethereumNonce;
     if (state.wallet.send?.precomposedTx) {
         // Send stores the resolved nonce; WalletConnect fills precomposedForm instead.
         return (
@@ -43,7 +46,8 @@ export const TransactionReviewEthereumNotes = ({
     account,
     tx,
 }: TransactionReviewEthereumNotesProps) => {
-    const ethereumNonce = useSelector(selectReviewEthereumNonce);
+    const session = useSendSession();
+    const ethereumNonce = useSelector(state => selectReviewEthereumNonce(state, session));
 
     const fee = getFee(account.networkType, tx);
 
