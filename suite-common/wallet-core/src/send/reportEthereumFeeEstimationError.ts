@@ -1,9 +1,11 @@
 import { captureException, withScope } from '@sentry/core';
 
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { isEvmApprovalTx } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import type { EvmFeeEstimationFailure } from '@trezor/network-ethereum-suite-common';
 
 interface ReportEthereumFeeEstimationFailedParams {
     account: Account;
@@ -62,4 +64,21 @@ export const reportEthereumFeeEstimationFailed = ({
             ),
         );
     });
+};
+
+/** Reports a failed EVM gas estimate the way the send form always did: Sentry and a toast. */
+export const handleEvmFeeEstimationFailure = (
+    dispatch: (action: any) => unknown,
+    account: Account,
+    { draft, tokenInfo, estimateTarget, error }: EvmFeeEstimationFailure,
+) => {
+    reportEthereumFeeEstimationFailed({
+        account,
+        formState: draft as FormState,
+        tokenInfo,
+        estimateTarget,
+        error,
+    });
+
+    dispatch(notificationsActions.addToast({ type: 'estimated-fee-error' }));
 };

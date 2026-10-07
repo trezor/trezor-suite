@@ -5,7 +5,6 @@ import {
 } from '@suite-common/device';
 import { type EvmGasParamsGwei } from '@suite-common/schemas/src/evm';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import { ETH_SPEED_UP_TX_MULTIPLIER } from '@suite-common/wallet-constants';
 import {
@@ -15,7 +14,6 @@ import {
     type ComposeActionContext,
     type ExternalOutput,
     type FeeInfo,
-    type FormState,
     type PrecomposedLevels,
     type PrecomposedTransaction,
     type RbfTransactionParams,
@@ -38,7 +36,7 @@ import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { chainSendConnectDeps, toChainSendDevice } from './chainSendAdapter';
-import { reportEthereumFeeEstimationFailed } from './reportEthereumFeeEstimationError';
+import { handleEvmFeeEstimationFailure } from './reportEthereumFeeEstimationError';
 import { sendFormActions } from './sendFormActions';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
@@ -283,21 +281,8 @@ const createSend = (account: Account, { dispatch, getState, device }: EvmSendThu
                     fetchConfirmedNonce,
                 }),
             ).unwrap(),
-        onEvmFeeEstimationFailed: ({ draft, tokenInfo, estimateTarget, error }) => {
-            reportEthereumFeeEstimationFailed({
-                account,
-                formState: draft as FormState,
-                tokenInfo,
-                estimateTarget,
-                error,
-            });
-
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'estimated-fee-error',
-                }),
-            );
-        },
+        onEvmFeeEstimationFailed: failure =>
+            handleEvmFeeEstimationFailure(dispatch, account, failure),
     })(account.symbol);
 
 type ComposeEthereumTransactionFeeLevelsThunkState = DeviceRootState & TransactionsRootState;
