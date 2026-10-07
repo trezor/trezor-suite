@@ -2,12 +2,13 @@ import { type PublicClient, createPublicClient } from 'viem';
 
 import { HISTORY_STEP_BLOCKS, MAX_LOG_CONCURRENCY, TRANSFER_TOPIC } from './constants';
 import {
-    getRpcErrorInfo,
     padAddressTopic,
     parseMaxRangeBlocks,
     parseSuggestedRange,
     scanTransferLogs,
 } from './logScanner';
+import { getRpcErrorInfo } from '../utils/errors';
+import { wasRateLimitedSince } from '../utils/rateLimit';
 import { getTransport } from '../utils/transportType';
 
 const ADDRESS = '0xcAe32Cd53A96209fA02C0c0cfE165a5c97d456dF';
@@ -233,6 +234,67 @@ describe(scanTransferLogs.name, () => {
 
         expect(result.complete).toBe(true);
         expect(request).toHaveBeenCalledTimes(3);
+        jest.useRealTimers();
+    });
+
+    it('remembers a rate limit that cost part of the scan', async () => {
+        jest.useFakeTimers();
+        const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        const request = jest.fn().mockRejectedValue(rpcError(-32005, 'rate limit exceeded'));
+        const { client } = createClient(request);
+
+        const pending = scanTransferLogs(client, ADDRESS, { from: 1, to: 100 }, 20_000);
+        await jest.advanceTimersByTimeAsync(60_000);
+        const result = await pending;
+
+        expect(result.complete).toBe(false);
+        expect(wasRateLimitedSince(client, 0)).toBe(true);
+        warn.mockRestore();
+        jest.useRealTimers();
+    });
+
+    it('does not count a rate limit its retry got past as a loss', async () => {
+        jest.useFakeTimers();
+        const request = jest
+            .fn()
+            .mockRejectedValueOnce(rpcError(-32005, 'rate limit exceeded'))
+            .mockResolvedValue([]);
+        const { client } = createClient(request);
+
+        const pending = scanTransferLogs(client, ADDRESS, { from: 1, to: 100 }, 20_000);
+        await jest.advanceTimersByTimeAsync(5_000);
+        await pending;
+
+        expect(wasRateLimitedSince(client, 0)).toBe(false);
+        jest.useRealTimers();
+    });
+
+    it('sends fewer queries at once after a rate limit, instead of retrying them all together', async () => {
+        jest.useFakeTimers();
+        let inFlight = 0;
+        let mostInFlightAfterLimit = 0;
+        let isLimited = false;
+        const request = jest.fn(async () => {
+            inFlight++;
+            if (isLimited) mostInFlightAfterLimit = Math.max(mostInFlightAfterLimit, inFlight);
+            await new Promise(resolve => setTimeout(resolve, 100));
+            inFlight--;
+            if (request.mock.calls.length <= 40) {
+                isLimited = true;
+                throw rpcError(-32005, 'rate limit exceeded');
+            }
+
+            return [];
+        });
+        const { client } = createClient(request);
+
+        // 20 chunks per topic position, so all 40 first queries go out together.
+        const pending = scanTransferLogs(client, ADDRESS, { from: 0, to: 199 }, 10);
+        await jest.advanceTimersByTimeAsync(60_000);
+        const result = await pending;
+
+        expect(result.complete).toBe(true);
+        expect(mostInFlightAfterLimit).toBeLessThanOrEqual(20);
         jest.useRealTimers();
     });
 
