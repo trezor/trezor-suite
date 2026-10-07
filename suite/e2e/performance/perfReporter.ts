@@ -7,15 +7,19 @@ import {
     PerfJsonReport,
     PerfMetrics,
     aggregateSamples,
+    buildHistoryFile,
     buildJsonReport,
     compareScenario,
     formatMetricValue,
     measurementKey,
     resolveBudget,
+    resolveSurface,
     suggestLimits,
 } from '@trezor/perf-e2e';
 
 import { BASELINES, LIMITS } from './budgets';
+import { isLighthouseEnabled } from './lighthouseConfig';
+import { writeHistoryFile } from './perfHistory';
 import { publishPerfReport } from './perfReportPublisher';
 
 const BUDGETS_MODULE_PATH = 'suite/e2e/performance/budgets.ts';
@@ -72,16 +76,27 @@ const scenarioVerdict = (report: PerfJsonReport) => {
  * renders red there, while the exit code stays the job's own. No-op outside GitHub Actions, where the
  * console table is the whole report.
  */
-const annotateOverLimit = (measurements: string[]) => {
+const annotateOverLimit = (measurements: string[], profiled: boolean) => {
     if (!process.env.GITHUB_ACTIONS || measurements.length === 0) {
         return;
     }
+
+    // A profiled run is expected to sit above limits that were set without a tracer attached, so it
+    // gets a notice rather than the red annotation: an alarm that is wrong by construction is worse
+    // than none, because it is the one people learn to scroll past.
+    const { command, title, note } = profiled
+        ? {
+              command: 'notice',
+              title: 'Performance over limit (profiled run)',
+              note: ' Recorded under Lighthouse tracing.',
+          }
+        : { command: 'error', title: 'Performance over limit', note: '' };
 
     // Measurement names go in the message, not in `title=`: workflow-command properties are
     // comma-separated, so a comma in the title would start another property.
     // eslint-disable-next-line no-console
     console.log(
-        `::error title=Performance over limit::${measurements.join(', ')} — see PERFORMANCE REPORT in this job's log. Does not fail the run.`,
+        `::${command} title=${title}::${measurements.join(', ')} — see PERFORMANCE REPORT in this job's log. Does not fail the run.${note}`,
     );
 };
 
@@ -110,6 +125,11 @@ class PerfReporter implements Reporter {
         if (this.reports.length === 0) {
             return;
         }
+
+        // Lighthouse traces the very interactions measured here, which costs the app time. The
+        // numbers stay worth reporting — they are comparable against another profiled run, and the
+        // store keeps the two populations apart — but they are not what the budgets describe.
+        const profiled = isLighthouseEnabled();
 
         // Aggregate retries: one median comparison per measurement (a test may run 2-3× on CI).
         // Grouping by scenario alone would average a slow device model with a fast one and hide a
@@ -159,9 +179,22 @@ class PerfReporter implements Reporter {
         const lines: string[] = [
             '',
             headerStyle('━'.repeat(72)),
-            headerStyle('PERFORMANCE REPORT'),
+            headerStyle(
+                `PERFORMANCE REPORT${profiled ? ' (recorded under Lighthouse tracing)' : ''}`,
+            ),
             headerStyle('━'.repeat(72)),
         ];
+
+        if (profiled) {
+            lines.push(
+                chalk.yellow(
+                    'Lighthouse was attached while these interactions ran, so every number below carries',
+                ),
+                chalk.yellow(
+                    'its tracing overhead. Compare against another profiled run, not against the limits.',
+                ),
+            );
+        }
 
         lines.push(
             ...scenarios.flatMap(({ scenario, project, report, runs }) => [
@@ -212,14 +245,25 @@ class PerfReporter implements Reporter {
         );
         const updatedLimits: Limits = { ...LIMITS, ...suggestedLimits };
 
+        // Never offered for a profiled run: the paste would write this run's tracing overhead into
+        // the budgets as if it were what the app costs, and every later unprofiled run would then
+        // measure comfortably under a limit that has quietly moved.
         lines.push(
-            '',
-            `To record this run's numbers, run from the repo root then commit`,
-            '(the baseline is reference only; a raised limit says the app may cost more):',
-            '',
-            `cat > ${BUDGETS_MODULE_PATH} <<'TS'`,
-            formatBudgetsModule(updatedBaselines, updatedLimits),
-            'TS',
+            ...(profiled
+                ? [
+                      '',
+                      'No budgets paste for a profiled run: these numbers include Lighthouse',
+                      'tracing, and recording them as the budget would raise it by the overhead.',
+                  ]
+                : [
+                      '',
+                      `To record this run's numbers, run from the repo root then commit`,
+                      '(the baseline is reference only; a raised limit says the app may cost more):',
+                      '',
+                      `cat > ${BUDGETS_MODULE_PATH} <<'TS'`,
+                      formatBudgetsModule(updatedBaselines, updatedLimits),
+                      'TS',
+                  ]),
         );
 
         lines.push(headerStyle('━'.repeat(72)), '');
@@ -227,16 +271,45 @@ class PerfReporter implements Reporter {
         // eslint-disable-next-line no-console
         console.log(lines.join('\n'));
 
-        annotateOverLimit(overLimit.map(entry => measurementKey(entry.scenario, entry.project)));
+        annotateOverLimit(
+            overLimit.map(entry => measurementKey(entry.scenario, entry.project)),
+            profiled,
+        );
+
+        // Beside the comment, and independent of it: the numbers this shard measured, for the
+        // publish job to put in the shared store. A surface it cannot name contributes no history.
+        const surface = resolveSurface(process.env.PERF_SURFACE);
+
+        if (surface) {
+            writeHistoryFile(
+                buildHistoryFile(
+                    surface,
+                    measured.map(entry => ({
+                        scenario: entry.scenario,
+                        variant: entry.project,
+                        runs: entry.runs,
+                        metrics: entry.median,
+                    })),
+                ),
+                process.env.PERF_HISTORY_DIR,
+                message => {
+                    // eslint-disable-next-line no-console
+                    console.log(message);
+                },
+            );
+        }
 
         await publishPerfReport({
             measurements: measured.map(entry => ({
                 key: entry.key,
                 runs: entry.runs,
                 report: entry.report,
-                suggestedLimits: suggestedLimits[entry.key],
+                // Same reason the paste is withheld: a limit raised to fit a traced run is a limit
+                // raised by the tracer.
+                suggestedLimits: profiled ? undefined : suggestedLimits[entry.key],
             })),
             budgetsPath: BUDGETS_MODULE_PATH,
+            profiled,
             log: message => {
                 // eslint-disable-next-line no-console
                 console.log(message);

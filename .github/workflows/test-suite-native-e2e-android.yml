@@ -77,3 +77,26 @@ jobs:
       CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
       CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
       E2E_TEST_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
+
+  # Publishes this run's numbers to the S3 history. See docs/tests/suite-native-e2e-performance.md.
+  publish_performance_history:
+    # Fork pull requests are issued no OIDC token, so they could never assume the role. head.repo
+    # can be null when the fork was deleted, so the comparison fails closed.
+    if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+    needs: run_android_e2e_tests
+    permissions:
+      id-token: write # to assume the dev-deploy role
+      contents: read
+    # Serialize the writers of the rolling branch index. Native keys apart from web so the two
+    # never wait on each other.
+    concurrency:
+      group: publish-performance-history-${{ github.ref }}
+      cancel-in-progress: false
+    uses: ./.github/workflows/template-publish-performance-history.yml
+    with:
+      workspace: "@suite-native/app"
+      artifact-pattern: android-perf-report-*
+      # Invoked directly rather than through a script in the app's package.json: that scripts block
+      # is an Expo fingerprint input, and an entry of ours there costs every run on this branch the
+      # cached-APK path and a ~50 minute native rebuild.
+      publish-command: yarn workspace @suite-native/app exec tsx e2e/performance/publish.ts

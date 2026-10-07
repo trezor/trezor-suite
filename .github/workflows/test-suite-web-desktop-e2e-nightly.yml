@@ -164,3 +164,23 @@ jobs:
       - name: Upload coverage map to S3
         run: |
           aws s3api put-object --bucket dev.suite.sldev.cz --key coverage/e2e/index.json --body packages/e2e-utils/coverage-map/index.json --content-type application/json --cache-control "no-cache, max-age=0"
+
+  # As the pull request job, except that a run here is on the base branch, so it seals the baseline
+  # every later run is compared against. A pull request never seals one.
+  publish_performance_history:
+    if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' }}
+    needs:
+      - run-e2e-suite-desktop-tests
+      - run-e2e-suite-web-tests
+    permissions:
+      id-token: write # to assume the dev-deploy role
+      contents: read
+    concurrency:
+      group: publish-performance-history-web-${{ github.ref }}
+      cancel-in-progress: false
+    uses: ./.github/workflows/template-publish-performance-history.yml
+    with:
+      workspace: "@trezor/suite-e2e"
+      artifact-pattern: perf-history-*
+      publish-command: yarn workspace @trezor/suite-e2e perf:publish
+      timeout-minutes: 15

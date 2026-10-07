@@ -221,11 +221,15 @@ jobs:
           RUN_GITHUB_REPORTER: ${{ inputs.run-reporter }} # Read by playwright-base.config.ts to enable the GitHub reporter
           E2E_EDITED_SPECS: ${{ inputs.edited-specs }}
           ELECTRON_DISABLE_SANDBOX: 1
-          # Keep these two apart. The label keys this job's section of the shared pull request
-          # comment and must stay stable across runs, or a re-run adds a section instead of
-          # replacing one. The job name is only the title rendered inside it.
+          # Performance reporting and history; see docs/tests/perf-history.md.
+          # The label keys this job's section of the shared pull request comment, so it must stay
+          # stable across runs or a re-run adds a section instead of replacing one.
           PERF_REPORT_LABEL: "${{ inputs.target }} / group ${{ inputs.test-group }}"
           PERF_REPORT_JOB: "${{ inputs.caller-job-id && format('{0} ({1})', inputs.caller-job-id, inputs.test-group) || '' }}"
+          PERF_SURFACE: "${{ inputs.target }}"
+          # Its own directory: Playwright cleans test-results before the upload step can run.
+          PERF_HISTORY_DIR: "${{ github.workspace }}/perf-history"
+          LIGHTHOUSE: "1"
           COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage == 'true' && 'true' || '' }}
           COVERAGE_MAP_DIR: ${{ github.workspace }}/coverage-map
         run: |
@@ -324,6 +328,19 @@ jobs:
         with:
           target: ${{ inputs.target }}
           test-group: ${{ inputs.test-group }}
+
+      # Consumed by the caller's publish job. continue-on-error because persisting history must
+      # never red a test shard.
+      - name: Upload perf history
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: perf-history-${{ inputs.target }}-${{ inputs.test-group }}
+          path: perf-history/
+          if-no-files-found: ignore
+          retention-days: 7
+          overwrite: true
 
       - name: Upload per-test coverage map
         if: inputs.enable-coverage == 'true' && !cancelled()
