@@ -21,6 +21,7 @@ import {
     WalletLayout,
     isNetworkWithGraphFeature,
     useSelector,
+    useWatchAccountHistory,
 } from '@trezor/suite';
 
 interface LayoutProps {
@@ -42,6 +43,7 @@ export const TransactionsPage = () => {
     const accountTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, selectedAccount.account?.key || null),
     );
+    useWatchAccountHistory(selectedAccount.account?.key);
 
     if (selectedAccount.status !== 'loaded') {
         return <Layout selectedAccount={selectedAccount} />;

@@ -308,6 +308,7 @@ export { AccountOverviewBalance } from './src/views/wallet/transactions/componen
 export { NoTransactions } from './src/views/wallet/transactions/components/NoTransactions';
 export { TransactionSummary } from './src/views/wallet/transactions/components/TransactionSummary';
 export { TronResources } from './src/views/wallet/transactions/components/TronResources/TronResources';
+export { useWatchAccountHistory } from './src/views/wallet/transactions/useWatchAccountHistory';
 export { CardanoNewProviderCard } from './src/views/wallet/staking/components/AdaStakingDashboard/CardanoNewProviderCard';
 export { SendForm } from './src/views/wallet/send/SendForm';
 export { AboveTabletOnly } from './src/components/suite/layouts/SuiteLayout/LayoutSizeOnly';
