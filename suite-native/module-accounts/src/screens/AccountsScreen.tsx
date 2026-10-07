@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 
 import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
-import { Box } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
@@ -50,22 +49,23 @@ export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => 
     };
 
     return (
-        <Screen header={<DeviceManagerScreenHeader />} isScrollable={false} noHorizontalPadding>
+        <Screen
+            header={<DeviceManagerScreenHeader />}
+            isScrollable={false}
+            noHorizontalPadding
+            noBottomPadding
+        >
             {scrollDivider}
-            <Box flex={1} paddingHorizontal="sp16">
-                <AccountsListWithFilter
-                    title={
-                        <Translation id="moduleAccountManagement.accountsScreen.accountsTitle" />
-                    }
-                    onSelectAccount={handleSelectAccount}
-                    flowType="accounts"
-                    networksFilter={networksFilter}
-                    onScroll={handleScroll}
-                    noHeaderPaddingTop
-                >
-                    <AccountsRediscoveryNeededWarning />
-                </AccountsListWithFilter>
-            </Box>
+            <AccountsListWithFilter
+                title={<Translation id="moduleAccountManagement.accountsScreen.accountsTitle" />}
+                onSelectAccount={handleSelectAccount}
+                flowType="accounts"
+                networksFilter={networksFilter}
+                onScroll={handleScroll}
+                noHeaderPaddingTop
+            >
+                <AccountsRediscoveryNeededWarning />
+            </AccountsListWithFilter>
         </Screen>
     );
 };

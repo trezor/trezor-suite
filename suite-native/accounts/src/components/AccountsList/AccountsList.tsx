@@ -1,12 +1,14 @@
 import { type ReactElement, useCallback } from 'react';
 import { type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
+import type { EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
 import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 
 import { type NetworksRootState } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Box, useScrollDivider } from '@suite-native/atoms';
+import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
+import { useIsBottomInsetApplicable } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountsListEmptyPlaceholder } from './AccountsListEmptyPlaceholder';
@@ -17,10 +19,6 @@ import {
     selectFilteredDeviceAccountListRows,
 } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
-
-const listStyle = prepareNativeStyle(() => ({
-    flex: 1,
-}));
 
 const DEFAULT_NETWORK_FILTER: NetworkSymbol[] = [];
 
@@ -34,6 +32,13 @@ type AccountsListProps = {
     onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
 };
 
+const footerStyle = prepareNativeStyle<{
+    insets: EdgeInsets;
+    isBottomInsetApplicable: boolean;
+}>((_, { insets, isBottomInsetApplicable }) => ({
+    paddingBottom: isBottomInsetApplicable ? insets.bottom : 0,
+}));
+
 export const AccountsList = ({
     onSelectAccount,
     searchValue = '',
@@ -43,44 +48,48 @@ export const AccountsList = ({
     ListFooterComponent,
     onScroll,
 }: AccountsListProps) => {
+    const insets = useBannerAwareSafeAreaInsets();
+    const isBottomInsetApplicable = useIsBottomInsetApplicable();
+    const { applyStyle } = useNativeStyles();
+
     const accountListRows = useSelector((state: NativeAccountsRootState & NetworksRootState) =>
         selectFilteredDeviceAccountListRows(state, searchValue, isSendFlow, networkFilter),
     );
-    const { applyStyle } = useNativeStyles();
 
     const renderItem = useCallback(
-        ({ item, index }: ListRenderItemInfo<FilteredDeviceAccountListRow>) => (
+        ({ item }: ListRenderItemInfo<FilteredDeviceAccountListRow>) => (
             <AccountsListRow
                 {...item}
-                hasBottomSpacing={item.isLast && index < accountListRows.length - 1}
+                hasBottomSpacing={item.isLast}
                 onSelectAccount={onSelectAccount}
             />
         ),
-        [accountListRows.length, onSelectAccount],
+        [onSelectAccount],
     );
 
     return (
-        <Box flex={1}>
-            <FlashList
-                testID="@accountList"
-                style={applyStyle(listStyle)}
-                data={accountListRows}
-                keyExtractor={item => item.accountKey}
-                renderItem={renderItem}
-                ListHeaderComponent={
-                    <>
-                        {ListHeaderComponent}
-                        {accountListRows.length > 0 && <Box paddingTop="sp8" />}
-                    </>
-                }
-                ListEmptyComponent={
-                    <AccountsListEmptyPlaceholder isFilterEmpty={!searchValue.length} />
-                }
-                ListFooterComponent={ListFooterComponent}
-                keyboardShouldPersistTaps="handled"
-                maintainVisibleContentPosition={{ disabled: true }}
-                onScroll={onScroll}
-            />
-        </Box>
+        <FlashList
+            testID="@accountList"
+            data={accountListRows}
+            keyExtractor={item => item.accountKey}
+            renderItem={renderItem}
+            ListHeaderComponent={
+                <>
+                    <Box marginHorizontal="sp16">{ListHeaderComponent}</Box>
+                    {accountListRows.length > 0 && <Box paddingTop="sp8" />}
+                </>
+            }
+            ListEmptyComponent={
+                <AccountsListEmptyPlaceholder isFilterEmpty={!searchValue.length} />
+            }
+            ListFooterComponent={
+                <Box style={applyStyle(footerStyle, { insets, isBottomInsetApplicable })}>
+                    {ListFooterComponent}
+                </Box>
+            }
+            keyboardShouldPersistTaps="handled"
+            maintainVisibleContentPosition={{ disabled: true }}
+            onScroll={onScroll}
+        />
     );
 };

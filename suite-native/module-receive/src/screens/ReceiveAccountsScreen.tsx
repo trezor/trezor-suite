@@ -61,7 +61,7 @@ export const ReceiveAccountsScreen = () => {
     };
 
     return (
-        <Screen isScrollable={false}>
+        <Screen isScrollable={false} noHorizontalPadding noBottomPadding hasBottomInset={false}>
             <AccountsListWithFilter
                 title={<Translation id="moduleReceive.receiveTitle" />}
                 onSelectAccount={navigateToReceiveScreen}
