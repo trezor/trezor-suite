@@ -12,6 +12,7 @@ import { parseTransferLog } from './transferLog';
 import { mapTransaction } from '../mappers/transaction';
 import { getTokenMetadataMap } from '../tokens';
 import { toHex } from '../utils/hex';
+import { recordRateLimitLoss } from '../utils/rateLimit';
 
 export const DEFAULT_PAGE_SIZE = 25;
 
@@ -41,9 +42,11 @@ const fetchTransaction = async (client: PublicClient, entry: HistoryEntry) => {
         ]);
 
         return tx ? { entry, tx, receipt } : undefined;
-    } catch {
+    } catch (error) {
         // A transaction that cannot be read right now is better omitted from the page than allowed
         // to fail the whole request.
+        recordRateLimitLoss(client, error);
+
         return undefined;
     }
 };
