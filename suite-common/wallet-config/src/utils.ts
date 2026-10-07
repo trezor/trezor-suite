@@ -116,6 +116,14 @@ export const isNetworkUsingExternalBackend = (symbol: NetworkSymbol) =>
         option => 'isExternalBackend' in option && option.isExternalBackend,
     );
 
+// A direct-RPC backend notices account activity only by polling, and on infrastructure Trezor pays
+// for every poll is billed.
+export const isNetworkUsingExternalRpcBackend = (symbol: NetworkSymbol) =>
+    !!getNetwork(symbol)?.backendOptions.some(
+        option =>
+            option.type === 'evm-rpc' && 'isExternalBackend' in option && option.isExternalBackend,
+    );
+
 export const getNetworkType = (symbol: NetworkSymbol): NetworkType =>
     getNetwork(symbol)?.networkType;
 
