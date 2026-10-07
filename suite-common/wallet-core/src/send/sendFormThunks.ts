@@ -314,6 +314,8 @@ type SynchronizeSentTransactionThunkParams = {
     // shows the true nonce instead of a value re-derived from the pending-inclusive
     // account.misc.nonce (which reads one too high until the backend picks up the real tx).
     ethereumNonce?: string;
+    // The signed bitcoin-like transaction; read from the send form state when not passed.
+    signedTransaction?: BlockbookTransaction;
 };
 
 export type SynchronizeSentTransactionThunkState = FeesRootState &
@@ -332,7 +334,14 @@ export const synchronizeSentTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/synchronizePendingTransactionsThunk`,
     (
-        { selectedAccount, precomposedTransaction, precomposedForm, txid, ethereumNonce },
+        {
+            selectedAccount,
+            precomposedTransaction,
+            precomposedForm,
+            txid,
+            ethereumNonce,
+            signedTransaction,
+        },
         { dispatch },
     ) => {
         // notification from the backend may be delayed.
@@ -366,6 +375,7 @@ export const synchronizeSentTransactionThunk = createThunk<
                     addFakePendingTxThunk({
                         precomposedTransaction,
                         account: selectedAccount,
+                        signedTransaction,
                     }),
                 );
                 break;
@@ -458,7 +468,117 @@ export const synchronizeSentTransactionThunk = createThunk<
     },
 );
 
-export type PushSendFormTransactionThunkState = EarnTransactionsRootState &
+type ShowSentTransactionToastThunkParams = {
+    selectedAccount: Account;
+    precomposedTransaction: GeneralPrecomposedTransactionFinal;
+    precomposedForm?: FormState;
+    txid: string;
+};
+
+export type ShowSentTransactionToastThunkState = DeviceRootState & EarnTransactionsRootState;
+
+/** Tells the user what was just broadcast: an approval, an exchange, or the amount sent. */
+export const showSentTransactionToastThunk = createThunk<
+    void,
+    ShowSentTransactionToastThunkParams,
+    { state: ShowSentTransactionToastThunkState }
+>(
+    `${SEND_MODULE_PREFIX}/showSentTransactionToastThunk`,
+    (
+        { selectedAccount, precomposedTransaction, precomposedForm, txid },
+        { dispatch, getState },
+    ) => {
+        const device = selectSelectedDevice(getState());
+        const { token } = precomposedTransaction;
+        const spentWithoutFee = !token
+            ? new BigNumber(precomposedTransaction.totalSpent)
+                  .minus(precomposedTransaction.fee)
+                  .toString()
+            : '0';
+
+        const evmApprovalData = Calldata.evm.erc20.approve.decode(precomposedForm?.transactionData);
+        const bumpedPrevTxid = isRbfBumpFeeTransaction(precomposedTransaction)
+            ? precomposedTransaction.prevTxid
+            : undefined;
+        const spedUpEarnTransaction = bumpedPrevTxid
+            ? selectTrackedEarnTransaction(getState(), selectedAccount.key, bumpedPrevTxid)
+            : undefined;
+
+        if (evmApprovalData && token) {
+            const amountString = evmApprovalData.amount.toString();
+            const isInfiniteApproval = isAllowanceUnlimited({
+                amount: amountString,
+                decimals: token.decimals,
+                isSubunit: true,
+            });
+            const amount = subunitsToUnits({
+                value: asAmountSubunit(new BigNumber(amountString)),
+                decimals: token.decimals,
+            }).toString();
+
+            dispatch(
+                notificationsActions.addToast({
+                    type: evmApprovalData.amount === 0n ? 'tx-revoked' : 'tx-approved',
+                    isInfiniteApproval,
+                    amount,
+                    token,
+                    device,
+                    descriptor: selectedAccount.descriptor,
+                    symbol: selectedAccount.symbol,
+                    txid,
+                    style: { maxWidth: 'auto' },
+                }),
+            );
+        } else if (isExchangeTradingForm(precomposedForm?.trading)) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'tx-exchange',
+                    metadata: precomposedForm.trading,
+                    amount: precomposedForm.trading.send.amount,
+                    device,
+                    descriptor: selectedAccount.descriptor,
+                    symbol: selectedAccount.symbol,
+                    txid,
+                    style: { maxWidth: 'auto' },
+                }),
+            );
+        } else if (spedUpEarnTransaction) {
+            dispatch(
+                notifyEarnTransactionBroadcastThunk({
+                    account: selectedAccount,
+                    device,
+                    txid,
+                    flow: spedUpEarnTransaction.flow,
+                    stage: 'sped-up',
+                    prevTxid: bumpedPrevTxid,
+                }),
+            );
+        } else {
+            // The token amount, or the total amount without the fee, in main units.
+            const sentAmount = token
+                ? subunitsToUnits({
+                      value: asAmountSubunit(new BigNumber(precomposedTransaction.totalSpent)),
+                      decimals: token.decimals,
+                  }).toString()
+                : formatNetworkAmount(spentWithoutFee, selectedAccount.symbol);
+
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'tx-sent',
+                    amount: sentAmount,
+                    device,
+                    token,
+                    descriptor: selectedAccount.descriptor,
+                    symbol: selectedAccount.symbol,
+                    txid,
+                    style: { maxWidth: 'auto' },
+                }),
+            );
+        }
+    },
+);
+
+export type PushSendFormTransactionThunkState = ShowSentTransactionToastThunkState &
     SynchronizeSentTransactionThunkState;
 
 export type PushSendFormTransactionThunkDeps = {
@@ -485,7 +605,6 @@ export const pushSendFormTransactionThunk = createThunk<
         const precomposedForm = selectPrecomposedSendForm(getState());
         const precomposedTransaction = selectSendPrecomposedTx(getState());
         const serializedTx = selectSendSerializedTx(getState());
-        const device = selectSelectedDevice(getState());
         // Read the signed-with nonce before onModalCancel() so the fake pending tx (added in
         // synchronizeSentTransactionThunk) shows the true nonce rather than a re-derived one.
         const resolvedEthereumNonce = selectResolvedEthereumNonce(getState());
@@ -514,95 +633,17 @@ export const pushSendFormTransactionThunk = createThunk<
         // close modal regardless result
         dispatch(onModalCancel());
 
-        const { token } = precomposedTransaction;
-        const spentWithoutFee = !token
-            ? new BigNumber(precomposedTransaction.totalSpent)
-                  .minus(precomposedTransaction.fee)
-                  .toString()
-            : '0';
-
-        const evmApprovalData = Calldata.evm.erc20.approve.decode(precomposedForm?.transactionData);
-        const bumpedPrevTxid = isRbfBumpFeeTransaction(precomposedTransaction)
-            ? precomposedTransaction.prevTxid
-            : undefined;
-        const spedUpEarnTransaction = bumpedPrevTxid
-            ? selectTrackedEarnTransaction(getState(), selectedAccount.key, bumpedPrevTxid)
-            : undefined;
-
         if (pushTxResponse.success) {
             const { txid } = pushTxResponse.payload;
 
-            if (evmApprovalData && token) {
-                const amountString = evmApprovalData.amount.toString();
-                const isInfiniteApproval = isAllowanceUnlimited({
-                    amount: amountString,
-                    decimals: token.decimals,
-                    isSubunit: true,
-                });
-                const amount = subunitsToUnits({
-                    value: asAmountSubunit(new BigNumber(amountString)),
-                    decimals: token.decimals,
-                }).toString();
-
-                dispatch(
-                    notificationsActions.addToast({
-                        type: evmApprovalData.amount === 0n ? 'tx-revoked' : 'tx-approved',
-                        isInfiniteApproval,
-                        amount,
-                        token,
-                        device,
-                        descriptor: selectedAccount.descriptor,
-                        symbol: selectedAccount.symbol,
-                        txid,
-                        style: { maxWidth: 'auto' },
-                    }),
-                );
-            } else if (isExchangeTradingForm(precomposedForm?.trading)) {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'tx-exchange',
-                        metadata: precomposedForm.trading,
-                        amount: precomposedForm.trading.send.amount,
-                        device,
-                        descriptor: selectedAccount.descriptor,
-                        symbol: selectedAccount.symbol,
-                        txid,
-                        style: { maxWidth: 'auto' },
-                    }),
-                );
-            } else if (spedUpEarnTransaction) {
-                dispatch(
-                    notifyEarnTransactionBroadcastThunk({
-                        account: selectedAccount,
-                        device,
-                        txid,
-                        flow: spedUpEarnTransaction.flow,
-                        stage: 'sped-up',
-                        prevTxid: bumpedPrevTxid,
-                    }),
-                );
-            } else {
-                // The token amount, or the total amount without the fee, in main units.
-                const sentAmount = token
-                    ? subunitsToUnits({
-                          value: asAmountSubunit(new BigNumber(precomposedTransaction.totalSpent)),
-                          decimals: token.decimals,
-                      }).toString()
-                    : formatNetworkAmount(spentWithoutFee, selectedAccount.symbol);
-
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'tx-sent',
-                        amount: sentAmount,
-                        device,
-                        token,
-                        descriptor: selectedAccount.descriptor,
-                        symbol: selectedAccount.symbol,
-                        txid,
-                        style: { maxWidth: 'auto' },
-                    }),
-                );
-            }
+            dispatch(
+                showSentTransactionToastThunk({
+                    selectedAccount,
+                    precomposedTransaction,
+                    precomposedForm,
+                    txid,
+                }),
+            );
 
             dispatch(
                 synchronizeSentTransactionThunk({
@@ -833,6 +874,114 @@ export const signTransactionThunk = createThunk<
     },
 );
 
+export type EnhancePrecomposedTransactionParams = {
+    transactionFormValues: FormState;
+    precomposedTransaction: GeneralPrecomposedTransactionFinal;
+    selectedAccount: Account;
+};
+
+export type EnhancedPrecomposedTransaction = {
+    /** The transaction to sign: tagged as a replacement where it replaces one. */
+    enhancedPrecomposedTransaction: GeneralPrecomposedTransactionFinal;
+
+    /** Whether the device knows the sent token's definition; `undefined` for coins. */
+    isTokenKnown: boolean | undefined;
+};
+
+export type EnhancePrecomposedTransactionDeps = {
+    /** Where Connect takes the EVM token definitions from; read only when a token is checked. */
+    getEvmDefinitionsBaseUrl: () => string;
+};
+
+/** Prepares a composed transaction for signing and review. */
+export const enhancePrecomposedTransaction = async (
+    {
+        transactionFormValues: formValues,
+        precomposedTransaction,
+        selectedAccount,
+    }: EnhancePrecomposedTransactionParams,
+    { getEvmDefinitionsBaseUrl }: EnhancePrecomposedTransactionDeps,
+): Promise<EnhancedPrecomposedTransaction> => {
+    const selectedAccountNetwork = getNetwork(selectedAccount.symbol);
+
+    const createRbfEnhancedTransaction = (): GeneralPrecomposedTransactionFinal => {
+        if (!isCardanoTx(selectedAccount, precomposedTransaction) && formValues.rbfParams) {
+            // A cancel (zero-value replace) tx is already tagged rbfType: 'cancel' by its own
+            // compose step (e.g. useEthereumCancelTxCompose) — preserve that instead of always
+            // relabeling as 'bump-fee', which mislabels the review modal/analytics for cancels.
+            if (isRbfCancelTransaction(precomposedTransaction)) {
+                const enhancedCancelPrecomposedTx: PrecomposedTransactionFinalCancelRbf = {
+                    ...precomposedTransaction,
+                    rbfType: 'cancel',
+                    prevTxid: formValues.rbfParams.txid,
+                };
+
+                return enhancedCancelPrecomposedTx;
+            }
+
+            const enhancedRbfPrecomposedTx: PrecomposedTransactionFinalBumpFeeRbf = {
+                ...precomposedTransaction,
+                rbfType: 'bump-fee',
+                prevTxid: formValues.rbfParams.txid,
+                feeDifference: new BigNumber(precomposedTransaction.fee)
+                    .minus(
+                        formValues.rbfParams.type === 'bitcoin' ? formValues.rbfParams.baseFee : 0,
+                    )
+                    .toFixed(),
+                useNativeRbf: selectedAccount.networkType === 'bitcoin',
+            };
+
+            return enhancedRbfPrecomposedTx;
+        }
+
+        return precomposedTransaction;
+    };
+
+    let enhancedPrecomposedTransaction = createRbfEnhancedTransaction();
+
+    // Contract calldata (e.g. DEX swap) must not carry `token` on the precomposed object:
+    // signing uses prepareEthereumTransaction, which would replace calldata with an ERC-20
+    // transfer if `token` is set.
+    const sig = getEvmTransactionTextSignature(formValues.transactionData);
+    if (
+        selectedAccount.networkType === 'ethereum' &&
+        formValues.transactionData &&
+        !isEvmApprovalTxByTextSignature(sig) &&
+        !isEvmYieldTxByTextSignature(sig)
+    ) {
+        enhancedPrecomposedTransaction = cloneObject(enhancedPrecomposedTransaction);
+        delete (enhancedPrecomposedTransaction as { token?: unknown }).token;
+    }
+
+    let isTokenKnown;
+    if (
+        !isCardanoTx(selectedAccount, enhancedPrecomposedTransaction) &&
+        selectedAccount.networkType === 'ethereum' &&
+        enhancedPrecomposedTransaction.token?.contract &&
+        selectedAccountNetwork.chainId
+    ) {
+        isTokenKnown = await fetch(
+            `${getEvmDefinitionsBaseUrl()}/chain-id/${selectedAccountNetwork.chainId}/token-${enhancedPrecomposedTransaction.token.contract.substring(2).toLowerCase()}.dat`,
+            { method: 'HEAD' },
+        )
+            .then(response => response.ok)
+            .catch(() => false);
+    }
+
+    if (
+        selectedAccount.networkType === 'solana' &&
+        enhancedPrecomposedTransaction.token?.contract
+    ) {
+        const tokenDefinition = await getSolanaTokenDefinition({
+            mintAddress: enhancedPrecomposedTransaction.token.contract,
+        });
+
+        isTokenKnown = !!tokenDefinition;
+    }
+
+    return { enhancedPrecomposedTransaction, isTokenKnown };
+};
+
 export type EnhancePrecomposedTransactionThunkState = DeviceRootState;
 
 export type EnhancePrecomposedTransactionThunkDeps = {
@@ -843,11 +992,7 @@ export type EnhancePrecomposedTransactionThunkDeps = {
 
 export const enhancePrecomposedTransactionThunk = createThunk<
     GeneralPrecomposedTransactionFinal,
-    {
-        transactionFormValues: FormState;
-        precomposedTransaction: GeneralPrecomposedTransactionFinal;
-        selectedAccount: Account;
-    },
+    EnhancePrecomposedTransactionParams,
     {
         rejectValue: string;
         state: EnhancePrecomposedTransactionThunkState;
@@ -855,105 +1000,31 @@ export const enhancePrecomposedTransactionThunk = createThunk<
     }
 >(
     `${SEND_MODULE_PREFIX}/enhancePrecomposedTransactionThunk`,
-    async (
-        { transactionFormValues: formValues, precomposedTransaction, selectedAccount },
-        { getState, dispatch, rejectWithValue, extra },
-    ) => {
+    async (params, { getState, dispatch, rejectWithValue, extra }) => {
         const device = selectSelectedDevice(getState());
-        const selectedAccountNetwork = getNetwork(selectedAccount.symbol);
         if (!device) return rejectWithValue('Device not found');
 
-        const createRbfEnhancedTransaction = (): GeneralPrecomposedTransactionFinal => {
-            if (!isCardanoTx(selectedAccount, precomposedTransaction) && formValues.rbfParams) {
-                // A cancel (zero-value replace) tx is already tagged rbfType: 'cancel' by its own
-                // compose step (e.g. useEthereumCancelTxCompose) — preserve that instead of always
-                // relabeling as 'bump-fee', which mislabels the review modal/analytics for cancels.
-                if (isRbfCancelTransaction(precomposedTransaction)) {
-                    const enhancedCancelPrecomposedTx: PrecomposedTransactionFinalCancelRbf = {
-                        ...precomposedTransaction,
-                        rbfType: 'cancel',
-                        prevTxid: formValues.rbfParams.txid,
-                    };
-
-                    return enhancedCancelPrecomposedTx;
-                }
-
-                const enhancedRbfPrecomposedTx: PrecomposedTransactionFinalBumpFeeRbf = {
-                    ...precomposedTransaction,
-                    rbfType: 'bump-fee',
-                    prevTxid: formValues.rbfParams.txid,
-                    feeDifference: new BigNumber(precomposedTransaction.fee)
-                        .minus(
-                            formValues.rbfParams.type === 'bitcoin'
-                                ? formValues.rbfParams.baseFee
-                                : 0,
-                        )
-                        .toFixed(),
-                    useNativeRbf: selectedAccount.networkType === 'bitcoin',
-                };
-
-                return enhancedRbfPrecomposedTx;
-            }
-
-            return precomposedTransaction;
-        };
-
-        let enhancedPrecomposedTransaction = createRbfEnhancedTransaction();
-
-        // Contract calldata (e.g. DEX swap) must not carry `token` on the precomposed object:
-        // signing uses prepareEthereumTransaction, which would replace calldata with an ERC-20
-        // transfer if `token` is set.
-        const sig = getEvmTransactionTextSignature(formValues.transactionData);
-        if (
-            selectedAccount.networkType === 'ethereum' &&
-            formValues.transactionData &&
-            !isEvmApprovalTxByTextSignature(sig) &&
-            !isEvmYieldTxByTextSignature(sig)
-        ) {
-            enhancedPrecomposedTransaction = cloneObject(enhancedPrecomposedTransaction);
-            delete (enhancedPrecomposedTransaction as { token?: unknown }).token;
-        }
-
-        let isTokenKnown;
-        if (
-            !isCardanoTx(selectedAccount, enhancedPrecomposedTransaction) &&
-            selectedAccount.networkType === 'ethereum' &&
-            enhancedPrecomposedTransaction.token?.contract &&
-            selectedAccountNetwork.chainId
-        ) {
-            // Probe the same definitions Connect will send to the device.
-            const baseUrl = getEthereumDefinitionsBaseUrl(
-                getDefinitionsVersionForFirmware(getFirmwareVersionArray(device) ?? undefined),
-                extra.services.getDebugSettings().definitionsChannel,
-            );
-            isTokenKnown = await fetch(
-                `${baseUrl}/chain-id/${selectedAccountNetwork.chainId}/token-${enhancedPrecomposedTransaction.token.contract.substring(2).toLowerCase()}.dat`,
-                { method: 'HEAD' },
-            )
-                .then(response => response.ok)
-                .catch(() => false);
-        }
-
-        if (
-            selectedAccount.networkType === 'solana' &&
-            enhancedPrecomposedTransaction.token?.contract
-        ) {
-            const tokenDefinition = await getSolanaTokenDefinition({
-                mintAddress: enhancedPrecomposedTransaction.token.contract,
+        const { enhancedPrecomposedTransaction, isTokenKnown } =
+            await enhancePrecomposedTransaction(params, {
+                // Probe the same definitions Connect will send to the device.
+                getEvmDefinitionsBaseUrl: () =>
+                    getEthereumDefinitionsBaseUrl(
+                        getDefinitionsVersionForFirmware(
+                            getFirmwareVersionArray(device) ?? undefined,
+                        ),
+                        extra.services.getDebugSettings().definitionsChannel,
+                    ),
             });
-
-            isTokenKnown = !!tokenDefinition;
-        }
 
         dispatch(
             sendFormActions.storePrecomposedTransaction({
-                formState: formValues,
+                formState: params.transactionFormValues,
                 precomposedTransaction: {
                     ...enhancedPrecomposedTransaction,
                     createdTimestamp: new Date().getTime(),
                     isTokenKnown,
                 },
-                accountKey: selectedAccount.key,
+                accountKey: params.selectedAccount.key,
             }),
         );
 

@@ -35,8 +35,8 @@ export const useChainSignTransaction = () =>
         meta: CONFIDENTIAL_QUERY_META,
     });
 
-export type PushChainTransactionVariables = PushChainTransactionParams & {
-    network: ChainNetwork;
+/** What the wallet signed; a raw transaction pasted by the user has none. */
+export type PushedChainTransactionOrigin = {
     precomposed: GeneralPrecomposedTransactionFinal;
     signed: ChainSignedTransaction;
 
@@ -44,12 +44,17 @@ export type PushChainTransactionVariables = PushChainTransactionParams & {
     replacedTxid?: string;
 };
 
+export type PushChainTransactionVariables = PushChainTransactionParams & {
+    network: ChainNetwork;
+    origin?: PushedChainTransactionOrigin;
+};
+
 /**
  * Broadcasts a signed transaction. Never retried: a repeated broadcast of a transaction that did
  * reach the network fails, and the user decides whether to try again.
  *
- * The broadcast transaction shows in the account's history right away, and everything read for the
- * account is read again.
+ * A transaction the wallet signed shows in the account's history right away, and everything read
+ * for the account is read again.
  */
 export const useChainPushTransaction = () => {
     const queryClient = useQueryClient();
@@ -66,23 +71,23 @@ export const useChainPushTransaction = () => {
 
             return network.send.push({ account, serializedTx, isMevProtectionEnabled });
         },
-        onSuccess: ({ txid }, { network, account, precomposed, signed, replacedTxid }) => {
-            if (!network.send) return;
-
-            addChainPendingSend(queryClient, {
-                network,
-                descriptor: account.descriptor,
-                pendingSend: {
-                    transaction: network.send.createPendingTransaction({
-                        account,
-                        precomposed,
-                        signed,
-                        txid,
-                    }),
-                    replacedTxid,
-                    sentAt: Date.now(),
-                },
-            });
+        onSuccess: ({ txid }, { network, account, origin }) => {
+            if (network.send && origin) {
+                addChainPendingSend(queryClient, {
+                    network,
+                    descriptor: account.descriptor,
+                    pendingSend: {
+                        transaction: network.send.createPendingTransaction({
+                            account,
+                            precomposed: origin.precomposed,
+                            signed: origin.signed,
+                            txid,
+                        }),
+                        replacedTxid: origin.replacedTxid,
+                        sentAt: Date.now(),
+                    },
+                });
+            }
 
             return queryClient.invalidateQueries({
                 queryKey: chainQueryKeys.account(
