@@ -60,18 +60,25 @@ fn run_agent(
 
     let manager = Arc::new(ctx.manager);
     let device_id = Arc::new(ctx.params.id);
+    let expected_device_path = Arc::new(format!("/org/bluez/{device_id}"));
 
     let mut cr = Crossroads::new();
     let agent_iface = cr.register(AGENT_INTERFACE, |b: &mut IfaceBuilder<()>| {
         let manager = manager.clone();
         let device_id = device_id.clone();
+        let expected_device_path = expected_device_path.clone();
         let handle = tokio_handle.clone();
 
         b.method(
             "RequestConfirmation",
             ("device", "passkey"),
             (),
-            move |_, _, (_, passkey): (dbus::Path, u32)| {
+            move |_, _, (device, passkey): (dbus::Path, u32)| {
+                if *device != **expected_device_path {
+                    info!("Agent rejected request for unexpected device {device}");
+                    return Err(dbus::MethodErr::failed("Rejected"));
+                }
+
                 let (tx, rx) = mpsc::channel();
                 let manager = manager.clone();
                 let device_id = device_id.to_string();
