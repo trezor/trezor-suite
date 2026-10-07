@@ -13,6 +13,7 @@ import {
 import { Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
+import { useAccountBalanceView } from 'src/hooks/wallet/chainData/useAccountBalanceView';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 import { type Account } from 'src/types/wallet';
 
@@ -62,6 +63,7 @@ export const AccountItemsGroup = ({
 }: AccountItemsGroupProps) => {
     const { isSidebarCollapsed } = useResponsiveContext();
     const stakingBalance = getAccountTotalStakingBalance(account);
+    const balanceView = useAccountBalanceView(account);
 
     const routeName = useSelector(selectRouteName);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
@@ -95,7 +97,9 @@ export const AccountItemsGroup = ({
                         (routeName === 'wallet-index' ||
                             (routeName === 'wallet-staking' && !showStaking))
                     }
-                    formattedBalance={account.formattedBalance}
+                    formattedBalance={balanceView.formattedBalance}
+                    customFiatValue={balanceView.fiatValue}
+                    isFiatLoading={balanceView.isFiatLoading}
                     dataTestKey={dataTestKey}
                     onClick={onItemClick}
                 />

@@ -1,6 +1,7 @@
 import { HelmetProvider } from 'react-helmet-async';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { injectQueryClient } from '@suite-common/react-query';
 import { ReactQueryProvider } from '@suite-common/react-query/src/components/ReactQueryProvider';
 import { injectStore } from '@suite-common/redux-utils';
 import { SelectCacheProvider } from '@trezor/components';
@@ -25,7 +26,7 @@ type MainProps = {
 };
 
 export const Main = ({ trafficLightOffset, children }: MainProps) => {
-    const { store } = useServices(injectStore);
+    const { store, queryClient } = useServices(injectStore, injectQueryClient);
 
     return (
         // Todo: Enable when issues are fixed (ReactTruncate & BumpFee)
@@ -37,7 +38,7 @@ export const Main = ({ trafficLightOffset, children }: MainProps) => {
                 <ConnectedThemeProvider>
                     <ResponsiveContextProvider>
                         <ErrorBoundary>
-                            <ReactQueryProvider>
+                            <ReactQueryProvider client={queryClient}>
                                 <Autodetect />
                                 <Resize />
                                 <Protocol />

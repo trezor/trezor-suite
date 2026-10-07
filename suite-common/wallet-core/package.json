@@ -56,6 +56,7 @@
         "@trezor/eslint": "workspace:*",
         "@trezor/network-cardano": "workspace:*",
         "@trezor/network-ethereum-suite-common": "workspace:*",
+        "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-ripple": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/network-solana-types": "workspace:*",

@@ -1,4 +1,5 @@
 import { type DeviceRootState, selectHasOnlyPortfolioDevice } from '@suite-common/device';
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type NetworksRootState } from '@suite-common/networks';
 import { type PersistentDeviceDataRootState } from '@suite-common/persistent-device-data';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
@@ -17,12 +18,14 @@ import {
 } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
+    getBackendFromSettings,
     isAccountDiscoverable,
     isAccountFailed,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { type ContractInfoProtocol } from '@trezor/blockchain-link-types/src/blockbook';
 import { type StaticSessionId, type TrezorConnectCallable } from '@trezor/connect';
+import { type ChainNetworkParams } from '@trezor/network-module-suite-common-types';
 import { arrayToDictionary } from '@trezor/utils';
 
 import { type AccountsRootState } from './accounts/accountsReducer';
@@ -33,7 +36,11 @@ import {
     selectIsDeviceAccountless,
     selectVisibleDeviceAccounts,
 } from './accounts/accountsSelectors';
-import { type BlockchainRootState, selectGapLimit } from './blockchain/blockchainReducer';
+import {
+    type BlockchainRootState,
+    selectBlockchainState,
+    selectGapLimit,
+} from './blockchain/blockchainReducer';
 import { selectDeviceSupportedNetworks } from './device/deviceSelectors';
 import { type DiscoveryRootState } from './discovery/discoveryReducer';
 import { selectHasRunningDiscovery } from './discovery/discoverySelectors';
@@ -56,13 +63,33 @@ export type WalletCoreCompoundRootState = AccountsRootState &
     NetworksRootState;
 const createMemoizedSelector = createWeakMapSelector.withTypes<WalletCoreCompoundRootState>();
 
-const selectEnabledSupportedNetworks = createMemoizedSelector(
+export const selectEnabledSupportedNetworks = createMemoizedSelector(
     [selectEnabledNetworks, selectDeviceSupportedNetworks],
     (enabledNetworks, deviceNetworks) => {
         const supportedNetworks = enabledNetworks.filter(n => deviceNetworks.includes(n));
 
         return returnStableArrayIfEmpty(supportedNetworks);
     },
+);
+
+/**
+ * The networks to build chain networks for, each with the backend the user chose for it: the
+ * enabled networks the device supports. A new array on every blockchain update, so consumers must
+ * reuse their instances while an entry's values stay the same.
+ */
+export const selectChainNetworkSelection = createMemoizedSelector(
+    [selectEnabledSupportedNetworks, selectBlockchainState],
+    (symbols, blockchainState): ChainNetworkParams[] =>
+        symbols.map(symbol => {
+            const backends = blockchainState[symbol as LegacyNetworkSymbol]?.backends;
+            const backend = getBackendFromSettings(symbol, backends);
+
+            return {
+                symbol,
+                backend: { type: backend.type, urls: backend.urls },
+                gapLimit: backends?.gapLimit,
+            };
+        }),
 );
 
 /**

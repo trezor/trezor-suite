@@ -43,6 +43,8 @@ export type FlagsState = {
     hasSeenDisconnectTooltip: boolean;
     showNoDeviceEshopSidebarBanner: boolean;
     areNoDeviceEshopBannersDisabled: boolean;
+    /** Debug only: read account balances through chain networks and TanStack Query. */
+    queryChainData: boolean;
     seenNewContentIndicators: Partial<Record<NewContentIndicatorId, true>>;
 };
 
@@ -87,6 +89,7 @@ export const flagsInitialState: FlagsState = {
     hasSeenDisconnectTooltip: false,
     showNoDeviceEshopSidebarBanner: true,
     areNoDeviceEshopBannersDisabled: false,
+    queryChainData: false,
     // In a fresh Suite, all content is new, so we don't need to distinguish individual features as "new" → mark all as seen.
     // See the unit test, which specifies this behavior.
     seenNewContentIndicators: typedObjectFromEntries(
@@ -140,6 +143,7 @@ export const prepareFlagsReducer = flagsSlice.prepareReducer;
 
 export const selectFlags = (state: FlagsRootState) => state.flags;
 export const selectIsInitialRun = (state: FlagsRootState) => state.flags.initialRun;
+export const selectIsQueryChainDataEnabled = (state: FlagsRootState) => state.flags.queryChainData;
 export const selectIsTEXDashboardPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showTEXDashboardPromoBanner;
 export const selectIsTS7DashboardPromoBannerShown = (state: FlagsRootState) =>

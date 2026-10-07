@@ -12,6 +12,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { blockchainInitialState } from './blockchain/blockchainReducer';
 import {
     type WalletCoreCompoundRootState,
+    selectChainNetworkSelection,
     selectDiscoveryAccountsParam,
     selectShouldRediscover,
 } from './selectors';
@@ -196,5 +197,64 @@ describe(selectShouldRediscover.name, () => {
                 device,
             ),
         ).toBe(false);
+    });
+});
+
+describe(selectChainNetworkSelection.name, () => {
+    const btc = asNetworkSymbol('btc');
+    const eth = asNetworkSymbol('eth');
+
+    const withBlockchain = (
+        state: WalletCoreCompoundRootState,
+        blockchain: WalletCoreCompoundRootState['wallet']['blockchain'],
+    ): WalletCoreCompoundRootState => ({
+        ...state,
+        networks: mockNetworksState([btc, eth, solSymbol]),
+        wallet: { ...state.wallet, blockchain },
+    });
+
+    const getSelectionState = (blockchain: WalletCoreCompoundRootState['wallet']['blockchain']) =>
+        withBlockchain(getState({ enabledNetworks: [btc, eth, solSymbol] }), blockchain);
+
+    it('selects the default backend of every enabled network the device supports', () => {
+        expect(selectChainNetworkSelection(getSelectionState(blockchainInitialState))).toEqual([
+            { symbol: btc, backend: { type: 'blockbook', urls: [] }, gapLimit: undefined },
+            { symbol: eth, backend: { type: 'blockbook', urls: [] }, gapLimit: undefined },
+            { symbol: solSymbol, backend: { type: 'solana', urls: [] }, gapLimit: undefined },
+        ]);
+    });
+
+    it('selects the custom backend and gap limit the user chose', () => {
+        const state = getSelectionState({
+            ...blockchainInitialState,
+            btc: {
+                ...blockchainInitialState.btc,
+                backends: {
+                    selected: 'electrum',
+                    urls: { electrum: ['electrum.example:50001:s'] },
+                    gapLimit: 40,
+                },
+            },
+        });
+
+        expect(selectChainNetworkSelection(state)[0]).toEqual({
+            symbol: btc,
+            backend: { type: 'electrum', urls: ['electrum.example:50001:s'] },
+            gapLimit: 40,
+        });
+    });
+
+    it('leaves out networks that are not enabled', () => {
+        const state = getSelectionState(blockchainInitialState);
+
+        expect(
+            selectChainNetworkSelection({
+                ...state,
+                wallet: {
+                    ...state.wallet,
+                    settings: { ...state.wallet.settings, enabledNetworks: [eth] },
+                },
+            }).map(({ symbol }) => symbol),
+        ).toEqual([eth]);
     });
 });

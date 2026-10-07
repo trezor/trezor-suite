@@ -19,6 +19,7 @@ import {
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
+import { type GetSelectedChainNetworksDep } from '@suite-common/chain-data';
 import {
     type ConnectInitSettings,
     type CreateTransports,
@@ -29,9 +30,15 @@ import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-ide
 import { toGetter } from '@suite-common/dependency-injection';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { type CommonServices } from '@suite-common/extra-dependencies';
+import {
+    createFetchBlockbookHttpCurrentRate,
+    createFetchCoinGeckoCurrentRate,
+} from '@suite-common/fiat-services';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { type QueryClientDep, createQueryClient } from '@suite-common/react-query';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
     createSuiteSyncWriteLabels,
@@ -42,7 +49,10 @@ import {
 import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/suite-types';
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
-import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
+import {
+    selectAccountsByDeviceState,
+    selectChainNetworkSelection,
+} from '@suite-common/wallet-core';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import type { CreateLoggerDep } from '@trezor/logger';
@@ -52,6 +62,7 @@ import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { type DbDep } from 'src/storage/createDb';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
+import { createDesktopChainNetworks } from './chainNetworks/createDesktopChainNetworks';
 import { createConnectInitDeviceEventHooks } from './createConnectInitDeviceEventHooks';
 import { createConnectInitUIEventHooks } from './createConnectInitUIEventHooks';
 import { type AppState } from '../types/suite';
@@ -74,7 +85,9 @@ export type SuiteServices = CommonServices &
     MetadataMigrationDep &
     SuiteRouterHistoryDep &
     TransportsDep &
-    BluetoothDep;
+    BluetoothDep &
+    GetSelectedChainNetworksDep &
+    QueryClientDep;
 
 export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch'>;
 
@@ -148,6 +161,17 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
     });
 
+    const createChainNetworks = createDesktopChainNetworks({
+        getTrezorConnect: deps.getTrezorConnect,
+        getNetworkConfig: networks.getNetworkConfig,
+        fetchCoinGeckoCurrentRate: createFetchCoinGeckoCurrentRate(),
+        fetchBlockbookHttpCurrentRate: createFetchBlockbookHttpCurrentRate(),
+    });
+    const selectSelectedChainNetworks = createWeakMapSelector.withTypes<AppState>()(
+        [selectChainNetworkSelection],
+        createChainNetworks,
+    );
+
     const createTransports: CreateTransports = transports => {
         const factories = deps.getTransportsFactories();
 
@@ -165,6 +189,8 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         db: deps.db,
         desktopApi: deps.desktopApi,
         networks,
+        getSelectedChainNetworks: toGetter(deps.getState, selectSelectedChainNetworks),
+        queryClient: createQueryClient('web'),
         suiteSync,
         bip329,
         migrateLegacyLabelsToSuiteSync,

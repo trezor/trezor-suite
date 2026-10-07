@@ -11204,7 +11204,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/chain-data@workspace:suite-common/chain-data":
+"@suite-common/chain-data@workspace:*, @suite-common/chain-data@workspace:suite-common/chain-data":
   version: 0.0.0-use.local
   resolution: "@suite-common/chain-data@workspace:suite-common/chain-data"
   dependencies:
@@ -12326,6 +12326,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/network-cardano": "workspace:*"
     "@trezor/network-ethereum-suite-common": "workspace:*"
+    "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-ripple": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/network-solana-types": "workspace:*"
@@ -18982,6 +18983,7 @@ __metadata:
     "@suite-common/bip329-types": "workspace:*"
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/calldata": "workspace:*"
+    "@suite-common/chain-data": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/delegated-identity-key": "workspace:*"
@@ -19107,11 +19109,14 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/logger": "workspace:*"
+    "@trezor/network-bitcoin-suite-common": "workspace:*"
     "@trezor/network-ethereum": "workspace:*"
     "@trezor/network-ethereum-suite-common": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
     "@trezor/network-ripple": "workspace:*"
     "@trezor/network-solana": "workspace:*"
+    "@trezor/network-solana-suite-common": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
     "@trezor/network-tron": "workspace:*"
     "@trezor/product-components": "workspace:*"
