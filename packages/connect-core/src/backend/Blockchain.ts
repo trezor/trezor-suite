@@ -69,16 +69,27 @@ export class Blockchain {
     private onDisconnected: BlockchainOptions['onDisconnected'];
     private initPromise?: Promise<ServerInfo>;
 
+    private readonly proxy?: Proxy;
+    private readonly debug?: boolean;
+
+    // Optional dedicated backend for transactions the primary one does not know yet.
+    private readonly broadcastConfig?: NonNullable<CoinInfo['blockchainLink']>['broadcast'];
+    private broadcastLink?: BlockchainLink;
+
     constructor(options: BlockchainOptions) {
         this.identity = options.identity;
         this.coinInfo = options.coinInfo;
         this.postMessage = options.postMessage;
         this.onDisconnected = options.onDisconnected;
+        this.proxy = options.proxy;
+        this.debug = options.debug;
 
         const { blockchainLink } = options.coinInfo;
         if (!blockchainLink) {
             throw ERRORS.TypedError('Backend_NotSupported');
         }
+
+        this.broadcastConfig = blockchainLink.broadcast;
 
         const worker = getWorker(blockchainLink.type);
         if (!worker) {
@@ -186,8 +197,24 @@ export class Blockchain {
         return this.initPromise;
     }
 
+    // The broadcast backend knows a transaction from the moment it is sent, the primary one only
+    // once it indexes it, so a lookup the primary backend cannot answer is retried there.
+    private getTransaction(params: { txid: string; descriptor?: string }) {
+        return this.link.getTransaction(params).catch(error => {
+            const broadcastLink = this.getBroadcastLink();
+            if (!broadcastLink) {
+                throw error;
+            }
+
+            // Report the primary backend error, the broadcast backend is only a fallback here.
+            return broadcastLink.getTransaction(params).catch(() => {
+                throw error;
+            });
+        });
+    }
+
     getTransactions(txs: string[], descriptor?: string) {
-        return Promise.all(txs.map(txid => this.link.getTransaction({ txid, descriptor })));
+        return Promise.all(txs.map(txid => this.getTransaction({ txid, descriptor })));
     }
 
     getTransactionHexes(txids: string[]) {
@@ -311,15 +338,51 @@ export class Blockchain {
         return this.unsubscribeBlocks();
     }
 
+    // Lazily create the broadcast link on first use so networks without a broadcast backend
+    // never spawn a second worker.
+    private getBroadcastLink() {
+        if (!this.broadcastConfig?.url.length) {
+            return undefined;
+        }
+
+        if (!this.broadcastLink) {
+            const worker = getWorker(this.broadcastConfig.type);
+            if (!worker) {
+                throw ERRORS.TypedError(
+                    'Backend_WorkerMissing',
+                    `BlockchainLink broadcast worker not found ${this.broadcastConfig.type}`,
+                );
+            }
+
+            this.broadcastLink = new BlockchainLink({
+                name: `${this.coinInfo.shortcut}-broadcast`,
+                worker,
+                server: this.broadcastConfig.url,
+                debug: this.debug,
+                proxy: this.proxy,
+            });
+        }
+
+        return this.broadcastLink;
+    }
+
     pushTransaction(tx: PushTransaction['tx']) {
         const data = typeof tx === 'string' ? { hex: tx } : tx;
+        // Broadcast via the dedicated link when configured, fall back to the primary one otherwise.
+        const link = this.getBroadcastLink() ?? this.link;
 
-        return this.link.pushTransaction(data);
+        return link.pushTransaction(data);
     }
 
     disconnect() {
         this.link.removeAllListeners();
         this.link.disconnect().then(() => this.link.dispose());
+
+        const { broadcastLink } = this;
+        if (broadcastLink) {
+            broadcastLink.disconnect().then(() => broadcastLink.dispose());
+        }
+
         this.onBackendDisconnected();
     }
 }
