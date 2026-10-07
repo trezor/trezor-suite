@@ -283,8 +283,10 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
     }
 
-    public getMethodInfo(): MethodInfo {
-        return {
+    // Async so that a method can download what its title names (e.g. a network definition) only
+    // when the title is requested, instead of on every call.
+    public getMethodInfo(): Promise<MethodInfo> {
+        return Promise.resolve({
             useUi: this.useUi,
             useDevice: this.useDevice,
             useDeviceState: this.useDeviceState,
@@ -293,7 +295,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             info: this.info,
             precomposed: undefined, // requested by a special flag,
             confirmation: this.confirmation,
-        };
+        });
     }
 
     public payloadToPrecomposed(): Promise<PrecomposeResultFinal | undefined> {
