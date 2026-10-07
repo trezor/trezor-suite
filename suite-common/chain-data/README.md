@@ -25,6 +25,12 @@ descriptor, 'balance']`) and per network rate. Keys hold plain strings only; the
 - **Multi-chain accounts**: aggregation runs over `PortfolioAccount.chainAccounts`, never over a
   single symbol, so one EVM address on Ethereum and its L2s is one account with several entries.
 
+- **Assets**: each network answers its native asset (`nativeAsset` + balance) and, where it has
+  them, its tokens (`getTokens`, absent on Bitcoin). `useChainAssets` returns one flat,
+  unmerged list of `ChainAsset`s across networks. Grouping is the UI's decision: the desktop groups
+  per network as the dashboard does today (`groupChainAssetsByNetwork`); an asset-first view
+  (WETH and ETH as one row) would be another grouping over the same list.
+
 Account descriptors are confidential: balance queries carry `CONFIDENTIAL_QUERY_META`, so a failure
 logs only the error name, and `ChainNetworkError` carries a code and symbol, never a backend
 message. Keys are never logged and the cache is not persisted.
@@ -33,14 +39,15 @@ message. Keys are never logged and the cache is not persisted.
 
 Desktop reads native balances and their fiat value through this package behind the debug flag
 `queryChainData` (Settings → Debug → Flags): the sidebar coin rows, the account header and the
-dashboard total. With the flag off nothing is fetched and the Redux path is unchanged. Under the
+dashboard total. Under the flag the dashboard also lists every asset read through chain networks
+(native coins and EVM tokens, filtered by the token definitions as today). With the flag off nothing is fetched and the Redux path is unchanged. Under the
 flag the dashboard total values native balances only.
 
 ## Roadmap
 
 | #   | Phase                                                                                                                   | Exit criterion                                           |
 | --- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| 1   | Tokens and staking: `getAccountTokens`, token rates; the Cardano staking rule moves into its network                    | Flagged total equals the legacy total                    |
+| 1   | Tokens and staking: EVM tokens done; Solana SPL tokens, staking, the Cardano staking rule moves into its network        | Flagged total equals the legacy total                    |
 | 2   | Sync: invalidator wired to Connect block and notification events; `network.subscribe`; legacy refresh off when flagged  | No double fetching; `NETWORK_SYNC_INTERVALS` removed     |
 | 3   | Discovery: `network.discoverAccounts` returns chain accounts; Redux persists identities only (`PortfolioAccount` slice) | Redux accounts hold no balances or tokens                |
 | 4   | Transactions: `useInfiniteQuery` over `network.getTransactions(ref, cursor)`                                            | Redux transactions slice is legacy only                  |
