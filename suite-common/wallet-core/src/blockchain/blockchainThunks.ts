@@ -11,7 +11,12 @@ import {
     isNetworkSymbol,
     isNetworkUsingExternalBackend,
 } from '@suite-common/wallet-config';
-import type { Account, CustomBackend, GetTradedAccountKeysDep } from '@suite-common/wallet-types';
+import type {
+    Account,
+    AccountKey,
+    CustomBackend,
+    GetTradedAccountKeysDep,
+} from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     findAccountDevice,
@@ -24,6 +29,7 @@ import {
     shouldSubscribeBlocks,
     shouldUseIdentities,
     subunitsToUnits,
+    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     type BlockchainBlock,
@@ -40,10 +46,12 @@ import {
     selectBlockchainState,
     selectCustomBackends,
     selectIsCustomBackendConfigured,
+    selectIsSubscriptionLimitedToWatchedAccount,
     selectNetworkBlockchainInfo,
+    selectWatchedAccountKey,
 } from './blockchainReducer';
 import { type AccountsRootState } from '../accounts/accountsReducer';
-import { selectAccounts } from '../accounts/accountsSelectors';
+import { selectAccountByKey, selectAccounts } from '../accounts/accountsSelectors';
 import {
     type FetchAndUpdateAccountThunkState,
     fetchAndUpdateAccountThunk,
@@ -155,7 +163,19 @@ type SubscribeBlockchainThunkParams = {
     onConnect?: boolean;
 };
 
-export type SubscribeBlockchainThunkState = AccountsRootState;
+const findSubscribedAccounts = (
+    state: AccountsRootState & BlockchainRootState,
+    symbol: NetworkSymbol,
+) => {
+    const isLimitedToWatched = selectIsSubscriptionLimitedToWatchedAccount(state, symbol);
+    const watchedAccountKey = selectWatchedAccountKey(state, symbol);
+
+    return findAccountsByNetwork(symbol, selectAccounts(state))
+        .filter(isAccountSubscribable) // do not subscribe accounts with unsupported backend type
+        .filter(account => !isLimitedToWatched || account.key === watchedAccountKey);
+};
+
+export type SubscribeBlockchainThunkState = AccountsRootState & BlockchainRootState;
 
 // called from WalletMiddleware after ACCOUNT.ADD/UPDATE action
 // or after BLOCKCHAIN.CONNECT event (blockchainActions.onConnect)
@@ -167,19 +187,19 @@ export const subscribeBlockchainThunk = createThunk<
     `${BLOCKCHAIN_MODULE_PREFIX}/subscribeBlockchainThunk`,
     async ({ symbol, onConnect }, { getState }) => {
         const useIdentities = shouldUseIdentities(symbol);
+        // Blocks are polled for too, yet drive nothing on a network synced by timer
+        // (see onBlockMinedThunk), so a backend billed per poll is not asked for them.
+        const isLimitedToWatched = selectIsSubscriptionLimitedToWatchedAccount(getState(), symbol);
         // Don't subscribe to blocks for Solana, this is too intensive
-        const blocks = shouldSubscribeBlocks(symbol);
+        const blocks = !isLimitedToWatched && shouldSubscribeBlocks(symbol);
 
-        if (onConnect && useIdentities) {
+        if (onConnect && useIdentities && !isLimitedToWatched) {
             await TrezorConnect.blockchainSubscribe({ coin: asCoinSymbol(symbol), blocks });
         }
 
         // do NOT subscribe if there are no accounts
         // it leads to websocket disconnection
-        const accountsToSubscribe = findAccountsByNetwork(
-            symbol,
-            selectAccounts(getState()),
-        ).filter(isAccountSubscribable); // do not subscribe accounts with unsupported backend type
+        const accountsToSubscribe = findSubscribedAccounts(getState(), symbol);
         if (!accountsToSubscribe.length) return;
 
         const paramsArray = useIdentities
@@ -197,7 +217,7 @@ export const subscribeBlockchainThunk = createThunk<
     },
 );
 
-type UnsubscribeBlockchainThunkState = AccountsRootState;
+export type UnsubscribeBlockchainThunkState = AccountsRootState & BlockchainRootState;
 
 // called from WalletMiddleware after ACCOUNT.REMOVE action
 export const unsubscribeBlockchainThunk = createThunk<
@@ -207,16 +227,13 @@ export const unsubscribeBlockchainThunk = createThunk<
 >(`${BLOCKCHAIN_MODULE_PREFIX}/unsubscribeBlockchainThunk`, (removedAccounts, { getState }) => {
     // collect unique symbols
     const symbols = removedAccounts.map(({ symbol }) => symbol).filter(arrayDistinct);
-    const allAccounts = selectAccounts(getState());
     const paramsArray = symbols.flatMap<{
         symbol: NetworkSymbol;
         identity?: string;
         blocks?: boolean;
         accounts: Account[];
     }>(symbol => {
-        const accountsToSubscribe = findAccountsByNetwork(symbol, allAccounts).filter(
-            isAccountSubscribable,
-        ); // do not unsubscribe accounts with unsupported backend type
+        const accountsToSubscribe = findSubscribedAccounts(getState(), symbol);
 
         if (shouldUseIdentities(symbol)) {
             const accountIdentities = arrayToDictionary(
@@ -258,6 +275,69 @@ export const unsubscribeBlockchainThunk = createThunk<
         }),
     );
 });
+
+type AccountHistoryWatchParams = { accountKey: AccountKey };
+
+const getWatchedAccountParams = (account: Account) => ({
+    accounts: [account],
+    coin: asCoinSymbol(account.symbol),
+    identity: tryGetAccountIdentity(account),
+});
+
+export type WatchAccountHistoryThunkState = AccountsRootState & BlockchainRootState;
+
+// Called while an account's transaction history is on screen. A backend billed per poll watches
+// only that account; everywhere else every account is subscribed already and this does nothing.
+export const watchAccountHistoryThunk = createThunk<
+    void,
+    AccountHistoryWatchParams,
+    { state: WatchAccountHistoryThunkState }
+>(
+    `${BLOCKCHAIN_MODULE_PREFIX}/watchAccountHistoryThunk`,
+    async ({ accountKey }, { dispatch, getState }) => {
+        const account = selectAccountByKey(getState(), accountKey);
+        if (
+            !account ||
+            !isAccountSubscribable(account) ||
+            !selectIsSubscriptionLimitedToWatchedAccount(getState(), account.symbol)
+        ) {
+            return;
+        }
+
+        dispatch(blockchainActions.setWatchedAccount({ symbol: account.symbol, accountKey }));
+        await TrezorConnect.blockchainSubscribe({
+            ...getWatchedAccountParams(account),
+            blocks: false,
+        });
+    },
+);
+
+export type UnwatchAccountHistoryThunkState = AccountsRootState & BlockchainRootState;
+
+export const unwatchAccountHistoryThunk = createThunk<
+    void,
+    AccountHistoryWatchParams,
+    { state: UnwatchAccountHistoryThunkState }
+>(
+    `${BLOCKCHAIN_MODULE_PREFIX}/unwatchAccountHistoryThunk`,
+    async ({ accountKey }, { dispatch, getState }) => {
+        const account = selectAccountByKey(getState(), accountKey);
+        if (!account || !selectIsSubscriptionLimitedToWatchedAccount(getState(), account.symbol)) {
+            return;
+        }
+
+        // Switching accounts may watch the next one before this one is let go.
+        if (selectWatchedAccountKey(getState(), account.symbol) === accountKey) {
+            dispatch(
+                blockchainActions.setWatchedAccount({
+                    symbol: account.symbol,
+                    accountKey: undefined,
+                }),
+            );
+        }
+        await TrezorConnect.blockchainUnsubscribe(getWatchedAccountParams(account));
+    },
+);
 
 const tryClearTimeout = (timeout?: TimerId) => {
     if (timeout) clearTimeout(timeout);

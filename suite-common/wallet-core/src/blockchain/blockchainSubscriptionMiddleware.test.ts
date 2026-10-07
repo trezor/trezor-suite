@@ -7,15 +7,21 @@ import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
+import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
 import { prepareBlockchainSubscriptionMiddleware } from './blockchainSubscriptionMiddleware';
+import { type SubscribeBlockchainThunkState } from './blockchainThunks';
 import { mockSetAccountAddMetadata } from '../../mocks';
 import { accountsActions } from '../accounts/accountsActions';
-import { type AccountsRootState, prepareAccountsReducer } from '../accounts/accountsReducer';
+import { prepareAccountsReducer } from '../accounts/accountsReducer';
 
 const accountsReducer = prepareAccountsReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
     actions: { setAccountAddMetadata: mockSetAccountAddMetadata() },
     reducers: { storageLoadAccounts: mockReducer() },
+});
+const blockchainReducer = prepareBlockchainReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadBlockchain: mockReducer() },
 });
 
 const adaSymbol = asNetworkSymbol('ada');
@@ -43,10 +49,12 @@ const account = mockWalletAccount(
 );
 
 const initStore = (accounts: Account[] = []) =>
-    createTestCompositionRoot<void, AccountsRootState>({
+    createTestCompositionRoot<void, SubscribeBlockchainThunkState>({
         middleware: [prepareBlockchainSubscriptionMiddleware(() => ({}))],
-        reducer: { wallet: combineReducers({ accounts: accountsReducer }) },
-        preloadedState: { wallet: { accounts } },
+        reducer: {
+            wallet: combineReducers({ accounts: accountsReducer, blockchain: blockchainReducer }),
+        },
+        preloadedState: { wallet: { accounts, blockchain: blockchainInitialState } },
     }).services.store;
 
 const waitForThunks = () => new Promise(resolve => setTimeout(resolve, 0));

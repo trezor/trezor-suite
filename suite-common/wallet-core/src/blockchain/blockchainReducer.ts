@@ -11,6 +11,7 @@ import {
 import {
     type NetworkSymbol,
     getNetworkOptional,
+    isNetworkUsingExternalRpcBackend,
     networksCollection,
 } from '@suite-common/wallet-config';
 import { type Blockchain, type BlockchainNetworks } from '@suite-common/wallet-types';
@@ -95,6 +96,7 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
         version: info.version,
         backends: draft[network.symbol as LegacyNetworkSymbol].backends,
         identityConnections: draft[network.symbol as LegacyNetworkSymbol].identityConnections,
+        watchedAccountKey: draft[network.symbol as LegacyNetworkSymbol].watchedAccountKey,
     };
 };
 
@@ -172,6 +174,10 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
                     };
                 }
             })
+            .addCase(blockchainActions.setWatchedAccount, (state, action) => {
+                state[action.payload.symbol as LegacyNetworkSymbol].watchedAccountKey =
+                    action.payload.accountKey;
+            })
             .addCase(blockchainActions.setBackendGapLimit, (state, action) => {
                 const { symbol, gapLimit } = action.payload;
                 if (gapLimit === undefined) {
@@ -242,6 +248,21 @@ export const selectIsCustomBackendConfigured = createMemoizedSelector(
     [selectBlockchainBackendType],
     backendType => !!backendType,
 );
+
+export const selectWatchedAccountKey = (state: BlockchainRootState, symbol: NetworkSymbol) =>
+    selectNetworkBlockchainInfo(state, symbol)?.watchedAccountKey;
+
+/**
+ * A backend that can only poll for account activity is billed per poll, so on Trezor's own endpoint
+ * it watches just the account whose history is on screen. A custom backend is the user's own
+ * infrastructure and keeps watching every account.
+ */
+export const selectIsSubscriptionLimitedToWatchedAccount = (
+    state: BlockchainRootState,
+    symbol: NetworkSymbol,
+) =>
+    isNetworkUsingExternalRpcBackend(symbol) &&
+    !selectNetworkBlockchainInfo(state, symbol)?.backends.selected;
 
 export const selectGapLimit = (state: BlockchainRootState, symbol: NetworkSymbol) =>
     state.wallet.blockchain[symbol as LegacyNetworkSymbol]?.backends.gapLimit;

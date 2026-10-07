@@ -23,6 +23,7 @@ import { AccountOverviewBalance } from './components/AccountOverviewBalance';
 import { NoTransactions } from './components/NoTransactions';
 import { TransactionSummary } from './components/TransactionSummary';
 import { TronResources } from './components/TronResources';
+import { useWatchAccountHistory } from './useWatchAccountHistory';
 import { CardanoNewProviderCard } from '../staking/components/AdaStakingDashboard/CardanoNewProviderCard';
 
 interface LayoutProps {
@@ -44,6 +45,7 @@ export const Transactions = () => {
     const accountTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, selectedAccount.account?.key || null),
     );
+    useWatchAccountHistory(selectedAccount.account?.key);
 
     if (selectedAccount.status !== 'loaded') {
         return <Layout selectedAccount={selectedAccount} />;

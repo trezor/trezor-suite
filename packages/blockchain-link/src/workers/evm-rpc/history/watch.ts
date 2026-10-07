@@ -50,6 +50,13 @@ export const detectAccountChanges = async (
     );
     const checkedTo = failed.length ? Math.min(...failed.map(gap => gap.from)) - 1 : latestBlock;
 
+    // Lets watching that stops and starts again pick up here rather than rescan since the last
+    // sync. Callers already leave the tip out of `latestBlock`.
+    watched.forEach(({ descriptor }) => {
+        const history = getDescriptorHistory(state, descriptor);
+        history.watchedTo = Math.max(history.watchedTo, checkedTo);
+    });
+
     if (!logs.length) {
         return { changes: [], checkedTo };
     }

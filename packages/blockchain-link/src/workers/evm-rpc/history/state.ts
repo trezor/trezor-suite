@@ -12,6 +12,11 @@ export type DescriptorHistory = {
     syncedFrom: number;
     /** Newest block scanned, inclusive, or COLD when nothing has been scanned yet. */
     syncedTo: number;
+    /**
+     * Newest block the live watcher has checked, or COLD. Says only that no change went unnoticed up
+     * to here, unlike `syncedTo`, which promises that `entries` holds everything in its bounds.
+     */
+    watchedTo: number;
     entries: Map<string, HistoryEntry>;
     /** Lowercased contract addresses seen transferring to or from this descriptor. */
     tokenContracts: Set<string>;
@@ -58,6 +63,7 @@ export const getDescriptorHistory = (state: WorkerState, descriptor: string): De
     const created: DescriptorHistory = {
         syncedFrom: COLD,
         syncedTo: COLD,
+        watchedTo: COLD,
         entries: new Map(),
         tokenContracts: new Set(),
     };
