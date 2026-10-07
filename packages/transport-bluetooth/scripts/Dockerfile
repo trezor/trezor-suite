@@ -1,6 +1,6 @@
 # https://github.com/joseluisq/rust-linux-darwin-builder/blob/master/README.md
 
-FROM joseluisq/rust-linux-darwin-builder:1.85.1
+FROM joseluisq/rust-linux-darwin-builder:1.88.0
 
 RUN apt-get update && apt-get install -y mingw-w64 curl ca-certificates
 
