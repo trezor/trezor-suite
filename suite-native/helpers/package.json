@@ -21,7 +21,7 @@
         "expo-file-system": "~57.0.1",
         "expo-sharing": "~57.0.6",
         "react": "19.2.3",
-        "react-native": "0.86.0",
+        "react-native": "0.86.3",
         "react-redux": "9.3.0"
     },
     "devDependencies": {

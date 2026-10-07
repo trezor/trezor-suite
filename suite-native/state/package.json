@@ -72,7 +72,7 @@
         "@trezor/type-utils": "workspace:*",
         "expo-device": "~57.0.1",
         "react": "19.2.3",
-        "react-native": "0.86.0",
+        "react-native": "0.86.3",
         "react-native-restart": "0.0.27",
         "react-redux": "9.3.0",
         "redux-logger": "^3.0.6",

@@ -29,7 +29,7 @@
         "@trezor/utils": "workspace:*",
         "expo-image": "~57.0.1",
         "react": "19.2.3",
-        "react-native": "0.86.0",
+        "react-native": "0.86.3",
         "react-native-reanimated": "4.7.0"
     },
     "devDependencies": {
