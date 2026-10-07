@@ -28,6 +28,36 @@ export const convertAmountUnitsToSubunits = (amount: BigNumberValue, decimals: n
     }
 };
 
+/** Smallest unit to units, as a string. Throws when the amount is not a number. */
+export const convertAmountSubunitsToUnits = (amount: BigNumberValue, decimals: number) => {
+    const safeAmount = amount || '0';
+    const bAmount = new BigNumber(safeAmount);
+
+    if (bAmount.isNaN()) {
+        throw new Error('Amount is not a number');
+    }
+
+    const factor = new BigNumber(10).exponentiatedBy(decimals);
+
+    return bAmount.div(factor).toString(10);
+};
+
+/** A coin amount in units to its smallest unit; unchanged for a coin without decimals. */
+export const coinAmountToSmallestUnit = (amount: string | null, decimals: number) => {
+    if (!amount) return '0';
+
+    if (!decimals) return amount;
+
+    return convertAmountUnitsToSubunits(amount, decimals);
+};
+
+/** A coin amount in its smallest unit to units; unchanged for a coin without decimals. */
+export const formatCoinAmount = (amount: string, decimals: number) => {
+    if (!decimals) return amount;
+
+    return convertAmountSubunitsToUnits(amount, decimals);
+};
+
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
         const total = new BigNumber(amount).plus(fee);

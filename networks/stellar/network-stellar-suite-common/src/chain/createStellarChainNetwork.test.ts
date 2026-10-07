@@ -12,9 +12,15 @@ const fetchCoinGeckoCurrentRate = jest.fn();
 const fetchCoinGeckoHistoricRates = jest.fn();
 
 const deps: StellarChainNetworkDeps = {
-    getTrezorConnect: () => ({ getAccountInfo }),
+    getTrezorConnect: () => ({
+        getAccountInfo,
+        stellarSignTransaction: jest.fn(),
+        pushTransaction: jest.fn(),
+    }),
     fetchCoinGeckoCurrentRate,
     fetchCoinGeckoHistoricRates,
+    getStellarBackendUrl: () => undefined,
+    resolveStellarContractId: () => Promise.resolve(undefined),
 };
 
 const xlm = asNetworkSymbol('xlm');

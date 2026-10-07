@@ -6,6 +6,12 @@
     "include": ["./src"],
     "references": [
         {
+            "path": "../../../packages/blockchain-link-types"
+        },
+        {
+            "path": "../../../packages/connect-common"
+        },
+        {
             "path": "../../network-module/network-module-suite-common-types"
         },
         {
@@ -19,6 +25,9 @@
         },
         {
             "path": "../network-stellar-types"
+        },
+        {
+            "path": "../../../packages/utils"
         }
     ]
 }

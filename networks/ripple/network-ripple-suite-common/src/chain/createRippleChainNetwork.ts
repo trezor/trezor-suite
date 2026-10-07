@@ -12,11 +12,13 @@ import {
 import { isSupportedRippleNetwork } from '@trezor/network-ripple-types';
 
 import { getAccountSyncInterval, getNetworkConfig } from '../networkConfig';
+import { type RippleChainSendDeps, createRippleChainSend } from './send/createRippleChainSend';
 
 export type RippleChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchCoinGeckoCurrentRateDep &
     FetchConnectTransactionsDeps &
-    FetchCoinGeckoHistoricRatesDep;
+    FetchCoinGeckoHistoricRatesDep &
+    RippleChainSendDeps;
 
 /**
  * XRP Ledger network. The ledger holds back a reserve from every account, so the user sees the
@@ -25,6 +27,7 @@ export type RippleChainNetworkDeps = FetchConnectAccountBalanceDeps &
 export const createRippleChainNetwork = (deps: RippleChainNetworkDeps): CreateChainNetwork => {
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
     const fetchTransactions = createFetchConnectTransactions(deps);
+    const createSend = createRippleChainSend(deps);
 
     return params => {
         const config = readChainNetworkConfig(
@@ -53,6 +56,7 @@ export const createRippleChainNetwork = (deps: RippleChainNetworkDeps): CreateCh
                 useStellarContractTokens: false,
             },
             fetchHistoricFiatRates: config.hasFiatRate ? deps.fetchCoinGeckoHistoricRates : null,
+            send: createSend(params.symbol),
         });
     };
 };
