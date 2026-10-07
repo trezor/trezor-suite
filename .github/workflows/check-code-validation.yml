@@ -166,9 +166,9 @@ jobs:
       - name: Check Files for Correct Formatting
         run: yarn format:verify
       - name: Collect Markdown link inputs
-        # Start with repository instructions and skills; exclude dependencies and generated files.
+        # All tracked Markdown files; untracked dependencies and generated files are excluded.
         run: |
-          git ls-files -- 'AGENTS.md' '**/AGENTS.md' 'skills/*.md' '**/skills/*.md' > "$RUNNER_TEMP/markdown-link-inputs.txt"
+          git ls-files -- '*.md' > "$RUNNER_TEMP/markdown-link-inputs.txt"
       - name: Lint Markdown links
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
