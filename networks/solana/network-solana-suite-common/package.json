@@ -17,5 +17,8 @@
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-solana-assets": "workspace:*",
         "@trezor/network-solana-types": "workspace:*"
+    },
+    "devDependencies": {
+        "@trezor/network-module-types": "workspace:*"
     }
 }
