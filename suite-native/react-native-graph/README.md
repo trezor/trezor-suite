@@ -155,4 +155,4 @@ Example:
 />
 ```
 
-See this [example `<SelectionDot />` component](./example/src/components/CustomSelectionDot.tsx).
+See this [example `<SelectionDot />` component](https://github.com/margelo/react-native-graph/blob/main/example/src/components/CustomSelectionDot.tsx).

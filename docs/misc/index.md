@@ -11,5 +11,4 @@ location, so as to ensure that the documentation is well structured overall.
 - [development on Windows](./development-on-windows.md)
 - [device naming](./device-naming.md)
 - [review](./review.md)
-- [suite setup troubleshooting](./suite-setup-troubleshooting.md)
 - [videos](./videos.md)

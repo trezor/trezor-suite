@@ -15,7 +15,7 @@ Follow the steps provided in the [migration documentation](../../suite/idb-migra
 
 Documentation
 
-- [Suite Playwright E2E](./tests/e2e-playwright-suite.md)
-- [Suite E2E in CI](./tests/e2e-ci.md)
-- [Playwright contribution guide](./tests/e2e-playwright-contribution-guide.md)
-- [GitHub Test Reporter](./tests/e2e-github-reporter.md)
+- [Suite Playwright E2E](../../suite/e2e/docs/e2e-playwright-suite.md)
+- [Suite E2E in CI](../../suite/e2e/docs/e2e-ci.md)
+- [Playwright contribution guide](../../suite/e2e/docs/e2e-playwright-contribution-guide.md)
+- [GitHub Test Reporter](../../suite/e2e/docs/e2e-github-reporter.md)
