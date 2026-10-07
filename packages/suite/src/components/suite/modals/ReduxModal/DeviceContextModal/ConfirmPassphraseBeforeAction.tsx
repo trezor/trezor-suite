@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl';
 import { Translation, messages } from '@suite/intl';
 import { MODAL_CONTEXT_DEVICE, selectModal, selectModalRequestId } from '@suite/modal';
 import {
+    getPassphraseMaxLength,
     selectDeviceModel,
     selectHasDevicePassphraseEntryCapability,
     selectSelectedDevice,
@@ -71,6 +72,7 @@ export const ConfirmPassphraseBeforeAction = () => {
                     deviceModel={deviceModel ?? undefined}
                     onSubmit={onSubmit}
                     offerPassphraseOnDevice={offerPassphraseOnDevice}
+                    passphraseMaxLength={getPassphraseMaxLength(device)}
                     allowNonAsciiCharacters
                 />
             </CardWithDevice>

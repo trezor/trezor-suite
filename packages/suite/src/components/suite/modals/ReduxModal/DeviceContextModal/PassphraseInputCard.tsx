@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { PASSPHRASE_MAX_LENGTH } from '@suite-common/device';
+import { getIsPassphraseTooLong } from '@suite-common/device';
 import {
     Box,
     Button,
@@ -22,7 +22,7 @@ import { type DeviceModelInternal } from '@trezor/device-utils';
 import { isAndroid } from '@trezor/env-utils';
 import { CaretRightIcon, EyeClosedIcon, EyeIcon } from '@trezor/icons';
 import { PasswordStrengthIndicator } from '@trezor/product-components';
-import { countBytesInString, getNonAsciiChars } from '@trezor/utils';
+import { getNonAsciiChars } from '@trezor/utils';
 
 type PassphraseInputCardProps = {
     deviceModel?: DeviceModelInternal;
@@ -33,6 +33,7 @@ type PassphraseInputCardProps = {
     isDeviceLoading: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     offerPassphraseOnDevice: boolean;
+    passphraseMaxLength: number;
     allowNonAsciiCharacters?: boolean;
     value?: string;
     setValue?: (value: string) => void;
@@ -59,6 +60,7 @@ export const PassphraseInputCard = ({
     isDeviceLoading,
     onSubmit,
     offerPassphraseOnDevice,
+    passphraseMaxLength,
     allowNonAsciiCharacters = false,
     value: externalValue,
     setValue: setExternalValue,
@@ -71,7 +73,7 @@ export const PassphraseInputCard = ({
     const value = externalValue ?? internalValue;
     const setValue = setExternalValue ?? setInternalValue;
 
-    const isPassphraseTooLong = countBytesInString(value) > PASSPHRASE_MAX_LENGTH;
+    const isPassphraseTooLong = getIsPassphraseTooLong(value, passphraseMaxLength);
     const isUsingNonAsciiCharacters = allowNonAsciiCharacters
         ? false
         : getNonAsciiChars(value) !== null;
