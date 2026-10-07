@@ -34,3 +34,15 @@ export type {
     ChainQueryInvalidator,
     ChainQueryInvalidatorDeps,
 } from './createChainQueryInvalidator';
+export { useChainAccountTransactions } from './useChainAccountTransactions';
+export type {
+    ChainAccountTransactions,
+    UseChainAccountTransactionsParams,
+} from './useChainAccountTransactions';
+export { useChainHistoricRates } from './useChainHistoricRates';
+export type { UseChainHistoricRatesParams } from './useChainHistoricRates';
+export { getHistoricRateRequests, toRateHour } from './getHistoricRateRequests';
+export type { HistoricRateRequest } from './getHistoricRateRequests';
+export { findChainTransaction } from './findChainTransaction';
+export { getCachedChainTransaction } from './getCachedChainTransaction';
+export type { CachedChainAccount } from './getCachedChainTransaction';

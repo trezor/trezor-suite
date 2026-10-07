@@ -1,7 +1,9 @@
 import {
     type ChainNetwork,
     type ChainTokenBalance,
+    type ChainTransactionsPage,
     type FiatRate,
+    type HistoricFiatRates,
     getChainSyncPolicy,
     getDisplayBalanceFiatValue,
 } from '@trezor/network-module-suite-common-types';
@@ -18,6 +20,10 @@ type FakeChainNetworkParams = {
     tokens?: Record<string, readonly ChainTokenBalance[]>;
     /** Token rates by contract. */
     tokenRates?: Record<string, FiatRate | null>;
+    /** History pages by descriptor; a network without it has no history. */
+    history?: Record<string, readonly ChainTransactionsPage[]>;
+    /** Past rates by contract, `''` for the coin. */
+    historicRates?: Record<string, HistoricFiatRates>;
 };
 
 /** A network answering from memory, with spies on what shared code asks it. */
@@ -48,6 +54,29 @@ export const createFakeChainNetwork = (params: FakeChainNetworkParams) => {
         Parameters<NonNullable<ChainNetwork['getTokenFiatRate']>>
     >(({ contract }) => Promise.resolve(params.tokenRates?.[contract] ?? null));
 
+    const getTransactions = jest.fn<
+        ReturnType<NonNullable<ChainNetwork['getTransactions']>>,
+        Parameters<NonNullable<ChainNetwork['getTransactions']>>
+    >(({ ref, cursor }) => {
+        const page = params.history?.[ref.descriptor]?.[cursor.page - 1];
+
+        return Promise.resolve(page ?? { transactions: [], nextCursor: null, total: 0 });
+    });
+    const getHistoricFiatRates = jest.fn<
+        ReturnType<ChainNetwork['getHistoricFiatRates']>,
+        Parameters<ChainNetwork['getHistoricFiatRates']>
+    >(({ contract, timestamps }) => {
+        const rates = params.historicRates?.[contract ?? ''] ?? {};
+
+        return Promise.resolve(
+            Object.fromEntries(
+                timestamps.flatMap(timestamp =>
+                    rates[timestamp] === undefined ? [] : [[timestamp, rates[timestamp]]],
+                ),
+            ),
+        );
+    });
+
     const network: ChainNetwork = {
         symbol: params.symbol,
         backendType: 'blockbook',
@@ -59,8 +88,18 @@ export const createFakeChainNetwork = (params: FakeChainNetworkParams) => {
         getAccountBalance,
         getNativeFiatRate,
         getAccountFiatBalance: getDisplayBalanceFiatValue,
+        getHistoricFiatRates,
         ...(params.tokens ? { getTokens, getTokenFiatRate } : {}),
+        ...(params.history ? { getTransactions } : {}),
     };
 
-    return { network, getAccountBalance, getNativeFiatRate, getTokens, getTokenFiatRate };
+    return {
+        network,
+        getAccountBalance,
+        getNativeFiatRate,
+        getTokens,
+        getTokenFiatRate,
+        getTransactions,
+        getHistoricFiatRates,
+    };
 };
