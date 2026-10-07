@@ -2,11 +2,10 @@ import type { PublicClient } from 'viem';
 
 import type { Transaction } from '@trezor/blockchain-link-types';
 
-import { MAX_DISCOVERED_TOKENS } from './constants';
 import { mapEntries } from './getHistory';
 import { scanTransferLogs } from './logScanner';
 import { getNativeLogSources } from './nativeAsset';
-import { getDescriptorHistory } from './state';
+import { discoverTokenContract, getDescriptorHistory } from './state';
 import { parseTransferLog } from './transferLog';
 import type { WorkerState } from '../../state';
 import { isSameAddress } from '../utils/address';
@@ -99,12 +98,7 @@ export const detectAccountChanges = async (
                 blockTimestamp: log.blockTimestamp ? Number(log.blockTimestamp) : undefined,
             });
 
-            if (
-                !nativeAddresses.has(transfer.contract) &&
-                history.tokenContracts.size < MAX_DISCOVERED_TOKENS
-            ) {
-                history.tokenContracts.add(transfer.contract);
-            }
+            discoverTokenContract(history, transfer, nativeAddresses);
 
             if (isNew) {
                 freshByDescriptor.set(descriptor, [
