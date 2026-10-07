@@ -5,6 +5,7 @@ import type { BackendType } from '../SuiteCommonNetworkConfig';
 import type { ChainAccountBalance } from './ChainAccountBalance';
 import type { ChainAccountRef } from './ChainAccountRef';
 import type { ChainSyncPolicy } from './ChainSyncPolicy';
+import type { ChainTokenBalance } from './ChainTokenBalance';
 import type { FiatRate } from './FiatRate';
 
 export type GetAccountBalanceParams = {
@@ -15,6 +16,18 @@ export type GetAccountBalanceParams = {
 export type GetNativeFiatRateParams = {
     currency: BaseCurrencyCode;
     signal: AbortSignal;
+};
+
+export type GetTokenFiatRateParams = {
+    contract: string;
+    currency: BaseCurrencyCode;
+    signal: AbortSignal;
+};
+
+export type ChainNativeAsset = {
+    /** Symbol shown to the user, which can differ from the network symbol (`ETH` on Base). */
+    readonly symbol: string;
+    readonly name: string;
 };
 
 export type GetAccountFiatBalanceParams = {
@@ -36,6 +49,7 @@ export type ChainNetwork = {
     /** Scopes cached data: switching backend must not serve data fetched from the previous one. */
     readonly backendType: BackendType;
     readonly syncPolicy: ChainSyncPolicy;
+    readonly nativeAsset: ChainNativeAsset;
 
     getAccountBalance: (params: GetAccountBalanceParams) => Promise<ChainAccountBalance>;
 
@@ -44,6 +58,15 @@ export type ChainNetwork = {
 
     /** Fiat value of an account's balance as a decimal string. */
     getAccountFiatBalance: (params: GetAccountFiatBalanceParams) => string;
+
+    /**
+     * Fungible tokens the account holds. Absent on networks without tokens, and on networks whose
+     * tokens are not read through chain networks yet.
+     */
+    getTokens?: (params: GetAccountBalanceParams) => Promise<readonly ChainTokenBalance[]>;
+
+    /** Present exactly when `getTokens` is; resolves `null` when no source knows the rate. */
+    getTokenFiatRate?: (params: GetTokenFiatRateParams) => Promise<FiatRate | null>;
 };
 
 export type ChainNetworkBackend = {

@@ -2,32 +2,46 @@ import {
     type CreateChainNetwork,
     type FetchCoinGeckoCurrentRateDep,
     type FetchConnectAccountBalanceDeps,
+    type FetchConnectTokensDeps,
     buildConnectChainNetwork,
     createFetchConnectAccountBalance,
+    createFetchConnectTokens,
 } from '@trezor/network-module-suite-common-types';
 
-import { getEthereumChainNetworkConfig } from './getEthereumChainNetworkConfig';
+import {
+    EVM_FUNGIBLE_TOKEN_STANDARDS,
+    getEthereumChainNetworkConfig,
+} from './getEthereumChainNetworkConfig';
 
 export type EthereumCustomRpcChainNetworkDeps = FetchConnectAccountBalanceDeps &
+    FetchConnectTokensDeps &
     FetchCoinGeckoCurrentRateDep;
 
-/** EVM network served by the user's own JSON-RPC node, which quotes no rates. */
+/** EVM network served by the user's own JSON-RPC node, which quotes no rates for coins or tokens. */
 export const createEthereumCustomRpcChainNetwork = (
     deps: EthereumCustomRpcChainNetworkDeps,
 ): CreateChainNetwork => {
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
+    const fetchTokens = createFetchConnectTokens(deps);
 
     return params => {
         const config = getEthereumChainNetworkConfig(params.symbol);
+        const rateSource = config.hasFiatRate ? deps.fetchCoinGeckoCurrentRate : null;
 
         return buildConnectChainNetwork({
             params,
+            nativeAsset: config.nativeAsset,
             decimals: config.decimals,
             accountSyncIntervalMs: config.accountSyncIntervalMs,
             displayBalance: 'availableBalance',
             useConnectionIdentity: true,
             fetchAccountBalance,
-            fetchFiatRate: config.hasFiatRate ? deps.fetchCoinGeckoCurrentRate : null,
+            fetchFiatRate: rateSource,
+            tokens: {
+                fetchTokens,
+                fungibleStandards: EVM_FUNGIBLE_TOKEN_STANDARDS,
+                fetchTokenFiatRate: rateSource,
+            },
         });
     };
 };

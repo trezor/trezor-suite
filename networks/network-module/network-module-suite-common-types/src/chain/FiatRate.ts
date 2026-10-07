@@ -12,10 +12,14 @@ export type FetchCurrentFiatRateParams = {
     symbol: NetworkSymbol;
     currency: BaseCurrencyCode;
     signal: AbortSignal;
+
+    /** The token to quote instead of the network's native coin. */
+    tokenAddress?: string;
 };
 
 /**
- * Current rate of a network's native coin from a source outside the network's own backend.
+ * Current rate of a network's native coin, or of one of its tokens, from a source outside the
+ * network's own backend.
  * Resolves `null` when the source has no rate for the coin.
  *
  * @serviceContract

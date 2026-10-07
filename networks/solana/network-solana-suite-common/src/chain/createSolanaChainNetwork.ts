@@ -26,6 +26,10 @@ export const createSolanaChainNetwork = (deps: SolanaChainNetworkDeps): CreateCh
 
         return buildConnectChainNetwork({
             params,
+            nativeAsset: {
+                symbol: config.displaySymbol,
+                name: config.displaySymbolName ?? config.name,
+            },
             decimals: config.decimals,
             accountSyncIntervalMs: getAccountSyncInterval(solanaSymbol),
             displayBalance: 'availableBalance',

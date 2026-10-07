@@ -3,11 +3,11 @@ import type { FetchCurrentFiatRate } from '@trezor/network-module-suite-common-t
 import * as blockbookService from './blockbook';
 
 /**
- * Current rate from Trezor's public Blockbook HTTP API, which serves Bitcoin only. Requests carry
+ * Current rate from Trezor's public Blockbook HTTP API, which serves the Bitcoin coin only. Requests carry
  * the currency alone, never anything account-specific.
  */
 export const createFetchBlockbookHttpCurrentRate = (): FetchCurrentFiatRate => async params => {
-    if (params.symbol !== 'btc') return null;
+    if (params.symbol !== 'btc' || params.tokenAddress) return null;
 
     const response = await blockbookService.fetchCurrentFiatRates(
         'btc',

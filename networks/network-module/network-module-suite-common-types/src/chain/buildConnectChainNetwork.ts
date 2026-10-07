@@ -1,4 +1,5 @@
-import type { ChainNetwork, ChainNetworkParams } from './ChainNetwork';
+import type { ChainAccountRef } from './ChainAccountRef';
+import type { ChainNativeAsset, ChainNetwork, ChainNetworkParams } from './ChainNetwork';
 import { ChainNetworkError } from './ChainNetworkError';
 import { getChainSyncPolicy } from './ChainSyncPolicy';
 import type { FetchCurrentFiatRate } from './FiatRate';
@@ -6,10 +7,20 @@ import type {
     FetchConnectAccountBalance,
     FetchConnectAccountBalanceParams,
 } from './createFetchConnectAccountBalance';
+import type { FetchConnectTokens, FetchConnectTokensParams } from './createFetchConnectTokens';
 import { getDisplayBalanceFiatValue } from './getDisplayBalanceFiatValue';
+
+export type ConnectChainNetworkTokens = {
+    fetchTokens: FetchConnectTokens;
+    fungibleStandards: FetchConnectTokensParams['fungibleStandards'];
+
+    /** `null` when no token of the network has a fiat value (testnets). */
+    fetchTokenFiatRate: FetchCurrentFiatRate | null;
+};
 
 export type ConnectChainNetworkDefinition = {
     params: ChainNetworkParams;
+    nativeAsset: ChainNativeAsset;
     decimals: number;
     accountSyncIntervalMs: number;
     displayBalance: FetchConnectAccountBalanceParams['displayBalance'];
@@ -19,6 +30,9 @@ export type ConnectChainNetworkDefinition = {
     /** `null` when the network has no fiat value at all (testnets). */
     fetchFiatRate: FetchCurrentFiatRate | null;
     getAccountFiatBalance?: ChainNetwork['getAccountFiatBalance'];
+
+    /** Only for networks with tokens; without it the network has no token capabilities. */
+    tokens?: ConnectChainNetworkTokens;
 };
 
 /**
@@ -29,16 +43,21 @@ export const buildConnectChainNetwork = (
     definition: ConnectChainNetworkDefinition,
 ): ChainNetwork => {
     const { symbol } = definition.params;
-    const { fetchFiatRate } = definition;
+    const { fetchFiatRate, tokens } = definition;
 
-    return {
+    const assertOwnAccount = (ref: ChainAccountRef) => {
+        if (ref.symbol !== symbol) {
+            throw new ChainNetworkError('symbol-mismatch', symbol);
+        }
+    };
+
+    const network: ChainNetwork = {
         symbol,
         backendType: definition.params.backend.type,
         syncPolicy: getChainSyncPolicy(definition.accountSyncIntervalMs),
+        nativeAsset: definition.nativeAsset,
         getAccountBalance: async params => {
-            if (params.ref.symbol !== symbol) {
-                throw new ChainNetworkError('symbol-mismatch', symbol);
-            }
+            assertOwnAccount(params.ref);
 
             return await definition.fetchAccountBalance({
                 ...params,
@@ -51,5 +70,31 @@ export const buildConnectChainNetwork = (
         getNativeFiatRate: async params =>
             fetchFiatRate ? await fetchFiatRate({ ...params, symbol }) : null,
         getAccountFiatBalance: definition.getAccountFiatBalance ?? getDisplayBalanceFiatValue,
+    };
+
+    if (!tokens) return network;
+
+    const { fetchTokenFiatRate } = tokens;
+
+    return {
+        ...network,
+        getTokens: async params => {
+            assertOwnAccount(params.ref);
+
+            return await tokens.fetchTokens({
+                ...params,
+                fungibleStandards: tokens.fungibleStandards,
+                useConnectionIdentity: definition.useConnectionIdentity,
+            });
+        },
+        getTokenFiatRate: async params =>
+            fetchTokenFiatRate
+                ? await fetchTokenFiatRate({
+                      symbol,
+                      currency: params.currency,
+                      signal: params.signal,
+                      tokenAddress: params.contract,
+                  })
+                : null,
     };
 };

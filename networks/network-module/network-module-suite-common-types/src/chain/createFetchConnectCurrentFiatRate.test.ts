@@ -73,4 +73,19 @@ describe('createFetchConnectCurrentFiatRate', () => {
         await expect(fetchCurrentFiatRate(params)).resolves.toBeNull();
         expect(mockFetchCoinGeckoCurrentRate).not.toHaveBeenCalled();
     });
+
+    it('quotes a token when asked for one', async () => {
+        mockGetCurrentFiatRates.mockResolvedValue({
+            success: true,
+            payload: { ts: 1700000000, rates: { usd: 1 } },
+        });
+
+        await fetchCurrentFiatRate({ ...params, tokenAddress: '0xusdc' });
+
+        expect(mockGetCurrentFiatRates).toHaveBeenCalledWith({
+            coin: 'btc',
+            token: '0xusdc',
+            currencies: ['usd'],
+        });
+    });
 });

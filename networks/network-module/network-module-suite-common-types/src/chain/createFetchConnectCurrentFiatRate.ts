@@ -23,6 +23,7 @@ export const createFetchConnectCurrentFiatRate =
             () =>
                 deps.getTrezorConnect().blockchainGetCurrentFiatRates({
                     coin: toCoinSymbol(params.symbol),
+                    token: params.tokenAddress,
                     currencies: [params.currency],
                 }),
             { timeout: CONNECT_FETCH_TIMEOUT_MS, signal: params.signal },

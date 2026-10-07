@@ -31,6 +31,7 @@ export const createBitcoinElectrumChainNetwork = (
 
         return buildConnectChainNetwork({
             params,
+            nativeAsset: config.nativeAsset,
             decimals: config.decimals,
             accountSyncIntervalMs: config.accountSyncIntervalMs,
             displayBalance: 'availableBalance',

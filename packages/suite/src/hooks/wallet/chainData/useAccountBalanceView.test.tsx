@@ -26,6 +26,7 @@ const btcNetwork: ChainNetwork = {
     symbol: asNetworkSymbol('btc'),
     backendType: 'blockbook',
     syncPolicy: getChainSyncPolicy(60_000),
+    nativeAsset: { symbol: 'BTC', name: 'Bitcoin' },
     getAccountBalance,
     getNativeFiatRate,
     getAccountFiatBalance: getDisplayBalanceFiatValue,

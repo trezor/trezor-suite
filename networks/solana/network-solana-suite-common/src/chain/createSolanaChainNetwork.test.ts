@@ -62,4 +62,11 @@ describe('createSolanaChainNetwork', () => {
 
         await expect(network.getNativeFiatRate({ currency: 'usd', signal })).resolves.toBeNull();
     });
+
+    it('does not read SPL tokens through chain networks yet', () => {
+        const network = createSolanaChainNetwork(deps)({ symbol: asNetworkSymbol('sol'), backend });
+
+        expect(network.nativeAsset.symbol).toBe('SOL');
+        expect(network.getTokens).toBeUndefined();
+    });
 });

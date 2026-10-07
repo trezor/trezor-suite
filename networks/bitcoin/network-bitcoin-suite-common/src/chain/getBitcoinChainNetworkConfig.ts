@@ -17,6 +17,10 @@ export const getBitcoinChainNetworkConfig = (symbol: NetworkSymbol) => {
     const config = getNetworkConfig(bitcoinSymbol);
 
     return {
+        nativeAsset: {
+            symbol: config.displaySymbol,
+            name: config.displaySymbolName ?? config.name,
+        },
         decimals: config.decimals,
         accountSyncIntervalMs: getAccountSyncInterval(bitcoinSymbol),
         hasFiatRate: !config.testnet,
