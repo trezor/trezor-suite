@@ -56,6 +56,8 @@ import {
     calculateTotal,
     findToken,
     getExternalComposeOutput,
+    getMaxAmountWithReserve,
+    isNetworkReserveApplicable,
     toMevProtectedPushData,
 } from '@trezor/network-module-suite-common-types';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
@@ -615,11 +617,7 @@ export const getNetworkReserve = ({
     contractAddress,
     isEnabled,
 }: GetNetworkReserveProps) => {
-    if (
-        (!!contractAddress && contractAddress !== '0x0000000000000000000000000000000000000000') ||
-        !isEnabled
-    )
-        return undefined;
+    if (!isNetworkReserveApplicable(contractAddress, isEnabled)) return undefined;
     const network = getNetwork(symbol);
 
     return network.nativeTokenReserve;
@@ -675,27 +673,19 @@ export const getCryptoMaxAmountWithReserve = ({
     contractAddress,
     balance,
     amount,
-    fee = '0',
+    fee,
     isNetworkReserveEnabled,
-}: GetCryptoMaxAmountWithReserveProps) => {
-    const networkReserve = getNetworkReserve({
-        symbol,
-        contractAddress,
-        isEnabled: isNetworkReserveEnabled,
+}: GetCryptoMaxAmountWithReserveProps) =>
+    getMaxAmountWithReserve({
+        networkReserve: getNetworkReserve({
+            symbol,
+            contractAddress,
+            isEnabled: isNetworkReserveEnabled,
+        }),
+        balance,
+        amount,
+        fee,
     });
-    if (!networkReserve) return amount;
-
-    const accountBalance = new BigNumber(balance);
-    const reservePlusFee = new BigNumber(networkReserve).plus(fee);
-
-    if (new BigNumber(amount).plus(reservePlusFee).gt(accountBalance)) {
-        const maxAmount = accountBalance.minus(reservePlusFee);
-
-        return maxAmount.lt(0) ? '0' : maxAmount.toFixed();
-    }
-
-    return amount;
-};
 
 interface IsAmountWithinNetworkReserveProps {
     reserve?: string;

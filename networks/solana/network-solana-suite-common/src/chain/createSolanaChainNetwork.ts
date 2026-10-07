@@ -14,12 +14,14 @@ import {
 import { isSupportedSolanaNetwork } from '@trezor/network-solana-types';
 
 import { getAccountSyncInterval, getNetworkConfig } from '../networkConfig';
+import { type SolanaChainSendDeps, createSolanaChainSend } from './send/createSolanaChainSend';
 
 export type SolanaChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
     FetchCoinGeckoCurrentRateDep &
     FetchConnectTransactionsDeps &
-    FetchCoinGeckoHistoricRatesDep;
+    FetchCoinGeckoHistoricRatesDep &
+    SolanaChainSendDeps;
 
 /**
  * Solana network served by its RPC backend, which quotes no rates: CoinGecko values the coin and
@@ -29,6 +31,7 @@ export const createSolanaChainNetwork = (deps: SolanaChainNetworkDeps): CreateCh
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
     const fetchTransactions = createFetchConnectTransactions(deps);
     const fetchTokens = createFetchConnectTokens(deps);
+    const createSend = createSolanaChainSend(deps);
 
     return params => {
         const config = readChainNetworkConfig(
@@ -67,6 +70,7 @@ export const createSolanaChainNetwork = (deps: SolanaChainNetworkDeps): CreateCh
                 useStellarContractTokens: false,
             },
             fetchHistoricFiatRates: config.hasFiatRate ? deps.fetchCoinGeckoHistoricRates : null,
+            send: createSend(params.symbol),
         });
     };
 };

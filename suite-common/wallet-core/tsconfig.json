@@ -67,6 +67,9 @@
             "path": "../../networks/solana/network-solana"
         },
         {
+            "path": "../../networks/solana/network-solana-suite-common"
+        },
+        {
             "path": "../../networks/solana/network-solana-types"
         },
         {

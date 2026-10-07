@@ -22,6 +22,9 @@ export type ChainNetworkConfig = {
 
     /** Blockbook quotes the network's coin and tokens. */
     hasBlockbookRates: boolean;
+
+    /** Coin kept back for fees when the user enables the reserve, in units. */
+    nativeTokenReserve?: string;
 };
 
 /**
@@ -48,5 +51,6 @@ export const readChainNetworkConfig = <TSymbol extends string>(
         isTestnet: config.testnet,
         hasFiatRate: !config.testnet,
         hasBlockbookRates: config.backendOptions.some(option => option.type === 'blockbook'),
+        nativeTokenReserve: config.nativeTokenReserve,
     };
 };
