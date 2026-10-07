@@ -16,6 +16,9 @@
         },
         { "path": "../../packages/device-utils" },
         {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        {
             "path": "../../networks/network-module/network-module-suite-common-types"
         },
         {

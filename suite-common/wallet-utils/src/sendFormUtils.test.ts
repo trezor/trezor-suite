@@ -1,7 +1,7 @@
 import { asNetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type FeeLevel } from '@trezor/connect';
+import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import * as fixtures from './__fixtures__/sendFormUtils';

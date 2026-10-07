@@ -11,9 +11,9 @@ import {
     type TradingExchangeFormProps,
 } from '@suite-common/trading';
 import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
-import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
+import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@trezor/network-ethereum-suite-common';
 
 import { useExchangeDexQuote } from './useExchangeDexQuote';
 

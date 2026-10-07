@@ -4,7 +4,7 @@ import { BigNumber } from '@trezor/utils';
 // increasing gas limit as tx can consume more than it was estimated due to edge cases
 // stake/unstake method usually consumes 97k-425k but can take up to 1M
 // claim method 97k-300k
-export const STAKE_GAS_LIMIT_RESERVE = 220_000;
+export { STAKE_GAS_LIMIT_RESERVE } from '@trezor/network-ethereum-suite-common';
 
 export const MIN_ETH_AMOUNT_FOR_STAKING = new BigNumber(0.01);
 export const MAX_ETH_AMOUNT_FOR_STAKING = new BigNumber(1_000_000);

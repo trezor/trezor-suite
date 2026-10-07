@@ -138,6 +138,7 @@ export type {
     ChainSendDraft,
     ChainSignOptions,
     ChainSignedTransaction,
+    ChainSigningPrepared,
     ComposeFeeLevelsParams,
     PushChainTransactionParams,
     PushedChainTransaction,

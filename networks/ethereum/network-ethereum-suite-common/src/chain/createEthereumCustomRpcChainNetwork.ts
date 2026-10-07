@@ -10,11 +10,16 @@ import {
 } from '@trezor/network-module-suite-common-types';
 
 import { getEthereumChainNetworkConfig, getEvmTokenRules } from './getEthereumChainNetworkConfig';
+import {
+    type EthereumChainSendDeps,
+    createEthereumChainSend,
+} from './send/createEthereumChainSend';
 
 export type EthereumCustomRpcChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
     FetchCoinGeckoCurrentRateDep &
-    FetchCoinGeckoHistoricRatesDep;
+    FetchCoinGeckoHistoricRatesDep &
+    EthereumChainSendDeps;
 
 /** EVM network served by the user's own JSON-RPC node, which quotes no rates for coins or tokens. */
 export const createEthereumCustomRpcChainNetwork = (
@@ -22,6 +27,7 @@ export const createEthereumCustomRpcChainNetwork = (
 ): CreateChainNetwork => {
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
     const fetchTokens = createFetchConnectTokens(deps);
+    const createSend = createEthereumChainSend(deps);
 
     return params => {
         const config = getEthereumChainNetworkConfig(params.symbol);
@@ -42,6 +48,7 @@ export const createEthereumCustomRpcChainNetwork = (
                 fetchTokenFiatRate: rateSource,
             },
             fetchHistoricFiatRates: config.hasFiatRate ? deps.fetchCoinGeckoHistoricRates : null,
+            send: createSend(params.symbol),
         });
     };
 };
