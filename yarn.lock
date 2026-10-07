@@ -11204,6 +11204,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/chain-data@workspace:suite-common/chain-data":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/chain-data@workspace:suite-common/chain-data"
+  dependencies:
+    "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/network-module-suite-common-types": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.2.3"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/connect-init@workspace:*, @suite-common/connect-init@workspace:suite-common/connect-init":
   version: 0.0.0-use.local
   resolution: "@suite-common/connect-init@workspace:suite-common/connect-init"

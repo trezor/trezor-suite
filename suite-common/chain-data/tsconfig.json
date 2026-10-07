@@ -1,0 +1,21 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../dependency-injection" },
+        { "path": "../react-query" },
+        { "path": "../wallet-types" },
+        { "path": "../wallet-utils" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        {
+            "path": "../../networks/network-module/network-module-suite-common-types"
+        },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils" }
+    ]
+}
