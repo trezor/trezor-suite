@@ -685,6 +685,9 @@ impl AdapterManager {
                     info!("remove_listener/adapter.stop_scan: {err}");
                 }
             }
+            // No advertisements arrive once scanning stopped, so the map
+            // would not be pruned until the next scan.
+            self.clear_serviceless_devices().await;
         }
     }
 
