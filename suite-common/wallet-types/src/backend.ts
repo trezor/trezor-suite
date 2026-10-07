@@ -2,6 +2,8 @@ import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type BackendType, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TimerId } from '@trezor/type-utils';
 
+import { type AccountKey } from './account';
+
 /**
  * @deprecated
  */
@@ -41,6 +43,8 @@ export interface Blockchain extends ConnectionStatus {
     identityConnections?: {
         [identity: string]: ConnectionStatus;
     };
+    /** Account whose transaction history is on screen, the only one a polled backend watches. */
+    watchedAccountKey?: AccountKey;
 }
 
 export type BlockchainNetworks = Record<LegacyNetworkSymbol, Blockchain>;
