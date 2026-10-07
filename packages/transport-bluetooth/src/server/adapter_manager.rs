@@ -80,6 +80,9 @@ pub enum AdapterError {
     #[error("Peripheral create error")]
     PeripheralNotCreated,
 
+    #[error("ClientDisconnected")]
+    ClientDisconnected,
+
     #[error("Btleplug error: {0}")]
     BtleplugError(#[from] btleplug::Error),
 }
@@ -646,14 +649,21 @@ impl AdapterManager {
     }
 
     pub async fn remove_listener(&self, listener: &ConnectionBroadcast) {
+        // Unregister the listener before sweeping its streams. A request of
+        // this connection still being processed then either registers its
+        // stream in time to be swept below, or is rejected by
+        // `register_notification_stream`.
+        {
+            let mut state = self.manager_state.lock().await;
+            state.listeners.retain(|item| !item.same_channel(listener));
+        }
+
         // Notification streams forward to this connection only, so they must
         // not outlive it no matter how many other clients stay connected.
         self.close_notification_streams(Some(listener.get_peer()), None, None)
             .await;
 
         let mut state = self.manager_state.lock().await;
-        state.listeners.retain(|item| !item.same_channel(listener));
-
         if !state.listeners.is_empty() {
             return;
         }
@@ -680,15 +690,37 @@ impl AdapterManager {
         }
     }
 
-    pub fn register_notification_stream(
+    /// Registers a notification stream task owned by `peer`. Returns `false`
+    /// when `peer` is not a listener anymore: `remove_listener` unregisters
+    /// the listener before it sweeps the registry, so nothing would ever
+    /// remove such an entry. The task is aborted and its BLE subscription
+    /// released instead.
+    pub async fn register_notification_stream(
         &self,
         peer: String,
         device_id: String,
         characteristic: NotificationCharacteristic,
         task: JoinHandle<()>,
-    ) {
-        self.notification_streams
-            .register(peer, device_id, characteristic, task);
+    ) -> bool {
+        let state = self.manager_state.lock().await;
+        let is_listener = state.listeners.iter().any(|item| item.get_peer() == peer);
+        // Registered while holding the lock, `remove_listener` must not sweep
+        // the registry in between the check and the registration.
+        self.notification_streams.register(
+            peer.clone(),
+            device_id.clone(),
+            characteristic.clone(),
+            task,
+        );
+        drop(state);
+
+        if !is_listener {
+            info!("Stream of already disconnected client {peer}, closing it");
+            self.close_notification_streams(Some(&peer), Some(&device_id), Some(&characteristic))
+                .await;
+        }
+
+        is_listener
     }
 
     /// Aborts matching notification stream tasks and releases BLE
@@ -797,18 +829,22 @@ mod tests {
 
         let aborted_a = Arc::new(AtomicBool::new(false));
         let aborted_b = Arc::new(AtomicBool::new(false));
-        manager.register_notification_stream(
-            "a".to_string(),
-            "dev1".to_string(),
-            NotificationCharacteristic::Read,
-            pending_stream_task(aborted_a.clone()),
-        );
-        manager.register_notification_stream(
-            "b".to_string(),
-            "dev1".to_string(),
-            NotificationCharacteristic::Read,
-            pending_stream_task(aborted_b.clone()),
-        );
+        manager
+            .register_notification_stream(
+                "a".to_string(),
+                "dev1".to_string(),
+                NotificationCharacteristic::Read,
+                pending_stream_task(aborted_a.clone()),
+            )
+            .await;
+        manager
+            .register_notification_stream(
+                "b".to_string(),
+                "dev1".to_string(),
+                NotificationCharacteristic::Read,
+                pending_stream_task(aborted_b.clone()),
+            )
+            .await;
 
         // Client "a" disconnects while client "b" stays connected.
         manager.remove_listener(&client_a).await;
@@ -817,6 +853,32 @@ mod tests {
 
         assert!(aborted_a.load(Ordering::SeqCst));
         assert!(!aborted_b.load(Ordering::SeqCst));
+    }
+
+    // A client may disconnect while `open_device` is still discovering
+    // characteristics. Registering its stream afterwards would leak the task,
+    // `remove_listener` has already swept the registry.
+    #[tokio::test]
+    async fn register_notification_stream_rejects_disconnected_client() {
+        let manager = AdapterManager::new().await.expect("manager");
+        let client_a = ConnectionBroadcast::new("a".to_string()).expect("broadcast");
+        manager.add_listener(client_a.clone()).await;
+        manager.remove_listener(&client_a).await;
+
+        let aborted = Arc::new(AtomicBool::new(false));
+        let registered = manager
+            .register_notification_stream(
+                "a".to_string(),
+                "dev1".to_string(),
+                NotificationCharacteristic::Read,
+                pending_stream_task(aborted.clone()),
+            )
+            .await;
+        // Give the runtime a moment to drop the aborted task.
+        sleep(Duration::from_millis(50)).await;
+
+        assert!(!registered);
+        assert!(aborted.load(Ordering::SeqCst));
     }
 
     // Finding 3 of https://github.com/trezor/trezor-suite/issues/31948:
