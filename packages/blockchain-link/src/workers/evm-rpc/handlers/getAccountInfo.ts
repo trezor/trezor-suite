@@ -24,6 +24,7 @@ import { getKnownTokens } from '../tokens/knownTokens';
 import { getTokenInfo, getTokenInfos } from '../tokens/tokenInfo';
 import type { Request } from '../types';
 import { toHex } from '../utils/hex';
+import { wasRateLimitedSince } from '../utils/rateLimit';
 
 type AccountInfoDetails = MessageTypes.GetAccountInfo['payload']['details'];
 
@@ -110,6 +111,7 @@ export const getAccountInfo = async (
 ): Promise<Responses.GetAccountInfo> => {
     const { payload, state } = request;
     const client = await request.connect();
+    const startedAt = Date.now();
 
     const address = toHex(payload.descriptor);
 
@@ -176,5 +178,6 @@ export const getAccountInfo = async (
         olderHistoryFrom,
         historyCoveredSince,
         holdsKnownToken: isKnownTokenHeld,
+        isRateLimited: wasRateLimitedSince(client, startedAt),
     });
 };

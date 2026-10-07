@@ -10,7 +10,8 @@ import {
     RATE_LIMIT_BACKOFF_MS,
     TRANSFER_TOPIC,
 } from './constants';
-import { getErrorName } from '../utils/errors';
+import { type RpcErrorInfo, getErrorName, getRpcErrorInfo } from '../utils/errors';
+import { isRateLimited, recordRateLimitLoss } from '../utils/rateLimit';
 
 export type RawLog = {
     address: string;
@@ -29,11 +30,7 @@ export type BlockRange = { from: number; to: number };
 
 type QueuedRange = BlockRange & { rateLimitRetries: number };
 
-export type RpcErrorInfo = { code?: number; status?: number; message: string };
-
 const RANGE_TOO_LARGE = -32012;
-const RATE_LIMIT_EXCEEDED = -32005;
-const HTTP_TOO_MANY_REQUESTS = 429;
 
 export const padAddressTopic = (address: string): `0x${string}` =>
     `0x${address.replace(/^0x/, '').toLowerCase().padStart(64, '0')}`;
@@ -86,35 +83,6 @@ export const parseMaxRangeBlocks = (message: string): number | undefined => {
     return undefined;
 };
 
-/** viem nests the JSON-RPC error, and how deeply depends on the transport. */
-export const getRpcErrorInfo = (error: unknown): RpcErrorInfo => {
-    const messages: string[] = [];
-    let code: number | undefined;
-    let status: number | undefined;
-    let current: unknown = error;
-
-    for (let depth = 0; current && depth < 5; depth++) {
-        const candidate = current as {
-            code?: unknown;
-            status?: unknown;
-            message?: unknown;
-            cause?: unknown;
-        };
-        if (code === undefined && typeof candidate.code === 'number') {
-            code = candidate.code;
-        }
-        if (status === undefined && typeof candidate.status === 'number') {
-            status = candidate.status;
-        }
-        if (typeof candidate.message === 'string') {
-            messages.push(candidate.message);
-        }
-        current = candidate.cause;
-    }
-
-    return { code, status, message: messages.join(' | ') };
-};
-
 const RANGE_TOO_LARGE_MESSAGE =
     /range too large|exceed\w* max(imum)? block range|ranges? over \d+ blocks?|limited to a [\d,]+ range/i;
 
@@ -135,13 +103,6 @@ const learnChunkCap = (client: PublicClient, blocks: number) => {
         learnedChunkCaps.set(client, blocks);
     }
 };
-
-// A batched request turned away at the HTTP level fails every query it carried at once, so a 429
-// has to back off like a JSON-RPC rate limit rather than abandon the whole batch.
-const isRateLimited = ({ code, status, message }: RpcErrorInfo) =>
-    code === RATE_LIMIT_EXCEEDED ||
-    status === HTTP_TOO_MANY_REQUESTS ||
-    /rate limit/i.test(message);
 
 const splitIntoChunks = (range: BlockRange, chunkSize: number): QueuedRange[] => {
     const chunks: QueuedRange[] = [];
@@ -210,91 +171,122 @@ const scanQueue = async (client: PublicClient, pending: WorkItem[]): Promise<Sca
         });
     };
 
+    // A rate limit is the provider's, not one query's, so it slows the whole scan down: everything
+    // waits out one shared pause, and fewer queries go out at once from then on. Retrying each
+    // rejected query after the same fixed delay would send them all back together and get them
+    // rejected together again.
+    let concurrency = MAX_LOG_CONCURRENCY;
+    let active = 0;
+    let resumeAt = 0;
+
+    const backOff = (attempt: number) => {
+        const now = Date.now();
+        // Halved from what was actually in flight, which is usually far below the cap.
+        if (now >= resumeAt) {
+            concurrency = Math.max(1, Math.floor(Math.min(concurrency, active) / 2));
+        }
+        const jitter = 0.5 + Math.random();
+        resumeAt = Math.max(resumeAt, now + RATE_LIMIT_BACKOFF_MS * attempt * jitter);
+    };
+
     const runner = async (onRequeued: () => void) => {
-        for (let next = pending.pop(); next; next = pending.pop()) {
-            const chunk = next;
-            const { topics } = chunk;
-            try {
-                logs.push(...(await requestLogs(client, chunk, topics)));
-            } catch (error) {
-                const info = getRpcErrorInfo(error);
+        try {
+            // Gives up its place once the scan has slowed down below the runners still going.
+            for (
+                let next = pending.pop();
+                next;
+                next = active > concurrency ? undefined : pending.pop()
+            ) {
+                const chunk = next;
+                const { topics } = chunk;
+                const pause = resumeAt - Date.now();
+                if (pause > 0) {
+                    await resolveAfter(pause);
+                }
+                try {
+                    logs.push(...(await requestLogs(client, chunk, topics)));
+                } catch (error) {
+                    const info = getRpcErrorInfo(error);
 
-                const suggested = parseSuggestedRange(info.message);
-                // Only the suggested end is trusted: a start past `chunk.from` would leave a hole.
-                if (suggested && suggested.to >= chunk.from && suggested.to < chunk.to) {
-                    pending.push(
-                        { from: chunk.from, to: suggested.to, rateLimitRetries: 0, topics },
-                        { from: suggested.to + 1, to: chunk.to, rateLimitRetries: 0, topics },
+                    const suggested = parseSuggestedRange(info.message);
+                    // Only the suggested end is trusted: a start past `chunk.from` would leave a hole.
+                    if (suggested && suggested.to >= chunk.from && suggested.to < chunk.to) {
+                        pending.push(
+                            { from: chunk.from, to: suggested.to, rateLimitRetries: 0, topics },
+                            { from: suggested.to + 1, to: chunk.to, rateLimitRetries: 0, topics },
+                        );
+                        onRequeued();
+                        continue;
+                    }
+
+                    if (isRateLimited(info) && chunk.rateLimitRetries < MAX_RATE_LIMIT_RETRIES) {
+                        const attempt = chunk.rateLimitRetries + 1;
+                        backOff(attempt);
+                        pending.push({ ...chunk, rateLimitRetries: attempt });
+                        onRequeued();
+                        continue;
+                    }
+
+                    const span = chunk.to - chunk.from + 1;
+
+                    // A provider that names its cap gets taken at its word, but only when the number
+                    // it names actually cuts the range. Observed on Arc: it refuses ~9950 blocks while
+                    // naming 10000 as the limit, so a cap derived from that name shaves a block off
+                    // per round trip and takes thousands of requests to converge. Anything that does
+                    // not shorten the range by at least the smallest chunk worth retrying is treated
+                    // as no cap at all, and halving - which converges in a handful of steps - takes
+                    // over instead.
+                    const named = parseMaxRangeBlocks(info.message);
+                    const cap =
+                        named !== undefined && named <= span - MIN_LOG_CHUNK_BLOCKS
+                            ? named
+                            : undefined;
+                    if (cap !== undefined && cap > 0) {
+                        applyChunkCap(cap);
+                        pending.push(...withTopics(splitIntoChunks(chunk, cap), topics));
+                        onRequeued();
+                        continue;
+                    }
+
+                    if (isRangeTooLarge(info) && span > MIN_LOG_CHUNK_BLOCKS) {
+                        const half = Math.floor(span / 2);
+                        applyChunkCap(half);
+                        pending.push(
+                            {
+                                from: chunk.from,
+                                to: chunk.from + half - 1,
+                                rateLimitRetries: 0,
+                                topics,
+                            },
+                            { from: chunk.from + half, to: chunk.to, rateLimitRetries: 0, topics },
+                        );
+                        onRequeued();
+                        continue;
+                    }
+
+                    console.warn(
+                        `[evm-rpc] Abandoned log range ${chunk.from}-${chunk.to}:`,
+                        getErrorName(error),
                     );
-                    onRequeued();
-                    continue;
+                    recordRateLimitLoss(client, error);
+                    failed.push({ from: chunk.from, to: chunk.to });
                 }
-
-                if (isRateLimited(info) && chunk.rateLimitRetries < MAX_RATE_LIMIT_RETRIES) {
-                    const attempt = chunk.rateLimitRetries + 1;
-                    await resolveAfter(RATE_LIMIT_BACKOFF_MS * attempt);
-                    pending.push({ ...chunk, rateLimitRetries: attempt });
-                    onRequeued();
-                    continue;
-                }
-
-                const span = chunk.to - chunk.from + 1;
-
-                // A provider that names its cap gets taken at its word, but only when the number
-                // it names actually cuts the range. Observed on Arc: it refuses ~9950 blocks while
-                // naming 10000 as the limit, so a cap derived from that name shaves a block off
-                // per round trip and takes thousands of requests to converge. Anything that does
-                // not shorten the range by at least the smallest chunk worth retrying is treated
-                // as no cap at all, and halving - which converges in a handful of steps - takes
-                // over instead.
-                const named = parseMaxRangeBlocks(info.message);
-                const cap =
-                    named !== undefined && named <= span - MIN_LOG_CHUNK_BLOCKS ? named : undefined;
-                if (cap !== undefined && cap > 0) {
-                    applyChunkCap(cap);
-                    pending.push(...withTopics(splitIntoChunks(chunk, cap), topics));
-                    onRequeued();
-                    continue;
-                }
-
-                if (isRangeTooLarge(info) && span > MIN_LOG_CHUNK_BLOCKS) {
-                    const half = Math.floor(span / 2);
-                    applyChunkCap(half);
-                    pending.push(
-                        {
-                            from: chunk.from,
-                            to: chunk.from + half - 1,
-                            rateLimitRetries: 0,
-                            topics,
-                        },
-                        { from: chunk.from + half, to: chunk.to, rateLimitRetries: 0, topics },
-                    );
-                    onRequeued();
-                    continue;
-                }
-
-                console.warn(
-                    `[evm-rpc] Abandoned log range ${chunk.from}-${chunk.to}:`,
-                    getErrorName(error),
-                );
-                failed.push({ from: chunk.from, to: chunk.to });
             }
+        } finally {
+            // Counted down on the way out rather than once the promise settles, so the runners
+            // still going see it at once and do not all give up their places together.
+            active--;
         }
     };
 
     const runners: Promise<void>[] = [];
-    let active = 0;
 
     // Splits and retries put work back on the queue. Idle capacity picks it up at once, so it joins
     // the batch about to go out instead of waiting a round trip behind the runner that queued it.
     const startRunners = () => {
-        while (active < MAX_LOG_CONCURRENCY && pending.length) {
+        while (active < concurrency && pending.length) {
             active++;
-            runners.push(
-                runner(startRunners).finally(() => {
-                    active--;
-                }),
-            );
+            runners.push(runner(startRunners));
         }
     };
 

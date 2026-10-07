@@ -13,6 +13,7 @@ import {
     CardanoNewProviderCard,
     CoinjoinAccountDiscoveryProgress,
     NoTransactions,
+    RateLimitedHistoryBanner,
     SingleAccountTransactionList,
     SolanaLimitedHistoryBanner,
     TradeBox,
@@ -107,6 +108,7 @@ export const TransactionsPage = () => {
                     </Column>
                 )}
                 <SolanaLimitedHistoryBanner account={account} />
+                <RateLimitedHistoryBanner account={account} />
                 <SingleAccountTransactionList account={account} symbol={account.symbol} />
             </Layout>
         );

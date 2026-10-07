@@ -2,6 +2,7 @@ import type { PublicClient } from 'viem';
 
 import { mapWithConcurrency } from './concurrency';
 import { MAX_TX_CONCURRENCY } from './constants';
+import { recordRateLimitLoss } from '../utils/rateLimit';
 
 // Block timestamps never change, and a page of transactions routinely revisits the same blocks.
 const timestampCaches = new WeakMap<PublicClient, Map<number, number>>();
@@ -27,8 +28,9 @@ export const getBlockTimestamps = async (
         try {
             const block = await client.getBlock({ blockNumber: BigInt(blockNumber) });
             cache.set(blockNumber, Number(block.timestamp));
-        } catch {
+        } catch (error) {
             // A missing timestamp only costs the transaction its date, so leave it unset.
+            recordRateLimitLoss(client, error);
         }
     });
 

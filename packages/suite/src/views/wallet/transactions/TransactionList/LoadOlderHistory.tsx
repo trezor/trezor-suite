@@ -32,6 +32,7 @@ interface LoadOlderHistoryProps {
 export const LoadOlderHistory = ({ accounts }: LoadOlderHistoryProps) => {
     const { dispatch } = useServices(injectDispatch);
     const [isLoading, setIsLoading] = useState(false);
+    const [hasFailed, setHasFailed] = useState(false);
 
     const olderAccounts = accounts.filter(account => getOlderHistoryFrom(account) !== undefined);
     // Including not-yet-filled page slots, so the next page starts where the stored ones end.
@@ -48,31 +49,34 @@ export const LoadOlderHistory = ({ accounts }: LoadOlderHistoryProps) => {
 
     if (olderAccounts.length === 0) return null;
 
-    const handleClick = async () => {
+    const handleClick = () => {
         setIsLoading(true);
-        try {
-            // `from` widens the backend's window and the page starting where the list ends comes
-            // back in the same request. `noLoading` keeps the loaded transactions on screen; only
-            // the incoming page gets skeletons, and the thunk stores it before it resolves.
-            await Promise.all(
-                olderAccounts.map((account, index) => {
-                    const perPage = getTxsPerPage(account.networkType);
+        setHasFailed(false);
+        // `from` widens the backend's window and the page starting where the list ends comes
+        // back in the same request. `noLoading` keeps the loaded transactions on screen; only
+        // the incoming page gets skeletons, and the thunk stores it before it resolves.
+        Promise.all(
+            olderAccounts.map((account, index) => {
+                const perPage = getTxsPerPage(account.networkType);
 
-                    return dispatch(
-                        fetchTransactionsPageThunk({
-                            accountKey: account.key,
-                            page: Math.floor((loadedCounts[index] ?? 0) / perPage) + 1,
-                            perPage,
-                            forceRefetch: true,
-                            noLoading: true,
-                            from: getOlderHistoryFrom(account),
-                        }),
-                    );
-                }),
-            );
-        } finally {
-            setIsLoading(false);
-        }
+                return dispatch(
+                    fetchTransactionsPageThunk({
+                        accountKey: account.key,
+                        page: Math.floor((loadedCounts[index] ?? 0) / perPage) + 1,
+                        perPage,
+                        forceRefetch: true,
+                        noLoading: true,
+                        from: getOlderHistoryFrom(account),
+                    }),
+                ).unwrap();
+            }),
+        )
+            .catch(() => {
+                setHasFailed(true);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     };
 
     return (
@@ -104,6 +108,11 @@ export const LoadOlderHistory = ({ accounts }: LoadOlderHistoryProps) => {
                 >
                     <Translation id="TR_LOAD_OLDER_TRANSACTIONS" />
                 </Button>
+                {hasFailed && (
+                    <Text typographyStyle="body-sm" intent="warning">
+                        <Translation id="TR_LOAD_OLDER_TRANSACTIONS_FAILED" />
+                    </Text>
+                )}
             </Column>
         </Column>
     );
