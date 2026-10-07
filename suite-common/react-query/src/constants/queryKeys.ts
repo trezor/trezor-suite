@@ -93,14 +93,12 @@ export const chainQueryKeys = {
         descriptor,
         'balance',
     ],
-    accountTokens: (symbol: string, backendType: string, descriptor: string) => [
-        'chain',
-        symbol,
-        backendType,
-        'account',
-        descriptor,
-        'tokens',
-    ],
+    accountTokens: (
+        symbol: string,
+        backendType: string,
+        descriptor: string,
+        watchedTokensKey: string,
+    ) => ['chain', symbol, backendType, 'account', descriptor, 'tokens', watchedTokensKey],
     tokenFiatRate: (symbol: string, backendType: string, contract: string, currency: string) => [
         'chain',
         symbol,

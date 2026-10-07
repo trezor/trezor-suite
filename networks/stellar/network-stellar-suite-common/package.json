@@ -18,5 +18,8 @@
         "@trezor/network-stellar": "workspace:*",
         "@trezor/network-stellar-types": "workspace:*",
         "crc": "^4.3.2"
+    },
+    "devDependencies": {
+        "@trezor/network-module-types": "workspace:*"
     }
 }

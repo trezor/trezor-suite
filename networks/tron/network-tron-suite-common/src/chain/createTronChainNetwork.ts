@@ -7,28 +7,34 @@ import {
     createFetchConnectAccountBalance,
     createFetchConnectCurrentFiatRate,
     createFetchConnectTokens,
+    readChainNetworkConfig,
 } from '@trezor/network-module-suite-common-types';
+import { isSupportedTronNetwork } from '@trezor/network-tron-types';
 
-import { getEthereumChainNetworkConfig, getEvmTokenRules } from './getEthereumChainNetworkConfig';
+import { getAccountSyncInterval, getNetworkConfig } from '../networkConfig';
 
-export type EthereumBlockbookChainNetworkDeps = FetchConnectAccountBalanceDeps &
+export type TronChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
     FetchConnectCurrentFiatRateDeps;
 
 /**
- * EVM network served by Blockbook. Blockbook keeps one connection per wallet, so accounts are
- * fetched with their connection identity. Rates of the coin and its tokens come from Blockbook
- * where it quotes the network.
+ * Tron network served by Blockbook, which also quotes the coin and its TRC10/TRC20 tokens.
+ * Frozen TRX is staking, not part of the displayed balance.
  */
-export const createEthereumBlockbookChainNetwork = (
-    deps: EthereumBlockbookChainNetworkDeps,
-): CreateChainNetwork => {
+export const createTronChainNetwork = (deps: TronChainNetworkDeps): CreateChainNetwork => {
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
-    const fetchConnectFiatRate = createFetchConnectCurrentFiatRate(deps);
     const fetchTokens = createFetchConnectTokens(deps);
+    const fetchConnectFiatRate = createFetchConnectCurrentFiatRate(deps);
 
     return params => {
-        const config = getEthereumChainNetworkConfig(params.symbol);
+        const config = readChainNetworkConfig(
+            {
+                isSupportedNetwork: isSupportedTronNetwork,
+                getNetworkConfig,
+                getAccountSyncInterval,
+            },
+            params.symbol,
+        );
         const fetchFiatRate = config.hasBlockbookRates
             ? fetchConnectFiatRate
             : deps.fetchCoinGeckoCurrentRate;
@@ -40,12 +46,17 @@ export const createEthereumBlockbookChainNetwork = (
             decimals: config.decimals,
             accountSyncIntervalMs: config.accountSyncIntervalMs,
             displayBalance: 'availableBalance',
-            useConnectionIdentity: true,
+            useConnectionIdentity: false,
             fetchAccountBalance,
             fetchFiatRate: rateSource,
             tokens: {
                 fetchTokens,
-                ...getEvmTokenRules(),
+                fungibleStandards: ['TRC10', 'TRC20'],
+                details: 'tokenBalances',
+                watchedTokensStrategy: {
+                    type: 'contract-filter',
+                    isContractCaseInsensitive: false,
+                },
                 fetchTokenFiatRate: rateSource,
             },
         });

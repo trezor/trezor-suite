@@ -63,10 +63,33 @@ describe('createSolanaChainNetwork', () => {
         await expect(network.getNativeFiatRate({ currency: 'usd', signal })).resolves.toBeNull();
     });
 
-    it('does not read SPL tokens through chain networks yet', () => {
+    it('reads SPL tokens by mint', async () => {
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: {
+                tokens: [
+                    { standard: 'SPL', contract: 'UsdcMint', decimals: 6, balance: '2500000' },
+                    { standard: 'SPL-2022', contract: 'NewMint', decimals: 9, balance: '1' },
+                ],
+            },
+        });
         const network = createSolanaChainNetwork(deps)({ symbol: asNetworkSymbol('sol'), backend });
 
-        expect(network.nativeAsset.symbol).toBe('SOL');
-        expect(network.getTokens).toBeUndefined();
+        const tokens = await network.getTokens?.({
+            ref: {
+                symbol: asNetworkSymbol('sol'),
+                descriptor: 'solAddress',
+                accountType: 'normal',
+            },
+            signal,
+        });
+
+        expect(tokens?.map(({ contract, balance }) => [contract, balance])).toEqual([
+            ['UsdcMint', '2.5'],
+            ['NewMint', '0.000000001'],
+        ]);
+        expect(getAccountInfo).toHaveBeenCalledWith(
+            expect.objectContaining({ coin: 'sol', details: 'tokenBalances' }),
+        );
     });
 });

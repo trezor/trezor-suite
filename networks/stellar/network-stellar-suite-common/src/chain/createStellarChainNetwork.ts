@@ -8,26 +8,27 @@ import {
     createFetchConnectTokens,
     readChainNetworkConfig,
 } from '@trezor/network-module-suite-common-types';
-import { isSupportedSolanaNetwork } from '@trezor/network-solana-types';
+import { isSupportedStellarNetwork } from '@trezor/network-stellar-types';
 
 import { getAccountSyncInterval, getNetworkConfig } from '../networkConfig';
 
-export type SolanaChainNetworkDeps = FetchConnectAccountBalanceDeps &
+export type StellarChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
     FetchCoinGeckoCurrentRateDep;
 
 /**
- * Solana network served by its RPC backend, which quotes no rates: CoinGecko values the coin and
- * its SPL tokens, which are identified by their mint.
+ * Stellar network. The ledger holds back a reserve, so the user sees the full balance. Classic
+ * assets come with the account's trustlines; Soroban contract tokens no backend lists, so the
+ * contracts the user watches are passed along. CoinGecko values the coin and its tokens.
  */
-export const createSolanaChainNetwork = (deps: SolanaChainNetworkDeps): CreateChainNetwork => {
+export const createStellarChainNetwork = (deps: StellarChainNetworkDeps): CreateChainNetwork => {
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
     const fetchTokens = createFetchConnectTokens(deps);
 
     return params => {
         const config = readChainNetworkConfig(
             {
-                isSupportedNetwork: isSupportedSolanaNetwork,
+                isSupportedNetwork: isSupportedStellarNetwork,
                 getNetworkConfig,
                 getAccountSyncInterval,
             },
@@ -40,18 +41,15 @@ export const createSolanaChainNetwork = (deps: SolanaChainNetworkDeps): CreateCh
             nativeAsset: config.nativeAsset,
             decimals: config.decimals,
             accountSyncIntervalMs: config.accountSyncIntervalMs,
-            displayBalance: 'availableBalance',
+            displayBalance: 'balance',
             useConnectionIdentity: false,
             fetchAccountBalance,
             fetchFiatRate: rateSource,
             tokens: {
                 fetchTokens,
-                fungibleStandards: ['SPL', 'SPL-2022'],
-                details: 'tokenBalances',
-                watchedTokensStrategy: {
-                    type: 'contract-filter',
-                    isContractCaseInsensitive: false,
-                },
+                fungibleStandards: ['STELLAR-CLASSIC', 'STELLAR-CONTRACT'],
+                details: 'basic',
+                watchedTokensStrategy: { type: 'stellar-contract-tokens' },
                 fetchTokenFiatRate: rateSource,
             },
         });

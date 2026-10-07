@@ -19,7 +19,17 @@ const fetchTokens = createFetchConnectTokens(deps);
 
 const { signal } = new AbortController();
 
-const params: FetchConnectTokensParams = {
+const erc20 = (contract: string, balance: string) => ({
+    standard: 'ERC20',
+    contract,
+    symbol: contract.toUpperCase(),
+    decimals: 6,
+    balance,
+});
+
+const getParams = (
+    overrides: Partial<FetchConnectTokensParams> = {},
+): FetchConnectTokensParams => ({
     ref: {
         symbol: asNetworkSymbol('eth'),
         descriptor: DESCRIPTOR,
@@ -29,22 +39,25 @@ const params: FetchConnectTokensParams = {
     signal,
     fungibleStandards: ['ERC20'],
     useConnectionIdentity: true,
-};
+    details: 'tokenBalances',
+    watchedTokensStrategy: { type: 'contract-filter', isContractCaseInsensitive: true },
+    ...overrides,
+});
 
 describe('createFetchConnectTokens', () => {
     beforeEach(() => {
         mockGetAccountInfo.mockReset();
     });
 
-    it('asks Connect for token balances through the wallet connection', async () => {
+    it('asks Connect for tokens at the network detail level', async () => {
         mockGetAccountInfo.mockResolvedValue({ success: true, payload: { tokens: [] } });
 
-        await fetchTokens(params);
+        await fetchTokens(getParams({ details: 'basic' }));
 
         expect(mockGetAccountInfo).toHaveBeenCalledWith({
             coin: 'eth',
             descriptor: DESCRIPTOR,
-            details: 'tokenBalances',
+            details: 'basic',
             suppressBackupWarning: true,
             identity: 'wallet-identity',
         });
@@ -55,25 +68,18 @@ describe('createFetchConnectTokens', () => {
             success: true,
             payload: {
                 tokens: [
-                    {
-                        standard: 'ERC20',
-                        contract: '0xusdc',
-                        symbol: 'USDC',
-                        name: 'USD Coin',
-                        decimals: 6,
-                        balance: '4440000',
-                    },
+                    { ...erc20('0xusdc', '4440000'), name: 'USD Coin' },
                     { standard: 'ERC721', contract: '0xnft', decimals: 0, balance: '1' },
                     { standard: 'ERC20', contract: '0xempty', decimals: 18 },
                 ],
             },
         });
 
-        await expect(fetchTokens(params)).resolves.toEqual([
+        await expect(fetchTokens(getParams())).resolves.toEqual([
             {
                 standard: 'ERC20',
                 contract: '0xusdc',
-                symbol: 'USDC',
+                symbol: '0XUSDC',
                 name: 'USD Coin',
                 decimals: 6,
                 balance: '4.44',
@@ -89,10 +95,68 @@ describe('createFetchConnectTokens', () => {
         ]);
     });
 
-    it('answers no tokens when the backend reports none', async () => {
-        mockGetAccountInfo.mockResolvedValue({ success: true, payload: {} });
+    it('asks once per watched contract the answer left out', async () => {
+        mockGetAccountInfo
+            .mockResolvedValueOnce({ success: true, payload: { tokens: [erc20('0xAbC', '1')] } })
+            .mockResolvedValueOnce({ success: true, payload: { tokens: [erc20('0xdef', '2')] } });
 
-        await expect(fetchTokens(params)).resolves.toEqual([]);
+        const tokens = await fetchTokens(
+            getParams({
+                ref: { ...getParams().ref, watchedTokens: ['0xabc', '0xdef'] },
+            }),
+        );
+
+        expect(mockGetAccountInfo).toHaveBeenCalledTimes(2);
+        expect(mockGetAccountInfo).toHaveBeenLastCalledWith(
+            expect.objectContaining({ details: 'tokenBalances', contractFilter: '0xdef' }),
+        );
+        expect(tokens.map(({ contract }) => contract)).toEqual(['0xAbC', '0xdef']);
+    });
+
+    it('matches watched contracts exactly where the network is case-sensitive', async () => {
+        mockGetAccountInfo
+            .mockResolvedValueOnce({ success: true, payload: { tokens: [erc20('Mint', '1')] } })
+            .mockResolvedValueOnce({ success: false, error: { message: 'unknown' } });
+
+        const tokens = await fetchTokens(
+            getParams({
+                ref: { ...getParams().ref, watchedTokens: ['mint'] },
+                watchedTokensStrategy: {
+                    type: 'contract-filter',
+                    isContractCaseInsensitive: false,
+                },
+            }),
+        );
+
+        expect(mockGetAccountInfo).toHaveBeenLastCalledWith(
+            expect.objectContaining({ contractFilter: 'mint' }),
+        );
+        // A watched token the backend cannot answer for is left out.
+        expect(tokens.map(({ contract }) => contract)).toEqual(['Mint']);
+    });
+
+    it('lets the Stellar backend read watched Soroban contracts', async () => {
+        mockGetAccountInfo.mockResolvedValue({ success: true, payload: { tokens: [] } });
+
+        await fetchTokens(
+            getParams({
+                ref: {
+                    symbol: asNetworkSymbol('xlm'),
+                    descriptor: DESCRIPTOR,
+                    accountType: 'normal',
+                    watchedTokens: ['USDC-GISSUER', 'CCONTRACT'],
+                },
+                details: 'basic',
+                fungibleStandards: ['STELLAR-CLASSIC', 'STELLAR-CONTRACT'],
+                useConnectionIdentity: false,
+                watchedTokensStrategy: { type: 'stellar-contract-tokens' },
+            }),
+        );
+
+        expect(mockGetAccountInfo).toHaveBeenCalledTimes(1);
+        expect(mockGetAccountInfo).toHaveBeenCalledWith(
+            expect.objectContaining({ stellarContractTokens: ['CCONTRACT'] }),
+        );
     });
 
     it('fails with a code and never with the backend message', async () => {
@@ -101,7 +165,7 @@ describe('createFetchConnectTokens', () => {
             error: { message: `Invalid descriptor ${DESCRIPTOR}` },
         });
 
-        const error = await fetchTokens(params).catch((e: unknown) => e);
+        const error = await fetchTokens(getParams()).catch((e: unknown) => e);
 
         expect(error).toBeInstanceOf(ChainNetworkError);
         expect(String(error)).not.toContain(DESCRIPTOR);

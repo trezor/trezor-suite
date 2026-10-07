@@ -2,32 +2,27 @@ import {
     type CreateChainNetwork,
     type FetchCoinGeckoCurrentRateDep,
     type FetchConnectAccountBalanceDeps,
-    type FetchConnectTokensDeps,
     buildConnectChainNetwork,
     createFetchConnectAccountBalance,
-    createFetchConnectTokens,
     readChainNetworkConfig,
 } from '@trezor/network-module-suite-common-types';
-import { isSupportedSolanaNetwork } from '@trezor/network-solana-types';
+import { isSupportedRippleNetwork } from '@trezor/network-ripple-types';
 
 import { getAccountSyncInterval, getNetworkConfig } from '../networkConfig';
 
-export type SolanaChainNetworkDeps = FetchConnectAccountBalanceDeps &
-    FetchConnectTokensDeps &
-    FetchCoinGeckoCurrentRateDep;
+export type RippleChainNetworkDeps = FetchConnectAccountBalanceDeps & FetchCoinGeckoCurrentRateDep;
 
 /**
- * Solana network served by its RPC backend, which quotes no rates: CoinGecko values the coin and
- * its SPL tokens, which are identified by their mint.
+ * XRP Ledger network. The ledger holds back a reserve from every account, so the user sees the
+ * full balance. Tokens are not read: the backend does not report them.
  */
-export const createSolanaChainNetwork = (deps: SolanaChainNetworkDeps): CreateChainNetwork => {
+export const createRippleChainNetwork = (deps: RippleChainNetworkDeps): CreateChainNetwork => {
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
-    const fetchTokens = createFetchConnectTokens(deps);
 
     return params => {
         const config = readChainNetworkConfig(
             {
-                isSupportedNetwork: isSupportedSolanaNetwork,
+                isSupportedNetwork: isSupportedRippleNetwork,
                 getNetworkConfig,
                 getAccountSyncInterval,
             },
@@ -40,20 +35,10 @@ export const createSolanaChainNetwork = (deps: SolanaChainNetworkDeps): CreateCh
             nativeAsset: config.nativeAsset,
             decimals: config.decimals,
             accountSyncIntervalMs: config.accountSyncIntervalMs,
-            displayBalance: 'availableBalance',
+            displayBalance: 'balance',
             useConnectionIdentity: false,
             fetchAccountBalance,
             fetchFiatRate: rateSource,
-            tokens: {
-                fetchTokens,
-                fungibleStandards: ['SPL', 'SPL-2022'],
-                details: 'tokenBalances',
-                watchedTokensStrategy: {
-                    type: 'contract-filter',
-                    isContractCaseInsensitive: false,
-                },
-                fetchTokenFiatRate: rateSource,
-            },
         });
     };
 };

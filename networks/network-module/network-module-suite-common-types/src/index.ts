@@ -70,4 +70,7 @@ export type {
     FetchConnectTokens,
     FetchConnectTokensDeps,
     FetchConnectTokensParams,
+    WatchedTokensStrategy,
 } from './chain/createFetchConnectTokens';
+export { readChainNetworkConfig } from './chain/readChainNetworkConfig';
+export type { ChainNetworkConfig, ChainNetworkConfigSource } from './chain/readChainNetworkConfig';

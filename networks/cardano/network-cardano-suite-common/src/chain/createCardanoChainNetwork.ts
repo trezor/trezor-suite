@@ -1,3 +1,4 @@
+import { isSupportedCardanoNetwork } from '@trezor/network-cardano-types';
 import {
     type CreateChainNetwork,
     type FetchCoinGeckoCurrentRateDep,
@@ -8,26 +9,27 @@ import {
     createFetchConnectTokens,
     readChainNetworkConfig,
 } from '@trezor/network-module-suite-common-types';
-import { isSupportedSolanaNetwork } from '@trezor/network-solana-types';
 
 import { getAccountSyncInterval, getNetworkConfig } from '../networkConfig';
 
-export type SolanaChainNetworkDeps = FetchConnectAccountBalanceDeps &
+export type CardanoChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
     FetchCoinGeckoCurrentRateDep;
 
 /**
- * Solana network served by its RPC backend, which quotes no rates: CoinGecko values the coin and
- * its SPL tokens, which are identified by their mint.
+ * Cardano network served by Blockfrost. Native tokens are identified by policy id and asset
+ * name; Blockfrost quotes no rates, so the coin and its tokens are valued by CoinGecko.
+ *
+ * Staked ADA is part of the balance itself, so the displayed balance already holds it.
  */
-export const createSolanaChainNetwork = (deps: SolanaChainNetworkDeps): CreateChainNetwork => {
+export const createCardanoChainNetwork = (deps: CardanoChainNetworkDeps): CreateChainNetwork => {
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
     const fetchTokens = createFetchConnectTokens(deps);
 
     return params => {
         const config = readChainNetworkConfig(
             {
-                isSupportedNetwork: isSupportedSolanaNetwork,
+                isSupportedNetwork: isSupportedCardanoNetwork,
                 getNetworkConfig,
                 getAccountSyncInterval,
             },
@@ -46,7 +48,7 @@ export const createSolanaChainNetwork = (deps: SolanaChainNetworkDeps): CreateCh
             fetchFiatRate: rateSource,
             tokens: {
                 fetchTokens,
-                fungibleStandards: ['SPL', 'SPL-2022'],
+                fungibleStandards: ['BLOCKFROST'],
                 details: 'tokenBalances',
                 watchedTokensStrategy: {
                     type: 'contract-filter',

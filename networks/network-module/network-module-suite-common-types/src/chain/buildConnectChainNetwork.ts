@@ -13,6 +13,8 @@ import { getDisplayBalanceFiatValue } from './getDisplayBalanceFiatValue';
 export type ConnectChainNetworkTokens = {
     fetchTokens: FetchConnectTokens;
     fungibleStandards: FetchConnectTokensParams['fungibleStandards'];
+    details: FetchConnectTokensParams['details'];
+    watchedTokensStrategy: FetchConnectTokensParams['watchedTokensStrategy'];
 
     /** `null` when no token of the network has a fiat value (testnets). */
     fetchTokenFiatRate: FetchCurrentFiatRate | null;
@@ -84,6 +86,8 @@ export const buildConnectChainNetwork = (
             return await tokens.fetchTokens({
                 ...params,
                 fungibleStandards: tokens.fungibleStandards,
+                details: tokens.details,
+                watchedTokensStrategy: tokens.watchedTokensStrategy,
                 useConnectionIdentity: definition.useConnectionIdentity,
             });
         },

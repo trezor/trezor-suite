@@ -19,4 +19,10 @@ export type ChainAccountRef = {
      * wallet (EVM Blockbook). It is passed at call time only and never belongs in a query key.
      */
     readonly connectionIdentity?: string;
+
+    /**
+     * Tokens the user tracks that a backend may leave out of its answer (custom tokens, Soroban
+     * contracts). Public contract ids; how a network uses them is its own rule.
+     */
+    readonly watchedTokens?: readonly string[];
 };

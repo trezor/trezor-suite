@@ -22,7 +22,23 @@ describe('legacy account adapter', () => {
             descriptor: 'zpub',
             accountType: 'normal',
             connectionIdentity: 'session@device:0',
+            watchedTokens: [],
         });
+    });
+
+    it('watches the tokens the account held and the ones the user added', () => {
+        const ref = toChainAccountRef(
+            {
+                ...account,
+                tokens: [
+                    { standard: 'STELLAR-CLASSIC', contract: 'USDC-GISSUER', decimals: 7 },
+                    { standard: 'STELLAR-CONTRACT', contract: 'CWATCHED', decimals: 7 },
+                ],
+            },
+            ['CWATCHED', 'CADDED'],
+        );
+
+        expect(ref?.watchedTokens).toEqual(['USDC-GISSUER', 'CWATCHED', 'CADDED']);
     });
 
     it.each([

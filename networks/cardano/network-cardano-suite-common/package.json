@@ -19,5 +19,8 @@
         "@trezor/network-module-suite-common-types": "workspace:*",
         "cbor": "^10.0.12",
         "crc": "^4.3.2"
+    },
+    "devDependencies": {
+        "@trezor/network-module-types": "workspace:*"
     }
 }

@@ -10,6 +10,9 @@
             "path": "../../network-module/network-module-suite-common-types"
         },
         { "path": "../network-tron" },
-        { "path": "../network-tron-types" }
+        { "path": "../network-tron-types" },
+        {
+            "path": "../../network-module/network-module-types"
+        }
     ]
 }
