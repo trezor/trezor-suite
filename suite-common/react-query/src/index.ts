@@ -20,6 +20,8 @@ export {
 export * from './constants/queryKeys';
 export { CONFIDENTIAL_QUERY_META, createQueryClient } from './createQueryClient';
 export type { QueryClientPlatform } from './createQueryClient';
+export { injectQueryClient } from './QueryClientDep';
+export type { QueryClientDep } from './QueryClientDep';
 export * from './constants/mutationKeys';
 // The query client providers are platform-specific React components, so they live in the
 // `./react` and `./react-native` entry points and this index stays importable from Node-only code.

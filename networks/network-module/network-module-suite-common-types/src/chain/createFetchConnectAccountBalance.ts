@@ -1,9 +1,10 @@
-import { type GetTrezorConnectDep, asCoinSymbol } from '@trezor/connect-common';
+import type { GetTrezorConnectDep } from '@trezor/connect-common';
 
 import type { ChainAccountBalance } from './ChainAccountBalance';
 import type { GetAccountBalanceParams } from './ChainNetwork';
 import { ChainNetworkError } from './ChainNetworkError';
 import { subunitsToUnits } from './subunitsToUnits';
+import { toCoinSymbol } from './toCoinSymbol';
 
 export type FetchConnectAccountBalanceDeps = GetTrezorConnectDep<'getAccountInfo'>;
 
@@ -30,7 +31,7 @@ export const createFetchConnectAccountBalance =
     (deps: FetchConnectAccountBalanceDeps): FetchConnectAccountBalance =>
     async params => {
         const result = await deps.getTrezorConnect().getAccountInfo({
-            coin: asCoinSymbol(params.ref.symbol),
+            coin: toCoinSymbol(params.ref.symbol),
             descriptor: params.ref.descriptor,
             details: 'basic',
             suppressBackupWarning: true,

@@ -1,7 +1,8 @@
-import { type GetTrezorConnectDep, asCoinSymbol } from '@trezor/connect-common';
+import type { GetTrezorConnectDep } from '@trezor/connect-common';
 import { scheduleAction } from '@trezor/utils';
 
 import type { FetchCoinGeckoCurrentRateDep, FetchCurrentFiatRate } from './FiatRate';
+import { toCoinSymbol } from './toCoinSymbol';
 
 const CONNECT_FETCH_TIMEOUT_MS = 10_000;
 
@@ -21,7 +22,7 @@ export const createFetchConnectCurrentFiatRate =
         const result = await scheduleAction(
             () =>
                 deps.getTrezorConnect().blockchainGetCurrentFiatRates({
-                    coin: asCoinSymbol(params.symbol),
+                    coin: toCoinSymbol(params.symbol),
                     currencies: [params.currency],
                 }),
             { timeout: CONNECT_FETCH_TIMEOUT_MS, signal: params.signal },
