@@ -8,9 +8,8 @@ import { CameraIcon, ImageIcon } from '@trezor/icons';
 import { useActiveTab } from './hooks/useActiveTab';
 
 /**
- * Lazy-loaded components for QR code scanning modals (react-zxing & @zxing/library)
- * @url https://bundlephobia.com/package/@zxing/library
- * @url https://bundlephobia.com/package/react-zxing
+ * Lazy-loaded components for QR code scanning modals (qr)
+ * @url https://bundlephobia.com/package/qr
  */
 const QrScannerModalContent = lazy(() =>
     import('./QrScannerModalContent').then(module => ({ default: module.QrScannerModalContent })),

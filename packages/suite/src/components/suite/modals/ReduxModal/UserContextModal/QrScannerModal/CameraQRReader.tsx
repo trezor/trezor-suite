@@ -1,6 +1,6 @@
-import { type ReactNode, useState } from 'react';
-import { useZxing } from 'react-zxing';
+import { type ReactNode, useEffect, useEffectEvent, useRef, useState } from 'react';
 
+import { type QRCamera, QRCanvas, frameLoop, rearCamera } from 'qr/dom.js';
 import styled from 'styled-components';
 
 import { LearnMoreButton } from '@suite/external-links';
@@ -52,20 +52,53 @@ export const CameraQRReader = ({ onResult }: CameraQRReaderProps) => {
         }
     };
 
-    const { ref } = useZxing({
-        onDecodeResult: result => {
-            try {
-                onResult(result.getText());
-                setIsReaderLoaded(true);
-            } catch (err) {
-                handleError(err);
-            }
-        },
-        onError: err => {
-            handleError(err);
-        },
-        timeBetweenDecodingAttempts: 500,
-    });
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const onDecodeResult = useEffectEvent(onResult);
+    const onCameraError = useEffectEvent(handleError);
+
+    useEffect(() => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        let isActive = true;
+        let camera: QRCamera | undefined;
+        let cancelFrameLoop: (() => void) | undefined;
+        // The default centered square crop discards frame edges, so a QR code outside the middle is missed.
+        const qrCanvas = new QRCanvas({}, { cropToSquare: false });
+
+        const stop = () => {
+            isActive = false;
+            cancelFrameLoop?.();
+            camera?.stop();
+        };
+
+        rearCamera(video)
+            .then(openedCamera => {
+                if (!isActive) {
+                    openedCamera.stop();
+
+                    return;
+                }
+
+                camera = openedCamera;
+                cancelFrameLoop = frameLoop(async () => {
+                    try {
+                        const result = await openedCamera.readFrame(qrCanvas, true);
+
+                        if (isActive && typeof result === 'string') {
+                            stop();
+                            onDecodeResult(result);
+                        }
+                    } catch (err) {
+                        stop();
+                        onCameraError(err);
+                    }
+                }, video);
+            })
+            .catch(err => onCameraError(err));
+
+        return stop;
+    }, []);
 
     return (
         <>
@@ -91,7 +124,7 @@ export const CameraQRReader = ({ onResult }: CameraQRReaderProps) => {
                 {!error && (
                     <ReaderWrapper $isVisible={isReaderLoaded}>
                         <StyledVideo
-                            ref={ref}
+                            ref={videoRef}
                             onLoadedMetadata={() => setIsReaderLoaded(true)}
                             autoPlay
                             muted
