@@ -362,7 +362,11 @@ async fn pair_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformErro
                 Ok(false) => Err("Device is not paired after pairing finished".into()),
                 Err(err) => Err(err),
             },
-            Ok(Some(err)) => Err(err.into()),
+            // Pair may report a timeout although the bond was created
+            Ok(Some(err)) => match is_paired(device.get_id()).await {
+                Ok(true) => Ok(()),
+                _ => Err(err.into()),
+            },
             Err(err) => Err(err.into()),
         },
     };
