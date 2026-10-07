@@ -60,6 +60,26 @@ import {
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
 
+/**
+ * Drops a caller-supplied `device` from an incoming call payload.
+ *
+ * The payload is untrusted — the deeplink path `JSON.parse`s it straight from the URL, and the web
+ * popup and WalletConnect adapters funnel into the same thunk. Left in place it would decide which
+ * device and passphrase wallet the call targets (including forcing `useEmptyPassphrase: true`),
+ * overriding the wallet the user picked in the popup. On this tier the host owns device selection,
+ * so the caller's value is always dropped; the desktop silent path does the same.
+ *
+ * `device` is optional on every method's params, so a payload without it is still a valid payload
+ * for that method — hence `T` in, `T` out.
+ */
+const omitCallerDevice = <T extends object>(payload: T): T => {
+    if (!('device' in payload)) return payload;
+
+    const { device: _callerDevice, ...safePayload } = payload;
+
+    return safePayload as T;
+};
+
 type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     method: M;
     payload: DistributiveOmit<CallMethodParams<M>, 'method'>;
@@ -84,7 +104,11 @@ export const connectPopupCallInnerThunk = createThunk<
     `${CONNECT_POPUP_MODULE}/callThunk`,
     async ({ source, ...params }, { dispatch, getState, extra }) => {
         try {
-            const { method, payload } = compatibilityHooks({ ...params, source });
+            const { method, payload: callerPayload } = compatibilityHooks({ ...params, source });
+            // Strip the caller's `device` before the payload reaches the method-info call, the
+            // popup state, any hook or the call below, so that Suite's own selected device is the
+            // only one that can win.
+            const payload = omitCallerDevice(callerPayload);
 
             if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
 

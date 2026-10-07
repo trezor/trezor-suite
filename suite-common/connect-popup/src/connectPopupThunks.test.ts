@@ -1,5 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { type AnalyticsDep } from '@suite-common/analytics';
 import { mock } from '@suite-common/dependency-injection';
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { type WithServices } from '@suite-common/redux-utils';
@@ -9,13 +10,19 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { accountsInitialState } from '@suite-common/wallet-core';
 import * as walletUtils from '@suite-common/wallet-utils';
+import TrezorConnect from '@trezor/connect';
+import { asDeviceUniquePath } from '@trezor/connect-common';
 
 import { connectPopupActions } from './connectPopupActions';
 import { prepareConnectPopupReducer, selectConnectPopupCallWithState } from './connectPopupReducer';
 import {
+    type ConnectPopupCallInnerThunkDeps,
+    type ConnectPopupCallInnerThunkState,
     type ConnectPopupLoadSelectAccountPageThunkState,
+    connectPopupCallThunk,
     connectPopupLoadSelectAccountPageThunk,
 } from './connectPopupThunks';
+import { CALL_SOURCE_WALLETCONNECT, type ConnectCallSource } from './connectPopupTypes';
 
 // prepareNewAccountPayload is the device round-trip the load thunk awaits — exactly once on the
 // manual address-phase path these tests exercise (the account-index path loops it per row). Mocking
@@ -238,5 +245,90 @@ describe('connectPopupLoadSelectAccountPageThunk — concurrent loads', () => {
         const candidates =
             selectConnectPopupCallWithState(store.getState(), 'select-account')?.candidates ?? [];
         expect(candidates.map(c => c.address)).toEqual(['ADDR_ONLY']);
+    });
+});
+
+describe('connectPopupCallInnerThunk — caller-supplied device', () => {
+    // The wallet the user actually picked in the popup. Deliberately a passphrase wallet, so a
+    // leaked `useEmptyPassphrase: true` from the caller would be visible in the assertion.
+    const selectedDevice = mockSuiteDevice({
+        connected: true,
+        path: '2',
+        instance: 1,
+        state: { staticSessionId: 'SUITE@device_id:1' },
+        useEmptyPassphrase: false,
+    });
+    const selectedDeviceState: DeviceReducerState = {
+        ...deviceInitialState,
+        selectedDevice,
+    };
+
+    // WalletConnect skips the permission modal, so the call runs through without a user interaction.
+    const walletConnectSource: ConnectCallSource = {
+        type: CALL_SOURCE_WALLETCONNECT,
+        origin: 'https://dapp.example',
+        manifest: { appName: 'dapp' },
+    };
+
+    const initCallStore = () =>
+        createTestCompositionRoot<
+            WithServices<ConnectPopupCallInnerThunkDeps['services']>,
+            ConnectPopupCallInnerThunkState
+        >({
+            services: () => ({
+                lockDevice: mock<LockDevice>(),
+                analytics: { report: jest.fn() } as unknown as AnalyticsDep['analytics'],
+            }),
+            reducer: combineReducers({
+                connectPopup: connectPopupReducer,
+                device: (state = selectedDeviceState) => state,
+            }),
+            preloadedState: {
+                connectPopup: { activeCall: null, permissions: [] },
+                device: selectedDeviceState,
+            },
+        }).services.store;
+
+    it('ignores a device in the incoming payload and calls with the popup-selected device', async () => {
+        const call = jest
+            .spyOn(TrezorConnect, 'call')
+            // `__info` probe
+            .mockResolvedValueOnce({
+                success: true,
+                payload: {
+                    name: 'getFeatures',
+                    info: 'Export device features',
+                    requiredPermissions: [{ permission: 'read' }],
+                    useUi: false,
+                    useDevice: true,
+                    useDeviceState: false,
+                },
+            } as any)
+            // the real call
+            .mockResolvedValueOnce({ success: true, payload: {} } as any);
+
+        await initCallStore().dispatch(
+            connectPopupCallThunk({
+                method: 'getFeatures',
+                // A dapp forcing another device and the standard (empty-passphrase) wallet.
+                payload: { device: { path: asDeviceUniquePath('1'), useEmptyPassphrase: true } },
+                source: walletConnectSource,
+            }),
+        );
+
+        expect(call).toHaveBeenCalledTimes(2);
+        // Neither the probe nor the call may carry the caller's device.
+        expect(call.mock.calls[0]?.[0]).not.toHaveProperty('device');
+        expect(call.mock.calls[1]?.[0]).toMatchObject({
+            method: 'getFeatures',
+            device: {
+                path: '2',
+                instance: 1,
+                state: { staticSessionId: 'SUITE@device_id:1' },
+                useEmptyPassphrase: false,
+            },
+        });
+
+        call.mockRestore();
     });
 });

@@ -83,7 +83,11 @@ const createSendCoreMessageWithCallId =
  * @returns {Promise<Device>}
  * @memberof Core
  */
-const selectDevice = ({ deviceList }: CoreContext, methodCallDevice?: DeviceIdentity) => {
+const selectDevice = (
+    { deviceList, logger }: CoreContext,
+    methodCallDevice: DeviceIdentity | undefined,
+    methodName: string,
+) => {
     assertDeviceListConnected(deviceList);
 
     let device: Device | undefined;
@@ -95,6 +99,12 @@ const selectDevice = ({ deviceList }: CoreContext, methodCallDevice?: DeviceIden
         device = deviceList.getDeviceByPath(methodCallDevice.path);
     }
     if (!device) {
+        // Nothing in the call identified a device, so fall back to whichever single device the
+        // list yields. With more than one device connected that choice is effectively arbitrary,
+        // and on a signing method it means the user confirms on the wrong device or passphrase
+        // wallet. Log the method name only: Connect logs are user-exportable, so a device path,
+        // state or session id must never end up in them.
+        logger.warn(`${methodName} resolved its device implicitly, no device was passed`);
         device = deviceList.getOnlyDevice();
     }
     if (!device) {
@@ -285,7 +295,7 @@ const onCallDevice = async (
     // find device
     let tempDevice: Device | undefined;
     try {
-        tempDevice = selectDevice(context, message.payload.device);
+        tempDevice = selectDevice(context, message.payload.device, method.name);
     } catch (error) {
         if (error.code === 'Transport_Missing') {
             // show message about transport
@@ -888,7 +898,8 @@ export class Core extends EventEmitter {
                         context: {
                             deviceList: this.deviceList,
                             postMessage: sendCoreMessageWithCallId,
-                            selectDevice: path => selectDevice(coreContext, { path }),
+                            selectDevice: path =>
+                                selectDevice(coreContext, { path }, message.payload.method),
                             log: this.coreLogger,
                             abortSignal: this.abortController.signal,
                             registerEvents: registerDeviceEvents(coreContext),
