@@ -89,7 +89,7 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1', '@optional'] }, 
             await test.step('Swap from sidebar', async () => {
                 await dashboardPage.navigateTo();
                 await walletPage.openSwapSidebarButton.click();
-                await tradingPage.verifySwapFormOpened(/BTC|ETH|LTC/);
+                await tradingPage.verifySwapFormOpened(/USDT/);
             });
 
             await test.step('Swap from account trade section', async () => {
