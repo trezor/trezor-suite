@@ -51,21 +51,12 @@ export default class SolanaComposeTransaction extends AbstractMethod<
         );
 
         // If serializedTx is provided, preserve token metadata for the signing step so
-        // firmware can resolve known SPL tokens instead of displaying a raw address.
+        // firmware can display the recipient's base address instead of the token account.
         if (this.params.serializedTx) {
             const { token, toAddress } = this.params;
-            let newAccountProgramName;
             let tokenAccountInfo;
 
             if (token && toAddress) {
-                newAccountProgramName = token.program;
-                const fallbackTokenAccountInfo = {
-                    baseAddress: toAddress,
-                    tokenProgram: tokenProgramsInfo[token.program].publicKey,
-                    tokenMint: token.mint,
-                    tokenAccount: toAddress,
-                };
-
                 try {
                     const { getDecompiledMessage } = await solana();
                     const decompiledMessage = getDecompiledMessage(this.params.serializedTx, true);
@@ -73,26 +64,23 @@ export default class SolanaComposeTransaction extends AbstractMethod<
                         instruction => instruction.type === 'transfer-checked',
                     );
 
-                    tokenAccountInfo = tokenTransferInstruction
-                        ? {
-                              baseAddress: toAddress,
-                              tokenProgram: tokenProgramsInfo[token.program].publicKey,
-                              tokenMint: tokenTransferInstruction.parsed.accounts.mint.address,
-                              tokenAccount:
-                                  tokenTransferInstruction.parsed.accounts.destination.address,
-                          }
-                        : fallbackTokenAccountInfo;
+                    if (tokenTransferInstruction) {
+                        tokenAccountInfo = {
+                            baseAddress: toAddress,
+                            tokenProgram: tokenProgramsInfo[token.program].publicKey,
+                            tokenMint: tokenTransferInstruction.parsed.accounts.mint.address,
+                            tokenAccount:
+                                tokenTransferInstruction.parsed.accounts.destination.address,
+                        };
+                    }
                 } catch {
-                    tokenAccountInfo = fallbackTokenAccountInfo;
+                    // without token metadata the device falls back to showing the token account
                 }
             }
 
             return {
                 serializedTx: this.params.serializedTx,
-                additionalInfo: {
-                    newAccountProgramName,
-                    tokenAccountInfo,
-                },
+                additionalInfo: { tokenAccountInfo },
             };
         }
 
