@@ -30,7 +30,7 @@ export class ThreadProxy<_Target extends object> {
     }
 
     /**
-     * @param settings.name file name (without extension) of the corresponding file in `suite-desktop/src/threads`
+     * @param settings.name file name (without extension) of the corresponding file in `desktop-app-main/src/threads`
      * @param settings.keepAlive if true, tries to respawn the process immediately when it unexpectedly exits
      */
     constructor(settings: ThreadProxySettings) {

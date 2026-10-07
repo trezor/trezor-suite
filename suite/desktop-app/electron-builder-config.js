@@ -146,7 +146,7 @@ module.exports = {
         signExts: ['.exe', '.dll'],
         signtoolOptions: {
             publisherName: ['SatoshiLabs, s.r.o.', 'Trezor Company s.r.o.'],
-            // TODO #14482: when Electron-main is migrated to ESM, and we declare whole suite-desktop package as ESM, rename .mjs files to .js
+            // TODO #14482: when Electron-main is migrated to ESM, and we declare whole desktop-app package as ESM, rename .mjs files to .js
             sign: '../desktop-app-main/scripts/sign-windows.mjs',
         },
     },
@@ -175,7 +175,7 @@ module.exports = {
         category: 'Utility',
         target: ['AppImage'],
     },
-    // TODO #14482: when Electron-main is migrated to ESM, and we declare whole suite-desktop package as ESM, rename .mjs files to .js
+    // TODO #14482: when Electron-main is migrated to ESM, and we declare whole desktop-app package as ESM, rename .mjs files to .js
     afterPack: '../desktop-app-main/scripts/setElectronFuses.mjs',
     afterSign: '../desktop-app-main/scripts/notarize.mjs',
 };

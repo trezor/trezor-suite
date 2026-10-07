@@ -126,7 +126,7 @@ export abstract class BaseProcess {
         const { ext } = this.getPlatformInfo();
         // NOTE:
         // - unpacked app (dev || e2e-test)
-        //   binaries are stored in suite-desktop/build/static/bin/{this.resourceName}/{system}/{this.processName} - see desktop.webpack.config.ts
+        //   binaries are stored in desktop-app/build/static/bin/{this.resourceName}/{system}/{this.processName} - see desktop-app-renderer/webpack.config.ts
         // - packed app (.dmg || .AppImage || .exe)
         //   binaries are stored in {app.resourcesPath}/bin/{this.resourceName}/{this.processName} - see electron-builder-config.js
         const processDir = this.getProcessDir();
