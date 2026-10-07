@@ -1,11 +1,10 @@
-import { type ReactNode, useContext, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { type ScrollViewProps, View, type ViewProps } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import { type EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
-import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { useRoute } from '@react-navigation/native';
 import { type RequireOneOrNone } from 'type-fest';
 
@@ -16,7 +15,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
 import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
-import { useIsKeyboardShown } from '../hooks/useIsKeyboardShown';
+import { useIsBottomInsetApplicable } from '../hooks/useIsBottomInsetApplicable';
 import { type DynamicScreenHeaderProps } from './DynamicHeader/DynamicScreenHeader';
 import { DynamicHeaderProvider } from './DynamicHeader/DynamicScreenHeaderContext';
 import { DynamicScrollableScreenContentHeader } from './DynamicHeader/DynamicScrollableScreenContentHeader';
@@ -112,13 +111,12 @@ export const Screen = ({
     } = useNativeStyles();
 
     const insets = useBannerAwareSafeAreaInsets();
-    const isKeyboardShown = useIsKeyboardShown();
+    const isBottomInsetApplicable = useIsBottomInsetApplicable();
     const activeKeyboardToolbarHeight = keyboardToolbarComponent ? keyboardToolbarHeight : 0;
 
     const horizontalPadding = noHorizontalPadding ? 0 : spacings.sp16;
     const bottomPadding = noBottomPadding ? 0 : spacings.sp16;
-    const applyBottomInset =
-        !useContext(BottomTabBarHeightContext) && hasBottomInset && !isKeyboardShown;
+    const applyBottomInset = isBottomInsetApplicable && hasBottomInset;
     const systemBarsStyle = useAndroidNavigationBarStyle({ backgroundColor });
 
     const isMessageBannerDisplayed = useSelector(selectIsAnyBannerMessageActive);
