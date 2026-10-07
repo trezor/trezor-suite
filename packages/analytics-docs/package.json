@@ -24,7 +24,7 @@
         "date-fns": "^4.1.0",
         "react": "19.2.3",
         "react-dom": "19.2.3",
-        "styled-components": "^6.3.9",
+        "styled-components": "^6.5.3",
         "ts-morph": "^27.0.2",
         "vite": "^8.0.7",
         "vite-plugin-node-polyfills": "^0.26.0"

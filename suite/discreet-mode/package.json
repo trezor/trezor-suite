@@ -14,6 +14,6 @@
         "@suite-common/discreet-mode": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0",
-        "styled-components": "^6.3.9"
+        "styled-components": "^6.5.3"
     }
 }
