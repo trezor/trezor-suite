@@ -18,7 +18,6 @@
         { "path": "../react-query" },
         { "path": "../redux-utils" },
         { "path": "../schemas" },
-        { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../test-utils" },
@@ -47,6 +46,9 @@
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/eslint" },
+        {
+            "path": "../../networks/bitcoin/network-bitcoin-suite-common"
+        },
         {
             "path": "../../networks/cardano/network-cardano"
         },

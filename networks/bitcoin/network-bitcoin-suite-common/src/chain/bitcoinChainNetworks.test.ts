@@ -21,22 +21,34 @@ const blockchainGetFiatRatesForTimestamps = jest.fn();
 const fetchBlockbookHttpHistoricRates = jest.fn();
 const fetchBlockbookHttpCurrentRate = jest.fn();
 
+const sendConnect = {
+    composeTransaction: jest.fn(),
+    composePsbt: jest.fn(),
+    signTransaction: jest.fn(),
+    pushTransaction: jest.fn(),
+};
+
+const datetimeToLocktime = () => undefined;
+
 const blockbookDeps: BitcoinBlockbookChainNetworkDeps = {
     getTrezorConnect: () => ({
         getAccountInfo,
         blockchainGetCurrentFiatRates,
         blockchainGetFiatRatesForTimestamps,
+        ...sendConnect,
     }),
     fetchCoinGeckoCurrentRate,
     fetchCoinGeckoHistoricRates,
+    datetimeToLocktime,
 };
 
 const electrumDeps: BitcoinElectrumChainNetworkDeps = {
-    getTrezorConnect: () => ({ getAccountInfo }),
+    getTrezorConnect: () => ({ getAccountInfo, ...sendConnect }),
     fetchBlockbookHttpCurrentRate,
     fetchCoinGeckoCurrentRate,
     fetchCoinGeckoHistoricRates,
     fetchBlockbookHttpHistoricRates,
+    datetimeToLocktime,
 };
 
 const blockbook = { type: 'blockbook', urls: [] } as const;

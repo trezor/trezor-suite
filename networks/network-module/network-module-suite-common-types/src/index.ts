@@ -100,6 +100,9 @@ export {
     SUITE_PRECOMPOSE_ERRORS,
     asTxTargetId,
     isFinalPrecomposedTransaction,
+    isRbfBumpFeeTransaction,
+    isRbfCancelTransaction,
+    isRbfTransaction,
 } from './chain/send/PrecomposedTransaction';
 export type {
     BaseCurrencyOption,

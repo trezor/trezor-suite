@@ -42,10 +42,11 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import type { Bip43Path, Bip43PathTemplate } from '@trezor/crypto-utils';
+import { getUtxoOutpoint } from '@trezor/network-bitcoin-suite-common';
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
-import { BigNumber, arrayDistinct, bufferUtils, typedObjectKeys } from '@trezor/utils';
+import { BigNumber, arrayDistinct, typedObjectKeys } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -1125,17 +1126,7 @@ export const hasNetworkFeatures = (
 };
 
 // https://developer.bitcoin.org/reference/transactions.html#outpoint-the-specific-part-of-a-specific-output
-export const getUtxoOutpoint = (utxo: { txid: string; vout: number }) => {
-    if (utxo.txid.length !== 64) {
-        throw new Error('Invalid length of txid');
-    }
-    const hash = bufferUtils.reverseBuffer(Buffer.from(utxo.txid, 'hex'));
-    const buffer = Buffer.allocUnsafe(36);
-    hash.copy(buffer);
-    buffer.writeUInt32LE(utxo.vout, hash.length);
-
-    return buffer.toString('hex');
-};
+export { getUtxoOutpoint };
 
 export const isSameUtxo = (a: AccountUtxo, b: AccountUtxo) =>
     a.txid === b.txid && a.vout === b.vout;

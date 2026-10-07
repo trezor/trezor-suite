@@ -10,8 +10,6 @@ import {
     type FormState,
     type GeneralPrecomposedTransactionFinal,
     type PrecomposedTransactionFinal,
-    type PrecomposedTransactionFinalBumpFeeRbf,
-    type PrecomposedTransactionFinalCancelRbf,
     type RatesByTimestamps,
     type RbfTransactionParamsBitcoin,
     type RbfTransactionParamsEthereum,
@@ -28,6 +26,11 @@ import {
     type TokenInfo,
     type TokenTransfer,
 } from '@trezor/connect';
+import {
+    isRbfBumpFeeTransaction,
+    isRbfCancelTransaction,
+    isRbfTransaction,
+} from '@trezor/network-module-suite-common-types';
 import { type Branded } from '@trezor/type-utils';
 import { BigNumber, arrayPartition, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
@@ -329,18 +332,7 @@ export const getEvmNonceStatus = (
     return 'ok'; // nonce === nextNonce, extends the queue normally
 };
 
-export const isRbfTransaction = (
-    tx: GeneralPrecomposedTransactionFinal,
-): tx is PrecomposedTransactionFinalBumpFeeRbf | PrecomposedTransactionFinalCancelRbf =>
-    'rbfType' in tx;
-
-export const isRbfBumpFeeTransaction = (
-    tx: GeneralPrecomposedTransactionFinal,
-): tx is PrecomposedTransactionFinalBumpFeeRbf => isRbfTransaction(tx) && tx.rbfType === 'bump-fee';
-
-export const isRbfCancelTransaction = (
-    tx: GeneralPrecomposedTransactionFinal,
-): tx is PrecomposedTransactionFinalCancelRbf => isRbfTransaction(tx) && tx.rbfType === 'cancel';
+export { isRbfBumpFeeTransaction, isRbfCancelTransaction, isRbfTransaction };
 
 export const getDecreaseOutputId = (
     precomposedTx: GeneralPrecomposedTransactionFinal | undefined,

@@ -1,9 +1,5 @@
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { BITCOIN_ONLY_SYMBOLS } from '@trezor/network-bitcoin-suite-common';
 
-export const BITCOIN_ONLY_SYMBOLS = [
-    asNetworkSymbol('btc'),
-    asNetworkSymbol('test'),
-    asNetworkSymbol('regtest'),
-] as const satisfies NetworkSymbol[];
+export { BITCOIN_ONLY_SYMBOLS };
 
 export type BitcoinOnlySymbolsItemType = (typeof BITCOIN_ONLY_SYMBOLS)[number];

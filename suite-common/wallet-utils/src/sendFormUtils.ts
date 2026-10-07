@@ -25,7 +25,6 @@ import type {
     FormStateTradingSell,
     GeneralPrecomposedTransactionFinal,
     Output,
-    RbfTransactionParams,
     SendFormDraftKey,
     TokenAddress,
 } from '@suite-common/wallet-types';
@@ -34,7 +33,11 @@ import {
     baseCurrencies,
     isBaseCurrencyCode,
 } from '@trezor/blockchain-link-types';
-import { type ComposeOutput, type FeeLevel, type PROTO } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
+import {
+    getBitcoinComposeOutputs as getBitcoinComposeOutputsOfNetwork,
+    restoreOrigOutputsOrder,
+} from '@trezor/network-bitcoin-suite-common';
 import {
     ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
     calculateTotalGasCost,
@@ -53,7 +56,7 @@ import {
 } from '@trezor/network-module-suite-common-types';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
-import { formatNetworkAmount, networkAmountToSmallestUnit } from './amountUtils';
+import { formatNetworkAmount, getAccountDecimals } from './amountUtils';
 import { isBaseCurrencyWithSats } from './baseCurrency';
 import { fromWei } from './ethConverter';
 import { isEip1559 } from './ethUtils';
@@ -198,110 +201,12 @@ export const getBitcoinComposeOutputs = (
     values: Partial<FormState>,
     symbol: Account['symbol'],
     isSatoshis?: boolean,
-) => {
-    const result: ComposeOutput[] = [];
-    if (!values || !Array.isArray(values.outputs) || values.transactionData) return result;
-
-    const { setMaxOutputId } = values;
-
-    values.outputs.forEach((output, index) => {
-        if (!output || typeof output !== 'object') return; // skip invalid object
-
-        if (output.type === 'opreturn' && output.dataHex) {
-            result.push({
-                type: 'opreturn',
-                dataHex: output.dataHex,
-            });
-        }
-
-        const { address } = output;
-        const isMaxActive = setMaxOutputId === index;
-        if (isMaxActive) {
-            if (address) {
-                result.push({
-                    type: 'send-max',
-                    address,
-                });
-            } else {
-                result.push({ type: 'send-max-noaddress' });
-            }
-        } else if (output.amount) {
-            const amount = isSatoshis
-                ? output.amount
-                : networkAmountToSmallestUnit(output.amount, symbol);
-
-            if (address) {
-                result.push({
-                    type: 'payment',
-                    address,
-                    amount,
-                });
-            } else {
-                result.push({
-                    type: 'payment-noaddress',
-                    amount,
-                });
-            }
-        }
-    });
-
-    // corner case for multiple outputs
-    // one Output is valid and "final" but other has only address
-    // to prevent composing "final" transaction switch it to not-final (noaddress)
-    const hasIncompleteOutput = values.outputs.find(
-        (o, i) => setMaxOutputId !== i && o?.address && !o.amount,
-    );
-    if (hasIncompleteOutput) {
-        const finalOutput = result.find(o => o.type === 'send-max' || o.type === 'payment');
-        if (finalOutput) {
-            // replace to *-noaddress
-            finalOutput.type =
-                finalOutput.type === 'payment' ? 'payment-noaddress' : 'send-max-noaddress';
-        }
-    }
-
-    return result;
-};
+) => getBitcoinComposeOutputsOfNetwork(values, getAccountDecimals(symbol) ?? 0, isSatoshis);
 
 // ETH/XRP composeTransaction, only one Output is used
 export { getExternalComposeOutput };
 
-export const restoreOrigOutputsOrder = (
-    outputs: PROTO.TxOutputType[],
-    origOutputs: RbfTransactionParams['outputs'],
-    origTxid: string,
-): PROTO.TxOutputType[] => {
-    const usedIndex: number[] = []; // collect used indexes to avoid duplicates
-
-    return outputs
-        .map(output => {
-            const index = origOutputs.findIndex((prevOutput, i) => {
-                if (usedIndex.includes(i)) return false;
-                if (prevOutput.type === 'opreturn' && output.script_type === 'PAYTOOPRETURN')
-                    return true;
-                if (prevOutput.type === 'change' && output.address_n) return true;
-                if (prevOutput.type === 'payment' && output.address === prevOutput.address)
-                    return true;
-
-                return false;
-            });
-            if (index >= 0) {
-                usedIndex.push(index);
-
-                return { ...output, orig_index: index, orig_hash: origTxid };
-            }
-
-            return output;
-        })
-        .sort((a, b) => {
-            if (typeof a.orig_index === 'undefined' && typeof b.orig_index === 'undefined')
-                return 0;
-            if (typeof b.orig_index === 'undefined') return -1;
-            if (typeof a.orig_index === 'undefined') return 1;
-
-            return a.orig_index - b.orig_index;
-        });
-};
+export { restoreOrigOutputsOrder };
 
 export const getDefaultValues = (
     currency: Output['currency'],
