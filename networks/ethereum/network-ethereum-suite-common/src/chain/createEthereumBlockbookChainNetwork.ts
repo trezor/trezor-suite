@@ -14,12 +14,17 @@ import {
 } from '@trezor/network-module-suite-common-types';
 
 import { getEthereumChainNetworkConfig, getEvmTokenRules } from './getEthereumChainNetworkConfig';
+import {
+    type EthereumChainSendDeps,
+    createEthereumChainSend,
+} from './send/createEthereumChainSend';
 
 export type EthereumBlockbookChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
     FetchConnectCurrentFiatRateDeps &
     FetchConnectTransactionsDeps &
-    FetchConnectHistoricFiatRatesDeps;
+    FetchConnectHistoricFiatRatesDeps &
+    EthereumChainSendDeps;
 
 /**
  * EVM network served by Blockbook. Blockbook keeps one connection per wallet, so accounts are
@@ -34,6 +39,7 @@ export const createEthereumBlockbookChainNetwork = (
     const fetchConnectHistoricRates = createFetchConnectHistoricFiatRates(deps);
     const fetchConnectFiatRate = createFetchConnectCurrentFiatRate(deps);
     const fetchTokens = createFetchConnectTokens(deps);
+    const createSend = createEthereumChainSend(deps);
 
     return params => {
         const config = getEthereumChainNetworkConfig(params.symbol);
@@ -68,6 +74,7 @@ export const createEthereumBlockbookChainNetwork = (
                 protocols: ['erc4626'],
             },
             fetchHistoricFiatRates: config.hasFiatRate ? fetchHistoricRates : null,
+            send: createSend(params.symbol),
         });
     };
 };

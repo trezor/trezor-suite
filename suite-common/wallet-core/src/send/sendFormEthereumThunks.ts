@@ -5,53 +5,39 @@ import {
 } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type EvmGasParamsGwei } from '@suite-common/schemas/src/evm';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
+import { ETH_SPEED_UP_TX_MULTIPLIER } from '@suite-common/wallet-constants';
 import {
-    ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
-    ETH_SPEED_UP_TX_MULTIPLIER,
-    ETH_TRANSFER_BACKUP_GAS_LIMIT,
-} from '@suite-common/wallet-constants';
-import {
+    type Account,
     type AccountWithNetworkType,
     AddressDisplayOptions,
     type ComposeActionContext,
     type ExternalOutput,
     type FeeInfo,
+    type FormState,
     type PrecomposedLevels,
     type PrecomposedTransaction,
     type RbfTransactionParams,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
-    asAmountSubunit,
-    asAmountUnit,
-    calculateMax,
-    calculateTotal,
-    calculateTotalGasCost,
-    convertAmountSubunitsToUnits,
-    convertAmountUnitsToSubunits,
-    fromGwei,
-    fromWei,
-    getAccountIdentity,
-    getApprovalComposeOutput,
-    getCryptoMaxAmountWithReserve,
-    getEthereumEstimateFeeParams,
     getEvmNonceInfo,
     getEvmNonceInfoFromConfirmedNonce,
-    getExternalComposeOutput,
-    getTxStakeNameByDataHex,
     isEip1559,
-    isEvmApprovalTx,
-    prepareEthereumTransaction,
-    subunitsToUnits,
     tryGetAccountIdentity,
-    unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import {
+    calculateEvmTransfer,
+    createEthereumChainSend,
+} from '@trezor/network-ethereum-suite-common';
+import { ChainSendError } from '@trezor/network-module-suite-common-types';
 import { BigNumber } from '@trezor/utils';
 
+import { chainSendConnectDeps, toChainSendDevice } from './chainSendAdapter';
 import { reportEthereumFeeEstimationFailed } from './reportEthereumFeeEstimationError';
 import { sendFormActions } from './sendFormActions';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
@@ -65,7 +51,6 @@ import {
     type WalletSettingsRootState,
     selectAddressDisplayType,
 } from '../settings/walletSettingsReducer';
-import { STAKE_GAS_LIMIT_RESERVE } from '../staking/ethereum/ethereumStakingConstants';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import {
     selectAccountTransactions,
@@ -147,313 +132,23 @@ export const calculate = (
     composeContext?: ComposeActionContext,
     isNetworkReserveEnabled = false,
 ): PrecomposedTransaction => {
-    let amount: string;
-    let max: string | undefined;
+    const network = composeContext && getNetwork(composeContext.account.symbol);
 
-    const totalGasCostInWei = calculateTotalGasCost(
-        fromGwei(feeLevel.maxFeePerGas || feeLevel.feePerUnit).toWei(),
-        feeLevel.feeLimit,
-    );
-
-    const availableTokenBalance = token
-        ? convertAmountUnitsToSubunits(token.balance!, token.decimals)
-        : undefined;
-
-    const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
-
-    const consumesEntireFee =
-        isSendMax && !token && feeLevel.label !== 'custom' && !!feeLevel.maxFeePerGas;
-
-    if (isSendMax) {
-        max = availableTokenBalance || calculateMax(availableBalance, totalGasCostInWei);
-
-        if (composeContext) {
-            const feesInUnits = subunitsToUnits({
-                value: asAmountSubunit(new BigNumber(totalGasCostInWei)),
-                symbol: composeContext.account.symbol,
-            }).toString();
-
-            const maxInUnits = subunitsToUnits({
-                value: asAmountSubunit(new BigNumber(max)),
-                symbol: composeContext.account.symbol,
-            }).toString();
-
-            max = getCryptoMaxAmountWithReserve({
-                symbol: composeContext.account.symbol,
-                contractAddress: token?.contract,
-                balance: composeContext.account.formattedBalance,
-                amount: maxInUnits,
-                fee: feesInUnits,
-                isNetworkReserveEnabled,
-            });
-
-            max = unitsToSubunits({
-                value: asAmountUnit(new BigNumber(max)),
-                symbol: composeContext.account.symbol,
-            }).toString();
-        }
-
-        amount = max;
-    } else {
-        amount = output.amount;
-    }
-
-    // total ETH spent (amount + fee), in ERC20 only fee
-    const totalSpent = new BigNumber(calculateTotal(token ? '0' : amount, totalGasCostInWei));
-
-    if (totalSpent.isGreaterThan(availableBalance)) {
-        if (token) {
-            return {
-                type: 'error',
-                error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
-                errorMessage: {
-                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
-                    values: {
-                        feeAmount: fromWei(totalGasCostInWei).toEther(),
-                    },
-                },
-            } as const;
-        }
-
-        return {
-            type: 'error',
-            error: 'AMOUNT_IS_NOT_ENOUGH',
-            errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
-        } as const;
-    }
-
-    // validate if token balance is not 0 or lower than amount
-    if (
-        availableTokenBalance &&
-        (availableTokenBalance === '0' || new BigNumber(amount).gt(availableTokenBalance))
-    ) {
-        return {
-            type: 'error',
-            error: 'AMOUNT_IS_NOT_ENOUGH',
-            errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
-        } as const;
-    }
-
-    const payloadData = {
-        type: 'nonfinal' as const,
-        totalSpent: token ? amount : totalSpent.toString(),
-        max,
-        fee: totalGasCostInWei,
-        maxFeePerGas: feeLevel.maxFeePerGas,
-        maxPriorityFeePerGas: consumesEntireFee
-            ? feeLevel.maxFeePerGas
-            : feeLevel.maxPriorityFeePerGas,
-        feePerByte: feeLevel.feePerUnit,
-        feeLimit: feeLevel.feeLimit,
+    return calculateEvmTransfer(
+        availableBalance,
+        output,
+        feeLevel,
         token,
-        bytes: 0, // TODO: calculate
-        inputs: [],
-    };
-
-    if (output.type === 'send-max' || output.type === 'payment') {
-        return {
-            ...payloadData,
-            type: 'final',
-            // compatibility with BTC PrecomposedTransaction from @trezor/connect
-            inputs: [],
-            outputsPermutation: [0],
-            outputs: [
-                {
-                    address: output.address,
-                    amount,
-                    script_type: 'PAYTOADDRESS',
-                },
-            ],
-        };
-    }
-
-    return payloadData;
+        composeContext && network
+            ? {
+                  decimals: network.decimals,
+                  formattedBalance: composeContext.account.formattedBalance,
+                  isNetworkReserveEnabled,
+                  nativeTokenReserve: network.nativeTokenReserve,
+              }
+            : undefined,
+    );
 };
-
-type ComposeEthereumTransactionFeeLevelsThunkState = DeviceRootState & TransactionsRootState;
-
-export const composeEthereumTransactionFeeLevelsThunk = createThunk<
-    PrecomposedLevels,
-    ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError; state: ComposeEthereumTransactionFeeLevelsThunkState }
->(
-    `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
-    async (
-        { formState, composeContext, isNetworkReserveEnabled = false },
-        { dispatch, rejectWithValue, getState },
-    ) => {
-        const device = selectSelectedDevice(getState());
-
-        const { account, network, feeInfo } = composeContext;
-        const { transactionData } = formState;
-
-        const isApproveTx = isEvmApprovalTx(transactionData);
-        const { outputs } = formState;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstOutput: (typeof outputs)[number] = outputs[0];
-        const contract = isApprovalFlowSupported(device)
-            ? (firstOutput.token ?? undefined)
-            : firstOutput.address;
-
-        if (isApproveTx && !contract) {
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Unable to compose output.',
-            });
-        }
-
-        const composedOutput = isApproveTx
-            ? getApprovalComposeOutput(contract, account, network)
-            : getExternalComposeOutput(formState, account, network);
-
-        if (!composedOutput)
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Unable to compose output.',
-            });
-
-        const { output, tokenInfo, decimals } = composedOutput;
-        const { availableBalance } = account;
-        const { amount } = firstOutput;
-        // Use the resolved onchain address for a named input (e.g. ENS), otherwise the raw input.
-        const address = firstOutput.resolvedAddress ?? firstOutput.address;
-
-        const ethereumEstimateFeeParams =
-            isApproveTx && contract
-                ? getEthereumEstimateFeeParams(contract, '0', undefined, formState.transactionData)
-                : getEthereumEstimateFeeParams(
-                      address || account.descriptor,
-                      amount || (tokenInfo ? tokenInfo.balance! : account.formattedBalance),
-                      tokenInfo,
-                      formState.transactionData,
-                  );
-
-        // trezor/blockbook#1639: declare our local pending txs so blockbook estimates gas against
-        // the correct pending state. undefined for non-EVM / nothing pending — the field is omitted.
-        const privatePending = selectEvmPrivatePendingHint(getState(), account.key);
-
-        // gasLimit calculation based on address, amount and data size
-        // amount in essential for a proper calculation of gasLimit (via blockbook/geth)
-        const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-            coin: asCoinSymbol(account.symbol),
-            identity: getAccountIdentity(account),
-            request: {
-                blocks: [2],
-                specific: {
-                    from: account.descriptor,
-                    ...ethereumEstimateFeeParams,
-                    privatePending,
-                },
-            },
-        });
-
-        let customFeeLimit: BigNumber;
-        if (estimatedFee.success) {
-            const { levels } = estimatedFee.payload;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const firstLevel: (typeof levels)[number] = levels[0];
-            customFeeLimit = new BigNumber(firstLevel.feeLimit || '');
-        } else {
-            customFeeLimit = new BigNumber(
-                tokenInfo || transactionData
-                    ? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT
-                    : ETH_TRANSFER_BACKUP_GAS_LIMIT,
-            );
-
-            reportEthereumFeeEstimationFailed({
-                account,
-                formState,
-                tokenInfo,
-                estimateTarget: ethereumEstimateFeeParams.to,
-                error: estimatedFee.error,
-            });
-
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'estimated-fee-error',
-                }),
-            );
-        }
-
-        // increase gas limit, this flow is used only for Invity
-        if (formState.ethereumAdjustGasLimit) {
-            customFeeLimit = customFeeLimit.multipliedBy(formState.ethereumAdjustGasLimit);
-        }
-
-        // increase gas limit for staking, this flow is used only during bump fee
-        const isStakeEthTx = !!getTxStakeNameByDataHex(formState.transactionData);
-        if (isStakeEthTx) {
-            customFeeLimit = customFeeLimit.plus(STAKE_GAS_LIMIT_RESERVE);
-        }
-
-        // FeeLevels are read-only
-        const levels = customFeeLimit ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
-        const predefinedLevels = levels.filter(l => l.label !== 'custom');
-        // update predefined levels with customFeeLimit (gasLimit from data size or erc20 transfer)
-        if (customFeeLimit.gt(0)) {
-            predefinedLevels.forEach(l => (l.feeLimit = customFeeLimit.toFixed(0)));
-        }
-        // in case when selectedFee is set to 'custom' construct this FeeLevel from values
-        if (formState.selectedFee === 'custom') {
-            const { maxPriorityFeePerGas, maxFeePerGas, feePerUnit, feeLimit } = formState;
-
-            predefinedLevels.push({
-                label: 'custom',
-                feePerUnit,
-                feeLimit,
-                maxPriorityFeePerGas,
-                maxFeePerGas,
-                blocks: -1,
-            });
-        }
-
-        // wrap response into PrecomposedLevels object where key is a FeeLevel label
-        const resultLevels: PrecomposedLevels = {};
-        const response = predefinedLevels.map(level =>
-            calculate(
-                availableBalance,
-                output,
-                level,
-                tokenInfo,
-                composeContext,
-                isNetworkReserveEnabled,
-            ),
-        );
-        response.forEach((tx, index) => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
-            const feeLabel = predefinedLevel.label;
-            resultLevels[feeLabel] = tx;
-        });
-
-        // format max
-        // update errorMessage values (symbol)
-        Object.keys(resultLevels).forEach(key => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const tx: (typeof resultLevels)[string] = resultLevels[key];
-            if (tx.type !== 'error') {
-                tx.max = tx.max ? convertAmountSubunitsToUnits(tx.max, decimals) : undefined;
-                tx.estimatedFeeLimit = !customFeeLimit.isNaN()
-                    ? customFeeLimit.toFixed(0)
-                    : undefined;
-            }
-            if (
-                tx.type === 'error' &&
-                tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT'
-            ) {
-                tx.errorMessage = {
-                    values: {
-                        networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
-                        feeAmount: tx.errorMessage?.values?.feeAmount || '',
-                    },
-                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
-                };
-            }
-        });
-
-        return resultLevels;
-    },
-);
 
 /**
  * Resolves the nonce to use for the next Ethereum transaction.
@@ -566,6 +261,78 @@ export const ethereumGetCurrentNonceThunk = createThunk<
     },
 );
 
+type EvmSendThunkApi = {
+    dispatch: (action: any) => any;
+    getState: () => TransactionsRootState;
+
+    /** The device the transaction is composed for or signed on. */
+    device: TrezorDevice | undefined;
+};
+
+/** The EVM network's send, given the app's knowledge of the account from Redux. */
+const createSend = (account: Account, { dispatch, getState, device }: EvmSendThunkApi) =>
+    createEthereumChainSend({
+        ...chainSendConnectDeps,
+        isApprovalFlowSupported: () => isApprovalFlowSupported(device),
+        getEvmPrivatePendingHint: () => selectEvmPrivatePendingHint(getState(), account.key),
+        resolveEvmNonce: ({ rbfParams, fetchConfirmedNonce }) =>
+            dispatch(
+                ethereumGetCurrentNonceThunk({
+                    selectedAccount: account as AccountWithNetworkType<'ethereum'>,
+                    rbfParams,
+                    fetchConfirmedNonce,
+                }),
+            ).unwrap(),
+        onEvmFeeEstimationFailed: ({ draft, tokenInfo, estimateTarget, error }) => {
+            reportEthereumFeeEstimationFailed({
+                account,
+                formState: draft as FormState,
+                tokenInfo,
+                estimateTarget,
+                error,
+            });
+
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'estimated-fee-error',
+                }),
+            );
+        },
+    })(account.symbol);
+
+type ComposeEthereumTransactionFeeLevelsThunkState = DeviceRootState & TransactionsRootState;
+
+export const composeEthereumTransactionFeeLevelsThunk = createThunk<
+    PrecomposedLevels,
+    ComposeTransactionThunkArguments,
+    { rejectValue: ComposeFeeLevelsError; state: ComposeEthereumTransactionFeeLevelsThunkState }
+>(
+    `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
+    async (
+        { formState, composeContext, isNetworkReserveEnabled = false },
+        { dispatch, rejectWithValue, getState },
+    ) => {
+        const { account } = composeContext;
+
+        try {
+            const device = selectSelectedDevice(getState());
+
+            return await createSend(account, { dispatch, getState, device }).composeFeeLevels({
+                account,
+                draft: formState,
+                context: { ...composeContext, isNetworkReserveEnabled },
+            });
+        } catch (error) {
+            if (!(error instanceof ChainSendError)) throw error;
+
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: error.message,
+            });
+        }
+    },
+);
+
 export type SignEthereumSendFormTransactionThunkState = TransactionsRootState &
     WalletSettingsRootState;
 
@@ -582,9 +349,7 @@ export const signEthereumSendFormTransactionThunk = createThunk<
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
         { dispatch, getState, rejectWithValue },
     ) => {
-        const network = getNetwork(selectedAccount.symbol);
-
-        if (selectedAccount.networkType !== 'ethereum' || !network.chainId)
+        if (selectedAccount.networkType !== 'ethereum')
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Ethereum network mismatch.',
@@ -592,74 +357,33 @@ export const signEthereumSendFormTransactionThunk = createThunk<
 
         const addressDisplayType = selectAddressDisplayType(getState());
 
-        // Re-check the backend right before signing: the confirmed nonce may have advanced since
-        // the form was composed (e.g. another wallet/session spent it), so this returns the
-        // next available nonce. When a custom nonce is provided, skip rbfParams so we get the
-        // actual confirmed nonce for validation instead of the RBF nonce.
-        const customNonce = formState.ethereumNonce;
-        const { nonce: resolvedNonce, confirmedNonce } = await dispatch(
-            ethereumGetCurrentNonceThunk({
-                selectedAccount,
-                rbfParams: customNonce ? undefined : formState.rbfParams,
-                fetchConfirmedNonce: true,
-            }),
-        ).unwrap();
+        try {
+            const send = createSend(selectedAccount, { dispatch, getState, device });
+            const { serializedTx } = await send.sign({
+                account: selectedAccount,
+                draft: formState,
+                precomposed: precomposedTransaction,
+                options: {
+                    device: toChainSendDevice(device),
+                    chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
+                    paymentRequests,
+                    // Store the exact nonce being signed so the review modal can display it
+                    // without resolving it again (which would race this in-progress signing).
+                    onPrepared: ({ nonce }) => {
+                        if (nonce) dispatch(sendFormActions.storeResolvedEthereumNonce(nonce));
+                    },
+                },
+            });
 
-        let nonce = resolvedNonce;
-        if (customNonce) {
-            if (parseInt(customNonce, 10) < parseInt(confirmedNonce, 10)) {
-                return rejectWithValue({
-                    error: 'sign-transaction-failed',
-                    message: `Custom nonce ${customNonce} is below the confirmed nonce ${confirmedNonce}.`,
-                });
-            }
-            nonce = customNonce;
-        }
+            return { serializedTx };
+        } catch (error) {
+            if (!(error instanceof ChainSendError)) throw error;
 
-        // Store the exact nonce being signed so the review modal can display it without resolving
-        // it again (which would race this in-progress signing).
-        dispatch(sendFormActions.storeResolvedEthereumNonce(nonce));
-
-        const { outputs: signOutputs } = formState;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstSignOutput: (typeof signOutputs)[number] = signOutputs[0];
-        // transform to TrezorConnect.ethereumSignTransaction params
-        const transaction = prepareEthereumTransaction({
-            token: precomposedTransaction.token,
-            chainId: network.chainId,
-            // Use the resolved onchain address for a named input (e.g. ENS), otherwise the raw input.
-            to: firstSignOutput.resolvedAddress ?? firstSignOutput.address,
-            amount: firstSignOutput.amount,
-            data: formState.transactionData,
-            gasLimit: precomposedTransaction.feeLimit || '',
-            maxFeePerGas: precomposedTransaction.maxFeePerGas,
-            maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,
-            gasPrice: precomposedTransaction.feePerByte,
-            nonce,
-            payment_req: paymentRequests?.[0],
-        });
-
-        const response = await TrezorConnect.ethereumSignTransaction({
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: device.state,
-                useEmptyPassphrase: device.useEmptyPassphrase,
-            },
-            path: selectedAccount.path,
-            transaction,
-            chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
-        });
-
-        if (!response.success) {
-            // catch manual error from TransactionReviewModal
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                errorCode: response.error.code,
-                message: response.error.message,
+                errorCode: error.connectErrorCode,
+                message: error.message,
             });
         }
-
-        return { serializedTx: response.payload.serializedTx };
     },
 );

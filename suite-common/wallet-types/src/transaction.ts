@@ -1,6 +1,6 @@
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import type { AccountTransaction, PROTO, StaticSessionId, TokenInfo } from '@trezor/connect';
+import type { AccountTransaction, StaticSessionId } from '@trezor/connect';
 import type { FeeInfo, RbfTransactionParams } from '@trezor/network-module-suite-common-types';
 import { type RequiredKey } from '@trezor/type-utils';
 
@@ -49,19 +49,7 @@ export type FeesState = {
     };
 };
 
-export type EthTransactionData = {
-    token?: TokenInfo;
-    chainId: number;
-    to: string;
-    amount: string;
-    data?: string;
-    gasLimit: string;
-    gasPrice?: string;
-    maxFeePerGas?: string;
-    maxPriorityFeePerGas?: string;
-    nonce: string;
-    payment_req?: PROTO.PaymentRequest;
-};
+export type { EthTransactionData } from '@trezor/network-ethereum-suite-common';
 
 export type EvmTransactionPurpose =
     | 'transfer'

@@ -6,16 +6,21 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { type EthereumSpecific, type TokenInfo } from '@trezor/blockchain-link-types';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import {
+    isEip1559,
+    isEvmApprovalTx,
+    isWrappedNativeToken,
+    padLeftEven,
+    sanitizeHex,
+    strip,
+} from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { asAmountSubunit, asAmountUnit } from './AmountTypes';
 import { unitsToSubunits } from './amountUtils';
 
-export const isEip1559 = (
-    tx: Record<string, any> | null | undefined,
-): tx is { maxFeePerGas: string } => !!tx && !!tx.maxFeePerGas;
+export { isEip1559, isEvmApprovalTx, padLeftEven, sanitizeHex, strip };
 
 // Returns the per-gas price actually charged: effectiveGasPrice when present and > 0
 // (L2 networks), otherwise the gasPrice bid. Mirrors blockbook's L2 fee logic.
@@ -29,23 +34,6 @@ export const getEffectiveGasPrice = (
 export const hasEip1559MaxPriorityFee = (
     tx: Record<string, any> | null | undefined,
 ): tx is { maxPriorityFeePerGas: string } => !!tx && !!tx.maxPriorityFeePerGas;
-
-export const padLeftEven = (hex: string): string => (hex.length % 2 !== 0 ? `0${hex}` : hex);
-
-export const sanitizeHex = ($hex: string): string => {
-    const hex = $hex.toLowerCase().startsWith('0x') ? $hex.substring(2) : $hex;
-    if (hex === '') return '';
-
-    return `0x${padLeftEven(hex)}`;
-};
-
-export const strip = (str: string): string => {
-    if (str.startsWith('0x')) {
-        return padLeftEven(str.substring(2, str.length));
-    }
-
-    return padLeftEven(str);
-};
 
 type WrappedNativeTxParams = {
     networkSymbol: NetworkSymbol;
@@ -131,9 +119,6 @@ export const getNativeWrapTxKind = (
 
     return undefined;
 };
-
-export const isEvmApprovalTx = (data?: string): boolean =>
-    Calldata.evm.erc20.approve.decode(data) !== null;
 
 export const getErc20ApproveSpender = (data?: string): string | undefined =>
     Calldata.evm.erc20.approve.decode(data)?.spender;

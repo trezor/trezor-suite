@@ -17,9 +17,6 @@
             "path": "../../suite-common/wallet-config"
         },
         {
-            "path": "../../suite-common/wallet-constants"
-        },
-        {
             "path": "../../suite-common/wallet-core"
         },
         {
@@ -43,6 +40,9 @@
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
         {
             "path": "../../packages/styles-native"

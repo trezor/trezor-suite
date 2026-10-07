@@ -20,6 +20,7 @@
         "@trezor/network-ethereum-types": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "viem": "^2.54.1"
     },

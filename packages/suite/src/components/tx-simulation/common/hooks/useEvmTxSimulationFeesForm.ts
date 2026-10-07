@@ -8,7 +8,6 @@ import {
     asNetworkSymbol,
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
-import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { type EvmSelectedFee } from '@suite-common/wallet-types';
 import {
@@ -16,6 +15,7 @@ import {
     fromIntegerString,
     getConvertedOrDefaultFeeInfo,
 } from '@suite-common/wallet-utils';
+import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

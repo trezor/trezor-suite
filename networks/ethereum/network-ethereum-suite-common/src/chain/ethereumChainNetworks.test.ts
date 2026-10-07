@@ -17,20 +17,36 @@ const fetchCoinGeckoCurrentRate = jest.fn();
 const fetchCoinGeckoHistoricRates = jest.fn();
 const blockchainGetFiatRatesForTimestamps = jest.fn();
 
+const sendConnect = {
+    blockchainEstimateFee: jest.fn(),
+    ethereumSignTransaction: jest.fn(),
+    pushTransaction: jest.fn(),
+};
+
+const sendAppDeps = {
+    isApprovalFlowSupported: () => true,
+    getEvmPrivatePendingHint: () => undefined,
+    resolveEvmNonce: () => Promise.resolve({ nonce: '0', confirmedNonce: '0' }),
+    onEvmFeeEstimationFailed: jest.fn(),
+};
+
 const blockbookDeps: EthereumBlockbookChainNetworkDeps = {
     getTrezorConnect: () => ({
         getAccountInfo,
         blockchainGetCurrentFiatRates,
         blockchainGetFiatRatesForTimestamps,
+        ...sendConnect,
     }),
     fetchCoinGeckoCurrentRate,
     fetchCoinGeckoHistoricRates,
+    ...sendAppDeps,
 };
 
 const customRpcDeps: EthereumCustomRpcChainNetworkDeps = {
-    getTrezorConnect: () => ({ getAccountInfo }),
+    getTrezorConnect: () => ({ getAccountInfo, ...sendConnect }),
     fetchCoinGeckoCurrentRate,
     fetchCoinGeckoHistoricRates,
+    ...sendAppDeps,
 };
 
 const getRef = (symbol: 'eth' | 'base') =>

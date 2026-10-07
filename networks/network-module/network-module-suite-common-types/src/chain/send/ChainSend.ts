@@ -126,6 +126,17 @@ export type ChainSignOptions = {
     /** Show long addresses and data in chunks on the device. */
     readonly chunkify?: boolean;
     readonly paymentRequests?: PROTO.PaymentRequest[];
+
+    /**
+     * Called with what is about to be signed, before the device asks the user, so the app can show
+     * it next to the device prompt.
+     */
+    readonly onPrepared?: (prepared: ChainSigningPrepared) => void;
+};
+
+export type ChainSigningPrepared = {
+    /** The account nonce the transaction is signed with, on networks that order by nonce. */
+    readonly nonce?: string;
 };
 
 export type SignChainTransactionParams = {
@@ -141,6 +152,9 @@ export type ChainSignedTransaction = {
 
     /** The decoded transaction, where signing returns it (Bitcoin-like networks). */
     readonly signedTransaction?: BlockbookTransaction;
+
+    /** The account nonce the transaction is signed with, on networks that order by nonce. */
+    readonly nonce?: string;
 };
 
 export type PushChainTransactionParams = {

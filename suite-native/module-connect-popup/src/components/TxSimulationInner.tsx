@@ -1,13 +1,13 @@
 import { type ConnectCallSource, connectPopupActions } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
 import { Button, Card, HStack, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { EvmTxSimulationReviewContent } from '@suite-native/tx-simulation';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@trezor/network-ethereum-suite-common';
 
 import { ConnectAppIcon } from './ConnectAppIcon';
 

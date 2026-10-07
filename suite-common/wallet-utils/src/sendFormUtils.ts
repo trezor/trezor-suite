@@ -7,26 +7,17 @@ import {
     type Merge,
 } from 'react-hook-form';
 
-import {
-    type Network,
-    type NetworkSymbol,
-    type NetworkType,
-    getNetwork,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import {
     COMPOSE_ERROR_TYPES,
     DEFAULT_PAYMENT,
     DEFAULT_VALUES,
-    ERC20_TRANSFER,
-    ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
     ETH_ESTIMATED_GAS_LIMIT_MULTIPLIER,
 } from '@suite-common/wallet-constants';
 import type {
     Account,
     AccountKey,
     BaseCurrencyOption,
-    EthTransactionData,
-    ExternalOutput,
     FeeInfo,
     FormState,
     FormStateTrading,
@@ -43,14 +34,14 @@ import {
     baseCurrencies,
     isBaseCurrencyCode,
 } from '@trezor/blockchain-link-types';
+import { type ComposeOutput, type FeeLevel, type PROTO } from '@trezor/connect';
 import {
-    type ComposeOutput,
-    type EthereumTransaction,
-    type EthereumTransactionEIP1559,
-    type FeeLevel,
-    type PROTO,
-    type TokenInfo,
-} from '@trezor/connect';
+    ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+    calculateTotalGasCost,
+    getApprovalComposeOutput,
+    getEthereumEstimateFeeParams,
+    prepareEthereumTransaction,
+} from '@trezor/network-ethereum-suite-common';
 import {
     calculateMax,
     calculateTotal,
@@ -62,90 +53,20 @@ import {
 } from '@trezor/network-module-suite-common-types';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
-import {
-    convertAmountUnitsToSubunits,
-    formatNetworkAmount,
-    networkAmountToSmallestUnit,
-} from './amountUtils';
+import { formatNetworkAmount, networkAmountToSmallestUnit } from './amountUtils';
 import { isBaseCurrencyWithSats } from './baseCurrency';
-import { fromEther, fromGwei, fromIntegerString, fromWei } from './ethConverter';
-import { isEip1559, isEvmApprovalTx, sanitizeHex, strip } from './ethUtils';
+import { fromWei } from './ethConverter';
+import { isEip1559 } from './ethUtils';
 
 export { calculateMax, calculateTotal };
 
 // EVM SPECIFIC
 
-/**
- * Calculate the EVM fee from gas price / max fee and gas limit.
- * @param {string} [gasPriceInWei] - The gas price in wei.
- * @param {string} [gasLimit] - The gas limit.
- * @returns {string} The calculated fee in wei, or '0' if inputs are invalid.
- */
-export const calculateTotalGasCost = (gasPriceInWei?: string, gasLimit?: string): string => {
-    if (!gasPriceInWei || !gasLimit) {
-        return '0';
-    }
-
-    const gasPriceBN = new BigNumber(gasPriceInWei);
-    const gasLimitBN = new BigNumber(gasLimit);
-
-    if (gasPriceBN.isNaN() || gasLimitBN.isNaN()) {
-        return '0';
-    }
-
-    const fee = gasPriceBN.times(gasLimitBN);
-
-    if (fee.isNaN()) {
-        return '0';
-    }
-
-    return fee.toFixed();
-};
-
-const getSerializedAmount = (amount?: string) => (amount ? fromEther(amount).toWei('hex') : '0x00');
-
-const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string) => {
-    // 32 bytes address parameter, remove '0x' prefix
-    const erc20recipient = strip(to).padStart(64, '0');
-    // convert amount to satoshi
-    const tokenAmount = convertAmountUnitsToSubunits(amount, token.decimals);
-    // 32 bytes amount paramter, remove '0x' prefix
-    const erc20amount = fromIntegerString(tokenAmount).toHex().substring(2).padStart(64, '0');
-
-    // join data
-    return `0x${ERC20_TRANSFER}${erc20recipient}${erc20amount}`;
-};
-
-// TrezorConnect.blockchainEstimateFee for ETH
-export const getEthereumEstimateFeeParams = (
-    to: string,
-    amount: string,
-    token?: TokenInfo,
-    data?: string,
-) => {
-    if (token) {
-        // use the data if provided
-        if (data) {
-            return {
-                to,
-                value: '0x0',
-                data,
-            };
-        }
-
-        // otherwise compose basic ERC-20 token transfer data
-        return {
-            to: token.contract,
-            value: '0x0',
-            data: getSerializedErc20Transfer(token, to, amount),
-        };
-    }
-
-    return {
-        to,
-        value: getSerializedAmount(amount),
-        data: data || '',
-    };
+export {
+    calculateTotalGasCost,
+    getApprovalComposeOutput,
+    getEthereumEstimateFeeParams,
+    prepareEthereumTransaction,
 };
 
 export const getGasLimitWithBuffer = (estimatedGasLimit: string | undefined) => {
@@ -159,59 +80,6 @@ export const getGasLimitWithBuffer = (estimatedGasLimit: string | undefined) => 
         .multipliedBy(ETH_ESTIMATED_GAS_LIMIT_MULTIPLIER)
         .integerValue(BigNumber.ROUND_CEIL)
         .toFixed();
-};
-
-export const prepareEthereumTransaction = (
-    txInfo: EthTransactionData,
-): EthereumTransaction | EthereumTransactionEIP1559 => {
-    let result: EthereumTransaction | EthereumTransactionEIP1559;
-
-    const commonTxData = {
-        to: txInfo.to,
-        value: getSerializedAmount(txInfo.amount),
-        chainId: txInfo.chainId,
-        nonce: fromIntegerString(txInfo.nonce).toHex(),
-        gasLimit: fromIntegerString(txInfo.gasLimit).toHex(),
-        payment_req: txInfo.payment_req,
-    };
-
-    if (txInfo.maxFeePerGas) {
-        result = {
-            ...commonTxData,
-            gasPrice: undefined,
-            maxFeePerGas: fromGwei(txInfo.maxFeePerGas).toWei('hex'),
-            maxPriorityFeePerGas: fromGwei(txInfo.maxPriorityFeePerGas || '0').toWei('hex'),
-        } satisfies EthereumTransactionEIP1559;
-    } else if (txInfo.gasPrice) {
-        result = {
-            ...commonTxData,
-            gasPrice: fromGwei(txInfo.gasPrice).toWei('hex'),
-            maxFeePerGas: undefined,
-            maxPriorityFeePerGas: undefined,
-        } satisfies EthereumTransaction;
-    } else {
-        throw new Error('No gas price or maxFeePerGas and maxPriorityFeePerGas provided');
-    }
-
-    if (!txInfo.token && txInfo.data) {
-        result.data = sanitizeHex(txInfo.data);
-    }
-
-    if (txInfo.token) {
-        const isApprovalTx = isEvmApprovalTx(txInfo.data);
-
-        if (txInfo.data && txInfo.data !== '0x' && !isApprovalTx) {
-            result.data = sanitizeHex(txInfo.data);
-        } else {
-            result.data = isApprovalTx
-                ? txInfo.data
-                : getSerializedErc20Transfer(txInfo.token, txInfo.to, txInfo.amount);
-            result.to = txInfo.token.contract;
-        }
-        result.value = '0x00';
-    }
-
-    return result;
 };
 
 type GetConvertedOrDefaultFeeLevelsProps = {
@@ -393,29 +261,6 @@ export const getBitcoinComposeOutputs = (
     }
 
     return result;
-};
-
-export const getApprovalComposeOutput = (
-    contract: string | undefined,
-    account: Account,
-    network: Network,
-): { output: ExternalOutput; tokenInfo: TokenInfo | undefined; decimals: number } | undefined => {
-    if (!contract) {
-        return undefined;
-    }
-
-    const tokenInfo = findToken(account.tokens, contract);
-    const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
-
-    return {
-        output: {
-            address: contract,
-            amount: '0',
-            type: 'payment',
-        },
-        tokenInfo,
-        decimals,
-    };
 };
 
 // ETH/XRP composeTransaction, only one Output is used
