@@ -5,13 +5,16 @@ import * as managementDefinitions from '@trezor/protobuf/src/definitions/message
 import * as messageTypeDefinitions from '@trezor/protobuf/src/definitions/messages_pb';
 import * as optionDefinitions from '@trezor/protobuf/src/definitions/options_pb';
 
+import { loadLegacyEthereumDefinitions } from './legacyEthereumMessages';
+
 let isLoaded = false;
 
 /**
  * Registers the protobuf messages the migration exchanges with the device. The shared
  * `protobufManager` starts empty and the bridge transport encodes through it, so this has to
  * run before the first device call. Only the Bitcoin, common and management messages are
- * loaded, together with the message-id enum and the option carrying wire-type overrides.
+ * loaded, together with the message-id enum and the option carrying wire-type overrides. The
+ * Ethereum messages come from the legacy definitions built here, never from the shared module.
  */
 export const loadProtobufDefinitions = () => {
     if (isLoaded) return;
@@ -23,5 +26,6 @@ export const loadProtobufDefinitions = () => {
         messageTypeDefinitions,
         optionDefinitions,
     ]);
+    loadLegacyEthereumDefinitions();
     isLoaded = true;
 };
