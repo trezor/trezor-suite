@@ -14,12 +14,13 @@
     "dependencies": {
         "@noble/hashes": "^2.0.1",
         "@scure/base": "^2.0.0",
+        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
         "@trezor/network-stellar-types": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "crc": "^4.3.2"
-    },
-    "devDependencies": {
-        "@trezor/network-module-types": "workspace:*"
     }
 }

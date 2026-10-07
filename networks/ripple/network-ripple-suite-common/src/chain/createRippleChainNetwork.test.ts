@@ -9,7 +9,11 @@ const fetchCoinGeckoCurrentRate = jest.fn();
 const fetchCoinGeckoHistoricRates = jest.fn();
 
 const deps: RippleChainNetworkDeps = {
-    getTrezorConnect: () => ({ getAccountInfo }),
+    getTrezorConnect: () => ({
+        getAccountInfo,
+        rippleSignTransaction: jest.fn(),
+        pushTransaction: jest.fn(),
+    }),
     fetchCoinGeckoCurrentRate,
     fetchCoinGeckoHistoricRates,
 };

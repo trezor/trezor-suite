@@ -20,7 +20,6 @@
         "@trezor/network-cardano-types": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
-        "@trezor/utils": "workspace:*",
         "cbor": "^10.0.12",
         "crc": "^4.3.2"
     }

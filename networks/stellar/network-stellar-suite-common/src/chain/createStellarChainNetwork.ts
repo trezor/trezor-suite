@@ -14,12 +14,14 @@ import {
 import { isSupportedStellarNetwork } from '@trezor/network-stellar-types';
 
 import { getAccountSyncInterval, getNetworkConfig } from '../networkConfig';
+import { type StellarChainSendDeps, createStellarChainSend } from './send/createStellarChainSend';
 
 export type StellarChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
     FetchCoinGeckoCurrentRateDep &
     FetchConnectTransactionsDeps &
-    FetchCoinGeckoHistoricRatesDep;
+    FetchCoinGeckoHistoricRatesDep &
+    StellarChainSendDeps;
 
 /**
  * Stellar network. The ledger holds back a reserve, so the user sees the full balance. Classic
@@ -30,6 +32,7 @@ export const createStellarChainNetwork = (deps: StellarChainNetworkDeps): Create
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
     const fetchTransactions = createFetchConnectTransactions(deps);
     const fetchTokens = createFetchConnectTokens(deps);
+    const createSend = createStellarChainSend(deps);
 
     return params => {
         const config = readChainNetworkConfig(
@@ -65,6 +68,7 @@ export const createStellarChainNetwork = (deps: StellarChainNetworkDeps): Create
                 useStellarContractTokens: true,
             },
             fetchHistoricFiatRates: config.hasFiatRate ? deps.fetchCoinGeckoHistoricRates : null,
+            send: createSend(params.symbol),
         });
     };
 };

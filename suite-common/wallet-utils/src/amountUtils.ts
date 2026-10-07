@@ -4,7 +4,10 @@ import {
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
 import type { TokenTransfer } from '@trezor/connect';
-import { convertAmountUnitsToSubunits } from '@trezor/network-module-suite-common-types';
+import {
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
+} from '@trezor/network-module-suite-common-types';
 import { BigNumber, type BigNumberValue } from '@trezor/utils';
 
 import { type AmountSubunit, type AmountUnit, asAmountSubunit, asAmountUnit } from './AmountTypes';
@@ -44,18 +47,7 @@ export const unitsToSubunits = (params: UnitsToSubunitsParams): AmountSubunit =>
  *
  * @deprecated Use `subunitsToUnits` instead!
  */
-export const convertAmountSubunitsToUnits = (amount: BigNumberValue, decimals: number) => {
-    const safeAmount = amount || '0';
-    const bAmount = new BigNumber(safeAmount);
-
-    if (bAmount.isNaN()) {
-        throw new Error('Amount is not a number');
-    }
-
-    const factor = new BigNumber(10).exponentiatedBy(decimals);
-
-    return bAmount.div(factor).toString(10);
-};
+export { convertAmountSubunitsToUnits };
 
 /**
  * BTC -> Sats, etc...

@@ -1,36 +1,15 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    type Account,
     AddressDisplayOptions,
-    type ExternalOutput,
     type PrecomposedLevels,
-    type PrecomposedTransaction,
 } from '@suite-common/wallet-types';
-import {
-    asAmountUnit,
-    calculateMax,
-    calculateTotal,
-    convertAmountSubunitsToUnits,
-    formatNetworkAmount,
-    getExternalComposeOutput,
-    isTestnet,
-    networkAmountToSmallestUnit,
-    resolveStellarContractId,
-    unitsToSubunits,
-} from '@suite-common/wallet-utils';
-import TrezorConnect, {
-    type AccountInfo,
-    type FeeLevel,
-    type RipplePayment,
-    type TokenInfo,
-} from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
-import { XRP_FLAG } from '@trezor/network-ripple/constants';
-import stellar from '@trezor/network-stellar/runtime';
-import type { StellarTransaction } from '@trezor/network-stellar/types';
-import { StellarAssetType } from '@trezor/protobuf/src/definitions';
-import { BigNumber } from '@trezor/utils';
+import { resolveStellarContractId } from '@suite-common/wallet-utils';
+import { ChainSendError } from '@trezor/network-module-suite-common-types';
+import { createRippleChainSend } from '@trezor/network-ripple-suite-common';
+import { createStellarChainSend } from '@trezor/network-stellar-suite-common';
 
+import { chainSendConnectDeps, toChainSendDevice } from './chainSendAdapter';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
     type ComposeFeeLevelsError,
@@ -45,133 +24,17 @@ import {
     selectAddressDisplayType,
 } from '../settings/walletSettingsReducer';
 
-const calculate = (
-    availableBalance: string,
-    output: ExternalOutput,
-    feeLevel: FeeLevel,
-    requiredAmount?: BigNumber,
-    token?: TokenInfo, // Only when sending non-native tokens.
-    // Soroban only; `feePerByte` stays the inclusion fee the transaction is built with.
-    resourceFee?: string,
-): PrecomposedTransaction => {
-    const feeInSatoshi = new BigNumber(feeLevel.feePerUnit).plus(resourceFee ?? 0).toFixed();
+const createRippleSend = createRippleChainSend(chainSendConnectDeps);
 
-    let amount: string;
-    let max: string | undefined;
-    const availableTokenBalance = token
-        ? unitsToSubunits({
-              value: asAmountUnit(new BigNumber(token.balance!)),
-              decimals: token.decimals,
-          }).toString()
-        : undefined;
-    if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
-        max = availableTokenBalance || calculateMax(availableBalance, feeInSatoshi);
-        amount = max;
-    } else {
-        amount = output.amount;
-    }
+const getSend = (account: Account, getState: () => BlockchainRootState) => {
+    if (account.networkType === 'ripple') return createRippleSend(account.symbol);
+    if (account.networkType !== 'stellar') return undefined;
 
-    // Total native asset amount to be sent.
-    // If sending a token, we only need to calculate the fee.
-    const totalNativeSpent = new BigNumber(calculateTotal(token ? '0' : amount, feeInSatoshi));
-
-    if (totalNativeSpent.isGreaterThan(availableBalance)) {
-        const error = token ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' : 'AMOUNT_IS_NOT_ENOUGH';
-
-        return {
-            type: 'error',
-            error,
-            errorMessage: { id: error },
-        } as const;
-    }
-
-    if (requiredAmount?.gt(amount)) {
-        return {
-            type: 'error',
-            error: 'AMOUNT_IS_LESS_THAN_RESERVE',
-            // errorMessage declared later
-        } as const;
-    }
-
-    const payloadData = {
-        type: 'nonfinal' as const,
-        totalSpent: token ? amount : totalNativeSpent.toString(),
-        max,
-        token,
-        fee: feeInSatoshi,
-        feePerByte: feeLevel.feePerUnit,
-        bytes: 0, // TODO: calculate
-        inputs: [],
-    };
-
-    if (output.type === 'send-max' || output.type === 'payment') {
-        return {
-            ...payloadData,
-            type: 'final',
-            // compatibility with BTC PrecomposedTransaction from @trezor/connect
-            inputs: [],
-            outputsPermutation: [0],
-            outputs: [
-                {
-                    address: output.address,
-                    amount,
-                    script_type: 'PAYTOADDRESS',
-                },
-            ],
-        };
-    }
-
-    return payloadData;
-};
-
-type StellarComposeError =
-    'TR_STELLAR_SIMULATION_FAILED' | 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE';
-
-// Shown under the amount field; a rejected compose would only disable the button.
-const stellarErrorLevels = (
-    levels: FeeLevel[],
-    error: StellarComposeError,
-    values: Record<string, string>,
-): PrecomposedLevels => {
-    const failed = { type: 'error', error, errorMessage: { id: error, values } } as const;
-
-    return Object.fromEntries(levels.map(level => [level.label, failed]));
-};
-
-/**
- * A classic asset can only be paid to an account holding its trustline, and so can its Stellar
- * Asset Contract; the sender cannot create the trustline. Its issuer holds no trustline to its own
- * asset and needs none: paying it back is how the asset is redeemed. A native SEP-41 token needs
- * no trustline at all, so an unresolvable contract id is left to the simulation.
- */
-const isRecipientMissingTrustline = async (recipient: AccountInfo, token: TokenInfo) => {
-    const trustlines = recipient.tokens ?? [];
-    const { computeSorobanAssetContractId, parseClassicAssetContract } = await stellar();
-    const isIssuer = (asset?: { assetIssuer: string }) =>
-        !!asset && asset.assetIssuer === recipient.descriptor;
-
-    if (token.standard !== 'STELLAR-CONTRACT') {
-        if (isIssuer(parseClassicAssetContract(token.contract))) {
-            return false;
-        }
-
-        return recipient.empty || !trustlines.some(({ contract }) => contract === token.contract);
-    }
-
-    const heldSacIds = trustlines.flatMap(({ contract }) => {
-        try {
-            return [computeSorobanAssetContractId(contract).sorobanAssetContractId];
-        } catch {
-            return [];
-        }
-    });
-    if (heldSacIds.includes(token.contract)) {
-        return false;
-    }
-
-    const wrappedAsset = await resolveStellarContractId(token.contract);
-
-    return !!wrappedAsset && !isIssuer(wrappedAsset);
+    return createStellarChainSend({
+        ...chainSendConnectDeps,
+        getStellarBackendUrl: symbol => selectBlockchainUrl(getState(), symbol),
+        resolveStellarContractId,
+    })(account.symbol);
 };
 
 type ComposeRippleStellarTransactionFeeLevelsThunkState = BlockchainRootState;
@@ -186,206 +49,30 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/composeRippleStellarTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { getState, rejectWithValue }) => {
-        const { account, network, feeInfo } = composeContext;
-        const composeOutputs = getExternalComposeOutput(formState, account, network);
-        if (!composeOutputs)
+        const { account } = composeContext;
+        const send = getSend(account, getState);
+
+        if (!send) {
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
-                message: 'Unable to compose output.',
-            });
-
-        const { output, tokenInfo, decimals } = composeOutputs;
-        const { availableBalance } = account;
-        const { outputs: composeOutputsList } = formState;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstOutput: (typeof composeOutputsList)[number] = composeOutputsList[0];
-        const { address } = firstOutput;
-
-        const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
-        // in case when selectedFee is set to 'custom' construct this FeeLevel from values
-        if (formState.selectedFee === 'custom') {
-            predefinedLevels.push({
-                label: 'custom',
-                feePerUnit: formState.feePerUnit,
-                blocks: -1,
+                message: 'Invalid network type.',
             });
         }
 
-        // Fee info without any level cannot be composed, and the custom level fallback below
-        // reads the last predefined level, which would throw on an empty list.
-        if (predefinedLevels.length === 0) {
+        try {
+            return await send.composeFeeLevels({
+                account,
+                draft: formState,
+                context: composeContext,
+            });
+        } catch (error) {
+            if (!(error instanceof ChainSendError)) throw error;
+
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
-                message: 'No fee levels available.',
+                message: error.message,
             });
         }
-
-        // A Soroban transfer also owes a resource fee that only a simulation can tell, and it is
-        // priced in the Soroban lane rather than the classic one `feeInfo` carries.
-        let resourceFee: string | undefined;
-        let sorobanInclusionFee: string | undefined;
-        const isContractTokenTransfer =
-            account.networkType === 'stellar' && tokenInfo?.standard === 'STELLAR-CONTRACT';
-        if (isContractTokenTransfer) {
-            // The output amount is already in base units; the balance is kept in units.
-            const amountToSend =
-                output.type === 'send-max' || output.type === 'send-max-noaddress'
-                    ? unitsToSubunits({
-                          value: asAmountUnit(new BigNumber(tokenInfo.balance ?? '0')),
-                          decimals: tokenInfo.decimals,
-                      }).toFixed()
-                    : output.amount;
-
-            const backendUrl = selectBlockchainUrl(getState(), account.symbol);
-
-            // Simulating needs a recipient; until then only the inclusion half can be priced.
-            if (address && backendUrl && new BigNumber(amountToSend).isGreaterThan(0)) {
-                const { prepareContractTokenTransfer } = await stellar();
-
-                try {
-                    ({ resourceFee, inclusionFee: sorobanInclusionFee } =
-                        await prepareContractTokenTransfer({
-                            backendUrl,
-                            descriptor: account.descriptor,
-                            sequence: account.misc.stellarSequence,
-                            contract: tokenInfo.contract,
-                            destination: address,
-                            amount: amountToSend,
-                            isTestnet: isTestnet(account.symbol),
-                        }));
-                } catch (error) {
-                    const [reason = 'Simulation failed.'] = (
-                        error instanceof Error ? error.message : String(error)
-                    ).split('\n');
-
-                    return stellarErrorLevels(predefinedLevels, 'TR_STELLAR_SIMULATION_FAILED', {
-                        reason: reason.slice(0, 200),
-                    });
-                }
-            } else if (backendUrl) {
-                const { getStellarRpcServer, readSorobanInclusionFee } = await stellar();
-
-                // A placeholder priced in the wrong market is still worth avoiding.
-                sorobanInclusionFee = await readSorobanInclusionFee(
-                    getStellarRpcServer(backendUrl),
-                ).catch(() => undefined);
-            }
-        }
-
-        // The envelope has to be built with the fee the user approved, so a level the backend
-        // priced classically is repriced. A custom level is the user's own bid.
-        const composeLevels =
-            sorobanInclusionFee === undefined
-                ? predefinedLevels
-                : predefinedLevels.map(level =>
-                      level.label === 'custom'
-                          ? level
-                          : { ...level, feePerUnit: sorobanInclusionFee },
-                  );
-
-        let requiredAmount: BigNumber | undefined;
-        // additional check if recipient address is empty
-        // it will set requiredAmount to recipient account reserve value
-        if (address) {
-            const accountResponse = await TrezorConnect.getAccountInfo({
-                descriptor: address,
-                coin: asCoinSymbol(account.symbol),
-                suppressBackupWarning: true,
-                stellarClassicTokens:
-                    account.networkType === 'stellar' && tokenInfo?.standard === 'STELLAR-CLASSIC'
-                        ? [tokenInfo.contract]
-                        : undefined,
-            });
-            if (accountResponse.success) {
-                if (account.networkType === 'stellar' && tokenInfo) {
-                    if (await isRecipientMissingTrustline(accountResponse.payload, tokenInfo)) {
-                        return stellarErrorLevels(
-                            predefinedLevels,
-                            'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
-                            { symbol: tokenInfo.symbol ?? tokenInfo.contract },
-                        );
-                    }
-                } else if (accountResponse.payload.empty) {
-                    requiredAmount = new BigNumber(accountResponse.payload.misc!.reserve!);
-                }
-            }
-        }
-
-        // wrap response into PrecomposedLevels object where key is a FeeLevel label
-        const resultLevels: PrecomposedLevels = {};
-        const response = composeLevels.map(level =>
-            calculate(availableBalance, output, level, requiredAmount, tokenInfo, resourceFee),
-        );
-        response.forEach((tx, index) => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const composeLevel: (typeof composeLevels)[number] = composeLevels[index];
-            const feeLabel = composeLevel.label;
-            resultLevels[feeLabel] = tx;
-        });
-
-        const hasAtLeastOneValid = response.find(r => r.type !== 'error');
-        // there is no valid tx in predefinedLevels and there is no custom level.
-        // A Soroban transfer is never rescued this way: the ladder walks the inclusion fee down a
-        // stroop at a time, while the resource fee it cannot touch is orders of magnitude larger.
-        if (!hasAtLeastOneValid && !resultLevels.custom && !isContractTokenTransfer) {
-            const { minFee } = feeInfo;
-            const lastIndex = composeLevels.length - 1;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const lastLevel: (typeof composeLevels)[number] = composeLevels[lastIndex];
-            const lastKnownFee = lastLevel.feePerUnit;
-            let maxFee = new BigNumber(lastKnownFee).minus(1);
-            // generate custom levels in range from lastKnownFee -1 to feeInfo.minFee (coinInfo in @trezor/connect)
-            const customLevels: FeeLevel[] = [];
-            while (maxFee.gte(minFee)) {
-                customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom', blocks: -1 });
-                maxFee = maxFee.minus(1);
-            }
-
-            const customLevelsResponse = customLevels.map(level =>
-                calculate(availableBalance, output, level, requiredAmount, tokenInfo, resourceFee),
-            );
-
-            const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
-            if (customValid >= 0) {
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const customResult: (typeof customLevelsResponse)[number] =
-                    customLevelsResponse[customValid];
-                resultLevels.custom = customResult;
-            }
-        }
-
-        // format max (calculate sends it in the base units of whatever is being sent)
-        // update errorMessage values (reserve)
-        Object.keys(resultLevels).forEach(key => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const tx: (typeof resultLevels)[string] = resultLevels[key];
-            if (tx.type !== 'error' && tx.max) {
-                tx.max = convertAmountSubunitsToUnits(tx.max, decimals);
-            }
-            if (
-                tx.type === 'error' &&
-                tx.error === 'AMOUNT_IS_LESS_THAN_RESERVE' &&
-                requiredAmount
-            ) {
-                tx.errorMessage = {
-                    id: 'AMOUNT_IS_LESS_THAN_RESERVE',
-                    values: {
-                        reserve: formatNetworkAmount(requiredAmount.toString(), account.symbol),
-                        displaySymbol: getDisplaySymbol(account.symbol),
-                    },
-                };
-            }
-            if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
-                tx.errorMessage = {
-                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                    values: {
-                        networkDisplaySymbol: getDisplaySymbol(network.symbol),
-                    },
-                };
-            }
-        });
-
-        return resultLevels;
     },
 );
 
@@ -404,197 +91,38 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
         { getState, rejectWithValue },
     ) => {
-        const addressDisplayType = selectAddressDisplayType(getState());
+        const send = getSend(selectedAccount, getState);
 
-        let response;
-
-        const { outputs: signOutputs } = formState;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstSignOutput: (typeof signOutputs)[number] = signOutputs[0];
-
-        if (selectedAccount.networkType === 'ripple') {
-            const payment: RipplePayment = {
-                destination: firstSignOutput.address,
-                amount: networkAmountToSmallestUnit(firstSignOutput.amount, selectedAccount.symbol),
-            };
-
-            if (formState.destinationTag) {
-                payment.destinationTag = parseInt(formState.destinationTag, 10);
-            }
-
-            response = await TrezorConnect.rippleSignTransaction({
-                device: {
-                    path: device.path,
-                    instance: device.instance,
-                    state: device.state,
-                    useEmptyPassphrase: device.useEmptyPassphrase,
-                },
-                path: selectedAccount.path,
-                transaction: {
-                    fee: precomposedTransaction.feePerByte,
-                    flags: XRP_FLAG,
-                    sequence: selectedAccount.misc.sequence,
-                    payment,
-                },
-                payment_req: paymentRequests?.[0],
-                chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
-            });
-            if (response.success) {
-                return { serializedTx: response.payload.serializedTx };
-            }
-        } else if (selectedAccount.networkType === 'stellar') {
-            const { token: sentToken } = precomposedTransaction;
-
-            if (sentToken?.standard === 'STELLAR-CONTRACT') {
-                const backendUrl = selectBlockchainUrl(getState(), selectedAccount.symbol);
-                if (!backendUrl) {
-                    return rejectWithValue({
-                        error: 'sign-transaction-failed',
-                        message: 'Not connected to a Stellar backend.',
-                    });
-                }
-
-                // Composing already put the amount in the token's base units; converting the form
-                // value again would have to repeat that conversion with the same decimals.
-                const [composedOutput] = precomposedTransaction.outputs;
-                if (!composedOutput) {
-                    return rejectWithValue({
-                        error: 'sign-transaction-failed',
-                        message: 'Nothing composed to sign.',
-                    });
-                }
-
-                const { prepareContractTokenTransfer, serializeSignedTransaction } =
-                    await stellar();
-                const testnet = isTestnet(selectedAccount.symbol);
-
-                let prepared: StellarTransaction;
-                try {
-                    ({ transaction: prepared } = await prepareContractTokenTransfer({
-                        backendUrl,
-                        descriptor: selectedAccount.descriptor,
-                        sequence: selectedAccount.misc.stellarSequence,
-                        // What composing priced and the user approved: inclusion only, since
-                        // preparing adds back the resource fee the displayed `fee` already carries.
-                        inclusionFee: precomposedTransaction.feePerByte,
-                        contract: sentToken.contract,
-                        destination: firstSignOutput.address,
-                        amount: String(composedOutput.amount),
-                        isTestnet: testnet,
-                    }));
-                } catch (error) {
-                    // Nothing worth asking the user to approve on the device.
-                    return rejectWithValue({
-                        error: 'sign-transaction-failed',
-                        message: error instanceof Error ? error.message : 'Simulation failed.',
-                    });
-                }
-
-                const contractResponse = await TrezorConnect.stellarSignTransaction({
-                    device: {
-                        path: device.path,
-                        instance: device.instance,
-                        state: device.state,
-                        useEmptyPassphrase: device.useEmptyPassphrase,
-                    },
-                    payment_req: paymentRequests?.[0],
-                    path: selectedAccount.path,
-                    xdrBase64: prepared.toXdr(),
-                    testnet,
-                });
-
-                if (contractResponse.success) {
-                    return {
-                        serializedTx: serializeSignedTransaction(
-                            prepared,
-                            selectedAccount.descriptor,
-                            contractResponse.payload.signature,
-                        ),
-                    };
-                }
-
-                return rejectWithValue({
-                    error: 'sign-transaction-failed',
-                    errorCode: contractResponse.error.code,
-                    message: contractResponse.error.message,
-                });
-            }
-
-            const destinationAccount = await TrezorConnect.getAccountInfo({
-                descriptor: firstSignOutput.address,
-                coin: asCoinSymbol(selectedAccount.symbol),
-                suppressBackupWarning: true,
-            });
-
-            const destinationActivated =
-                destinationAccount.success && !destinationAccount.payload.empty;
-
-            const { token } = precomposedTransaction;
-            let asset: { type: StellarAssetType; code?: string; issuer?: string };
-            if (token) {
-                const tokenContractParts = token.contract.split('-');
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const code: string = tokenContractParts[0];
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const issuer: string = tokenContractParts[1];
-                asset = {
-                    type:
-                        code.length <= 4 ? StellarAssetType.ALPHANUM4 : StellarAssetType.ALPHANUM12,
-                    code,
-                    issuer,
-                };
-            } else {
-                asset = { type: StellarAssetType.NATIVE };
-            }
-
-            const { buildSendTransaction } = await stellar();
-
-            const testnet = isTestnet(selectedAccount.symbol);
-            const transaction = buildSendTransaction({
-                descriptor: selectedAccount.descriptor,
-                sequence: selectedAccount.misc.stellarSequence,
-                fee: precomposedTransaction.feePerByte,
-                destinationActivated,
-                destination: firstSignOutput.address,
-                amount: firstSignOutput.amount,
-                asset,
-                memo: formState.destinationTag,
-                isTestnet: testnet,
-            });
-
-            const xdrBase64 = transaction.toXdr();
-
-            response = await TrezorConnect.stellarSignTransaction({
-                device: {
-                    path: device.path,
-                    instance: device.instance,
-                    state: device.state,
-                    useEmptyPassphrase: device.useEmptyPassphrase,
-                },
-                payment_req: paymentRequests?.[0],
-                path: selectedAccount.path,
-                xdrBase64,
-                testnet,
-            });
-
-            if (response.success) {
-                const signature = Buffer.from(response.payload.signature, 'hex').toString('base64');
-                transaction.addSignature(selectedAccount.descriptor, signature);
-
-                return { serializedTx: transaction.toEnvelope().toXdr('hex') };
-            }
-        } else {
+        if (!send) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Invalid network type.',
             });
         }
 
-        // catch manual error from TransactionReviewModal
-        return rejectWithValue({
-            error: 'sign-transaction-failed',
-            errorCode: response.error.code,
-            message: response.error.message,
-        });
+        const addressDisplayType = selectAddressDisplayType(getState());
+
+        try {
+            const { serializedTx } = await send.sign({
+                account: selectedAccount,
+                draft: formState,
+                precomposed: precomposedTransaction,
+                options: {
+                    device: toChainSendDevice(device),
+                    chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
+                    paymentRequests,
+                },
+            });
+
+            return { serializedTx };
+        } catch (error) {
+            if (!(error instanceof ChainSendError)) throw error;
+
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                errorCode: error.connectErrorCode,
+                message: error.message,
+            });
+        }
     },
 );

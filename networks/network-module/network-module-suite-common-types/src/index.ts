@@ -163,3 +163,14 @@ export {
 } from './chain/send/composeHelpers';
 export type { ExternalComposeOutput } from './chain/send/composeHelpers';
 export { toCoinSymbol } from './chain/toCoinSymbol';
+export {
+    coinAmountToSmallestUnit,
+    convertAmountSubunitsToUnits,
+    formatCoinAmount,
+} from './chain/send/composeHelpers';
+export {
+    calculateAccountTransfer,
+    composeAccountTransferLevels,
+    getRequestedFeeLevels,
+} from './chain/send/accountTransfer';
+export type { ComposeAccountTransferLevelsParams } from './chain/send/accountTransfer';

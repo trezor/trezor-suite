@@ -19,7 +19,6 @@
         },
         {
             "path": "../../network-module/network-module-types"
-        },
-        { "path": "../../../packages/utils" }
+        }
     ]
 }

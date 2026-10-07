@@ -12327,10 +12327,11 @@ __metadata:
     "@trezor/network-cardano-suite-common": "workspace:*"
     "@trezor/network-ethereum-suite-common": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
-    "@trezor/network-ripple": "workspace:*"
+    "@trezor/network-ripple-suite-common": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/network-solana-types": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
+    "@trezor/network-stellar-suite-common": "workspace:*"
     "@trezor/network-tron": "workspace:*"
     "@trezor/network-tron-suite-common": "workspace:*"
     "@trezor/protobuf": "workspace:*"
@@ -18455,7 +18456,6 @@ __metadata:
     "@trezor/network-cardano-types": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
-    "@trezor/utils": "workspace:*"
     cbor: "npm:^10.0.12"
     crc: "npm:^4.3.2"
   languageName: unknown
@@ -18545,10 +18545,12 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/network-ripple": "workspace:*"
     "@trezor/network-ripple-types": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -18613,10 +18615,13 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
     "@trezor/network-stellar-types": "workspace:*"
+    "@trezor/utils": "workspace:*"
     crc: "npm:^4.3.2"
   languageName: unknown
   linkType: soft

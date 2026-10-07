@@ -3,10 +3,12 @@ import type { PROTO } from '@trezor/connect-common';
 import {
     type AccountType,
     type Output,
+    coinAmountToSmallestUnit,
+    convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
+    formatCoinAmount,
 } from '@trezor/network-module-suite-common-types';
 import type { NetworkSymbol } from '@trezor/network-module-types';
-import { BigNumber } from '@trezor/utils';
 
 // Connect's Cardano constants, by value: importing them would load Connect's protobuf runtime.
 const MAINNET_PROTOCOL_MAGIC = 764824073;
@@ -54,13 +56,6 @@ export const getAddressParameters = (account: { index: number }, path: string) =
     stakingPath: getStakingPath(account),
 });
 
-const coinAmountToSmallestUnit = (amount: string | null, decimals: number) => {
-    if (!amount) return '0';
-    if (!decimals) return amount;
-
-    return convertAmountUnitsToSubunits(amount, decimals);
-};
-
 /**
  * The send form's outputs as Cardano composing takes them: lovelace for ADA, the token's smallest
  * unit for native assets.
@@ -96,16 +91,6 @@ export const transformUserOutputs = (
         };
     });
 
-const convertAmountSubunitsToUnits = (amount: string, decimals: number) => {
-    const bAmount = new BigNumber(amount || '0');
-
-    if (bAmount.isNaN()) {
-        throw new Error('Amount is not a number');
-    }
-
-    return bAmount.div(new BigNumber(10).exponentiatedBy(decimals)).toString(10);
-};
-
 /**
  * Converts the 'max' amount coin selection returns in lovelace (or the token's smallest unit) to
  * ADA (or the token's unit).
@@ -121,7 +106,7 @@ export const formatMaxOutputAmount = (
     if (!maxOutput || !maxAmount) return maxAmount;
     if (maxOutput.assets.length === 0) {
         // output without asset, convert lovelaces to ADA
-        return decimals ? convertAmountSubunitsToUnits(maxAmount, decimals) : maxAmount;
+        return formatCoinAmount(maxAmount, decimals);
     }
 
     const { assets } = maxOutput;

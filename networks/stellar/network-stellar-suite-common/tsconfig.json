@@ -3,12 +3,19 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../../packages/blockchain-link-types"
+        },
+        {
+            "path": "../../../packages/connect-common"
+        },
+        {
             "path": "../../network-module/network-module-suite-common-types"
+        },
+        {
+            "path": "../../network-module/network-module-types"
         },
         { "path": "../network-stellar" },
         { "path": "../network-stellar-types" },
-        {
-            "path": "../../network-module/network-module-types"
-        }
+        { "path": "../../../packages/utils" }
     ]
 }
