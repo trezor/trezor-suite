@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { selectDeviceModel } from '@suite-common/device';
+import { getPassphraseMaxLength, selectDeviceModel } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 import { Banner, Column, H3 } from '@trezor/components';
@@ -55,6 +55,7 @@ export const PassphraseWalletConfirmation = ({
                         deviceModel={deviceModel ?? undefined}
                         onSubmit={onSubmit}
                         offerPassphraseOnDevice={offerPassphraseOnDevice}
+                        passphraseMaxLength={getPassphraseMaxLength(device)}
                         allowNonAsciiCharacters={isExistingWallet}
                     />
                 </Column>
