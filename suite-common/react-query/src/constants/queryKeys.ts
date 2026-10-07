@@ -68,3 +68,36 @@ export const desktopQueryKeys = {
 export const tradingQueryKeys = {
     otcData: () => ['trading', 'otc-data'],
 } as const satisfies Record<string, AllowedQueryKey>;
+
+/**
+ * Chain data, scoped by network and by the backend it came from. The unit is one account on one
+ * chain, so an address used on several chains has one entry per chain. Key parts are plain
+ * strings: a live object never belongs in a key. Descriptors make these keys confidential.
+ */
+export const chainQueryKeys = {
+    all: (symbol: string) => ['chain', symbol],
+    backend: (symbol: string, backendType: string) => ['chain', symbol, backendType],
+    accounts: (symbol: string, backendType: string) => ['chain', symbol, backendType, 'account'],
+    account: (symbol: string, backendType: string, descriptor: string) => [
+        'chain',
+        symbol,
+        backendType,
+        'account',
+        descriptor,
+    ],
+    accountBalance: (symbol: string, backendType: string, descriptor: string) => [
+        'chain',
+        symbol,
+        backendType,
+        'account',
+        descriptor,
+        'balance',
+    ],
+    nativeFiatRate: (symbol: string, backendType: string, currency: string) => [
+        'chain',
+        symbol,
+        backendType,
+        'fiat-rate',
+        currency,
+    ],
+} as const satisfies Record<string, AllowedQueryKey>;
