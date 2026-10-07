@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { tradingThunks } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button } from '@trezor/components';
 
@@ -27,7 +28,10 @@ export const TradingExchangeDetailPaymentReturned = ({
 }: TradingExchangeDetailPaymentReturnedProps) => {
     const { dispatch } = useServices(injectDispatch);
 
-    const handleClick = () => dispatch(gotoThunk({ routeName: 'wallet-trading-exchange' }));
+    const handleClick = () => {
+        dispatch(tradingThunks.clearQuotesAndParamsByTradingTypeThunk({ tradingType: 'exchange' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-exchange' }));
+    };
 
     return (
         <TradingDetailTerminalState
