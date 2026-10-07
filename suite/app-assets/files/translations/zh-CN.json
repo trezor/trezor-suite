@@ -407,7 +407,6 @@
   "TR_APPS_EMBEDDING": "App 嵌入",
   "TR_ASCII_ONLY": "只允许使用 ASCII 字符",
   "TR_ASSETS": "网络",
-  "TR_ASSET_CODE": "资产代码",
   "TR_ASSET_CODE_INVALID": "资产代码无效。请输入有效的资产代码。",
   "TR_ASSET_PICKER_LOW_BALANCE": "余额不足",
   "TR_ASSET_PICKER_NETWORK_FILTER": "网络",
