@@ -6,7 +6,7 @@ Build target for Trezor Suite desktop application.
 
 > The @suite/desktop-app package now serves as a container for the generated/bundled code from the UI and Electron layers, and is responsible for creating the Electron app. No custom code should be added to this package, and no dependencies from the monorepo should be added to the package.json in @suite/desktop-app. Doing so would break this system.
 
-Both `dependencies` and `devDependencies` defined in `package.json` of this package are [taken as "external" and copied into bundle without other processing](../suite-desktop-core/scripts/build.ts/#L70).
+Both `dependencies` and `devDependencies` defined in `package.json` of this package are [taken as "external" and copied into bundle without other processing](../desktop-app-main/scripts/build.ts/#L70).
 
 ## Development
 
