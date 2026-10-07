@@ -82,7 +82,10 @@ impl NotificationRegistry {
             let matches = peer.is_none_or(|peer| entry.peer == peer)
                 && device_id.is_none_or(|id| entry.device_id == id)
                 && characteristic.is_none_or(|ch| entry.characteristic == *ch);
-            if matches {
+            // A stream task may also end on its own. Nothing else removes
+            // such an entry, so drop it here instead of letting it pretend
+            // to be a live user of the shared BLE subscription.
+            if matches || entry.task.is_finished() {
                 entry.task.abort();
                 removed.push(entry);
             } else {
@@ -100,6 +103,7 @@ impl NotificationRegistry {
                 let unsubscribe = !entries.iter().any(|other| {
                     other.device_id == entry.device_id
                         && other.characteristic == entry.characteristic
+                        && !other.task.is_finished()
                 });
 
                 RemovedStream {
@@ -118,6 +122,15 @@ mod tests {
 
     fn dummy_task() -> JoinHandle<()> {
         tokio::spawn(std::future::pending::<()>())
+    }
+
+    async fn finished_task() -> JoinHandle<()> {
+        let task = tokio::spawn(async {});
+        while !task.is_finished() {
+            tokio::task::yield_now().await;
+        }
+
+        task
     }
 
     fn stream_count(registry: &NotificationRegistry) -> usize {
@@ -188,6 +201,32 @@ mod tests {
         );
 
         assert_eq!(stream_count(&registry), 1);
+    }
+
+    // A stream task that ended on its own must not keep the shared BLE
+    // subscription of another connection alive.
+    #[tokio::test]
+    async fn ignores_finished_streams_as_subscription_users() {
+        let registry = NotificationRegistry::default();
+        registry.register(
+            "a".into(),
+            "dev1".into(),
+            NotificationCharacteristic::Read,
+            finished_task().await,
+        );
+        registry.register(
+            "b".into(),
+            "dev1".into(),
+            NotificationCharacteristic::Read,
+            dummy_task(),
+        );
+
+        // Client "b" closes the last running stream of dev1/Read.
+        let removed = registry.remove(Some("b"), None, None);
+
+        assert_eq!(removed.len(), 2);
+        assert!(removed.iter().all(|stream| stream.unsubscribe));
+        assert_eq!(stream_count(&registry), 0);
     }
 
     #[tokio::test]
