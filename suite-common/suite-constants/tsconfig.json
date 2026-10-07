@@ -2,7 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../wallet-config" },
+        {
+            "path": "../../networks/bitcoin/network-bitcoin-suite-common"
+        },
         { "path": "../../packages/protobuf" }
     ]
 }

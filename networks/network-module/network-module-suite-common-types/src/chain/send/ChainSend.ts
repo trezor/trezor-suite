@@ -3,7 +3,12 @@ import type {
     BlockbookTransaction,
     TokenInfo,
 } from '@trezor/blockchain-link-types';
-import type { AccountUtxo, DeviceIdentity, PROTO } from '@trezor/connect-common';
+import type {
+    AccountTransaction,
+    AccountUtxo,
+    DeviceIdentity,
+    PROTO,
+} from '@trezor/connect-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import type {
@@ -109,6 +114,9 @@ export type ChainComposeContext = {
 
     /** Keep the network's account reserve or rent out of what can be sent. */
     readonly isNetworkReserveEnabled?: boolean;
+
+    /** The user enters amounts in the coin's smallest unit (satoshis), where the network allows. */
+    readonly isSmallestUnitEnabled?: boolean;
 };
 
 export type ComposeFeeLevelsParams = {
@@ -127,6 +135,15 @@ export type ChainSignOptions = {
     /** Show long addresses and data in chunks on the device. */
     readonly chunkify?: boolean;
     readonly paymentRequests?: PROTO.PaymentRequest[];
+
+    /** The unit the device shows amounts in, where the network allows. */
+    readonly amountUnit?: PROTO.AmountUnit;
+
+    /**
+     * The transaction a replacement (RBF) spends again, from the wallet's own history. Signing
+     * then need not ask the backend for it, which would tell the backend which one is replaced.
+     */
+    readonly replacedTransactions?: AccountTransaction[];
 
     /**
      * Called with what is about to be signed, before the device asks the user, so the app can show

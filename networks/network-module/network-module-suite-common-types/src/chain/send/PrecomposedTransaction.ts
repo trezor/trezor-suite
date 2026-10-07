@@ -256,3 +256,16 @@ export type FeeLevelLabel = FeeLevel['label'];
 export const isFinalPrecomposedTransaction = (
     tx?: GeneralPrecomposedTransaction,
 ): tx is PrecomposedTransactionFinal => !!tx && tx.type === 'final';
+
+export const isRbfTransaction = (
+    tx: GeneralPrecomposedTransactionFinal,
+): tx is PrecomposedTransactionFinalBumpFeeRbf | PrecomposedTransactionFinalCancelRbf =>
+    'rbfType' in tx;
+
+export const isRbfBumpFeeTransaction = (
+    tx: GeneralPrecomposedTransactionFinal,
+): tx is PrecomposedTransactionFinalBumpFeeRbf => isRbfTransaction(tx) && tx.rbfType === 'bump-fee';
+
+export const isRbfCancelTransaction = (
+    tx: GeneralPrecomposedTransactionFinal,
+): tx is PrecomposedTransactionFinalCancelRbf => isRbfTransaction(tx) && tx.rbfType === 'cancel';

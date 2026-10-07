@@ -27,6 +27,9 @@
         { "path": "../../packages/crypto-utils" },
         { "path": "../../packages/device-utils" },
         {
+            "path": "../../networks/bitcoin/network-bitcoin-suite-common"
+        },
+        {
             "path": "../../networks/cardano/network-cardano-suite-common"
         },
         {

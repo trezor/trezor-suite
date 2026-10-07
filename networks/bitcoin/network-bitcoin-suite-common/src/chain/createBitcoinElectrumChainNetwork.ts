@@ -14,13 +14,15 @@ import {
 } from '@trezor/network-module-suite-common-types';
 
 import { getBitcoinChainNetworkConfig } from './getBitcoinChainNetworkConfig';
+import { type BitcoinChainSendDeps, createBitcoinChainSend } from './send/createBitcoinChainSend';
 
 export type BitcoinElectrumChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchBlockbookHttpCurrentRateDep &
     FetchCoinGeckoCurrentRateDep &
     FetchConnectTransactionsDeps &
     FetchBlockbookHttpHistoricRatesDep &
-    FetchCoinGeckoHistoricRatesDep;
+    FetchCoinGeckoHistoricRatesDep &
+    BitcoinChainSendDeps;
 
 /**
  * Bitcoin-like network served by the user's Electrum server. Electrum quotes no rates, so they
@@ -42,6 +44,8 @@ export const createBitcoinElectrumChainNetwork = (
         (await deps.fetchBlockbookHttpCurrentRate(params)) ??
         (await deps.fetchCoinGeckoCurrentRate(params));
 
+    const createSend = createBitcoinChainSend(deps);
+
     return params => {
         const config = getBitcoinChainNetworkConfig(params.symbol);
 
@@ -61,6 +65,7 @@ export const createBitcoinElectrumChainNetwork = (
                 useStellarContractTokens: false,
             },
             fetchHistoricFiatRates: config.hasFiatRate ? fetchHistoricFiatRates : null,
+            send: createSend(params.symbol),
         });
     };
 };

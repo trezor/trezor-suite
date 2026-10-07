@@ -12,11 +12,13 @@ import {
 } from '@trezor/network-module-suite-common-types';
 
 import { getBitcoinChainNetworkConfig } from './getBitcoinChainNetworkConfig';
+import { type BitcoinChainSendDeps, createBitcoinChainSend } from './send/createBitcoinChainSend';
 
 export type BitcoinBlockbookChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectCurrentFiatRateDeps &
     FetchConnectTransactionsDeps &
-    FetchConnectHistoricFiatRatesDeps;
+    FetchConnectHistoricFiatRatesDeps &
+    BitcoinChainSendDeps;
 
 /** Bitcoin-like network served by Blockbook, which also quotes its fiat rates. */
 export const createBitcoinBlockbookChainNetwork = (
@@ -26,6 +28,8 @@ export const createBitcoinBlockbookChainNetwork = (
     const fetchTransactions = createFetchConnectTransactions(deps);
     const fetchConnectHistoricRates = createFetchConnectHistoricFiatRates(deps);
     const fetchFiatRate = createFetchConnectCurrentFiatRate(deps);
+
+    const createSend = createBitcoinChainSend(deps);
 
     return params => {
         const config = getBitcoinChainNetworkConfig(params.symbol);
@@ -46,6 +50,7 @@ export const createBitcoinBlockbookChainNetwork = (
                 useStellarContractTokens: false,
             },
             fetchHistoricFiatRates: config.hasFiatRate ? fetchConnectHistoricRates : null,
+            send: createSend(params.symbol),
         });
     };
 };
