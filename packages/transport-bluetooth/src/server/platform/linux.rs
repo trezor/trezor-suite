@@ -116,13 +116,10 @@ async fn get_device_properties(
 
 async fn is_paired(id: String) -> Result<bool, PlatformError> {
     let (props,) = get_device_properties(id, DBUS_TIMEOUT).await?;
-    if let Some(variant) = props.get("Paired") {
-        if let Some(is_paired) = variant.0.as_any().downcast_ref::<bool>().cloned() {
-            return Ok(is_paired);
-        }
-    }
-
-    Ok(false)
+    props
+        .get("Paired")
+        .and_then(|variant| variant.0.as_any().downcast_ref::<bool>().copied())
+        .ok_or_else(|| PlatformError::from("Paired property is missing or not a boolean"))
 }
 
 /// try to disconnect the device silently
