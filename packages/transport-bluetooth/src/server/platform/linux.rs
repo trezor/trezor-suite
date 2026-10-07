@@ -36,8 +36,8 @@ impl PlatformDevice for LinuxDevice {
     }
 
     async fn connect(ctx: ConnectDeviceContext) -> Result<(), PlatformError> {
-        let id = ctx.params.id.clone();
-        let paired = is_paired(id).await?;
+        let device = ctx.manager.get_device_or_die(ctx.params.id.clone()).await?;
+        let paired = is_paired(device.get_id()).await?;
         if paired {
             connect_with_timeout(ctx.clone()).await?;
         } else {
@@ -84,7 +84,9 @@ fn get_device_proxy(
     ),
     dbus::Error,
 > {
-    let device_path = format!("/org/bluez/{id}");
+    let device_path = dbus::Path::new(format!("/org/bluez/{id}")).map_err(|reason| {
+        dbus::Error::new_custom("org.freedesktop.DBus.Error.InvalidArgs", &reason)
+    })?;
     let (resource, conn) = dbus_tokio::connection::new_system_sync()?;
     let connection_task = tokio::spawn(resource);
     let timeout = Duration::from_millis(timeout.into());
