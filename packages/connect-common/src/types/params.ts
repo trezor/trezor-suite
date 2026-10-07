@@ -5,7 +5,7 @@ import { Type } from '@trezor/schema-utils';
 import type { Err, Ok } from '@trezor/type-utils';
 
 import type { CoinSymbol } from './coinInfo';
-import type { DeviceState, DeviceUniquePath } from './device';
+import type { DeviceState, DeviceUniquePath, StaticSessionId } from './device';
 import type { SerializedError } from '../constants/errors';
 
 export interface DeviceIdentity {
@@ -13,6 +13,19 @@ export interface DeviceIdentity {
     state?: DeviceState;
     instance?: number;
 }
+
+/**
+ * `device` the way the privileged tier demands it: an identity that actually identifies a device.
+ *
+ * `path` and `state.staticSessionId` are the two identifiers device selection can resolve; without
+ * either of them the call falls back to "whichever device is connected", which is exactly the
+ * ambiguity the privileged tier must not allow. Modelled as a union instead of required fields so
+ * `DeviceIdentity` keeps its all-optional shape everywhere else, while `device: {}` stops compiling.
+ */
+export type RequiredDeviceIdentity = (
+    | (DeviceIdentity & { path: DeviceUniquePath })
+    | (DeviceIdentity & { state: DeviceState & { staticSessionId: StaticSessionId } })
+) & { useEmptyPassphrase?: boolean };
 
 /**
  * Common parameters of methods that never talk to a device (`useDevice = false` at runtime).

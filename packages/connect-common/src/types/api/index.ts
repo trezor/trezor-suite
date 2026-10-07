@@ -1,10 +1,11 @@
 import type { TrezorConnectCallable } from './callable';
+import type { TrezorConnectCallableWithRequiredDevice } from './deviceRequired';
 import type { TrezorConnectInternal } from './internal';
 import type { TrezorConnectManagement } from './management';
 import type { CallMethodPayload } from '../../events/call';
 import type { ConnectSettings, Manifest } from '../settings';
 
-export type { TrezorConnectCallable };
+export type { TrezorConnectCallable, TrezorConnectCallableWithRequiredDevice };
 
 export interface TrezorConnectCore<InitSettings extends Record<string, any>> {
     init(settings: InitSettings & { manifest: Manifest }): Promise<void>;
