@@ -25,7 +25,6 @@ import {
 } from '@suite-native/trading-state';
 import { type BuyFormType, type BuyFormValues } from '@suite-native/trading-types';
 
-import { resetBuyForm } from '../../utils/buy/buyFormResetUtils';
 import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
@@ -33,7 +32,6 @@ import { useProviderMetadataChangeEffect } from '../general/form/useProviderMeta
 import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccountChangeEffect';
 import { useReceiveAccountPreselectionEffect } from '../general/form/useReceiveAccountPreselectionEffect';
 import { useTradeableAssetValidityEffect } from '../general/form/useTradeableAssetValidityEffect';
-import { useTradingFormResetRequest } from '../general/form/useTradingFormResetRequest';
 
 const useBuyQuotesChangeEffect = ({ getValues, setValue }: BuyFormType) => {
     const quotes = useSelector(selectValidTradingBuyQuotesNative);
@@ -183,10 +181,6 @@ export const useBuyForm = (): BuyFormType => {
     useValidations(form, limits);
     useCountryChangeEffect(control);
     useProviderMetadataChangeEffect(control, 'buy');
-    useTradingFormResetRequest({
-        tradeType: 'buy',
-        resetForm: () => resetBuyForm(form, defaultValues),
-    });
 
     return form;
 };

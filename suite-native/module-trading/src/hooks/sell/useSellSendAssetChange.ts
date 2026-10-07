@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { tradingSellActions } from '@suite-common/trading';
 import { useWatch } from '@suite-native/forms';
 import { sellActions } from '@suite-native/trading-state';
@@ -9,6 +11,7 @@ import { useTradeableAssetChange } from '../general/form/useTradeableAssetChange
 
 export const useSellSendAssetChange = (form: SellFormType) => {
     const { control, setValue } = form;
+    const { dispatch } = useServices(injectDispatch);
     const selectedAsset = useWatch({ control, name: 'sendAsset' });
     const setSelectedAsset = useCallback(
         (asset: TradeableAsset) => setValue('sendAsset', asset),
@@ -25,5 +28,10 @@ export const useSellSendAssetChange = (form: SellFormType) => {
         getSetTradingAccountKeyAction: tradingSellActions.setTradingAccountKey,
     });
 
-    return { selectedAsset, changeAsset };
+    const clearAsset = useCallback(() => {
+        setValue('sendAsset', undefined);
+        dispatch(tradingSellActions.setTradingAccountKey(undefined));
+    }, [dispatch, setValue]);
+
+    return { selectedAsset, changeAsset, clearAsset };
 };
