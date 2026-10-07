@@ -12,9 +12,9 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getBitcoinNetwork, getBitcoinNetworkOrThrow } from '../data/coinInfo';
+import { getBitcoinNetwork, getBitcoinNetworkOrThrow, getCoinInfoOfPath } from '../data/coinInfo';
 import { bundlify, validateCoinPath } from './common/paramsValidator';
-import { getPublicKeyLabel } from '../utils/accountUtils';
+import { getLabelWithPathNetwork, getPublicKeyLabel } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
 
 type Params = {
@@ -83,7 +83,10 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
     hasBundle?: boolean;
 
     get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
+        return this.coinPerms(
+            'read_xpub',
+            this.params.map(({ proto, coinInfo }) => getCoinInfoOfPath(proto.address_n, coinInfo)),
+        );
     }
 
     get info() {
@@ -94,7 +97,11 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const first: (typeof params)[number] = params[0];
 
-        return getPublicKeyLabel(first.proto.address_n, first.coinInfo);
+        return getLabelWithPathNetwork(
+            getPublicKeyLabel(first.proto.address_n, first.coinInfo),
+            first.proto.address_n,
+            first.coinInfo,
+        );
     }
 
     async run({ sendCoreMessage }: MethodContext) {
