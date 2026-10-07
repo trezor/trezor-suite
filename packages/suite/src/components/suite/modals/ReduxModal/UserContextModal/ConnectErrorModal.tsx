@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import {
     connectPopupActions,
     connectPopupCallInnerThunk,
+    connectPopupCancelThunk,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
@@ -29,7 +30,14 @@ export const ConnectSelectDeviceModal = () => {
     const isLoading = isDiscoveryRunning;
 
     const onCancel = () => {
-        dispatch(connectPopupActions.finishCall());
+        // A call that ended with a device error never answered its caller: its deferred is still
+        // pending and would hold back every call queued after it. Cancel it instead of only
+        // closing, so the caller gets a response and the queue moves on.
+        if (popupCall?.state === 'call-error') {
+            dispatch(connectPopupCancelThunk({}));
+        } else {
+            dispatch(connectPopupActions.finishCall());
+        }
     };
     const onResume = () => {
         if (popupCall?.state === 'call-error')
@@ -83,10 +91,6 @@ export const ConnectErrorModal = () => {
     const prerequisite = useSelector(selectPrerequisite);
     const handleOpenSuite = useOpenSuiteDesktop();
 
-    const onFinish = () => {
-        dispatch(connectPopupActions.finishCall());
-    };
-
     if (!popupCall || (popupCall?.state !== 'error' && popupCall?.state !== 'call-error'))
         return null;
 
@@ -103,6 +107,16 @@ export const ConnectErrorModal = () => {
 
     if (isDeviceReconnectError && (!prerequisite || prerequisite === 'device-disconnected'))
         return <ConnectSelectDeviceModal />;
+
+    const onFinish = () => {
+        // Same as the reconnect modal above: a device error left the call unanswered, so close it
+        // through a cancel.
+        if (isDeviceReconnectError && popupCall.state === 'call-error') {
+            dispatch(connectPopupCancelThunk({}));
+        } else {
+            dispatch(connectPopupActions.finishCall());
+        }
+    };
 
     const getIconIntent = () => {
         if (isCancelled) return 'warning';
