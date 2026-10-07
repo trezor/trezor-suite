@@ -583,6 +583,28 @@ describe('deriveBitcoinSwapFromAddresses', () => {
         );
     });
 
+    it('should compose send-max with percent amounts relative to available balance, ignoring a stale send amount', async () => {
+        await deriveBitcoinSwapFromAddresses({
+            account,
+            network,
+            sendStringAmount: '0.5',
+            decimals: 8,
+            setMaxOutputId: 0,
+            btcSwapComposeTemplate: btcSwapComposeTemplateWithPercent(2),
+        });
+
+        expect(TrezorConnect.composeTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({
+                outputs: [
+                    { type: 'send-max', address: 'unused-address' },
+                    { type: 'opreturn', dataHex: defaultOpreturnHex },
+                    { type: 'payment', amount: '200', address: 'unused-address' },
+                    { type: 'payment', amount: '200', address: 'unused-address' },
+                ],
+            }),
+        );
+    });
+
     it('should treat sendStringAmount as satoshis when shouldSendInSats is true', async () => {
         await deriveBitcoinSwapFromAddresses({
             account,

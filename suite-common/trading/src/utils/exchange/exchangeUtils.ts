@@ -313,7 +313,7 @@ export const deriveBitcoinSwapFromAddresses = async ({
     }
 
     let sendAmountSubunit: BigNumber;
-    if (!sendStringAmount) {
+    if (!sendStringAmount || setMaxOutputId === 0) {
         sendAmountSubunit = new BigNumber(account.availableBalance);
     } else if (shouldSendInSats) {
         sendAmountSubunit = new BigNumber(sendStringAmount);
