@@ -1,3 +1,4 @@
+import { AddressFormatter } from '@suite-common/formatters';
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
@@ -207,6 +208,12 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                 await expect(tradingPage.pendingApprovalTransactionId).toHaveAttribute(
                     'id',
                     tradingMock.lastBroadcastTxid,
+                );
+                await expect(tradingPage.pendingApprovalTransactionId).toHaveText(
+                    AddressFormatter.format(tradingMock.lastBroadcastTxid, {
+                        format: 'long',
+                        isChunked: false,
+                    }),
                 );
                 await tradingPage.pendingApprovalTransactionId.click();
                 await expect(tradingPage.approvalModal.heading).toHaveTranslation(
