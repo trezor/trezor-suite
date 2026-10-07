@@ -13,6 +13,8 @@ pub struct MacosDevice;
 #[derive(Clone, Debug)]
 enum SubscriptionResult {
     Success,
+    Disconnected,
+    Timeout,
     Error(String),
 }
 
@@ -67,7 +69,7 @@ pub async fn try_to_subscribe(ctx: &ConnectDeviceContext) -> Result<(), Platform
             let is_connected = subscription_device.is_connected().await.unwrap_or(false);
             if !is_connected {
                 info!("subscription_task device disconnected");
-                return SubscriptionResult::Error("Device disconnected".to_string());
+                return SubscriptionResult::Disconnected;
             }
 
             info!(
@@ -78,7 +80,7 @@ pub async fn try_to_subscribe(ctx: &ConnectDeviceContext) -> Result<(), Platform
 
             if start.elapsed() > timeout {
                 info!("subscription_task timeout");
-                return SubscriptionResult::Error("Subscription timeout".to_string());
+                return SubscriptionResult::Timeout;
             }
 
             let characteristic = subscription_device.characteristics().into_iter().find(|c| {
@@ -122,6 +124,21 @@ pub async fn try_to_subscribe(ctx: &ConnectDeviceContext) -> Result<(), Platform
 
     match result {
         SubscriptionResult::Success => Ok(()),
+        SubscriptionResult::Disconnected | SubscriptionResult::Timeout => {
+            let reason = match result {
+                SubscriptionResult::Timeout => "Subscription timeout",
+                _ => "Device disconnected",
+            };
+
+            dispatch_status(
+                manager.clone(),
+                device.clone(),
+                DeviceConnectionStatus::Disconnected,
+            )
+            .await;
+
+            Err(reason.into())
+        }
         SubscriptionResult::Error(e) => {
             device.set_connection_status(DeviceConnectionStatus::PairingError { error: e.clone() });
             dispatch_status(
