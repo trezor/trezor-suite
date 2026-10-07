@@ -5,7 +5,7 @@ import type { BuyTrade } from 'invity-api';
 import { type NetworkSymbol, type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { FeatureFlag, type FeatureFlagsRootState } from '@suite-native/feature-flags';
@@ -37,7 +37,11 @@ const supportedCoins: readonly NetworkSymbol[] = [
 ];
 
 describe('buySelectors', () => {
-    let state: TradingRootState & AccountsRootState & FeatureFlagsRootState & NetworksRootState;
+    let state: TradingRootState &
+        AccountsRootState &
+        FeatureFlagsRootState &
+        NetworksRootState &
+        WalletSettingsRootState;
 
     beforeEach(() => {
         Platform.OS = 'ios';
@@ -144,7 +148,7 @@ describe('buySelectors', () => {
 
         it('should return object with computed default values', () => {
             expect(selectBuyFormDefaultValues(state)).toEqual({
-                fiatCurrency: 'czk',
+                fiatCurrency: 'usd',
                 country: expect.objectContaining({
                     value: 'CZ',
                 }),
@@ -164,7 +168,18 @@ describe('buySelectors', () => {
             );
         });
 
-        it('should use default value for fiat currency if no fiat is suggested', () => {
+        it('should use suggested fiat currency if base currency is not supported', () => {
+            state.wallet.settings.localCurrency = 'jpy';
+
+            expect(selectBuyFormDefaultValues(state)).toEqual(
+                expect.objectContaining({
+                    fiatCurrency: 'czk',
+                }),
+            );
+        });
+
+        it('should use default value for fiat currency if base currency is not supported and no fiat is suggested', () => {
+            state.wallet.settings.localCurrency = 'jpy';
             state.wallet.trading.buy.buyInfo!.buyInfo.suggestedFiatCurrency = undefined;
 
             expect(selectBuyFormDefaultValues(state)).toEqual(

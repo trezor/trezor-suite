@@ -41,7 +41,10 @@ describe('BuyFiatCurrencyPicker', () => {
     beforeEach(async () => {
         mockUseListDataFilter = jest.requireActual('@suite-common/trading').useListDataFilter;
         reportMock.mockClear();
-        store = createTradingTestStore({ tradeType: 'buy' });
+        store = createTradingTestStore({
+            tradeType: 'buy',
+            overrides: { wallet: { settings: { localCurrency: 'czk' } } },
+        });
         const { result } = await renderHookWithStoreProvider(() => useBuyForm(), {
             services: { ...services, store },
         });

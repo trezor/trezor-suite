@@ -15,7 +15,11 @@ import {
     selectTradingBuySupportedCryptoIds,
     selectValidTradingBuyQuotes,
 } from '@suite-common/trading';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectBaseCurrency,
+} from '@suite-common/wallet-core';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import {
     coinInfoToTradeableAsset,
@@ -24,7 +28,7 @@ import {
 import { type BuyFormValues, type FiatCurrencyItem } from '@suite-native/trading-types';
 import { unique } from '@trezor/utils';
 
-import { getAssetByEnabledNetworksFilter } from '../utils';
+import { getAssetByEnabledNetworksFilter, getDefaultFiatCurrency } from '../utils';
 import {
     selectTradingResidenceCountry,
     selectTradingResidenceCountrySubdivision,
@@ -33,10 +37,9 @@ import {
     type TradingRootState,
     createMemoizedSelector,
     createMemoizedSelectorWithAccounts,
+    createMemoizedSelectorWithWalletSettings,
     createTradingWithFeatureFlagsMemoizedSelector,
 } from '../reducers';
-
-const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 
 export const selectTradingBuy = (state: TradingRootState) => state.wallet.trading.buy;
 
@@ -91,7 +94,7 @@ export const selectBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSel
     },
 );
 
-export const selectBuyFormDefaultValues = createMemoizedSelector(
+export const selectBuyFormDefaultValues = createMemoizedSelectorWithWalletSettings(
     [
         selectTradingBuyInfo as unknown as (
             state: TradingRootState,
@@ -99,8 +102,9 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
         ({ wallet }) => wallet.trading.info.coins,
         selectTradingResidenceCountry,
         selectTradingResidenceCountrySubdivision,
+        selectBaseCurrency,
     ],
-    (buyInfo, coins, residenceCountry, residenceCountrySubdivision) => {
+    (buyInfo, coins, residenceCountry, residenceCountrySubdivision, baseCurrency) => {
         if (!buyInfo || !coins) {
             return {};
         }
@@ -108,7 +112,11 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
         const { suggestedFiatCurrency } = buyInfo.buyInfo;
         const country = residenceCountry ?? (buyInfo.buyInfo.country as TradingCountryCode);
 
-        const fiatCurrency = suggestedFiatCurrency || DEFAULT_FIAT_CURRENCY_FALLBACK;
+        const fiatCurrency = getDefaultFiatCurrency({
+            baseCurrency,
+            supportedFiatCurrencies: buyInfo.supportedFiatCurrencies,
+            suggestedFiatCurrency,
+        });
         const countryDefaultValue =
             nonSanctionedRegional.getCountryOptionWithWorldwideFallback(country);
 
@@ -118,7 +126,7 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
         );
 
         return {
-            fiatCurrency: fiatCurrency.toLowerCase(),
+            fiatCurrency,
             country: countryDefaultValue,
             countrySubdivision: countrySubdivisionDefaultValue,
             amountInCrypto: false,

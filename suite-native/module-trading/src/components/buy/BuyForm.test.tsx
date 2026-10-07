@@ -119,7 +119,7 @@ describe('BuyForm', () => {
 
             expect(
                 getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')),
-            ).toHaveTextContent(/CZK/);
+            ).toHaveTextContent(/USD/);
             expect(
                 getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
             ).toHaveTextContent(

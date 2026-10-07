@@ -1,6 +1,6 @@
 import type { SellFiatTrade } from 'invity-api';
 
-import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
@@ -23,7 +23,7 @@ import {
 } from './sellSelectors';
 
 describe('sellSelectors', () => {
-    let state: TradingRootState & AccountsRootState;
+    let state: TradingRootState & AccountsRootState & WalletSettingsRootState;
 
     beforeEach(() => {
         state = { wallet: getWalletState({ tradeType: 'sell' }) };
@@ -172,6 +172,26 @@ describe('sellSelectors', () => {
                 }),
                 amountInCrypto: false,
             });
+        });
+
+        it('should use supported base currency as fiat currency', () => {
+            state.wallet.settings.localCurrency = 'eur';
+
+            expect(selectSellFormDefaultValues(state)).toEqual(
+                expect.objectContaining({
+                    fiatCurrency: 'eur',
+                }),
+            );
+        });
+
+        it('should fall back to USD if base currency is not supported', () => {
+            state.wallet.settings.localCurrency = 'czk';
+
+            expect(selectSellFormDefaultValues(state)).toEqual(
+                expect.objectContaining({
+                    fiatCurrency: 'usd',
+                }),
+            );
         });
 
         it('should respect residence settings', () => {
