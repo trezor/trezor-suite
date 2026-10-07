@@ -23,6 +23,11 @@ export const HISTORY_STEP_BLOCKS = 1_200_000;
 // idempotent (entries are keyed by txid), and at ~0.5s blocks this range is trivial.
 export const TIP_LAG_BLOCKS = 2;
 
+// A socket that died without closing delivers nothing and looks exactly like a quiet account, so
+// one cheap request every so often proves it alive. It also records how far watching reached, which
+// bounds what has to be caught up on over HTTP once the socket is gone.
+export const WATCH_HEALTH_CHECK_INTERVAL_MS = 2 * 60_000;
+
 // The transport splits whatever is in flight into batches that travel in parallel, so a whole
 // history step (240 queries) goes out at once instead of waiting for the first batch to return.
 export const MAX_LOG_CONCURRENCY = 2 * RPC_BATCH_SIZE;
