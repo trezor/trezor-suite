@@ -6,6 +6,10 @@ import {
     createBitcoinElectrumChainNetwork,
 } from '@trezor/network-bitcoin-suite-common';
 import {
+    type CardanoChainNetworkDeps,
+    createCardanoChainNetwork,
+} from '@trezor/network-cardano-suite-common';
+import {
     type EthereumBlockbookChainNetworkDeps,
     type EthereumCustomRpcChainNetworkDeps,
     createEthereumBlockbookChainNetwork,
@@ -14,15 +18,32 @@ import {
 import type { ChainNetwork, ChainNetworkParams } from '@trezor/network-module-suite-common-types';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 import {
+    type RippleChainNetworkDeps,
+    createRippleChainNetwork,
+} from '@trezor/network-ripple-suite-common';
+import {
     type SolanaChainNetworkDeps,
     createSolanaChainNetwork,
 } from '@trezor/network-solana-suite-common';
+import {
+    type StellarChainNetworkDeps,
+    createStellarChainNetwork,
+} from '@trezor/network-stellar-suite-common';
+import {
+    type TronChainNetworkDeps,
+    createTronChainNetwork,
+} from '@trezor/network-tron-suite-common';
+import { exhaustive } from '@trezor/type-utils';
 
 export type DesktopChainNetworksDeps = BitcoinBlockbookChainNetworkDeps &
     BitcoinElectrumChainNetworkDeps &
     EthereumBlockbookChainNetworkDeps &
     EthereumCustomRpcChainNetworkDeps &
     SolanaChainNetworkDeps &
+    CardanoChainNetworkDeps &
+    RippleChainNetworkDeps &
+    StellarChainNetworkDeps &
+    TronChainNetworkDeps &
     GetNetworkConfigDep;
 
 /** Builds the chain networks for a selection, keeping each one while its selection is unchanged. */
@@ -36,8 +57,6 @@ const getInstanceKey = (params: ChainNetworkParams) =>
 /**
  * The desktop composition of chain networks: the one place that knows which implementation serves
  * a network family on a given backend. Everything past it works with `ChainNetwork` only.
- *
- * Families not migrated yet build no network; their accounts stay on the Redux path.
  */
 export const createDesktopChainNetworks = (
     deps: DesktopChainNetworksDeps,
@@ -47,9 +66,15 @@ export const createDesktopChainNetworks = (
     const createEthereumBlockbook = createEthereumBlockbookChainNetwork(deps);
     const createEthereumCustomRpc = createEthereumCustomRpcChainNetwork(deps);
     const createSolana = createSolanaChainNetwork(deps);
+    const createCardano = createCardanoChainNetwork(deps);
+    const createRipple = createRippleChainNetwork(deps);
+    const createStellar = createStellarChainNetwork(deps);
+    const createTron = createTronChainNetwork(deps);
 
-    const create = (params: ChainNetworkParams): ChainNetwork | null => {
-        switch (deps.getNetworkConfig(params.symbol).networkType) {
+    const create = (params: ChainNetworkParams): ChainNetwork => {
+        const { networkType } = deps.getNetworkConfig(params.symbol);
+
+        switch (networkType) {
             case 'bitcoin':
                 return params.backend.type === 'electrum'
                     ? createBitcoinElectrum(params)
@@ -60,14 +85,22 @@ export const createDesktopChainNetworks = (
                     : createEthereumBlockbook(params);
             case 'solana':
                 return createSolana(params);
+            case 'cardano':
+                return createCardano(params);
+            case 'ripple':
+                return createRipple(params);
+            case 'stellar':
+                return createStellar(params);
+            case 'tron':
+                return createTron(params);
             default:
-                return null;
+                return exhaustive(networkType);
         }
     };
 
     // One instance per symbol: a network is rebuilt only when its backend settings change, so
     // consumers holding it (and the queries keyed by it) are not churned by unrelated updates.
-    const instances = new Map<NetworkSymbol, { key: string; network: ChainNetwork | null }>();
+    const instances = new Map<NetworkSymbol, { key: string; network: ChainNetwork }>();
 
     return selection => {
         const selectedSymbols = new Set(selection.map(params => params.symbol));
@@ -75,16 +108,16 @@ export const createDesktopChainNetworks = (
             .filter(symbol => !selectedSymbols.has(symbol))
             .forEach(symbol => instances.delete(symbol));
 
-        return selection.flatMap(params => {
+        return selection.map(params => {
             const key = getInstanceKey(params);
             const cached = instances.get(params.symbol);
 
-            if (cached?.key === key) return cached.network ?? [];
+            if (cached?.key === key) return cached.network;
 
             const network = create(params);
             instances.set(params.symbol, { key, network });
 
-            return network ?? [];
+            return network;
         });
     };
 };

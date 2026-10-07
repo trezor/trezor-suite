@@ -1,12 +1,7 @@
 import { useMemo } from 'react';
 
 import { selectIsQueryChainDataEnabled } from '@suite/flags';
-import {
-    type PortfolioAccount,
-    toPortfolioAccount,
-    useChainAssets,
-    useSelectedChainNetworks,
-} from '@suite-common/chain-data';
+import { useChainAssets, useSelectedChainNetworks } from '@suite-common/chain-data';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { selectAllAccountsToList, selectBaseCurrency } from '@suite-common/wallet-core';
 
@@ -16,6 +11,8 @@ import {
     type NetworkAssetGroup,
     groupChainAssetsByNetwork,
 } from 'src/views/dashboard/ChainAssetsList/groupChainAssetsByNetwork';
+
+import { useLegacyPortfolioAccounts } from './useLegacyPortfolioAccounts';
 
 export type DashboardChainAssets = {
     isEnabled: boolean;
@@ -35,13 +32,7 @@ export const useDashboardChainAssets = (): DashboardChainAssets => {
     const tokenDefinitions = useSelector(selectTokenDefinitions);
     const networks = useSelectedChainNetworks();
 
-    const accounts = useMemo(
-        () =>
-            listedAccounts
-                .map(toPortfolioAccount)
-                .filter((account): account is PortfolioAccount => account !== null),
-        [listedAccounts],
-    );
+    const { accounts } = useLegacyPortfolioAccounts(listedAccounts);
 
     const chainAssets = useChainAssets({ networks, accounts, currency, enabled: isEnabled });
 

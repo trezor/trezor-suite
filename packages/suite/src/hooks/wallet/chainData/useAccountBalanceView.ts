@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { selectIsQueryChainDataEnabled } from '@suite/flags';
 import {
     toLastKnownBalance,
-    toPortfolioAccount,
     useAccountsFiatBalance,
     useChainAccountBalance,
     useSelectedChainNetworks,
@@ -18,6 +17,8 @@ import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
+
+import { useLegacyPortfolioAccounts } from './useLegacyPortfolioAccounts';
 
 export type AccountBalanceView = {
     formattedBalance: string;
@@ -37,12 +38,9 @@ export const useAccountBalanceView = (account: Account): AccountBalanceView => {
     const currency = useSelector(selectBaseCurrency);
     const networks = useSelectedChainNetworks();
 
-    const portfolioAccount = useMemo(() => toPortfolioAccount(account), [account]);
-    const accounts = useMemo(
-        () => (portfolioAccount ? [portfolioAccount] : []),
-        [portfolioAccount],
-    );
-    const ref = portfolioAccount?.chainAccounts[0] ?? null;
+    const legacyAccounts = useMemo(() => [account], [account]);
+    const { accounts } = useLegacyPortfolioAccounts(legacyAccounts);
+    const ref = accounts[0]?.chainAccounts[0] ?? null;
     const network = networks.find(({ symbol }) => symbol === ref?.symbol);
     const enabled = isQueryChainDataEnabled && !!network && !!ref;
 

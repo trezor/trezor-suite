@@ -44,7 +44,7 @@ const renderBalanceView = (queryChainData: boolean, networks: readonly ChainNetw
     const store = configureStore({
         reducer: {
             flags: () => ({ ...flagsInitialState, queryChainData }),
-            wallet: () => ({ settings: { localCurrency: 'usd' } }),
+            wallet: () => ({ settings: { localCurrency: 'usd' }, stellarContractTokens: {} }),
         },
     });
     const services: GetSelectedChainNetworksDep = {

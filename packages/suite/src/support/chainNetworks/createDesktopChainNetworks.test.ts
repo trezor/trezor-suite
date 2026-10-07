@@ -12,6 +12,9 @@ const NETWORK_TYPES: Partial<Record<string, NetworkType>> = {
     base: 'ethereum',
     sol: 'solana',
     ada: 'cardano',
+    xrp: 'ripple',
+    xlm: 'stellar',
+    trx: 'tron',
 };
 
 const getTrezorConnect = jest.fn();
@@ -41,7 +44,7 @@ describe('createDesktopChainNetworks', () => {
         jest.resetAllMocks();
     });
 
-    it('builds one network per selected and migrated network', () => {
+    it('builds a network for every selected network of every family', () => {
         const createChainNetworks = createDesktopChainNetworks(deps);
 
         const networks = createChainNetworks([
@@ -50,6 +53,9 @@ describe('createDesktopChainNetworks', () => {
             select('base', 'blockbook'),
             select('sol', 'solana'),
             select('ada', 'blockfrost'),
+            select('xrp', 'ripple'),
+            select('xlm', 'stellar'),
+            select('trx', 'blockbook'),
         ]);
 
         expect(networks.map(({ symbol, backendType }) => [symbol, backendType])).toEqual([
@@ -57,6 +63,32 @@ describe('createDesktopChainNetworks', () => {
             ['eth', 'blockbook'],
             ['base', 'blockbook'],
             ['sol', 'solana'],
+            ['ada', 'blockfrost'],
+            ['xrp', 'ripple'],
+            ['xlm', 'stellar'],
+            ['trx', 'blockbook'],
+        ]);
+    });
+
+    it('gives each family its own token capabilities', () => {
+        const networks = createDesktopChainNetworks(deps)([
+            select('btc', 'blockbook'),
+            select('xrp', 'ripple'),
+            select('ada', 'blockfrost'),
+            select('xlm', 'stellar'),
+            select('trx', 'blockbook'),
+            select('sol', 'solana'),
+            select('eth', 'blockbook'),
+        ]);
+
+        expect(networks.map(network => [network.symbol, !!network.getTokens])).toEqual([
+            ['btc', false],
+            ['xrp', false],
+            ['ada', true],
+            ['xlm', true],
+            ['trx', true],
+            ['sol', true],
+            ['eth', true],
         ]);
     });
 
