@@ -98,10 +98,7 @@ pub async fn try_to_subscribe(ctx: &ConnectDeviceContext) -> Result<(), Platform
                     if err.to_string().contains("authentication") {
                         //
                         if let Err(err) = subscription_device.unsubscribe(&characteristic).await {
-                            info!(
-                                "subscription_task authentication unsubscribe error {:?}",
-                                err
-                            );
+                            info!("subscription_task authentication unsubscribe error {err:?}");
                         }
                     } else {
                         info!("subscription_task subscribe error {err:?}");
@@ -111,7 +108,7 @@ pub async fn try_to_subscribe(ctx: &ConnectDeviceContext) -> Result<(), Platform
                     info!("subscription_task successful, unsubscribing");
                     // try to unsubscribe
                     if let Err(err) = subscription_device.unsubscribe(&characteristic).await {
-                        info!("subscription_task unsubscribe error {:?}", err);
+                        info!("subscription_task unsubscribe error {err:?}");
                     }
                     return SubscriptionResult::Success;
                 }
