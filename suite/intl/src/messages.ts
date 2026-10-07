@@ -632,7 +632,7 @@ export const messages = defineMessages({
         id: 'TR_EXCHANGE_DETAIL_COMPLETE_BUTTON',
     },
     TR_EXCHANGE_DETAIL_RETURNED_TITLE: {
-        defaultMessage: 'Your swap returned',
+        defaultMessage: 'Your swap was returned',
         id: 'TR_EXCHANGE_DETAIL_RETURNED_TITLE',
     },
     TR_EXCHANGE_DETAIL_RETURNED_TEXT: {
@@ -960,7 +960,7 @@ export const messages = defineMessages({
         id: 'TR_SELL_DETAIL_FAILED_TITLE',
     },
     TR_SELL_DETAIL_FAILED_TEXT: {
-        defaultMessage: 'Your transaction failed or was rejected. Funds are in your account.',
+        defaultMessage: 'Your transaction failed or was rejected. The funds are in your account.',
         id: 'TR_SELL_DETAIL_FAILED_TEXT',
     },
     TR_SELL_DETAIL_FAILED_BUTTON: {
@@ -1128,8 +1128,7 @@ export const messages = defineMessages({
         id: 'TR_BUY_DETAIL_PAYMENT_INTERRUPTION_TITLE',
     },
     TR_BUY_DETAIL_PAYMENT_INTERRUPTION_TEXT: {
-        defaultMessage:
-            "No worries – you haven't been charged. Just go back and create a new trade.",
+        defaultMessage: "You haven't been charged. Go back to start a new trade.",
         id: 'TR_BUY_DETAIL_PAYMENT_INTERRUPTION_TEXT',
     },
     TR_BUY_SELL_OFFERS_EMPTY: {
@@ -1332,7 +1331,7 @@ export const messages = defineMessages({
         id: 'TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS',
     },
     TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS_DESC: {
-        defaultMessage: 'Select a lower fee, or go back and reduce the send amount in trade form.',
+        defaultMessage: 'Select a lower fee, or go back and reduce the send amount.',
         id: 'TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS_DESC',
     },
     TR_TRADING_TREZOR_FEE: {
@@ -1615,7 +1614,7 @@ export const messages = defineMessages({
         id: 'TR_TRADING_RECEIVE_NO_ACCOUNT_TITLE',
     },
     TR_TRADING_RECEIVE_NO_ACCOUNT_TEXT: {
-        defaultMessage: "It seems that you don't have any account matching the selected asset.",
+        defaultMessage: 'No account found for the selected asset.',
         id: 'TR_TRADING_RECEIVE_NO_ACCOUNT_TEXT',
     },
     TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TITLE: {
@@ -3358,7 +3357,8 @@ export const messages = defineMessages({
         id: 'TR_PIN_HEADING_REPEAT',
     },
     TR_PIN_SUBHEADING: {
-        defaultMessage: 'Set a strong PIN to keep your Trezor safe from unauthorized access.',
+        defaultMessage:
+            'Use 6 or more digits for a strong PIN. Avoid obvious choices like birthdays. The keypad on your Trezor device changes position each time, so no one can see what you type.',
         description: 'Subheading on PIN page',
         id: 'TR_PIN_SUBHEADING',
     },
@@ -3451,8 +3451,7 @@ export const messages = defineMessages({
         id: 'TR_GLOBAL_RECEIVE_NO_RESULTS',
     },
     TR_GLOBAL_RECEIVE_NO_RESULTS_DESCRIPTION: {
-        defaultMessage:
-            'Make sure your search terms are spelled correctly or try different keywords.',
+        defaultMessage: 'Check the spelling or try different keywords.',
         id: 'TR_GLOBAL_RECEIVE_NO_RESULTS_DESCRIPTION',
     },
     TR_GLOBAL_RECEIVE_SEARCH_ASSETS: {
@@ -5714,8 +5713,7 @@ export const messages = defineMessages({
     },
     TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION: {
         id: 'TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION',
-        defaultMessage:
-            'To activate a token, enter its contract ID, or its asset code and issuer address.',
+        defaultMessage: 'To activate a token, enter its asset code and issuer address.',
     },
     TR_MAKE_SURE_NO_ONE_CAN_PEEK: {
         id: 'TR_MAKE_SURE_NO_ONE_CAN_PEEK',
@@ -10998,7 +10996,7 @@ export const messages = defineMessages({
     },
     TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES_NO_APR: {
         id: 'TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES_NO_APR',
-        defaultMessage: 'You only earn rewards on assigned votes. Assign the rest too.',
+        defaultMessage: 'You only earn rewards on assigned votes. Assign your remaining votes.',
     },
     TR_STAKING_BANNER_DETAIL_TITLE: {
         id: 'TR_STAKING_BANNER_DETAIL_TITLE',
@@ -11110,7 +11108,7 @@ export const messages = defineMessages({
     TR_STAKING_VOTING_PREFERENCE_DESCRIPTION: {
         id: 'TR_STAKING_VOTING_PREFERENCE_DESCRIPTION',
         defaultMessage:
-            "Cardano asks every staker to set a voting preference. It doesn't move your funds — change it anytime.",
+            "Cardano asks every staker to set a voting preference. It doesn't move your funds and you can change it anytime.",
     },
     TR_STAKING_VOTE_ABSTAIN: {
         id: 'TR_STAKING_VOTE_ABSTAIN',
@@ -12190,8 +12188,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_DREP_DELEGATION_REQUIRED: {
         id: 'TR_STAKE_DREP_DELEGATION_REQUIRED',
-        defaultMessage:
-            "Delegate your voting rights first. Cardano doesn't allow claiming rewards or unstaking without it.",
+        defaultMessage: 'To claim rewards or unstake, first delegate your voting rights.',
     },
     TR_STAKE_CHANGE_YOUR_DELEGATE: {
         id: 'TR_STAKE_CHANGE_YOUR_DELEGATE',
@@ -12293,8 +12290,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_CLAIM_REWARDS_DESCRIPTION: {
         id: 'TR_STAKE_CLAIM_REWARDS_DESCRIPTION',
-        defaultMessage:
-            "Rewards aren't included in your balance yet. Claim them to use them freely.",
+        defaultMessage: "Rewards aren't included in your balance yet. Claim them to use them.",
     },
     TR_STAKE_MIN_AMOUNT_TOOLTIP: {
         id: 'TR_STAKE_MIN_AMOUNT_TOOLTIP',
