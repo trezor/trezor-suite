@@ -6,10 +6,12 @@ const { signal } = new AbortController();
 
 const getAccountInfo = jest.fn();
 const fetchCoinGeckoCurrentRate = jest.fn();
+const fetchCoinGeckoHistoricRates = jest.fn();
 
 const deps: RippleChainNetworkDeps = {
     getTrezorConnect: () => ({ getAccountInfo }),
     fetchCoinGeckoCurrentRate,
+    fetchCoinGeckoHistoricRates,
 };
 
 const createNetwork = (symbol: 'xrp' | 'txrp') =>
@@ -62,5 +64,33 @@ describe('createRippleChainNetwork', () => {
         await expect(
             createNetwork('txrp').getNativeFiatRate({ currency: 'usd', signal }),
         ).resolves.toBeNull();
+    });
+
+    it('pages its history by ledger marker', async () => {
+        const marker = { ledger: 5, seq: 1 };
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: { history: { total: -1, transactions: [] }, marker },
+        });
+
+        const page = await createNetwork('xrp').getTransactions?.({
+            ref: { symbol: asNetworkSymbol('xrp'), descriptor: 'rAddress', accountType: 'normal' },
+            cursor: { page: 1 },
+            signal,
+        });
+
+        expect(page).toMatchObject({ nextCursor: { page: 2, marker }, total: null });
+    });
+
+    it('values past XRP with CoinGecko', async () => {
+        fetchCoinGeckoHistoricRates.mockResolvedValue({ 100: 0.5 });
+
+        await expect(
+            createNetwork('xrp').getHistoricFiatRates({
+                currency: 'usd',
+                timestamps: [100],
+                signal,
+            }),
+        ).resolves.toEqual({ 100: 0.5 });
     });
 });

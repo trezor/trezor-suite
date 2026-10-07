@@ -7,10 +7,17 @@ const { signal } = new AbortController();
 const getAccountInfo = jest.fn();
 const blockchainGetCurrentFiatRates = jest.fn();
 const fetchCoinGeckoCurrentRate = jest.fn();
+const fetchCoinGeckoHistoricRates = jest.fn();
+const blockchainGetFiatRatesForTimestamps = jest.fn();
 
 const deps: TronChainNetworkDeps = {
-    getTrezorConnect: () => ({ getAccountInfo, blockchainGetCurrentFiatRates }),
+    getTrezorConnect: () => ({
+        getAccountInfo,
+        blockchainGetCurrentFiatRates,
+        blockchainGetFiatRatesForTimestamps,
+    }),
     fetchCoinGeckoCurrentRate,
+    fetchCoinGeckoHistoricRates,
 };
 
 const trx = asNetworkSymbol('trx');
@@ -85,5 +92,45 @@ describe('createTronChainNetwork', () => {
             'TUsdt',
         ]);
         expect(fetchCoinGeckoCurrentRate).not.toHaveBeenCalled();
+    });
+
+    it('pages its history 25 transactions at a time', async () => {
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: {
+                history: { total: 30, transactions: [{ txid: 'a' }] },
+                page: { index: 1, size: 25, total: 2 },
+            },
+        });
+
+        const page = await network.getTransactions?.({
+            ref,
+            cursor: { page: 1 },
+            signal,
+        });
+
+        expect(page?.nextCursor).toEqual({ page: 2 });
+        expect(getAccountInfo).toHaveBeenLastCalledWith(
+            expect.objectContaining({ details: 'txs', page: 1, pageSize: 25 }),
+        );
+    });
+
+    it('takes past rates of the coin and its tokens from Blockbook', async () => {
+        blockchainGetFiatRatesForTimestamps.mockResolvedValue({
+            success: true,
+            payload: { tickers: [{ ts: 100, rates: { usd: 0.3 } }] },
+        });
+
+        await expect(
+            network.getHistoricFiatRates({
+                contract: 'TUsdt',
+                currency: 'usd',
+                timestamps: [100],
+                signal,
+            }),
+        ).resolves.toEqual({ 100: 0.3 });
+        expect(blockchainGetFiatRatesForTimestamps).toHaveBeenCalledWith(
+            expect.objectContaining({ coin: 'trx', token: 'TUsdt' }),
+        );
     });
 });

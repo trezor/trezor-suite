@@ -1,6 +1,7 @@
 import {
     type CreateChainNetwork,
     type FetchCoinGeckoCurrentRateDep,
+    type FetchCoinGeckoHistoricRatesDep,
     type FetchConnectAccountBalanceDeps,
     type FetchConnectTokensDeps,
     buildConnectChainNetwork,
@@ -12,7 +13,8 @@ import { getEthereumChainNetworkConfig, getEvmTokenRules } from './getEthereumCh
 
 export type EthereumCustomRpcChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
-    FetchCoinGeckoCurrentRateDep;
+    FetchCoinGeckoCurrentRateDep &
+    FetchCoinGeckoHistoricRatesDep;
 
 /** EVM network served by the user's own JSON-RPC node, which quotes no rates for coins or tokens. */
 export const createEthereumCustomRpcChainNetwork = (
@@ -39,6 +41,7 @@ export const createEthereumCustomRpcChainNetwork = (
                 ...getEvmTokenRules(),
                 fetchTokenFiatRate: rateSource,
             },
+            fetchHistoricFiatRates: config.hasFiatRate ? deps.fetchCoinGeckoHistoricRates : null,
         });
     };
 };

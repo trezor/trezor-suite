@@ -1,16 +1,22 @@
 import {
     type CreateChainNetwork,
     type FetchCoinGeckoCurrentRateDep,
+    type FetchCoinGeckoHistoricRatesDep,
     type FetchConnectAccountBalanceDeps,
+    type FetchConnectTransactionsDeps,
     buildConnectChainNetwork,
     createFetchConnectAccountBalance,
+    createFetchConnectTransactions,
     readChainNetworkConfig,
 } from '@trezor/network-module-suite-common-types';
 import { isSupportedRippleNetwork } from '@trezor/network-ripple-types';
 
 import { getAccountSyncInterval, getNetworkConfig } from '../networkConfig';
 
-export type RippleChainNetworkDeps = FetchConnectAccountBalanceDeps & FetchCoinGeckoCurrentRateDep;
+export type RippleChainNetworkDeps = FetchConnectAccountBalanceDeps &
+    FetchCoinGeckoCurrentRateDep &
+    FetchConnectTransactionsDeps &
+    FetchCoinGeckoHistoricRatesDep;
 
 /**
  * XRP Ledger network. The ledger holds back a reserve from every account, so the user sees the
@@ -18,6 +24,7 @@ export type RippleChainNetworkDeps = FetchConnectAccountBalanceDeps & FetchCoinG
  */
 export const createRippleChainNetwork = (deps: RippleChainNetworkDeps): CreateChainNetwork => {
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
+    const fetchTransactions = createFetchConnectTransactions(deps);
 
     return params => {
         const config = readChainNetworkConfig(
@@ -39,6 +46,13 @@ export const createRippleChainNetwork = (deps: RippleChainNetworkDeps): CreateCh
             useConnectionIdentity: false,
             fetchAccountBalance,
             fetchFiatRate: rateSource,
+            transactions: {
+                fetchTransactions,
+                pagination: 'ripple-marker',
+                pageSize: 25,
+                useStellarContractTokens: false,
+            },
+            fetchHistoricFiatRates: config.hasFiatRate ? deps.fetchCoinGeckoHistoricRates : null,
         });
     };
 };

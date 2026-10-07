@@ -12,6 +12,8 @@ const fetchAccountBalance = jest.fn();
 const fetchFiatRate = jest.fn();
 const fetchTokens = jest.fn();
 const fetchTokenFiatRate = jest.fn();
+const fetchHistoricFiatRates = jest.fn();
+const fetchTransactions = jest.fn();
 const watchedTokensStrategy = { type: 'contract-filter', isContractCaseInsensitive: true } as const;
 
 const getDefinition = (
@@ -29,6 +31,7 @@ const getDefinition = (
     useConnectionIdentity: false,
     fetchAccountBalance,
     fetchFiatRate,
+    fetchHistoricFiatRates,
     ...overrides,
 });
 
@@ -186,5 +189,65 @@ describe('buildConnectChainNetwork', () => {
         await expect(
             network.getTokenFiatRate?.({ contract: '0xusdc', currency: 'eur', signal }),
         ).resolves.toBeNull();
+    });
+
+    it('has no history without a history source', () => {
+        expect(buildConnectChainNetwork(getDefinition()).getTransactions).toBeUndefined();
+    });
+
+    it('reads history with the network paging rules', async () => {
+        fetchTransactions.mockResolvedValue('page');
+        const network = buildConnectChainNetwork(
+            getDefinition({
+                transactions: {
+                    fetchTransactions,
+                    pagination: 'page',
+                    pageSize: 25,
+                    useStellarContractTokens: false,
+                },
+            }),
+        );
+        const cursor = { page: 2 };
+
+        await expect(network.getTransactions?.({ ref, cursor, signal })).resolves.toBe('page');
+        expect(fetchTransactions).toHaveBeenCalledWith({
+            ref,
+            cursor,
+            signal,
+            pagination: 'page',
+            pageSize: 25,
+            useStellarContractTokens: false,
+            protocols: undefined,
+            useConnectionIdentity: false,
+            gap: 25,
+        });
+    });
+
+    it('asks the historic rate source for the coin or a token of its own network', async () => {
+        fetchHistoricFiatRates.mockResolvedValue({ 100: 1 });
+        const network = buildConnectChainNetwork(getDefinition());
+
+        await network.getHistoricFiatRates({
+            contract: '0xusdc',
+            currency: 'eur',
+            timestamps: [100],
+            signal,
+        });
+
+        expect(fetchHistoricFiatRates).toHaveBeenCalledWith({
+            symbol: 'btc',
+            currency: 'eur',
+            timestamps: [100],
+            signal,
+            tokenAddress: '0xusdc',
+        });
+    });
+
+    it('has no historic rates without a historic rate source', async () => {
+        const network = buildConnectChainNetwork(getDefinition({ fetchHistoricFiatRates: null }));
+
+        await expect(
+            network.getHistoricFiatRates({ currency: 'eur', timestamps: [100], signal }),
+        ).resolves.toEqual({});
     });
 });

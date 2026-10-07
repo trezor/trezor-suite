@@ -2,18 +2,24 @@ import {
     type CreateChainNetwork,
     type FetchConnectAccountBalanceDeps,
     type FetchConnectCurrentFiatRateDeps,
+    type FetchConnectHistoricFiatRatesDeps,
     type FetchConnectTokensDeps,
+    type FetchConnectTransactionsDeps,
     buildConnectChainNetwork,
     createFetchConnectAccountBalance,
     createFetchConnectCurrentFiatRate,
+    createFetchConnectHistoricFiatRates,
     createFetchConnectTokens,
+    createFetchConnectTransactions,
 } from '@trezor/network-module-suite-common-types';
 
 import { getEthereumChainNetworkConfig, getEvmTokenRules } from './getEthereumChainNetworkConfig';
 
 export type EthereumBlockbookChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
-    FetchConnectCurrentFiatRateDeps;
+    FetchConnectCurrentFiatRateDeps &
+    FetchConnectTransactionsDeps &
+    FetchConnectHistoricFiatRatesDeps;
 
 /**
  * EVM network served by Blockbook. Blockbook keeps one connection per wallet, so accounts are
@@ -24,6 +30,8 @@ export const createEthereumBlockbookChainNetwork = (
     deps: EthereumBlockbookChainNetworkDeps,
 ): CreateChainNetwork => {
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
+    const fetchTransactions = createFetchConnectTransactions(deps);
+    const fetchConnectHistoricRates = createFetchConnectHistoricFiatRates(deps);
     const fetchConnectFiatRate = createFetchConnectCurrentFiatRate(deps);
     const fetchTokens = createFetchConnectTokens(deps);
 
@@ -33,6 +41,10 @@ export const createEthereumBlockbookChainNetwork = (
             ? fetchConnectFiatRate
             : deps.fetchCoinGeckoCurrentRate;
         const rateSource = config.hasFiatRate ? fetchFiatRate : null;
+
+        const fetchHistoricRates = config.hasBlockbookRates
+            ? fetchConnectHistoricRates
+            : deps.fetchCoinGeckoHistoricRates;
 
         return buildConnectChainNetwork({
             params,
@@ -48,6 +60,14 @@ export const createEthereumBlockbookChainNetwork = (
                 ...getEvmTokenRules(),
                 fetchTokenFiatRate: rateSource,
             },
+            transactions: {
+                fetchTransactions,
+                pagination: 'page',
+                pageSize: 25,
+                useStellarContractTokens: false,
+                protocols: ['erc4626'],
+            },
+            fetchHistoricFiatRates: config.hasFiatRate ? fetchHistoricRates : null,
         });
     };
 };

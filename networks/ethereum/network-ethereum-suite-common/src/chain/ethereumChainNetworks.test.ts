@@ -14,15 +14,23 @@ const { signal } = new AbortController();
 const getAccountInfo = jest.fn();
 const blockchainGetCurrentFiatRates = jest.fn();
 const fetchCoinGeckoCurrentRate = jest.fn();
+const fetchCoinGeckoHistoricRates = jest.fn();
+const blockchainGetFiatRatesForTimestamps = jest.fn();
 
 const blockbookDeps: EthereumBlockbookChainNetworkDeps = {
-    getTrezorConnect: () => ({ getAccountInfo, blockchainGetCurrentFiatRates }),
+    getTrezorConnect: () => ({
+        getAccountInfo,
+        blockchainGetCurrentFiatRates,
+        blockchainGetFiatRatesForTimestamps,
+    }),
     fetchCoinGeckoCurrentRate,
+    fetchCoinGeckoHistoricRates,
 };
 
 const customRpcDeps: EthereumCustomRpcChainNetworkDeps = {
     getTrezorConnect: () => ({ getAccountInfo }),
     fetchCoinGeckoCurrentRate,
+    fetchCoinGeckoHistoricRates,
 };
 
 const getRef = (symbol: 'eth' | 'base') =>
@@ -185,5 +193,44 @@ describe('Ethereum chain networks', () => {
             signal,
             tokenAddress: '0xusdc',
         });
+    });
+
+    it('pages its history through the wallet connection with vault data', async () => {
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: {
+                history: { total: 1, transactions: [] },
+                page: { index: 1, size: 25, total: 1 },
+            },
+        });
+        const network = createEthereumBlockbookChainNetwork(blockbookDeps)({
+            symbol: asNetworkSymbol('eth'),
+            backend: { type: 'blockbook', urls: [] },
+        });
+
+        const page = await network.getTransactions?.({
+            ref: getRef('eth'),
+            cursor: { page: 1 },
+            signal,
+        });
+
+        expect(page?.nextCursor).toBeNull();
+        expect(getAccountInfo).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+                details: 'txs',
+                pageSize: 25,
+                identity: 'wallet-identity',
+                protocols: ['erc4626'],
+            }),
+        );
+    });
+
+    it('has no history on a custom RPC node, which keeps none', () => {
+        const network = createEthereumCustomRpcChainNetwork(customRpcDeps)({
+            symbol: asNetworkSymbol('eth'),
+            backend: { type: 'evm-rpc', urls: ['https://rpc.example'] },
+        });
+
+        expect(network.getTransactions).toBeUndefined();
     });
 });

@@ -1,11 +1,14 @@
 import {
     type CreateChainNetwork,
     type FetchCoinGeckoCurrentRateDep,
+    type FetchCoinGeckoHistoricRatesDep,
     type FetchConnectAccountBalanceDeps,
     type FetchConnectTokensDeps,
+    type FetchConnectTransactionsDeps,
     buildConnectChainNetwork,
     createFetchConnectAccountBalance,
     createFetchConnectTokens,
+    createFetchConnectTransactions,
     readChainNetworkConfig,
 } from '@trezor/network-module-suite-common-types';
 import { isSupportedSolanaNetwork } from '@trezor/network-solana-types';
@@ -14,7 +17,9 @@ import { getAccountSyncInterval, getNetworkConfig } from '../networkConfig';
 
 export type SolanaChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
-    FetchCoinGeckoCurrentRateDep;
+    FetchCoinGeckoCurrentRateDep &
+    FetchConnectTransactionsDeps &
+    FetchCoinGeckoHistoricRatesDep;
 
 /**
  * Solana network served by its RPC backend, which quotes no rates: CoinGecko values the coin and
@@ -22,6 +27,7 @@ export type SolanaChainNetworkDeps = FetchConnectAccountBalanceDeps &
  */
 export const createSolanaChainNetwork = (deps: SolanaChainNetworkDeps): CreateChainNetwork => {
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
+    const fetchTransactions = createFetchConnectTransactions(deps);
     const fetchTokens = createFetchConnectTokens(deps);
 
     return params => {
@@ -54,6 +60,13 @@ export const createSolanaChainNetwork = (deps: SolanaChainNetworkDeps): CreateCh
                 },
                 fetchTokenFiatRate: rateSource,
             },
+            transactions: {
+                fetchTransactions,
+                pagination: 'solana-page',
+                pageSize: 8,
+                useStellarContractTokens: false,
+            },
+            fetchHistoricFiatRates: config.hasFiatRate ? deps.fetchCoinGeckoHistoricRates : null,
         });
     };
 };

@@ -9,10 +9,12 @@ const { signal } = new AbortController();
 
 const getAccountInfo = jest.fn();
 const fetchCoinGeckoCurrentRate = jest.fn();
+const fetchCoinGeckoHistoricRates = jest.fn();
 
 const deps: StellarChainNetworkDeps = {
     getTrezorConnect: () => ({ getAccountInfo }),
     fetchCoinGeckoCurrentRate,
+    fetchCoinGeckoHistoricRates,
 };
 
 const xlm = asNetworkSymbol('xlm');
@@ -85,6 +87,33 @@ describe('createStellarChainNetwork', () => {
 
         expect(fetchCoinGeckoCurrentRate).toHaveBeenCalledWith(
             expect.objectContaining({ symbol: 'xlm', tokenAddress: 'USDC-GISSUER' }),
+        );
+    });
+
+    it('pages its history by cursor with the Soroban contracts the user watches', async () => {
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: {
+                history: { total: -1, transactions: [] },
+                stellarCursor: 'cursor-2',
+            },
+        });
+
+        const page = await network.getTransactions?.({
+            ref: {
+                symbol: xlm,
+                descriptor: 'GADDRESS',
+                accountType: 'normal',
+                watchedTokens: [CONTRACT],
+            },
+            cursor: { page: 1 },
+            signal,
+        });
+
+        // A page shorter than the page size is the end of the history.
+        expect(page).toMatchObject({ nextCursor: null, total: null });
+        expect(getAccountInfo).toHaveBeenLastCalledWith(
+            expect.objectContaining({ pageSize: 25, stellarContractTokens: [CONTRACT] }),
         );
     });
 });
