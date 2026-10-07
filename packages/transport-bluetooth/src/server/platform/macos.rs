@@ -8,8 +8,6 @@ use btleplug::platform::Peripheral;
 use log::info;
 use tokio::time::{sleep, Duration};
 
-const DEFAULT_PAIRING_TIMEOUT: Duration = Duration::from_secs(30);
-
 pub struct MacosDevice;
 
 #[derive(Clone, Debug)]
@@ -61,12 +59,7 @@ pub async fn try_to_subscribe(ctx: &ConnectDeviceContext) -> Result<(), Platform
 
     let subscription_device = peripheral.clone();
     let start = tokio::time::Instant::now();
-    let timeout = Duration::from_millis(ctx.params.timeout as u64);
-    let timeout = if timeout.is_zero() {
-        DEFAULT_PAIRING_TIMEOUT
-    } else {
-        timeout
-    };
+    let timeout = Duration::from_millis(ctx.params.timeout.into());
 
     let subscription_task = tokio::spawn(async move {
         let mut tries = 0;
