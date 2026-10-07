@@ -16,7 +16,7 @@ import { rpcCall } from './handlers/rpcCall';
 import { cleanupSubscriptions, subscribe, unsubscribe } from './handlers/subscribe';
 import type { Request } from './types';
 import { getChainId } from './utils/client';
-import { getTransport } from './utils/transportType';
+import { getTransport, isWebSocketUrl, orderEndpointsForRequests } from './utils/transportType';
 
 const onRequest = (request: Request<MessageTypes.Message>) => {
     switch (request.type) {
@@ -51,6 +51,18 @@ export class EvmRpcWorker extends BaseWorker<PublicClient> {
     cleanup() {
         cleanupSubscriptions(this.state);
         super.cleanup();
+    }
+
+    protected orderEndpoints(urls: string[]) {
+        return orderEndpointsForRequests(urls);
+    }
+
+    private getSubscriptionUrl() {
+        const servers = Array.isArray(this.settings.server) ? this.settings.server : [];
+
+        return [this.state.url, ...servers].find(
+            (url): url is string => typeof url === 'string' && isWebSocketUrl(url),
+        );
     }
 
     protected isConnected(client: PublicClient | undefined): client is PublicClient {
@@ -89,6 +101,7 @@ export class EvmRpcWorker extends BaseWorker<PublicClient> {
                 post: (data: Response) => this.post(data),
                 state: this.state,
                 coinName: this.settings.name || 'ETH',
+                subscriptionUrl: this.getSubscriptionUrl(),
             };
 
             const response = await onRequest(request);
