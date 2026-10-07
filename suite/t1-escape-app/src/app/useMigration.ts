@@ -3,7 +3,7 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import { getRandomInt } from '@trezor/utils';
 
 import { type MigrationController, createMigrationController } from './createMigrationController';
-import { isTransferUnsettled } from './migrationState';
+import { hasUnsettledTransfers } from './migrationState';
 import { createBlockbookBackend } from '../backend/createBlockbookBackend';
 import { createBridgeConnection } from '../device/createBridgeConnection';
 import { queryLocalNetworkAccess } from '../preflight/localNetworkAccess';
@@ -28,7 +28,7 @@ export const useMigration = () => {
     const [controller] = useState(createController);
     const state = useSyncExternalStore(controller.subscribe, controller.getState);
 
-    const hasTransfersToTrack = state.transfers.some(isTransferUnsettled);
+    const hasTransfersToTrack = hasUnsettledTransfers(state);
 
     useEffect(() => {
         if (!hasTransfersToTrack) return;

@@ -25,6 +25,16 @@ const FIRST_FIRMWARE_WITH_BECH32: FirmwareVersion = [1, 6, 0];
 // Firmware 1.6.1 switched the address confirmation screen to a fixed-width font.
 const FIRST_FIRMWARE_WITH_FIXED_WIDTH_ADDRESS: FirmwareVersion = [1, 6, 1];
 
+/**
+ * Firmware 1.4.0 added Ethereum signing, but only 1.4.2 added the EIP-155 replay protection
+ * (`chain_id`). Nodes reject transactions without it today, so older firmware gets no Ethereum.
+ */
+export const MIN_ETHEREUM_FIRMWARE: FirmwareVersion = [1, 4, 2];
+
+// Firmware 1.5.1 started showing the Ethereum destination EIP-55 checksummed with its `0x`
+// prefix. Firmware 1.4.2 and 1.5.0 show it as lowercase hex without the prefix.
+const FIRST_FIRMWARE_WITH_CHECKSUMMED_ETHEREUM_ADDRESS: FirmwareVersion = [1, 5, 1];
+
 export const isSupportedFirmware = (version: FirmwareVersion) =>
     versionUtils.isWithinRange(version, MIN_SUPPORTED_FIRMWARE, MAX_SUPPORTED_FIRMWARE);
 
@@ -88,5 +98,12 @@ export const wipesAfterWrongPinAttempts = (version: FirmwareVersion) =>
 /** Before firmware 1.6.1 addresses are shown in a proportional font that is easy to misread. */
 export const showsAddressInProportionalFont = (version: FirmwareVersion) =>
     !versionUtils.isNewerOrEqual(version, FIRST_FIRMWARE_WITH_FIXED_WIDTH_ADDRESS);
+
+export const isEthereumSupported = (version: FirmwareVersion) =>
+    versionUtils.isNewerOrEqual(version, MIN_ETHEREUM_FIRMWARE);
+
+/** Before firmware 1.5.1 the Ethereum destination is shown as lowercase hex without `0x`. */
+export const showsEthereumAddressChecksum = (version: FirmwareVersion) =>
+    versionUtils.isNewerOrEqual(version, FIRST_FIRMWARE_WITH_CHECKSUMMED_ETHEREUM_ADDRESS);
 
 export const formatFirmwareVersion = (version: FirmwareVersion) => version.join('.');

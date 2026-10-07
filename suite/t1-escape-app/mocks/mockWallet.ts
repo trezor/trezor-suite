@@ -1,3 +1,6 @@
+import type { Address, Hex } from 'viem';
+import { privateKeyToAccount, publicKeyToAddress } from 'viem/accounts';
+
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { type BIP32Interface, address as addressUtils, bip32, payments } from '@trezor/utxo-lib';
 
@@ -35,6 +38,18 @@ export const mockWallet = (seedHex = DEFAULT_SEED) => {
 
     const getAccountXpub = (accountType: AccountType, accountIndex = 0) =>
         deriveNode(getAccountPath(accountType, accountIndex)).neutered().toBase58();
+
+    const getPrivateKey = (path: readonly number[]): Hex => {
+        const { privateKey } = deriveNode(path);
+        if (!privateKey) throw new Error('mockWallet: the node has no private key');
+
+        return `0x${privateKey.toString('hex')}`;
+    };
+
+    // The address is derived the way the firmware does it: the uncompressed secp256k1 public
+    // key hashed with keccak-256, the last 20 bytes being the address.
+    const getEthereumAddress = (path: readonly number[]): Address =>
+        publicKeyToAddress(privateKeyToAccount(getPrivateKey(path)).publicKey);
 
     // Scripts are built here from the private derivation, independently of the public
     // derivation in the application code they are compared against.
@@ -81,6 +96,8 @@ export const mockWallet = (seedHex = DEFAULT_SEED) => {
             };
         },
         getAccountXpub,
+        getPrivateKey,
+        getEthereumAddress,
         getScript,
         getAddress: (params: MockWalletAddressParams) =>
             addressUtils.fromOutputScript(getScript(params), BITCOIN_NETWORK),

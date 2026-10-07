@@ -4,8 +4,10 @@ import {
     getDiscoverableAccountTypes,
     isAffectedBySegwitAmountVulnerability,
     isDestinationFormatSupported,
+    isEthereumSupported,
     isSupportedFirmware,
     showsAddressInProportionalFont,
+    showsEthereumAddressChecksum,
     wipesAfterWrongPinAttempts,
 } from './firmwareSupport';
 
@@ -105,5 +107,29 @@ describe('firmware quirks', () => {
         [[1, 6, 3], false],
     ])('firmware %j shows addresses in a proportional font: %s', (version, isProportional) => {
         expect(showsAddressInProportionalFont(version)).toBe(isProportional);
+    });
+});
+
+describe('isEthereumSupported', () => {
+    it.each<[FirmwareVersion, boolean]>([
+        [[1, 3, 6], false],
+        [[1, 4, 0], false],
+        [[1, 4, 1], false],
+        [[1, 4, 2], true],
+        [[1, 5, 2], true],
+        [[1, 6, 3], true],
+    ])('on firmware %j is %s', (version, isSupported) => {
+        expect(isEthereumSupported(version)).toBe(isSupported);
+    });
+});
+
+describe('showsEthereumAddressChecksum', () => {
+    it.each<[FirmwareVersion, boolean]>([
+        [[1, 4, 2], false],
+        [[1, 5, 0], false],
+        [[1, 5, 1], true],
+        [[1, 6, 3], true],
+    ])('on firmware %j is %s', (version, isShown) => {
+        expect(showsEthereumAddressChecksum(version)).toBe(isShown);
     });
 });

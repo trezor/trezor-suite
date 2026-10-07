@@ -1,8 +1,12 @@
+import { type EthereumFlow, createEthereumFlow } from './createEthereumFlow';
 import { describeError, diagnosticLog } from './diagnosticLog';
 import {
+    type Coin,
+    INITIAL_ETHEREUM_MIGRATION_STATE,
     INITIAL_MIGRATION_STATE,
     type MigrationState,
     type Transfer,
+    isEthereumChain,
     isTransferUnsettled,
 } from './migrationState';
 import type { Backend } from '../backend/backend';
@@ -24,7 +28,8 @@ import {
     scanAccountRange,
 } from '../discovery/discoverAccounts';
 import { discoverWallet } from '../discovery/discoverWallet';
-import { getDiscoverableAccountTypes } from '../firmware/firmwareSupport';
+import { ETHEREUM_CHAIN_DEFINITIONS } from '../ethereum/ethereumChain';
+import { getDiscoverableAccountTypes, isEthereumSupported } from '../firmware/firmwareSupport';
 import { getAccountAddresses, loadAccountSnapshot } from '../migration/accountSnapshot';
 import { type InFlightTransfer, evaluateAccountState } from '../migration/accountState';
 import { prepareSweep } from '../migration/prepareSweep';
@@ -47,7 +52,12 @@ export type MigrationController = {
     subscribe: (listener: () => void) => () => void;
     runPreflight: () => Promise<void>;
     connectDevice: () => Promise<void>;
+    /** Chooses what to move. Ethereum chains are accepted only on firmware that signs them. */
+    chooseCoin: (coin: Coin) => void;
+    /** Returns to the coin choice. Possible only while no transfer has been prepared. */
+    changeCoin: () => void;
     submitPassphrase: (first: string, second: string) => Promise<void>;
+    /** Runs the Bitcoin discovery. Calling it chooses Bitcoin. */
     startDiscovery: () => Promise<void>;
     scanMoreAccounts: () => Promise<void>;
     confirmDiscovery: () => void;
@@ -58,7 +68,20 @@ export type MigrationController = {
     retryTransfer: (key: string) => Promise<void>;
     signTransfer: (key: string) => Promise<void>;
     broadcastTransfer: (key: string) => Promise<void>;
+    /** Follows the open transfers of either coin on the network. */
     refreshTransfers: () => Promise<void>;
+    /** The Ethereum and Ethereum Classic flow, active once such a coin is chosen. */
+    ethereum: Pick<
+        EthereumFlow,
+        | 'startDiscovery'
+        | 'scanMoreAddresses'
+        | 'confirmDiscovery'
+        | 'submitDestination'
+        | 'editDestination'
+        | 'retryTransfer'
+        | 'signTransfer'
+        | 'broadcastTransfer'
+    >;
     finish: () => Promise<void>;
     submitPin: (pin: string) => void;
     cancelPin: () => void;
@@ -162,6 +185,27 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
     // A call can learn about the loss before the bridge event arrives. Both paths end here.
     const reportIfDeviceLost = (error: { type: string }) => {
         if (isDeviceLostError(error) && !state.deviceLostReason) handleDeviceLost(error.reason);
+    };
+
+    const ethereum = createEthereumFlow({
+        backend: deps.backend,
+        getMigrationState: () => state,
+        setState,
+        runExclusive,
+        getSession: () => session,
+        getPassphraseCandidates: () => passphraseCandidates,
+        setActivePassphrase: passphrase => {
+            activePassphrase = passphrase;
+        },
+        reportIfDeviceLost,
+    });
+
+    const describeSearch = () => {
+        const { coin } = state;
+
+        return isEthereumChain(coin)
+            ? `Searching for your ${ETHEREUM_CHAIN_DEFINITIONS[coin].symbol}`
+            : 'Searching for your bitcoin';
     };
 
     const runPreflight: MigrationController['runPreflight'] = () =>
@@ -290,11 +334,40 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             });
         });
 
+    const chooseCoin: MigrationController['chooseCoin'] = coin => {
+        const { device, step } = state;
+        if (state.activity !== undefined || !device) return;
+        if (step !== 'passphrase' && step !== 'discovery') return;
+        if (isEthereumChain(coin) && !isEthereumSupported(device.firmwareVersion)) return;
+
+        diagnosticLog.info('flow', 'coin chosen', { coin });
+        setState({
+            coin,
+            // With passphrase protection the passphrase comes next, whatever the coin.
+            step: step === 'discovery' && isEthereumChain(coin) ? 'ethereum-discovery' : step,
+        });
+    };
+
+    const changeCoin: MigrationController['changeCoin'] = () => {
+        const hasTransfers = state.transfers.length > 0 || state.ethereum.transfers.length > 0;
+        if (state.activity !== undefined || hasTransfers || state.isDeviceReleased) return;
+
+        diagnosticLog.info('flow', 'back to the coin choice');
+        setState({
+            step: 'discovery',
+            coin: undefined,
+            accounts: [],
+            walletKind: undefined,
+            discoveryError: undefined,
+            ethereum: { ...INITIAL_ETHEREUM_MIGRATION_STATE },
+        });
+    };
+
     const discover = async () => {
         const { device } = state;
         if (!session || !device) return;
 
-        setState({ step: 'discovery', discoveryError: undefined, accounts: [] });
+        setState({ step: 'discovery', coin: 'bitcoin', discoveryError: undefined, accounts: [] });
 
         const discovered = await discoverWallet({
             call: session.call,
@@ -330,7 +403,7 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         runExclusive('Searching for your bitcoin', discover);
 
     const submitPassphrase: MigrationController['submitPassphrase'] = (first, second) =>
-        runExclusive('Searching for your bitcoin', async () => {
+        runExclusive(describeSearch(), async () => {
             const candidates = validatePassphraseEntry({ first, second });
             if (!candidates.success) {
                 setState({ passphraseError: candidates.error });
@@ -340,7 +413,12 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
 
             passphraseCandidates = candidates.payload;
             setState({ passphraseError: undefined });
-            await discover();
+
+            if (isEthereumChain(state.coin)) {
+                await ethereum.discover();
+            } else {
+                await discover();
+            }
         });
 
     const scanMoreAccounts: MigrationController['scanMoreAccounts'] = () =>
@@ -638,6 +716,8 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
                         }),
                     );
             }
+
+            await ethereum.refreshTransfers();
         } finally {
             isRefreshingTransfers = false;
         }
@@ -686,7 +766,9 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
 
             // A signed transaction that was not sent yet exists only on the transfers screen.
             // Locking the device is always possible, leaving that screen is not.
-            const hasUnsentTransaction = state.transfers.some(({ stage }) => stage === 'signed');
+            const hasUnsentTransaction =
+                state.transfers.some(({ stage }) => stage === 'signed') ||
+                ethereum.hasUnsentTransaction();
             setState({
                 step: hasUnsentTransaction ? state.step : 'summary',
                 isDeviceReleased: true,
@@ -711,6 +793,8 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         },
         runPreflight,
         connectDevice,
+        chooseCoin,
+        changeCoin,
         submitPassphrase,
         startDiscovery,
         scanMoreAccounts,
@@ -721,6 +805,16 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         signTransfer,
         broadcastTransfer,
         refreshTransfers,
+        ethereum: {
+            startDiscovery: ethereum.startDiscovery,
+            scanMoreAddresses: ethereum.scanMoreAddresses,
+            confirmDiscovery: ethereum.confirmDiscovery,
+            submitDestination: ethereum.submitDestination,
+            editDestination: ethereum.editDestination,
+            retryTransfer: ethereum.retryTransfer,
+            signTransfer: ethereum.signTransfer,
+            broadcastTransfer: ethereum.broadcastTransfer,
+        },
         finish,
         submitPin: pin => answerPin(pin),
         cancelPin: () => answerPin(undefined),
