@@ -3,6 +3,7 @@
 ### 0.5.0
 
 - feat: connection token authorization
+- update dependencies (forked btleplug 0.13.4 additional fixes)
 
 ### 0.4.3
 
