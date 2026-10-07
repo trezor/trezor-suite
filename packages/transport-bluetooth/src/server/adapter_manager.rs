@@ -779,7 +779,7 @@ impl AdapterManager {
     }
 
     // send to all registered peers
-    async fn send_to_listeners(&self, message: ChannelMessage) {
+    pub async fn send_to_listeners(&self, message: ChannelMessage) {
         // info!("send_to_listeners: {:?}", message.clone());
         let state = self.manager_state.lock().await;
         let listeners = state.listeners.clone();
