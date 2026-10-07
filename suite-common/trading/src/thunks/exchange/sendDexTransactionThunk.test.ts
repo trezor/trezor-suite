@@ -279,6 +279,46 @@ describe('sendDexTransactionThunk', () => {
         ).toBe(expectedHex);
     });
 
+    it('should compose from dexTx.to and dexTx.value when Solana dexTx.data is empty', async () => {
+        const quote = getQuote();
+        const { store, returnUrl } = getMocks({
+            selectedQuote: {
+                ...quote,
+                dexTx: { ...quote.dexTx, data: '' },
+            } as TradingExchangeState['selectedQuote'],
+        });
+
+        const solanaAccount = { ...accountBtc, networkType: 'solana' } as Account;
+
+        (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock) = jest
+            .fn()
+            .mockImplementation(
+                createThunk('@trading/thunk/recomposeAndSignTx', (_, { fulfillWithValue }) =>
+                    fulfillWithValue({ success: true, payload: { txid: 'txid' } }),
+                ),
+            );
+        (confirmExchangeTradeThunk as unknown as jest.Mock).mockImplementation(
+            createThunk('@trading-exchange/thunk/confirmTrade', () => undefined),
+        );
+
+        await store.dispatch(
+            exchangeThunks.sendDexTransactionThunk({
+                account: solanaAccount,
+                returnUrl,
+                nextStep: jest.fn(),
+                triggerAnalyticsTradeConfirmation: jest.fn(),
+                processResponseData: jest.fn(),
+                signAndPushSendFormTransaction: jest.fn(),
+            }),
+        );
+
+        const [recomposeArgs] = (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock).mock
+            .calls[0];
+        expect(recomposeArgs).toEqual(
+            expect.objectContaining({ address: 'to', amount: 'value', transactionData: undefined }),
+        );
+    });
+
     it('should not recalculate the custom fee limit for a bitcoin PSBT', async () => {
         const { store, returnUrl } = getMocks();
 
