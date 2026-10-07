@@ -239,7 +239,12 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         } catch (error) {
             response = createResponseMessage(method.responseID, false, { error });
         }
-        sendCoreMessage(response);
+
+        // A cancel that arrived while this call was awaiting may have answered it already:
+        // abortRunningCall answers a call without a device itself.
+        if (callMethods.includes(method)) {
+            sendCoreMessage(response);
+        }
 
         return Promise.resolve();
     }
