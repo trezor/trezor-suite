@@ -6,7 +6,7 @@ Build target for Trezor Suite desktop application.
 
 > The @suite/desktop-app package now serves as a container for the generated/bundled code from the UI and Electron layers, and is responsible for creating the Electron app. No custom code should be added to this package, and no dependencies from the monorepo should be added to the package.json in @suite/desktop-app. Doing so would break this system.
 
-Both `dependencies` and `devDependencies` defined in `package.json` of this package are [taken as "external" and copied into bundle without other processing](../desktop-app-main/scripts/build.ts/#L70).
+Both `dependencies` and `devDependencies` defined in `package.json` of this package are [taken as "external" and copied into bundle without other processing](../desktop-app-main/webpack/core.webpack.config.ts).
 
 ## Development
 
@@ -14,7 +14,7 @@ Both `dependencies` and `devDependencies` defined in `package.json` of this pack
 yarn workspace @suite/desktop-app dev
 ```
 
-[Read more about development and debugging](../../docs/suite/desktop-app/index.md)
+[Read more about development and debugging](../../docs/packages/desktop-app/index.md)
 
 ---
 
@@ -83,7 +83,7 @@ Location of data directory depends on platform:
 | macOS    | `~/Library/Application Support/`   |
 | Windows  | `C:\Users\<user>\AppData\Roaming\` |
 
-Name of data directory [depends on environment](../../docs/suite/desktop-app/index.md/#app-id-and-name-by-environment) and it's `@suite/desktop-app`, `@suite/desktop-app-dev` or `@suite/desktop-app-local`.
+Name of data directory [depends on environment](../../docs/packages/desktop-app/index.md#app-id-and-name-by-environment) and it's `@trezor/suite-desktop`, `@trezor/suite-desktop-dev` or `@trezor/suite-desktop-local`.
 
 You can open current user data dir directly in Suite debug settings via the link in "Wipe app data" description.
 
