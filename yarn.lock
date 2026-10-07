@@ -2877,7 +2877,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/unitless@npm:0.10.0, @emotion/unitless@npm:^0.10.0":
+"@emotion/unitless@npm:^0.10.0":
   version: 0.10.0
   resolution: "@emotion/unitless@npm:0.10.0"
   checksum: 10/6851c16edce01c494305f43b2cad7a26b939a821131b7c354e49b8e3b012c8810024755b0f4a03ef51117750309e55339825a97bd10411fb3687e68904769106
@@ -16156,7 +16156,7 @@ __metadata:
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -16217,7 +16217,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -16279,7 +16279,7 @@ __metadata:
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -16359,7 +16359,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -16491,7 +16491,7 @@ __metadata:
     react: "npm:19.2.3"
     react-dom: "npm:19.2.3"
     react-redux: "npm:9.3.0"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
     webpack: "npm:5.110.1"
@@ -16588,7 +16588,7 @@ __metadata:
     "@suite-common/discreet-mode": "workspace:*"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -16632,7 +16632,7 @@ __metadata:
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -16657,7 +16657,7 @@ __metadata:
     react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
     semver: "npm:^7.7.1"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -16777,7 +16777,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/theme": "workspace:*"
     react: "npm:19.2.3"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -16807,7 +16807,7 @@ __metadata:
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -16884,7 +16884,7 @@ __metadata:
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
     zod: "npm:4.6.5"
   languageName: unknown
   linkType: soft
@@ -16911,7 +16911,7 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/icons": "workspace:*"
     react: "npm:19.2.3"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -16982,7 +16982,7 @@ __metadata:
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -17255,7 +17255,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@types/invity-api": "npm:^1.1.22"
     react: "npm:19.2.3"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -18003,7 +18003,7 @@ __metadata:
     date-fns: "npm:^4.1.0"
     react: "npm:19.2.3"
     react-dom: "npm:19.2.3"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
     ts-morph: "npm:^27.0.2"
     tsx: "npm:^4.21.0"
     vite: "npm:^8.0.7"
@@ -18185,7 +18185,7 @@ __metadata:
     react-use: "npm:^17.6.1"
     storybook: "npm:^10.3.4"
     stream-browserify: "npm:^3.0.0"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
@@ -18343,7 +18343,7 @@ __metadata:
     react: "npm:19.2.3"
     react-dom: "npm:19.2.3"
     scroll-into-view-if-needed: "npm:^3.1.0"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
     tailwindcss: "npm:^3.4.10"
     zod: "npm:4.6.5"
   peerDependencies:
@@ -18407,7 +18407,7 @@ __metadata:
     remark-gemoji: "npm:^8.0.0"
     remark-gfm: "npm:^4.0.1"
     rimraf: "npm:^6.1.2"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
     swr: "npm:^2.4.1"
@@ -18947,7 +18947,7 @@ __metadata:
     react-svg: "npm:16.4.2"
     reselect: "npm:5.2.0"
     storybook: "npm:^10.3.4"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
     svgo: "npm:^4.0.1"
@@ -19401,7 +19401,7 @@ __metadata:
     redux-thunk: "npm:^3.1.0"
     semver: "npm:^7.7.1"
     stream-browserify: "npm:^3.0.0"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
     vm-browserify: "npm:^1.1.2"
@@ -19462,7 +19462,7 @@ __metadata:
     react-dom: "npm:19.2.3"
     react-intl: "npm:^8.1.3"
     rimraf: "npm:^6.1.2"
-    styled-components: "npm:^6.3.9"
+    styled-components: "npm:^6.5.3"
     usb: "npm:^3.1.0"
     usb-legacy: "npm:usb@2.17.0"
     webpack: "npm:5.110.1"
@@ -20631,13 +20631,6 @@ __metadata:
   version: 2.0.3
   resolution: "@types/stack-utils@npm:2.0.3"
   checksum: 10/72576cc1522090fe497337c2b99d9838e320659ac57fa5560fcbdcbafcf5d0216c6b3a0a8a4ee4fdb3b1f5e3420aa4f6223ab57b82fef3578bec3206425c6cf5
-  languageName: node
-  linkType: hard
-
-"@types/stylis@npm:4.2.7":
-  version: 4.2.7
-  resolution: "@types/stylis@npm:4.2.7"
-  checksum: 10/068c7fd64ee2e1649b06615da57c76dd9f5be1836e310ebf94aa08193c3544d48944079ce6e94ba89b72b716944f217234a86fecc28185246c1787f02ad0eae1
   languageName: node
   linkType: hard
 
@@ -39140,7 +39133,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.1.3, nanoid@npm:^3.3.1, nanoid@npm:^3.3.11, nanoid@npm:^3.3.17, nanoid@npm:^3.3.6, nanoid@npm:^3.3.7, nanoid@npm:^3.3.8":
+"nanoid@npm:^3.1.3, nanoid@npm:^3.3.1, nanoid@npm:^3.3.11, nanoid@npm:^3.3.17, nanoid@npm:^3.3.6, nanoid@npm:^3.3.8":
   version: 3.3.18
   resolution: "nanoid@npm:3.3.18"
   bin:
@@ -41723,17 +41716,6 @@ __metadata:
     picocolors: "npm:^1.0.0"
     source-map-js: "npm:^1.0.2"
   checksum: 10/1a6653e72105907377f9d4f2cd341d8d90e3fde823a5ddea1e2237aaa56933ea07853f0f2758c28892a1d70c53bbaca200eb8b80f8ed55f13093003dbec5afa0
-  languageName: node
-  linkType: hard
-
-"postcss@npm:8.4.49":
-  version: 8.4.49
-  resolution: "postcss@npm:8.4.49"
-  dependencies:
-    nanoid: "npm:^3.3.7"
-    picocolors: "npm:^1.1.1"
-    source-map-js: "npm:^1.2.1"
-  checksum: 10/28fe1005b1339870e0a5006375ba5ac1213fd69800f79e7db09c398e074421ba6e162898e94f64942fed554037fd292db3811d87835d25ab5ef7f3c9daacb6ca
   languageName: node
   linkType: hard
 
@@ -45193,7 +45175,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shallowequal@npm:1.1.0, shallowequal@npm:^1.1.0":
+"shallowequal@npm:^1.1.0":
   version: 1.1.0
   resolution: "shallowequal@npm:1.1.0"
   checksum: 10/f4c1de0837f106d2dbbfd5d0720a5d059d1c66b42b580965c8f06bb1db684be8783538b684092648c981294bf817869f743a066538771dbecb293df78f765e00
@@ -46514,26 +46496,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-components@npm:^6.3.9":
-  version: 6.3.9
-  resolution: "styled-components@npm:6.3.9"
+"styled-components@npm:^6.5.3":
+  version: 6.5.3
+  resolution: "styled-components@npm:6.5.3"
   dependencies:
     "@emotion/is-prop-valid": "npm:1.4.0"
-    "@emotion/unitless": "npm:0.10.0"
-    "@types/stylis": "npm:4.2.7"
     css-to-react-native: "npm:3.2.0"
     csstype: "npm:3.2.3"
-    postcss: "npm:8.4.49"
-    shallowequal: "npm:1.1.0"
     stylis: "npm:4.3.6"
-    tslib: "npm:2.8.1"
   peerDependencies:
+    css-to-react-native: ">= 3.2.0"
     react: ">= 16.8.0"
     react-dom: ">= 16.8.0"
+    react-native: ">= 0.68.0"
   peerDependenciesMeta:
+    css-to-react-native:
+      optional: true
     react-dom:
       optional: true
-  checksum: 10/506137a6771434f805bdf8ef693e7e8a6eb218f41044a26acee698a64c63546bedf75372dc00eaf16a073c194cda22b540e4db02a04ac4c4d5a4e17bcbda91fd
+    react-native:
+      optional: true
+  checksum: 10/58f19a1ea02d8a2288f865e51ac62961453549969a646936b0ca335038286dbc64d7163f740adc817b5a4e96dc412d919797e246d2cb5a46caabde905929b791
   languageName: node
   linkType: hard
 

@@ -40,7 +40,7 @@
         "react-select": "^5.10.2",
         "react-svg": "16.4.2",
         "react-use": "^17.6.1",
-        "styled-components": "^6.3.9"
+        "styled-components": "^6.5.3"
     },
     "devDependencies": {
         "@babel/preset-env": "7.29.7",
