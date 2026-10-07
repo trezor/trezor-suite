@@ -7,8 +7,8 @@ import {
     isWalletEmpty,
     scanAccountRange,
 } from './discoverAccounts';
+import { discoverWalletCandidates } from './discoverWalletCandidates';
 import type { WalletKind } from './scanReport';
-import { diagnosticLog } from '../app/diagnosticLog';
 import type { Backend } from '../backend/backend';
 import type { AccountType } from '../bitcoin/accountType';
 import type { DeviceCall } from '../device/deviceSession';
@@ -58,70 +58,24 @@ const scanAllAccountTypes = async ({
 };
 
 /**
- * Runs the standard discovery of the wallet the device currently unlocks.
- *
- * With a passphrase the NFKD-normalized form is tried first. If that wallet turns out empty and
- * normalization changed the typed text, the wallet under the text exactly as typed is scanned as
- * well, because some old clients sent passphrases without normalizing them.
+ * Runs the standard Bitcoin discovery of the wallet the device currently unlocks, trying the
+ * passphrase candidates the way `discoverWalletCandidates` describes.
  */
 export const discoverWallet = async ({
     passphraseCandidates,
     setActivePassphrase,
     ...params
 }: DiscoverWalletParams): Promise<Result<DiscoveredWallet, DiscoveryError>> => {
-    if (!passphraseCandidates) {
-        const accounts = await scanAllAccountTypes(params);
+    const discovered = await discoverWalletCandidates({
+        call: params.call,
+        passphraseCandidates,
+        setActivePassphrase,
+        scan: () => scanAllAccountTypes(params),
+        isWalletEmpty,
+    });
+    if (!discovered.success) return discovered;
 
-        return accounts.success
-            ? ok({ walletKind: 'standard', accounts: accounts.payload })
-            : accounts;
-    }
+    const { walletKind, scanned } = discovered.payload;
 
-    const { normalized, raw } = passphraseCandidates;
-
-    const describeCandidate = (passphrase: string) => {
-        if (passphrase === '') return 'empty';
-
-        return passphrase === normalized ? 'normalized' : 'raw';
-    };
-
-    // Initialize makes this firmware forget the cached passphrase, so the next call asks for
-    // it again and receives the candidate chosen here.
-    const selectPassphrase = (passphrase: string) => {
-        // Which candidate is in use is logged, the passphrase itself never.
-        diagnosticLog.info('discovery', 'selecting wallet', {
-            passphrase: describeCandidate(passphrase),
-        });
-        setActivePassphrase(passphrase);
-
-        return params.call('Initialize', 'Features');
-    };
-
-    const selectedNormalized = await selectPassphrase(normalized);
-    if (!selectedNormalized.success) return selectedNormalized;
-
-    const normalizedAccounts = await scanAllAccountTypes(params);
-    if (!normalizedAccounts.success) return normalizedAccounts;
-
-    const normalizedWallet: DiscoveredWallet = {
-        walletKind: normalized === '' ? 'standard' : 'passphrase-normalized',
-        accounts: normalizedAccounts.payload,
-    };
-    if (raw === undefined || !isWalletEmpty(normalizedAccounts.payload))
-        return ok(normalizedWallet);
-
-    const selectedRaw = await selectPassphrase(raw);
-    if (!selectedRaw.success) return selectedRaw;
-
-    const rawAccounts = await scanAllAccountTypes(params);
-    if (!rawAccounts.success) return rawAccounts;
-
-    if (!isWalletEmpty(rawAccounts.payload)) {
-        return ok({ walletKind: 'passphrase-raw', accounts: rawAccounts.payload });
-    }
-
-    // Both wallets are empty. Return to the normalized one, which is the regular choice.
-    const reselectedNormalized = await selectPassphrase(normalized);
-
-    return reselectedNormalized.success ? ok(normalizedWallet) : reselectedNormalized;
+    return ok({ walletKind, accounts: scanned });
 };

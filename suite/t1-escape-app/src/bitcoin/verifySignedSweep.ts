@@ -35,6 +35,8 @@ export const verifySignedSweep = ({
     serializedTx,
     plan,
 }: VerifySignedSweepParams): Result<SignedSweep, SignedSweepError> => {
+    // Every reason is a fixed string. The caller logs it, and a message from the verifier
+    // would carry the amounts into the diagnostic log.
     const invalid = (reason: string) =>
         err({ type: 'signed-transaction-invalid' as const, reason });
 
@@ -50,8 +52,8 @@ export const verifySignedSweep = ({
             outputScripts: [plan.destination.script],
             network: BITCOIN_NETWORK,
         });
-    } catch (error) {
-        return invalid(error instanceof Error ? error.message : 'verification failed');
+    } catch {
+        return invalid('verification failed');
     }
 
     const [output, ...otherOutputs] = transaction.outs;

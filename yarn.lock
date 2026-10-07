@@ -17724,6 +17724,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/t1-escape-app@workspace:suite/t1-escape-app"
   dependencies:
+    "@bufbuild/protobuf": "npm:^2.11.0"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/components": "workspace:*"
@@ -17745,6 +17746,7 @@ __metadata:
     react: "npm:19.3.0"
     react-dom: "npm:19.3.0"
     styled-components: "npm:^6.5.3"
+    viem: "npm:^2.57.2"
     vite: "npm:^8.3.3"
     vite-plugin-node-polyfills: "npm:^0.28.0"
   languageName: unknown

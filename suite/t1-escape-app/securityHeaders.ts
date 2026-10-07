@@ -5,12 +5,16 @@
 /** The bridge inside Trezor Suite desktop. */
 export const BRIDGE_ORIGIN = 'http://127.0.0.1:21328';
 
-/** Trezor's Bitcoin blockbook, reached over WebSocket. */
-export const BLOCKBOOK_ORIGINS = ['wss://btc.trezor.io'];
+/** Trezor's Bitcoin, Ethereum and Ethereum Classic blockbooks, reached over WebSocket. */
+export const BLOCKBOOK_ORIGINS = [
+    'wss://btc.trezor.io',
+    'wss://eth.trezor.io',
+    'wss://etc.trezor.io',
+];
 
 /**
  * The page may load code only from its own origin and may talk only to the bridge inside
- * Trezor Suite and to Trezor's Bitcoin blockbook.
+ * Trezor Suite and to Trezor's blockbooks.
  *
  * `style-src 'unsafe-inline'` is required by styled-components, which injects its style sheets
  * at runtime. Trezor Suite Web ships the same exception.

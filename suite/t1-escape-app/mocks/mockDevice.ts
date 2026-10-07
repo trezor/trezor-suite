@@ -1,3 +1,6 @@
+import { keccak256, serializeTransaction } from 'viem';
+import { sign } from 'viem/accounts';
+
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { ok } from '@trezor/type-utils';
 import { bufferUtils } from '@trezor/utils';
@@ -26,6 +29,25 @@ type RecordedPreviousOutput = {
     script_pubkey: string;
 };
 
+/** The legacy `EthereumSignTx` fields as the host sends them: hex strings for every bytes field. */
+type RecordedEthereumSignTx = {
+    address_n: number[];
+    nonce?: string;
+    gas_price?: string;
+    gas_limit?: string;
+    to?: string;
+    value?: string;
+    data_initial_chunk?: string;
+    data_length?: number;
+    chain_id?: number;
+};
+
+const ADDRESS_BYTES_HEX_LENGTH = 40;
+
+const EIP155_V_BASE = 35;
+
+const bytesToBigInt = (hex: string | undefined) => (hex ? BigInt(`0x${hex}`) : 0n);
+
 export type MockDeviceParams = {
     /** Wallets by passphrase. The empty passphrase selects the standard wallet. */
     wallets: Record<string, MockWallet>;
@@ -47,8 +69,9 @@ const failure = (code: PROTO.FailureType, message: string) =>
 
 /**
  * Imitates the parts of old Trezor One firmware the migration talks to: the PIN and passphrase
- * prompts, `GetPublicKey`, and the request-driven transaction signing including the streaming
- * of previous transactions. It does not produce real signatures.
+ * prompts, `GetPublicKey`, the request-driven Bitcoin signing including the streaming of previous
+ * transactions, and the legacy Ethereum messages. Bitcoin signatures are fake; Ethereum ones are
+ * real EIP-155 signatures from the wallet's keys, so that the host can verify the signer.
  */
 export const mockDevice = ({
     wallets,
@@ -74,6 +97,10 @@ export const mockDevice = ({
               previous?: { hash: string; inputsCount: number; outputsCount: number };
               isTransactionConfirmed: boolean;
           }
+        | undefined;
+
+    let ethereumSigning:
+        | { message: RecordedEthereumSignTx; wallet: MockWallet; isTransferConfirmed: boolean }
         | undefined;
 
     const requestTransactionData = (
@@ -191,6 +218,81 @@ export const mockDevice = ({
         }
     };
 
+    const signEthereumTransfer = async () => {
+        if (!ethereumSigning) return failure('Failure_UnexpectedMessage', 'Not in signing mode');
+
+        const { message, wallet } = ethereumSigning;
+        ethereumSigning = undefined;
+
+        const chainId = message.chain_id ?? 0;
+        const hash = keccak256(
+            serializeTransaction({
+                type: 'legacy',
+                chainId,
+                nonce: Number(bytesToBigInt(message.nonce)),
+                gasPrice: bytesToBigInt(message.gas_price),
+                gas: bytesToBigInt(message.gas_limit),
+                to: `0x${message.to ?? ''}`,
+                value: bytesToBigInt(message.value) - (isSignedAmountAltered ? 1n : 0n),
+            }),
+        );
+        const { r, s, yParity } = await sign({
+            hash,
+            privateKey: wallet.getPrivateKey(message.address_n),
+            to: 'object',
+        });
+        if (yParity === undefined) throw new Error('mockDevice: signature without recovery id');
+
+        return response('EthereumTxRequest', {
+            signature_v: yParity + 2 * chainId + EIP155_V_BASE,
+            signature_r: r.slice(2),
+            signature_s: s.slice(2),
+            // Demanded by the shared message type only. The legacy message has no such field.
+            auth7702_list: [],
+        });
+    };
+
+    const handleEthereumSigning = ({ name }: TransportCallParams) => {
+        if (!ethereumSigning) return failure('Failure_UnexpectedMessage', 'Not in signing mode');
+
+        if (name !== 'ButtonAck') {
+            ethereumSigning = undefined;
+
+            return failure('Failure_UnexpectedMessage', 'Unknown message');
+        }
+
+        if (isOutputRejected) {
+            ethereumSigning = undefined;
+
+            return failure('Failure_ActionCancelled', 'Signing cancelled by user');
+        }
+
+        // The firmware shows the destination and amount first, then the maximum fee.
+        if (!ethereumSigning.isTransferConfirmed) {
+            ethereumSigning.isTransferConfirmed = true;
+
+            return response('ButtonRequest', { code: 'ButtonRequest_SignTx' });
+        }
+
+        return signEthereumTransfer();
+    };
+
+    const startEthereumSigning = (message: RecordedEthereumSignTx, wallet: MockWallet) => {
+        // Real firmware would sign a contract creation without a destination. The fake one
+        // refuses, so that a message with the destination in the wrong field cannot pass a test.
+        if (message.to?.length !== ADDRESS_BYTES_HEX_LENGTH) {
+            return failure('Failure_DataError', 'Destination missing');
+        }
+        if (message.data_length || message.data_initial_chunk) {
+            return failure('Failure_DataError', 'Data not supported by the fake firmware');
+        }
+        if (!message.chain_id) return failure('Failure_DataError', 'chain_id missing');
+
+        ethereumSigning = { message, wallet, isTransferConfirmed: false };
+
+        return response('ButtonRequest', { code: 'ButtonRequest_ConfirmOutput' });
+    };
+
     const handleUnlocked = (call: TransportCallParams) => {
         const wallet = wallets[cachedPassphrase ?? ''];
         if (!wallet) return failure('Failure_ProcessError', 'Unknown wallet');
@@ -198,6 +300,16 @@ export const mockDevice = ({
         switch (call.name) {
             case 'GetPublicKey':
                 return response('PublicKey', wallet.getPublicKey(call.data.address_n as number[]));
+            case 'EthereumGetAddress':
+                // The legacy answer carries the 20 raw address bytes, decoded by the host as hex.
+                return response('EthereumAddress', {
+                    address: wallet
+                        .getEthereumAddress(call.data.address_n as number[])
+                        .slice(2)
+                        .toLowerCase(),
+                });
+            case 'EthereumSignTx':
+                return startEthereumSigning(call.data as RecordedEthereumSignTx, wallet);
             case 'SignTx':
                 signing = {
                     inputsCount: call.data.inputs_count as number,
@@ -221,6 +333,7 @@ export const mockDevice = ({
             case 'Initialize':
                 // Old firmware forgets the passphrase on Initialize but keeps the PIN.
                 signing = undefined;
+                ethereumSigning = undefined;
                 pendingCall = undefined;
                 if (hasPassphraseProtection) cachedPassphrase = undefined;
 
@@ -245,6 +358,7 @@ export const mockDevice = ({
                 return response('Success', { message: 'Session cleared' });
             case 'Cancel':
                 signing = undefined;
+                ethereumSigning = undefined;
                 pendingCall = undefined;
 
                 return failure('Failure_ActionCancelled', 'Cancelled');
@@ -261,6 +375,7 @@ export const mockDevice = ({
                 break;
             default:
                 if (signing) return handleSigning(call);
+                if (ethereumSigning) return handleEthereumSigning(call);
                 pendingCall = call;
         }
 
