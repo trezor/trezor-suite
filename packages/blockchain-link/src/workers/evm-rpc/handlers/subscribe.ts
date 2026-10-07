@@ -3,7 +3,7 @@ import type { MessageTypes, ResponseTypes as Responses } from '@trezor/blockchai
 
 import type { WorkerState } from '../../state';
 import { BLOCK_SUBSCRIPTION } from '../constants';
-import { detectAccountChanges } from '../history';
+import { detectAccountChanges, getDescriptorHistory, isCold } from '../history';
 import { TIP_LAG_BLOCKS } from '../history/constants';
 import type { Request } from '../types';
 import { getErrorName } from '../utils/errors';
@@ -12,6 +12,19 @@ type PollInterval = ReturnType<typeof setInterval>;
 
 const getBlockPollInterval = (state: WorkerState) =>
     state.getSubscription('block') as PollInterval | undefined;
+
+// Accounts are subscribed only while someone looks at them, so whatever was mined since they were
+// last synced or watched has not been seen yet. Cold accounts have nothing to catch up on: their
+// first sync scans the recent window anyway.
+const getCatchUpStart = (state: WorkerState, latestBlock: number) =>
+    Math.min(
+        latestBlock,
+        ...state
+            .getAccounts()
+            .map(account => getDescriptorHistory(state, account.descriptor))
+            .filter(history => !isCold(history))
+            .map(history => Math.max(history.syncedTo, history.watchedTo)),
+    );
 
 /**
  * One poll loop serves both subscription kinds: it reports new blocks when blocks are subscribed,
@@ -25,13 +38,22 @@ const startPolling = async (request: Request<MessageTypes.Subscribe>) => {
     const client = await request.connect();
     let lastBlockHeight = Number(await client.getBlockNumber());
     // The newest blocks' logs may not be queryable yet, so they are left for a later look.
-    let lastCheckedBlock = lastBlockHeight - TIP_LAG_BLOCKS;
+    let lastCheckedBlock = getCatchUpStart(state, lastBlockHeight - TIP_LAG_BLOCKS);
 
     const pollInterval: PollInterval = setInterval(async () => {
         // The state entry is the subscription. BaseWorker.cleanup() drops it without
         // knowing about the interval, so the poll has to stop itself.
         if (getBlockPollInterval(state) !== pollInterval) {
             clearInterval(pollInterval);
+
+            return;
+        }
+
+        // Everything subscribed may have left while the loop was still starting, after the last
+        // unsubscribe already looked for an interval to stop.
+        if (!state.getSubscription('blockNotifications') && !state.getAccounts().length) {
+            clearInterval(pollInterval);
+            state.removeSubscription('block');
 
             return;
         }

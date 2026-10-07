@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import type { CustomBackend } from '@suite-common/wallet-types';
+import type { AccountKey, CustomBackend } from '@suite-common/wallet-types';
 import type { ServerInfo } from '@trezor/blockchain-link-types';
 import type { TimerId } from '@trezor/type-utils';
 
@@ -42,10 +42,16 @@ const setCardanoProtocolParameters = createAction(
     }),
 );
 
+const setWatchedAccount = createAction(
+    `${BLOCKCHAIN_MODULE_PREFIX}/setWatchedAccount`,
+    (payload: { symbol: NetworkSymbol; accountKey: AccountKey | undefined }) => ({ payload }),
+);
+
 export const blockchainActions = {
     setBackend,
     setBackendGapLimit,
     setCardanoProtocolParameters,
     connected,
     synced,
+    setWatchedAccount,
 };

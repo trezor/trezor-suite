@@ -6,6 +6,7 @@ import type { MessageTypes } from '@trezor/blockchain-link-types';
 import { cleanupSubscriptions, subscribe, unsubscribe } from './subscribe';
 import { WorkerState } from '../../state';
 import { BLOCK_SUBSCRIPTION } from '../constants';
+import { getDescriptorHistory } from '../history';
 import { TIP_LAG_BLOCKS } from '../history/constants';
 
 const { POLL_INTERVAL_MS } = BLOCK_SUBSCRIPTION;
@@ -451,5 +452,69 @@ describe('account subscriptions', () => {
         worker.unsubscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
 
         expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it('stops polling when the last account leaves while the loop is still starting', async () => {
+        const worker = createWorker();
+
+        const subscribing = worker.subscribe({
+            type: 'accounts',
+            accounts: [{ descriptor: ADDRESS }],
+        });
+        worker.unsubscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        await subscribing;
+
+        worker.mineBlock();
+        await jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS * 2);
+
+        expect(worker.rpcRequest).not.toHaveBeenCalled();
+        expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it('catches up from where the account history was last synced', async () => {
+        const worker = createWorker({ blockNumber: 100n });
+        const history = getDescriptorHistory(worker.state, ADDRESS);
+        history.syncedFrom = 1;
+        history.syncedTo = 50;
+
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        worker.mineBlock();
+        await jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS);
+
+        expect(worker.rpcRequest).toHaveBeenCalledWith(
+            expect.objectContaining({
+                params: [expect.objectContaining({ fromBlock: '0x33', toBlock: '0x63' })],
+            }),
+        );
+    });
+
+    it('resumes from where watching stopped instead of rescanning since the last sync', async () => {
+        const worker = createWorker({ blockNumber: 100n });
+        const history = getDescriptorHistory(worker.state, ADDRESS);
+        history.syncedFrom = 1;
+        history.syncedTo = 50;
+
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        worker.mineBlock();
+        await jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS);
+        worker.unsubscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+
+        worker.mineBlock();
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        worker.rpcRequest.mockClear();
+        worker.mineBlock();
+        await jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS);
+
+        // The first watch covered up to block 99, leaving the tip-lag blocks for later.
+        expect(worker.rpcRequest).toHaveBeenCalledWith(
+            expect.objectContaining({
+                params: [expect.objectContaining({ fromBlock: '0x64', toBlock: '0x65' })],
+            }),
+        );
+        expect(worker.rpcRequest).not.toHaveBeenCalledWith(
+            expect.objectContaining({
+                params: [expect.objectContaining({ fromBlock: '0x33' })],
+            }),
+        );
     });
 });
