@@ -176,17 +176,17 @@ async fn handle_http_request(
         };
         tokio::spawn(async move {
             if let Err(err) = handle_ws_connection(peer.clone(), websocket, manager).await {
-                log::error!("WebSocket connection error for peer {}: {:?}", peer, err);
+                log::error!("WebSocket connection error for peer {peer}: {err:?}");
 
                 match err {
                     ServerError::WebSocket(ws_err) => {
-                        log::debug!("WebSocket protocol error: {}", ws_err);
+                        log::debug!("WebSocket protocol error: {ws_err}");
                     }
                     ServerError::Io(io_err) => {
-                        log::warn!("IO error in WebSocket connection: {}", io_err);
+                        log::warn!("IO error in WebSocket connection: {io_err}");
                     }
                     ServerError::Http(http_err) => {
-                        log::warn!("HTTP error in WebSocket connection: {}", http_err);
+                        log::warn!("HTTP error in WebSocket connection: {http_err}");
                     }
                     ServerError::ConnectionBroadcast(err) => {
                         log::warn!("ConnectionBroadcastError {err}");

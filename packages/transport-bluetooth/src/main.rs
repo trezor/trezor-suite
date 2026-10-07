@@ -8,7 +8,7 @@ async fn main() {
         Err(_) => "21327".to_string(),
     };
 
-    let addr = format!("127.0.0.1:{}", port);
+    let addr = format!("127.0.0.1:{port}");
 
     match server::start_server(&addr).await {
         // Ok should not happen as start_server runs indefinitely unless there's an error
@@ -17,7 +17,7 @@ async fn main() {
             std::process::exit(1);
         }
         Err(err) => {
-            eprintln!("Server start error: {:?}", err);
+            eprintln!("Server start error: {err:?}");
             std::process::exit(1);
         }
     }
