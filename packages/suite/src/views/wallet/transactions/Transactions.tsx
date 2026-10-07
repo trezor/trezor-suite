@@ -15,6 +15,7 @@ import { type AppState } from 'src/types/suite';
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 
 import { TradeBox } from './TradeBox/TradeBox';
+import { RateLimitedHistoryBanner } from './TransactionList/RateLimitedHistoryBanner';
 import { SingleAccountTransactionList } from './TransactionList/SingleAccountTransactionList';
 import { AccountEmpty } from './components/AccountEmpty';
 import { AccountOverviewBalance } from './components/AccountOverviewBalance';
@@ -107,6 +108,7 @@ export const Transactions = () => {
                     </Column>
                 )}
                 <SolanaLimitedHistoryBanner account={account} />
+                <RateLimitedHistoryBanner account={account} />
                 <SingleAccountTransactionList account={account} symbol={account.symbol} />
             </Layout>
         );

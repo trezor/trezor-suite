@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
 import { unwatchAccountHistoryThunk, watchAccountHistoryThunk } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';

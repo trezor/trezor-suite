@@ -32,6 +32,7 @@ interface LoadOlderHistoryProps {
 export const LoadOlderHistory = ({ accounts }: LoadOlderHistoryProps) => {
     const { dispatch } = useServices(injectDispatch);
     const [isLoading, setIsLoading] = useState(false);
+    const [hasFailed, setHasFailed] = useState(false);
 
     const olderAccounts = accounts.filter(account => getOlderHistoryFrom(account) !== undefined);
     // Including not-yet-filled page slots, so the next page starts where the stored ones end.
@@ -50,6 +51,7 @@ export const LoadOlderHistory = ({ accounts }: LoadOlderHistoryProps) => {
 
     const handleClick = async () => {
         setIsLoading(true);
+        setHasFailed(false);
         try {
             // `from` widens the backend's window and the page starting where the list ends comes
             // back in the same request. `noLoading` keeps the loaded transactions on screen; only
@@ -67,9 +69,11 @@ export const LoadOlderHistory = ({ accounts }: LoadOlderHistoryProps) => {
                             noLoading: true,
                             from: getOlderHistoryFrom(account),
                         }),
-                    );
+                    ).unwrap();
                 }),
             );
+        } catch {
+            setHasFailed(true);
         } finally {
             setIsLoading(false);
         }
@@ -104,6 +108,11 @@ export const LoadOlderHistory = ({ accounts }: LoadOlderHistoryProps) => {
                 >
                     <Translation id="TR_LOAD_OLDER_TRANSACTIONS" />
                 </Button>
+                {hasFailed && (
+                    <Text typographyStyle="body-sm" intent="warning">
+                        <Translation id="TR_LOAD_OLDER_TRANSACTIONS_FAILED" />
+                    </Text>
+                )}
             </Column>
         </Column>
     );

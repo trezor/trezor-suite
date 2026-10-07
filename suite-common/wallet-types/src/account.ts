@@ -76,6 +76,8 @@ type AccountNetworkSpecific =
               olderHistoryFrom?: number;
               /** Direct RPC only: unix time of the oldest block the scanned history covers. */
               historyCoveredSince?: number;
+              /** Direct RPC only: the provider's rate limit cost the last answer some of its data. */
+              isRateLimited?: boolean;
           };
           marker: undefined;
           stellarCursor: undefined;
