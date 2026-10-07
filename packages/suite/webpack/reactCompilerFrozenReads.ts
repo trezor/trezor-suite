@@ -6,8 +6,8 @@ import path from 'path';
 import { REACT_COMPILER_PATHS, reactCompilerOptions } from './reactCompiler';
 
 /**
- * Finds the two failure modes the React Compiler has actually shipped in this repository. Neither the
- * compiler-backed ESLint rules nor `@swc/jest` (which executes no babel plugin) can see either one,
+ * Finds the four failure modes the React Compiler has actually shipped in this repository. Neither the
+ * compiler-backed ESLint rules nor `@swc/jest` (which executes no babel plugin) can see any of them,
  * so this is the only gate that can.
  *
  * 1. `findings` — a render-time read of a `react-hook-form` accessor that the compiler caches on a
@@ -17,15 +17,28 @@ import { REACT_COMPILER_PATHS, reactCompilerOptions } from './reactCompiler';
  *    `if ($[0] !== watch) { t0 = watch("amount"); … }`, whose test is false from the second render
  *    onwards — the value freezes permanently.
  *
- * 2. `frozenCaptures` — an impure render-scoped value captured by a closure the compiler caches. The
+ * 2. `formSpreads` — a cached object that spreads `useForm()`'s return value while nothing in its
+ *    cache key is `formState`. The spread copies `formState` by value, and react-hook-form swaps each
+ *    new `formState` proxy onto that same unchanging object, so the copy stays the one taken on the
+ *    render that filled the cache. `useRbfForm.ts` had one: `useCompose` never saw a validation
+ *    error, so a Speed up fee outside the limits still composed.
+ *
+ * 3. `editedInPlaceReads` — a value derived during render from `formState.errors`, `dirtyFields`,
+ *    `touchedFields` or `validatingFields` and cached on that same object. react-hook-form edits
+ *    them in place, so the key compares equal on every render and `Object.keys(formState.errors)`
+ *    keeps its first answer. The trading forms had three: a swap amount above the balance kept the
+ *    previous offer and left Approve enabled.
+ *
+ * 4. `frozenCaptures` — an impure render-scoped value captured by a closure the compiler caches. The
  *    exact complement of `impureCaches`: there the impure read itself is cached, here it is
  *    recomputed every render and the closure reading it is not, so the closure keeps serving the
  *    first render's value. Structurally invisible to `impureCaches`, which only ever walks a guard
  *    consequent — the impure read sits at render level, between two guards, inside no guard at all.
  *    `ConnectionGlobalModalContext.tsx` shipped one: a Bluetooth liveness cut-off frozen at mount.
  *
- * ONCE THE READS BELOW SUBSCRIBE THROUGH `useWatch`, THE FIRST HALF OF THIS MODULE AND ITS OPT-OUT
- * DIRECTIVES GO AWAY. The second half outlives it — it guards a compiler behaviour, not a library.
+ * ONCE THE READS BELOW SUBSCRIBE THROUGH `useWatch`, THE FIRST CHANNEL AND ITS OPT-OUT DIRECTIVES GO
+ * AWAY. The next two last as long as react-hook-form keeps its form objects' identity across updates.
+ * The fourth outlives them all — it guards a compiler behaviour, not a library.
  */
 
 const repoRoot = path.resolve(__dirname, '../../..');
@@ -74,6 +87,18 @@ const IMPURE_GLOBAL_READS: ReadonlyArray<{ object: string; property: string }> =
     { object: 'performance', property: 'now' },
 ];
 
+/**
+ * `formState` members react-hook-form 7 edits in place with `set`/`unset`, replacing the object only
+ * on a `reset` and a few whole-form recomputations. Adding or clearing an error leaves `errors` the
+ * same object, so a cache keyed on it never refills.
+ */
+const EDITED_IN_PLACE_FORM_STATE: ReadonlySet<string> = new Set([
+    'errors',
+    'dirtyFields',
+    'touchedFields',
+    'validatingFields',
+]);
+
 export type FrozenReadKind = 'render-read' | 'render-callback';
 
 export type FrozenReadFinding = {
@@ -112,6 +137,30 @@ export type FrozenCaptureFinding = {
     depCount: number;
 };
 
+export type FormSpreadFinding = {
+    file: string;
+    /** Line of the cached object literal — the thing to change. */
+    line: number;
+    column: number;
+    /** The `useForm()` return value it spreads. */
+    binding: string;
+    owner: string | null;
+    /** The cache key, none of it `formState`. Empty for a first-render sentinel. */
+    dependencies: string[];
+};
+
+export type EditedInPlaceReadFinding = {
+    file: string;
+    line: number;
+    column: number;
+    /** The cache key react-hook-form edits in place, spelled as the guard compares it. */
+    key: string;
+    kind: FrozenReadKind;
+    owner: string | null;
+    /** How many dependencies have to change before the cached value is recomputed. */
+    depCount: number;
+};
+
 export type SourceLocation = {
     file: string;
     line: number;
@@ -130,6 +179,10 @@ export type FrozenReadReport = {
     /** Memo-cache guards examined, across every compiled file. */
     guards: number;
     findings: FrozenReadFinding[];
+    /** Cached objects spreading `useForm()`'s return value with no `formState` in their key. */
+    formSpreads: FormSpreadFinding[];
+    /** Render-time reads of form state react-hook-form edits in place, cached on that object. */
+    editedInPlaceReads: EditedInPlaceReadFinding[];
     /** Advisory only: impure globals cached behind a first-render sentinel. */
     impureCaches: ImpureCacheFinding[];
     /** Impure render-scoped values captured by a cached closure, so the closure serves a stale one. */
@@ -453,6 +506,8 @@ const collectRenderEvaluatedCallbacks = (ast: t.File): Set<t.Node> => {
 type AnalyseCompiledModuleResult = {
     guards: number;
     findings: FrozenReadFinding[];
+    formSpreads: FormSpreadFinding[];
+    editedInPlaceReads: EditedInPlaceReadFinding[];
     impureCaches: ImpureCacheFinding[];
     frozenCaptures: FrozenCaptureFinding[];
     unknownGuardShapes: SourceLocation[];
@@ -790,6 +845,306 @@ const collectFrozenCaptures = ({
     });
 };
 
+type SourcePosition = { line: number; column: number };
+
+/**
+ * Where the nearest node that kept a source position starts. The JSX transform builds the props
+ * object of a `_jsx` call from scratch, so `<FormProvider {...methods}>` spreads into an object with
+ * no `loc` of its own.
+ */
+const getSourcePosition = (startPath: NodePath<Node>): SourcePosition => {
+    const { line = 0, column = 0 } =
+        startPath.find(candidate => candidate.node.loc != null)?.node.loc?.start ?? {};
+
+    return { line, column };
+};
+
+/**
+ * `formState.errors` for `formState.errors` and `formState?.errors` alike, so a guard dependency
+ * matches a read however the source spelled the chain. `null` for anything but a chain of names.
+ */
+const getPropertyPath = (node: t.Node): string | null => {
+    if (t.isIdentifier(node)) {
+        return node.name;
+    }
+
+    if (
+        !(t.isMemberExpression(node) || t.isOptionalMemberExpression(node)) ||
+        node.computed ||
+        !t.isIdentifier(node.property)
+    ) {
+        return null;
+    }
+
+    const objectPath = getPropertyPath(node.object);
+
+    return objectPath === null ? null : `${objectPath}.${node.property.name}`;
+};
+
+/** `errors` for both `errors` and `formState.errors`. */
+const getPathTail = (propertyPath: string) => propertyPath.slice(propertyPath.lastIndexOf('.') + 1);
+
+/** `formState` in `formState.errors` — the binding a property chain starts from. */
+const getRootIdentifier = (node: t.Node): t.Identifier | null => {
+    if (t.isIdentifier(node)) {
+        return node;
+    }
+
+    return t.isMemberExpression(node) || t.isOptionalMemberExpression(node)
+        ? getRootIdentifier(node.object)
+        : null;
+};
+
+/**
+ * `formState`, `methods.formState`, or a binding destructured out of one under another name, which
+ * the compiler emits itself (`const { formState: t0 } = useForm()`). Each is read afresh on every
+ * render, so a cache keyed on it refills with every new `formState` proxy.
+ */
+const isFormStateDependency = (dependency: t.Expression, scopePath: NodePath<Node>): boolean => {
+    const dependencyPath = getPropertyPath(dependency);
+    if (dependencyPath !== null && getPathTail(dependencyPath) === 'formState') {
+        return true;
+    }
+
+    if (!t.isIdentifier(dependency)) {
+        return false;
+    }
+
+    const declarator = scopePath.scope.getBinding(dependency.name)?.path.node;
+
+    return (
+        t.isVariableDeclarator(declarator) &&
+        t.isObjectPattern(declarator.id) &&
+        declarator.id.properties.some(
+            property =>
+                t.isObjectProperty(property) &&
+                t.isIdentifier(property.key, { name: 'formState' }) &&
+                t.isIdentifier(property.value, { name: dependency.name }),
+        )
+    );
+};
+
+/**
+ * `useForm()`'s return value, the `useRef` payload whose identity never changes. A `useFormContext()`
+ * value is deliberately not one: `FormProvider` memoises it on `formState`, so every form-state
+ * update reaches its consumers as a new object and a cache keyed on it refills.
+ */
+const isUseFormReturnValue = (
+    argumentPath: NodePath<Node>,
+): argumentPath is NodePath<t.Identifier> => {
+    if (!argumentPath.isIdentifier()) {
+        return false;
+    }
+
+    const declarator = argumentPath.scope.getBinding(argumentPath.node.name)?.path.node;
+
+    return (
+        t.isVariableDeclarator(declarator) &&
+        t.isIdentifier(declarator.id) &&
+        t.isCallExpression(declarator.init) &&
+        t.isIdentifier(declarator.init.callee, { name: 'useForm' })
+    );
+};
+
+type CollectFormSpreadsParams = {
+    guardPath: NodePath<t.IfStatement>;
+    guard: GuardShape;
+    file: string;
+    ownerName: string | null;
+    owner: NodePath<t.Function> | null;
+    renderEvaluatedCallbacks: Set<t.Node>;
+    formSpreads: FormSpreadFinding[];
+};
+
+/**
+ * An object literal this guard caches that spreads `useForm()`'s return value while nothing in the
+ * guard's key is `formState`. The key is then a ref that never changes, so the `formState` the
+ * spread copied stays the one from the render that first filled the slot. Passing the bound
+ * `formState` right after the spread puts it in the key; `formState: methods.formState` does not,
+ * because the compiler folds that path into the `methods` it already depends on.
+ */
+const collectFormSpreads = ({
+    guardPath,
+    guard,
+    file,
+    ownerName,
+    owner,
+    renderEvaluatedCallbacks,
+    formSpreads,
+}: CollectFormSpreadsParams) => {
+    if (owner === null) {
+        return;
+    }
+
+    const dependencies = guard.kind === 'dependency' ? guard.dependencies : [];
+    if (dependencies.some(dependency => isFormStateDependency(dependency, guardPath))) {
+        return;
+    }
+
+    guardPath.get('consequent').traverse({
+        SpreadElement(spreadPath) {
+            const argumentPath = spreadPath.get('argument');
+            if (
+                !spreadPath.parentPath.isObjectExpression() ||
+                !isUseFormReturnValue(argumentPath)
+            ) {
+                return;
+            }
+
+            // A handler or an effect builds its object when it runs, out of that moment's `formState`.
+            const enclosing = spreadPath.getFunctionParent();
+            if (
+                enclosing === null ||
+                getReadKind({ enclosing, owner, renderEvaluatedCallbacks }) === null
+            ) {
+                return;
+            }
+
+            // A guard nested inside this one has a key of its own and is visited in its own right.
+            if (findEnclosingMemoGuard(spreadPath, owner)?.node !== guardPath.node) {
+                return;
+            }
+
+            const { line, column } = getSourcePosition(spreadPath.parentPath);
+            formSpreads.push({
+                file,
+                line,
+                column,
+                binding: argumentPath.node.name,
+                owner: ownerName,
+                dependencies: dependencies.map(
+                    dependency => getPropertyPath(dependency) ?? dependency.type,
+                ),
+            });
+        },
+    });
+};
+
+/**
+ * Whether the object is looked into here — its keys listed, a member read, its entries copied —
+ * rather than handed on as a reference, which whoever reads it later resolves against the live
+ * object. Seen through `??`, `||`, `&&` and the branches of a conditional.
+ */
+const isContentRead = (referencePath: NodePath<Node>): boolean => {
+    let valuePath = referencePath;
+    while (
+        valuePath.parentPath !== null &&
+        (valuePath.parentPath.isLogicalExpression() ||
+            (valuePath.parentPath.isConditionalExpression() && valuePath.key !== 'test'))
+    ) {
+        valuePath = valuePath.parentPath;
+    }
+
+    const { parentPath, key, listKey } = valuePath;
+    if (parentPath === null) {
+        return false;
+    }
+
+    if (parentPath.isMemberExpression() || parentPath.isOptionalMemberExpression()) {
+        return key === 'object';
+    }
+
+    if (
+        parentPath.isBinaryExpression({ operator: 'in' }) ||
+        parentPath.isForInStatement() ||
+        parentPath.isForOfStatement()
+    ) {
+        return key === 'right';
+    }
+
+    // `listKey` is `arguments` for a call and a `new` alike.
+    return listKey === 'arguments' || parentPath.isSpreadElement();
+};
+
+type CollectEditedInPlaceReadsParams = {
+    guardPath: NodePath<t.IfStatement>;
+    guard: GuardShape;
+    file: string;
+    ownerName: string | null;
+    owner: NodePath<t.Function> | null;
+    renderEvaluatedCallbacks: Set<t.Node>;
+    editedInPlaceReads: EditedInPlaceReadFinding[];
+};
+
+/**
+ * A guard keyed on form state react-hook-form edits in place, whose consequent looks into that object
+ * during render. The key compares equal on every render, so whatever was derived from it —
+ * `Object.keys(errors)` for a validity flag, typically — stays as it was when the slot was filled.
+ * Storing the reference is fine, and so is reading it in a callback: both reach the live object.
+ */
+const collectEditedInPlaceReads = ({
+    guardPath,
+    guard,
+    file,
+    ownerName,
+    owner,
+    renderEvaluatedCallbacks,
+    editedInPlaceReads,
+}: CollectEditedInPlaceReadsParams) => {
+    if (owner === null || guard.kind !== 'dependency') {
+        return;
+    }
+
+    const { dependencies } = guard;
+
+    dependencies.forEach(dependency => {
+        const key = getPropertyPath(dependency);
+        const root = getRootIdentifier(dependency);
+        if (key === null || root === null || !EDITED_IN_PLACE_FORM_STATE.has(getPathTail(key))) {
+            return;
+        }
+
+        const keyBinding = guardPath.scope.getBinding(root.name);
+
+        const inspect = (referencePath: NodePath<Node>) => {
+            if (getPropertyPath(referencePath.node) !== key) {
+                return;
+            }
+
+            // The `errors` of `formState.errors` is a property name, and a callback parameter of the
+            // same name is another value altogether.
+            const isReference =
+                !referencePath.isIdentifier() || referencePath.isReferencedIdentifier();
+            if (!isReference || referencePath.scope.getBinding(root.name) !== keyBinding) {
+                return;
+            }
+
+            const enclosing = referencePath.getFunctionParent();
+            const kind =
+                enclosing === null
+                    ? null
+                    : getReadKind({ enclosing, owner, renderEvaluatedCallbacks });
+
+            // The compiler's own `$[n] = errors` stores the reference, so it is no read either.
+            if (kind === null || !isContentRead(referencePath)) {
+                return;
+            }
+
+            // A guard nested inside this one has a key of its own and is visited in its own right.
+            if (findEnclosingMemoGuard(referencePath, owner)?.node !== guardPath.node) {
+                return;
+            }
+
+            const { line, column } = getSourcePosition(referencePath);
+            editedInPlaceReads.push({
+                file,
+                line,
+                column,
+                key,
+                kind,
+                owner: ownerName,
+                depCount: dependencies.length,
+            });
+        };
+
+        guardPath.get('consequent').traverse({
+            Identifier: inspect,
+            MemberExpression: inspect,
+            OptionalMemberExpression: inspect,
+        });
+    });
+};
+
 /**
  * Walks one already-compiled module. Takes the AST rather than source so a hand-written guard shape
  * can be fed straight in, which is the only way to test the compiler-upgrade tripwire.
@@ -797,6 +1152,8 @@ const collectFrozenCaptures = ({
 export const analyseCompiledModule = (ast: t.File, file: string): AnalyseCompiledModuleResult => {
     const renderEvaluatedCallbacks = collectRenderEvaluatedCallbacks(ast);
     const findings: FrozenReadFinding[] = [];
+    const formSpreads: FormSpreadFinding[] = [];
+    const editedInPlaceReads: EditedInPlaceReadFinding[] = [];
     const impureCaches: ImpureCacheFinding[] = [];
     const frozenCaptures: FrozenCaptureFinding[] = [];
     const impureRenderBindings = new Map<t.Node, ImpureRenderBinding[]>();
@@ -832,6 +1189,26 @@ export const analyseCompiledModule = (ast: t.File, file: string): AnalyseCompile
                 owner,
                 impureRenderBindings,
                 frozenCaptures,
+            });
+
+            collectFormSpreads({
+                guardPath,
+                guard,
+                file,
+                ownerName,
+                owner,
+                renderEvaluatedCallbacks,
+                formSpreads,
+            });
+
+            collectEditedInPlaceReads({
+                guardPath,
+                guard,
+                file,
+                ownerName,
+                owner,
+                renderEvaluatedCallbacks,
+                editedInPlaceReads,
             });
 
             if (guard.kind === 'sentinel') {
@@ -878,7 +1255,15 @@ export const analyseCompiledModule = (ast: t.File, file: string): AnalyseCompile
         },
     });
 
-    return { guards, findings, impureCaches, frozenCaptures, unknownGuardShapes };
+    return {
+        guards,
+        findings,
+        formSpreads,
+        editedInPlaceReads,
+        impureCaches,
+        frozenCaptures,
+        unknownGuardShapes,
+    };
 };
 
 const SOURCE_EXTENSIONS = /\.(j|t)sx?$/;
@@ -1099,9 +1484,11 @@ export const evaluateOptOutSnapshot = (
             `${file} is compiled now; it used to be skipped ("${status}: ${reasons}"). Its code is ` +
                 `memoized for the first time and nothing reviewed it for that. A green ` +
                 `react-compiler:check afterwards is not evidence it is safe: this gate only sees a ` +
-                `react-hook-form accessor read during render and an impure value captured by a ` +
-                `cached closure. Read the file for values that must not be cached — a ref read, a ` +
-                `latest-value ref, a subscription — then record it with \`${UPDATE_COMMAND}\`.`,
+                `react-hook-form accessor read during render, a cached spread of \`useForm()\`'s ` +
+                `return value, a cached read of form state react-hook-form edits in place and an ` +
+                `impure value captured by a cached closure. Read the file for values that must not ` +
+                `be cached — a ref read, a latest-value ref, a subscription — then record it with ` +
+                `\`${UPDATE_COMMAND}\`.`,
         );
     });
 
@@ -1121,6 +1508,8 @@ export const scanDirectories = (
         compiled: 0,
         guards: 0,
         findings: [],
+        formSpreads: [],
+        editedInPlaceReads: [],
         impureCaches: [],
         frozenCaptures: [],
         suppressedFiles: [],
@@ -1160,6 +1549,8 @@ export const scanDirectories = (
             }
 
             report.findings.push(...analysis.findings);
+            report.formSpreads.push(...analysis.formSpreads);
+            report.editedInPlaceReads.push(...analysis.editedInPlaceReads);
             report.impureCaches.push(...analysis.impureCaches);
             report.frozenCaptures.push(...analysis.frozenCaptures);
             report.unknownGuardShapes.push(...analysis.unknownGuardShapes);
@@ -1168,6 +1559,9 @@ export const scanDirectories = (
 
     return report;
 };
+
+const describeRecomputation = (depCount: number) =>
+    `recomputed only when ${depCount === 1 ? 'its single dependency changes' : `one of ${depCount} dependencies changes`}`;
 
 const describeFinding = ({
     file,
@@ -1179,7 +1573,30 @@ const describeFinding = ({
     depCount,
 }: FrozenReadFinding) =>
     `${file}:${line}:${column}  ${accessor}  ${kind}  in ${owner ?? '<anonymous>'}, ` +
-    `recomputed only when ${depCount === 1 ? 'its single dependency changes' : `one of ${depCount} dependencies changes`}`;
+    describeRecomputation(depCount);
+
+const describeFormSpread = ({
+    file,
+    line,
+    column,
+    binding,
+    owner,
+    dependencies,
+}: FormSpreadFinding) =>
+    `${file}:${line}:${column}  {...${binding}}  in ${owner ?? '<anonymous>'}, ` +
+    `${dependencies.length === 0 ? 'built once on the first render and never again' : `recomputed only when one of [${dependencies.join(', ')}] changes`}`;
+
+const describeEditedInPlaceRead = ({
+    file,
+    line,
+    column,
+    key,
+    kind,
+    owner,
+    depCount,
+}: EditedInPlaceReadFinding) =>
+    `${file}:${line}:${column}  ${key}  ${kind}  in ${owner ?? '<anonymous>'}, ` +
+    describeRecomputation(depCount);
 
 const describeFrozenCapture = ({
     file,
@@ -1235,6 +1652,27 @@ export const evaluateFrozenReadReport = (
             `${describeFinding(finding)} — a react-hook-form accessor read during render in a ` +
                 `compiled path. Subscribe with \`useWatch\`, move the read into an event handler or ` +
                 `effect, or opt the function out with \`'use no memo'\`.`,
+        ),
+    );
+
+    report.formSpreads.forEach(spread =>
+        failures.push(
+            `${describeFormSpread(spread)} — a cached object spreads \`useForm()\`'s return value, ` +
+                `whose identity never changes, so it keeps the \`formState\` copied on the render ` +
+                `that filled the cache. Bind \`const { formState } = ${spread.binding}\` and pass it ` +
+                `right after the spread. \`formState: ${spread.binding}.formState\` does not help: ` +
+                `the compiler folds that path into the \`${spread.binding}\` it already depends on.`,
+        ),
+    );
+
+    report.editedInPlaceReads.forEach(read =>
+        failures.push(
+            `${describeEditedInPlaceRead(read)} — react-hook-form edits \`${read.key}\` in place, ` +
+                `so it keeps one identity until the next reset and what is derived from it here is ` +
+                `never recomputed. Naming \`formState\` cannot help, the guard compares this object ` +
+                `itself. Read a leaf path such as \`${read.key}.amount?.message\`, which the ` +
+                `compiler compares by value, move the read into a callback, or opt the function ` +
+                `out with \`'use no memo'\`.`,
         ),
     );
 

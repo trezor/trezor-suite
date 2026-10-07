@@ -21,9 +21,11 @@ const readSnapshot = () => {
 };
 
 /**
- * Fails the build on the two things the React Compiler has actually got wrong here — a
- * `react-hook-form` accessor read during render, and an impure render-scoped value captured by a
- * cached closure — and on any drift in the set of files it refuses to compile. See
+ * Fails the build on the four things the React Compiler has actually got wrong here — a
+ * `react-hook-form` accessor read during render, a cached spread of `useForm()`'s return value with
+ * no `formState` in its key, a cached read of form state react-hook-form edits in place, and an
+ * impure render-scoped value captured by a cached closure — and on any drift in the set of files it
+ * refuses to compile. See
  * `reactCompilerFrozenReads.ts` for why nothing else in the repository can catch any of them, and
  * `plans/react-compiler-rollout.md` for the rollout this gate belongs to.
  *

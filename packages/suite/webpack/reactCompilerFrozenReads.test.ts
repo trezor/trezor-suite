@@ -2,6 +2,7 @@ import { parseSync, types as t } from '@babel/core';
 
 import { REACT_COMPILER_PATHS } from './reactCompiler';
 import {
+    type EditedInPlaceReadFinding,
     type FrozenReadFinding,
     type FrozenReadReport,
     analyseCompiledModule,
@@ -34,6 +35,8 @@ const describeFinding = ({ accessor, kind, line }: FrozenReadFinding) =>
     `${accessor} ${kind} ${line}`;
 
 const FORM_CONTEXT_IMPORT = `import { useFormContext } from 'react-hook-form';`;
+
+const FORM_IMPORT = `import { useForm } from 'react-hook-form';`;
 
 describe('analyseCompiledModule', () => {
     it('reports a render-body read of a destructured accessor', () => {
@@ -261,7 +264,292 @@ export const Amount = () => {
 });
 
 /**
- * The second channel: an impure value the compiler leaves at render level, captured by a closure it
+ * The second channel: a cached object spreading `useForm()`'s return value, keyed on that unchanging
+ * ref with no `formState` beside it. `useRbfForm.ts` had this — `useCompose` kept the first render's
+ * empty `errors`, so a Speed up fee outside the limits still composed and left Replace enabled.
+ */
+describe('analyseCompiledModule — form spreads', () => {
+    const COMPOSE_IMPORT = `import { useCompose } from './useCompose';`;
+
+    it('reports a cached object that spreads useForm() with no formState in its key', () => {
+        const { formSpreads } = analyse(`${FORM_IMPORT}
+${COMPOSE_IMPORT}
+
+export const useFeeForm = ({ state }) => {
+    const methods = useForm({ mode: 'onChange' });
+
+    return useCompose({ ...methods, state });
+};
+`);
+
+        expect(formSpreads).toEqual([
+            {
+                file: 'fixture.tsx',
+                line: 7,
+                column: 22,
+                binding: 'methods',
+                owner: 'useFeeForm',
+                dependencies: ['methods', 'state'],
+            },
+        ]);
+    });
+
+    it('says nothing once the bound formState follows the spread', () => {
+        // The fix: `formState` joins the key and the cache refills with every new proxy.
+        const { formSpreads } = analyse(`${FORM_IMPORT}
+${COMPOSE_IMPORT}
+
+export const useFeeForm = ({ state }) => {
+    const methods = useForm({ mode: 'onChange' });
+    const { formState } = methods;
+
+    return useCompose({ ...methods, formState, state });
+};
+`);
+
+        expect(formSpreads).toEqual([]);
+    });
+
+    it('still reports formState spelled as a path off the spread object', () => {
+        // The compiler reduces `methods.formState` to the `methods` it already depends on.
+        const { formSpreads } = analyse(`${FORM_IMPORT}
+${COMPOSE_IMPORT}
+
+export const useFeeForm = ({ state }) => {
+    const methods = useForm({ mode: 'onChange' });
+
+    return useCompose({ ...methods, formState: methods.formState, state });
+};
+`);
+
+        expect(formSpreads.map(({ dependencies }) => dependencies)).toEqual([['methods', 'state']]);
+    });
+
+    it('accepts formState bound under another name', () => {
+        const { formSpreads } = analyse(`${FORM_IMPORT}
+${COMPOSE_IMPORT}
+
+export const useFeeForm = ({ state }) => {
+    const methods = useForm({ mode: 'onChange' });
+    const { formState: currentFormState } = methods;
+
+    return useCompose({ ...methods, formState: currentFormState, state });
+};
+`);
+
+        expect(formSpreads).toEqual([]);
+    });
+
+    it('reports a provider spread from useForm(), at the element', () => {
+        // The props object of the `_jsx` call is built by the JSX transform and has no position.
+        const { formSpreads } = analyse(`import { FormProvider, useForm } from 'react-hook-form';
+
+export const AmountForm = ({ children }) => {
+    const methods = useForm();
+
+    return <FormProvider {...methods}>{children}</FormProvider>;
+};
+`);
+
+        expect(formSpreads.map(({ line, column, owner }) => `${line}:${column} ${owner}`)).toEqual([
+            '6:11 AmountForm',
+        ]);
+    });
+
+    it('ignores a spread inside an event handler, which runs long after render', () => {
+        const { formSpreads } = analyse(`${FORM_IMPORT}
+
+export const AmountForm = ({ onSubmit }) => {
+    const methods = useForm();
+    const submit = () => onSubmit({ ...methods });
+
+    return <button onClick={submit} />;
+};
+`);
+
+        expect(formSpreads).toEqual([]);
+    });
+
+    it('does not take a useFormContext() value for form methods', () => {
+        // `FormProvider` memoises the context value on `formState`, so it changes with every update.
+        const { formSpreads } = analyse(`${FORM_CONTEXT_IMPORT}
+${COMPOSE_IMPORT}
+
+export const useFeeForm = ({ state }) => {
+    const form = useFormContext();
+
+    return useCompose({ ...form, state });
+};
+`);
+
+        expect(formSpreads).toEqual([]);
+    });
+});
+
+/**
+ * The third channel: form state react-hook-form edits in place, looked into during render and cached
+ * on that same object. The trading forms had three — `Object.keys(formState.errors)` kept its first
+ * answer, so a swap amount above the balance kept the previous offer and left Approve enabled.
+ */
+describe('analyseCompiledModule — form state edited in place', () => {
+    const describeRead = ({ key, kind, line }: EditedInPlaceReadFinding) =>
+        `${key} ${kind} ${line}`;
+
+    it('reports a value derived from formState.errors and cached on it', () => {
+        const { editedInPlaceReads } = analyse(`${FORM_IMPORT}
+
+export const useAmountForm = () => {
+    const methods = useForm({ mode: 'onChange' });
+    const { formState } = methods;
+    const isFormValid = Object.keys(formState.errors).length === 0;
+
+    return { methods, isFormValid };
+};
+`);
+
+        expect(editedInPlaceReads).toEqual([
+            {
+                file: 'fixture.tsx',
+                line: 6,
+                column: 36,
+                key: 'formState.errors',
+                kind: 'render-read',
+                owner: 'useAmountForm',
+                depCount: 1,
+            },
+        ]);
+    });
+
+    it('reports the same read through a destructured errors binding', () => {
+        const { editedInPlaceReads } = analyse(`${FORM_IMPORT}
+
+export const useAmountForm = () => {
+    const { formState } = useForm();
+    const { errors } = formState;
+
+    return Object.keys(errors).length === 0;
+};
+`);
+
+        expect(editedInPlaceReads.map(describeRead)).toEqual(['errors render-read 7']);
+    });
+
+    it.each(['dirtyFields', 'touchedFields', 'validatingFields'])(
+        'reports a read of formState.%s too',
+        member => {
+            const { editedInPlaceReads } = analyse(`${FORM_IMPORT}
+
+export const useChangedCount = () => {
+    const { formState } = useForm();
+
+    return Object.keys(formState.${member}).length;
+};
+`);
+
+            expect(editedInPlaceReads.map(describeRead)).toEqual([
+                `formState.${member} render-read 6`,
+            ]);
+        },
+    );
+
+    it('sees the read through a fallback', () => {
+        const { editedInPlaceReads } = analyse(`${FORM_IMPORT}
+
+export const useErrorCount = () => {
+    const { formState } = useForm();
+
+    return Object.keys(formState.errors ?? {}).length;
+};
+`);
+
+        expect(editedInPlaceReads.map(describeRead)).toEqual(['formState.errors render-read 6']);
+    });
+
+    it('reports a read inside a callback that still runs during render', () => {
+        const { editedInPlaceReads } = analyse(`${FORM_IMPORT}
+
+export const AmountErrors = ({ names }) => {
+    const { formState } = useForm();
+    const { errors } = formState;
+
+    return <ul>{names.map(name => <li key={name}>{errors[name]?.message}</li>)}</ul>;
+};
+`);
+
+        expect(editedInPlaceReads.map(describeRead)).toEqual(['errors render-callback 7']);
+    });
+
+    it('ignores a read inside a callback that runs long after render', () => {
+        // `useSendFormCompose.ts`: by the time the callback runs, the object holds the live errors.
+        const { editedInPlaceReads } = analyse(`import { useCallback } from 'react';
+${FORM_IMPORT}
+
+export const useSubmit = ({ onSubmit }) => {
+    const { formState } = useForm();
+    const { errors } = formState;
+
+    return useCallback(() => {
+        if (Object.keys(errors).length === 0) {
+            onSubmit();
+        }
+    }, [errors, onSubmit]);
+};
+`);
+
+        expect(editedInPlaceReads).toEqual([]);
+    });
+
+    it('ignores a guard that only hands the reference on', () => {
+        // `useExplorerForm.ts`: whoever reads the returned object later reaches the live errors.
+        const { editedInPlaceReads } = analyse(`${FORM_IMPORT}
+
+export const useAmountForm = () => {
+    const {
+        register,
+        formState: { errors },
+    } = useForm();
+
+    return { register, errors };
+};
+`);
+
+        expect(editedInPlaceReads).toEqual([]);
+    });
+
+    it('says nothing about a leaf read, which the compiler compares by value', () => {
+        const { editedInPlaceReads, guards } = analyse(`${FORM_IMPORT}
+
+export const AmountError = () => {
+    const { formState } = useForm();
+
+    return <span>{formState.errors.amount?.message}</span>;
+};
+`);
+
+        expect(guards).toBeGreaterThan(0);
+        expect(editedInPlaceReads).toEqual([]);
+    });
+
+    it('says nothing once the hook opts out', () => {
+        // The fix the trading forms use: naming `formState` cannot help, the key is `errors` itself.
+        const { editedInPlaceReads, guards } = analyse(`${FORM_IMPORT}
+
+export const useAmountForm = () => {
+    'use no memo';
+
+    const { formState } = useForm();
+
+    return Object.keys(formState.errors).length === 0;
+};
+`);
+
+        expect(guards).toBe(0);
+        expect(editedInPlaceReads).toEqual([]);
+    });
+});
+
+/**
+ * The fourth channel: an impure value the compiler leaves at render level, captured by a closure it
  * caches. `ConnectionGlobalModalContext.tsx` shipped this — a Bluetooth liveness cut-off that stopped
  * advancing after the first render, so a device that went silent never dropped off the list.
  */
@@ -647,6 +935,8 @@ describe('scanDirectories', () => {
             compiled: 0,
             guards: 0,
             findings: [],
+            formSpreads: [],
+            editedInPlaceReads: [],
             impureCaches: [],
             frozenCaptures: [],
             suppressedFiles: [],
@@ -683,6 +973,8 @@ describe('evaluateFrozenReadReport', () => {
         compiled: 4,
         guards: 20,
         findings: [],
+        formSpreads: [],
+        editedInPlaceReads: [],
         impureCaches: [],
         frozenCaptures: [],
         suppressedFiles: [],
@@ -751,6 +1043,55 @@ describe('evaluateFrozenReadReport', () => {
         expect(failures[0]).toContain('Amount.tsx:12:4');
         expect(failures[0]).toContain('watch');
         expect(failures[0]).toContain('useWatch');
+    });
+
+    it('fails on a form spread and says which formState to bind', () => {
+        const failures = evaluateFrozenReadReport(
+            {
+                ...cleanReport,
+                formSpreads: [
+                    {
+                        file: 'useRbfForm.ts',
+                        line: 300,
+                        column: 19,
+                        binding: 'useFormMethods',
+                        owner: 'useRbf',
+                        dependencies: ['state', 'useFormMethods'],
+                    },
+                ],
+            },
+            ['packages/suite/src/hooks'],
+        );
+
+        expect(failures).toHaveLength(1);
+        expect(failures[0]).toContain('useRbfForm.ts:300:19');
+        expect(failures[0]).toContain('[state, useFormMethods]');
+        expect(failures[0]).toContain('const { formState } = useFormMethods');
+    });
+
+    it('fails on a read of form state edited in place and names the key', () => {
+        const failures = evaluateFrozenReadReport(
+            {
+                ...cleanReport,
+                editedInPlaceReads: [
+                    {
+                        file: 'useTradingSellForm.ts',
+                        line: 84,
+                        column: 36,
+                        key: 'formState.errors',
+                        kind: 'render-read',
+                        owner: 'useTradingSellForm',
+                        depCount: 1,
+                    },
+                ],
+            },
+            ['packages/suite/src/hooks'],
+        );
+
+        expect(failures).toHaveLength(1);
+        expect(failures[0]).toContain('useTradingSellForm.ts:84:36');
+        expect(failures[0]).toContain('edits `formState.errors` in place');
+        expect(failures[0]).toContain("'use no memo'");
     });
 
     it('does not fail on the advisory suppressed-file channel', () => {
