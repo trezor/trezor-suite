@@ -1,33 +1,12 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { AddressDisplayOptions, type PrecomposedLevels } from '@suite-common/wallet-types';
+import { ChainSendError } from '@trezor/network-module-suite-common-types';
 import {
-    type Account,
-    AddressDisplayOptions,
-    type ComposeActionContext,
-    type ExternalOutput,
-    type PrecomposedLevels,
-    type PrecomposedTransaction,
-} from '@suite-common/wallet-types';
-import {
-    asAmountSubunit,
-    asAmountUnit,
-    calculateMax,
-    calculateTotal,
-    convertAmountSubunitsToUnits,
-    convertAmountUnitsToSubunits,
-    getAccountIdentity,
-    getCryptoMaxAmountWithReserve,
-    getExternalComposeOutput,
-    subunitsToUnits,
-    unitsToSubunits,
-} from '@suite-common/wallet-utils';
-import type { TokenInfo } from '@trezor/blockchain-link-types';
-import { solanaUtils } from '@trezor/blockchain-link-utils';
-import TrezorConnect, { type FeeLevel } from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
-import { SOL_COMPUTE_UNIT_LIMIT } from '@trezor/network-solana/constants';
-import { BigNumber } from '@trezor/utils';
+    createSignSolanaTransaction,
+    createSolanaChainSend,
+} from '@trezor/network-solana-suite-common';
 
+import { chainSendConnectDeps, toChainSendDevice } from './chainSendAdapter';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
     type ComposeFeeLevelsError,
@@ -44,129 +23,20 @@ import {
     selectAddressDisplayType,
 } from '../settings/walletSettingsReducer';
 
-const calculate = (
-    availableBalance: string,
-    output: ExternalOutput,
-    feeLevel: FeeLevel,
-    decimals: number,
-    rent: number,
-    token?: TokenInfo,
-    composeContext?: ComposeActionContext,
-    isNetworkReserveEnabled = false,
-): PrecomposedTransaction => {
-    const feeInLamports = feeLevel.feePerTx;
-    if (feeInLamports == null) throw new Error('Invalid fee.');
+const signSolanaTransaction = createSignSolanaTransaction(chainSendConnectDeps);
 
-    let amount: string;
-    let max: string | undefined;
-    const availableTokenBalance = token
-        ? convertAmountUnitsToSubunits(token.balance!, token.decimals)
-        : undefined;
-    if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
-        max = availableTokenBalance || calculateMax(availableBalance, feeInLamports);
+const createSend = (getState: () => BlockchainRootState) =>
+    createSolanaChainSend({
+        ...chainSendConnectDeps,
+        getSolanaBlockInfo: symbol => {
+            const { blockhash, blockHeight } = selectBlockchainBlockInfoBySymbol(
+                getState(),
+                symbol,
+            );
 
-        if (composeContext) {
-            const feesInUnits = subunitsToUnits({
-                value: asAmountSubunit(new BigNumber(feeInLamports)),
-                symbol: composeContext.account.symbol,
-            }).toString();
-
-            const maxInUnits = subunitsToUnits({
-                value: asAmountSubunit(new BigNumber(max)),
-                symbol: composeContext.account.symbol,
-            }).toString();
-
-            max = getCryptoMaxAmountWithReserve({
-                symbol: composeContext.account.symbol,
-                contractAddress: token?.contract,
-                balance: composeContext.account.formattedBalance,
-                amount: maxInUnits,
-                fee: feesInUnits,
-                isNetworkReserveEnabled,
-            });
-
-            max = unitsToSubunits({
-                value: asAmountUnit(new BigNumber(max)),
-                symbol: composeContext.account.symbol,
-            }).toString();
-        }
-
-        amount = max;
-    } else {
-        amount = output.amount;
-    }
-
-    // total SOL spent (amount + fee), in case of SPL token only the fee
-    const totalSolSpent = new BigNumber(calculateTotal(token ? '0' : amount, feeInLamports));
-
-    if (totalSolSpent.isGreaterThan(availableBalance)) {
-        const error = token ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' : 'AMOUNT_IS_NOT_ENOUGH';
-
-        // errorMessage declared later
-        return { type: 'error', error, errorMessage: { id: error } } as const;
-    }
-    const remainingSolBalance = new BigNumber(availableBalance).minus(totalSolSpent);
-
-    if (remainingSolBalance.isLessThan(rent) && remainingSolBalance.isGreaterThan(0)) {
-        const errorMessage = {
-            id: 'REMAINING_BALANCE_LESS_THAN_RENT' as const,
-            values: {
-                remainingSolBalance: convertAmountSubunitsToUnits(remainingSolBalance, decimals),
-                rent: convertAmountSubunitsToUnits(rent, decimals),
-            },
-        };
-
-        return { type: 'error', error: errorMessage.id, errorMessage } as const;
-    }
-
-    const payloadData: PrecomposedTransaction = {
-        type: 'nonfinal',
-        totalSpent: token ? amount : totalSolSpent.toString(),
-        max,
-        fee: feeInLamports,
-        feePerByte: feeLevel.feePerUnit,
-        feeLimit: feeLevel.feeLimit,
-        token,
-        bytes: 0,
-        inputs: [],
-    };
-
-    if (output.type === 'send-max' || output.type === 'payment') {
-        return {
-            ...payloadData,
-            type: 'final',
-            // compatibility with BTC PrecomposedTransaction from @trezor/connect
-            inputs: [],
-            outputsPermutation: [0],
-            outputs: [
-                {
-                    address: output.address,
-                    amount,
-                    script_type: 'PAYTOADDRESS',
-                },
-            ],
-        };
-    }
-
-    if (output.type === 'payment-noaddress') {
-        return {
-            ...payloadData,
-            type: 'final',
-            inputs: [],
-            outputsPermutation: [0],
-            outputs: [],
-        };
-    }
-
-    return payloadData;
-};
-
-function assertIsSolanaAccount(
-    account: Account,
-): asserts account is Extract<Account, { networkType: 'solana' }> {
-    if (account.networkType !== 'solana')
-        throw new Error(`Invalid network type. ${account.networkType}`);
-}
+            return { blockHash: blockhash, blockHeight };
+        },
+    });
 
 type ComposeSolanaTransactionFeeLevelsThunkState = BlockchainRootState;
 
@@ -180,157 +50,26 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         { formState, composeContext, isNetworkReserveEnabled = false },
         { getState, rejectWithValue },
     ) => {
-        const { account, network, feeInfo } = composeContext;
-        const composedOutput = getExternalComposeOutput(formState, account, network);
-        if (!composedOutput)
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Unable to prepare compose output.',
-            });
+        const { account } = composeContext;
 
-        const { output, decimals, tokenInfo } = composedOutput;
-
-        const { blockhash: blockHash, blockHeight: lastValidBlockHeight } =
-            selectBlockchainBlockInfoBySymbol(getState(), account.symbol);
-
-        assertIsSolanaAccount(account);
-
-        // invalid token transfer -- should never happen
-        if (tokenInfo && !tokenInfo.accounts)
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Token accounts not found.',
-            });
-
-        const { outputs: composeOutputsList } = formState;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstOutput: (typeof composeOutputsList)[number] = composeOutputsList[0];
-        if (formState.setMaxOutputId !== undefined && !firstOutput.amount) {
-            if (tokenInfo?.balance) {
-                firstOutput.amount = tokenInfo.balance;
-            } else {
-                // minimal amount for purpose of fee estimation, at least to cover rent + 1 lamport
-                firstOutput.amount = convertAmountSubunitsToUnits(
-                    (account.misc?.rent ?? 0) + 1,
-                    decimals,
-                );
-            }
+        if (account.networkType !== 'solana') {
+            throw new Error(`Invalid network type. ${account.networkType}`);
         }
 
-        // To estimate fees on Solana we need to turn a transaction into a message for which fees are estimated.
-        // Since all the values don't have to be filled in the form at the time of this function call, we use dummy values
-        // for the estimation, since these values don't affect the final fee.
-        // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
-        const transaction = await TrezorConnect.solanaComposeTransaction({
-            fromAddress: account.descriptor,
-            toAddress: firstOutput.address,
-            amount: firstOutput.amount,
-            token: tokenInfo
-                ? {
-                      mint: tokenInfo.contract,
-                      program: solanaUtils.tokenStandardToTokenProgramName(tokenInfo.standard),
-                      decimals: tokenInfo.decimals,
-                      accounts: tokenInfo.accounts ?? [],
-                  }
-                : undefined,
-            blockHash,
-            lastValidBlockHeight,
-            memo: formState.destinationTag || undefined,
-            coin: asCoinSymbol(account.symbol),
-            identity: getAccountIdentity(account),
-            priorityFees: {
-                // dummy value so simulation always passes
-                computeUnitPrice: formState.feePerUnit || '1',
-                computeUnitLimit: formState.feeLimit || SOL_COMPUTE_UNIT_LIMIT.toString(),
-            },
-            serializedTx: formState.transactionData,
-        });
+        try {
+            return await createSend(getState)(account.symbol).composeFeeLevels({
+                account,
+                draft: formState,
+                context: { ...composeContext, isNetworkReserveEnabled },
+            });
+        } catch (error) {
+            if (!(error instanceof ChainSendError)) throw error;
 
-        if (!transaction.success) {
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
-                message: transaction.error.message,
+                message: error.message,
             });
         }
-
-        const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-            coin: asCoinSymbol(account.symbol),
-            request: {
-                specific: {
-                    data: transaction.payload.serializedTx,
-                    newAccountProgramName: transaction.payload.additionalInfo.newAccountProgramName,
-                },
-            },
-        });
-
-        let fetchedFee: string | undefined;
-        let fetchedFeePerUnit: string | undefined;
-        let fetchedFeeLimit: string | undefined;
-        if (estimatedFee.success) {
-            // We access the array directly like this because the fee response from the solana worker always returns an array of size 1
-            const { levels: estimatedFeeLevels } = estimatedFee.payload;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const feeLevel: (typeof estimatedFeeLevels)[number] = estimatedFeeLevels[0];
-            fetchedFee = feeLevel.feePerTx;
-            fetchedFeePerUnit = feeLevel.feePerUnit;
-            fetchedFeeLimit = feeLevel.feeLimit;
-        } else {
-            // Error fetching fee, fall back on default values defined in `/packages/connect-core/src/data/defaultFeeLevels.ts`
-            console.warn('Error fetching fee, using default values.', estimatedFee.error.message);
-        }
-
-        // FeeLevels are read-only, so we create a copy if need be
-        const levels = fetchedFee ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
-        // update predefined levels with fee fetched from network
-        const predefinedLevels = levels
-            .filter(l => l.label !== 'custom')
-            .map(l => ({
-                ...l,
-                feePerTx: fetchedFee || l.feePerTx,
-                feePerUnit: fetchedFeePerUnit || l.feePerUnit,
-                feeLimit: fetchedFeeLimit || l.feeLimit,
-            }));
-
-        const resultLevels: PrecomposedLevels = {};
-
-        const response = predefinedLevels.map(level =>
-            calculate(
-                account.availableBalance,
-                output,
-                level,
-                decimals,
-                account.misc?.rent ?? 0,
-                tokenInfo,
-                composeContext,
-                isNetworkReserveEnabled,
-            ),
-        );
-        response.forEach((tx, index) => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
-            const feeLabel = predefinedLevel.label;
-            resultLevels[feeLabel] = tx;
-        });
-
-        // format max (calculate sends it as lamports)
-        // update errorMessage values (symbol)
-        Object.keys(resultLevels).forEach(key => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const tx: (typeof resultLevels)[string] = resultLevels[key];
-            if (tx.type !== 'error') {
-                tx.max = tx.max ? convertAmountSubunitsToUnits(tx.max, decimals) : undefined;
-            }
-            if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
-                tx.errorMessage = {
-                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                    values: {
-                        networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
-                    },
-                };
-            }
-        });
-
-        return resultLevels;
     },
 );
 
@@ -349,101 +88,34 @@ export const signSolanaSendFormTransactionThunk = createThunk<
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
         { getState, rejectWithValue },
     ) => {
-        if (precomposedTransaction.feeLimit == null)
-            return rejectWithValue({
-                error: 'sign-transaction-failed',
-                message: 'Fee limit missing.',
-            });
-
         if (selectedAccount.networkType !== 'solana')
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Invalid network type.',
             });
-        const { token } = precomposedTransaction;
 
-        const blockchainInfo = await TrezorConnect.blockchainGetInfo({
-            coin: asCoinSymbol(selectedAccount.symbol),
-            identity: getAccountIdentity(selectedAccount),
-        });
-        if (!blockchainInfo.success) {
+        try {
+            const { serializedTx } = await signSolanaTransaction({
+                account: selectedAccount,
+                draft: formState,
+                precomposed: precomposedTransaction,
+                options: {
+                    device: toChainSendDevice(device),
+                    chunkify:
+                        selectAddressDisplayType(getState()) === AddressDisplayOptions.CHUNKED,
+                    paymentRequests,
+                },
+            });
+
+            return { serializedTx };
+        } catch (error) {
+            if (!(error instanceof ChainSendError)) throw error;
+
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                message: 'Failed to fetch blockchain info.',
+                errorCode: error.connectErrorCode,
+                message: error.message,
             });
         }
-        const { blockHash, blockHeight: lastValidBlockHeight } = blockchainInfo.payload;
-
-        if (token && !token.accounts)
-            rejectWithValue({
-                error: 'sign-transaction-failed',
-                message: 'Missing token accounts.',
-            });
-
-        const { outputs: signOutputs } = formState;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstSignOutput: (typeof signOutputs)[number] = signOutputs[0];
-        const transaction = await TrezorConnect.solanaComposeTransaction({
-            fromAddress: selectedAccount.descriptor,
-            toAddress: firstSignOutput.address,
-            amount: firstSignOutput.amount,
-            token: token
-                ? {
-                      mint: token.contract,
-                      program: solanaUtils.tokenStandardToTokenProgramName(token.standard),
-                      decimals: token.decimals,
-                      accounts: token.accounts ?? [],
-                  }
-                : undefined,
-            blockHash,
-            lastValidBlockHeight,
-            memo: formState.destinationTag || undefined,
-            priorityFees: {
-                computeUnitPrice: precomposedTransaction.feePerByte,
-                computeUnitLimit: precomposedTransaction.feeLimit,
-            },
-            coin: asCoinSymbol(selectedAccount.symbol),
-            identity: getAccountIdentity(selectedAccount),
-            serializedTx: formState.transactionData,
-        });
-
-        if (!transaction.success) {
-            return rejectWithValue({
-                error: 'sign-transaction-failed',
-                message: transaction.error.message,
-            });
-        }
-
-        const payment_req = paymentRequests?.[0];
-
-        const response = await TrezorConnect.solanaSignTransaction({
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: device.state,
-                useEmptyPassphrase: device.useEmptyPassphrase,
-            },
-            path: selectedAccount.path,
-            serializedTx: transaction.payload.serializedTx,
-            payment_req,
-            serialize: true,
-            additionalInfo: transaction.payload.additionalInfo.tokenAccountInfo
-                ? {
-                      tokenAccountsInfos: [transaction.payload.additionalInfo.tokenAccountInfo],
-                  }
-                : undefined,
-            chunkify: selectAddressDisplayType(getState()) === AddressDisplayOptions.CHUNKED,
-        });
-
-        if (!response.success) {
-            // catch manual error from TransactionReviewModal
-            return rejectWithValue({
-                error: 'sign-transaction-failed',
-                errorCode: response.error.code,
-                message: response.error.message,
-            });
-        }
-
-        return { serializedTx: response.payload.serializedTx! };
     },
 );

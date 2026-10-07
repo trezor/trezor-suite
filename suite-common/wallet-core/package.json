@@ -59,6 +59,7 @@
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-ripple-suite-common": "workspace:*",
         "@trezor/network-solana": "workspace:*",
+        "@trezor/network-solana-suite-common": "workspace:*",
         "@trezor/network-solana-types": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
         "@trezor/network-stellar-suite-common": "workspace:*",

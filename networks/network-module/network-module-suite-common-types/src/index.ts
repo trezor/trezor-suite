@@ -174,3 +174,5 @@ export {
     getRequestedFeeLevels,
 } from './chain/send/accountTransfer';
 export type { ComposeAccountTransferLevelsParams } from './chain/send/accountTransfer';
+export { getMaxAmountWithReserve, isNetworkReserveApplicable } from './chain/send/networkReserve';
+export type { GetMaxAmountWithReserveParams } from './chain/send/networkReserve';

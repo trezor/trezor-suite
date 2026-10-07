@@ -4,14 +4,25 @@
     "include": ["./src"],
     "references": [
         {
+            "path": "../../../packages/blockchain-link-types"
+        },
+        {
+            "path": "../../../packages/blockchain-link-utils"
+        },
+        {
+            "path": "../../../packages/connect-common"
+        },
+        {
             "path": "../../../packages/device-utils"
         },
         {
             "path": "../../network-module/network-module-suite-common-types"
         },
-        { "path": "../network-solana-types" },
         {
             "path": "../../network-module/network-module-types"
-        }
+        },
+        { "path": "../network-solana" },
+        { "path": "../network-solana-types" },
+        { "path": "../../../packages/utils" }
     ]
 }

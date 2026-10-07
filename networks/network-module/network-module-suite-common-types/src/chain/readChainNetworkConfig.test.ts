@@ -11,6 +11,7 @@ const configs: Record<'abc' | 'tabc', Partial<SuiteCommonNetworkConfig>> = {
         decimals: 6,
         testnet: false,
         backendOptions: [{ type: 'blockbook' }],
+        nativeTokenReserve: '0.01',
     },
     tabc: {
         displaySymbol: 'tABC',
@@ -37,6 +38,7 @@ describe('readChainNetworkConfig', () => {
             isTestnet: false,
             hasFiatRate: true,
             hasBlockbookRates: true,
+            nativeTokenReserve: '0.01',
         });
     });
 

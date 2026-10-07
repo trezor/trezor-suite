@@ -12329,6 +12329,7 @@ __metadata:
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-ripple-suite-common": "workspace:*"
     "@trezor/network-solana": "workspace:*"
+    "@trezor/network-solana-suite-common": "workspace:*"
     "@trezor/network-solana-types": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
     "@trezor/network-stellar-suite-common": "workspace:*"
@@ -18575,10 +18576,15 @@ __metadata:
   resolution: "@trezor/network-solana-suite-common@workspace:networks/solana/network-solana-suite-common"
   dependencies:
     "@scure/base": "npm:^2.0.0"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/blockchain-link-utils": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
     "@trezor/network-solana-types": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

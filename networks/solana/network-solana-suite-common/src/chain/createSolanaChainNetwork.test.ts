@@ -9,9 +9,17 @@ const fetchCoinGeckoCurrentRate = jest.fn();
 const fetchCoinGeckoHistoricRates = jest.fn();
 
 const deps: SolanaChainNetworkDeps = {
-    getTrezorConnect: () => ({ getAccountInfo }),
+    getTrezorConnect: () => ({
+        getAccountInfo,
+        blockchainEstimateFee: jest.fn(),
+        blockchainGetInfo: jest.fn(),
+        solanaComposeTransaction: jest.fn(),
+        solanaSignTransaction: jest.fn(),
+        pushTransaction: jest.fn(),
+    }),
     fetchCoinGeckoCurrentRate,
     fetchCoinGeckoHistoricRates,
+    getSolanaBlockInfo: () => ({ blockHash: 'hash', blockHeight: 1 }),
 };
 
 const backend = { type: 'solana', urls: [] } as const;
