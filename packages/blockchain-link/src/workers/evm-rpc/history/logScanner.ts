@@ -21,6 +21,8 @@ export type RawLog = {
     transactionIndex: string;
     /** Non-standard, but Arc returns it, which saves a getBlock per block just for the timestamp. */
     blockTimestamp?: string;
+    /** Set on a log a subscription withdraws after a reorg. */
+    removed?: boolean;
 };
 
 export type BlockRange = { from: number; to: number };
@@ -35,6 +37,13 @@ const HTTP_TOO_MANY_REQUESTS = 429;
 
 export const padAddressTopic = (address: string): `0x${string}` =>
     `0x${address.replace(/^0x/, '').toLowerCase().padStart(64, '0')}`;
+
+/** A topic position accepts alternatives, so any number of addresses fit in one filter. */
+export const toAddressTopic = (addresses: readonly string[]): LogTopic => {
+    const topics = addresses.map(padAddressTopic);
+
+    return topics.length === 1 ? (topics[0] as `0x${string}`) : topics;
+};
 
 /**
  * Providers that cap results rather than range answer with the widest range they would have
@@ -309,13 +318,13 @@ export const scanTransferLogs = async (
     range: BlockRange,
     chunkSize = LOG_CHUNK_BLOCKS,
 ): Promise<ScanResult> => {
-    const watched = (typeof addresses === 'string' ? [addresses] : addresses).map(padAddressTopic);
+    const watched = typeof addresses === 'string' ? [addresses] : addresses;
 
     if (range.from > range.to || !watched.length) {
         return { logs: [], complete: true, failed: [] };
     }
 
-    const topic: LogTopic = watched.length === 1 ? (watched[0] as `0x${string}`) : watched;
+    const topic = toAddressTopic(watched);
     const chunks = splitIntoChunks(range, getEffectiveChunkSize(client, chunkSize));
 
     return await scanQueue(client, [
