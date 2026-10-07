@@ -51,6 +51,13 @@ import {
     type PROTO,
     type TokenInfo,
 } from '@trezor/connect';
+import {
+    calculateMax,
+    calculateTotal,
+    findToken,
+    getExternalComposeOutput,
+    toMevProtectedPushData,
+} from '@trezor/network-module-suite-common-types';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import {
@@ -62,40 +69,7 @@ import { isBaseCurrencyWithSats } from './baseCurrency';
 import { fromEther, fromGwei, fromIntegerString, fromWei } from './ethConverter';
 import { isEip1559, isEvmApprovalTx, sanitizeHex, strip } from './ethUtils';
 
-export const calculateTotal = (amount: string, fee: string): string => {
-    try {
-        const total = new BigNumber(amount).plus(fee);
-        if (total.isNaN()) {
-            console.error('calculateTotal: Amount is not a number', amount, fee);
-
-            return '0';
-        }
-
-        return total.toString();
-    } catch (error) {
-        console.error('calculateTotal: error', error);
-
-        return '0';
-    }
-};
-
-export const calculateMax = (availableBalance: string, fee: string): string => {
-    try {
-        const max = new BigNumber(availableBalance).minus(fee);
-        if (max.isNaN()) {
-            console.error('calculateMax: Amount is not a number', availableBalance, fee);
-
-            return '0';
-        }
-        if (max.isLessThan(0)) return '0';
-
-        return max.toFixed();
-    } catch (error) {
-        console.error('calculateMax: error', error);
-
-        return '0';
-    }
-};
+export { calculateMax, calculateTotal };
 
 // EVM SPECIFIC
 
@@ -346,11 +320,7 @@ export const findComposeErrors = <T extends FieldValues>(
     return composeErrors;
 };
 
-export const findToken = (tokens: Account['tokens'], address?: string | null) => {
-    if (!address || !tokens) return;
-
-    return tokens.find(t => t.contract.toLowerCase() === address.toLowerCase());
-};
+export { findToken };
 
 // BTC composeTransaction
 // returns ComposeOutput[]
@@ -447,63 +417,7 @@ export const getApprovalComposeOutput = (
 };
 
 // ETH/XRP composeTransaction, only one Output is used
-// returns { output, tokenInfo, decimals }
-export const getExternalComposeOutput = (
-    values: Partial<FormState>,
-    account: Account,
-    network: Network,
-    formattedFallbackAmount?: string, // for cases when value is zero but amount is available in eth data
-) => {
-    if (!values || !Array.isArray(values.outputs) || !values.outputs[0]) return;
-    const out = values.outputs[0];
-    if (!out || typeof out !== 'object') return;
-    const { address, amount, token, resolvedAddress } = out;
-
-    // A named input (e.g. ENS) keeps what the user typed on `address`, and the transaction has to
-    // carry the address it resolved to: that is what gets signed, what the device shows for the
-    // user to check the review against, and what identifies the recipient to everything else
-    // reading the composed output.
-    const recipient = resolvedAddress ?? address;
-
-    const isMaxActive = typeof values.setMaxOutputId === 'number';
-    if (!isMaxActive && !amount) return; // incomplete Output
-
-    const tokenInfo = findToken(account.tokens, token);
-    const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
-    const formattedAmount = convertAmountUnitsToSubunits(amount, decimals);
-
-    let output: ExternalOutput;
-    if (isMaxActive) {
-        if (recipient) {
-            output = {
-                type: 'send-max',
-                address: recipient,
-                amount: formattedAmount,
-            };
-        } else {
-            output = {
-                type: 'send-max-noaddress',
-            };
-        }
-    } else if (recipient) {
-        output = {
-            type: 'payment',
-            address: recipient,
-            amount: formattedFallbackAmount || formattedAmount,
-        };
-    } else {
-        output = {
-            type: 'payment-noaddress',
-            amount: formattedAmount,
-        };
-    }
-
-    return {
-        output,
-        tokenInfo,
-        decimals,
-    };
-};
+export { getExternalComposeOutput };
 
 export const restoreOrigOutputsOrder = (
     outputs: PROTO.TxOutputType[],
@@ -670,17 +584,12 @@ export const getAmountValidationResult = ({
 export const isAmountTooHigh = (params: GetAmountValidationResultParams): boolean =>
     getAmountValidationResult(params).type !== 'ok';
 
+/** @deprecated Use `toMevProtectedPushData`; the network does not change the pushed data. */
 export const getMevProtectedTxData = (
-    symbol: NetworkSymbol,
+    _symbol: NetworkSymbol,
     hex: string,
     isMevProtectionEnabled: boolean,
-) => {
-    if (!isMevProtectionEnabled) return { hex, disableAlternativeRPC: true };
-    const isMevSupported = getNetwork(symbol).features.includes('mev-protection');
-    if (!isMevSupported) return hex;
-
-    return hex;
-};
+) => toMevProtectedPushData(hex, isMevProtectionEnabled);
 
 export const isExchangeTradingForm = (
     form: FormStateTrading | undefined,
