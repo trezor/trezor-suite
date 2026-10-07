@@ -60,6 +60,12 @@ import {
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
 
+// Names only, values may hold confidential data. Deeplink payloads are arbitrary parsed JSON.
+const getCallParamNames = (payload: unknown): string[] =>
+    payload && typeof payload === 'object' && !Array.isArray(payload)
+        ? Object.keys(payload).sort()
+        : [];
+
 type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     method: M;
     payload: DistributiveOmit<CallMethodParams<M>, 'method'>;
@@ -235,13 +241,14 @@ export const connectPopupCallInnerThunk = createThunk<
             extra.services.analytics.report({
                 type: events.connectPopupCallEvent.name,
                 payload: {
-                    method,
+                    method: params.method,
                     appName: source.manifest.appName,
                     appUrl: source.manifest.appUrl,
                     appEmail: source.manifest.email,
                     npmVersion: source.manifest.npmVersion,
                     connectionType: source.type,
                     origin: source.origin,
+                    paramNames: getCallParamNames(params.payload),
                 },
             });
 
@@ -280,6 +287,7 @@ export const connectPopupCallInnerThunk = createThunk<
                     appEmail: source.manifest.email,
                     npmVersion: source.manifest.npmVersion,
                     connectionType: source.type,
+                    paramNames: getCallParamNames(params.payload),
                 },
             });
 
