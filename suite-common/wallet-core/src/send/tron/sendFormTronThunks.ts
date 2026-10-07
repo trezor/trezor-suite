@@ -1,5 +1,4 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { type PrecomposedLevels } from '@suite-common/wallet-types';
 import { ChainSendError } from '@trezor/network-module-suite-common-types';
 import { createTronChainSend } from '@trezor/network-tron-suite-common';
@@ -12,6 +11,7 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from '../sendFormTypes';
+import { notifyChainComposeFailure } from '../walletChainSend';
 
 const createSend = createTronChainSend(chainSendConnectDeps);
 
@@ -42,9 +42,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
         } catch (error) {
             if (!(error instanceof ChainSendError)) throw error;
 
-            if (error.code === 'fee-estimation-failed') {
-                dispatch(notificationsActions.addToast({ type: 'estimated-fee-error' }));
-            }
+            notifyChainComposeFailure(dispatch, account, error);
 
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',

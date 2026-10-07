@@ -173,9 +173,7 @@ describe('useChainPushTransaction', () => {
                 account,
                 serializedTx: 'signed',
                 isMevProtectionEnabled: false,
-                precomposed,
-                signed: { serializedTx: 'signed' },
-                replacedTxid,
+                origin: { precomposed, signed: { serializedTx: 'signed' }, replacedTxid },
             }),
         );
 
@@ -222,6 +220,26 @@ describe('useChainPushTransaction', () => {
         );
     });
 
+    it('reads the account again after a raw transaction, showing nothing it cannot know', async () => {
+        const btc = createNetwork();
+        btc.send.push.mockResolvedValue({ txid: 'raw' });
+        const { result } = renderSendAndHistory(btc);
+        await waitFor(() => expect(result.current.history.isPending).toBe(false));
+
+        await act(() =>
+            result.current.push.mutateAsync({
+                network: btc.network,
+                account,
+                serializedTx: 'raw-hex',
+                isMevProtectionEnabled: false,
+            }),
+        );
+
+        await waitFor(() => expect(btc.getTransactions).toHaveBeenCalledTimes(2));
+        expect(btc.send.createPendingTransaction).not.toHaveBeenCalled();
+        expect(result.current.history.transactions.map(({ txid }) => txid)).toEqual(['old']);
+    });
+
     it('broadcasts once, even when the backend refuses', async () => {
         const btc = createNetwork();
         btc.send.push.mockRejectedValue(new Error('push-failed'));
@@ -234,8 +252,7 @@ describe('useChainPushTransaction', () => {
                     account,
                     serializedTx: 'signed',
                     isMevProtectionEnabled: false,
-                    precomposed,
-                    signed: { serializedTx: 'signed' },
+                    origin: { precomposed, signed: { serializedTx: 'signed' } },
                 }),
             ).rejects.toThrow('push-failed'),
         );

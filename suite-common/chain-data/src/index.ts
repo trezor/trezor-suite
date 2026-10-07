@@ -53,10 +53,17 @@ export {
     getVisiblePendingSends,
 } from './chainPendingSends';
 export type { AddChainPendingSendParams, ChainPendingSend } from './chainPendingSends';
-export { useChainComposeFeeLevels } from './useChainComposeFeeLevels';
-export type { UseChainComposeFeeLevelsParams } from './useChainComposeFeeLevels';
+export {
+    getChainComposeFeeLevelsQueryOptions,
+    useChainComposeFeeLevels,
+} from './useChainComposeFeeLevels';
+export type {
+    ChainComposeFeeLevelsQueryParams,
+    UseChainComposeFeeLevelsParams,
+} from './useChainComposeFeeLevels';
 export { useChainPushTransaction, useChainSignTransaction } from './useChainSendMutations';
 export type {
     PushChainTransactionVariables,
+    PushedChainTransactionOrigin,
     SignChainTransactionVariables,
 } from './useChainSendMutations';

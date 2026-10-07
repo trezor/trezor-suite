@@ -1,5 +1,4 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { AddressDisplayOptions, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { datetimeToLocktime } from '@suite-common/wallet-utils';
 import { createBitcoinChainSend } from '@trezor/network-bitcoin-suite-common';
@@ -16,6 +15,7 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { notifyChainComposeFailure, notifyChainComposeLevels } from './walletChainSend';
 import {
     type WalletSettingsRootState,
     selectAddressDisplayType,
@@ -51,28 +51,13 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
                 },
             });
 
-            // catch unexpected error
-            Object.values(levels).forEach(tx => {
-                if (tx.type === 'error' && !tx.errorMessage) {
-                    dispatch(
-                        notificationsActions.addToast({
-                            type: 'sign-tx-error',
-                            error: 'message' in tx ? tx.message : tx.error, // tx.error = 'COINSELECT' contains additional message
-                        }),
-                    );
-                }
-            });
+            notifyChainComposeLevels(dispatch, account, levels);
 
             return levels;
         } catch (error) {
             if (!(error instanceof ChainSendError)) throw error;
 
-            const isConnectFailure = error.connectErrorCode !== undefined;
-            if (isConnectFailure && error.connectErrorCode !== 'Method_InvalidParameter') {
-                dispatch(
-                    notificationsActions.addToast({ type: 'sign-tx-error', error: error.message }),
-                );
-            }
+            notifyChainComposeFailure(dispatch, account, error);
 
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',

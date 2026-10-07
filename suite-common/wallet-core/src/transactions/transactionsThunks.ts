@@ -30,7 +30,7 @@ import {
     replaceEthereumSpecific,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { type BlockbookTransaction, type TokenInfo } from '@trezor/blockchain-link-types';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, {
     type AccountInfo,
@@ -86,6 +86,9 @@ interface ReplaceTransactionThunkParams {
     // transaction input parameters. It has to be passed as argument rather than obtained form send-form state, because this thunk is used also by eth-staking module that uses different redux state.
     precomposedTransaction: PrecomposedTransactionFinalBumpFeeRbf;
     newTxid: string;
+
+    /** The signed bitcoin-like transaction; read from the send form state when not passed. */
+    signedTransaction?: BlockbookTransaction;
 }
 
 export type ReplaceTransactionThunkState = AccountsRootState &
@@ -100,11 +103,11 @@ export const replaceTransactionThunk = createThunk<
     }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/replaceTransactionThunk`,
-    ({ precomposedTransaction, newTxid }, { getState, dispatch }) => {
+    ({ precomposedTransaction, newTxid, ...params }, { getState, dispatch }) => {
         if (!isRbfBumpFeeTransaction(precomposedTransaction)) return; // ignore if it's not a replacement tx
 
         const walletTransactions = selectTransactions(getState());
-        const signedTransaction = selectSendSignedTx(getState());
+        const signedTransaction = params.signedTransaction ?? selectSendSignedTx(getState());
 
         // find all transactions to replace, they may be related to another account
         const origTransactions = findTransactions(
@@ -164,6 +167,9 @@ export const replaceTransactionThunk = createThunk<
 interface AddFakePendingTransactionParams {
     precomposedTransaction: PrecomposedTransactionFinal;
     account: Account;
+
+    /** The signed transaction; read from the send form state when not passed. */
+    signedTransaction?: BlockbookTransaction;
 }
 
 type AddFakePendingTxThunkState = AccountsRootState & BlockchainRootState & SendRootState;
@@ -174,10 +180,10 @@ export const addFakePendingTxThunk = createThunk<
     { state: AddFakePendingTxThunkState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    ({ precomposedTransaction, account }, { dispatch, getState, rejectWithValue }) => {
+    ({ precomposedTransaction, account, ...params }, { dispatch, getState, rejectWithValue }) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const accounts = selectAccounts(getState());
-        const signedTransaction = selectSendSignedTx(getState());
+        const signedTransaction = params.signedTransaction ?? selectSendSignedTx(getState());
 
         if (!signedTransaction) return rejectWithValue('No signed transaction found');
 

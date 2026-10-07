@@ -1,5 +1,4 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { AddressDisplayOptions, type PrecomposedLevelsCardano } from '@suite-common/wallet-types';
 import { type PrecomposedTransactionFinalCardano } from '@trezor/connect';
 import { createCardanoChainSend } from '@trezor/network-cardano-suite-common';
@@ -13,6 +12,7 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { notifyChainComposeFailure, notifyChainComposeLevels } from './walletChainSend';
 import {
     type WalletSettingsRootState,
     selectAddressDisplayType,
@@ -38,25 +38,13 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
                 context: composeContext,
             });
 
-            // Coin selection errors the user cannot fix come without a message to show.
-            Object.values(levels).forEach(tx => {
-                if (tx.type === 'error' && !tx.errorMessage) {
-                    dispatch(
-                        notificationsActions.addToast({ type: 'sign-tx-error', error: tx.error }),
-                    );
-                }
-            });
+            notifyChainComposeLevels(dispatch, account, levels);
 
             return levels;
         } catch (error) {
             if (!(error instanceof ChainSendError)) throw error;
 
-            const isConnectFailure = error.connectErrorCode !== undefined;
-            if (isConnectFailure && error.connectErrorCode !== 'Method_InvalidParameter') {
-                dispatch(
-                    notificationsActions.addToast({ type: 'sign-tx-error', error: error.message }),
-                );
-            }
+            notifyChainComposeFailure(dispatch, account, error);
 
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
