@@ -6513,6 +6513,19 @@ export const messages = defineMessages({
         id: 'TR_LOAD_OLDER_TRANSACTIONS',
         defaultMessage: 'Load older transactions',
     },
+    TR_LOAD_OLDER_TRANSACTIONS_FAILED: {
+        id: 'TR_LOAD_OLDER_TRANSACTIONS_FAILED',
+        defaultMessage: "Couldn't load older transactions. Wait a moment, then try again.",
+    },
+    TR_HISTORY_RATE_LIMITED_TITLE: {
+        id: 'TR_HISTORY_RATE_LIMITED_TITLE',
+        defaultMessage: 'Some transactions may be missing',
+    },
+    TR_HISTORY_RATE_LIMITED_DESCRIPTION: {
+        id: 'TR_HISTORY_RATE_LIMITED_DESCRIPTION',
+        defaultMessage:
+            "The network's data provider is limiting requests right now. Wait a moment, then try again.",
+    },
     TR_TOKEN: {
         id: 'TR_TOKEN',
         defaultMessage: 'Token',

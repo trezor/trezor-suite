@@ -373,6 +373,11 @@ export interface AccountInfo {
         olderHistoryFrom?: number;
         /** Direct-RPC backends: unix time of the oldest block the scanned history covers. */
         historyCoveredSince?: number;
+        /**
+         * Direct-RPC backends: the provider's rate limit cost this answer part of what it should
+         * hold, such as transactions, dates or token balances. Asking again later fills it in.
+         */
+        isRateLimited?: boolean;
         // XRP
         sequence?: number;
         // Stellar

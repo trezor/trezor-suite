@@ -26,6 +26,7 @@ import {
     hasNetworkFeatures,
     haveTokenBalancesChanged,
     isAccountOutdated,
+    isDirectRpcHistoryRateLimited,
     isDirectRpcHistoryUnscanned,
     isTestnet,
     sortByBIP44AddressIndex,
@@ -595,6 +596,30 @@ describe(getOlderHistoryFrom.name, () => {
         };
 
         expect(getOlderHistoryFrom(account)).toBeUndefined();
+    });
+});
+
+describe(isDirectRpcHistoryRateLimited.name, () => {
+    const withRateLimit = (backendType: 'evm-rpc' | 'blockbook'): Account => ({
+        ...mockWalletAccount({ symbol: ethSymbol }, { misc: { isRateLimited: true } }),
+        backendType,
+    });
+
+    it('is true when a rate limit left a direct-RPC answer incomplete', () => {
+        expect(isDirectRpcHistoryRateLimited(withRateLimit('evm-rpc'))).toBe(true);
+    });
+
+    it('is false for an answer that came back whole', () => {
+        const account: Account = {
+            ...mockWalletAccount({ symbol: ethSymbol }),
+            backendType: 'evm-rpc',
+        };
+
+        expect(isDirectRpcHistoryRateLimited(account)).toBe(false);
+    });
+
+    it('ignores backends that do not report it', () => {
+        expect(isDirectRpcHistoryRateLimited(withRateLimit('blockbook'))).toBe(false);
     });
 });
 

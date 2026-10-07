@@ -17,6 +17,7 @@ import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
 import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';
 import { TradeBox } from './TradeBox/TradeBox';
+import { RateLimitedHistoryBanner } from './TransactionList/RateLimitedHistoryBanner';
 import { WalletTransactionList } from './TransactionList/WalletTransactionList';
 import { AccountEmpty } from './components/AccountEmpty';
 import { AccountOverviewBalance } from './components/AccountOverviewBalance';
@@ -104,6 +105,7 @@ export const Transactions = () => {
                     </Column>
                 )}
                 <SolanaLimitedHistoryBanner account={account} />
+                <RateLimitedHistoryBanner account={account} />
                 <WalletTransactionList account={account} symbol={account.symbol} />
             </Layout>
         );

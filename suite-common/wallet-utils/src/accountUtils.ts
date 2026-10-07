@@ -694,6 +694,15 @@ export const getOlderHistoryFrom = (account: Account) =>
         ? account.misc.olderHistoryFrom
         : undefined;
 
+/**
+ * A direct-RPC backend could not read everything for the last answer because the provider was
+ * rate-limiting it, so transactions, dates or token balances may be missing until it is asked again.
+ */
+export const isDirectRpcHistoryRateLimited = (account: Account) =>
+    account.networkType === 'ethereum' &&
+    account.backendType === 'evm-rpc' &&
+    !!account.misc.isRateLimited;
+
 /** A direct-RPC backend reports -1 until it has scanned the account's history at least once. */
 export const isDirectRpcHistoryUnscanned = (account: Account) =>
     account.networkType === 'ethereum' &&
@@ -742,8 +751,11 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                 // moving is only visible in the token list itself. An unscanned history counts
                 // as outdated too, or an account holding only the native asset never gets its
                 // transactions fetched.
+                // Whether a rate limit left an answer incomplete counts too, so a warning about it
+                // both appears and clears with the next refresh.
                 (account.backendType === 'evm-rpc' &&
                     (freshInfo.history.total === -1 ||
+                        !!freshInfo.misc?.isRateLimited !== !!account.misc?.isRateLimited ||
                         haveTokenBalancesChanged(freshInfo.tokens, account.tokens)))
             );
         case 'cardano': {
