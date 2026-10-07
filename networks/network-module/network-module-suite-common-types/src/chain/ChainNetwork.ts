@@ -6,6 +6,12 @@ import type { ChainAccountBalance } from './ChainAccountBalance';
 import type { ChainAccountRef } from './ChainAccountRef';
 import type { ChainSyncPolicy } from './ChainSyncPolicy';
 import type { ChainTokenBalance } from './ChainTokenBalance';
+import type {
+    ChainTransactionsPage,
+    GetHistoricFiatRatesParams,
+    GetTransactionsParams,
+    HistoricFiatRates,
+} from './ChainTransactions';
 import type { FiatRate } from './FiatRate';
 
 export type GetAccountBalanceParams = {
@@ -67,6 +73,12 @@ export type ChainNetwork = {
 
     /** Present exactly when `getTokens` is; resolves `null` when no source knows the rate. */
     getTokenFiatRate?: (params: GetTokenFiatRateParams) => Promise<FiatRate | null>;
+
+    /** One page of the account's history. Absent where the backend keeps no history. */
+    getTransactions?: (params: GetTransactionsParams) => Promise<ChainTransactionsPage>;
+
+    /** Rates of the coin or one of its tokens at past times, to value historic transactions. */
+    getHistoricFiatRates: (params: GetHistoricFiatRatesParams) => Promise<HistoricFiatRates>;
 };
 
 export type ChainNetworkBackend = {

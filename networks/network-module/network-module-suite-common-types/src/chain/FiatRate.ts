@@ -1,6 +1,8 @@
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
+import type { HistoricFiatRates } from './ChainTransactions';
+
 export type FiatRate = {
     readonly rate: number;
 
@@ -31,4 +33,30 @@ export type FetchCoinGeckoCurrentRateDep = { fetchCoinGeckoCurrentRate: FetchCur
 /** Blockbook's public HTTP API, used where the account backend is not Blockbook (Electrum). */
 export type FetchBlockbookHttpCurrentRateDep = {
     fetchBlockbookHttpCurrentRate: FetchCurrentFiatRate;
+};
+
+export type FetchHistoricFiatRatesParams = {
+    symbol: NetworkSymbol;
+    currency: BaseCurrencyCode;
+    timestamps: readonly number[];
+    signal: AbortSignal;
+    tokenAddress?: string;
+};
+
+/**
+ * Rates of a network's coin, or of one of its tokens, at past times from a source outside the
+ * network's own backend.
+ *
+ * @serviceContract
+ */
+export type FetchHistoricFiatRates = (
+    params: FetchHistoricFiatRatesParams,
+) => Promise<HistoricFiatRates>;
+
+export type FetchCoinGeckoHistoricRatesDep = {
+    fetchCoinGeckoHistoricRates: FetchHistoricFiatRates;
+};
+
+export type FetchBlockbookHttpHistoricRatesDep = {
+    fetchBlockbookHttpHistoricRates: FetchHistoricFiatRates;
 };

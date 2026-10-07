@@ -6,10 +6,12 @@ const { signal } = new AbortController();
 
 const getAccountInfo = jest.fn();
 const fetchCoinGeckoCurrentRate = jest.fn();
+const fetchCoinGeckoHistoricRates = jest.fn();
 
 const deps: SolanaChainNetworkDeps = {
     getTrezorConnect: () => ({ getAccountInfo }),
     fetchCoinGeckoCurrentRate,
+    fetchCoinGeckoHistoricRates,
 };
 
 const backend = { type: 'solana', urls: [] } as const;
@@ -91,5 +93,29 @@ describe('createSolanaChainNetwork', () => {
         expect(getAccountInfo).toHaveBeenCalledWith(
             expect.objectContaining({ coin: 'sol', details: 'tokenBalances' }),
         );
+    });
+
+    it('pages its history 8 transactions at a time by transaction count', async () => {
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: {
+                history: { total: 20, transactions: [] },
+                page: { index: 0, size: 8, total: 20 },
+            },
+        });
+        const network = createSolanaChainNetwork(deps)({ symbol: asNetworkSymbol('sol'), backend });
+
+        const page = await network.getTransactions?.({
+            ref: {
+                symbol: asNetworkSymbol('sol'),
+                descriptor: 'solAddress',
+                accountType: 'normal',
+            },
+            cursor: { page: 1 },
+            signal,
+        });
+
+        expect(page?.nextCursor).toEqual({ page: 2 });
+        expect(getAccountInfo).toHaveBeenLastCalledWith(expect.objectContaining({ pageSize: 8 }));
     });
 });

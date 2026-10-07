@@ -2,12 +2,16 @@ import type { ChainAccountRef } from './ChainAccountRef';
 import type { ChainNativeAsset, ChainNetwork, ChainNetworkParams } from './ChainNetwork';
 import { ChainNetworkError } from './ChainNetworkError';
 import { getChainSyncPolicy } from './ChainSyncPolicy';
-import type { FetchCurrentFiatRate } from './FiatRate';
+import type { FetchCurrentFiatRate, FetchHistoricFiatRates } from './FiatRate';
 import type {
     FetchConnectAccountBalance,
     FetchConnectAccountBalanceParams,
 } from './createFetchConnectAccountBalance';
 import type { FetchConnectTokens, FetchConnectTokensParams } from './createFetchConnectTokens';
+import type {
+    FetchConnectTransactions,
+    FetchConnectTransactionsParams,
+} from './createFetchConnectTransactions';
 import { getDisplayBalanceFiatValue } from './getDisplayBalanceFiatValue';
 
 export type ConnectChainNetworkTokens = {
@@ -18,6 +22,13 @@ export type ConnectChainNetworkTokens = {
 
     /** `null` when no token of the network has a fiat value (testnets). */
     fetchTokenFiatRate: FetchCurrentFiatRate | null;
+};
+
+export type ConnectChainNetworkTransactions = Pick<
+    FetchConnectTransactionsParams,
+    'pagination' | 'pageSize' | 'useStellarContractTokens' | 'protocols'
+> & {
+    fetchTransactions: FetchConnectTransactions;
 };
 
 export type ConnectChainNetworkDefinition = {
@@ -35,6 +46,12 @@ export type ConnectChainNetworkDefinition = {
 
     /** Only for networks with tokens; without it the network has no token capabilities. */
     tokens?: ConnectChainNetworkTokens;
+
+    /** Only for backends that keep history; without it the network has no history. */
+    transactions?: ConnectChainNetworkTransactions;
+
+    /** Past rates of the coin and its tokens; `null` when they have no fiat value (testnets). */
+    fetchHistoricFiatRates: FetchHistoricFiatRates | null;
 };
 
 /**
@@ -45,7 +62,7 @@ export const buildConnectChainNetwork = (
     definition: ConnectChainNetworkDefinition,
 ): ChainNetwork => {
     const { symbol } = definition.params;
-    const { fetchFiatRate, tokens } = definition;
+    const { fetchFiatRate, fetchHistoricFiatRates, tokens, transactions } = definition;
 
     const assertOwnAccount = (ref: ChainAccountRef) => {
         if (ref.symbol !== symbol) {
@@ -72,6 +89,31 @@ export const buildConnectChainNetwork = (
         getNativeFiatRate: async params =>
             fetchFiatRate ? await fetchFiatRate({ ...params, symbol }) : null,
         getAccountFiatBalance: definition.getAccountFiatBalance ?? getDisplayBalanceFiatValue,
+        getHistoricFiatRates: async params =>
+            fetchHistoricFiatRates
+                ? await fetchHistoricFiatRates({
+                      symbol,
+                      currency: params.currency,
+                      timestamps: params.timestamps,
+                      signal: params.signal,
+                      tokenAddress: params.contract,
+                  })
+                : {},
+        ...(transactions && {
+            getTransactions: async params => {
+                assertOwnAccount(params.ref);
+
+                return await transactions.fetchTransactions({
+                    ...params,
+                    pagination: transactions.pagination,
+                    pageSize: transactions.pageSize,
+                    useStellarContractTokens: transactions.useStellarContractTokens,
+                    protocols: transactions.protocols,
+                    useConnectionIdentity: definition.useConnectionIdentity,
+                    gap: definition.params.gapLimit,
+                });
+            },
+        }),
     };
 
     if (!tokens) return network;

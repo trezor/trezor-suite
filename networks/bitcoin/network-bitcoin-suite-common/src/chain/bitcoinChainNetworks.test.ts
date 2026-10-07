@@ -16,17 +16,27 @@ const ref = { symbol: asNetworkSymbol('btc'), descriptor: 'zpub', accountType: '
 const getAccountInfo = jest.fn();
 const blockchainGetCurrentFiatRates = jest.fn();
 const fetchCoinGeckoCurrentRate = jest.fn();
+const fetchCoinGeckoHistoricRates = jest.fn();
+const blockchainGetFiatRatesForTimestamps = jest.fn();
+const fetchBlockbookHttpHistoricRates = jest.fn();
 const fetchBlockbookHttpCurrentRate = jest.fn();
 
 const blockbookDeps: BitcoinBlockbookChainNetworkDeps = {
-    getTrezorConnect: () => ({ getAccountInfo, blockchainGetCurrentFiatRates }),
+    getTrezorConnect: () => ({
+        getAccountInfo,
+        blockchainGetCurrentFiatRates,
+        blockchainGetFiatRatesForTimestamps,
+    }),
     fetchCoinGeckoCurrentRate,
+    fetchCoinGeckoHistoricRates,
 };
 
 const electrumDeps: BitcoinElectrumChainNetworkDeps = {
     getTrezorConnect: () => ({ getAccountInfo }),
     fetchBlockbookHttpCurrentRate,
     fetchCoinGeckoCurrentRate,
+    fetchCoinGeckoHistoricRates,
+    fetchBlockbookHttpHistoricRates,
 };
 
 const blockbook = { type: 'blockbook', urls: [] } as const;
@@ -125,5 +135,51 @@ describe('Bitcoin chain networks', () => {
         expect(network.nativeAsset).toEqual({ symbol: 'BTC', name: 'Bitcoin' });
         expect(network.getTokens).toBeUndefined();
         expect(network.getTokenFiatRate).toBeUndefined();
+    });
+
+    it('pages its history 25 transactions at a time with the gap limit', async () => {
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: {
+                history: { total: 30, transactions: [] },
+                page: { index: 1, size: 25, total: 2 },
+                addresses: { used: [], unused: [], change: [] },
+            },
+        });
+        const network = createBitcoinBlockbookChainNetwork(blockbookDeps)({
+            symbol: asNetworkSymbol('btc'),
+            backend: blockbook,
+            gapLimit: 40,
+        });
+
+        const page = await network.getTransactions?.({ ref, cursor: { page: 1 }, signal });
+
+        expect(page).toMatchObject({ nextCursor: { page: 2 }, total: 30 });
+        expect(page?.addresses).toEqual({ used: [], unused: [], change: [] });
+        expect(getAccountInfo).toHaveBeenLastCalledWith(
+            expect.objectContaining({ details: 'txs', pageSize: 25, gap: 40 }),
+        );
+    });
+
+    it('takes past rates from Blockbook on Blockbook, public Blockbook then CoinGecko on Electrum', async () => {
+        blockchainGetFiatRatesForTimestamps.mockResolvedValue({
+            success: true,
+            payload: { tickers: [{ ts: 100, rates: { usd: 1 } }] },
+        });
+        await expect(
+            createBitcoinBlockbookChainNetwork(blockbookDeps)({
+                symbol: asNetworkSymbol('btc'),
+                backend: blockbook,
+            }).getHistoricFiatRates({ currency: 'usd', timestamps: [100], signal }),
+        ).resolves.toEqual({ 100: 1 });
+
+        fetchBlockbookHttpHistoricRates.mockResolvedValue({});
+        fetchCoinGeckoHistoricRates.mockResolvedValue({ 100: 2 });
+        await expect(
+            createBitcoinElectrumChainNetwork(electrumDeps)({
+                symbol: asNetworkSymbol('btc'),
+                backend: electrum,
+            }).getHistoricFiatRates({ currency: 'usd', timestamps: [100], signal }),
+        ).resolves.toEqual({ 100: 2 });
     });
 });

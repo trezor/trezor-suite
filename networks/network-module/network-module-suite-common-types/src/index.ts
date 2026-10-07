@@ -30,6 +30,13 @@ export type { ChainAccountBalance } from './chain/ChainAccountBalance';
 export type { ChainAccountRef } from './chain/ChainAccountRef';
 export type { ChainTokenBalance } from './chain/ChainTokenBalance';
 export type {
+    ChainTransactionsCursor,
+    ChainTransactionsPage,
+    GetHistoricFiatRatesParams,
+    GetTransactionsParams,
+    HistoricFiatRates,
+} from './chain/ChainTransactions';
+export type {
     ChainNativeAsset,
     ChainNetwork,
     ChainNetworkBackend,
@@ -46,9 +53,13 @@ export { getChainSyncPolicy } from './chain/ChainSyncPolicy';
 export type { ChainSyncPolicy } from './chain/ChainSyncPolicy';
 export type {
     FetchBlockbookHttpCurrentRateDep,
+    FetchBlockbookHttpHistoricRatesDep,
     FetchCoinGeckoCurrentRateDep,
+    FetchCoinGeckoHistoricRatesDep,
     FetchCurrentFiatRate,
     FetchCurrentFiatRateParams,
+    FetchHistoricFiatRates,
+    FetchHistoricFiatRatesParams,
     FiatRate,
 } from './chain/FiatRate';
 export { createFetchConnectAccountBalance } from './chain/createFetchConnectAccountBalance';
@@ -64,7 +75,17 @@ export { buildConnectChainNetwork } from './chain/buildConnectChainNetwork';
 export type {
     ConnectChainNetworkDefinition,
     ConnectChainNetworkTokens,
+    ConnectChainNetworkTransactions,
 } from './chain/buildConnectChainNetwork';
+export { createFetchConnectTransactions } from './chain/createFetchConnectTransactions';
+export type {
+    FetchConnectTransactions,
+    FetchConnectTransactionsDeps,
+    FetchConnectTransactionsParams,
+    TransactionsPagination,
+} from './chain/createFetchConnectTransactions';
+export { createFetchConnectHistoricFiatRates } from './chain/createFetchConnectHistoricFiatRates';
+export type { FetchConnectHistoricFiatRatesDeps } from './chain/createFetchConnectHistoricFiatRates';
 export { createFetchConnectTokens } from './chain/createFetchConnectTokens';
 export type {
     FetchConnectTokens,

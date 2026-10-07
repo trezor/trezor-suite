@@ -9,10 +9,12 @@ const { signal } = new AbortController();
 
 const getAccountInfo = jest.fn();
 const fetchCoinGeckoCurrentRate = jest.fn();
+const fetchCoinGeckoHistoricRates = jest.fn();
 
 const deps: CardanoChainNetworkDeps = {
     getTrezorConnect: () => ({ getAccountInfo }),
     fetchCoinGeckoCurrentRate,
+    fetchCoinGeckoHistoricRates,
 };
 
 const ada = asNetworkSymbol('ada');
@@ -76,6 +78,27 @@ describe('createCardanoChainNetwork', () => {
 
         expect(fetchCoinGeckoCurrentRate.mock.calls.map(([params]) => params.tokenAddress)).toEqual(
             [undefined, POLICY_ID],
+        );
+    });
+
+    it('pages its history 8 transactions at a time', async () => {
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: {
+                history: { total: 30, transactions: [{ txid: 'a' }] },
+                page: { index: 1, size: 8, total: 2 },
+            },
+        });
+
+        const page = await network.getTransactions?.({
+            ref,
+            cursor: { page: 1 },
+            signal,
+        });
+
+        expect(page?.nextCursor).toEqual({ page: 2 });
+        expect(getAccountInfo).toHaveBeenLastCalledWith(
+            expect.objectContaining({ details: 'txs', page: 1, pageSize: 8 }),
         );
     });
 });

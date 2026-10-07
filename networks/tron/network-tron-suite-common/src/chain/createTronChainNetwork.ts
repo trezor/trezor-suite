@@ -2,11 +2,15 @@ import {
     type CreateChainNetwork,
     type FetchConnectAccountBalanceDeps,
     type FetchConnectCurrentFiatRateDeps,
+    type FetchConnectHistoricFiatRatesDeps,
     type FetchConnectTokensDeps,
+    type FetchConnectTransactionsDeps,
     buildConnectChainNetwork,
     createFetchConnectAccountBalance,
     createFetchConnectCurrentFiatRate,
+    createFetchConnectHistoricFiatRates,
     createFetchConnectTokens,
+    createFetchConnectTransactions,
     readChainNetworkConfig,
 } from '@trezor/network-module-suite-common-types';
 import { isSupportedTronNetwork } from '@trezor/network-tron-types';
@@ -15,7 +19,9 @@ import { getAccountSyncInterval, getNetworkConfig } from '../networkConfig';
 
 export type TronChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
-    FetchConnectCurrentFiatRateDeps;
+    FetchConnectCurrentFiatRateDeps &
+    FetchConnectTransactionsDeps &
+    FetchConnectHistoricFiatRatesDeps;
 
 /**
  * Tron network served by Blockbook, which also quotes the coin and its TRC10/TRC20 tokens.
@@ -23,6 +29,8 @@ export type TronChainNetworkDeps = FetchConnectAccountBalanceDeps &
  */
 export const createTronChainNetwork = (deps: TronChainNetworkDeps): CreateChainNetwork => {
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
+    const fetchTransactions = createFetchConnectTransactions(deps);
+    const fetchConnectHistoricRates = createFetchConnectHistoricFiatRates(deps);
     const fetchTokens = createFetchConnectTokens(deps);
     const fetchConnectFiatRate = createFetchConnectCurrentFiatRate(deps);
 
@@ -39,6 +47,10 @@ export const createTronChainNetwork = (deps: TronChainNetworkDeps): CreateChainN
             ? fetchConnectFiatRate
             : deps.fetchCoinGeckoCurrentRate;
         const rateSource = config.hasFiatRate ? fetchFiatRate : null;
+
+        const fetchHistoricRates = config.hasBlockbookRates
+            ? fetchConnectHistoricRates
+            : deps.fetchCoinGeckoHistoricRates;
 
         return buildConnectChainNetwork({
             params,
@@ -59,6 +71,13 @@ export const createTronChainNetwork = (deps: TronChainNetworkDeps): CreateChainN
                 },
                 fetchTokenFiatRate: rateSource,
             },
+            transactions: {
+                fetchTransactions,
+                pagination: 'page',
+                pageSize: 25,
+                useStellarContractTokens: false,
+            },
+            fetchHistoricFiatRates: config.hasFiatRate ? fetchHistoricRates : null,
         });
     };
 };
