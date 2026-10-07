@@ -21,6 +21,8 @@ export class ToastSection {
     readonly wrappedMessage: Locator;
     readonly wrappedSendAmount: Locator;
     readonly wrappedReceiveAmount: Locator;
+    readonly txSentViewDetailsButton: Locator;
+    readonly txDetailsConfirmed: Locator;
     readonly toast = (preset: ActivityPreset): Locator => this.page.getByTestId(`@toast/${preset}`);
     readonly toastCloseButton = (preset: ToastActivityPreset): Locator =>
         this.page.getByTestId(`@toast/${preset}/close`);
@@ -36,6 +38,8 @@ export class ToastSection {
         this.wrappedMessage = this.page.getByTestId('@toast/tx-wrap/message');
         this.wrappedSendAmount = this.page.getByTestId('@toast/tx-wrap/send-amount');
         this.wrappedReceiveAmount = this.page.getByTestId('@toast/tx-wrap/receive-amount');
+        this.txSentViewDetailsButton = this.page.getByTestId('@toast/tx-sent/view-details');
+        this.txDetailsConfirmed = this.page.getByTestId('@modal/tx-details/confirmed');
     }
 
     @step()
@@ -46,6 +50,24 @@ export class ToastSection {
         await expect(this.txSentAmount).toHaveText(
             toCompactAmountWithSymbol(amount, { tokenDecimals }),
         );
+    }
+
+    @step()
+    async openTxSentDetailsAndWaitForConfirmation() {
+        await this.toast('tx-sent').click();
+        await this.txSentViewDetailsButton.hover();
+        // Suite clears the send draft once the broadcast is processed. Opening the
+        // detail before that races the navigation.
+        await this.page.expectReduxObjectToEqual('wallet.send.drafts', {});
+        await this.txSentViewDetailsButton.click();
+
+        // Base confirms in about 5s. Fast-forward the clock so Suite keeps polling
+        // until the detail shows confirmed.
+        await expect(async () => {
+            await this.page.clock.fastForward(30_000);
+
+            await expect(this.txDetailsConfirmed).toHaveTranslation('TR_CONFIRMED_TX');
+        }, 'expect Transaction to be confirmed').toPass({ timeout: 30_000 });
     }
 
     @step()

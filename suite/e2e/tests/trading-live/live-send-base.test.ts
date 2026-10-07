@@ -154,7 +154,7 @@ test.describe(
         test(
             'User can perform ethereum sending on base network',
             { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
-            async ({ device, devicePrompt, walletPage, tradingPage, page }) => {
+            async ({ device, devicePrompt, walletPage, tradingPage, page, toastSection }) => {
                 await test.step('Fill in a Send form', async () => {
                     await walletPage.openSendFormButton.click();
                     await tradingPage.sendAddressInput.fill(sendAddress);
@@ -243,21 +243,7 @@ test.describe(
                     // wait for transaction to be prepared
                     await page.expectReduxObjectToEqual('wallet.send.serializedTx.symbol', 'base');
                     await devicePrompt.sendButton.click();
-                    await page.getByTestId('@toast/tx-sent').click();
-                    await page.getByRole('button', { name: 'View details' }).hover();
-                    // wait for transaction to be processed in Suite before navigating to its detail
-                    await page.expectReduxObjectToEqual('wallet.send.drafts', {});
-                    await page.getByRole('button', { name: 'View details' }).click();
-
-                    // Transaction takes ~5s to confirm on the network, but we need to pull
-                    // for updated data and check status repeatedly until confirmed
-                    await expect(async () => {
-                        await page.clock.fastForward(30_000);
-
-                        await expect(page.getByTestId('@modal/tx-details/confirmed')).toHaveText(
-                            'Confirmed',
-                        );
-                    }, 'expect Transaction to be confirmed').toPass({ timeout: 30_000 });
+                    await toastSection.openTxSentDetailsAndWaitForConfirmation();
                 });
             },
         );
@@ -376,21 +362,7 @@ test.describe(
                         account: networkName,
                         amount: formattedTokenSendAmount,
                     });
-                    await page.getByTestId('@toast/tx-sent').click();
-                    await page.getByRole('button', { name: 'View details' }).hover();
-                    // wait for transaction to be processed in Suite before navigating to its detail
-                    await page.expectReduxObjectToEqual('wallet.send.drafts', {});
-                    await page.getByRole('button', { name: 'View details' }).click();
-
-                    // Transaction takes ~5s to confirm on the network, but we need to pull
-                    // for updated data and check status repeatedly until confirmed
-                    await expect(async () => {
-                        await page.clock.fastForward(30_000);
-
-                        await expect(page.getByTestId('@modal/tx-details/confirmed')).toHaveText(
-                            'Confirmed',
-                        );
-                    }, 'expect Transaction to be confirmed').toPass({ timeout: 30_000 });
+                    await toastSection.openTxSentDetailsAndWaitForConfirmation();
                     await expect(
                         walletPage.transactionDetailTokenAmount(tokenContractAddress),
                     ).toHaveText(`–${formattedTokenSendAmount}`);
