@@ -17,9 +17,10 @@ type ValueProps = {
 const Value = styled.div<ValueProps>`
     background: ${({ $color }) => $color};
     height: 5px;
-    max-width: 100%;
-    width: ${({ $max, $value }) => `calc((100% / ${$max}) * ${$value})`};
-    transition: width 0.5s;
+    width: 100%;
+    transform-origin: left;
+    transform: scaleX(${({ $max, $value }) => Math.min($value / ($max || 1), 1)});
+    transition: transform 0.5s;
 `;
 
 export type ProgressBarProps = {
