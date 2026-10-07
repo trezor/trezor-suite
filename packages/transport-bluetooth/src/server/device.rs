@@ -203,11 +203,14 @@ impl TrezorDevice {
         current_status: &DeviceConnectionStatus,
         new_status: DeviceConnectionStatus,
     ) -> DeviceConnectionStatus {
-        // do not override status if device pairing failed
-        if let DeviceConnectionStatus::PairingError { error: _ } = &current_status {
-            current_status.clone()
-        } else {
-            new_status
+        // do not override status if device pairing failed, unless it connected successfully
+        match (current_status, &new_status) {
+            (
+                DeviceConnectionStatus::PairingError { error: _ },
+                DeviceConnectionStatus::Connected,
+            ) => new_status,
+            (DeviceConnectionStatus::PairingError { error: _ }, _) => current_status.clone(),
+            _ => new_status,
         }
     }
 
