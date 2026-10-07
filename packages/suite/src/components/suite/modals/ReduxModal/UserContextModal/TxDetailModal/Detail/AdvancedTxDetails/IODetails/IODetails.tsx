@@ -1,9 +1,10 @@
 import { Translation } from '@suite/intl';
-import { selectAccountNetworkType, selectIsPhishingTransaction } from '@suite-common/wallet-core';
+import { selectAccountNetworkType } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, createAccountKey } from '@suite-common/wallet-types';
 import { Column, Divider } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
+import { usePhishingResult } from 'src/hooks/wallet/transactions/useTransactionReaders';
 
 import { CollapsibleIOSection } from './CollapsibleIOSection';
 import { IOGroup } from './IOGroup';
@@ -20,9 +21,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
         deviceStaticSessionId: tx.deviceState,
     });
     const networkType = useSelector(state => selectAccountNetworkType(state, accountKey));
-    const { isPhishing: isPhishingTransaction } = useSelector(state =>
-        selectIsPhishingTransaction(state, tx.txid, accountKey),
-    );
+    const { isPhishing: isPhishingTransaction } = usePhishingResult(tx, accountKey);
 
     const getContent = () => {
         if (networkType === 'ethereum' || networkType === 'tron') {

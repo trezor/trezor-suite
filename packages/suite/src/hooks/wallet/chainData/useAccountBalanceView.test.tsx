@@ -30,6 +30,7 @@ const btcNetwork: ChainNetwork = {
     getAccountBalance,
     getNativeFiatRate,
     getAccountFiatBalance: getDisplayBalanceFiatValue,
+    getHistoricFiatRates: jest.fn(),
 };
 
 const account = mockWalletAccount({

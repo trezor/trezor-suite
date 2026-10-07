@@ -1,6 +1,6 @@
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { type SignOperator } from '@suite-common/suite-types';
-import { selectBaseCurrency, selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
+import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type Timestamp } from '@suite-common/wallet-types';
 import {
     formatCardanoDeposit,
@@ -13,6 +13,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { useHistoricFiatRateAt } from 'src/hooks/wallet/transactions/HistoricFiatRatesContext';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionTargetLayout } from './TransactionTargetLayout';
@@ -35,9 +36,7 @@ export const CustomRow = ({
 }: CustomRowProps) => {
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
-    const historicRate = useSelector(state =>
-        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
-    );
+    const historicRate = useHistoricFiatRateAt(fiatRateKey, transaction.blockTime as Timestamp);
 
     return (
         <TransactionTargetLayout
@@ -128,9 +127,7 @@ type CoinjoinRowProps = {
 export const CoinjoinRow = ({ transaction, useFiatValues }: CoinjoinRowProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(transaction.symbol, baseCurrencyCode);
-    const historicRate = useSelector(state =>
-        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
-    );
+    const historicRate = useHistoricFiatRateAt(fiatRateKey, transaction.blockTime as Timestamp);
 
     return (
         <TransactionTargetLayout

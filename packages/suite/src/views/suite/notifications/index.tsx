@@ -6,10 +6,6 @@ import {
     type NotificationsState,
     isTransactionNotification,
 } from '@suite-common/toast-notifications';
-import {
-    selectHasUnseenNonPhishingTransactionNotifications,
-    selectNonPhishingTransactionNotifications,
-} from '@suite-common/wallet-core';
 import { Card, CollapsibleBox, Column, Dot, Row } from '@trezor/components';
 
 import {
@@ -21,6 +17,7 @@ import { NotificationGroup } from 'src/components/suite/notifications/Notificati
 import { ReleaseNotes } from 'src/components/suite/notifications/ReleaseNotes/ReleaseNotes';
 import { TriggerActivityNotification } from 'src/components/suite/notifications/TriggerActivityNotification/TriggerActivityNotification';
 import { useLayout, useSelector } from 'src/hooks/suite';
+import { useNonPhishingTransactionNotifications } from 'src/hooks/wallet/chainData/useNonPhishingTransactionNotifications';
 
 type ActivityTab = 'transactions' | 'release-notes' | 'all';
 
@@ -35,8 +32,8 @@ const NotificationsView = () => {
     const [selectedTab, setSelectedTab] = useState<ActivityTab>('transactions');
 
     const notifications = useSelector(selectSuiteNotifications);
-    const hasUnseenNotifications = useSelector(selectHasUnseenNonPhishingTransactionNotifications);
-    const transactionNotifications = useSelector(selectNonPhishingTransactionNotifications);
+    const { notifications: transactionNotifications, hasUnseen: hasUnseenNotifications } =
+        useNonPhishingTransactionNotifications();
     const activityNotifications = notifications.filter(
         notification => !isTransactionNotification(notification),
     );

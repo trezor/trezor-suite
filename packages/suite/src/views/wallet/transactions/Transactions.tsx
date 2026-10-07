@@ -1,17 +1,15 @@
 import { type ReactNode } from 'react';
 
 import { selectFullSelectedAccount } from '@suite/account';
-import {
-    selectAccountTransactionsWithNulls,
-    selectIsLoadingAccountTransactions,
-} from '@suite-common/wallet-core';
 import { getOlderHistoryFrom, isDirectRpcHistoryUnscanned } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
 import { CoinjoinAccountDiscoveryProgress, WalletLayout } from 'src/components/wallet';
 import { SolanaLimitedHistoryBanner } from 'src/components/wallet/WalletLayout/AccountBanners/SolanaLimitedHistoryBanner';
 import { useSelector } from 'src/hooks/suite';
+import { useAccountTransactionsSource } from 'src/hooks/wallet/chainData/useAccountTransactionsSource';
 import { type AppState } from 'src/types/suite';
+import { type Account } from 'src/types/wallet';
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 
 import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
@@ -36,20 +34,15 @@ const Layout = ({ selectedAccount, children }: LayoutProps) => (
     </WalletLayout>
 );
 
-export const Transactions = () => {
-    const selectedAccount = useSelector(selectFullSelectedAccount);
-    const transactionsIsLoading = useSelector(state =>
-        selectIsLoadingAccountTransactions(state, selectedAccount.account?.key || null),
-    );
-    const accountTransactions = useSelector(state =>
-        selectAccountTransactionsWithNulls(state, selectedAccount.account?.key || null),
-    );
+type AccountTransactionsProps = {
+    selectedAccount: AppState['wallet']['selectedAccount'];
+    account: Account;
+};
 
-    if (selectedAccount.status !== 'loaded') {
-        return <Layout selectedAccount={selectedAccount} />;
-    }
-
-    const { account } = selectedAccount;
+const AccountTransactions = ({ selectedAccount, account }: AccountTransactionsProps) => {
+    const source = useAccountTransactionsSource(account);
+    const accountTransactions = source.transactions;
+    const transactionsIsLoading = source.isLoading;
 
     const isGraphSupported = isNetworkWithGraphFeature(account.symbol, account.backendType);
 
@@ -112,7 +105,7 @@ export const Transactions = () => {
             <Layout selectedAccount={selectedAccount}>
                 <Column gap={20}>
                     <AccountOverviewBalance selectedAccount={selectedAccount} />
-                    <AccountEmpty account={selectedAccount.account} />
+                    <AccountEmpty account={account} />
                 </Column>
                 <TradeBox account={account} />
             </Layout>
@@ -127,5 +120,17 @@ export const Transactions = () => {
             </Column>
             <TradeBox account={account} />
         </Layout>
+    );
+};
+
+export const Transactions = () => {
+    const selectedAccount = useSelector(selectFullSelectedAccount);
+
+    if (selectedAccount.status !== 'loaded') {
+        return <Layout selectedAccount={selectedAccount} />;
+    }
+
+    return (
+        <AccountTransactions selectedAccount={selectedAccount} account={selectedAccount.account} />
     );
 };

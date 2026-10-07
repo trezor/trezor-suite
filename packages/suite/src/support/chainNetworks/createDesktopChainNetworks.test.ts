@@ -20,11 +20,15 @@ const NETWORK_TYPES: Partial<Record<string, NetworkType>> = {
 const getTrezorConnect = jest.fn();
 const fetchCoinGeckoCurrentRate = jest.fn();
 const fetchBlockbookHttpCurrentRate = jest.fn();
+const fetchCoinGeckoHistoricRates = jest.fn();
+const fetchBlockbookHttpHistoricRates = jest.fn();
 
 const deps: DesktopChainNetworksDeps = {
     getTrezorConnect,
     fetchCoinGeckoCurrentRate,
     fetchBlockbookHttpCurrentRate,
+    fetchCoinGeckoHistoricRates,
+    fetchBlockbookHttpHistoricRates,
     getNetworkConfig: symbol =>
         ({ networkType: NETWORK_TYPES[symbol] }) as ReturnType<
             DesktopChainNetworksDeps['getNetworkConfig']
@@ -89,6 +93,30 @@ describe('createDesktopChainNetworks', () => {
             ['trx', true],
             ['sol', true],
             ['eth', true],
+        ]);
+    });
+
+    it('reads history on every backend that keeps one', () => {
+        const networks = createDesktopChainNetworks(deps)([
+            select('btc', 'electrum', ['electrum.example:50001:s']),
+            select('eth', 'evm-rpc', ['https://rpc.example']),
+            select('base', 'blockbook'),
+            select('sol', 'solana'),
+            select('ada', 'blockfrost'),
+            select('xrp', 'ripple'),
+            select('xlm', 'stellar'),
+            select('trx', 'blockbook'),
+        ]);
+
+        expect(networks.map(network => [network.symbol, !!network.getTransactions])).toEqual([
+            ['btc', true],
+            ['eth', false],
+            ['base', true],
+            ['sol', true],
+            ['ada', true],
+            ['xrp', true],
+            ['xlm', true],
+            ['trx', true],
         ]);
     });
 

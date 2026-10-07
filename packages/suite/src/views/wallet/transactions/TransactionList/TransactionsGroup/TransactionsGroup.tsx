@@ -2,7 +2,6 @@ import { type ReactNode } from 'react';
 
 import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectHistoricFiatRates } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import {
     getErc4626Contracts,
@@ -16,6 +15,7 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
+import { useHistoricFiatRates } from 'src/hooks/wallet/transactions/HistoricFiatRatesContext';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { DayHeader } from './DayHeader';
@@ -41,7 +41,7 @@ export const TransactionsGroup = ({
     children,
     index,
 }: TransactionsGroupProps) => {
-    const historicFiatRates = useSelector(selectHistoricFiatRates);
+    const historicFiatRates = useHistoricFiatRates();
     const tokenDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
     const totalAmountPerDay = sumTransactions(transactions);
     const totalFiatAmountPerDay = sumTransactionsFiat(

@@ -1,5 +1,4 @@
 import { Translation } from '@suite/intl';
-import { selectTransactionConfirmations } from '@suite-common/wallet-core';
 import {
     type Account,
     type ChainedTransactions,
@@ -8,7 +7,7 @@ import {
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useTransactionConfirmations } from 'src/hooks/wallet/transactions/useTransactionReaders';
 import { RbfContext, useRbf } from 'src/hooks/wallet/useRbfForm';
 
 import { ChangeFee } from './ChangeFee';
@@ -39,9 +38,7 @@ export const BumpFeeModal = ({
 }: BumpFeeModalProps) => {
     const contextValues = useRbf({ rbfParams: tx.rbfParams, chainedTxs, account });
 
-    const confirmations = useSelector(state =>
-        selectTransactionConfirmations(state, tx.txid, account.key),
-    );
+    const confirmations = useTransactionConfirmations(tx);
 
     const isTxConfirmed = confirmations > 0;
 

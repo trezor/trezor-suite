@@ -5,8 +5,6 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     getInstantStakeType,
     selectAccountByKey,
-    selectAllPendingTransactions,
-    selectTransactionByAccountKeyAndTxid,
     useEvmNonceInfo,
 } from '@suite-common/wallet-core';
 import {
@@ -24,6 +22,11 @@ import {
 import { Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
+import {
+    type AccountTransactionLookup,
+    useAccountTransaction,
+} from 'src/hooks/wallet/chainData/useAccountTransaction';
+import { HistoricFiatRatesProvider } from 'src/hooks/wallet/transactions/HistoricFiatRatesContext';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { CancelTransactionModal } from './CancelTransaction/CancelTransactionModal';
@@ -45,15 +48,17 @@ type TxDetailModalProps = {
     onCancel: () => void;
 };
 
-export const TxDetailModal = ({
-    txid,
+type TxDetailModalViewProps = TxDetailModalProps & { lookup: AccountTransactionLookup };
+
+const TxDetailModalView = ({
     descriptor,
     symbol,
     deviceState,
     flow,
     showCancelButton,
     onCancel,
-}: TxDetailModalProps) => {
+    lookup,
+}: TxDetailModalViewProps) => {
     const [section, setSection] = useState<TxDetailModalProps['flow']>(flow);
     const [tab, setTab] = useState<TabID | undefined>(undefined);
 
@@ -62,9 +67,7 @@ export const TxDetailModal = ({
         networkSymbol: symbol,
         deviceStaticSessionId: deviceState,
     });
-    const originalTx = useSelector(state =>
-        selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
-    );
+    const originalTx = lookup.transaction;
 
     // A confirming (or replaced) tx is briefly evicted from the store: fetchAndUpdateAccountThunk
     // dispatches removeTransaction before re-adding the confirmed record, so this selector returns
@@ -102,7 +105,7 @@ export const TxDetailModal = ({
     const nonceAccount = account?.networkType === 'ethereum' ? account : undefined;
     const { nonceInfo: fetchedNonceInfo } = useEvmNonceInfo(nonceAccount);
 
-    const transactions = useSelector(selectAllPendingTransactions);
+    const transactions = lookup.pendingTransactions;
     // const confirmations = getConfirmations(tx, blockchain.blockHeight);
     // TODO: replace this part will be refactored after blockbook implementation:
     // https://github.com/trezor/blockbook/issues/555
@@ -211,5 +214,21 @@ export const TxDetailModal = ({
             nonceStatus={nonceStatus}
             nextNonce={fetchedNonceInfo?.nextNonce}
         />
+    );
+};
+
+export const TxDetailModal = (props: TxDetailModalProps) => {
+    const accountKey = createAccountKey({
+        accountDescriptor: props.descriptor,
+        networkSymbol: props.symbol,
+        deviceStaticSessionId: props.deviceState,
+    });
+    const account = useSelector(state => selectAccountByKey(state, accountKey));
+    const lookup = useAccountTransaction(account ?? undefined, props.txid);
+
+    return (
+        <HistoricFiatRatesProvider rates={lookup.historicRates}>
+            <TxDetailModalView {...props} lookup={lookup} />
+        </HistoricFiatRatesProvider>
     );
 };
