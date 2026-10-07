@@ -77,17 +77,6 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
         return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
-    async initAsync(): Promise<void> {
-        const { V1_NOT_SUPPORTED_MESSAGE, isV1Transaction } = await solana();
-
-        // Firmware cannot parse the v1 envelope yet. Rejecting from initAsync matters: core runs
-        // it before payloadToPrecomposed and before the device is acquired, so the caller gets an
-        // error instead of the user confirming a transaction the device would then refuse.
-        if (isV1Transaction(this.params.proto.serialized_tx)) {
-            throw ERRORS.TypedError('Method_InvalidParameter', V1_NOT_SUPPORTED_MESSAGE);
-        }
-    }
-
     get info() {
         return 'Sign Solana transaction';
     }
@@ -204,8 +193,8 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
         }
     }
 
-    // The definition version depends on the device firmware, so it is fetched in run() and not
-    // in initAsync(), which runs before the device is known.
+    // The definition version depends on the device firmware, so it is fetched in run(), once the
+    // device is known.
     private async setTokenDefinition() {
         const additionalInfo = this.params.proto.additional_info;
         const token = additionalInfo?.token_accounts_infos?.[0];
@@ -221,12 +210,18 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
     }
 
     async run() {
+        const cmd = this.getDevice().getCommands();
+        const { V1_NOT_SUPPORTED_MESSAGE, createTransactionShimFromHex, isV1Transaction } =
+            await solana();
+
+        // Firmware cannot parse the v1 envelope yet.
+        if (isV1Transaction(this.params.proto.serialized_tx)) {
+            throw ERRORS.TypedError('Method_InvalidParameter', V1_NOT_SUPPORTED_MESSAGE);
+        }
+
         await this.setTokenDefinition();
 
-        const cmd = this.getDevice().getCommands();
-
         if (this.params.serialize) {
-            const { createTransactionShimFromHex } = await solana();
             const tx = createTransactionShimFromHex(this.params.proto.serialized_tx);
 
             const addressCall = await cmd.typedCall('SolanaGetAddress', 'SolanaAddress', {
