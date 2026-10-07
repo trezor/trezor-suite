@@ -83,6 +83,23 @@ Still on the Redux transactions slice: export, the graph, staking views, the sen
 control, nonces, RBF), block height, and the phishing filter of notifications whose transaction is
 not loaded in the query cache.
 
+Under the flag the desktop send pipeline also runs through chain networks. That covers the send
+form, RBF bump fee and cancel, token allowance, trading exchange and sell, and Send raw.
+
+- **Compose.** Each family composes in its network package (`network.send.composeFeeLevels`),
+  through the query cache (`getChainComposeFeeLevelsQueryOptions`, `useChainComposeFeeLevels`).
+- **Sign and broadcast.** `useChainSignTransaction` and `useChainPushTransaction` are never
+  retried and log nothing confidential.
+- **Under review.** The transaction lives in the desktop's React send session, not in the send
+  form state.
+- **After the broadcast.** The network's pending transaction (`network.send.createPendingTransaction`)
+  shows on top of the history until the backend lists it or 15 minutes pass. The transaction it
+  replaces is hidden. The account is read again.
+- **Legacy readers.** The wallet's own sync is still told about the sent transaction.
+- **One implementation.** The Redux send thunks delegate to the same network functions, so the
+  flag-off path and the flows still on Redux run the same code. Those flows are staking, yield,
+  WalletConnect and the native app.
+
 ## Roadmap
 
 | #   | Phase                                                                                                                   | Exit criterion                                           |
@@ -91,7 +108,7 @@ not loaded in the query cache.
 | 2   | Sync: invalidator wired to Connect block and notification events; `network.subscribe`; legacy refresh off when flagged  | No double fetching; `NETWORK_SYNC_INTERVALS` removed     |
 | 3   | Discovery: `network.discoverAccounts` returns chain accounts; Redux persists identities only (`PortfolioAccount` slice) | Redux accounts hold no balances or tokens                |
 | 4   | Transactions: list, detail, notifications done; export, graph, staking and send readers remain                          | Redux transactions slice is legacy only                  |
-| 5   | Send: compose and sign/push as mutations, invalidating the account on success                                           | No network-type switches in `sendFormThunks`             |
+| 5   | Send: desktop send pipeline done; staking, yield, WalletConnect and native remain                                       | No network-type switches in `sendFormThunks`             |
 | 6   | Done: every network family is a chain network                                                                           | The composition switch is exhaustive                     |
 | 7   | Remove network-type switches from `wallet-utils` and the other hotspots                                                 | Lint bans network-type branching outside composition     |
 | 8   | Persistence for remembered wallets, with the same consent as Redux storage                                              | A remembered wallet works offline without Redux balances |
