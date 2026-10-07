@@ -73,10 +73,12 @@ export const createFormStateForSendForm = ({
         // DEX quotes carry transaction data for correct fee estimation
         if (exchangeQuote.isDex && exchangeQuote.dexTx) {
             outputAddress = exchangeQuote.dexTx.to;
-            transactionData = normalizeDexTransactionData({
-                data: exchangeQuote.dexTx.data,
-                networkType,
-            });
+            if (exchangeQuote.dexTx.data) {
+                transactionData = normalizeDexTransactionData({
+                    data: exchangeQuote.dexTx.data,
+                    networkType,
+                });
+            }
             ethereumAdjustGasLimit = ETHEREUM_ADJUST_GAS_LIMIT;
         }
 
