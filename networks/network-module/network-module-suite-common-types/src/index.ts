@@ -95,3 +95,71 @@ export type {
 } from './chain/createFetchConnectTokens';
 export { readChainNetworkConfig } from './chain/readChainNetworkConfig';
 export type { ChainNetworkConfig, ChainNetworkConfigSource } from './chain/readChainNetworkConfig';
+export {
+    SUITE_NATIVE_PRECOMPOSE_ERRORS,
+    SUITE_PRECOMPOSE_ERRORS,
+    asTxTargetId,
+    isFinalPrecomposedTransaction,
+} from './chain/send/PrecomposedTransaction';
+export type {
+    BaseCurrencyOption,
+    ExcludedUtxos,
+    ExternalOutput,
+    FeeInfo,
+    FeeLevelLabel,
+    GeneralPrecomposedLevels,
+    GeneralPrecomposedTransaction,
+    GeneralPrecomposedTransactionFinal,
+    Output,
+    PrecomposeError,
+    PrecomposedLevels,
+    PrecomposedLevelsCardano,
+    PrecomposedTransaction,
+    PrecomposedTransactionCardano,
+    PrecomposedTransactionCardanoFinal,
+    PrecomposedTransactionError,
+    PrecomposedTransactionFinal,
+    PrecomposedTransactionFinalBumpFeeRbf,
+    PrecomposedTransactionFinalCancelRbf,
+    PrecomposedTransactionFinalCardano,
+    RbfTransactionParams,
+    RbfTransactionParamsBitcoin,
+    RbfTransactionParamsEthereum,
+    RbfTransactionType,
+    SolanaTxMeta,
+    TxTargetId,
+} from './chain/send/PrecomposedTransaction';
+export type {
+    ChainComposeContext,
+    ChainNetworkSend,
+    ChainSendAccount,
+    ChainSendDevice,
+    ChainSendDraft,
+    ChainSignOptions,
+    ChainSignedTransaction,
+    ComposeFeeLevelsParams,
+    PushChainTransactionParams,
+    PushedChainTransaction,
+    SendFormOption,
+    SignChainTransactionParams,
+    UtxoSorting,
+} from './chain/send/ChainSend';
+export { ChainSendError } from './chain/send/ChainSendError';
+export type { ChainSendErrorCode } from './chain/send/ChainSendError';
+export { toMevProtectedPushData } from './chain/send/toMevProtectedPushData';
+export type { MevProtectedPushData } from './chain/send/toMevProtectedPushData';
+export { createPushConnectTransaction } from './chain/send/createPushConnectTransaction';
+export type {
+    PushConnectTransaction,
+    PushConnectTransactionDeps,
+    PushConnectTransactionParams,
+} from './chain/send/createPushConnectTransaction';
+export {
+    calculateMax,
+    calculateTotal,
+    convertAmountUnitsToSubunits,
+    findToken,
+    getExternalComposeOutput,
+} from './chain/send/composeHelpers';
+export type { ExternalComposeOutput } from './chain/send/composeHelpers';
+export { toCoinSymbol } from './chain/toCoinSymbol';

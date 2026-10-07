@@ -13,6 +13,7 @@ import type {
     FetchConnectTransactionsParams,
 } from './createFetchConnectTransactions';
 import { getDisplayBalanceFiatValue } from './getDisplayBalanceFiatValue';
+import type { ChainNetworkSend } from './send/ChainSend';
 
 export type ConnectChainNetworkTokens = {
     fetchTokens: FetchConnectTokens;
@@ -52,6 +53,9 @@ export type ConnectChainNetworkDefinition = {
 
     /** Past rates of the coin and its tokens; `null` when they have no fiat value (testnets). */
     fetchHistoricFiatRates: FetchHistoricFiatRates | null;
+
+    /** Composing, signing and broadcasting; without it the network cannot send. */
+    send?: ChainNetworkSend;
 };
 
 /**
@@ -62,9 +66,9 @@ export const buildConnectChainNetwork = (
     definition: ConnectChainNetworkDefinition,
 ): ChainNetwork => {
     const { symbol } = definition.params;
-    const { fetchFiatRate, fetchHistoricFiatRates, tokens, transactions } = definition;
+    const { fetchFiatRate, fetchHistoricFiatRates, tokens, transactions, send } = definition;
 
-    const assertOwnAccount = (ref: ChainAccountRef) => {
+    const assertOwnAccount = (ref: Pick<ChainAccountRef, 'symbol'>) => {
         if (ref.symbol !== symbol) {
             throw new ChainNetworkError('symbol-mismatch', symbol);
         }
@@ -112,6 +116,25 @@ export const buildConnectChainNetwork = (
                     useConnectionIdentity: definition.useConnectionIdentity,
                     gap: definition.params.gapLimit,
                 });
+            },
+        }),
+        ...(send && {
+            send: {
+                composeFeeLevels: async params => {
+                    assertOwnAccount(params.account);
+
+                    return await send.composeFeeLevels(params);
+                },
+                sign: async params => {
+                    assertOwnAccount(params.account);
+
+                    return await send.sign(params);
+                },
+                push: async params => {
+                    assertOwnAccount(params.account);
+
+                    return await send.push(params);
+                },
             },
         }),
     };

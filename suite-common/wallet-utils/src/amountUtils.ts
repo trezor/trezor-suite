@@ -4,6 +4,7 @@ import {
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
 import type { TokenTransfer } from '@trezor/connect';
+import { convertAmountUnitsToSubunits } from '@trezor/network-module-suite-common-types';
 import { BigNumber, type BigNumberValue } from '@trezor/utils';
 
 import { type AmountSubunit, type AmountUnit, asAmountSubunit, asAmountUnit } from './AmountTypes';
@@ -61,19 +62,7 @@ export const convertAmountSubunitsToUnits = (amount: BigNumberValue, decimals: n
  *
  * @deprecated Use `unitsToSubunits` instead!
  */
-export const convertAmountUnitsToSubunits = (amount: BigNumberValue, decimals: number) => {
-    try {
-        const bAmount = new BigNumber(amount);
-        if (bAmount.isNaN()) {
-            throw new Error('Amount is not a number');
-        }
-
-        return bAmount.times(10 ** decimals).toString(10);
-    } catch {
-        // TODO: return null, so we can decide how to handle missing value in caller component
-        return '-1';
-    }
-};
+export { convertAmountUnitsToSubunits };
 
 /**
  * @deprecated Use `subunitsToUnits` instead!

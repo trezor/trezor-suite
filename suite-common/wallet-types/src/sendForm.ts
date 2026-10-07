@@ -1,20 +1,17 @@
 import { type CryptoId } from 'invity-api';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import type { AccountUtxo, FeeLevel } from '@trezor/connect';
+import type {
+    ChainSendDraft,
+    SendFormOption,
+    UtxoSorting,
+} from '@trezor/network-module-suite-common-types';
 
 import { type AccountKey } from './account';
-import { type Output, type RbfTransactionParams } from './transaction';
 
-export type FormOptions =
-    | 'broadcast'
-    | 'utxoSelection'
-    | 'bitcoinLocktime'
-    | 'transactionData'
-    | 'ethereumNonce'
-    | 'destinationTag';
+export type { UtxoSorting };
 
-export type UtxoSorting = 'newestFirst' | 'oldestFirst' | 'smallestFirst' | 'largestFirst';
+export type FormOptions = SendFormOption;
 
 export type TronStakingVoteAllocation = {
     address: string;
@@ -65,38 +62,10 @@ export type FormStateTradingExchange = {
 export type FormStateTrading =
     FormStateTradingSell | FormStateTradingExchange | FormStateTradingDefault;
 
-export interface FormState {
-    outputs: Output[]; // output arrays, each element is corresponding with single Output item
-    setMaxOutputId?: number;
-    selectedFee?: FeeLevel['label'];
-    feePerUnit: string; // bitcoin/ethereum/ripple custom fee field (satB/gasPrice/drops)
-    maxPriorityFeePerGas?: string; // ethereum eip1559 only
-    maxFeePerGas?: string; // ethereum eip1559 only
-    feeLimit: string; // ethereum: gas limit; tron: fee_limit cap in SUN for TRC-20 transfers
-    estimatedFeeLimit?: string; // ethereum: estimated gas limit; tron: estimated fee_limit cap in SUN for TRC-20 transfers
-
-    /**
-     * Fee that was paid by chained transactions. To perform RBF transaction (bump fee or cancel)
-     * we must pay higher fee than all previous transactions + its own relay fee (see BIP-125 rules)
-     *
-     * This is passed down to `utxo-lib` as `baseFee` parameter (see `CoinSelectOptions`).
-     */
-    baseFee?: number;
-
-    // advanced form inputs
-    options: FormOptions[];
-    bitcoinLocktimeBlockHeight?: string;
-    bitcoinLocktimeDatetime?: string;
-    ethereumNonce?: string; // TODO: ethereum RBF
-    ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
-    transactionData?: string; // used for solana serialized txn from trading api, ethereum, tron txn hex data or bitcoin psbt hex data
-    destinationTag?: string; // For Ripple, Stellar, Solana, and Tron
+/** The send form: the draft composing and signing read, plus what only the UI needs. */
+export interface FormState extends ChainSendDraft {
     tronStaking?: TronStakingFormState;
-    rbfParams?: RbfTransactionParams;
-    isCoinControlEnabled: boolean;
     hasCoinControlBeenOpened: boolean;
     anonymityWarningChecked?: boolean;
-    selectedUtxos: AccountUtxo[];
-    utxoSorting?: UtxoSorting;
     trading?: FormStateTrading;
 }

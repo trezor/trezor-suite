@@ -13,6 +13,7 @@ import type {
     HistoricFiatRates,
 } from './ChainTransactions';
 import type { FiatRate } from './FiatRate';
+import type { ChainNetworkSend } from './send/ChainSend';
 
 export type GetAccountBalanceParams = {
     ref: ChainAccountRef;
@@ -79,6 +80,9 @@ export type ChainNetwork = {
 
     /** Rates of the coin or one of its tokens at past times, to value historic transactions. */
     getHistoricFiatRates: (params: GetHistoricFiatRatesParams) => Promise<HistoricFiatRates>;
+
+    /** Composing, signing and broadcasting. Absent where the network cannot send yet. */
+    send?: ChainNetworkSend;
 };
 
 export type ChainNetworkBackend = {

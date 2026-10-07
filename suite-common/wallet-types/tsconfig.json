@@ -14,6 +14,9 @@
         { "path": "../../packages/crypto-utils" },
         { "path": "../../packages/device-utils" },
         {
+            "path": "../../networks/network-module/network-module-suite-common-types"
+        },
+        {
             "path": "../../networks/solana/network-solana-types"
         },
         {
