@@ -1,13 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
-import { isFulfilled } from '@reduxjs/toolkit';
-
 import { isTranslationKey, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
     type ComposeActionContext,
     type FormState,
@@ -20,7 +15,8 @@ import { findComposeErrors } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { useComposeTransactionFeeLevels } from 'src/hooks/wallet/chainSend/useComposeTransactionFeeLevels';
+import { useSignAndPushTransaction } from 'src/hooks/wallet/chainSend/useSignAndPushTransaction';
 import { type SendContextValues } from 'src/types/wallet/sendForm';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
@@ -49,7 +45,8 @@ export const useCompose = <TFieldValues extends FormState>({
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
     const { translationString } = useTranslation();
 
-    const { dispatch } = useServices(injectDispatch);
+    const composeFeeLevels = useComposeTransactionFeeLevels();
+    const signAndPushTransaction = useSignAndPushTransaction();
 
     // actions
     const debounce = useDebounce();
@@ -87,14 +84,7 @@ export const useCompose = <TFieldValues extends FormState>({
                     return Promise.resolve(undefined);
                 }
 
-                const formState = getValues();
-
-                return dispatch(
-                    composeSendFormTransactionFeeLevelsThunk({
-                        formState,
-                        composeContext: state,
-                    }),
-                ).then(res => (isFulfilled(res) ? res.payload : undefined));
+                return composeFeeLevels(getValues(), state);
             });
 
             // RACE-CONDITION NOTE:
@@ -112,7 +102,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 }
             }
         },
-        [state, errors, debounce, clearErrors, getValues, dispatch],
+        [state, errors, debounce, clearErrors, getValues, composeFeeLevels],
     );
 
     // update fields AFTER composedLevels change or selectedFee change (below)
@@ -271,13 +261,11 @@ export const useCompose = <TFieldValues extends FormState>({
         if (precomposedTransaction?.type === 'final') {
             // sign workflow in Actions:
             // signSendFormTransactionThunk > sign[COIN]TransactionThunk > sendFormActions.storeSignedTransaction (modal with promise decision)
-            const result = await dispatch(
-                signAndPushSendFormTransactionThunk({
-                    formState,
-                    precomposedTransaction,
-                    selectedAccount: state.account,
-                }),
-            ).unwrap();
+            const result = await signAndPushTransaction({
+                formState,
+                precomposedTransaction,
+                selectedAccount: state.account,
+            });
 
             return result?.success;
         }

@@ -1,4 +1,5 @@
 import { selectFullSelectedAccount } from '@suite/account';
+import { closeModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -14,11 +15,9 @@ import {
     stakeActions,
 } from '@suite-common/wallet-core';
 import { type FormState, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import TrezorConnect from '@trezor/connect';
 
-import {
-    removeSendFormDraftThunk,
-    signAndPushSendFormTransactionThunk,
-} from 'src/actions/wallet/send/sendFormThunks';
+import { removeSendFormDraftThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { cancelSignYieldTxThunk } from 'src/actions/wallet/stablecoin-yield';
 import {
     cancelSignTxThunk as cancelSignStakingTx,
@@ -26,6 +25,8 @@ import {
 } from 'src/actions/wallet/stakeActions';
 import { cancelSignTronFreezeTxThunk } from 'src/actions/wallet/tron-stake/cancelSignTronFreezeTx';
 import { useSelector } from 'src/hooks/suite';
+import { useSignAndPushTransaction } from 'src/hooks/wallet/chainSend/useSignAndPushTransaction';
+import { useSendSessionContext } from 'src/support/chainSend/SendSessionContext';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';
@@ -44,6 +45,8 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     const stakePrecomposedForm = useSelector(selectStakePrecomposedForm);
     const selectedAccount = useSelector(selectFullSelectedAccount);
     const { dispatch } = useServices(injectDispatch);
+    const { session, setSession } = useSendSessionContext();
+    const signAndPushTransaction = useSignAndPushTransaction();
 
     const getReviewSource = (): {
         txInfoState: TxInfoState;
@@ -62,6 +65,22 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
                 txInfoState: yieldTxReview,
                 precomposedForm: yieldTxReview.precomposedForm,
                 cancelSignTx: () => dispatch(cancelSignYieldTxThunk()),
+            };
+        }
+        // A transaction signed and broadcast through its chain network.
+        if (session) {
+            return {
+                txInfoState: session,
+                precomposedForm: session.precomposedForm,
+                cancelSignTx: () => {
+                    setSession(undefined);
+                    // Interrupt signing, or just close the review once signed.
+                    if (!session.serializedTx) {
+                        TrezorConnect.cancel({ reason: 'tx-cancelled' });
+                    } else {
+                        dispatch(closeModal());
+                    }
+                },
             };
         }
         if (send?.precomposedTx) {
@@ -86,14 +105,14 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     const isSell = precomposedForm?.trading?.activeSection === 'sell';
 
     const handleSignAndPushSendTx = async () => {
+        const reviewed = session ?? send;
+
         try {
-            const result = await dispatch(
-                signAndPushSendFormTransactionThunk({
-                    formState: send.precomposedForm!,
-                    precomposedTransaction: send.precomposedTx!,
-                    selectedAccount: selectedAccount.account,
-                }),
-            ).unwrap();
+            const result = await signAndPushTransaction({
+                formState: reviewed.precomposedForm!,
+                precomposedTransaction: reviewed.precomposedTx!,
+                selectedAccount: selectedAccount.account,
+            });
 
             if (result?.success) {
                 dispatch(removeSendFormDraftThunk());
@@ -115,7 +134,10 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     };
 
     const handleTryAgainSignTx = async () => {
-        if (send.precomposedForm && send.precomposedTx) {
+        if (session) {
+            setSession({ ...session, serializedTx: undefined, signedTx: undefined });
+            await handleSignAndPushSendTx();
+        } else if (send.precomposedForm && send.precomposedTx) {
             dispatch(sendFormActions.clearSignedTransactionData());
             await handleSignAndPushSendTx();
         } else if (stake.precomposedForm && stake.precomposedTx) {

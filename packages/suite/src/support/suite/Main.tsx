@@ -7,6 +7,7 @@ import { injectStore } from '@suite-common/redux-utils';
 import { SelectCacheProvider } from '@trezor/components';
 import { NetworkDisplayProvider } from '@trezor/product-components';
 
+import { SendSessionProvider } from 'src/support/chainSend/SendSessionProvider';
 import Autodetect from 'src/support/suite/Autodetect';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
@@ -47,7 +48,7 @@ export const Main = ({ trafficLightOffset, children }: MainProps) => {
                                 <ConnectedIntlProvider>
                                     <SelectCacheProvider>
                                         <ConnectedFormatterProvider>
-                                            {children}
+                                            <SendSessionProvider>{children}</SendSessionProvider>
                                         </ConnectedFormatterProvider>
                                     </SelectCacheProvider>
                                 </ConnectedIntlProvider>

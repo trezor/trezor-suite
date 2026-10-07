@@ -31,9 +31,9 @@ import {
     getSendFormDraftThunk,
     removeSendFormDraftThunk,
     saveSendFormDraftThunk,
-    signAndPushSendFormTransactionThunk,
 } from 'src/actions/wallet/send/sendFormThunks';
 import { useSelector } from 'src/hooks/suite';
+import { useSignAndPushTransaction } from 'src/hooks/wallet/chainSend/useSignAndPushTransaction';
 import { selectProtocol } from 'src/selectors/suite/protocolSelectors';
 import { type AppState } from 'src/types/suite';
 import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
@@ -110,6 +110,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const draft = useRef<FormState | undefined>(undefined);
 
     const { dispatch } = useServices(injectDispatch);
+    const signAndPushTransaction = useSignAndPushTransaction();
 
     const { localCurrencyOption } = state;
 
@@ -276,13 +277,11 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             // sign workflow in Actions:
             // signSendFormTransactionThunk > sign[COIN]SendFormTransactionThunk > sendFormActions.storeSignedTransaction (modal with promise decision)
             setLoading(true);
-            const result = await dispatch(
-                signAndPushSendFormTransactionThunk({
-                    formState: currentFormState,
-                    precomposedTransaction,
-                    selectedAccount: selectedAccount.account,
-                }),
-            ).unwrap();
+            const result = await signAndPushTransaction({
+                formState: currentFormState,
+                precomposedTransaction,
+                selectedAccount: selectedAccount.account,
+            });
 
             setLoading(false);
             if (result?.success) {
@@ -290,7 +289,14 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                 dispatch(gotoThunk({ routeName: 'wallet-index', preserveParams: true }));
             }
         }
-    }, [getValues, composedLevels, dispatch, resetContext, selectedAccount.account]);
+    }, [
+        getValues,
+        composedLevels,
+        dispatch,
+        resetContext,
+        selectedAccount.account,
+        signAndPushTransaction,
+    ]);
 
     const protocol = useSelector(selectProtocol);
     const protocolNetworkSymbol = useSelector(state =>

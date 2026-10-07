@@ -9,7 +9,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { useYieldVaultName } from '@suite-common/earn-stablecoin';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
-import { selectYieldTxReview } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectYieldTxReview } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
@@ -20,6 +20,7 @@ import TrezorConnect from '@trezor/connect';
 import { type Deferred } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
+import { useSendSession } from 'src/support/chainSend/SendSessionContext';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
 
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';
@@ -45,7 +46,13 @@ export const TransactionReviewModalBody = ({
     isRbfConfirmedError,
 }: TransactionReviewModalBodyProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const account = useSelector(selectAccountIncludingChosenInTrading);
+    const session = useSendSession();
+    const sessionAccount = useSelector(state =>
+        session ? selectAccountByKey(state, session.accountKey) : undefined,
+    );
+    const chosenAccount = useSelector(selectAccountIncludingChosenInTrading);
+    // The send session's account is the one under review, as the send form state's would be.
+    const account = sessionAccount ?? chosenAccount;
     const device = useSelector(selectSelectedDevice);
     const yieldTxReview = useSelector(selectYieldTxReview);
     const swapSlippage = useSelector(selectTradingExchangeSelectedQuote)?.swapSlippage;

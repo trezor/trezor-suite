@@ -8,13 +8,8 @@ import {
 } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
-import { isFulfilled } from '@reduxjs/toolkit';
-
 import { type TranslationKey, isTranslationKey, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
     type ExcludedUtxos,
     type FeeInfo,
@@ -29,6 +24,7 @@ import { type FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 import { isChanged } from '@trezor/utils';
 
+import { useComposeTransactionFeeLevels } from 'src/hooks/wallet/chainSend/useComposeTransactionFeeLevels';
 import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
 
 import { useSolanaSubscribeBlocks } from './form/useSolanaSubscribeBlocks';
@@ -67,7 +63,7 @@ export const useSendFormCompose = ({
     const [composeField, setComposeField] = useState<FieldPath<FormState> | undefined>(undefined);
     const [draftSaveRequest, setDraftSaveRequest] = useState(false);
 
-    const { dispatch } = useServices(injectDispatch);
+    const composeFeeLevels = useComposeTransactionFeeLevels();
     const { translationString } = useTranslation();
 
     const composeRequestID = useRef(0); // compose ID, incremented with every compose request
@@ -80,27 +76,22 @@ export const useSendFormCompose = ({
             setLoading(true);
             setComposedLevels(undefined);
 
-            const result = await dispatch(
-                composeSendFormTransactionFeeLevelsThunk({
-                    formState,
-                    composeContext: {
-                        account,
-                        network: state.network,
-                        feeInfo,
-                        excludedUtxos,
-                        prison,
-                    },
-                }),
-            );
+            const result = await composeFeeLevels(formState, {
+                account,
+                network: state.network,
+                feeInfo,
+                excludedUtxos,
+                prison,
+            });
 
-            if (isFulfilled(result)) {
-                setComposedLevels(result.payload);
+            if (result) {
+                setComposedLevels(result);
             } else {
                 // undefined result will not be processed by useEffect below, reset loader
                 setLoading(false);
             }
         },
-        [account, dispatch, prison, excludedUtxos, setLoading, state.network, feeInfo],
+        [account, composeFeeLevels, prison, excludedUtxos, setLoading, state.network, feeInfo],
     );
 
     // Create a compose request
@@ -131,18 +122,13 @@ export const useSendFormCompose = ({
                 // save draft (it could be changed later, after composing)
                 setDraftSaveRequest(true);
 
-                return dispatch(
-                    composeSendFormTransactionFeeLevelsThunk({
-                        formState,
-                        composeContext: {
-                            account,
-                            network: state.network,
-                            feeInfo,
-                            excludedUtxos,
-                            prison,
-                        },
-                    }),
-                );
+                return composeFeeLevels(formState, {
+                    account,
+                    network: state.network,
+                    feeInfo,
+                    excludedUtxos,
+                    prison,
+                });
             });
 
             // RACE-CONDITION NOTE:
@@ -150,9 +136,9 @@ export const useSendFormCompose = ({
             // therefore another debounce process was not called yet to interrupt current one
             // unexpected result: `updateComposedValues` is trying to work with updated/newer FormState
             if (resultID === composeRequestID.current) {
-                if (isFulfilled(result)) {
+                if (result) {
                     // set new composed transactions
-                    setComposedLevels(result.payload);
+                    setComposedLevels(result);
                 } else {
                     // result undefined: (FormState got errors or sendFormActions got errors)
                     // undefined result will not be processed by useEffect below, reset loader
@@ -162,7 +148,7 @@ export const useSendFormCompose = ({
         },
         [
             debounce,
-            dispatch,
+            composeFeeLevels,
             setLoading,
             errors,
             clearErrors,

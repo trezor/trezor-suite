@@ -8,7 +8,6 @@ import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    type TradingSignAndPushSendFormTransactionProps,
     exchangeThunks,
     isSendRejectedError,
     isSilentSendRejection,
@@ -19,8 +18,8 @@ import {
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useSelector } from 'src/hooks/suite';
+import { useSignAndPushTransaction } from 'src/hooks/wallet/chainSend/useSignAndPushTransaction';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingExchangeTradeRequest } from 'src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
 import { useTradingFormAccount } from 'src/hooks/wallet/trading/form/useTradingFormAccount';
@@ -29,6 +28,7 @@ import { type TradingExchangeConfirmTradeProps } from 'src/types/trading/trading
 
 export const useTradingExchangeTradeActions = () => {
     const { dispatch } = useServices(injectDispatch);
+    const signAndPushTransaction = useSignAndPushTransaction();
     const { translationString } = useTranslation();
     const { device } = useDevice();
 
@@ -112,21 +112,6 @@ export const useTradingExchangeTradeActions = () => {
         const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData, nextStep } =
             commonFunctions;
 
-        const signAndPushSendFormTransaction = async ({
-            formState,
-            precomposedTransaction,
-            selectedAccount,
-            paymentRequests,
-        }: TradingSignAndPushSendFormTransactionProps) =>
-            await dispatch(
-                signAndPushSendFormTransactionThunk({
-                    formState,
-                    precomposedTransaction,
-                    selectedAccount,
-                    paymentRequests,
-                }),
-            ).unwrap();
-
         try {
             await dispatch(
                 exchangeThunks.sendTransactionThunk({
@@ -140,7 +125,7 @@ export const useTradingExchangeTradeActions = () => {
                     nextStep,
                     processResponseData,
                     triggerAnalyticsTradeConfirmation,
-                    signAndPushSendFormTransaction,
+                    signAndPushSendFormTransaction: signAndPushTransaction,
                 }),
             ).unwrap();
 

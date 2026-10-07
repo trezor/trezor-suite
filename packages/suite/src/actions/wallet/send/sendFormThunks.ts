@@ -31,7 +31,6 @@ import {
     pushSendFormTransactionThunk,
     replaceTransactionThunk,
     selectIsMevProtectionEnabled,
-    selectPrecomposedSendForm,
     selectSendFormDrafts,
     sendFormActions,
     signTransactionThunk,
@@ -43,6 +42,7 @@ import {
     type PrecomposedTransactionFinalBumpFeeRbf,
 } from '@suite-common/wallet-types';
 import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { type PROTO, type StaticSessionId } from '@trezor/connect';
 import { getSynchronize } from '@trezor/utils';
 
@@ -114,20 +114,28 @@ type UpdateRbfLabelsThunkParams = {
     prevTxid: string;
     deviceStaticSessionId: StaticSessionId;
     stateBeforePush: StateBeforePush;
+    signedTransaction?: BlockbookTransaction;
 };
 
 type UpdateRbfLabelsThunkState = MoveLabelsForRbfThunkState & ReplaceTransactionThunkState;
 
 type UpdateRbfLabelsThunkDeps = MoveLabelsForRbfThunkDeps;
 
-const updateRbfLabelsThunk = createThunk<
+export const updateRbfLabelsThunk = createThunk<
     void,
     UpdateRbfLabelsThunkParams,
     { state: UpdateRbfLabelsThunkState; extra: UpdateRbfLabelsThunkDeps }
 >(
     `${MODULE_PREFIX}/updateReplacedTransactionThunk`,
     (
-        { deviceStaticSessionId, precomposedTransaction, txid, stateBeforePush, prevTxid },
+        {
+            deviceStaticSessionId,
+            precomposedTransaction,
+            txid,
+            stateBeforePush,
+            prevTxid,
+            signedTransaction,
+        },
         { dispatch },
     ) => {
         dispatch(
@@ -146,6 +154,7 @@ const updateRbfLabelsThunk = createThunk<
             replaceTransactionThunk({
                 precomposedTransaction,
                 newTxid: txid,
+                signedTransaction,
             }),
         );
     },
@@ -153,6 +162,7 @@ const updateRbfLabelsThunk = createThunk<
 
 type ApplySendFormMetadataLabelsThunkParams = {
     selectedAccount: Account;
+    formState: FormState;
     precomposedTransaction: GeneralPrecomposedTransactionFinal;
     txid: string;
 };
@@ -160,12 +170,11 @@ type ApplySendFormMetadataLabelsThunkParams = {
 type ApplySendFormMetadataLabelsThunkState = DeviceRootState &
     MessageSystemRootState &
     MetadataRootState &
-    SendRootState &
     WithSuiteSyncState;
 
 type ApplySendFormMetadataLabelsThunkDeps = WithServices<SuiteSyncDep>;
 
-const applySendFormMetadataLabelsThunk = createThunk<
+export const applySendFormMetadataLabelsThunk = createThunk<
     void,
     ApplySendFormMetadataLabelsThunkParams,
     {
@@ -174,7 +183,7 @@ const applySendFormMetadataLabelsThunk = createThunk<
     }
 >(
     `${MODULE_PREFIX}/applyMetadataLabelsThunk`,
-    ({ selectedAccount, precomposedTransaction, txid }, { dispatch, getState }) => {
+    ({ selectedAccount, formState, precomposedTransaction, txid }, { dispatch, getState }) => {
         const metadata = selectMetadata(getState());
         const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(getState());
 
@@ -182,14 +191,13 @@ const applySendFormMetadataLabelsThunk = createThunk<
             return;
         }
 
-        const precomposedForm = selectPrecomposedSendForm(getState());
         const outputsPermutation = isCardanoTx(selectedAccount, precomposedTransaction)
             ? precomposedTransaction?.outputs.map((_o, i) => i) // cardano preserves order of outputs
             : precomposedTransaction?.outputsPermutation;
 
         const synchronize = getSynchronize();
 
-        precomposedForm?.outputs
+        formState.outputs
             // create array of metadata objects
             .map((formOutput, index) => {
                 const { label } = formOutput;
@@ -377,10 +385,10 @@ export const signAndPushSendFormTransactionThunk = createThunk<
             );
         }
 
-        // This thunk uses precomposedForm so it must be called before cleanup.
         dispatch(
             applySendFormMetadataLabelsThunk({
                 selectedAccount,
+                formState,
                 precomposedTransaction,
                 txid,
             }),

@@ -1,5 +1,8 @@
+import { type PropsWithChildren } from 'react';
+
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
+import { QueryClient, QueryClientProvider } from '@suite-common/react-query';
 import { createThunk } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -11,6 +14,15 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type AppState } from 'src/reducers/store';
 
 import { useTradingExchangeTradeActions } from './useTradingExchangeTradeActions';
+
+// Signing and broadcasting run through mutations, which need a query client.
+const createQueryClientWrapper = () => {
+    const queryClient = new QueryClient();
+
+    return ({ children }: PropsWithChildren) => (
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+};
 
 const DEVICE_CANCEL_TOAST_ERROR = 'Cancelled';
 
@@ -111,6 +123,8 @@ const SELECTED_QUOTE: ExchangeTrade = {
 };
 
 const preloadedState = {
+    // Signing goes through the wallet's thunk, not the chain network.
+    flags: { queryChainData: false },
     wallet: {
         accounts: [ACCOUNT],
         fees: {
@@ -188,6 +202,7 @@ describe('cancelling a swap on the device', () => {
         const { services } = createTestCompositionRoot<void, AppState>({ preloadedState });
         const { result } = renderHookWithStoreProvider(() => useTradingExchangeTradeActions(), {
             services,
+            wrapper: createQueryClientWrapper(),
         });
 
         const success = await result.current.sendTransaction();

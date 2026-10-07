@@ -10,7 +10,6 @@ import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    type TradingSignAndPushSendFormTransactionProps,
     isSendRejectedError,
     isSilentSendRejection,
     selectTradingComposedTransactionInfo,
@@ -23,10 +22,10 @@ import {
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { requestSellTradeThunk } from 'src/actions/wallet/trading/sell/requestSellTradeThunk';
 import { submitRequestFormThunk } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useSelector } from 'src/hooks/suite';
+import { useSignAndPushTransaction } from 'src/hooks/wallet/chainSend/useSignAndPushTransaction';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormAccount } from 'src/hooks/wallet/trading/form/useTradingFormAccount';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -38,6 +37,7 @@ export const useTradingSellTradeActions = () => {
         injectDesktopAnalytics,
         injectDispatch,
     );
+    const signAndPushTransaction = useSignAndPushTransaction();
     const { translationString } = useTranslation();
 
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
@@ -120,21 +120,6 @@ export const useTradingSellTradeActions = () => {
             dispatch(gotoThunk({ routeName: 'wallet-trading-sell-detail' }));
         };
 
-        const signAndPushSendFormTransaction = async ({
-            formState,
-            precomposedTransaction,
-            selectedAccount,
-            paymentRequests,
-        }: TradingSignAndPushSendFormTransactionProps) =>
-            await dispatch(
-                signAndPushSendFormTransactionThunk({
-                    formState,
-                    precomposedTransaction,
-                    selectedAccount,
-                    paymentRequests,
-                }),
-            ).unwrap();
-
         try {
             await dispatch(
                 sellThunks.sendTransactionThunk({
@@ -144,7 +129,7 @@ export const useTradingSellTradeActions = () => {
                     decimals,
                     isSlip24Active,
                     nextStep,
-                    signAndPushSendFormTransaction,
+                    signAndPushSendFormTransaction: signAndPushTransaction,
                 }),
             ).unwrap();
 
