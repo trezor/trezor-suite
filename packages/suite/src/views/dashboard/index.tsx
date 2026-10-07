@@ -7,6 +7,7 @@ import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useLayout } from 'src/hooks/suite';
 
 import { AssetsView } from './AssetsView/AssetsView';
+import { ChainAssetsList } from './ChainAssetsList/ChainAssetsList';
 import { DashboardFooter } from './DashboardFooter';
 import { DashboardPromoBanner } from './DashboardPromoBanner/DashboardPromoBanner';
 import { OnboardingFeedbackBanner } from './OnboardingFeedbackBanner/OnboardingFeedbackBanner';
@@ -37,6 +38,7 @@ const DashboardAsItWas = () => (
             <OnboardingFeedbackBanner />
         </Column>
         <DashboardPromoBanner />
+        <ChainAssetsList />
         <AssetsView />
     </Column>
 );
