@@ -48,7 +48,7 @@ const fail = (id: number, error: string) =>
 const fire = (event: string, payload: any) => process.parentPort.postMessage({ event, payload });
 
 /**
- * Utility process helper. Use only in a file inside `suite-desktop/src/threads`.
+ * Utility process helper. Use only in a file inside `desktop-app-main/src/threads`.
  *
  * Creates event-emitter-like object in Electron's utility process and allows
  * to communicate with it by `call`, `subscribe` and `unsubscribe` messages.
