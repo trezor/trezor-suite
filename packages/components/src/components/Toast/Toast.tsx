@@ -50,6 +50,7 @@ export const Toast = ({
             onClick={action.onClick}
             size="small"
             isInverse={intent === 'neutral'}
+            data-testid={action.dataTestId}
         >
             {action.label}
         </Button>
