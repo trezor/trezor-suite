@@ -32,7 +32,9 @@ import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import {
     createFetchBlockbookHttpCurrentRate,
+    createFetchBlockbookHttpHistoricRates,
     createFetchCoinGeckoCurrentRate,
+    createFetchCoinGeckoHistoricRates,
 } from '@suite-common/fiat-services';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
@@ -166,6 +168,8 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getNetworkConfig: networks.getNetworkConfig,
         fetchCoinGeckoCurrentRate: createFetchCoinGeckoCurrentRate(),
         fetchBlockbookHttpCurrentRate: createFetchBlockbookHttpCurrentRate(),
+        fetchCoinGeckoHistoricRates: createFetchCoinGeckoHistoricRates(),
+        fetchBlockbookHttpHistoricRates: createFetchBlockbookHttpHistoricRates(),
     });
     const selectSelectedChainNetworks = createWeakMapSelector.withTypes<AppState>()(
         [selectChainNetworkSelection],

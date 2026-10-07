@@ -5,17 +5,11 @@ import { getTxAnchor, gotoThunk, selectRouteName, selectRouterApp } from '@suite
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
-import {
-    selectAccounts,
-    selectNetworkBlockchainInfo,
-    selectTransactions,
-} from '@suite-common/wallet-core';
+import { selectAccounts, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import {
     findAccountDevice,
     findAccountsByDescriptor,
     findAccountsByNetwork,
-    findTransaction,
-    getAccountTransactions,
     getConfirmations,
     isStakeTypeTx,
 } from '@suite-common/wallet-utils';
@@ -30,6 +24,7 @@ import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
 import { useSelector } from 'src/hooks/suite';
+import { useAccountTransaction } from 'src/hooks/wallet/chainData/useAccountTransaction';
 
 type TransactionRendererProps = NotificationViewProps &
     NotificationRendererProps<TransactionNotificationType>;
@@ -37,7 +32,6 @@ type TransactionRendererProps = NotificationViewProps &
 export const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProps) => {
     const { symbol, descriptor, txid, device } = props.notification;
     const accounts = useSelector(selectAccounts);
-    const transactions = useSelector(selectTransactions);
     const blockchain = useSelector(state => selectNetworkBlockchainInfo(state, symbol));
     const devices = useSelector(selectDevices);
     const currentDevice = useSelector(selectSelectedDevice);
@@ -47,12 +41,11 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
 
     const networkAccounts = findAccountsByNetwork(symbol, accounts);
     const account = findAccountsByDescriptor(descriptor, networkAccounts).at(0);
+    const { transaction: tx } = useAccountTransaction(account, txid);
 
     // fallback: account not found, it should never happen tho
     if (!account) return <View {...props} />;
 
-    const accountTxs = getAccountTransactions(account.key, transactions);
-    const tx = findTransaction(txid, accountTxs);
     const accountDevice = findAccountDevice(account, devices);
     const confirmations = tx ? getConfirmations(tx, blockchain.blockHeight) : 0;
     const destinationRoute = isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId)

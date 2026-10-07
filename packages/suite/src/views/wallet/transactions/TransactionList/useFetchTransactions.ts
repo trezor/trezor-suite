@@ -1,22 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { isPhishingTransaction } from '@suite-common/token-definitions';
 import {
-    fetchAllTransactionsForAccountThunk,
-    fetchTransactionsPageThunk,
-    selectAccountTotalTransactions,
-    selectAccountTransactionsWithNulls,
     selectActiveDustPhishingThreshold,
-    selectIsLoadingAccountTransactions,
     selectPhishingTransactionsContext,
 } from '@suite-common/wallet-core';
 import { getSynchronize } from '@trezor/utils';
 
 import { useDiscovery, useSelector } from 'src/hooks/suite';
-import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
+import { type AccountTransactionsSource } from 'src/hooks/wallet/chainData/useAccountTransactionsSource';
+import { type Account } from 'src/types/wallet';
 
 import { shouldAttemptToLoadNextPageForVisibleTransactions } from './transaction-fetch-utils';
 
@@ -31,15 +25,12 @@ const getPaging = (network: Account['networkType'], txFetched: number, txTotal: 
     return { page, pagesTotal, perPage };
 };
 
-export const useFetchTransactions = (
-    account: Account,
-    transactions: WalletAccountTransaction[],
-) => {
+export const useFetchTransactions = (account: Account, source: AccountTransactionsSource) => {
     const accountKey = account.key;
     const { page, pagesTotal, perPage } = getPaging(
         account.networkType,
-        transactions.length,
-        account.history.total,
+        source.transactions.length,
+        source.total,
     );
 
     const [pagesFetched, setPagesFetched] = useState(page);
@@ -67,7 +58,7 @@ export const useFetchTransactions = (
     }, [fetchedAll, isLastPage]);
 
     const synchronize = useMemo(getSynchronize, [accountKey]);
-    const { dispatch } = useServices(injectDispatch);
+    const { fetchPage: fetchSourcePage, fetchAll: fetchSourceAll } = source;
 
     const fetchCommon = useCallback(
         (
@@ -78,18 +69,12 @@ export const useFetchTransactions = (
         ) => {
             if (options.recursive) {
                 // NOTE: when recursion is requested, load all the transactions along but don't wait for it
-                dispatch(fetchAllTransactionsForAccountThunk({ accountKey }));
+                fetchSourceAll();
             }
 
-            return dispatch(
-                fetchTransactionsPageThunk({
-                    accountKey: account.key,
-                    page,
-                    perPage,
-                }),
-            );
+            return fetchSourcePage(page, perPage);
         },
-        [dispatch, account.key, perPage, accountKey],
+        [fetchSourceAll, fetchSourcePage, perPage],
     );
 
     const fetchPage = useCallback(
@@ -101,19 +86,12 @@ export const useFetchTransactions = (
         ) => {
             synchronize(async () => {
                 setFetching(true);
-                await dispatch(
-                    fetchTransactionsPageThunk({
-                        accountKey: account.key,
-                        page,
-                        perPage,
-                        noLoading: Boolean(options.noLoading),
-                    }),
-                );
+                await fetchSourcePage(page, perPage, { noLoading: Boolean(options.noLoading) });
             }).finally(() => {
                 setFetching(false);
             });
         },
-        [account.key, dispatch, perPage, synchronize],
+        [fetchSourcePage, perPage, synchronize],
     );
 
     const fetchNext = useCallback(
@@ -149,18 +127,18 @@ export const useFetchTransactions = (
 
 type UseVisibleTransactionsParams = {
     account: Account;
+    source: AccountTransactionsSource;
     numberOfPagesRequested: number;
     enableFiltering?: boolean;
 };
 
 export const useVisibleTransactions = ({
     account,
+    source,
     numberOfPagesRequested,
     enableFiltering = false,
 }: UseVisibleTransactionsParams) => {
-    const allTransactions = useSelector(state =>
-        selectAccountTransactionsWithNulls(state, account.key),
-    );
+    const allTransactions = source.transactions;
     const { isDiscoveryRunning } = useDiscovery();
 
     const {
@@ -168,14 +146,11 @@ export const useVisibleTransactions = ({
         isFetching,
         pagesFetched: allTransactionsPagesFetched,
         fetchPage,
-    } = useFetchTransactions(account, allTransactions);
-    const allAccountTransactions = useSelector(state =>
-        selectAccountTotalTransactions(state, account.key),
-    );
-    const transactionsIsLoading = useSelector(state =>
-        selectIsLoadingAccountTransactions(state, account.key),
-    );
-    const { tokenDefinitions, txsMarkedAsNotScam, historicRates } = useSelector(state =>
+    } = useFetchTransactions(account, source);
+    const allAccountTransactions = source.total;
+    const transactionsIsLoading = source.isLoading;
+    const { historicRates } = source;
+    const { tokenDefinitions, txsMarkedAsNotScam } = useSelector(state =>
         selectPhishingTransactionsContext(state, account.key, account.symbol),
     );
     const dustThreshold = useSelector(selectActiveDustPhishingThreshold);

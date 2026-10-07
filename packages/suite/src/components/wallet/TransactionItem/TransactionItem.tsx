@@ -12,7 +12,6 @@ import { type AccountType, type Network } from '@suite-common/wallet-config';
 import {
     createTargets,
     selectAccountByKey,
-    selectIsPhishingTransaction,
     useDisplayBaseCurrency,
     useEvmNonceInfo,
 } from '@suite-common/wallet-core';
@@ -31,6 +30,7 @@ import { OutlineHighlight } from '@trezor/product-components';
 
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
+import { usePhishingResult } from 'src/hooks/wallet/transactions/useTransactionReaders';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { EvmBumpFeeTooltip } from './EvmBumpFeeTooltip';
@@ -155,9 +155,8 @@ export const TransactionItem = memo(
                 }),
             );
         };
-        const { isPhishing: isPhishingTransaction, detectorId: phishingDetectorId } = useSelector(
-            state => selectIsPhishingTransaction(state, transaction.txid, accountKey),
-        );
+        const { isPhishing: isPhishingTransaction, detectorId: phishingDetectorId } =
+            usePhishingResult(transaction, accountKey);
 
         const dataTestBase = `@transaction-item/${index}${
             transaction.deadline ? '/prepending' : ''

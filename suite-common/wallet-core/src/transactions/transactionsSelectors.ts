@@ -199,6 +199,13 @@ export const selectTransactionIsMarkedAsNotScam = (
     return state.wallet.transactions.phishing[accountKey]?.includes(txid);
 };
 
+/** Whether the user marked the txid as not a scam; needs only the txid, not a loaded transaction. */
+export const selectIsTxidMarkedAsNotScam = (
+    state: TransactionsRootState,
+    accountKey: AccountKey,
+    txid: string,
+) => state.wallet.transactions.phishing[accountKey]?.includes(txid) ?? false;
+
 export const selectAccountTransactionsMarkedAsNotScam = (
     state: TransactionsRootState,
     accountKey: AccountKey,

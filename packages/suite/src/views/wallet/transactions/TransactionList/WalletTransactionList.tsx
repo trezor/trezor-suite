@@ -2,13 +2,12 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
-import {
-    selectAreAllTransactionsLoaded,
-    selectIsHideSuspiciousTransactions,
-} from '@suite-common/wallet-core';
+import { selectIsHideSuspiciousTransactions } from '@suite-common/wallet-core';
 import { Card, Column, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
+import { useAccountTransactionsSource } from 'src/hooks/wallet/chainData/useAccountTransactionsSource';
+import { HistoricFiatRatesProvider } from 'src/hooks/wallet/transactions/HistoricFiatRatesContext';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionList } from './TransactionList';
@@ -44,29 +43,30 @@ export const WalletTransactionList = ({
     const fraudTransactionPossible =
         suspiciousTransactionsHidden && hasNetworkPotentialFraudTransactions(symbol);
     const [visiblePages, setVisiblePages] = useState(1);
-    const areAllTransactionsLoaded = useSelector(state =>
-        Boolean(selectAreAllTransactionsLoaded(state, account.key)),
-    );
+    const source = useAccountTransactionsSource(account);
     const result = useVisibleTransactions({
         account,
+        source,
         numberOfPagesRequested: visiblePages,
         enableFiltering: fraudTransactionPossible,
     });
 
     return (
-        <TransactionList
-            key={account.key} // NOTE: ensure that transaction list is unmounted when account key changes
-            areAllTransactionsLoaded={areAllTransactionsLoaded}
-            customPageFetching={fraudTransactionPossible}
-            customNoTransactions={<NoVisibleTransactions />}
-            allTransactions={result.allTransactions}
-            transactions={result.visibleTransactions}
-            symbol={symbol}
-            account={account}
-            isLoading={result.isFetching}
-            customTotalItems={customTotalItems ?? result.visibleTotal}
-            isExportable={isExportable}
-            onPageRequested={setVisiblePages}
-        />
+        <HistoricFiatRatesProvider rates={source.isQueryOwned ? source.historicRates : null}>
+            <TransactionList
+                key={account.key} // NOTE: ensure that transaction list is unmounted when account key changes
+                areAllTransactionsLoaded={source.areAllLoaded}
+                customPageFetching={fraudTransactionPossible}
+                customNoTransactions={<NoVisibleTransactions />}
+                source={source}
+                transactions={result.visibleTransactions}
+                symbol={symbol}
+                account={account}
+                isLoading={result.isFetching}
+                customTotalItems={customTotalItems ?? result.visibleTotal}
+                isExportable={isExportable}
+                onPageRequested={setVisiblePages}
+            />
+        </HistoricFiatRatesProvider>
     );
 };

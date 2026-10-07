@@ -13,7 +13,6 @@ import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import {
     type Target,
     selectBaseCurrency,
-    selectHistoricFiatRatesByTimestamp,
     selectIsSuspiciousTransactionsBlurringEnabled,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
@@ -33,6 +32,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';
 import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AccountLabelForOwnAddress';
 import { useSelector } from 'src/hooks/suite';
+import { useHistoricFiatRateAt } from 'src/hooks/wallet/transactions/HistoricFiatRatesContext';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TargetAddressLabel } from './TargetAddressLabel';
@@ -72,9 +72,7 @@ export const TransactionTarget = ({
 
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(transaction.symbol);
 
-    const historicRate = useSelector(state =>
-        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
-    );
+    const historicRate = useHistoricFiatRateAt(fiatRateKey, transaction.blockTime as Timestamp);
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
     const isBlurringEnabled = useSelector(state =>
         selectIsSuspiciousTransactionsBlurringEnabled(state, transaction.symbol),

@@ -7,7 +7,6 @@ import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import {
     composeCancelTransactionThunk,
     isComposeCancelTransactionAccount,
-    selectTransactionConfirmations,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -19,7 +18,7 @@ import {
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Banner, Column, Modal } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useTransactionConfirmations } from 'src/hooks/wallet/transactions/useTransactionReaders';
 import { CancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
 import { useEthereumCancelTxCompose } from 'src/hooks/wallet/useEthereumCancelTxCompose';
 
@@ -71,9 +70,7 @@ export const CancelTransactionModal = ({
     const error = account.networkType === 'ethereum' ? ethError : utxoError;
     const isComposing = composedCancelTx === null && error === null;
 
-    const confirmations = useSelector(state =>
-        selectTransactionConfirmations(state, tx.txid, account.key),
-    );
+    const confirmations = useTransactionConfirmations(tx);
 
     const isTxConfirmed = confirmations > 0;
 

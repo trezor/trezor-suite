@@ -1,9 +1,5 @@
 import { Translation } from '@suite/intl';
-import {
-    selectBaseCurrency,
-    selectHistoricFiatRates,
-    selectHistoricFiatRatesByTimestamp,
-} from '@suite-common/wallet-core';
+import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
@@ -25,6 +21,10 @@ import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmoun
 import { FormattedDate } from 'src/components/suite/FormattedDate';
 import { AmountComponent } from 'src/components/wallet/AmountComponent';
 import { useSelector } from 'src/hooks/suite';
+import {
+    useHistoricFiatRateAt,
+    useHistoricFiatRates,
+} from 'src/hooks/wallet/transactions/HistoricFiatRatesContext';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { HistoricRateChange } from './HistoricRateChange';
@@ -39,11 +39,9 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(tx.symbol, baseCurrencyCode);
 
-    const historicRate = useSelector(state =>
-        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, tx.blockTime as Timestamp),
-    );
+    const historicRate = useHistoricFiatRateAt(fiatRateKey, tx.blockTime as Timestamp);
 
-    const historicFiatRates = useSelector(selectHistoricFiatRates);
+    const historicFiatRates = useHistoricFiatRates();
 
     const fee = formatNetworkAmount(tx.fee, tx.symbol);
     const amount = new BigNumber(formatNetworkAmount(tx.amount, tx.symbol));

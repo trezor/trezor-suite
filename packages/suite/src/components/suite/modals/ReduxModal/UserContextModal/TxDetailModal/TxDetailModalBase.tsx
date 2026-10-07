@@ -11,9 +11,7 @@ import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls'
 import {
     selectAccountByKey,
     selectExplorer,
-    selectIsPhishingTransaction,
-    selectTransactionConfirmations,
-    selectTransactionIsMarkedAsNotScam,
+    selectIsTxidMarkedAsNotScam,
     transactionsActions,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
@@ -22,6 +20,10 @@ import { Banner, Button, Column, Modal, Tooltip } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';
+import {
+    usePhishingResult,
+    useTransactionConfirmations,
+} from 'src/hooks/wallet/transactions/useTransactionReaders';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { BasicTxDetails } from './BasicTxDetails';
@@ -74,19 +76,18 @@ export const TxDetailModalBase = ({
         networkSymbol: tx.symbol,
         deviceStaticSessionId: tx.deviceState,
     });
-    const confirmations = useSelector(state =>
-        selectTransactionConfirmations(state, tx.txid, accountKey),
-    );
+    const confirmations = useTransactionConfirmations(tx);
     const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
     const network = getNetwork(account.symbol);
     const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
     const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
 
-    const { isPhishing: isPhishingTransaction, detectorId: phishingDetectorId } = useSelector(
-        state => selectIsPhishingTransaction(state, tx.txid, accountKey),
+    const { isPhishing: isPhishingTransaction, detectorId: phishingDetectorId } = usePhishingResult(
+        tx,
+        accountKey,
     );
     const isTxMarkedAsNotScam = useSelector(state =>
-        selectTransactionIsMarkedAsNotScam(state, tx.txid, accountKey),
+        selectIsTxidMarkedAsNotScam(state, accountKey, tx.txid),
     );
 
     const { dispatch } = useServices(injectDispatch);

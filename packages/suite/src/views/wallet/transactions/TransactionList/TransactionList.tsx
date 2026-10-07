@@ -13,6 +13,7 @@ import { Column } from '@trezor/components';
 import { DashboardSection } from 'src/components/dashboard';
 import { Pagination } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
+import { type AccountTransactionsSource } from 'src/hooks/wallet/chainData/useAccountTransactionsSource';
 import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
@@ -24,7 +25,8 @@ import { PendingGroupHeader } from './TransactionsGroup/PendingGroupHeader';
 import { useFetchTransactions } from './useFetchTransactions';
 
 interface TransactionListProps {
-    allTransactions: WalletAccountTransaction[];
+    /** Where the account's history is loaded from; the list pages and searches through it. */
+    source: AccountTransactionsSource;
     areAllTransactionsLoaded: boolean;
     transactions: WalletAccountTransaction[];
     symbol: WalletAccountTransaction['symbol'];
@@ -40,7 +42,7 @@ interface TransactionListProps {
 }
 
 export const TransactionList = ({
-    allTransactions,
+    source,
     areAllTransactionsLoaded,
     transactions,
     isLoading,
@@ -58,7 +60,7 @@ export const TransactionList = ({
     const { dispatch } = useServices(injectDispatch);
     const searchLabels = useSelector(state => selectAccountLabelsForSearch(state, account));
 
-    const { fetchPage, fetchedAll, fetchAll } = useFetchTransactions(account, allTransactions);
+    const { fetchPage, fetchedAll, fetchAll } = useFetchTransactions(account, source);
 
     // Search
     const [searchQuery, setSearchQuery] = useState('');
