@@ -1,6 +1,6 @@
 import { isSupportedCardanoNetwork } from '@trezor/network-cardano-types';
 import {
-    type ChainNetworkSend,
+    type ChainNetworkSendDefinition,
     type PrecomposedLevelsCardano,
     type PushConnectTransactionDeps,
     createPushConnectTransaction,
@@ -25,7 +25,7 @@ export type CardanoChainSendDeps = ComposeCardanoFeeLevelsDeps &
 /** The send of one Cardano network, by symbol. */
 export type CardanoChainSend = (
     symbol: NetworkSymbol,
-) => ChainNetworkSend<PrecomposedLevelsCardano>;
+) => ChainNetworkSendDefinition<PrecomposedLevelsCardano>;
 
 /** Composing, signing and broadcasting on a Cardano network. */
 export const createCardanoChainSend = (deps: CardanoChainSendDeps): CardanoChainSend => {

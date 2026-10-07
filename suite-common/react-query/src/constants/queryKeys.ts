@@ -107,6 +107,22 @@ export const chainQueryKeys = {
         descriptor,
         'transactions',
     ],
+    /** Transactions the wallet broadcast that the backend does not list yet; kept in memory only. */
+    accountPendingSends: (symbol: string, backendType: string, descriptor: string) => [
+        'chain',
+        symbol,
+        backendType,
+        'account',
+        descriptor,
+        'pending-sends',
+    ],
+    /** Fee levels for one send draft; the input key holds the draft, so it is confidential. */
+    composeFeeLevels: (
+        symbol: string,
+        backendType: string,
+        descriptor: string,
+        inputKey: string,
+    ) => ['chain', symbol, backendType, 'account', descriptor, 'compose', inputKey],
     historicFiatRates: (
         symbol: string,
         backendType: string,

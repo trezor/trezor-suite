@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../../packages/blockchain-link-utils"
+        },
+        {
             "path": "../../../packages/connect-common"
         },
         { "path": "../network-bitcoin-types" },

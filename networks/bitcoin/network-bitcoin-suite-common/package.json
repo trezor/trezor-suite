@@ -14,6 +14,7 @@
     "dependencies": {
         "@noble/hashes": "^2.0.1",
         "@scure/base": "^2.0.0",
+        "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/network-bitcoin-types": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",

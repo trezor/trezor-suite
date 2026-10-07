@@ -4,6 +4,7 @@ import {
     type ChainTransactionsPage,
     type FiatRate,
     type HistoricFiatRates,
+    buildPendingTransaction,
     getChainSyncPolicy,
     getDisplayBalanceFiatValue,
 } from '@trezor/network-module-suite-common-types';
@@ -24,6 +25,9 @@ type FakeChainNetworkParams = {
     history?: Record<string, readonly ChainTransactionsPage[]>;
     /** Past rates by contract, `''` for the coin. */
     historicRates?: Record<string, HistoricFiatRates>;
+
+    /** Whether the network can send; its send answers with spies set up by the test. */
+    canSend?: boolean;
 };
 
 /** A network answering from memory, with spies on what shared code asks it. */
@@ -77,6 +81,20 @@ export const createFakeChainNetwork = (params: FakeChainNetworkParams) => {
         );
     });
 
+    type Send = NonNullable<ChainNetwork['send']>;
+    const send = {
+        composeFeeLevels: jest.fn<
+            ReturnType<Send['composeFeeLevels']>,
+            Parameters<Send['composeFeeLevels']>
+        >(),
+        sign: jest.fn<ReturnType<Send['sign']>, Parameters<Send['sign']>>(),
+        push: jest.fn<ReturnType<Send['push']>, Parameters<Send['push']>>(),
+        createPendingTransaction: jest.fn<
+            ReturnType<Send['createPendingTransaction']>,
+            Parameters<Send['createPendingTransaction']>
+        >(buildPendingTransaction),
+    };
+
     const network: ChainNetwork = {
         symbol: params.symbol,
         backendType: 'blockbook',
@@ -91,6 +109,7 @@ export const createFakeChainNetwork = (params: FakeChainNetworkParams) => {
         getHistoricFiatRates,
         ...(params.tokens ? { getTokens, getTokenFiatRate } : {}),
         ...(params.history ? { getTransactions } : {}),
+        ...(params.canSend ? { send } : {}),
     };
 
     return {
@@ -101,5 +120,6 @@ export const createFakeChainNetwork = (params: FakeChainNetworkParams) => {
         getTokenFiatRate,
         getTransactions,
         getHistoricFiatRates,
+        send,
     };
 };

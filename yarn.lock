@@ -18432,6 +18432,7 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
+    "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/network-bitcoin-types": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"

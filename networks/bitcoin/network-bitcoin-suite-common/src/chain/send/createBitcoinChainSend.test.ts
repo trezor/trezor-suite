@@ -201,4 +201,70 @@ describe('createBitcoinChainSend', () => {
         expect(payload.account.transactions).toEqual([replaced]);
         expect(payload.version).toBe(2);
     });
+
+    it('shows the signed transaction as the history will list it', () => {
+        const transaction = send.createPendingTransaction!({
+            account: {
+                ...account,
+                addresses: {
+                    change: [],
+                    used: [
+                        {
+                            address: 'bc1own',
+                            path: "m/84'/0'/0'/0/0",
+                            transfers: 1,
+                            balance: '0',
+                            sent: '1200',
+                            received: '1200',
+                        },
+                    ],
+                    unused: [],
+                },
+            },
+            precomposed: final() as unknown as PrecomposedTransactionFinal,
+            signed: {
+                serializedTx: 'signed',
+                signedTransaction: {
+                    txid: 'new',
+                    hex: 'signed',
+                    blockHeight: 0,
+                    confirmations: 0,
+                    blockTime: 1,
+                    value: '1000',
+                    valueIn: '1200',
+                    fees: '200',
+                    vin: [{ n: 0, addresses: ['bc1own'], isAddress: true, value: '1200' }],
+                    vout: [{ n: 0, addresses: ['bc1recipient'], isAddress: true, value: '1000' }],
+                },
+            },
+            txid: 'new',
+        });
+
+        expect(transaction).toMatchObject({
+            type: 'sent',
+            txid: 'new',
+            amount: '1000',
+            fee: '200',
+            targets: [{ addresses: ['bc1recipient'], amount: '1000' }],
+        });
+    });
+
+    it('falls back to the composed transaction without a signed one', () => {
+        const transaction = send.createPendingTransaction!({
+            account,
+            precomposed: {
+                ...final(),
+                outputs: [{ address: 'bc1recipient', amount: '1000' }],
+            } as unknown as PrecomposedTransactionFinal,
+            signed: { serializedTx: 'signed' },
+            txid: 'new',
+        });
+
+        expect(transaction).toMatchObject({
+            type: 'sent',
+            txid: 'new',
+            amount: '1000',
+            fee: '200',
+        });
+    });
 });
