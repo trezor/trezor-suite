@@ -69,16 +69,20 @@ export const getNativeFiatRateQueryOptions = (params: NativeFiatRateQueryParams)
 
 export type ChainAccountTokensQueryParams = ChainAccountBalanceQueryParams;
 
+// Watching another token changes what to fetch, so the watched set is part of the key.
+const getWatchedTokensKey = (ref: ChainAccountRef) =>
+    [...(ref.watchedTokens ?? [])].sort().join(',');
+
 /** Tokens of one chain account; never fetched on a network without token capabilities. */
 export const getChainAccountTokensQueryOptions = (params: ChainAccountTokensQueryParams) => {
     const { getTokens } = params.network;
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is symbol + backend + descriptor; the network object and the connection identity they select never belong in a key
     return queryOptions<readonly ChainTokenBalance[]>({
         queryKey: chainQueryKeys.accountTokens(
             params.network.symbol,
             params.network.backendType,
             params.ref.descriptor,
+            getWatchedTokensKey(params.ref),
         ),
         queryFn:
             params.enabled && getTokens

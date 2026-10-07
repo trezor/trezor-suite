@@ -11,6 +11,9 @@
             "path": "../../network-module/network-module-suite-common-types"
         },
         {
+            "path": "../../network-module/network-module-types"
+        },
+        {
             "path": "../network-tron"
         },
         {

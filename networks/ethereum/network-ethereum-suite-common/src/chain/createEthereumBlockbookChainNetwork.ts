@@ -9,10 +9,7 @@ import {
     createFetchConnectTokens,
 } from '@trezor/network-module-suite-common-types';
 
-import {
-    EVM_FUNGIBLE_TOKEN_STANDARDS,
-    getEthereumChainNetworkConfig,
-} from './getEthereumChainNetworkConfig';
+import { getEthereumChainNetworkConfig, getEvmTokenRules } from './getEthereumChainNetworkConfig';
 
 export type EthereumBlockbookChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
@@ -48,7 +45,7 @@ export const createEthereumBlockbookChainNetwork = (
             fetchFiatRate: rateSource,
             tokens: {
                 fetchTokens,
-                fungibleStandards: EVM_FUNGIBLE_TOKEN_STANDARDS,
+                ...getEvmTokenRules(),
                 fetchTokenFiatRate: rateSource,
             },
         });

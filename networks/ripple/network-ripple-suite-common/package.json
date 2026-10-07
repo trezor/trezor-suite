@@ -18,5 +18,8 @@
         "@trezor/network-ripple": "workspace:*",
         "@trezor/network-ripple-assets": "workspace:*",
         "@trezor/network-ripple-types": "workspace:*"
+    },
+    "devDependencies": {
+        "@trezor/network-module-types": "workspace:*"
     }
 }

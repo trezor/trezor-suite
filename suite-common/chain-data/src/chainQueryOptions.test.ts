@@ -3,6 +3,7 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import {
     getChainAccountBalanceQueryOptions,
+    getChainAccountTokensQueryOptions,
     getNativeFiatRateQueryOptions,
 } from './chainQueryOptions';
 import { createFakeChainNetwork } from '../mocks/createFakeChainNetwork';
@@ -48,6 +49,24 @@ describe('chain query options', () => {
         expect(getChainAccountBalanceQueryOptions({ network, ref, enabled: false }).queryFn).toBe(
             skipToken,
         );
+    });
+
+    it('keys tokens by the watched set, whatever its order', () => {
+        const { network: tokenNetwork } = createFakeChainNetwork({
+            symbol: asNetworkSymbol('eth'),
+            balances: {},
+            rate: null,
+            tokens: {},
+        });
+        const getKey = (watchedTokens: string[]) =>
+            getChainAccountTokensQueryOptions({
+                network: tokenNetwork,
+                ref: { ...ref, watchedTokens },
+                enabled: true,
+            }).queryKey;
+
+        expect(getKey(['0xb', '0xa'])).toEqual(getKey(['0xa', '0xb']));
+        expect(getKey(['0xa'])).not.toEqual(getKey(['0xa', '0xb']));
     });
 
     it('keys a rate by network, backend and currency', () => {

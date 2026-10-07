@@ -12,6 +12,7 @@ const fetchAccountBalance = jest.fn();
 const fetchFiatRate = jest.fn();
 const fetchTokens = jest.fn();
 const fetchTokenFiatRate = jest.fn();
+const watchedTokensStrategy = { type: 'contract-filter', isContractCaseInsensitive: true } as const;
 
 const getDefinition = (
     overrides: Partial<ConnectChainNetworkDefinition> = {},
@@ -105,7 +106,13 @@ describe('buildConnectChainNetwork', () => {
         const network = buildConnectChainNetwork(
             getDefinition({
                 useConnectionIdentity: true,
-                tokens: { fetchTokens, fungibleStandards: ['ERC20'], fetchTokenFiatRate },
+                tokens: {
+                    fetchTokens,
+                    fungibleStandards: ['ERC20'],
+                    details: 'tokenBalances',
+                    watchedTokensStrategy,
+                    fetchTokenFiatRate,
+                },
             }),
         );
 
@@ -114,6 +121,8 @@ describe('buildConnectChainNetwork', () => {
             ref,
             signal,
             fungibleStandards: ['ERC20'],
+            details: 'tokenBalances',
+            watchedTokensStrategy,
             useConnectionIdentity: true,
         });
     });
@@ -121,7 +130,13 @@ describe('buildConnectChainNetwork', () => {
     it('refuses tokens of an account of another network', async () => {
         const network = buildConnectChainNetwork(
             getDefinition({
-                tokens: { fetchTokens, fungibleStandards: ['ERC20'], fetchTokenFiatRate },
+                tokens: {
+                    fetchTokens,
+                    fungibleStandards: ['ERC20'],
+                    details: 'tokenBalances',
+                    watchedTokensStrategy,
+                    fetchTokenFiatRate,
+                },
             }),
         );
 
@@ -135,7 +150,13 @@ describe('buildConnectChainNetwork', () => {
         fetchTokenFiatRate.mockResolvedValue({ rate: 1, timestamp: 2 });
         const network = buildConnectChainNetwork(
             getDefinition({
-                tokens: { fetchTokens, fungibleStandards: ['ERC20'], fetchTokenFiatRate },
+                tokens: {
+                    fetchTokens,
+                    fungibleStandards: ['ERC20'],
+                    details: 'tokenBalances',
+                    watchedTokensStrategy,
+                    fetchTokenFiatRate,
+                },
             }),
         );
 
@@ -152,7 +173,13 @@ describe('buildConnectChainNetwork', () => {
     it('has no token rate without a token rate source', async () => {
         const network = buildConnectChainNetwork(
             getDefinition({
-                tokens: { fetchTokens, fungibleStandards: ['ERC20'], fetchTokenFiatRate: null },
+                tokens: {
+                    fetchTokens,
+                    fungibleStandards: ['ERC20'],
+                    details: 'tokenBalances',
+                    watchedTokensStrategy,
+                    fetchTokenFiatRate: null,
+                },
             }),
         );
 
