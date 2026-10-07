@@ -127,7 +127,7 @@ To make the tests as much standalone and independent on third party services as 
 
 ## GitHub CI
 
-Android E2E test run on GitHub CI on every PR that is labeled with a `mobile-app` tag. The workflow is described in the [.github/workflows/test-suite-native-e2e-android.yml](../../../.github/workflows/test-suite-native-e2e-android.yml) file.
+Android E2E tests run on pull requests that change paths selected by the [Android E2E workflow](../../../.github/workflows/test-suite-native-e2e-android.yml), on `release-native/*` pushes, and when manually dispatched.
 
 For easier debugging of failing tests on the CI, the screenshots, screen recording and device log of every test attempt are attached to the test results in Currents, so you can see how the app behaved and what went wrong.
 

@@ -18,7 +18,7 @@ Please note that instructions regarding Google Cloud configuration may not be up
 
 Continue in Trezor Suite:
 
-1. Replace `client_secret` in [index.ts](./src/index.ts) and `CLIENT_ID` in [@suite/metadata](../../suite/metadata/src/metadataProviderConstants.ts) with generated credentials.
+1. Set the auth server's `GOOGLE_CLIENT_SECRET` environment variable and replace `GOOGLE_CODE_FLOW_CLIENT_ID` in [@suite/metadata](../../suite/metadata/src/metadataProviderConstants.ts) with the generated OAuth credentials.
 1. Set OAuth API in Suite debug settings to `http://localhost:3005` or override the `authServerUrl` [here](../../suite/metadata/src/google.ts).
 1. Install dependencies via `yarn workspace @trezor/auth-server install`.
 1. Run the server locally via `yarn workspace @trezor/auth-server dev`.

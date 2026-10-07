@@ -9,7 +9,7 @@
     - suite-desktop
         - `@trezor/connect` is installed as regular node_module and works in nodejs context (electron main process).
         - `@trezor/connect` files are **not** hosted on the electron renderer context.
-        - On the renderer context all `@trezor/connect` methods from are replaced by `@trezor/ipc-proxy` methods. see [webpack config](https://github.com/trezor/trezor-suite/blob/develop/suite/desktop-app-renderer/webpack.config.ts)
+        - In the renderer context, `@trezor/connect` is aliased to `@trezor/connect-electron`, which proxies its methods via `@trezor/ipc-proxy`; see [webpack config](https://github.com/trezor/trezor-suite/blob/develop/suite/desktop-app-renderer/webpack.config.ts).
 - Firmware binaries
     - suite-web
         - newest firmware binaries are hosted at `[url]/build/static/connect/data/firmware` and they are downloaded using regular `fetch` API.
