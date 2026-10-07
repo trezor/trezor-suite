@@ -16,6 +16,7 @@
         "@scure/base": "^2.0.0",
         "@trezor/network-bitcoin-types": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
         "@trezor/utils": "workspace:*"
     }
 }

@@ -25,3 +25,37 @@ export {
     type Explorer,
     type NetworkAccount,
 } from './SuiteCommonNetworkConfig';
+
+export type { ChainAccountBalance } from './chain/ChainAccountBalance';
+export type { ChainAccountRef } from './chain/ChainAccountRef';
+export type {
+    ChainNetwork,
+    ChainNetworkBackend,
+    ChainNetworkParams,
+    CreateChainNetwork,
+    GetAccountBalanceParams,
+    GetAccountFiatBalanceParams,
+    GetNativeFiatRateParams,
+} from './chain/ChainNetwork';
+export { ChainNetworkError } from './chain/ChainNetworkError';
+export type { ChainNetworkErrorCode } from './chain/ChainNetworkError';
+export { getChainSyncPolicy } from './chain/ChainSyncPolicy';
+export type { ChainSyncPolicy } from './chain/ChainSyncPolicy';
+export type {
+    FetchBlockbookHttpCurrentRateDep,
+    FetchCoinGeckoCurrentRateDep,
+    FetchCurrentFiatRate,
+    FetchCurrentFiatRateParams,
+    FiatRate,
+} from './chain/FiatRate';
+export { createFetchConnectAccountBalance } from './chain/createFetchConnectAccountBalance';
+export type {
+    FetchConnectAccountBalance,
+    FetchConnectAccountBalanceDeps,
+    FetchConnectAccountBalanceParams,
+} from './chain/createFetchConnectAccountBalance';
+export { createFetchConnectCurrentFiatRate } from './chain/createFetchConnectCurrentFiatRate';
+export type { FetchConnectCurrentFiatRateDeps } from './chain/createFetchConnectCurrentFiatRate';
+export { getDisplayBalanceFiatValue } from './chain/getDisplayBalanceFiatValue';
+export { buildConnectChainNetwork } from './chain/buildConnectChainNetwork';
+export type { ConnectChainNetworkDefinition } from './chain/buildConnectChainNetwork';
