@@ -14,6 +14,7 @@ const rowStyle = prepareNativeStyle<{
     isLast: boolean;
     hasBottomSpacing: boolean;
 }>((utils, { isFirst, isLast, hasBottomSpacing }) => ({
+    marginHorizontal: utils.spacings.sp16,
     backgroundColor: utils.colors.surfaceFillRaised,
     extend: [
         {

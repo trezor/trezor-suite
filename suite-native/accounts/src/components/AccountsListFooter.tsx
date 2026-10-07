@@ -30,7 +30,7 @@ export const AccountsListFooter = ({
     }
 
     return (
-        <Box alignItems="center" paddingTop="sp16">
+        <Box alignItems="center" paddingBottom="sp16">
             <Button size="medium" intent="neutral" priority="secondary" onPress={onClearFilters}>
                 <Translation id="moduleAccountManagement.accountsScreen.networkFilter.showAllButton" />
             </Button>
