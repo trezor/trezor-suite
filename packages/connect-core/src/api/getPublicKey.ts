@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetPublicKey.js
 
-import type { BitcoinNetworkInfo, PermissionRequest } from '@trezor/connect-common';
+import type { BitcoinNetworkInfo, CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import {
     Bundle,
     GetPublicKey as GetPublicKeySchema,
@@ -12,16 +12,16 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getBitcoinNetwork, getBitcoinNetworkOrThrow } from '../data/coinInfo';
+import { getBitcoinNetwork, getBitcoinNetworkOrThrow, getCoinInfoOfPath } from '../data/coinInfo';
 import { bundlify, validateCoinPath } from './common/paramsValidator';
-import { getPublicKeyLabel } from '../utils/accountUtils';
+import { getLabelWithPathNetwork, getPublicKeyLabel } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
 
 type Params = {
     proto: PROTO.GetPublicKey;
     coinInfo: BitcoinNetworkInfo;
     // Unset when coinInfo is only the v9 btc fallback for a non-bitcoin path.
-    permissionCoinInfo?: BitcoinNetworkInfo;
+    permissionCoinInfo?: Readonly<CoinInfo>;
     suppressBackupWarning?: boolean;
     unlockPath?: PROTO.UnlockPath;
 };
@@ -73,7 +73,9 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             return {
                 proto,
                 coinInfo,
-                permissionCoinInfo: isFallbackCoin ? undefined : coinInfo,
+                permissionCoinInfo: isFallbackCoin
+                    ? undefined
+                    : getCoinInfoOfPath(address_n, coinInfo),
                 unlockPath: batch.unlockPath,
                 suppressBackupWarning: batch.suppressBackupWarning,
             };
@@ -106,7 +108,16 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const first: (typeof params)[number] = params[0];
 
-        return getPublicKeyLabel(first.proto.address_n, first.permissionCoinInfo);
+        // The v9 btc fallback has no permission coin; its label names the network of the path alone.
+        if (!first.permissionCoinInfo) {
+            return getPublicKeyLabel(first.proto.address_n);
+        }
+
+        return getLabelWithPathNetwork(
+            getPublicKeyLabel(first.proto.address_n, first.coinInfo),
+            first.proto.address_n,
+            first.coinInfo,
+        );
     }
 
     async run({ sendCoreMessage }: MethodContext) {

@@ -4,6 +4,7 @@ import { toHardenedPathPart } from '@trezor/crypto-utils';
 import {
     getAllNetworks,
     getBitcoinNetworkOrThrow,
+    getCoinInfoOfPath,
     getCoinInfoOrThrow,
     getMiscNetwork,
     getUniqueNetworks,
@@ -46,6 +47,28 @@ describe('data/coinInfo', () => {
         // eth/misc symbols resolve via getCoinInfoOrThrow but are rejected here (bitcoin-only guard)
         expect(() => getBitcoinNetworkOrThrow('eth')).toThrow('Coin not found');
         expect(() => getBitcoinNetworkOrThrow('ada')).toThrow('Coin not found');
+    });
+
+    it('getCoinInfoOfPath keeps the declared coin unless the path coin type has one network', () => {
+        // the declared coin wins whenever it is itself of the path's coin type
+        const test = getBitcoinNetworkOrThrow('test');
+        expect(getCoinInfoOfPath([toHardenedPathPart(84), toHardenedPathPart(1)], test)).toBe(test);
+
+        // a coin type held by exactly one bitcoin network resolves to it
+        const btc = getBitcoinNetworkOrThrow('btc');
+        expect(
+            getCoinInfoOfPath([toHardenedPathPart(84), toHardenedPathPart(2)], btc),
+        ).toMatchObject({ shortcut: 'LTC' });
+
+        // ten bitcoin networks are of coin type 1, so there is no sibling to prefer over the
+        // others and the declared coin is kept instead of the first one in coins.json (REGTEST)
+        expect(getCoinInfoOfPath([toHardenedPathPart(84), toHardenedPathPart(1)], btc)).toBe(btc);
+
+        // a misc coin type is not resolved at all: naming ada/tada in a permission would turn on
+        // derive_cardano for the device session, and these methods derive no Cardano key
+        expect(getCoinInfoOfPath([toHardenedPathPart(1852), toHardenedPathPart(1815)], btc)).toBe(
+            btc,
+        );
     });
 
     it('uses the production Robinhood Blockbook', () => {
