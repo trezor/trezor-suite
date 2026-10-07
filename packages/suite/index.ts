@@ -302,6 +302,7 @@ export { TradingFormEmbed } from './src/views/wallet/trading/common/TradingFormE
 export { SolanaLimitedHistoryBanner } from './src/components/wallet/WalletLayout/AccountBanners/SolanaLimitedHistoryBanner';
 export { isNetworkWithGraphFeature } from './src/utils/wallet/graph/utils';
 export { TradeBox } from './src/views/wallet/transactions/TradeBox/TradeBox';
+export { RateLimitedHistoryBanner } from './src/views/wallet/transactions/TransactionList/RateLimitedHistoryBanner';
 export { SingleAccountTransactionList } from './src/views/wallet/transactions/TransactionList/SingleAccountTransactionList';
 export { AccountEmpty } from './src/views/wallet/transactions/components/AccountEmpty';
 export { AccountOverviewBalance } from './src/views/wallet/transactions/components/AccountOverviewBalance';
