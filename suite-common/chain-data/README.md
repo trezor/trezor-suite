@@ -1,6 +1,6 @@
 # @suite-common/chain-data
 
-Chain data (balances, rates, and later tokens, transactions and sends) read through **chain
+Chain data (balances, tokens, rates, transaction history, and later sends) read through **chain
 networks** and owned by **TanStack Query**, instead of being copied into Redux by thunks.
 
 ## Shape
@@ -31,19 +31,30 @@ descriptor, 'balance']`) and per network rate. Keys hold plain strings only; the
   per network as the dashboard does today (`groupChainAssetsByNetwork`); an asset-first view
   (WETH and ETH as one row) would be another grouping over the same list.
 
+- **Transaction history**: one `useInfiniteQuery` per chain account
+  (`[...account, 'transactions']`) over `network.getTransactions({ ref, cursor })`. Pages load in
+  order; each network decides how the next page is asked for (page number, Ripple marker, Stellar
+  cursor) and the cursor is plain data. A network without history on its backend (EVM on a custom
+  RPC) has no `getTransactions`. History is refetched when the account's balance changes, and on
+  the network's sync interval while a loaded transaction is pending.
+- **Historic rates**: `useChainHistoricRates` asks `network.getHistoricFiatRates` once per loaded
+  page, asset and currency, at the hours of its confirmed transactions, and returns them in the
+  wallet's `RatesByTimestamps` shape, so the existing fiat helpers and the phishing detector work
+  unchanged.
+
 ## Coverage
 
 Every network family is a chain network; only failed and CoinJoin accounts stay on the Redux path.
 
-| Family                    | Backends              | Displayed balance | Tokens                          | Rates                         |
-| ------------------------- | --------------------- | ----------------- | ------------------------------- | ----------------------------- |
-| Bitcoin-like              | Blockbook, Electrum   | available         | none                            | Blockbook (HTTP) or CoinGecko |
-| Ethereum and EVM networks | Blockbook, custom RPC | available         | ERC20, BEP20; custom tokens     | Blockbook or CoinGecko        |
-| Solana                    | Solana RPC            | available         | SPL, SPL-2022                   | CoinGecko                     |
-| Cardano                   | Blockfrost            | available         | native assets                   | CoinGecko                     |
-| Ripple                    | Ripple                | full (reserve)    | none (backend lists none)       | CoinGecko                     |
-| Stellar                   | Stellar               | full (reserve)    | classic assets, watched Soroban | CoinGecko                     |
-| Tron                      | Blockbook             | available         | TRC10, TRC20; custom tokens     | Blockbook or CoinGecko        |
+| Family                    | Backends              | Displayed balance | Tokens                          | Rates                         | History paging            |
+| ------------------------- | --------------------- | ----------------- | ------------------------------- | ----------------------------- | ------------------------- |
+| Bitcoin-like              | Blockbook, Electrum   | available         | none                            | Blockbook (HTTP) or CoinGecko | page, 25                  |
+| Ethereum and EVM networks | Blockbook, custom RPC | available         | ERC20, BEP20; custom tokens     | Blockbook or CoinGecko        | page, 25; none on RPC     |
+| Solana                    | Solana RPC            | available         | SPL, SPL-2022                   | CoinGecko                     | page, 8                   |
+| Cardano                   | Blockfrost            | available         | native assets                   | CoinGecko                     | page, 8                   |
+| Ripple                    | Ripple                | full (reserve)    | none (backend lists none)       | CoinGecko                     | marker, 25; total unknown |
+| Stellar                   | Stellar               | full (reserve)    | classic assets, watched Soroban | CoinGecko                     | cursor, 25; total unknown |
+| Tron                      | Blockbook             | available         | TRC10, TRC20; custom tokens     | Blockbook or CoinGecko        | page, 25                  |
 
 Tokens a backend may leave out are watched: the account's last known tokens and the Soroban
 contracts the user added travel on `ChainAccountRef.watchedTokens`, and each network decides how
@@ -61,6 +72,17 @@ dashboard total. Under the flag the dashboard also lists every asset read throug
 (native coins and tokens of every family, filtered by the token definitions as today). With the flag off nothing is fetched and the Redux path is unchanged. Under the
 flag the dashboard total values native balances only.
 
+Under the flag the account's transaction list, the transaction detail modal (including bump fee
+and cancel) and the transaction notifications also read history and its historic rates from the
+query cache. Transactions the wallet has just sent stay in Redux until the backend lists them and
+are shown on top. Readers that took a txid and looked it up in Redux (confirmations, phishing
+detection) now take the transaction object, so they work in both states; the txids a user marked
+as "not a scam" stay persisted in Redux.
+
+Still on the Redux transactions slice: export, the graph, staking views, the send form (coin
+control, nonces, RBF), block height, and the phishing filter of notifications whose transaction is
+not loaded in the query cache.
+
 ## Roadmap
 
 | #   | Phase                                                                                                                   | Exit criterion                                           |
@@ -68,7 +90,7 @@ flag the dashboard total values native balances only.
 | 1   | Staking (Ethereum, Solana, Cardano, Tron) and token values in the totals                                                | Flagged total equals the legacy total                    |
 | 2   | Sync: invalidator wired to Connect block and notification events; `network.subscribe`; legacy refresh off when flagged  | No double fetching; `NETWORK_SYNC_INTERVALS` removed     |
 | 3   | Discovery: `network.discoverAccounts` returns chain accounts; Redux persists identities only (`PortfolioAccount` slice) | Redux accounts hold no balances or tokens                |
-| 4   | Transactions: `useInfiniteQuery` over `network.getTransactions(ref, cursor)`                                            | Redux transactions slice is legacy only                  |
+| 4   | Transactions: list, detail, notifications done; export, graph, staking and send readers remain                          | Redux transactions slice is legacy only                  |
 | 5   | Send: compose and sign/push as mutations, invalidating the account on success                                           | No network-type switches in `sendFormThunks`             |
 | 6   | Done: every network family is a chain network                                                                           | The composition switch is exhaustive                     |
 | 7   | Remove network-type switches from `wallet-utils` and the other hotspots                                                 | Lint bans network-type branching outside composition     |

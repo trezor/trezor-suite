@@ -15,6 +15,7 @@ export {
     type UseInfiniteQueryResult,
     type InfiniteData,
     type QueryKey,
+    type QueryFunctionContext,
     keepPreviousData,
 } from '@tanstack/react-query';
 export * from './constants/queryKeys';
