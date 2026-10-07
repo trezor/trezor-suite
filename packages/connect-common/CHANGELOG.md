@@ -576,8 +576,8 @@ Breaking changes:
 ### Added
 
 - 1.11.1 & 2.5.1 FW, (1.11.0 BL)
-- [storage utils](./src/storage) moved from standalone Connect repository
-- [coins.json](./files/coins.json) moved from standalone Connect repository
+- [storage utils](https://github.com/trezor/trezor-suite/tree/990bc8d556ffa684752aaf6ded7de7692628ec6c/packages/connect-common/src/storage) moved from standalone Connect repository
+- [coins.json](https://github.com/trezor/trezor-suite/blob/6d39a6f095a053e86cb81a0883ecfc235547f3c5/packages/connect-common/files/coins.json) moved from standalone Connect repository
 
 ### Removed
 

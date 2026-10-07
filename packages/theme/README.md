@@ -9,7 +9,7 @@ You can find the current design foundations here:
 
 # Fonts for React Native app
 
-If you want to update fonts, place new fonts to `./fonts` folder in this package and then follow the guide in [suite-native README](../suite-native/README.md).
+If you want to update fonts, place new fonts to `./fonts` folder in this package and then register them in the `expo-font` plugin in [suite-native app config](../../suite-native/app/app.config.ts).
 
 ## Colors
 

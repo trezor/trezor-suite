@@ -4,7 +4,7 @@ Trezor Connect enables an easy integration of Login with Trezor into websites or
 
 ![](login_form.png)
 
-**Note** See [requestLogin method](./methods/requestLogin.md) for technical documentation.
+**Note** See [requestLogin method](https://connect.trezor.io/9/methods/device/requestLogin/) for technical documentation.
 
 ## How it works
 
