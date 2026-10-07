@@ -20,7 +20,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "react": "19.2.3",
-        "react-native": "0.86.0",
+        "react-native": "0.86.3",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
