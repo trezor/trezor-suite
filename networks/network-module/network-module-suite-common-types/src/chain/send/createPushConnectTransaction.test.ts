@@ -13,6 +13,7 @@ const push = createPushConnectTransaction({
 const account: ChainSendAccount = {
     symbol: asNetworkSymbol('eth'),
     descriptor: '0xconfidential',
+    index: 0,
     path: "m/44'/60'/0'/0/0",
     accountType: 'normal',
     deviceState: 'wallet-identity',

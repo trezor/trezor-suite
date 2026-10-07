@@ -12,7 +12,12 @@ const fetchCoinGeckoCurrentRate = jest.fn();
 const fetchCoinGeckoHistoricRates = jest.fn();
 
 const deps: CardanoChainNetworkDeps = {
-    getTrezorConnect: () => ({ getAccountInfo }),
+    getTrezorConnect: () => ({
+        getAccountInfo,
+        cardanoComposeTransaction: jest.fn(),
+        cardanoSignTransaction: jest.fn(),
+        pushTransaction: jest.fn(),
+    }),
     fetchCoinGeckoCurrentRate,
     fetchCoinGeckoHistoricRates,
 };

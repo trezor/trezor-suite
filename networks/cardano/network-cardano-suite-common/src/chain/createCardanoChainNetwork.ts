@@ -14,12 +14,14 @@ import {
 } from '@trezor/network-module-suite-common-types';
 
 import { getAccountSyncInterval, getNetworkConfig } from '../networkConfig';
+import { type CardanoChainSendDeps, createCardanoChainSend } from './send/createCardanoChainSend';
 
 export type CardanoChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
     FetchCoinGeckoCurrentRateDep &
     FetchConnectTransactionsDeps &
-    FetchCoinGeckoHistoricRatesDep;
+    FetchCoinGeckoHistoricRatesDep &
+    CardanoChainSendDeps;
 
 /**
  * Cardano network served by Blockfrost. Native tokens are identified by policy id and asset
@@ -31,6 +33,7 @@ export const createCardanoChainNetwork = (deps: CardanoChainNetworkDeps): Create
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
     const fetchTransactions = createFetchConnectTransactions(deps);
     const fetchTokens = createFetchConnectTokens(deps);
+    const createSend = createCardanoChainSend(deps);
 
     return params => {
         const config = readChainNetworkConfig(
@@ -69,6 +72,7 @@ export const createCardanoChainNetwork = (deps: CardanoChainNetworkDeps): Create
                 useStellarContractTokens: false,
             },
             fetchHistoricFiatRates: config.hasFiatRate ? deps.fetchCoinGeckoHistoricRates : null,
+            send: createSend(params.symbol),
         });
     };
 };

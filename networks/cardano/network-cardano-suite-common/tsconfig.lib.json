@@ -6,7 +6,13 @@
     "include": ["./src"],
     "references": [
         {
+            "path": "../../../packages/blockchain-link-types"
+        },
+        {
             "path": "../../../packages/blockchain-link-utils"
+        },
+        {
+            "path": "../../../packages/connect-common"
         },
         {
             "path": "../../../packages/device-utils"
@@ -25,6 +31,9 @@
         },
         {
             "path": "../../network-module/network-module-types"
+        },
+        {
+            "path": "../../../packages/utils"
         }
     ]
 }

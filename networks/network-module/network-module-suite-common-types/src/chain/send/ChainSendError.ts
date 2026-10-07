@@ -1,3 +1,4 @@
+import type { ERRORS } from '@trezor/connect-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 export type ChainSendErrorCode =
@@ -19,13 +20,13 @@ export class ChainSendError extends Error {
     readonly symbol: NetworkSymbol;
 
     /** Connect's error code, when the failure came from Connect. */
-    readonly connectErrorCode?: string;
+    readonly connectErrorCode?: ERRORS.ErrorCode;
 
     constructor(
         code: ChainSendErrorCode,
         symbol: NetworkSymbol,
         message: string,
-        connectErrorCode?: string,
+        connectErrorCode?: ERRORS.ErrorCode,
     ) {
         super(message);
         this.name = 'ChainSendError';

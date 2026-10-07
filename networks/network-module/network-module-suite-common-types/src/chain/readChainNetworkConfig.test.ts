@@ -34,6 +34,7 @@ describe('readChainNetworkConfig', () => {
             nativeAsset: { symbol: 'ABC', name: 'Abc' },
             decimals: 6,
             accountSyncIntervalMs: 30_000,
+            isTestnet: false,
             hasFiatRate: true,
             hasBlockbookRates: true,
         });
@@ -42,6 +43,7 @@ describe('readChainNetworkConfig', () => {
     it('gives testnets no rate and names the asset as the user sees it', () => {
         expect(readChainNetworkConfig(source, asNetworkSymbol('tabc'))).toMatchObject({
             nativeAsset: { symbol: 'tABC', name: 'Abc Testnet' },
+            isTestnet: true,
             hasFiatRate: false,
             hasBlockbookRates: false,
         });

@@ -1,4 +1,4 @@
-import type { GetTrezorConnectDep } from '@trezor/connect-common';
+import type { ERRORS, GetTrezorConnectDep } from '@trezor/connect-common';
 import {
     ChainSendError,
     type ChainSignedTransaction,
@@ -27,7 +27,7 @@ export const createSignTronTransaction =
     (deps: SignTronTransactionDeps): SignTronTransaction =>
     async ({ account, draft, precomposed, options, config }) => {
         const { symbol } = account;
-        const fail = (message: string, connectErrorCode?: string) =>
+        const fail = (message: string, connectErrorCode?: ERRORS.ErrorCode) =>
             new ChainSendError('sign-failed', symbol, message, connectErrorCode);
         const connect = deps.getTrezorConnect();
 
