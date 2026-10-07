@@ -164,6 +164,9 @@ describe('WebsocketClient', () => {
         await cli.connect();
         const disconnectedSpy = jest.fn();
         cli.on('disconnected', disconnectedSpy);
+        const disconnectedPromise = new Promise<void>(resolve => {
+            cli.once('disconnected', resolve);
+        });
 
         // do not respond, client should timeout
         const sendSpy = jest.spyOn(server, 'sendResponse').mockImplementation(() => {});
@@ -174,7 +177,7 @@ describe('WebsocketClient', () => {
         // client is disconnected
         expect(cli.isConnected()).toEqual(false);
         // wait for ws.close propagation
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await disconnectedPromise;
         expect(disconnectedSpy).toHaveBeenCalledTimes(1);
 
         sendSpy.mockRestore();
