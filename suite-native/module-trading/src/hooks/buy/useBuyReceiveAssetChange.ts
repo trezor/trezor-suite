@@ -1,12 +1,15 @@
 import { useCallback } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { useWatch } from '@suite-native/forms';
 import { buyActions } from '@suite-native/trading-state';
 import { type BuyFormType, type TradeableAsset } from '@suite-native/trading-types';
 
 import { useTradeableAssetChange } from '../general/form/useTradeableAssetChange';
 
-export const useBuyAssetChange = (form: BuyFormType) => {
+export const useBuyReceiveAssetChange = (form: BuyFormType) => {
+    const { dispatch } = useServices(injectDispatch);
     const selectedAsset = useWatch({ control: form.control, name: 'asset' });
     const setSelectedAsset = useCallback(
         (asset: TradeableAsset) => form.setValue('asset', asset),
@@ -23,5 +26,10 @@ export const useBuyAssetChange = (form: BuyFormType) => {
         getAssetTokenChangedAction: buyActions.assetTokenChanged,
     });
 
-    return { selectedAsset, changeAsset };
+    const clearAsset = useCallback(() => {
+        form.setValue('asset', undefined);
+        dispatch(buyActions.assetChanged());
+    }, [dispatch, form]);
+
+    return { selectedAsset, changeAsset, clearAsset };
 };

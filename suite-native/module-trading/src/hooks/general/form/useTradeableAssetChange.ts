@@ -107,7 +107,9 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
                 if (collision.getCounterpartChangedAction) {
                     dispatch(collision.getCounterpartChangedAction());
                 }
-                reportParameterChanged(collision.counterpartAnalyticsParameter);
+                if (shouldReportAnalytics) {
+                    reportParameterChanged(collision.counterpartAnalyticsParameter);
+                }
             }
 
             dispatch(

@@ -2,11 +2,13 @@ import type { CryptoId } from 'invity-api';
 
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { renderHookWithStoreProvider, screen } from '@suite-native/test-utils-store';
+import { act, renderHookWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
+    ethAsset,
     getInitializedTradingState,
 } from '@suite-native/trading-fixtures';
+import { buyActions, tradingActions } from '@suite-native/trading-state';
 import { FirmwareType } from '@trezor/connect';
 
 import { useBuyForm } from './useBuyForm';
@@ -48,7 +50,7 @@ describe('useBuyFormDefaultAssets', () => {
             },
         });
 
-        return await renderHookWithStoreProvider(
+        const rendered = await renderHookWithStoreProvider(
             () => {
                 const form = useBuyForm();
                 useBuyFormDefaultAssets(form);
@@ -57,6 +59,8 @@ describe('useBuyFormDefaultAssets', () => {
             },
             { services: { ...services, store } },
         );
+
+        return { ...rendered, store };
     };
 
     afterEach(async () => {
@@ -74,5 +78,25 @@ describe('useBuyFormDefaultAssets', () => {
         const { result } = await renderBuyFormWithDefaults([ETHEREUM]);
 
         expect(result.current.getValues('asset')).toBeUndefined();
+    });
+
+    it('should replace the selected asset with bitcoin on form reset request', async () => {
+        const { result, store } = await renderBuyFormWithDefaults([ETHEREUM, BITCOIN]);
+
+        await act(() => {
+            result.current.setValue('asset', ethAsset);
+            result.current.setValue('fiatValue', '100');
+            store.dispatch(buyActions.assetChanged());
+        });
+
+        expect(result.current.getValues('receiveAccount')?.account.symbol).toBe('eth');
+
+        await act(() => {
+            store.dispatch(tradingActions.requestTradingFormReset('buy'));
+        });
+
+        expect(result.current.getValues('asset')?.cryptoId).toBe('bitcoin');
+        expect(result.current.getValues('receiveAccount')?.account.symbol).toBe('btc');
+        expect(result.current.getValues('fiatValue')).toBeUndefined();
     });
 });

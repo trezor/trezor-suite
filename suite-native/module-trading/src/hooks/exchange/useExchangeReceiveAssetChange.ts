@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { useWatch } from '@suite-native/forms';
 import { exchangeActions } from '@suite-native/trading-state';
 import { type ExchangeFormType, type TradeableAsset } from '@suite-native/trading-types';
@@ -13,6 +15,7 @@ const RECEIVE_ASSET_COLLISION = {
 } as const;
 
 export const useExchangeReceiveAssetChange = (form: ExchangeFormType) => {
+    const { dispatch } = useServices(injectDispatch);
     const selectedAsset = useWatch({ control: form.control, name: 'receiveAsset' });
     const setSelectedAsset = useCallback(
         (asset: TradeableAsset) => form.setValue('receiveAsset', asset),
@@ -30,5 +33,10 @@ export const useExchangeReceiveAssetChange = (form: ExchangeFormType) => {
         collision: RECEIVE_ASSET_COLLISION,
     });
 
-    return { selectedAsset, changeAsset };
+    const clearAsset = useCallback(() => {
+        form.setValue('receiveAsset', undefined);
+        dispatch(exchangeActions.receiveAssetChanged());
+    }, [dispatch, form]);
+
+    return { selectedAsset, changeAsset, clearAsset };
 };

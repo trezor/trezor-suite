@@ -11,8 +11,8 @@ import { noop } from '@trezor/utils';
 import { BuyBaseCurrencyAmountInput } from './BuyBaseCurrencyAmountInput';
 import { BuyCryptoAmountInput } from './BuyCryptoAmountInput';
 import { BuyReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance';
-import { useBuyAssetChange } from '../../hooks/buy/useBuyAssetChange';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { useBuyReceiveAssetChange } from '../../hooks/buy/useBuyReceiveAssetChange';
 import { useAssetSelectInputFocus } from '../../hooks/general/useAssetSelectInputFocus';
 import { useTradeableAssetPickerNavigation } from '../../hooks/general/useTradeableAssetPickerNavigation';
 import { TradeableAssetButton } from '../general/TradeableAssetButton';
@@ -24,7 +24,7 @@ export const BuyTradeableAssetPicker = () => {
     const baseCurrencyInputRef = useRef<TextInput>(null);
     const form = useBuyFormContext();
     const { requestInputFocus, focusRequestedInput } = useAssetSelectInputFocus();
-    const { selectedAsset: selectedValue, changeAsset } = useBuyAssetChange(form);
+    const { selectedAsset: selectedValue, changeAsset } = useBuyReceiveAssetChange(form);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const assets = useSelector(selectBuyTradeableAssets);
 

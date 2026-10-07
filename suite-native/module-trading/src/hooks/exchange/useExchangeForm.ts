@@ -28,7 +28,6 @@ import {
 } from '@suite-native/trading-state';
 import type { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
 
-import { resetExchangeForm } from '../../utils/exchange/exchangeFormResetUtils';
 import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
 import { setExchangeSendCryptoAmount } from '../../utils/exchange/exchangeSendAmountUtils';
 import { type TradingFormWithMetadata } from '../general/form/tradingFormTypes';
@@ -38,7 +37,6 @@ import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccount
 import { useReceiveAccountPreselectionEffect } from '../general/form/useReceiveAccountPreselectionEffect';
 import { useSendAccountAssetBalance } from '../general/form/useSendAccountAssetBalance';
 import { useSendAccountChangeEffect } from '../general/form/useSendAccountChangeEffect';
-import { useTradingFormResetRequest } from '../general/form/useTradingFormResetRequest';
 
 const useExchangeQuotesChangeEffect = ({ getValues, setValue }: ExchangeFormType) => {
     const providers = useSelector(selectTradingExchangeProviders);
@@ -272,10 +270,6 @@ export const useExchangeForm = (): TradingFormWithMetadata<ExchangeFormType> => 
         maxSpendableAmount: context.maxSpendableAmount,
     });
     useProviderMetadataChangeEffect(control, 'exchange');
-    useTradingFormResetRequest({
-        tradeType: 'exchange',
-        resetForm: () => resetExchangeForm(form),
-    });
 
     return { ...form, metadata: { maxSpendableAmount: context.maxSpendableAmount } };
 };

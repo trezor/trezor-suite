@@ -23,17 +23,19 @@ type AssetPreselection = {
     account?: Account;
 };
 
-type UseAssetPreselectionEffectParams = {
+type UseAssetPreselectionParams = {
     preselection: AssetPreselection | undefined;
     selectedAsset: TradeableAsset | undefined;
     changeAsset: ChangeTradeableAsset;
+    clearAsset: () => void;
 };
 
-const useAssetPreselectionEffect = ({
+const useAssetPreselection = ({
     preselection,
     selectedAsset,
     changeAsset,
-}: UseAssetPreselectionEffectParams) => {
+    clearAsset,
+}: UseAssetPreselectionParams) => {
     const applyPreselection = useEffectEvent(() => {
         if (selectedAsset || !preselection) {
             return;
@@ -45,18 +47,32 @@ const useAssetPreselectionEffect = ({
     useEffect(() => {
         applyPreselection();
     }, []);
+
+    const applyDefaultAsset = () => {
+        if (!preselection) {
+            clearAsset();
+
+            return;
+        }
+
+        changeAsset(preselection.asset, preselection.account, { shouldReportAnalytics: false });
+    };
+
+    return applyDefaultAsset;
 };
 
 type UseDefaultSendAssetPreselectionParams = {
     tradingType: Exclude<TradingType, 'buy'>;
     selectedAsset: TradeableAsset | undefined;
     changeAsset: ChangeTradeableAsset;
+    clearAsset: () => void;
 };
 
 export const useDefaultSendAssetPreselection = ({
     tradingType,
     selectedAsset,
     changeAsset,
+    clearAsset,
 }: UseDefaultSendAssetPreselectionParams) => {
     const myAssets = useTradingMyAssets(tradingType);
 
@@ -76,7 +92,7 @@ export const useDefaultSendAssetPreselection = ({
               }
             : undefined;
 
-    useAssetPreselectionEffect({ preselection, selectedAsset, changeAsset });
+    return useAssetPreselection({ preselection, selectedAsset, changeAsset, clearAsset });
 };
 
 type UseDefaultReceiveAssetPreselectionParams = {
@@ -84,6 +100,7 @@ type UseDefaultReceiveAssetPreselectionParams = {
     tradeableAssets: TradeableAsset[];
     selectedAsset: TradeableAsset | undefined;
     changeAsset: ChangeTradeableAsset;
+    clearAsset: () => void;
 };
 
 export const useDefaultReceiveAssetPreselection = ({
@@ -91,15 +108,17 @@ export const useDefaultReceiveAssetPreselection = ({
     tradeableAssets,
     selectedAsset,
     changeAsset,
+    clearAsset,
 }: UseDefaultReceiveAssetPreselectionParams) => {
     const asset = findTradeableAssetByCryptoIds(
         tradeableAssets,
         TRADING_FORM_DEFAULT_ASSETS[tradingType].receive,
     );
 
-    useAssetPreselectionEffect({
+    return useAssetPreselection({
         preselection: asset ? { asset } : undefined,
         selectedAsset,
         changeAsset,
+        clearAsset,
     });
 };
