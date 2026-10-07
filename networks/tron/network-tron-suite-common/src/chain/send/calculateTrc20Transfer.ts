@@ -1,32 +1,42 @@
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
-import { calculateTotal } from '@suite-common/wallet-utils';
+import type { TokenInfo } from '@trezor/blockchain-link-types';
+import {
+    type ExternalOutput,
+    type PrecomposedTransaction,
+} from '@trezor/network-module-suite-common-types';
 import { TRON_MEMO_FEE_SUN } from '@trezor/network-tron/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { type EstimateFeeLevel } from './types';
 
-export const calculateRawContractCall = (
+export const calculateTrc20Transfer = (
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: EstimateFeeLevel,
-    networkSymbol: NetworkSymbol,
+    token: TokenInfo,
+    networkDisplaySymbol: string,
     bytes: number,
     hasMemo: boolean,
 ): PrecomposedTransaction => {
     const baseFeeInSun = feeLevel.feePerTx || '0';
     const memoFeeInSun = hasMemo ? TRON_MEMO_FEE_SUN : 0;
     const totalFeeInSun = new BigNumber(baseFeeInSun).plus(memoFeeInSun).toString();
-    const amount = 'amount' in output ? (output.amount ?? '0') : '0';
+    const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
 
-    if (new BigNumber(calculateTotal(amount, totalFeeInSun)).isGreaterThan(availableBalance)) {
+    const tokenBalanceInSubunits = new BigNumber(token.balance ?? '0')
+        .shiftedBy(token.decimals)
+        .toString();
+    const outputAmount = 'amount' in output ? (output.amount ?? '0') : '0';
+    const amount = isSendMax ? tokenBalanceInSubunits : outputAmount;
+    const max = isSendMax ? amount : undefined;
+
+    if (new BigNumber(totalFeeInSun).isGreaterThan(availableBalance)) {
         return {
             type: 'error',
             error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
             errorMessage: {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
                 values: {
-                    networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol),
+                    networkDisplaySymbol,
                 },
             },
         } as const;
@@ -39,17 +49,18 @@ export const calculateRawContractCall = (
     const payloadData = {
         type: 'nonfinal' as const,
         totalSpent: amount,
-        max: undefined,
+        max,
         fee: baseFeeInSun,
         memoFee: hasMemo ? String(TRON_MEMO_FEE_SUN) : undefined,
         feePerByte: feeLevel.feePerUnit,
-        feeLimit: feeLevel.feeLimit,
+        feeLimit: feeLevel.feeLimit, // energy cap in energy units; fee_limit in the signed tx uses the equivalent in SUN (feeLimit × feePerUnit)
         energyConsumed,
         bytes,
         inputs: [],
+        token,
     };
 
-    if (output.type === 'payment') {
+    if (output.type === 'send-max' || output.type === 'payment') {
         return {
             ...payloadData,
             type: 'final',

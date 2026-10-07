@@ -41,6 +41,9 @@
         {
             "path": "../../networks/tron/network-tron"
         },
+        {
+            "path": "../../networks/tron/network-tron-suite-common"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }

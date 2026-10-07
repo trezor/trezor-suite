@@ -6,6 +6,15 @@
     "include": ["./src"],
     "references": [
         {
+            "path": "../../../suite-common/calldata"
+        },
+        {
+            "path": "../../../packages/blockchain-link-types"
+        },
+        {
+            "path": "../../../packages/connect-common"
+        },
+        {
             "path": "../../../packages/device-utils"
         },
         {
@@ -22,6 +31,9 @@
         },
         {
             "path": "../network-tron-types"
+        },
+        {
+            "path": "../../../packages/utils"
         }
     ]
 }

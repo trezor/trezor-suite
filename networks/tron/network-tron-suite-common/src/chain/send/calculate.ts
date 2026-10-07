@@ -1,6 +1,8 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
-import { type TokenInfo } from '@trezor/connect';
+import type { TokenInfo } from '@trezor/blockchain-link-types';
+import type {
+    ExternalOutput,
+    PrecomposedTransaction,
+} from '@trezor/network-module-suite-common-types';
 
 import { calculateRawContractCall } from './calculateRawContractCall';
 import { calculateTrc20Transfer } from './calculateTrc20Transfer';
@@ -11,7 +13,7 @@ export const calculate = (
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: EstimateFeeLevel,
-    networkSymbol: NetworkSymbol,
+    networkDisplaySymbol: string,
     bytes: number,
     hasMemo: boolean,
     token?: TokenInfo,
@@ -24,7 +26,7 @@ export const calculate = (
             output,
             feeLevel,
             token,
-            networkSymbol,
+            networkDisplaySymbol,
             bytes,
             hasMemo,
         );
@@ -34,7 +36,7 @@ export const calculate = (
             availableBalance,
             output,
             feeLevel,
-            networkSymbol,
+            networkDisplaySymbol,
             bytes,
             hasMemo,
         );
