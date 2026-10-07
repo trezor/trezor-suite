@@ -8,6 +8,7 @@ import { WorkerState } from '../../state';
 const ME = '0xcAe32Cd53A96209fA02C0c0cfE165a5c97d456dF';
 const OTHER = '0x1111111111111111111111111111111111111111';
 const TOKEN = '0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a';
+const SPAM_TOKEN = '0xc6203d86f5efbed7f9512755f3e6132ee50d03d1';
 const SENTINEL = '0xfffffffffffffffffffffffffffffffffffffffe';
 const ARC_TESTNET_CHAIN_ID = 5042002;
 const LATEST = 1_000_000;
@@ -20,16 +21,18 @@ const rawLog = ({
     txid,
     index = 0,
     timestamp,
+    value = 5,
 }: {
     address: string;
     blockNumber: number;
     txid: string;
     index?: number;
     timestamp?: number;
+    value?: number;
 }) => ({
     address: address.toLowerCase(),
     topics: [TRANSFER_TOPIC, topic(OTHER), topic(ME)],
-    data: `0x${'0'.repeat(63)}5`,
+    data: `0x${value.toString(16).padStart(64, '0')}`,
     blockNumber: `0x${blockNumber.toString(16)}`,
     transactionHash: txid,
     transactionIndex: `0x${index.toString(16)}`,
@@ -149,6 +152,21 @@ describe(syncHistory.name, () => {
 
         expect([...history.tokenContracts]).toEqual([TOKEN.toLowerCase()]);
         expect(history.entries.size).toBe(2);
+    });
+
+    it('does not take a contract that only moved nothing for a token the account holds', async () => {
+        const state = new WorkerState();
+        const { client } = createClient({
+            logs: (_from, to) => [
+                rawLog({ address: SPAM_TOKEN, blockNumber: to, txid: '0xspam', value: 0 }),
+            ],
+        });
+
+        const history = await syncHistory({ client, state, descriptor: ME });
+
+        expect([...history.tokenContracts]).toEqual([]);
+        // Still listed, so Suite can show the transaction and flag it as a scam.
+        expect(history.entries.size).toBe(1);
     });
 
     it('keeps the block timestamp a log carried', async () => {
