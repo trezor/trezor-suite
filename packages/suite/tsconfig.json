@@ -30,6 +30,9 @@
         },
         { "path": "../../suite-common/calldata" },
         {
+            "path": "../../suite-common/chain-data"
+        },
+        {
             "path": "../../suite-common/connect-init"
         },
         {
@@ -243,6 +246,9 @@
         { "path": "../icons" },
         { "path": "../logger" },
         {
+            "path": "../../networks/bitcoin/network-bitcoin-suite-common"
+        },
+        {
             "path": "../../networks/ethereum/network-ethereum"
         },
         {
@@ -252,10 +258,16 @@
             "path": "../../networks/network-module/network-module-suite-common-types"
         },
         {
+            "path": "../../networks/network-module/network-module-types"
+        },
+        {
             "path": "../../networks/ripple/network-ripple"
         },
         {
             "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/solana/network-solana-suite-common"
         },
         {
             "path": "../../networks/stellar/network-stellar"

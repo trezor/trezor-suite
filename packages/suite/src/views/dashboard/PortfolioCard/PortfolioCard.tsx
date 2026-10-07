@@ -31,6 +31,7 @@ import { updateGraphDataThunk } from 'src/actions/wallet/graphActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { GraphRangeSelector, GraphSkeleton } from 'src/components/suite';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { usePortfolioFiatBalance } from 'src/hooks/wallet/chainData/usePortfolioFiatBalance';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
@@ -62,7 +63,8 @@ export const PortfolioCard = memo(() => {
         () => accounts.some(a => !a.empty && !isAccountFailed(a)),
         [accounts],
     );
-    const walletBalance = useTotalFiatBalance(accounts, baseCurrencyCode, currentFiatRates);
+    const legacyWalletBalance = useTotalFiatBalance(accounts, baseCurrencyCode, currentFiatRates);
+    const walletBalance = usePortfolioFiatBalance(accounts) ?? legacyWalletBalance;
 
     const passphraseEntryCanceled =
         accounts.length === 0 && discoveryStatus === undefined && discovery?.status === 'cancelled';

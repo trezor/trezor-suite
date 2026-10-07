@@ -9,8 +9,10 @@ import { TokenIcon } from '@trezor/product-components';
 import { AmountUnitSwitchWrapper, FormattedCryptoAmount } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useSelector } from 'src/hooks/suite';
+import { useAccountBalanceView } from 'src/hooks/wallet/chainData/useAccountBalanceView';
 import { useAccountHeaderContext } from 'src/support/suite/AccountHeaderProvider';
 import { type AppState } from 'src/types/suite';
+import { type Account } from 'src/types/wallet';
 
 type AccountOverviewBalanceSkeletonProps = {
     animate?: boolean;
@@ -42,6 +44,54 @@ const getBalanceExcludesTranslationId = (hasTokens: boolean, hasStaking: boolean
     return null;
 };
 
+type AccountBalanceAmountsProps = {
+    account: Account;
+    shouldDisplayBaseCurrency: boolean;
+};
+
+const AccountBalanceAmounts = ({
+    account,
+    shouldDisplayBaseCurrency,
+}: AccountBalanceAmountsProps) => {
+    const baseCurrency = useSelector(selectBaseCurrency);
+    const balanceView = useAccountBalanceView(account);
+    const { symbol } = account;
+
+    return (
+        <>
+            {!isTestnet(symbol) &&
+                (balanceView.fiatValue === undefined ? (
+                    <FiatHeader
+                        symbol={symbol}
+                        amount={balanceView.formattedBalance}
+                        size="large"
+                        localCurrency={baseCurrency}
+                        data-testid="@wallet/account/fiat-amount"
+                    />
+                ) : (
+                    // Already valued by the account's chain network, so no conversion here.
+                    <FiatHeader
+                        amount={balanceView.fiatValue.toFixed()}
+                        size="large"
+                        localCurrency={baseCurrency}
+                        data-testid="@wallet/account/fiat-amount"
+                    />
+                ))}
+            <AmountUnitSwitchWrapper symbol={symbol}>
+                {shouldDisplayBaseCurrency && (
+                    <Text intent="neutral" typographyStyle="body-md" priority="secondary" as="div">
+                        <FormattedCryptoAmount
+                            data-testid="@wallet/account/crypto-balance"
+                            value={balanceView.formattedBalance}
+                            symbol={symbol}
+                        />
+                    </Text>
+                )}
+            </AmountUnitSwitchWrapper>
+        </>
+    );
+};
+
 type AccountOverviewBalanceProps = {
     selectedAccount: AppState['wallet']['selectedAccount'];
 };
@@ -70,9 +120,7 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
         );
     }
 
-    const { symbol, formattedBalance } = account;
-    const shouldDisplayBaseCurrency = baseCurrency !== symbol;
-    const isMainnet = !isTestnet(symbol);
+    const { symbol } = account;
     const hasTokens = !!account.tokens?.length;
     const hasStakingExcludedFromBalance = hasStaking && account.networkType !== 'cardano';
     const balanceExcludesTranslationId = getBalanceExcludesTranslationId(
@@ -83,31 +131,10 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
     return (
         <Row gap={16} justifyContent="space-between" alignItems="flex-end" flexWrap="wrap">
             <Column ref={balanceSectionRef}>
-                {isMainnet && (
-                    <FiatHeader
-                        symbol={account.symbol}
-                        amount={account.formattedBalance}
-                        size="large"
-                        localCurrency={baseCurrency}
-                        data-testid="@wallet/account/fiat-amount"
-                    />
-                )}
-                <AmountUnitSwitchWrapper symbol={symbol}>
-                    {shouldDisplayBaseCurrency && (
-                        <Text
-                            intent="neutral"
-                            typographyStyle="body-md"
-                            priority="secondary"
-                            as="div"
-                        >
-                            <FormattedCryptoAmount
-                                data-testid="@wallet/account/crypto-balance"
-                                value={formattedBalance}
-                                symbol={symbol}
-                            />
-                        </Text>
-                    )}
-                </AmountUnitSwitchWrapper>
+                <AccountBalanceAmounts
+                    account={account}
+                    shouldDisplayBaseCurrency={baseCurrency !== account.symbol}
+                />
             </Column>
             {balanceExcludesTranslationId && (
                 <Row gap={4}>

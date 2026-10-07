@@ -5,6 +5,7 @@ import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Row } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
+import { useAccountBalanceView } from 'src/hooks/wallet/chainData/useAccountBalanceView';
 
 import { AccountItem } from './AccountItem/AccountItem';
 import { AccountItemsGroup } from './AccountItemsGroup';
@@ -16,7 +17,8 @@ interface AccountSectionProps {
 }
 
 export const AccountSection = ({ account, tokens, selected }: AccountSectionProps) => {
-    const { symbol, accountType, index, descriptor, formattedBalance } = account;
+    const { symbol, accountType, index, descriptor } = account;
+    const balanceView = useAccountBalanceView(account);
 
     const showGroup = hasNetworkFeatures(account, 'tokens');
 
@@ -39,7 +41,9 @@ export const AccountSection = ({ account, tokens, selected }: AccountSectionProp
                 key={`${descriptor}-${symbol}`}
                 account={account}
                 isSelected={selected}
-                formattedBalance={formattedBalance}
+                formattedBalance={balanceView.formattedBalance}
+                customFiatValue={balanceView.fiatValue}
+                isFiatLoading={balanceView.isFiatLoading}
                 tokens={tokens}
                 dataTestKey={dataTestKey}
             />
