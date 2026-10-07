@@ -721,6 +721,7 @@ export const signTransactionThunk = createThunk<
         if (isCardanoTx(selectedAccount, precomposedTransaction)) {
             response = await dispatch(
                 signCardanoSendFormTransactionThunk({
+                    formState,
                     precomposedTransaction,
                     device,
                     selectedAccount,

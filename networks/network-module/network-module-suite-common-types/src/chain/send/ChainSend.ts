@@ -72,6 +72,9 @@ export interface ChainSendDraft {
 export type ChainSendAccount = {
     readonly symbol: NetworkSymbol;
     readonly descriptor: string;
+
+    /** The account's number within its type, which some networks derive further paths from. */
+    readonly index: number;
     readonly path: string;
     readonly unlockPath?: PROTO.UnlockPath;
     readonly accountType: AccountType;

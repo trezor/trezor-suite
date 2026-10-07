@@ -33,9 +33,6 @@
             "path": "../../packages/analytics-uploader"
         },
         {
-            "path": "../../packages/blockchain-link"
-        },
-        {
             "path": "../../packages/blockchain-link-types"
         },
         {
@@ -52,6 +49,9 @@
         { "path": "../../packages/eslint" },
         {
             "path": "../../networks/cardano/network-cardano"
+        },
+        {
+            "path": "../../networks/cardano/network-cardano-suite-common"
         },
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"

@@ -15,6 +15,8 @@ export type ChainNetworkConfig = {
     decimals: number;
     accountSyncIntervalMs: number;
 
+    isTestnet: boolean;
+
     /** Testnet coins and tokens have no fiat value. */
     hasFiatRate: boolean;
 
@@ -43,6 +45,7 @@ export const readChainNetworkConfig = <TSymbol extends string>(
         },
         decimals: config.decimals,
         accountSyncIntervalMs: source.getAccountSyncInterval(symbol),
+        isTestnet: config.testnet,
         hasFiatRate: !config.testnet,
         hasBlockbookRates: config.backendOptions.some(option => option.type === 'blockbook'),
     };

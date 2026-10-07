@@ -29,6 +29,7 @@ const deps: TronChainNetworkDeps = {
 const trx = asNetworkSymbol('trx');
 const sendAccount = {
     descriptor: 'TAddress',
+    index: 0,
     path: "m/44'/195'/0'/0/0",
     accountType: 'normal',
     deviceState: 'wallet-identity',

@@ -1,88 +1,47 @@
-import { type AccountType } from '@suite-common/wallet-config';
 import {
     type Account,
     type Output,
     type PrecomposedTransactionFinal,
     type PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
-import { CARDANO, type CardanoCertificate, PROTO } from '@trezor/connect';
-
+import { type CardanoCertificate, PROTO } from '@trezor/connect';
 import {
-    convertAmountSubunitsToUnits,
-    convertAmountUnitsToSubunits,
-    formatNetworkAmount,
-    networkAmountToSmallestUnit,
-} from './amountUtils';
+    formatMaxOutputAmount as formatCardanoMaxOutputAmount,
+    getAddressParameters,
+    getAddressType,
+    getDerivationType,
+    getNetworkId,
+    getProtocolMagic,
+    getStakingPath,
+    getUnusedChangeAddress,
+    transformUserOutputs as transformCardanoUserOutputs,
+} from '@trezor/network-cardano-suite-common';
 
-export const getDerivationType = (accountType: AccountType) => {
-    switch (accountType) {
-        case 'normal':
-            return 1;
-        case 'legacy':
-            return 2;
-        case 'ledger':
-            return 0;
-        default:
-            return 1;
-    }
+import { getAccountDecimals } from './amountUtils';
+
+export {
+    getAddressParameters,
+    getAddressType,
+    getDerivationType,
+    getNetworkId,
+    getProtocolMagic,
+    getStakingPath,
+    getUnusedChangeAddress,
 };
 
-export const getStakingPath = (account: Pick<Account, 'index'>) =>
-    `m/1852'/1815'/${account.index}'/2/0`;
-
-export const getProtocolMagic = (accountSymbol: Account['symbol']) =>
-    // TODO: use testnet magic from connect once this PR is merged https://github.com/trezor/connect/pull/1046
-    accountSymbol === 'ada' ? CARDANO.PROTOCOL_MAGICS.mainnet : 1097911063;
-
-export const getAddressType = () => PROTO.CardanoAddressType.BASE;
-
-export const getNetworkId = () => CARDANO.NETWORK_IDS.mainnet;
-
-export const getUnusedChangeAddress = (account: Pick<Account, 'addresses'>) => {
-    if (!account.addresses) return;
-
-    // Find first unused change address or fallback to the last address if all are used (should not happen)
-    const changeAddress =
-        account.addresses.change.find(a => !a.transfers) ||
-        account.addresses.change[account.addresses.change.length - 1];
-
-    return changeAddress;
-};
-
-export const getAddressParameters = (account: Pick<Account, 'index'>, path: string) => ({
-    path,
-    addressType: getAddressType(),
-    stakingPath: getStakingPath(account),
-});
-
+/** The send form's outputs as Cardano composing takes them. */
 export const transformUserOutputs = (
     outputs: Output[],
     accountTokens: Account['tokens'],
     symbol: Account['symbol'],
     maxOutputIndex?: number,
 ) =>
-    outputs.map((output, i) => {
-        const setMax = i === maxOutputIndex;
-        const amount =
-            output.amount === '' ? undefined : networkAmountToSmallestUnit(output.amount, symbol);
-        const tokenDecimals = accountTokens?.find(t => t.contract === output.token)?.decimals ?? 0;
-
-        return {
-            address: output.address === '' ? undefined : output.address,
-            amount: output.token ? undefined : amount,
-            assets: output.token
-                ? [
-                      {
-                          unit: output.token,
-                          quantity: output.amount
-                              ? convertAmountUnitsToSubunits(output.amount, tokenDecimals)
-                              : '0',
-                      },
-                  ]
-                : [],
-            setMax,
-        };
-    });
+    transformCardanoUserOutputs(
+        outputs,
+        accountTokens,
+        getAccountDecimals(symbol) ?? 0,
+        maxOutputIndex,
+    );
 
 export const getShortFingerprint = (fingerprint: string) => {
     const firstPart = fingerprint.substring(0, 10);
@@ -143,22 +102,13 @@ export const formatMaxOutputAmount = (
     maxAmount: string | undefined,
     maxOutput: ReturnType<typeof transformUserOutputs>[number] | undefined,
     account: Account,
-) => {
-    // Converts 'max' amount returned from coinselection in lovelaces (or token equivalent) to ADA (or token unit)
-    if (!maxOutput || !maxAmount) return maxAmount;
-    if (maxOutput.assets.length === 0) {
-        // output without asset, convert lovelaces to ADA
-        return formatNetworkAmount(maxAmount, account.symbol);
-    }
-
-    const { assets } = maxOutput;
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const firstAsset: (typeof assets)[number] = assets[0];
-    // output with a token, format using token decimals
-    const tokenDecimals = account.tokens?.find(t => t.contract === firstAsset.unit)?.decimals ?? 0;
-
-    return convertAmountSubunitsToUnits(maxAmount, tokenDecimals);
-};
+) =>
+    formatCardanoMaxOutputAmount(
+        maxAmount,
+        maxOutput,
+        account,
+        getAccountDecimals(account.symbol) ?? 0,
+    );
 
 export const getCardanoFingerprint = (
     tokens: Account['tokens'],

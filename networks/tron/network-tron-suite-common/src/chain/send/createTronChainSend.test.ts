@@ -29,6 +29,7 @@ const send = createTronChainSend({ getTrezorConnect: () => connect })(asNetworkS
 const account: ChainSendAccount = {
     symbol: asNetworkSymbol('trx'),
     descriptor: OWNER,
+    index: 0,
     path: "m/44'/195'/0'/0/0",
     accountType: 'normal',
     deviceState: 'wallet-identity',
