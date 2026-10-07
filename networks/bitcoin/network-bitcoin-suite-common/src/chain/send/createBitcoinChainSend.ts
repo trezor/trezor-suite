@@ -1,8 +1,10 @@
+import { blockbookUtils } from '@trezor/blockchain-link-utils';
 import { isSupportedBitcoinNetwork } from '@trezor/network-bitcoin-types';
 import {
-    type ChainNetworkSend,
+    type ChainNetworkSendDefinition,
     type PrecomposedLevels,
     type PushConnectTransactionDeps,
+    buildPendingTransaction,
     createPushConnectTransaction,
 } from '@trezor/network-module-suite-common-types';
 import type { NetworkSymbol } from '@trezor/network-module-types';
@@ -24,7 +26,9 @@ export type BitcoinChainSendDeps = ComposeBitcoinFeeLevelsDeps &
     PushConnectTransactionDeps;
 
 /** The send of one Bitcoin-like network, by symbol. */
-export type BitcoinChainSend = (symbol: NetworkSymbol) => ChainNetworkSend<PrecomposedLevels>;
+export type BitcoinChainSend = (
+    symbol: NetworkSymbol,
+) => ChainNetworkSendDefinition<PrecomposedLevels>;
 
 const getAccountFeatureCheck =
     (symbol: NetworkSymbol): BitcoinSendConfig['hasAccountFeature'] =>
@@ -53,6 +57,13 @@ export const createBitcoinChainSend = (deps: BitcoinChainSendDeps): BitcoinChain
             composeFeeLevels: params => composeFeeLevels({ ...params, config }),
             sign: params => sign({ ...params, config }),
             push: params => push({ ...params, useConnectionIdentity: false }),
+            createPendingTransaction: params =>
+                params.signed.signedTransaction
+                    ? blockbookUtils.transformTransaction(
+                          params.signed.signedTransaction,
+                          params.account.addresses ?? params.account.descriptor,
+                      )
+                    : buildPendingTransaction(params),
         };
     };
 };

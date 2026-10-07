@@ -16,6 +16,7 @@ import type {
     ChainTransactionsPage,
 } from '@trezor/network-module-suite-common-types';
 
+import { getChainPendingSendsQueryOptions, getVisiblePendingSends } from './chainPendingSends';
 import { getChainAccountBalanceQueryOptions } from './chainQueryOptions';
 
 const FIRST_PAGE: ChainTransactionsCursor = { page: 1 };
@@ -36,7 +37,10 @@ export type UseChainAccountTransactionsParams = {
 export type ChainAccountTransactions = {
     pages: readonly ChainTransactionsPage[];
 
-    /** Every loaded transaction, newest first. */
+    /**
+     * Every loaded transaction, newest first. Transactions the wallet broadcast come first until
+     * the backend lists them, and hide the transactions they replace.
+     */
     transactions: readonly Transaction[];
 
     /** Transactions in the whole history, `null` where the backend does not know it. */
@@ -52,6 +56,7 @@ export type ChainAccountTransactions = {
 };
 
 const NO_PAGES: readonly ChainTransactionsPage[] = [];
+const NO_PENDING_SENDS = [] as const;
 
 /**
  * An account's history, page by page in order. Pages stay cached while the history is unchanged;
@@ -75,6 +80,13 @@ export const useChainAccountTransactions = (
               )
             : chainQueryKeys.all('uncovered');
 
+    const pendingSendsOptions =
+        network && ref ? getChainPendingSendsQueryOptions(network, ref.descriptor) : undefined;
+    const pendingSendsQuery = useQuery(
+        pendingSendsOptions ?? { queryKey: chainQueryKeys.all('uncovered'), queryFn: skipToken },
+    );
+    const pendingSends = pendingSendsQuery.data ?? NO_PENDING_SENDS;
+
     const query = useInfiniteQuery({
         queryKey,
         queryFn:
@@ -84,8 +96,11 @@ export const useChainAccountTransactions = (
         initialPageParam: FIRST_PAGE,
         getNextPageParam: (lastPage: ChainTransactionsPage) => lastPage.nextCursor ?? undefined,
         staleTime: network?.syncPolicy.accountStaleTimeMs,
+        // While a transaction is pending, or a broadcast one not listed yet, look again regularly.
         refetchInterval: current =>
-            network && current.state.data?.pages.some(page => page.transactions.some(isPending))
+            network &&
+            (pendingSends.length > 0 ||
+                current.state.data?.pages.some(page => page.transactions.some(isPending)))
                 ? network.syncPolicy.accountRefetchIntervalMs
                 : false,
         refetchIntervalInBackground: false,
@@ -124,10 +139,43 @@ export const useChainAccountTransactions = (
     ]);
 
     const pages = query.data?.pages ?? NO_PAGES;
-    const transactions = useMemo(() => pages.flatMap(page => page.transactions), [pages]);
+    const fetchedTransactions = useMemo(() => pages.flatMap(page => page.transactions), [pages]);
+
+    // Expiry is measured at the last fetch: the history is refetched regularly while pending
+    // sends exist, and a pending send must not vanish between two fetches.
+    const fetchedAt = query.dataUpdatedAt;
+    const visiblePendingSends = useMemo(
+        () =>
+            getVisiblePendingSends(
+                pendingSends,
+                new Set(fetchedTransactions.map(transaction => transaction.txid)),
+                fetchedAt,
+            ),
+        [pendingSends, fetchedTransactions, fetchedAt],
+    );
+
+    // Listed or expired pending sends are dropped from the cache too.
+    useEffect(() => {
+        if (pendingSendsOptions && visiblePendingSends.length !== pendingSends.length) {
+            queryClient.setQueryData(pendingSendsOptions.queryKey, visiblePendingSends);
+        }
+        // The options are rebuilt every render; the data they hold is what matters.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [visiblePendingSends, pendingSends, queryClient]);
+
+    const transactions = useMemo(() => {
+        if (visiblePendingSends.length === 0) return fetchedTransactions;
+
+        const replacedTxids = new Set(visiblePendingSends.map(send => send.replacedTxid));
+
+        return [
+            ...visiblePendingSends.map(send => send.transaction),
+            ...fetchedTransactions.filter(transaction => !replacedTxids.has(transaction.txid)),
+        ];
+    }, [visiblePendingSends, fetchedTransactions]);
 
     const { fetchNextPage, hasNextPage } = query;
-    const loadedCount = transactions.length;
+    const loadedCount = fetchedTransactions.length;
     const loadUntil = useCallback(
         async (count: number | 'all') => {
             let state = { hasNextPage, loadedCount };
@@ -150,7 +198,7 @@ export const useChainAccountTransactions = (
     return {
         pages,
         transactions,
-        total: pages[0]?.total ?? null,
+        total: pages[0]?.total == null ? null : pages[0].total + visiblePendingSends.length,
         hasNextPage,
         fetchNextPage,
         loadUntil,

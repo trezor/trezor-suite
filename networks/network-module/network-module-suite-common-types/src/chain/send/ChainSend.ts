@@ -2,6 +2,7 @@ import type {
     AccountAddresses,
     BlockbookTransaction,
     TokenInfo,
+    Transaction,
 } from '@trezor/blockchain-link-types';
 import type {
     AccountTransaction,
@@ -185,6 +186,13 @@ export type PushedChainTransaction = {
     readonly txid: string;
 };
 
+export type CreatePendingTransactionParams = {
+    account: ChainSendAccount;
+    precomposed: GeneralPrecomposedTransactionFinal;
+    signed: ChainSignedTransaction;
+    txid: string;
+};
+
 /**
  * Composing, signing and broadcasting on one network. Each call talks to the device or the
  * backend and returns plain data, so the app decides what to keep and where.
@@ -197,4 +205,13 @@ export type ChainNetworkSend<TLevels extends GeneralPrecomposedLevels = GeneralP
         composeFeeLevels: (params: ComposeFeeLevelsParams) => Promise<TLevels>;
         sign: (params: SignChainTransactionParams) => Promise<ChainSignedTransaction>;
         push: (params: PushChainTransactionParams) => Promise<PushedChainTransaction>;
+
+        /** The broadcast transaction as the account's history shows it until the backend lists it. */
+        createPendingTransaction: (params: CreatePendingTransactionParams) => Transaction;
     };
+
+/** What a network implements; a generic pending transaction is used unless it builds its own. */
+export type ChainNetworkSendDefinition<
+    TLevels extends GeneralPrecomposedLevels = GeneralPrecomposedLevels,
+> = Omit<ChainNetworkSend<TLevels>, 'createPendingTransaction'> &
+    Partial<Pick<ChainNetworkSend<TLevels>, 'createPendingTransaction'>>;

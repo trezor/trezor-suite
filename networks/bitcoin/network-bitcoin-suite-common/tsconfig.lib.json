@@ -6,6 +6,9 @@
     "include": ["./src"],
     "references": [
         {
+            "path": "../../../packages/blockchain-link-utils"
+        },
+        {
             "path": "../../../packages/connect-common"
         },
         {

@@ -1,5 +1,5 @@
 import {
-    type ChainNetworkSend,
+    type ChainNetworkSendDefinition,
     type PrecomposedLevels,
     type PushConnectTransactionDeps,
     createPushConnectTransaction,
@@ -23,7 +23,9 @@ export type SolanaChainSendDeps = ComposeSolanaFeeLevelsDeps &
     PushConnectTransactionDeps;
 
 /** The send of one Solana network, by symbol. */
-export type SolanaChainSend = (symbol: NetworkSymbol) => ChainNetworkSend<PrecomposedLevels>;
+export type SolanaChainSend = (
+    symbol: NetworkSymbol,
+) => ChainNetworkSendDefinition<PrecomposedLevels>;
 
 /** Composing, signing and broadcasting on a Solana network. */
 export const createSolanaChainSend = (deps: SolanaChainSendDeps): SolanaChainSend => {

@@ -1,5 +1,5 @@
 import {
-    type ChainNetworkSend,
+    type ChainNetworkSendDefinition,
     type PrecomposedLevels,
     type PushConnectTransactionDeps,
     createPushConnectTransaction,
@@ -23,7 +23,9 @@ export type TronChainSendDeps = ComposeTronFeeLevelsDeps &
     PushConnectTransactionDeps;
 
 /** The send of one Tron network, by symbol. */
-export type TronChainSend = (symbol: NetworkSymbol) => ChainNetworkSend<PrecomposedLevels>;
+export type TronChainSend = (
+    symbol: NetworkSymbol,
+) => ChainNetworkSendDefinition<PrecomposedLevels>;
 
 /** Composing, signing and broadcasting on a Tron network. */
 export const createTronChainSend = (deps: TronChainSendDeps): TronChainSend => {

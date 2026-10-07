@@ -46,3 +46,17 @@ export type { HistoricRateRequest } from './getHistoricRateRequests';
 export { findChainTransaction } from './findChainTransaction';
 export { getCachedChainTransaction } from './getCachedChainTransaction';
 export type { CachedChainAccount } from './getCachedChainTransaction';
+export {
+    PENDING_SEND_TTL_MS,
+    addChainPendingSend,
+    getChainPendingSendsQueryOptions,
+    getVisiblePendingSends,
+} from './chainPendingSends';
+export type { AddChainPendingSendParams, ChainPendingSend } from './chainPendingSends';
+export { useChainComposeFeeLevels } from './useChainComposeFeeLevels';
+export type { UseChainComposeFeeLevelsParams } from './useChainComposeFeeLevels';
+export { useChainPushTransaction, useChainSignTransaction } from './useChainSendMutations';
+export type {
+    PushChainTransactionVariables,
+    SignChainTransactionVariables,
+} from './useChainSendMutations';

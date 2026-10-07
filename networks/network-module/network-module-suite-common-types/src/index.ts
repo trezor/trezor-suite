@@ -136,6 +136,7 @@ export type {
 export type {
     ChainComposeContext,
     ChainNetworkSend,
+    ChainNetworkSendDefinition,
     ChainSendAccount,
     ChainSendDevice,
     ChainSendDraft,
@@ -143,6 +144,7 @@ export type {
     ChainSignedTransaction,
     ChainSigningPrepared,
     ComposeFeeLevelsParams,
+    CreatePendingTransactionParams,
     PushChainTransactionParams,
     PushedChainTransaction,
     SendFormOption,
@@ -181,3 +183,4 @@ export {
 export type { ComposeAccountTransferLevelsParams } from './chain/send/accountTransfer';
 export { getMaxAmountWithReserve, isNetworkReserveApplicable } from './chain/send/networkReserve';
 export type { GetMaxAmountWithReserveParams } from './chain/send/networkReserve';
+export { buildPendingTransaction } from './chain/send/buildPendingTransaction';

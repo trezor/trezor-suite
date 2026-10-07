@@ -1,6 +1,6 @@
 import { isSupportedEthereumNetwork } from '@trezor/network-ethereum-types';
 import {
-    type ChainNetworkSend,
+    type ChainNetworkSendDefinition,
     type PrecomposedLevels,
     type PushConnectTransactionDeps,
     createPushConnectTransaction,
@@ -20,7 +20,9 @@ export type EthereumChainSendDeps = ComposeEvmFeeLevelsDeps &
     PushConnectTransactionDeps;
 
 /** The send of one EVM network, by symbol. */
-export type EthereumChainSend = (symbol: NetworkSymbol) => ChainNetworkSend<PrecomposedLevels>;
+export type EthereumChainSend = (
+    symbol: NetworkSymbol,
+) => ChainNetworkSendDefinition<PrecomposedLevels>;
 
 /**
  * Composing, signing and broadcasting on an EVM network. Backends keep one connection per wallet,

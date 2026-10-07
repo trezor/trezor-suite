@@ -13,7 +13,8 @@ import type {
     FetchConnectTransactionsParams,
 } from './createFetchConnectTransactions';
 import { getDisplayBalanceFiatValue } from './getDisplayBalanceFiatValue';
-import type { ChainNetworkSend } from './send/ChainSend';
+import type { ChainNetworkSendDefinition } from './send/ChainSend';
+import { buildPendingTransaction } from './send/buildPendingTransaction';
 
 export type ConnectChainNetworkTokens = {
     fetchTokens: FetchConnectTokens;
@@ -55,7 +56,7 @@ export type ConnectChainNetworkDefinition = {
     fetchHistoricFiatRates: FetchHistoricFiatRates | null;
 
     /** Composing, signing and broadcasting; without it the network cannot send. */
-    send?: ChainNetworkSend;
+    send?: ChainNetworkSendDefinition;
 };
 
 /**
@@ -134,6 +135,11 @@ export const buildConnectChainNetwork = (
                     assertOwnAccount(params.account);
 
                     return await send.push(params);
+                },
+                createPendingTransaction: params => {
+                    assertOwnAccount(params.account);
+
+                    return (send.createPendingTransaction ?? buildPendingTransaction)(params);
                 },
             },
         }),

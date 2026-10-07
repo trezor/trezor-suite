@@ -1,5 +1,5 @@
 import {
-    type ChainNetworkSend,
+    type ChainNetworkSendDefinition,
     type PrecomposedLevels,
     type PushConnectTransactionDeps,
     createPushConnectTransaction,
@@ -23,7 +23,9 @@ export type StellarChainSendDeps = ComposeStellarFeeLevelsDeps &
     PushConnectTransactionDeps;
 
 /** The send of one Stellar network, by symbol. */
-export type StellarChainSend = (symbol: NetworkSymbol) => ChainNetworkSend<PrecomposedLevels>;
+export type StellarChainSend = (
+    symbol: NetworkSymbol,
+) => ChainNetworkSendDefinition<PrecomposedLevels>;
 
 /** Composing, signing and broadcasting on a Stellar network. */
 export const createStellarChainSend = (deps: StellarChainSendDeps): StellarChainSend => {

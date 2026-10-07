@@ -1,5 +1,5 @@
 import {
-    type ChainNetworkSend,
+    type ChainNetworkSendDefinition,
     type PrecomposedLevels,
     type PushConnectTransactionDeps,
     createPushConnectTransaction,
@@ -23,7 +23,9 @@ export type RippleChainSendDeps = ComposeRippleFeeLevelsDeps &
     PushConnectTransactionDeps;
 
 /** The send of one XRP Ledger network, by symbol. */
-export type RippleChainSend = (symbol: NetworkSymbol) => ChainNetworkSend<PrecomposedLevels>;
+export type RippleChainSend = (
+    symbol: NetworkSymbol,
+) => ChainNetworkSendDefinition<PrecomposedLevels>;
 
 /** Composing, signing and broadcasting on an XRP Ledger network. */
 export const createRippleChainSend = (deps: RippleChainSendDeps): RippleChainSend => {
