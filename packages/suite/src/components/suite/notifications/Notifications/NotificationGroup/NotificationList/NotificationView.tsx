@@ -25,6 +25,7 @@ export interface NotificationAction {
     position?: 'bottom' | 'right';
     intent?: ButtonProps['intent'];
     priority?: ButtonPriority;
+    dataTestId?: string;
 }
 
 export interface NotificationViewProps {
