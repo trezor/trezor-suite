@@ -64,6 +64,10 @@ const stellarContractTokensSlice = createSliceWithExtraDeps({
 });
 
 // Read straight from a component, so a fresh array per call would re-render every token row.
+/** Every account's watched contracts, for code that maps many accounts at once. */
+export const selectAllStellarContractTokens = ({ wallet }: StellarContractTokensRootState) =>
+    wallet.stellarContractTokens;
+
 export const selectStellarContractTokens = (
     { wallet }: StellarContractTokensRootState,
     accountKey: AccountKey,

@@ -253,6 +253,9 @@
             "path": "../../networks/bitcoin/network-bitcoin-suite-common"
         },
         {
+            "path": "../../networks/cardano/network-cardano-suite-common"
+        },
+        {
             "path": "../../networks/ethereum/network-ethereum"
         },
         {
@@ -268,6 +271,9 @@
             "path": "../../networks/ripple/network-ripple"
         },
         {
+            "path": "../../networks/ripple/network-ripple-suite-common"
+        },
+        {
             "path": "../../networks/solana/network-solana"
         },
         {
@@ -277,7 +283,13 @@
             "path": "../../networks/stellar/network-stellar"
         },
         {
+            "path": "../../networks/stellar/network-stellar-suite-common"
+        },
+        {
             "path": "../../networks/tron/network-tron"
+        },
+        {
+            "path": "../../networks/tron/network-tron-suite-common"
         },
         { "path": "../product-components" },
         { "path": "../react-utils" },

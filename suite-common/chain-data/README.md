@@ -31,6 +31,24 @@ descriptor, 'balance']`) and per network rate. Keys hold plain strings only; the
   per network as the dashboard does today (`groupChainAssetsByNetwork`); an asset-first view
   (WETH and ETH as one row) would be another grouping over the same list.
 
+## Coverage
+
+Every network family is a chain network; only failed and CoinJoin accounts stay on the Redux path.
+
+| Family                    | Backends              | Displayed balance | Tokens                          | Rates                         |
+| ------------------------- | --------------------- | ----------------- | ------------------------------- | ----------------------------- |
+| Bitcoin-like              | Blockbook, Electrum   | available         | none                            | Blockbook (HTTP) or CoinGecko |
+| Ethereum and EVM networks | Blockbook, custom RPC | available         | ERC20, BEP20; custom tokens     | Blockbook or CoinGecko        |
+| Solana                    | Solana RPC            | available         | SPL, SPL-2022                   | CoinGecko                     |
+| Cardano                   | Blockfrost            | available         | native assets                   | CoinGecko                     |
+| Ripple                    | Ripple                | full (reserve)    | none (backend lists none)       | CoinGecko                     |
+| Stellar                   | Stellar               | full (reserve)    | classic assets, watched Soroban | CoinGecko                     |
+| Tron                      | Blockbook             | available         | TRC10, TRC20; custom tokens     | Blockbook or CoinGecko        |
+
+Tokens a backend may leave out are watched: the account's last known tokens and the Soroban
+contracts the user added travel on `ChainAccountRef.watchedTokens`, and each network decides how
+to ask for them.
+
 Account descriptors are confidential: balance queries carry `CONFIDENTIAL_QUERY_META`, so a failure
 logs only the error name, and `ChainNetworkError` carries a code and symbol, never a backend
 message. Keys are never logged and the cache is not persisted.
@@ -40,19 +58,19 @@ message. Keys are never logged and the cache is not persisted.
 Desktop reads native balances and their fiat value through this package behind the debug flag
 `queryChainData` (Settings → Debug → Flags): the sidebar coin rows, the account header and the
 dashboard total. Under the flag the dashboard also lists every asset read through chain networks
-(native coins and EVM tokens, filtered by the token definitions as today). With the flag off nothing is fetched and the Redux path is unchanged. Under the
+(native coins and tokens of every family, filtered by the token definitions as today). With the flag off nothing is fetched and the Redux path is unchanged. Under the
 flag the dashboard total values native balances only.
 
 ## Roadmap
 
 | #   | Phase                                                                                                                   | Exit criterion                                           |
 | --- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| 1   | Tokens and staking: EVM tokens done; Solana SPL tokens, staking, the Cardano staking rule moves into its network        | Flagged total equals the legacy total                    |
+| 1   | Staking (Ethereum, Solana, Cardano, Tron) and token values in the totals                                                | Flagged total equals the legacy total                    |
 | 2   | Sync: invalidator wired to Connect block and notification events; `network.subscribe`; legacy refresh off when flagged  | No double fetching; `NETWORK_SYNC_INTERVALS` removed     |
 | 3   | Discovery: `network.discoverAccounts` returns chain accounts; Redux persists identities only (`PortfolioAccount` slice) | Redux accounts hold no balances or tokens                |
 | 4   | Transactions: `useInfiniteQuery` over `network.getTransactions(ref, cursor)`                                            | Redux transactions slice is legacy only                  |
 | 5   | Send: compose and sign/push as mutations, invalidating the account on success                                           | No network-type switches in `sendFormThunks`             |
-| 6   | Cardano, Ripple, Stellar and Tron variants                                                                              | The composition switch covers every network family       |
+| 6   | Done: every network family is a chain network                                                                           | The composition switch is exhaustive                     |
 | 7   | Remove network-type switches from `wallet-utils` and the other hotspots                                                 | Lint bans network-type branching outside composition     |
 | 8   | Persistence for remembered wallets, with the same consent as Redux storage                                              | A remembered wallet works offline without Redux balances |
 | 9   | Native: `createNativeChainNetworks` from the same factories                                                             | The mobile account list reads chain data                 |
