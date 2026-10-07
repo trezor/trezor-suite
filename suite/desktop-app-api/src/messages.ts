@@ -104,7 +104,7 @@ export type UpdateProgress = Partial<{
     verifying: boolean;
 }>;
 
-// todo: desktop-app-api does not have desktop-app-main dependency but we could reuse lot of types from there I guess
+// TODO: `desktop-app-api` does not depend on `desktop-app-main`, but it could reuse many of its types.
 export type Status = {
     service: boolean;
     process: boolean;
