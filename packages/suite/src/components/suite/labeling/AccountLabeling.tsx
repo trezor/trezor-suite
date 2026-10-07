@@ -55,7 +55,7 @@ export const AccountLabeling = ({
                     <WalletLabeling
                         device={accountDevice}
                         shouldUseDeviceLabel={!isSelectedDevice(device, accountDevice)}
-                    />
+                    />{' '}
                     {accountLabel}
                 </span>
             );

@@ -62,11 +62,12 @@ export const NotificationView = ({
                 ) : (
                     defaultIcon
                 ))}
-            <Column gap={4} margin={{ right: 'auto' }}>
+            <Column gap={4} flex="1" minWidth={0} overflow="hidden">
                 <Paragraph
-                    typographyStyle={seen ? 'body-sm' : 'body-sm-strong'}
+                    typographyStyle="body-sm"
                     intent="neutral"
                     priority={isSeen ? 'secondary' : 'primary'}
+                    ellipsisLineCount={message === 'TOAST_TX_COMPOSED' ? 0 : 1}
                 >
                     <Translation id={message} values={messageValues} />
                 </Paragraph>

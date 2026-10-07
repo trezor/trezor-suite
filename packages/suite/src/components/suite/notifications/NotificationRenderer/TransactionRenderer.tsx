@@ -19,7 +19,6 @@ import {
     getConfirmations,
     isStakeTypeTx,
 } from '@suite-common/wallet-utils';
-import { Row } from '@trezor/components';
 import {
     TransactionNotification,
     type TransactionNotificationType,
@@ -47,13 +46,9 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
 
     const networkAccounts = findAccountsByNetwork(symbol, accounts);
     const account = findAccountsByDescriptor(descriptor, networkAccounts).at(0);
-
-    // fallback: account not found, it should never happen tho
-    if (!account) return <View {...props} />;
-
-    const accountTxs = getAccountTransactions(account.key, transactions);
+    const accountTxs = account ? getAccountTransactions(account.key, transactions) : [];
     const tx = findTransaction(txid, accountTxs);
-    const accountDevice = findAccountDevice(account, devices);
+    const accountDevice = account ? findAccountDevice(account, devices) : undefined;
     const confirmations = tx ? getConfirmations(tx, blockchain.blockHeight) : 0;
     const destinationRoute = isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId)
         ? 'wallet-staking'
@@ -69,8 +64,28 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
     const isSymbolRenderedBesideAmount =
         props.notification.type === 'tx-approved' || props.notification.type === 'tx-revoked';
     const toastTestIdPrefix = `@toast/${props.notification.type}`;
+    const accountLabel = account ? (
+        <span data-testid={`${toastTestIdPrefix}/account`}>
+            <AccountLabeling
+                account={account}
+                accountLabelRowProps={{
+                    as: 'span',
+                    display: 'inline-flex',
+                    gap: 4,
+                    overflow: 'visible',
+                    maxWidth: 'max-content',
+                }}
+            />
+        </span>
+    ) : (
+        props.messageValues?.account
+    );
 
     const handleTransactionClick = () => {
+        if (!account) {
+            return;
+        }
+
         const deviceToSelect = accountDevice || device;
         if (deviceToSelect?.id !== currentDevice?.id) {
             dispatch(selectDeviceThunk({ device: deviceToSelect }));
@@ -116,19 +131,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                                 id={props.message}
                                 values={{
                                     ...props.messageValues,
-                                    account: (
-                                        <Row
-                                            display="inline-flex"
-                                            alignItems="center"
-                                            data-testid={`${toastTestIdPrefix}/account`}
-                                        >
-                                            <AccountLabeling
-                                                account={account}
-                                                showAccountTypeBadge
-                                                accountTypeBadgeSize="small"
-                                            />
-                                        </Row>
-                                    ),
+                                    account: accountLabel,
                                     confirmations,
                                 }}
                             />
