@@ -407,7 +407,6 @@
   "TR_APPS_EMBEDDING": "Apps embedding",
   "TR_ASCII_ONLY": "Only ASCII characters are allowed",
   "TR_ASSETS": "Network",
-  "TR_ASSET_CODE": "Asset code",
   "TR_ASSET_CODE_INVALID": "Invalid asset code. Enter a valid asset code.",
   "TR_ASSET_PICKER_LOW_BALANCE": "Low balance",
   "TR_ASSET_PICKER_NETWORK_FILTER": "Network",
