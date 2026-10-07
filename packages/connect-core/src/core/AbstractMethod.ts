@@ -190,8 +190,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public getButtonRequestData?(code: string, name?: string): UiRequestButtonData | undefined;
 
-    public initAsync?(): Promise<void>;
-
     constructor(message: MethodMessage<Name>, params: Params) {
         const { payload } = message;
         this.name = payload.method;

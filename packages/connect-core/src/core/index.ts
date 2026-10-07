@@ -217,8 +217,6 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         method = await getMethod(message);
         logger.debug('method selected', method.name);
 
-        await method.initAsync?.();
-
         callMethods.push(method);
     } catch (error) {
         sendCoreMessage(createResponseMessage(responseID, false, { error }));
