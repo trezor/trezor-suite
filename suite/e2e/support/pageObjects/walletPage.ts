@@ -23,6 +23,11 @@ type GetTokenBalanceParams = {
 
 type TokenWalletParams = Omit<WalletParams, 'subAccount'> & { tokenName: string };
 
+type SelectSendTokenParams = {
+    networkSymbol: NetworkSymbol;
+    tokenSymbol: string;
+};
+
 export class WalletPage {
     readonly transactionSearch: Locator;
     readonly accountSearch: Locator;
@@ -231,13 +236,7 @@ export class WalletPage {
     }
 
     @step()
-    async selectSendToken({
-        networkSymbol,
-        tokenSymbol,
-    }: {
-        networkSymbol: NetworkSymbol;
-        tokenSymbol: string;
-    }) {
+    async selectSendToken({ networkSymbol, tokenSymbol }: SelectSendTokenParams) {
         await this.sendTokenSelect.click();
         await this.assetPicker.searchAsset(tokenSymbol);
         await this.page
