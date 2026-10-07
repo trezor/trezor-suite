@@ -106,8 +106,8 @@ describe('quotesUtils', () => {
                     fiatInput: '100',
                     cryptoInput: '0.001000168',
                     currencySelect: {
-                        value: 'czk',
-                        label: 'Czech Koruna',
+                        value: 'usd',
+                        label: 'United States Dollar',
                     },
                     cryptoSelect: {
                         id: 'bitcoin' as CryptoId,

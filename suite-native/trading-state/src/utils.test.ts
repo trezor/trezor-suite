@@ -9,7 +9,11 @@ import {
     usdtOnBscAsset,
 } from '@suite-native/trading-fixtures';
 
-import { getAssetByEnabledNetworksFilter, getFormDraftKeyByTradeType } from './utils';
+import {
+    getAssetByEnabledNetworksFilter,
+    getDefaultFiatCurrency,
+    getFormDraftKeyByTradeType,
+} from './utils';
 
 jest.mock('@suite-common/wallet-config', () => {
     const actual = jest.requireActual('@suite-common/wallet-config');
@@ -123,6 +127,42 @@ describe('utils', () => {
             const assetByEnabledNetworksFilter = getAssetByEnabledNetworksFilter(true, true);
 
             expect(assetByEnabledNetworksFilter(unknownAsset)).toBe(false);
+        });
+    });
+
+    describe('getDefaultFiatCurrency', () => {
+        const supportedFiatCurrencies = new Set(['usd', 'eur', 'czk']);
+
+        it('should prefer supported base currency over suggested currency', () => {
+            expect(
+                getDefaultFiatCurrency({
+                    baseCurrency: 'eur',
+                    supportedFiatCurrencies,
+                    suggestedFiatCurrency: 'czk',
+                }),
+            ).toBe('eur');
+        });
+
+        it('should match base currency case-insensitively', () => {
+            expect(getDefaultFiatCurrency({ baseCurrency: 'EUR', supportedFiatCurrencies })).toBe(
+                'eur',
+            );
+        });
+
+        it('should fall back to suggested currency if base currency is not supported', () => {
+            expect(
+                getDefaultFiatCurrency({
+                    baseCurrency: 'jpy',
+                    supportedFiatCurrencies,
+                    suggestedFiatCurrency: 'CZK',
+                }),
+            ).toBe('czk');
+        });
+
+        it('should fall back to USD if base currency is not supported and nothing is suggested', () => {
+            expect(getDefaultFiatCurrency({ baseCurrency: 'jpy', supportedFiatCurrencies })).toBe(
+                'usd',
+            );
         });
     });
 });

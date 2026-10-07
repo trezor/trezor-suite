@@ -62,7 +62,7 @@ describe('BuyCard', () => {
         expect(getByText(getTranslation('moduleTrading.selectCoin.title'))).toBeOnTheScreen();
         expect(
             getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')),
-        ).toHaveTextContent(/CZK/);
+        ).toHaveTextContent(/USD/);
         expect(getByTestId('@trading/buyCard/fiatSection')).toHaveStyle({
             borderBottomWidth: 1,
         });

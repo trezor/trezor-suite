@@ -35,6 +35,12 @@ type ChangeAssetOptions = {
     shouldReportAnalytics?: boolean;
 };
 
+export type ChangeTradeableAsset = (
+    asset: TradeableAsset,
+    account?: Account,
+    options?: ChangeAssetOptions,
+) => void;
+
 export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
     form,
     tradingType,
@@ -45,7 +51,7 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
     getAssetTokenChangedAction,
     getSetTradingAccountKeyAction,
     collision,
-}: UseTradeableAssetChangeConfig<TFieldValues>) => {
+}: UseTradeableAssetChangeConfig<TFieldValues>): ChangeTradeableAsset => {
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const { setValue, getValues } = form;
 

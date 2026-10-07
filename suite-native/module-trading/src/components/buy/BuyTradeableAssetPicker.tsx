@@ -4,16 +4,15 @@ import { useSelector } from 'react-redux';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { HStack } from '@suite-native/atoms';
-import { useWatch } from '@suite-native/forms';
-import { buyActions, selectBuyTradeableAssets } from '@suite-native/trading-state';
+import { selectBuyTradeableAssets } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { noop } from '@trezor/utils';
 
 import { BuyBaseCurrencyAmountInput } from './BuyBaseCurrencyAmountInput';
 import { BuyCryptoAmountInput } from './BuyCryptoAmountInput';
 import { BuyReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance';
+import { useBuyAssetChange } from '../../hooks/buy/useBuyAssetChange';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
-import { useTradeableAssetChange } from '../../hooks/general/form/useTradeableAssetChange';
 import { useAssetSelectInputFocus } from '../../hooks/general/useAssetSelectInputFocus';
 import { useTradeableAssetPickerNavigation } from '../../hooks/general/useTradeableAssetPickerNavigation';
 import { TradeableAssetButton } from '../general/TradeableAssetButton';
@@ -25,25 +24,11 @@ export const BuyTradeableAssetPicker = () => {
     const baseCurrencyInputRef = useRef<TextInput>(null);
     const form = useBuyFormContext();
     const { requestInputFocus, focusRequestedInput } = useAssetSelectInputFocus();
-    const selectedValue = useWatch({ control: form.control, name: 'asset' });
-    const setSelectedValue = useCallback(
-        (asset: TradeableAsset) => form.setValue('asset', asset),
-        [form],
-    );
+    const { selectedAsset: selectedValue, changeAsset } = useBuyAssetChange(form);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const assets = useSelector(selectBuyTradeableAssets);
 
     const btcAsset = useMemo(() => assets.find(asset => asset.cryptoId === 'bitcoin'), [assets]);
-
-    const changeAsset = useTradeableAssetChange({
-        form,
-        tradingType: 'buy',
-        selectedValue,
-        setSelectedValue,
-        analyticsParameter: 'cryptoTo',
-        getAssetChangedAction: buyActions.assetChanged,
-        getAssetTokenChangedAction: buyActions.assetTokenChanged,
-    });
 
     useEffect(() => {
         if (hasBitcoinOnlyFirmware && btcAsset) {

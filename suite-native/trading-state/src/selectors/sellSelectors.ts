@@ -11,17 +11,25 @@ import {
     selectTradingSellInfo,
     selectValidTradingSellQuotes,
 } from '@suite-common/trading';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectBaseCurrency,
+} from '@suite-common/wallet-core';
 import { type FiatCurrencyItem, type SellFormValues } from '@suite-native/trading-types';
 import { unique } from '@trezor/utils';
 
+import { getDefaultFiatCurrency } from '../utils';
 import {
     selectTradingResidenceCountry,
     selectTradingResidenceCountrySubdivision,
 } from './residenceSelectors';
-import { type TradingRootState, createMemoizedSelector } from '../reducers';
+import {
+    type TradingRootState,
+    createMemoizedSelector,
+    createMemoizedSelectorWithWalletSettings,
+} from '../reducers';
 
-const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 export const selectTradingSell = (state: TradingRootState) => state.wallet.trading.sell;
 
 export const selectSellSupportedFiatCurrencies = (state: TradingRootState) =>
@@ -42,7 +50,7 @@ export const selectSellSupportedFiatCurrenciesList = createMemoizedSelector(
 export const selectSellAmountLimits = (state: TradingRootState) =>
     selectTradingSell(state).amountLimits;
 
-export const selectSellFormDefaultValues = createMemoizedSelector(
+export const selectSellFormDefaultValues = createMemoizedSelectorWithWalletSettings(
     [
         selectTradingSellInfo as unknown as (
             state: TradingRootState,
@@ -50,15 +58,19 @@ export const selectSellFormDefaultValues = createMemoizedSelector(
         ({ wallet }) => wallet.trading.info.coins,
         selectTradingResidenceCountry,
         selectTradingResidenceCountrySubdivision,
+        selectBaseCurrency,
     ],
-    (sellInfo, coins, residenceCountry, residenceCountrySubdivision) => {
+    (sellInfo, coins, residenceCountry, residenceCountrySubdivision, baseCurrency) => {
         if (!sellInfo || !coins) {
             return {};
         }
 
         const country = residenceCountry ?? sellInfo.country;
 
-        const fiatCurrency = DEFAULT_FIAT_CURRENCY_FALLBACK;
+        const fiatCurrency = getDefaultFiatCurrency({
+            baseCurrency,
+            supportedFiatCurrencies: sellInfo.supportedFiatCurrencies,
+        });
         const countryDefaultValue =
             nonSanctionedRegional.getCountryOptionWithWorldwideFallback(country);
 
@@ -68,7 +80,7 @@ export const selectSellFormDefaultValues = createMemoizedSelector(
         );
 
         return {
-            fiatCurrency: fiatCurrency.toLowerCase(),
+            fiatCurrency,
             country: countryDefaultValue,
             countrySubdivision: countrySubdivisionDefaultValue,
             amountInCrypto: false,

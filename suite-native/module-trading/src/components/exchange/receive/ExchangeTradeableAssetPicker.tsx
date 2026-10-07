@@ -1,47 +1,21 @@
-import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { HStack } from '@suite-native/atoms';
-import { useWatch } from '@suite-native/forms';
-import { exchangeActions, selectExchangeBuyTradeableAssets } from '@suite-native/trading-state';
-import { type TradeableAsset } from '@suite-native/trading-types';
+import { selectExchangeBuyTradeableAssets } from '@suite-native/trading-state';
 
 import { ExchangeReceiveAmountInput } from './ExchangeReceiveAmountInput';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
-import { useTradeableAssetChange } from '../../../hooks/general/form/useTradeableAssetChange';
+import { useExchangeReceiveAssetChange } from '../../../hooks/exchange/useExchangeReceiveAssetChange';
 import { useTradeableAssetPickerNavigation } from '../../../hooks/general/useTradeableAssetPickerNavigation';
 import { TradeableAssetButton } from '../../general/TradeableAssetButton';
 
 const ASSET_PICKER_TEST_ID = '@trading/exchange/asset-receive-button';
 
-// Selecting a receive asset that equals the send asset clears the send side. The receive change
-// action dispatched afterwards already resets a superset of the send state, so no counterpart
-// action is needed here.
-const RECEIVE_ASSET_COLLISION = {
-    counterpartAssetField: 'sendAsset',
-    counterpartAmountField: 'sendCryptoAmount',
-    counterpartAnalyticsParameter: 'cryptoFrom',
-} as const;
-
 export const ExchangeTradeableAssetPicker = () => {
     const form = useExchangeFormContext();
     const assets = useSelector(selectExchangeBuyTradeableAssets);
-    const selectedValue = useWatch({ control: form.control, name: 'receiveAsset' });
-    const setSelectedValue = useCallback(
-        (asset: TradeableAsset) => form.setValue('receiveAsset', asset),
-        [form],
-    );
-
-    const handleAssetSelect = useTradeableAssetChange({
-        form,
-        tradingType: 'exchange',
-        selectedValue,
-        setSelectedValue,
-        analyticsParameter: 'cryptoTo',
-        getAssetChangedAction: exchangeActions.receiveAssetChanged,
-        getAssetTokenChangedAction: exchangeActions.receiveTokenChanged,
-        collision: RECEIVE_ASSET_COLLISION,
-    });
+    const { selectedAsset: selectedValue, changeAsset: handleAssetSelect } =
+        useExchangeReceiveAssetChange(form);
 
     const showAssetsScreen = useTradeableAssetPickerNavigation({
         assets,
