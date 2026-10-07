@@ -52,6 +52,7 @@ import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/sui
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
 import {
+    createWalletChainSendDeps,
     selectAccountsByDeviceState,
     selectChainNetworkSelection,
 } from '@suite-common/wallet-core';
@@ -164,6 +165,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
 
     const createChainNetworks = createDesktopChainNetworks({
+        ...createWalletChainSendDeps({ dispatch: deps.dispatch, getState: deps.getState }),
         getTrezorConnect: deps.getTrezorConnect,
         getNetworkConfig: networks.getNetworkConfig,
         fetchCoinGeckoCurrentRate: createFetchCoinGeckoCurrentRate(),

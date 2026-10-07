@@ -25,6 +25,14 @@ const fetchBlockbookHttpHistoricRates = jest.fn();
 
 const deps: DesktopChainNetworksDeps = {
     getTrezorConnect,
+    datetimeToLocktime: jest.fn(),
+    getStellarBackendUrl: jest.fn(),
+    resolveStellarContractId: jest.fn(),
+    getSolanaBlockInfo: jest.fn(),
+    isApprovalFlowSupported: jest.fn(),
+    getEvmPrivatePendingHint: jest.fn(),
+    resolveEvmNonce: jest.fn(),
+    onEvmFeeEstimationFailed: jest.fn(),
     fetchCoinGeckoCurrentRate,
     fetchBlockbookHttpCurrentRate,
     fetchCoinGeckoHistoricRates,
@@ -72,6 +80,23 @@ describe('createDesktopChainNetworks', () => {
             ['xlm', 'stellar'],
             ['trx', 'blockbook'],
         ]);
+    });
+
+    it('lets every family send, on every backend', () => {
+        const createChainNetworks = createDesktopChainNetworks(deps);
+
+        const networks = createChainNetworks([
+            select('btc', 'electrum'),
+            select('eth', 'blockbook'),
+            select('base', 'blockbook'),
+            select('sol', 'solana'),
+            select('ada', 'blockfrost'),
+            select('xrp', 'ripple'),
+            select('xlm', 'stellar'),
+            select('trx', 'blockbook'),
+        ]);
+
+        expect(networks.filter(network => !network.send)).toEqual([]);
     });
 
     it('gives each family its own token capabilities', () => {

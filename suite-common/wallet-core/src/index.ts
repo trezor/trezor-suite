@@ -66,6 +66,7 @@ export * from './send/sendFormThunks';
 export type * from './send/sendFormTypes';
 export * from './send/tron/deriveColdRecipient';
 export * from './send/useEvmNonceInfo';
+export * from './send/walletChainSendDeps';
 export * from './settings/useDisplayBaseCurrency';
 export * from './settings/walletSettingsActions';
 export * from './settings/walletSettingsConstants';
