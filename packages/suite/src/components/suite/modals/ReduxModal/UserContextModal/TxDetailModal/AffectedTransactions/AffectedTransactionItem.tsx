@@ -32,7 +32,7 @@ export const AffectedTransactionItem = ({ tx, isAccountOwned }: AffectedTransact
 
             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                 <HiddenPlaceholder>
-                    <Address value={tx.txid} isTruncated />
+                    <Address value={tx.txid} isTruncated isChunked={false} />
                 </HiddenPlaceholder>
             </Text>
         </InfoSegments>

@@ -368,6 +368,7 @@ export const TradingFormApproval = () => {
                         tx.approvalTxid ? (
                             <Address
                                 isTruncated
+                                isChunked={false}
                                 value={tx.approvalTxid}
                                 intent="brand"
                                 typographyStyle="body-md"
