@@ -192,17 +192,20 @@ export default class EthereumSignTransaction extends AbstractMethod<
         });
     }
 
-    // The device is not known yet, so these definitions are used only to decode the content.
-    async initAsync(): Promise<void> {
+    // Only `__info` names the network and token, so only `__info` downloads their definitions to
+    // decode them. payloadToPrecomposed reads them too; core resolves getMethodInfo before it.
+    async getMethodInfo() {
         const definitions = await this.getDefinitions();
-        if (!definitions) return;
+        if (definitions) {
+            this.params.definitions = definitions;
 
-        this.params.definitions = definitions;
-
-        const decoded = decodeEthereumDefinition(definitions);
-        if (decoded.network) {
-            this.params.network = ethereumNetworkInfoFromDefinition(decoded.network);
+            const decoded = decodeEthereumDefinition(definitions);
+            if (decoded.network) {
+                this.params.network = ethereumNetworkInfoFromDefinition(decoded.network);
+            }
         }
+
+        return super.getMethodInfo();
     }
 
     get info() {
