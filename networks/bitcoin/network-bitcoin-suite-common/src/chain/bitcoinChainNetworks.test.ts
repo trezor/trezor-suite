@@ -115,4 +115,15 @@ describe('Bitcoin chain networks', () => {
             }),
         ).toThrow(new ChainNetworkError('unsupported-network', asNetworkSymbol('eth')));
     });
+
+    it('holds only its native asset', () => {
+        const network = createBitcoinBlockbookChainNetwork(blockbookDeps)({
+            symbol: asNetworkSymbol('btc'),
+            backend: blockbook,
+        });
+
+        expect(network.nativeAsset).toEqual({ symbol: 'BTC', name: 'Bitcoin' });
+        expect(network.getTokens).toBeUndefined();
+        expect(network.getTokenFiatRate).toBeUndefined();
+    });
 });

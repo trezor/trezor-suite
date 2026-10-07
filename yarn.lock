@@ -18480,6 +18480,7 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@suite-common/calldata": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/network-ethereum": "workspace:*"
     "@trezor/network-ethereum-types": "workspace:*"

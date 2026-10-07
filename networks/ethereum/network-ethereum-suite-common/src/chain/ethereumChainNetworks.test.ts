@@ -111,4 +111,79 @@ describe('Ethereum chain networks', () => {
         });
         expect(network.backendType).toBe('evm-rpc');
     });
+
+    it('names its native asset as the user sees it', () => {
+        const network = createEthereumBlockbookChainNetwork(blockbookDeps)({
+            symbol: asNetworkSymbol('base'),
+            backend: { type: 'blockbook', urls: [] },
+        });
+
+        expect(network.nativeAsset.symbol).toBe('ETH');
+    });
+
+    it('reads fungible tokens through the wallet connection', async () => {
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: {
+                tokens: [
+                    {
+                        standard: 'ERC20',
+                        contract: '0xweth',
+                        symbol: 'WETH',
+                        decimals: 18,
+                        balance: '333300000000000000',
+                    },
+                    { standard: 'ERC1155', contract: '0xnft', decimals: 0, balance: '1' },
+                ],
+            },
+        });
+        const network = createEthereumBlockbookChainNetwork(blockbookDeps)({
+            symbol: asNetworkSymbol('eth'),
+            backend: { type: 'blockbook', urls: [] },
+        });
+
+        await expect(network.getTokens?.({ ref: getRef('eth'), signal })).resolves.toEqual([
+            expect.objectContaining({ contract: '0xweth', symbol: 'WETH', balance: '0.3333' }),
+        ]);
+        expect(getAccountInfo).toHaveBeenCalledWith(
+            expect.objectContaining({ details: 'tokenBalances', identity: 'wallet-identity' }),
+        );
+    });
+
+    it('takes token rates from Blockbook on a Blockbook backend', async () => {
+        blockchainGetCurrentFiatRates.mockResolvedValue({
+            success: true,
+            payload: { ts: 1, rates: { eur: 0.9 } },
+        });
+        const network = createEthereumBlockbookChainNetwork(blockbookDeps)({
+            symbol: asNetworkSymbol('eth'),
+            backend: { type: 'blockbook', urls: [] },
+        });
+
+        await expect(
+            network.getTokenFiatRate?.({ contract: '0xusdc', currency: 'eur', signal }),
+        ).resolves.toEqual({ rate: 0.9, timestamp: 1 });
+        expect(blockchainGetCurrentFiatRates).toHaveBeenCalledWith({
+            coin: 'eth',
+            token: '0xusdc',
+            currencies: ['eur'],
+        });
+    });
+
+    it('takes token rates from CoinGecko on a custom RPC node', async () => {
+        fetchCoinGeckoCurrentRate.mockResolvedValue({ rate: 1, timestamp: 2 });
+        const network = createEthereumCustomRpcChainNetwork(customRpcDeps)({
+            symbol: asNetworkSymbol('eth'),
+            backend: { type: 'evm-rpc', urls: ['https://rpc.example'] },
+        });
+
+        await network.getTokenFiatRate?.({ contract: '0xusdc', currency: 'eur', signal });
+
+        expect(fetchCoinGeckoCurrentRate).toHaveBeenCalledWith({
+            symbol: 'eth',
+            currency: 'eur',
+            signal,
+            tokenAddress: '0xusdc',
+        });
+    });
 });

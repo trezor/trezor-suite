@@ -33,6 +33,19 @@ describe('current fiat rate fetchers', () => {
             expect(coingeckoFetch).toHaveBeenCalledWith({ symbol: asNetworkSymbol('sol') });
         });
 
+        it('quotes a token by its contract', async () => {
+            coingeckoFetch.mockResolvedValue({ ts: 100, rates: { eur: 0.92 } });
+
+            await fetchRate({
+                symbol: asNetworkSymbol('eth'),
+                currency: 'eur',
+                signal,
+                tokenAddress: '0xusdc',
+            });
+
+            expect(coingeckoFetch).toHaveBeenCalledWith({ symbol: 'eth', tokenAddress: '0xusdc' });
+        });
+
         it.each([[null], [{ ts: 100, rates: {} }]])('answers null for %p', async response => {
             coingeckoFetch.mockResolvedValue(response);
 
@@ -63,6 +76,18 @@ describe('current fiat rate fetchers', () => {
             await expect(
                 fetchRate({ symbol: asNetworkSymbol('btc'), currency: 'usd', signal }),
             ).resolves.toBeNull();
+        });
+
+        it('answers null without asking for tokens', async () => {
+            await expect(
+                fetchRate({
+                    symbol: asNetworkSymbol('btc'),
+                    currency: 'usd',
+                    signal,
+                    tokenAddress: 'token',
+                }),
+            ).resolves.toBeNull();
+            expect(blockbookFetch).not.toHaveBeenCalled();
         });
 
         it('answers null without asking for coins it does not serve', async () => {

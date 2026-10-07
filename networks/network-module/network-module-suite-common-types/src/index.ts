@@ -28,7 +28,9 @@ export {
 
 export type { ChainAccountBalance } from './chain/ChainAccountBalance';
 export type { ChainAccountRef } from './chain/ChainAccountRef';
+export type { ChainTokenBalance } from './chain/ChainTokenBalance';
 export type {
+    ChainNativeAsset,
     ChainNetwork,
     ChainNetworkBackend,
     ChainNetworkParams,
@@ -36,6 +38,7 @@ export type {
     GetAccountBalanceParams,
     GetAccountFiatBalanceParams,
     GetNativeFiatRateParams,
+    GetTokenFiatRateParams,
 } from './chain/ChainNetwork';
 export { ChainNetworkError } from './chain/ChainNetworkError';
 export type { ChainNetworkErrorCode } from './chain/ChainNetworkError';
@@ -58,4 +61,13 @@ export { createFetchConnectCurrentFiatRate } from './chain/createFetchConnectCur
 export type { FetchConnectCurrentFiatRateDeps } from './chain/createFetchConnectCurrentFiatRate';
 export { getDisplayBalanceFiatValue } from './chain/getDisplayBalanceFiatValue';
 export { buildConnectChainNetwork } from './chain/buildConnectChainNetwork';
-export type { ConnectChainNetworkDefinition } from './chain/buildConnectChainNetwork';
+export type {
+    ConnectChainNetworkDefinition,
+    ConnectChainNetworkTokens,
+} from './chain/buildConnectChainNetwork';
+export { createFetchConnectTokens } from './chain/createFetchConnectTokens';
+export type {
+    FetchConnectTokens,
+    FetchConnectTokensDeps,
+    FetchConnectTokensParams,
+} from './chain/createFetchConnectTokens';

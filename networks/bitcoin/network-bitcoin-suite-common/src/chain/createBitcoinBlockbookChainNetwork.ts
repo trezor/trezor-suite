@@ -24,6 +24,7 @@ export const createBitcoinBlockbookChainNetwork = (
 
         return buildConnectChainNetwork({
             params,
+            nativeAsset: config.nativeAsset,
             decimals: config.decimals,
             accountSyncIntervalMs: config.accountSyncIntervalMs,
             displayBalance: 'availableBalance',

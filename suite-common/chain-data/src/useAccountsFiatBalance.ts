@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { type UseQueryResult, useQueries } from '@suite-common/react-query';
+import { useQueries } from '@suite-common/react-query';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type {
     ChainAccountBalance,
@@ -14,22 +14,8 @@ import {
     getChainAccountBalanceQueryOptions,
     getNativeFiatRateQueryOptions,
 } from './chainQueryOptions';
-import { pairChainAccounts } from './pairChainAccounts';
-
-type CombinedResults<TData> = {
-    data: readonly (TData | undefined)[];
-    isPending: boolean;
-    hasErrors: boolean;
-};
-
-// Module-level so its identity is stable and the combined result is memoized by the observer.
-const combineResults = <TData>(
-    results: readonly UseQueryResult<TData>[],
-): CombinedResults<TData> => ({
-    data: results.map(result => result.data),
-    isPending: results.some(result => result.isPending),
-    hasErrors: results.some(result => result.isError),
-});
+import { combineQueryResults } from './combineQueryResults';
+import { getChainAccountPairKey, pairChainAccounts } from './pairChainAccounts';
 
 export type UseAccountsFiatBalanceParams = {
     networks: readonly ChainNetwork[];
@@ -59,7 +45,7 @@ export type AccountsFiatBalance = {
 export const useAccountsFiatBalance = (
     params: UseAccountsFiatBalanceParams,
 ): AccountsFiatBalance => {
-    const { pairs, uncoveredRefs } = useMemo(
+    const { pairs, uniquePairs, uncoveredRefs } = useMemo(
         () => pairChainAccounts(params.networks, params.accounts),
         [params.networks, params.accounts],
     );
@@ -67,10 +53,14 @@ export const useAccountsFiatBalance = (
     const valuedNetworks = useMemo(() => [...new Set(pairs.map(pair => pair.network))], [pairs]);
 
     const balances = useQueries({
-        queries: pairs.map(pair =>
-            getChainAccountBalanceQueryOptions({ ...pair, enabled: params.enabled }),
+        queries: uniquePairs.map(pair =>
+            getChainAccountBalanceQueryOptions({
+                network: pair.network,
+                ref: pair.ref,
+                enabled: params.enabled,
+            }),
         ),
-        combine: combineResults<ChainAccountBalance>,
+        combine: combineQueryResults<ChainAccountBalance>,
     });
 
     const rates = useQueries({
@@ -81,18 +71,21 @@ export const useAccountsFiatBalance = (
                 enabled: params.enabled,
             }),
         ),
-        combine: combineResults<FiatRate | null>,
+        combine: combineQueryResults<FiatRate | null>,
     });
 
     return useMemo(() => {
+        const balanceByKey = new Map(
+            uniquePairs.map((pair, index) => [getChainAccountPairKey(pair), balances.data[index]]),
+        );
         const rateByNetwork = new Map(
             valuedNetworks.map((network, index) => [network, rates.data[index]]),
         );
         let total = new BigNumber(0);
         let valuedCount = 0;
 
-        pairs.forEach((pair, index) => {
-            const balance = balances.data[index];
+        pairs.forEach(pair => {
+            const balance = balanceByKey.get(getChainAccountPairKey(pair));
             const rate = rateByNetwork.get(pair.network);
 
             if (!balance || !rate) return;
@@ -110,5 +103,5 @@ export const useAccountsFiatBalance = (
             isPartial: !isPending && valuedCount < pairs.length,
             isCovered: uncoveredRefs.length === 0,
         };
-    }, [pairs, uncoveredRefs, valuedNetworks, balances, rates]);
+    }, [pairs, uniquePairs, uncoveredRefs, valuedNetworks, balances, rates]);
 };

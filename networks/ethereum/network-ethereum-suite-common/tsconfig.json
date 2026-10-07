@@ -6,6 +6,9 @@
             "path": "../../../suite-common/calldata"
         },
         {
+            "path": "../../../packages/blockchain-link-types"
+        },
+        {
             "path": "../../../packages/connect-common"
         },
         { "path": "../network-ethereum" },
