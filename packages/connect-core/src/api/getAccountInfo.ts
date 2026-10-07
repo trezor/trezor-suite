@@ -17,7 +17,7 @@ import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLin
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
-import { bundlify, validateParams } from './common/paramsValidator';
+import { bundlify, validateCoinPath, validateParams } from './common/paramsValidator';
 import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
 import { buildOutputDescriptor } from '../utils/buildOutputDescriptor';
 import { getScriptType, validatePath } from '../utils/pathUtils';
@@ -75,6 +75,24 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 address_n = validatePath(batch.path, 2);
                 // since there is no descriptor device will be used
                 willUseDevice = typeof batch.descriptor !== 'string';
+                // `validatePath(path, 2)` above guarantees the coin type element.
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const coinTypePathElement: number = address_n[1];
+                // The device also derives Bitcoin keys and Ethereum addresses at paths of other
+                // coins, so a path the device will derive must be in the SLIP-44 coin type of
+                // `coin`. Coin type 1 is accepted for every Ethereum network, not only for the EVM
+                // testnets (tsep, thod) whose legacy accounts use it: the ethereum coin definitions
+                // carry no testnet flag to narrow it by, and a key at a testnet coin type holds no
+                // mainnet funds. Other networks' firmware apps check their own paths. With a
+                // descriptor nothing is derived, so the path is only a label and is left alone.
+                if (
+                    willUseDevice &&
+                    (coinInfo.type === 'bitcoin' ||
+                        (coinInfo.type === 'ethereum' &&
+                            fromHardenedPathPart(coinTypePathElement) !== 1))
+                ) {
+                    validateCoinPath(address_n, coinInfo);
+                }
             }
             if (!batch.path && !batch.descriptor) {
                 throw ERRORS.TypedError(

@@ -56,14 +56,14 @@ describe('GetAccountInfo path and coin', () => {
         ]);
     });
 
-    // Unlike getAddress and getPublicKey, the path is not checked against the coin, so the device
-    // derives a key of another coin under the permission and confirmation of `coin`.
     it.each<GetAccountInfoParams>([
         { coin: 'btc', path: "m/44'/60'/0'" },
         { coin: 'test', path: "m/84'/0'/0'" },
         { coin: 'eth', path: "m/44'/61'/0'/0/0" },
-    ])('accepts $coin with path $path of another coin', params => {
-        expect(() => createMethodWith(params)).not.toThrow();
+    ])('rejects $coin with path $path of another coin', params => {
+        expect(() => createMethodWith(params)).toThrow(
+            'Parameters "path" and "coin" do not match.',
+        );
     });
 
     // With a descriptor the device derives nothing, so the path is only a response field and a
@@ -79,7 +79,7 @@ describe('GetAccountInfo path and coin', () => {
         ).not.toThrow();
     });
 
-    it('accepts a bundle in which one path is of another coin', () => {
+    it('rejects a bundle in which one path is of another coin', () => {
         expect(() =>
             createMethodWith({
                 bundle: [
@@ -87,6 +87,6 @@ describe('GetAccountInfo path and coin', () => {
                     { coin: 'btc', path: "m/44'/195'/0'" },
                 ],
             }),
-        ).not.toThrow();
+        ).toThrow('Parameters "path" and "coin" do not match.');
     });
 });
