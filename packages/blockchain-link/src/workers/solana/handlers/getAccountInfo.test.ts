@@ -10,6 +10,8 @@ const descriptor = 'DDBF6Yfa2iSt7v5VwQqpoqrCso2uBcmsTKPQu9vZZzeg';
 const tokenAccount = '3cEFnhs2mZBMEhENGh6eor1VG3mMP4Tf32bdaCbdyN9q';
 const mint = 'CXGiC9EhaGfpj4Ajc8WAU3UVpWxnyzdL7bCJUaUy2UHQ';
 const issuer = '8zCfx6n1MaH7hQ6q1eafD2nZ9Cn1CwKU83SaaG5mfSLC';
+const sender = '8omRgd6HBSSsJs81tbjag3igM2CF444m6DpuvMsCBDCx';
+const senderTokenAccount = 'BRgrqMggCS1ZU8Yxmh1rVMDyqhiiq74rJN4yu9mgqUZ4';
 
 const token2022Program = tokenProgramsInfo['spl-token-2022'].publicKey;
 
@@ -59,6 +61,80 @@ const mintToTransaction = {
                 owner: descriptor,
                 programId: token2022Program,
                 uiTokenAmount: { amount: '100000000', decimals: 6 },
+            },
+        ],
+    },
+};
+
+// Token-2022 mints with the transfer fee extension (e.g. PYUSD) are often sent with transferCheckedWithFee.
+const transferCheckedWithFeeTransaction = {
+    slot: 2n,
+    blockTime: 1790000000n,
+    transaction: {
+        signatures: ['transferCheckedWithFeeSignature'],
+        message: {
+            accountKeys: [
+                { pubkey: sender, signer: true, writable: true, source: 'transaction' },
+                { pubkey: tokenAccount, signer: false, writable: true, source: 'transaction' },
+                {
+                    pubkey: senderTokenAccount,
+                    signer: false,
+                    writable: true,
+                    source: 'transaction',
+                },
+                { pubkey: mint, signer: false, writable: false, source: 'transaction' },
+                { pubkey: token2022Program, signer: false, writable: false, source: 'transaction' },
+            ],
+            recentBlockhash: 'recentBlockhash',
+            instructions: [
+                {
+                    program: 'spl-token',
+                    programId: token2022Program,
+                    parsed: {
+                        type: 'transferCheckedWithFee',
+                        info: {
+                            authority: sender,
+                            destination: tokenAccount,
+                            feeAmount: { amount: '0', decimals: 6 },
+                            mint,
+                            source: senderTokenAccount,
+                            tokenAmount: { amount: '100000000', decimals: 6 },
+                        },
+                    },
+                    stackHeight: 1,
+                },
+            ],
+        },
+    },
+    meta: {
+        err: null,
+        fee: 5000n,
+        preBalances: [1000000n, 2039280n, 2039280n, 1461600n, 1n],
+        postBalances: [995000n, 2039280n, 2039280n, 1461600n, 1n],
+        innerInstructions: [],
+        preTokenBalances: [
+            {
+                accountIndex: 2,
+                mint,
+                owner: sender,
+                programId: token2022Program,
+                uiTokenAmount: { amount: '500000000', decimals: 6 },
+            },
+        ],
+        postTokenBalances: [
+            {
+                accountIndex: 1,
+                mint,
+                owner: descriptor,
+                programId: token2022Program,
+                uiTokenAmount: { amount: '100000000', decimals: 6 },
+            },
+            {
+                accountIndex: 2,
+                mint,
+                owner: sender,
+                programId: token2022Program,
+                uiTokenAmount: { amount: '400000000', decimals: 6 },
             },
         ],
     },
@@ -141,6 +217,20 @@ describe('solana getAccountInfo', () => {
             expect.objectContaining({
                 type: 'recv',
                 from: '',
+                to: descriptor,
+                contract: mint,
+                amount: '100000000',
+            }),
+        ]);
+    });
+
+    it('resolves the sender of a transferCheckedWithFee transfer', async () => {
+        const response = await getAccountInfo(createRequest(transferCheckedWithFeeTransaction));
+
+        expect(response.payload.history.transactions?.[0]?.tokens).toEqual([
+            expect.objectContaining({
+                type: 'recv',
+                from: sender,
                 to: descriptor,
                 contract: mint,
                 amount: '100000000',

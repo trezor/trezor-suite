@@ -41,6 +41,12 @@ export type ApiTokenAccount = {
     pubkey: Address;
 };
 
+const tokenTransferInstructionTypes = [
+    'transfer',
+    'transferChecked',
+    'transferCheckedWithFee',
+] as const;
+
 export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
     const env = isCodesignBuild() ? 'stable' : 'develop';
 
@@ -483,8 +489,7 @@ export const getTxType = (
 
     const isTransfer = parsedInstructions.every(
         instruction =>
-            instruction.parsed.type === 'transfer' ||
-            instruction.parsed.type === 'transferChecked' ||
+            isArrayMember(instruction.parsed.type, tokenTransferInstructionTypes) ||
             (instruction.program === 'system' && instruction.parsed.type === 'advanceNonce') ||
             isInstructionCreatingTokenAccount(instruction) ||
             instruction.programId === MEMO_PROGRAM_PUBLIC_KEY ||
@@ -574,7 +579,7 @@ type TokenTransferInstruction = {
     program: TokenProgramName;
     programId: Address;
     parsed: {
-        type: 'transferChecked' | 'transfer';
+        type: (typeof tokenTransferInstructionTypes)[number];
         info: {
             destination: string;
             authority: string;
@@ -586,6 +591,10 @@ type TokenTransferInstruction = {
                 decimals: number;
             };
             amount?: string;
+            feeAmount?: {
+                amount: string;
+                decimals: number;
+            };
         };
     };
 };
@@ -605,7 +614,7 @@ const isTokenTransferInstruction = (
         isTokenProgramName(ix.program) &&
         'type' in parsed &&
         typeof parsed.type === 'string' &&
-        (parsed.type === 'transferChecked' || parsed.type === 'transfer') &&
+        isArrayMember(parsed.type, tokenTransferInstructionTypes) &&
         'info' in parsed &&
         typeof parsed.info === 'object' &&
         (('authority' in parsed.info && typeof parsed.info.authority === 'string') ||
@@ -685,7 +694,15 @@ export const getTokens = (
             const decimals = Number(
                 parsed.info.tokenAmount?.decimals || instructionTokenInfo?.decimals || 0,
             );
-            const amount = parsed.info.tokenAmount?.amount || parsed.info.amount || '-1';
+            const type = getUiType(ix);
+            const transferredAmount = parsed.info.tokenAmount?.amount || parsed.info.amount || '-1';
+            // Token-2022 withholds the transfer fee from the amount credited to the recipient.
+            const amount =
+                type === 'recv' && parsed.info.feeAmount
+                    ? new BigNumber(transferredAmount)
+                          .minus(parsed.info.feeAmount.amount)
+                          .toString()
+                    : transferredAmount;
 
             const source = parsed.info.authority || parsed.info.source;
 
@@ -699,7 +716,7 @@ export const getTokens = (
                     : parsed.info.destination;
 
             return {
-                type: getUiType(ix),
+                type,
                 standard: tokenProgramsInfo[program].tokenStandard,
                 from,
                 to,
