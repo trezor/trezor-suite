@@ -61,8 +61,16 @@ const getScriptTypeFromScriptPubKey = (scriptPubKey: string): AllowedScriptTypes
 export function prefixScriptPubKey(scriptPubKey: string, useHex?: boolean): string;
 export function prefixScriptPubKey(scriptPubKey: string, useHex: false): Buffer;
 export function prefixScriptPubKey(scriptPubKey: string, useHex = true) {
-    const [OP, hash] = scriptPubKey.split(' ');
-    const script = bscript.fromASM(`OP_${OP} ${hash}`);
+    // NBitcoin prints the witness version of segwit outputs as a bare digit, and coordinators can
+    // only ever send `0` or `1` (witness versions 2-16 are undefined), so a single digit covers it.
+    // Do not widen this to `/^\d+$/`: an all-decimal-digit hash would match it as well and
+    // `fromASM` would then throw on a script that works today. Coordinators may also allow P2PKH
+    // and P2SH outputs, whose opcodes NBitcoin prints by name, e.g. `OP_HASH160 {hash} OP_EQUAL`.
+    const asm = scriptPubKey
+        .split(' ')
+        .map(chunk => (/^\d$/.test(chunk) ? `OP_${chunk}` : chunk))
+        .join(' ');
+    const script = bscript.fromASM(asm);
 
     return useHex ? script.toString('hex') : script;
 }
@@ -149,8 +157,13 @@ export const sortInputs = (a: CoinjoinInput, b: CoinjoinInput) => {
 
 // WalletWasabi/WalletWasabi/WabiSabi/Models/MultipartyTransaction/SigningState.cs
 export const sortOutputs = (a: CoinjoinOutput, b: CoinjoinOutput) => {
-    if (a.Value === b.Value)
-        return compareByteArray(Buffer.from(a.ScriptPubKey), Buffer.from(b.ScriptPubKey));
+    // WalletWasabi compares raw script bytes; the text form orders P2WPKH and P2WSH differently.
+    if (a.Value === b.Value) {
+        return compareByteArray(
+            prefixScriptPubKey(a.ScriptPubKey, false),
+            prefixScriptPubKey(b.ScriptPubKey, false),
+        );
+    }
 
     return b.Value - a.Value;
 };
