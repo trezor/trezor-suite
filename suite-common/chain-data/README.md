@@ -15,10 +15,11 @@ enabled networks    ──▶   createDesktopChainNetworks   ──▶   network
   the backend the user chose. Plain-promise capabilities, a network-owned fiat rule and its own
   refresh policy. Implementations live in each network's `-suite-common` package, one per backend
   variant (Bitcoin on Blockbook or Electrum, EVM on Blockbook or custom RPC, Solana).
-- **Composition**: each app builds networks for the selection
-  (`selectChainNetworkSelection`) and exposes them as the `getSelectedChainNetworks` getter. A
-  network is rebuilt only when its backend settings change, so queries and consumers are not
-  churned by unrelated store updates.
+- **Composition**: each app builds networks for the selection (`selectChainNetworkSelection`, plus
+  any runtime networks) and exposes them as a `ChainNetworksStore`: `{ getSnapshot, subscribe }`,
+  read with `useSyncExternalStore` (`useSelectedChainNetworks`). The store publishes only when a
+  network is added, removed or rebuilt, and a network is rebuilt only when its backend settings
+  change. Consumers do not subscribe to Redux, and a new block changes nothing.
 - **Queries**: one cache entry per chain account (`['chain', symbol, backendType, 'account',
 descriptor, 'balance']`) and per network rate. Keys hold plain strings only; the backend type
   scopes them so data from one backend is never served after switching to another.
@@ -83,7 +84,8 @@ Still on the Redux transactions slice: export, the graph, staking views, the sen
 control, nonces, RBF), block height, and the phishing filter of notifications whose transaction is
 not loaded in the query cache.
 
-Under the flag the desktop send pipeline also runs through chain networks. That covers the send
+Under the flag the desktop send pipeline also runs through chain networks, and runtime EVM
+networks (see below) can be turned on. That covers the send
 form, RBF bump fee and cancel, token allowance, trading exchange and sell, and Send raw.
 
 - **Compose.** Each family composes in its network package (`network.send.composeFeeLevels`),
@@ -100,6 +102,107 @@ form, RBF bump fee and cancel, token allowance, trading exchange and sell, and S
   flag-off path and the flows still on Redux run the same code. Those flows are staking, yield,
   WalletConnect and the native app.
 
+## Adding a network
+
+The send and read paths above never branch on the network type; a lint rule
+(`noNetworkTypeBranchingSyntax`) keeps it so in `chain-data`, the desktop chain-data and send hooks,
+and the wallet's chain-send glue. Each network decides from what the app passes in; only the
+composition (`createDesktopChainNetworks`) maps a network to its implementation.
+
+- **A new family.** Add a `-suite-common` package whose factory returns a `ChainNetwork` (with
+  `send` to send), and add one case to the composition switch. The legacy network list is derived
+  from the family's configs.
+- **A built-in EVM network (needs a release).** In `@trezor/network-ethereum*`, add the symbol, its
+  `networkConfigBySymbol` entry and its wrapped native token. The legacy list, the sync interval
+  and the chain network follow from that; transaction simulation is opt-in per chain. A Blockbook
+  backend still needs Connect's own coin data (`coins-eth.json`, fee levels).
+- **A runtime EVM network (no release).** Defined as data, read and broadcast over the network's
+  own JSON-RPC nodes; Connect only signs, for the definition's chain ID. See below.
+
+Still shared across families: `ChainSendDraft` and the precomposed types are the union of every
+family's send form fields. Splitting them means splitting the send form UI.
+
+### Runtime EVM networks
+
+Behind the `queryChainData` flag. A definition comes from one of two places:
+
+- **Trezor's signed list.** The message-system feature `networks.evm.runtime` carries the
+  definitions in its payload, signed and delivered like any message-system config:
+
+    ```json
+    {
+        "domain": "networks.evm.runtime",
+        "flag": true,
+        "payload": {
+            "networks": [
+                {
+                    "symbol": "exc",
+                    "chainId": 777,
+                    "name": "Example Chain",
+                    "nativeSymbol": "EXC",
+                    "decimals": 18,
+                    "rpcUrls": ["https://rpc.example.com"],
+                    "explorer": {
+                        "tx": "https://explorer.example.com/tx/",
+                        "address": "https://explorer.example.com/address/"
+                    }
+                }
+            ]
+        }
+    }
+    ```
+
+- **The user.** Settings → Debug → Custom EVM networks. The node must answer with the chain ID
+  the user entered.
+
+Every entry is validated (`validateRuntimeEvmNetworkDefinition`): a symbol of 2 to 10 lowercase
+letters or digits, a symbol and chain ID no built-in network has, 18 decimals, RPC nodes over
+https (http on this computer only) and an https explorer. Trezor's entries win over the user's on
+a clash. Each network stays off until the user turns it on, because it is then read at the
+addresses of the wallet's Ethereum accounts: an EVM address is the same on every chain, so a
+runtime network needs no discovery.
+
+What works: the network's balance per Ethereum account on the dashboard, and sending its coin. The
+send has its own review, since the wallet's reads the app's network config. The device shows the
+chain as unknown, with its chain ID. Before composing and before broadcasting, the node must serve
+the chain the definition names.
+
+What does not, yet: tokens, history, fiat rates, account pages, custom fees, replacement, MEV
+protection. Analytics see `runtime-evm`, never the network. On desktop, the renderer's request
+filter lets a node's host through on its first request (`request-filter/allow-chain-node-host`,
+used through `createChainNodeFetch`) until the app quits, as custom backends are in the main
+process.
+
+**State outside Redux.** None of it is in Redux:
+
+- **The registry** (`createRuntimeEvmNetworkRegistry`, Ethereum package) is an external store over
+  three sources the platform provides: the user's preferences, Trezor's list, and whether runtime
+  networks are read at all (the flag). It resolves them with `resolveRuntimeEvmNetworks`.
+- **The preferences** are a port, `RuntimeNetworkPreferencesStore`
+  (`@trezor/network-module-suite-common-types`). It holds the user's definitions and the networks
+  they turned on, keyed `source:symbol`, so consent never carries over to another network with the
+  same symbol. Each platform keeps them as it likes. Web and desktop use their own IndexedDB store,
+  `runtimeNetworkPreferences` (`createIdbRuntimeNetworkPreferencesStore`), over the shared
+  in-memory implementation.
+- **The send** is composed in a modal held in component state. It is reviewed in the React send
+  session. During a runtime session, the device's `ButtonRequest_Other` screens open that review.
+
+### Adding Sui
+
+Sui is the next family. It needs no change to the contracts above:
+
+- a `networks/sui/*` package whose factory returns a `ChainNetwork` with `send`: balances,
+  `Coin<T>` tokens, history and the gas budget. If Sui is not served through Connect, it reads
+  its fullnodes with `createChainNodeFetch`, like runtime networks do;
+- `'sui'` in the network type union and its config, from which the legacy list derives;
+- one case in `createDesktopChainNetworks`;
+- a gas-budget field in `ChainSendDraft`, while drafts are still shared across families;
+- signing through Connect once the firmware supports it. The fee levels can come from the node
+  through `send.getFeeInfo`.
+
+Still to edit for any new family: the `networkType` branches in the transaction review modal and
+`buttonRequestMiddleware`, and `wallet-utils` (roadmap phase 7).
+
 ## Roadmap
 
 | #   | Phase                                                                                                                   | Exit criterion                                           |
@@ -114,6 +217,7 @@ form, RBF bump fee and cancel, token allowance, trading exchange and sell, and S
 | 8   | Persistence for remembered wallets, with the same consent as Redux storage                                              | A remembered wallet works offline without Redux balances |
 | 9   | Native: `createNativeChainNetworks` from the same factories                                                             | The mobile account list reads chain data                 |
 | 10  | Remove the flag, Redux balance fields, fiat-rate thunks and `useTotalFiatBalance`                                       | The legacy path is gone                                  |
+| 11  | Runtime networks: tokens and history over JSON-RPC, their own account pages                                             | A runtime network reads like a built-in one              |
 
 Known gap carried into phase 2: changing only a backend URL keeps the cache scope, so the
 composition must call `createChainQueryInvalidator(...).onBackendChanged(symbol)` when it rebuilds
