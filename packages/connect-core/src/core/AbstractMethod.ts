@@ -278,16 +278,16 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     // Async so that a method can download what its title names (e.g. a network definition) only
     // when the title is requested, instead of on every call.
-    public getMethodInfo(): Promise<MethodInfo> {
-        return Promise.resolve({
+    public async getMethodInfo(): Promise<MethodInfo> {
+        return {
             useUi: this.useUi,
             requiredPermissions: this.requiredPermissions,
             info: this.info,
-            precomposed: undefined, // requested by a special flag,
-        });
+            precomposed: await this.payloadToPrecomposed(),
+        };
     }
 
-    public payloadToPrecomposed(): Promise<PrecomposeResultFinal | undefined> {
+    protected payloadToPrecomposed(): Promise<PrecomposeResultFinal | undefined> {
         // Suite uses precomposed result for transaction review modals
         return Promise.resolve(undefined);
     }
