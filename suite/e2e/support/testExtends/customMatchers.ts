@@ -14,7 +14,6 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { mockGetTrezorConnect } from '@trezor/network-module-suite-common-types/mocks';
 import { Model } from '@trezor/trezor-user-env-link';
-import { getIndexOrThrow } from '@trezor/utils';
 
 import { formatAddress, formatEvmAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
 import { DeviceFixture } from '../device';
@@ -253,7 +252,6 @@ export const expect = baseExpect.extend({
         translationKey: TranslationKey | TranslationKey[],
         // Use ICU values for placeholders (e.g., { amount, symbol, days })
         options?: {
-            isValueElement?: boolean;
             values?: Record<string, string | number>;
             timeout?: number;
         },
@@ -281,26 +279,9 @@ export const expect = baseExpect.extend({
             ? translationKey.map(translate)
             : translate(translationKey);
 
-        if (options?.isValueElement) {
-            if (Array.isArray(expected)) {
-                await baseExpect(locator).toHaveCount(expected.length, {
-                    timeout: options?.timeout,
-                });
-                for (let i = 0; i < expected.length; i++) {
-                    await baseExpect(locator.nth(i)).toHaveValue(getIndexOrThrow(expected, i), {
-                        timeout: options?.timeout,
-                    });
-                }
-            } else {
-                await baseExpect(locator).toHaveValue(expected, {
-                    timeout: options?.timeout,
-                });
-            }
-        } else {
-            await baseExpect(locator).toHaveText(expected, {
-                timeout: options?.timeout,
-            });
-        }
+        await baseExpect(locator).toHaveText(expected, {
+            timeout: options?.timeout,
+        });
 
         return {
             pass: true,
@@ -313,7 +294,6 @@ export const expect = baseExpect.extend({
         translationKey: TranslationKey,
         // Use ICU values for placeholders (e.g., { amount, symbol, days })
         options?: {
-            isValueElement?: boolean;
             values?: Record<string, string | number>;
             timeout?: number;
         },
@@ -329,17 +309,9 @@ export const expect = baseExpect.extend({
                       ),
                   )
                 : template;
-        if (options?.isValueElement) {
-            await baseExpect
-                .poll(async () => await locator.inputValue(), {
-                    timeout: options?.timeout,
-                })
-                .toContain(expectedTranslation);
-        } else {
-            await baseExpect(locator).toContainText(expectedTranslation, {
-                timeout: options?.timeout,
-            });
-        }
+        await baseExpect(locator).toContainText(expectedTranslation, {
+            timeout: options?.timeout,
+        });
 
         return {
             pass: true,
