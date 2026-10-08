@@ -7,8 +7,6 @@ import { RewardsList } from './rewardList';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
-const fiatAmountRegex = /^\$\d{1,3}(,\d{3})*\.\d{2}$/;
-
 type VerifyStakingToastParams = {
     type: 'staked' | 'unstaked' | 'claimed';
 };
@@ -33,7 +31,6 @@ export class StakingSection {
     readonly stakingDashboardCard: Locator;
     readonly stakingEmptyCard: Locator;
     readonly externalStakingCard: Locator;
-    readonly externalStakingCardFiat: Locator;
     readonly rewardsWarningBanner: Locator;
     readonly pendingAmount: Locator;
     readonly stakedAmount: Locator;
@@ -94,9 +91,6 @@ export class StakingSection {
         this.stakingDashboardCard = this.page.getByTestId('@wallet/staking/card');
         this.stakingEmptyCard = this.page.getByTestId('@wallet/staking/empty-card');
         this.externalStakingCard = this.page.getByTestId('@wallet/staking/outside-staking-card');
-        this.externalStakingCardFiat = this.page.getByTestId(
-            '@wallet/staking/outside-staking-card/fiat',
-        );
         this.rewardsWarningBanner = this.page.getByTestId('@wallet/staking/rewards-warning');
         this.pendingAmount = this.page.getByTestId('@account/staking/pending');
         this.stakedAmount = this.page.getByTestId('@account/staking/staked');
@@ -201,15 +195,15 @@ export class StakingSection {
         amount: string;
         displaySymbol: string;
     }) {
+        const fiatAmountRegex = /\$\d{1,3}(,\d{3})*\.\d{2}/;
+
         await expect(this.externalStakingCard).toContainTranslation(
             'TR_OUTSIDE_STAKING_CARD_TITLE',
         );
-        await expect(this.externalStakingCardFiat).toHaveText(fiatAmountRegex);
-        const fiat = await this.externalStakingCardFiat.innerText();
         await expect(this.externalStakingCard).toContainTranslation(
             'TR_OUTSIDE_STAKING_CARD_TEXT',
             {
-                values: { amount, displaySymbol, fiat },
+                values: { amount, displaySymbol, fiat: fiatAmountRegex },
             },
         );
     }

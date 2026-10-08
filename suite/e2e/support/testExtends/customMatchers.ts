@@ -1,8 +1,7 @@
-import { createIntl, createIntlCache } from 'react-intl';
-
-import { Locator, Request, expect as baseExpect, test } from '@playwright/test';
+import { Locator, expect as baseExpect, test } from '@playwright/test';
+import { IntlMessageFormat } from 'intl-messageformat';
 import { diff } from 'jest-diff';
-import { isEqualWith } from 'lodash';
+import { escapeRegExp, isEqualWith, isRegExp } from 'lodash';
 
 import { type TranslationKey, messages } from '@suite/intl';
 import { toChecksumAddress } from '@suite-common/address';
@@ -15,16 +14,17 @@ import { type Account } from '@suite-common/wallet-types';
 import { mockGetTrezorConnect } from '@trezor/network-module-suite-common-types/mocks';
 import { Model } from '@trezor/trezor-user-env-link';
 
-import { formatAddress, formatEvmAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
+import { formatAddress, formatEvmAddress, normalizeWhitespace } from '../common';
 import { DeviceFixture } from '../device';
 import type { NormalizedDisplayContent } from '../helpers/displayContentNormalizedParser';
 import { decodeQrCodes } from '../helpers/qrCodeDecoder';
 
 type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'cardanoTetragrams' | 'fullLine';
 
+type TranslationValues = Record<string, string | number | RegExp>;
+
 const DISPLAY_CHAR_LIMIT_T3T1 = 18;
 const STRING_UP_TO_T3T1_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT_T3T1}}`, 'g');
-const intlEn = createIntl({ locale: 'en', messages: {} }, createIntlCache());
 
 const networkModules = createNetworkModulesCompositionRoot({
     getTrezorConnect: mockGetTrezorConnect,
@@ -89,6 +89,22 @@ const compareDisplayContent = async (
     };
 };
 
+const hasOnlyPrimitiveValues = (
+    values?: TranslationValues,
+): values is Record<string, string | number> | undefined =>
+    !values || !Object.values(values).some(value => isRegExp(value));
+
+const translateToRegExp = (template: string, values: TranslationValues) => {
+    const source = [new IntlMessageFormat(template, 'en').format<RegExp>(values)]
+        .flat()
+        .map(part =>
+            isRegExp(part) ? `(?:${part.source})` : escapeRegExp(part).replace(/\s+/g, '\\s+'),
+        )
+        .join('');
+
+    return new RegExp(source);
+};
+
 const addNewlinesToAddress = (address: string, regex: RegExp, newLineFormat: string) =>
     address
         .replace(regex, match => `${match}${newLineFormat}`)
@@ -149,28 +165,6 @@ export const expect = baseExpect.extend({
 
     async toHaveTextLessThan(locator: Locator, expectedValue: number) {
         return await compareTextAndNumber(locator, expectedValue, (a, b) => a < b, 'less');
-    },
-
-    async toHavePayload(
-        requestPromise: Promise<Request>,
-        expectedPayload: any,
-        options?: { omit: string[] },
-    ) {
-        const requestPayload = (await requestPromise).postDataJSON();
-        const isRequestPayloadMatching = isEqualWithOmit({
-            object1: requestPayload,
-            object2: expectedPayload,
-            mask: options?.omit ?? [],
-        });
-
-        return {
-            pass: isRequestPayloadMatching,
-            message: () =>
-                `Request payload differs from expected.
-                \nDiff: ${diff(expectedPayload, requestPayload)}
-                \nExpected: ${JSON.stringify(expectedPayload)}
-                \nActual: ${JSON.stringify(requestPayload)}`,
-        };
     },
 
     async toShowReceiveAddress(
@@ -252,10 +246,12 @@ export const expect = baseExpect.extend({
         translationKey: TranslationKey | TranslationKey[],
         // Use ICU values for placeholders (e.g., { amount, symbol, days })
         options?: {
-            values?: Record<string, string | number>;
+            values?: TranslationValues;
             timeout?: number;
         },
     ) {
+        const values = options?.values;
+
         // Helper to resolve a translation key into its formatted string
         const translate = (key: TranslationKey) => {
             const message = messages[key];
@@ -263,11 +259,14 @@ export const expect = baseExpect.extend({
                 throw new Error(`[toHaveTranslation] Could not resolve translation key: ${key}`);
 
             const template = message.defaultMessage;
-            const values = options?.values;
+            if (!hasOnlyPrimitiveValues(values)) {
+                // A RegExp passes on a substring match; anchor it to keep the full-text match.
+                return new RegExp(`^\\s*${translateToRegExp(template, values).source}\\s*$`);
+            }
 
-            return values && Object.keys(values).length > 0
-                ? String(intlEn.formatMessage({ id: key, defaultMessage: template }, values))
-                : template;
+            const translatedToString = String(new IntlMessageFormat(template, 'en').format(values));
+
+            return translatedToString;
         };
 
         /*
@@ -294,21 +293,15 @@ export const expect = baseExpect.extend({
         translationKey: TranslationKey,
         // Use ICU values for placeholders (e.g., { amount, symbol, days })
         options?: {
-            values?: Record<string, string | number>;
+            values?: TranslationValues;
             timeout?: number;
         },
     ) {
         const template = messages[translationKey].defaultMessage;
         const values = options?.values;
-        const expectedTranslation =
-            values && Object.keys(values).length > 0
-                ? String(
-                      intlEn.formatMessage(
-                          { id: translationKey, defaultMessage: template },
-                          options.values,
-                      ),
-                  )
-                : template;
+        const expectedTranslation = hasOnlyPrimitiveValues(values)
+            ? String(new IntlMessageFormat(template, 'en').format(values))
+            : translateToRegExp(template, values);
         await baseExpect(locator).toContainText(expectedTranslation, {
             timeout: options?.timeout,
         });
