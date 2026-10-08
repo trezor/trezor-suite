@@ -1,5 +1,6 @@
 import { getNativeAssetIconSymbol } from '@suite-common/icons';
-import { type NetworkSymbol, getRepresentativeAssets } from '@suite-common/wallet-config';
+import { type RepresentativeAsset } from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -7,6 +8,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type CryptoIconSetProps = {
     symbol: NetworkSymbol;
+    assets?: readonly RepresentativeAsset[];
 };
 
 const ICON_SIZE = 24;
@@ -37,12 +39,10 @@ const countStyle = prepareNativeStyle(utils => ({
     zIndex: 0,
 }));
 
-export const CryptoIconSet = ({ symbol }: CryptoIconSetProps) => {
+export const CryptoIconSet = ({ symbol, assets }: CryptoIconSetProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const assets = getRepresentativeAssets(symbol);
-
-    if (assets.length === 0) {
+    if (!assets?.length) {
         return null;
     }
 

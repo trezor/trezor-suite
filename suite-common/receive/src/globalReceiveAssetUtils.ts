@@ -1,5 +1,8 @@
 import { normalizeForSearch } from '@suite-common/suite-utils';
-import { type RankedTokenStructure } from '@suite-common/token-definitions';
+import {
+    type RankedTokenStructure,
+    buildNetworkAssetCatalog,
+} from '@suite-common/token-definitions';
 import {
     type TradeableAssetBalance,
     type TradeableAssetBalances,
@@ -27,29 +30,23 @@ export const buildGlobalReceiveAssetOptions = ({
     networks,
     definitions,
 }: BuildGlobalReceiveAssetOptionsParams): TradingAssetOption[] => {
-    const assets: TradingAssetOption[] = networks.map(network =>
-        createAssetNativeTokenOption(toNetworkSymbolNonTestnet(network.symbol)),
+    const assets: TradingAssetOption[] = [];
+    const includedIds = new Set<string>();
+
+    buildNetworkAssetCatalog({ networks, definitions }).forEach(
+        ({ networkSymbol, symbol, name, contract }) => {
+            const asset =
+                contract === undefined
+                    ? createAssetNativeTokenOption(toNetworkSymbolNonTestnet(networkSymbol))
+                    : createAssetTokenOption(networkSymbol, { contract, symbol, name });
+
+            // Trading IDs can group distinct Cardano contracts under the same policy.
+            if (asset.isNativeToken || !includedIds.has(asset.id)) {
+                assets.push(asset);
+                includedIds.add(asset.id);
+            }
+        },
     );
-    const networksByPlatform = new Map(networks.map(network => [network.coingeckoId, network]));
-    const includedIds = new Set(assets.map(asset => asset.id));
-
-    // Filtering keeps the published market-cap order; normalized duplicate IDs keep their first entry.
-    definitions.forEach(token => {
-        const network = networksByPlatform.get(token.assetPlatformId);
-        if (!network) {
-            return;
-        }
-
-        const asset = createAssetTokenOption(network.symbol, {
-            contract: token.address,
-            symbol: token.symbol.toUpperCase(),
-            name: token.name,
-        });
-        if (!includedIds.has(asset.id)) {
-            assets.push(asset);
-            includedIds.add(asset.id);
-        }
-    });
 
     return assets;
 };
