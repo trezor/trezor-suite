@@ -10,8 +10,10 @@ import {
 } from '@trezor/network-module-suite-common-types';
 
 import { getEthereumChainNetworkConfig, getEvmTokenRules } from './getEthereumChainNetworkConfig';
+import { createEvmAccountNonce } from './nonce/createEvmAccountNonce';
+import { createReadEvmRpcNonce } from './nonce/readEvmNonce';
 import {
-    type EthereumChainSendDeps,
+    type EthereumChainNetworkSendDeps,
     createEthereumChainSend,
 } from './send/createEthereumChainSend';
 
@@ -19,7 +21,7 @@ export type EthereumCustomRpcChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectTokensDeps &
     FetchCoinGeckoCurrentRateDep &
     FetchCoinGeckoHistoricRatesDep &
-    EthereumChainSendDeps;
+    EthereumChainNetworkSendDeps;
 
 /** EVM network served by the user's own JSON-RPC node, which quotes no rates for coins or tokens. */
 export const createEthereumCustomRpcChainNetwork = (
@@ -27,10 +29,14 @@ export const createEthereumCustomRpcChainNetwork = (
 ): CreateChainNetwork => {
     const fetchAccountBalance = createFetchConnectAccountBalance(deps);
     const fetchTokens = createFetchConnectTokens(deps);
-    const createSend = createEthereumChainSend(deps);
+    const readNonce = createReadEvmRpcNonce(deps);
 
     return params => {
         const config = getEthereumChainNetworkConfig(params.symbol);
+        const nonce = createEvmAccountNonce(
+            { readNonce, getChainPendingSends: deps.getChainPendingSends },
+            { symbol: params.symbol, backendType: params.backend.type },
+        );
         const rateSource = config.hasFiatRate ? deps.fetchCoinGeckoCurrentRate : null;
 
         return buildConnectChainNetwork({
@@ -48,7 +54,8 @@ export const createEthereumCustomRpcChainNetwork = (
                 fetchTokenFiatRate: rateSource,
             },
             fetchHistoricFiatRates: config.hasFiatRate ? deps.fetchCoinGeckoHistoricRates : null,
-            send: createSend(params.symbol),
+            getAccountNonce: nonce.getAccountNonce,
+            send: createEthereumChainSend({ ...deps, ...nonce })(params.symbol),
         });
     };
 };

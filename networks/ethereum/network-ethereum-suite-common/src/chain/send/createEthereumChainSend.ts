@@ -1,6 +1,7 @@
 import { isSupportedEthereumNetwork } from '@trezor/network-ethereum-types';
 import {
     type ChainNetworkSendDefinition,
+    type GetChainPendingSendsDep,
     type PrecomposedLevels,
     type PushConnectTransactionDeps,
     createPushConnectTransaction,
@@ -18,6 +19,16 @@ import { type EvmChainSendDeps, createEvmChainSend } from './createEvmChainSend'
 export type EthereumChainSendDeps = Omit<EvmChainSendDeps, 'estimateEvmGasLimit' | 'push'> &
     ConnectEstimateEvmGasLimitDeps &
     PushConnectTransactionDeps;
+
+/**
+ * What an EVM chain network's send needs from the app. The network resolves the nonce itself, from
+ * its backend and the account's pending sends.
+ */
+export type EthereumChainNetworkSendDeps = Omit<
+    EthereumChainSendDeps,
+    'resolveEvmNonce' | 'getEvmPrivatePendingHint'
+> &
+    GetChainPendingSendsDep;
 
 /** The send of one EVM network, by symbol. */
 export type EthereumChainSend = (

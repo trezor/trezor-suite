@@ -23,6 +23,7 @@ const client = {
 
 const connect = { ethereumSignTransaction: jest.fn() };
 const createRpcClient = jest.fn(() => client);
+const getChainPendingSends = jest.fn();
 
 const definition: RuntimeEvmNetworkDefinition = {
     symbol: asNetworkSymbol('ink'),
@@ -37,6 +38,7 @@ const definition: RuntimeEvmNetworkDefinition = {
 const network = createEvmJsonRpcChainNetwork({
     getTrezorConnect: () => connect,
     createRpcClient,
+    getChainPendingSends,
     onEvmFeeEstimationFailed: jest.fn(),
 })(definition);
 
@@ -78,6 +80,7 @@ describe('createEvmJsonRpcChainNetwork', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         client.getChainId.mockResolvedValue(57073);
+        getChainPendingSends.mockReturnValue([]);
         client.getBlockNumber.mockResolvedValue(100n);
         client.estimateFeesPerGas.mockResolvedValue({
             maxFeePerGas: 2n * GWEI,
@@ -198,6 +201,49 @@ describe('createEvmJsonRpcChainNetwork', () => {
                 transaction: expect.objectContaining({ chainId: 57073, nonce: '0x7' }),
             }),
         );
+    });
+
+    it('reads the account nonce from the node, past sends the node does not see yet', async () => {
+        client.getTransactionCount.mockImplementation((_address, blockTag) =>
+            Promise.resolve(blockTag === 'pending' ? 6 : 5),
+        );
+        getChainPendingSends.mockReturnValue([
+            { txid: '0xmine', ethereumSpecific: { status: -1, nonce: 6, gasLimit: 21000 } },
+        ]);
+
+        await expect(
+            network.getAccountNonce!({
+                ref: { ...account, connectionIdentity: undefined },
+                signal,
+            }),
+        ).resolves.toEqual({ confirmedNonce: 5, nextNonce: 7, pendingNonces: [5, 6] });
+        expect(getChainPendingSends).toHaveBeenCalledWith({
+            symbol: definition.symbol,
+            backendType: 'evm-rpc',
+            descriptor: account.descriptor,
+        });
+    });
+
+    it('keeps the signed nonce on the pending transaction', () => {
+        const transaction = network.send!.createPendingTransaction({
+            account,
+            precomposed: {
+                type: 'final',
+                fee: '21000000000000',
+                feePerByte: '1',
+                feeLimit: '21000',
+                totalSpent: '100021000000000000',
+                outputs: [{ address: '0x' + '2'.repeat(40), amount: '100000000000000000' }],
+            } as never,
+            signed: { serializedTx: '0xsigned', nonce: '7' },
+            txid: '0xhash',
+        });
+
+        expect(transaction.ethereumSpecific).toMatchObject({
+            status: -1,
+            nonce: 7,
+            gasLimit: 21000,
+        });
     });
 
     it('broadcasts over the node and returns its transaction hash', async () => {

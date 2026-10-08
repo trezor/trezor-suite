@@ -45,6 +45,9 @@ export type ConnectChainNetworkDefinition = {
     useConnectionIdentity: boolean;
     fetchAccountBalance: FetchConnectAccountBalance;
 
+    /** Only for networks with account nonces. */
+    getAccountNonce?: ChainNetwork['getAccountNonce'];
+
     /** `null` when the network has no fiat value at all (testnets). */
     fetchFiatRate: FetchCurrentFiatRate | null;
     getAccountFiatBalance?: ChainNetwork['getAccountFiatBalance'];
@@ -70,7 +73,8 @@ export const buildConnectChainNetwork = (
     definition: ConnectChainNetworkDefinition,
 ): ChainNetwork => {
     const { symbol } = definition.params;
-    const { fetchFiatRate, fetchHistoricFiatRates, tokens, transactions, send } = definition;
+    const { fetchFiatRate, fetchHistoricFiatRates, tokens, transactions, send, getAccountNonce } =
+        definition;
 
     const assertOwnAccount = (ref: Pick<ChainAccountRef, 'symbol'>) => {
         if (ref.symbol !== symbol) {
@@ -94,6 +98,13 @@ export const buildConnectChainNetwork = (
                 gap: definition.params.gapLimit,
             });
         },
+        ...(getAccountNonce && {
+            getAccountNonce: async params => {
+                assertOwnAccount(params.ref);
+
+                return await getAccountNonce(params);
+            },
+        }),
         getNativeFiatRate: async params =>
             fetchFiatRate ? await fetchFiatRate({ ...params, symbol }) : null,
         getAccountFiatBalance: definition.getAccountFiatBalance ?? getDisplayBalanceFiatValue,
