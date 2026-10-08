@@ -79,6 +79,7 @@
         "reserve-npm-package": "node ./scripts/ci/npm-reserve-package.js",
         "deps": "rimraf **/node_modules && yarn",
         "list-outdated": "./scripts/list-outdated-dependencies/list-outdated-dependencies.sh",
+        "triage-dependabot-alerts": "yarn tsx ./scripts/triage-dependabot-alerts.ts",
         "message-system-sign-config": "yarn workspace @suite-common/message-system sign-config",
         "update-submodules": "./scripts/update-submodules.sh",
         "update-models": "./scripts/update-models.sh",
