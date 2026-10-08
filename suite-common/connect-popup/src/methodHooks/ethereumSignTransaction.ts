@@ -8,6 +8,7 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { getPrecomposedTxWithAccountToken } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import type {
     CallMethodKeys,
@@ -28,11 +29,13 @@ const temporaryAccounts: Account[] = [];
 type _storePrecomposedTransactionParams = {
     typedPayload: EthereumSignTransaction;
     txSigningPrecomposed: PrecomposedTransactionFinal;
+    account: Account;
 };
 
 const _storePrecomposedTransaction = ({
     typedPayload,
     txSigningPrecomposed,
+    account,
 }: _storePrecomposedTransactionParams) =>
     sendFormActions.storePrecomposedTransaction({
         formState: {
@@ -52,9 +55,12 @@ const _storePrecomposedTransaction = ({
                 ? parseInt(typedPayload.transaction.nonce, 16).toString()
                 : typedPayload.transaction.nonce,
         },
-        precomposedTransaction: {
-            ...txSigningPrecomposed,
-        },
+        precomposedTransaction: getPrecomposedTxWithAccountToken({
+            precomposedTx: txSigningPrecomposed,
+            contract: typedPayload.transaction.to,
+            data: typedPayload.transaction.data,
+            accountTokens: account.tokens,
+        }),
     });
 
 const preCallHook = async <M extends CallMethodKeys>({
@@ -73,10 +79,6 @@ const preCallHook = async <M extends CallMethodKeys>({
             const typedPayload = payload as any as EthereumSignTransaction;
             path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
             chainId = typedPayload.transaction.chainId || 1;
-
-            if (txSigningPrecomposed) {
-                dispatch(_storePrecomposedTransaction({ typedPayload, txSigningPrecomposed }));
-            }
         } else if (method === 'ethereumSignTypedData') {
             const typedPayload = payload as any as EthereumSignTypedData<any>;
             path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
@@ -113,6 +115,16 @@ const preCallHook = async <M extends CallMethodKeys>({
                 selectedAccountKey: selectedAccount.key,
             }),
         );
+
+        if (method === 'ethereumSignTransaction' && txSigningPrecomposed) {
+            dispatch(
+                _storePrecomposedTransaction({
+                    typedPayload: payload as any as EthereumSignTransaction,
+                    txSigningPrecomposed,
+                    account: selectedAccount,
+                }),
+            );
+        }
 
         // The simulation modal has nothing to render for a chain Blockaid can't scan, so opening it
         // would leave the call waiting on a confirmation the user never sees.
@@ -171,7 +183,13 @@ const preCallHook = async <M extends CallMethodKeys>({
                 }
                 txSigningPrecomposed = (methodInfo.payload as any as MethodInfo).precomposed;
                 if (txSigningPrecomposed)
-                    dispatch(_storePrecomposedTransaction({ typedPayload, txSigningPrecomposed }));
+                    dispatch(
+                        _storePrecomposedTransaction({
+                            typedPayload,
+                            txSigningPrecomposed,
+                            account: selectedAccount,
+                        }),
+                    );
 
                 return modifiedPayload as any as typeof payload;
             }
