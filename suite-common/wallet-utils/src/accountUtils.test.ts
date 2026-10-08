@@ -360,6 +360,17 @@ describe('account utils', () => {
         ).toBe(false);
     });
 
+    it('accountSearchFn matches network display symbol', () => {
+        const baseAcc = mockWalletAccount({ symbol: asNetworkSymbol('base') });
+        const arcAcc = mockWalletAccount({ symbol: asNetworkSymbol('arc') });
+        const btcAcc = mockWalletAccount({ symbol: btcSymbol });
+
+        expect(accountSearchFn(baseAcc, 'eth', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(arcAcc, 'usdc', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(arcAcc, 'USDC', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(btcAcc, 'eth', { accountLabel: '' })).toBe(false);
+    });
+
     it('accountSearchFn empty tokens', () => {
         const ethAcc = mockWalletAccount({
             symbol: ethSymbol,

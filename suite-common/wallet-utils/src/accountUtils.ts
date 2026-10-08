@@ -959,6 +959,7 @@ export const accountSearchFn = (
         .toLowerCase()
         .includes(searchString);
     const symbolMatch = account.symbol.startsWith(searchString);
+    const displaySymbolMatch = network?.displaySymbol.toLowerCase().startsWith(searchString);
     const networkNameMatch = network?.name.toLowerCase().includes(searchString);
     const accountTypeMatch = account.accountType.startsWith(searchString);
     const accountTypeNameMatch = !!accountTypeName?.toLowerCase().includes(searchString);
@@ -987,6 +988,7 @@ export const accountSearchFn = (
     return (
         accountNumberMatch ||
         symbolMatch ||
+        displaySymbolMatch ||
         networkNameMatch ||
         accountTypeMatch ||
         accountTypeNameMatch ||
