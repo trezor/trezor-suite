@@ -8,7 +8,7 @@ import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/messag
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { Box } from '@suite-native/atoms';
+import { Box, useScrollDivider } from '@suite-native/atoms';
 import {
     AccountDetailStackRoutes,
     AssetsStackRoutes,
@@ -17,7 +17,6 @@ import {
     SendStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { useScrollDivider } from '@suite-native/scrollview';
 import { exhaustive } from '@trezor/type-utils';
 
 import { ActiveTokensTab } from './ActiveTokensTab';
