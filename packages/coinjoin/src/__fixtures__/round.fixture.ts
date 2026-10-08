@@ -32,8 +32,6 @@ export const ROUND_CREATION_EVENT = {
         MaxInputCountByRound: 10,
         MinAmountCredentialValue: 5000,
         MaxAmountCredentialValue: 134375000000,
-        InitialInputVsizeAllocation: 99942,
-        MaxVsizeCredentialValue: 255,
         MaxVsizeAllocationPerAlice: 255,
         MaxTransactionSize: 100000,
         MinRelayTxFee: 1000,

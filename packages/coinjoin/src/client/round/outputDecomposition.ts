@@ -121,7 +121,7 @@ const credentialIssuance = async (params: CredentialIssuanceParams) => {
         vsizeToRequest,
         vsizeCredentials,
         round.vsizeCredentialIssuerParameters,
-        roundParameters.MaxVsizeCredentialValue,
+        roundParameters.MaxVsizeAllocationPerAlice,
         { signal, baseUrl: middlewareUrl },
     );
 
@@ -313,7 +313,7 @@ const createOutputsCredentials = async (params: CreateOutputsCredentials): Promi
     const vsizePair = findCredentialsForTarget(
         outputSize,
         vsizeCredentials,
-        round.roundParameters.MaxVsizeCredentialValue,
+        round.roundParameters.MaxVsizeAllocationPerAlice,
     );
 
     if (amountPair?.credentials && vsizePair) {
@@ -382,7 +382,7 @@ const createOutputsCredentials = async (params: CreateOutputsCredentials): Promi
     const vsizeToJoin = findCredentialsForTarget(
         0,
         vsizeCredentials,
-        roundParameters.MaxVsizeCredentialValue,
+        roundParameters.MaxVsizeAllocationPerAlice,
     );
 
     if (!amountToJoin || !vsizeToJoin) {

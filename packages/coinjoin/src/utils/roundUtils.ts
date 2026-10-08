@@ -4,6 +4,7 @@ import { type Network, Transaction, bufferutils } from '@trezor/utxo-lib';
 import {
     COORDINATOR_FEE_RATE_FALLBACK,
     MAX_ALLOWED_AMOUNT_FALLBACK,
+    MINING_FEE_RATE_FALLBACK,
     MIN_ALLOWED_AMOUNT_FALLBACK,
     PLEBS_DONT_PAY_THRESHOLD_FALLBACK,
     ROUND_MAXIMUM_REQUEST_DELAY,
@@ -183,24 +184,26 @@ const getDataFromRounds = (rounds: Round[]) => {
             max: roundParameters?.AllowedInputAmounts.Max ?? MAX_ALLOWED_AMOUNT_FALLBACK,
             min: roundParameters?.AllowedInputAmounts.Min ?? MIN_ALLOWED_AMOUNT_FALLBACK,
         },
+        miningFeeRate: roundParameters?.MiningFeeRate ?? MINING_FEE_RATE_FALLBACK,
     };
 };
 
 /**
  * Transform from coordinator format to coinjoinReducer format `CoinjoinClientInstance`
  * - coordinatorFeeRate: multiply the amount registered for coinjoin by this value to get the total fee
- * - feeRateMedian: array => value in kvBytes
+ * - feeRateMedian: recommended base fee rate in sat/vB
  */
 export const transformStatus = ({
     CoinJoinFeeRateMedians,
     RoundStates: rounds,
 }: CoinjoinStatus) => {
-    const { allowedInputAmounts, coordinationFeeRate } = getDataFromRounds(rounds);
+    const { allowedInputAmounts, coordinationFeeRate, miningFeeRate } = getDataFromRounds(rounds);
     // coinJoinFeeRateMedians include an array of medians per day, week and month - we take the first (day) median as the recommended fee rate base.
+    // WalletWasabi coordinators send it empty since 2.4.0; the mining fee rate of the last round in
+    // the status is the closest substitute.
     // The value is converted from kvBytes (kilo virtual bytes) to vBytes (how the value is displayed in UI).
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const firstMedian: (typeof CoinJoinFeeRateMedians)[number] = CoinJoinFeeRateMedians[0];
-    const feeRateMedian = Math.round(firstMedian.MedianFeeRate / 1000);
+    const feeRatePerKvbyte = CoinJoinFeeRateMedians[0]?.MedianFeeRate ?? miningFeeRate;
+    const feeRateMedian = Math.round(feeRatePerKvbyte / 1000);
 
     return {
         rounds,
