@@ -8,30 +8,35 @@ export class WorkerState {
     subscription: { [key: string]: unknown };
     cache: Cache;
     url?: string;
+    // Mirrors `addresses` for O(1) membership checks; `addresses` stays authoritative for order.
+    private subscribedAddresses: Set<string>;
 
     constructor() {
         this.addresses = [];
         this.accounts = [];
         this.subscription = {};
         this.cache = new Cache();
+        this.subscribedAddresses = new Set();
     }
 
     private validateAddresses(addr: string[]) {
         if (!Array.isArray(addr)) throw new CustomError('invalid_param', '+addresses');
-        const seen: string[] = [];
+        const seen = new Set<string>();
 
         return addr.filter(a => {
             if (typeof a !== 'string') return false;
-            if (seen.includes(a)) return false;
-            seen.push(a);
+            if (seen.has(a)) return false;
+            seen.add(a);
 
             return true;
         });
     }
 
     addAddresses(addr: string[]) {
-        const unique = this.validateAddresses(addr).filter(a => !this.addresses.includes(a));
+        const unique = this.validateAddresses(addr).filter(a => !this.subscribedAddresses.has(a));
+        // Reassign, never push: callers diff against the array a previous getAddresses() returned.
         this.addresses = this.addresses.concat(unique);
+        unique.forEach(a => this.subscribedAddresses.add(a));
 
         return unique;
     }
@@ -41,20 +46,21 @@ export class WorkerState {
     }
 
     removeAddresses(addr: string[]) {
-        const unique = this.validateAddresses(addr);
-        this.addresses = this.addresses.filter(a => !unique.includes(a));
+        const toRemove = new Set(this.validateAddresses(addr));
+        this.addresses = this.addresses.filter(a => !toRemove.has(a));
+        toRemove.forEach(a => this.subscribedAddresses.delete(a));
 
         return this.addresses;
     }
 
     private validateAccounts(acc: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] {
         if (!Array.isArray(acc)) throw new CustomError('invalid_param', '+accounts');
-        const seen: string[] = [];
+        const seen = new Set<string>();
 
         return acc.filter(a => {
             if (a && typeof a === 'object' && typeof a.descriptor === 'string') {
-                if (seen.includes(a.descriptor)) return false;
-                seen.push(a.descriptor);
+                if (seen.has(a.descriptor)) return false;
+                seen.add(a.descriptor);
 
                 return true;
             }
@@ -75,12 +81,10 @@ export class WorkerState {
 
     addAccounts(acc: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] {
         const valid = this.validateAccounts(acc);
-        const others = this.accounts.filter(a => !valid.some(b => b.descriptor === a.descriptor));
+        const validDescriptors = new Set(valid.map(a => a.descriptor));
+        const others = this.accounts.filter(a => !validDescriptors.has(a.descriptor));
         this.accounts = others.concat(valid);
-        const addresses = this.accounts.reduce(
-            (addr, a) => addr.concat(this.getAccountAddresses(a)),
-            [] as string[],
-        );
+        const addresses = this.accounts.flatMap(a => this.getAccountAddresses(a));
         this.addAddresses(addresses);
 
         return valid;
@@ -106,14 +110,10 @@ export class WorkerState {
 
     removeAccounts(acc: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] {
         const valid = this.validateAccounts(acc);
-        const accountsToRemove = this.accounts.filter(a =>
-            valid.find(b => b.descriptor === a.descriptor),
-        );
-        const addressesToRemove = accountsToRemove.reduce(
-            (addr, acc) => addr.concat(this.getAccountAddresses(acc)),
-            [] as string[],
-        );
-        this.accounts = this.accounts.filter(a => !accountsToRemove.includes(a));
+        const validDescriptors = new Set(valid.map(a => a.descriptor));
+        const accountsToRemove = this.accounts.filter(a => validDescriptors.has(a.descriptor));
+        const addressesToRemove = accountsToRemove.flatMap(a => this.getAccountAddresses(a));
+        this.accounts = this.accounts.filter(a => !validDescriptors.has(a.descriptor));
         this.removeAddresses(addressesToRemove);
 
         return this.accounts;
