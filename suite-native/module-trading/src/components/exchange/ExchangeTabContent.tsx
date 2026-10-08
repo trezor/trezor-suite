@@ -2,8 +2,8 @@ import { ServerOffline } from '@suite-native/trading-atoms';
 
 import { ExchangeForm } from './ExchangeForm';
 import { ExchangeFormContextProvider } from './ExchangeFormContextProvider';
-import { ExchangeFormSkeleton } from './ExchangeFormSkeleton';
 import { useExchangeData } from '../../hooks/exchange/useExchangeData';
+import { TradingFormSkeleton } from '../general/TradingFormSkeleton';
 
 export const ExchangeTabContent = () => {
     const { isLoading, lastLoadedTimestamp, isFullyLoaded, refetch } = useExchangeData();
@@ -14,7 +14,7 @@ export const ExchangeTabContent = () => {
     }
 
     if (!isFullyLoaded) {
-        return <ExchangeFormSkeleton />;
+        return <TradingFormSkeleton />;
     }
 
     return (

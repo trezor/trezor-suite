@@ -6,9 +6,9 @@ import { selectIsTradingBuyEnabled } from '@suite-native/trading-state';
 
 import { BuyForm } from './BuyForm';
 import { BuyFormContextProvider } from './BuyFormContextProvider';
-import { BuyFormSkeleton } from './BuyFormSkeleton';
 import { useBuyData } from '../../hooks/buy/useBuyData';
 import { TradingTypeDisabled } from '../general/Error/TradingTypeDisabled';
+import { TradingFormSkeleton } from '../general/TradingFormSkeleton';
 
 const BuyTabEnabled = () => {
     const { isLoading, lastLoadedTimestamp, isFullyLoaded, refetch } = useBuyData();
@@ -20,7 +20,7 @@ const BuyTabEnabled = () => {
     }
 
     if (!isFullyLoaded) {
-        return <BuyFormSkeleton />;
+        return <TradingFormSkeleton hasResidenceField />;
     }
 
     return (

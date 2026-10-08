@@ -7,7 +7,7 @@ export type SkeletonRowProps = {
     rightWidthPercentage: number;
 };
 
-const CONTENT_HEIGHT = 46;
+const CONTENT_HEIGHT = 40;
 
 export const SkeletonLargeRow = ({
     leftWidthPercentage,

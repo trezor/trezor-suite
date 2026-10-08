@@ -2,8 +2,8 @@ import { ServerOffline } from '@suite-native/trading-atoms';
 
 import { SellForm } from './SellForm';
 import { SellFormContextProvider } from './SellFormContextProvider';
-import { SellFormSkeleton } from './SellFormSkeleton';
 import { useSellData } from '../../hooks/sell/useSellData';
+import { TradingFormSkeleton } from '../general/TradingFormSkeleton';
 
 export const SellTabContent = () => {
     const { isLoading, lastLoadedTimestamp, isFullyLoaded, refetch } = useSellData();
@@ -14,7 +14,7 @@ export const SellTabContent = () => {
     }
 
     if (!isFullyLoaded) {
-        return <SellFormSkeleton />;
+        return <TradingFormSkeleton hasResidenceField />;
     }
 
     return (
