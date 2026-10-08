@@ -55,23 +55,7 @@ export interface UiRequestThpPairing {
 export interface UiRequestConfirmation {
     type: typeof UI_REQUESTS.REQUEST_CONFIRMATION;
     payload: {
-        view:
-            | 'thp-pairing-start'
-            | 'thp-pairing-failed'
-            | 'no-backup'
-            | 'export-xpub'
-            | 'export-address'
-            | 'export-account-info'
-            | 'device-management';
-        label?: string;
-        customConfirmButton?: {
-            className: string;
-            label: string;
-        };
-        customCancelButton?: {
-            className: string;
-            label: string;
-        };
+        view: 'thp-pairing-start' | 'thp-pairing-failed' | 'no-backup';
     };
 }
 

@@ -13,7 +13,6 @@ import type {
     PrecomposeResultFinal,
     StaticSessionId,
     UiRequestButtonData,
-    UiRequestConfirmation,
 } from '@trezor/connect-common';
 import { isStaticSessionId } from '@trezor/device-utils';
 import type { Capability } from '@trezor/protobuf/src/definitions';
@@ -122,7 +121,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         return '';
     } // method info, displayed in popup info-panel
 
-    protected get confirmation(): UiRequestConfirmation['payload'] | undefined {
+    protected get confirmation(): MethodInfo['confirmation'] {
         return undefined;
     }
 
