@@ -3,6 +3,7 @@ import fs from 'fs';
 import { join } from 'path';
 
 import { DEFINITIONS_FILENAME_SUFFIX, FILES_PATH } from './constants';
+import { getArcOfficialTokens } from './utils/arcOfficialTokens';
 import {
     type FailedLookup,
     type UncheckedEnrichment,
@@ -142,6 +143,15 @@ const main = async () => {
 
                 console.log(
                     `Merged vault address(es) from the earn-yield worker for ${assetPlatformId}`,
+                );
+            }
+
+            if (assetPlatformId === 'arc' && coinData instanceof Set) {
+                const arcOfficialTokens = getArcOfficialTokens();
+                arcOfficialTokens.forEach(address => coinData.add(address));
+
+                console.log(
+                    `Merged ${arcOfficialTokens.length} official Circle token address(es) for arc`,
                 );
             }
 
