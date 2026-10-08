@@ -2,7 +2,7 @@ import fs from 'fs';
 import * as os from 'os';
 import path from 'path';
 
-import type { IPCRequest, IPCResponse } from './types';
+import type { IPCReadyMessage, IPCRequest, IPCResponse } from './types';
 import type * as WinHelloTypes from './win_hello.d';
 
 const errorMessageToStandardError = (errorMessage: string) => {
@@ -139,17 +139,14 @@ class WinHelloChildProcess {
     }
 
     public start() {
-        const processSend = process.send?.bind(process);
-        if (!processSend) {
-            throw new Error('This script must be run as a child process');
-        }
+        const { parentPort } = process;
 
-        process.on('message', async (message: IPCRequest) => {
-            const response = await this.handleRequest(message);
-            processSend(response);
+        parentPort.on('message', async ({ data }) => {
+            const response = await this.handleRequest(data);
+            parentPort.postMessage(response);
         });
 
-        processSend({ ready: true });
+        parentPort.postMessage({ ready: true } satisfies IPCReadyMessage);
     }
 }
 
