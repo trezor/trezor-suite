@@ -395,7 +395,10 @@ export const exposeConnectWs = ({
         }
 
         // The http server is shared, so match the route before applying connect-ws policy to it.
-        const { pathname } = new URL(request.url, 'http://localhost');
+        // `new URL()` is not used here: it throws for request targets node accepts and delivers
+        // verbatim (`//[` for example), and the throw would escape this listener and leak the
+        // socket undestroyed and uncounted.
+        const pathname = request.url.split('?')[0];
         if (pathname !== '/connect-ws') {
             socket.destroy();
 
