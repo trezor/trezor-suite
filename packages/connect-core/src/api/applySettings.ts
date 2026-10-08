@@ -30,8 +30,6 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
         return [{ permission: 'management' }];
     }
 
-    init() {}
-
     get confirmation() {
         return {
             view: 'device-management' as const,
