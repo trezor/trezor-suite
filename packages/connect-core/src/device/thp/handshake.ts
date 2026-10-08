@@ -72,9 +72,9 @@ export const thpHandshake = async (device: IDevice, unlockPin = false) => {
     }
 
     const settings = settingsStore.get('thp');
-    // sort credentials by autoconnect field
+    // Sort credentials with autoconnect first; a missing flag counts as false.
     const knownCredentials = (settings?.knownCredentials || []).sort(
-        (a, b) => (a.autoconnect ? -1 : 1) - (b.autoconnect ? -1 : 1),
+        (a, b) => Number(!!b.autoconnect) - Number(!!a.autoconnect),
     );
     const tryToUnlock = unlockPin ? 1 : 0;
 
