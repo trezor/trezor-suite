@@ -16,15 +16,17 @@ import { type SendSession, SendSessionContext } from './SendSessionContext';
  */
 const useReplacedTransactionMinedGuard = (session: SendSession | undefined) => {
     const { dispatch } = useServices(injectDispatch);
+    // Only a wallet account's send replaces transactions; a runtime network's never does.
+    const walletSession = session?.kind === 'wallet' ? session : undefined;
     const prevTxid =
-        session && isRbfTransaction(session.precomposedTx)
-            ? session.precomposedTx.prevTxid
+        walletSession && isRbfTransaction(walletSession.precomposedTx)
+            ? walletSession.precomposedTx.prevTxid
             : undefined;
     const isReplacedTransactionMined = useSelector(
         state =>
-            !!session &&
+            !!walletSession &&
             !!prevTxid &&
-            selectAccountTransactions(state, session.accountKey).some(
+            selectAccountTransactions(state, walletSession.accountKey).some(
                 transaction => transaction.txid === prevTxid && !isPending(transaction),
             ),
     );

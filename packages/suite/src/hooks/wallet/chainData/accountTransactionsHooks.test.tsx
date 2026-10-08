@@ -5,12 +5,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { flagsInitialState } from '@suite/flags';
+import { createStaticChainNetworksStore } from '@suite-common/chain-data/mocks/createStaticChainNetworksStore';
 import { QueryClient, QueryClientProvider } from '@suite-common/react-query';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { Transaction } from '@trezor/blockchain-link-types';
-import { ServicesProvider, asGetter } from '@trezor/dependency-injection';
+import { ServicesProvider } from '@trezor/dependency-injection';
 import {
     type ChainNetwork,
     getChainSyncPolicy,
@@ -90,7 +91,7 @@ const createWrapper = (queryChainData: boolean) => {
     });
     const services = {
         store,
-        getSelectedChainNetworks: asGetter(() => [btcNetwork]),
+        chainNetworksStore: createStaticChainNetworksStore([btcNetwork]),
     };
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 

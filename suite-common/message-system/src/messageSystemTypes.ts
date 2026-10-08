@@ -123,6 +123,10 @@ export const Feature = {
         } as const satisfies Record<WrappedNativeFlowType, string>,
     },
     mevProtection: 'settings.mevProtection',
+    networks: {
+        // EVM networks Trezor lists without an app release; the payload carries their definitions.
+        evmRuntime: 'networks.evm.runtime',
+    },
     suiteSync: 'settings.suiteSync',
 
     // Feature flags implemented only for mobile app

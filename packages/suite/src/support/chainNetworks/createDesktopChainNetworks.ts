@@ -12,6 +12,8 @@ import {
 import {
     type EthereumBlockbookChainNetworkDeps,
     type EthereumCustomRpcChainNetworkDeps,
+    type EvmJsonRpcChainNetwork,
+    type RuntimeEvmNetworkDefinition,
     createEthereumBlockbookChainNetwork,
     createEthereumCustomRpcChainNetwork,
 } from '@trezor/network-ethereum-suite-common';
@@ -44,15 +46,25 @@ export type DesktopChainNetworksDeps = BitcoinBlockbookChainNetworkDeps &
     RippleChainNetworkDeps &
     StellarChainNetworkDeps &
     TronChainNetworkDeps &
-    GetNetworkConfigDep;
+    GetNetworkConfigDep & {
+        /** Builds a network for an EVM chain defined at runtime, read over its own nodes. */
+        createRuntimeEvmChainNetwork: EvmJsonRpcChainNetwork;
+    };
 
-/** Builds the chain networks for a selection, keeping each one while its selection is unchanged. */
+/**
+ * Builds the chain networks for a selection of built-in networks and the runtime EVM networks the
+ * user turned on, keeping each one while its selection or definition is unchanged.
+ */
 export type DesktopChainNetworks = (
     selection: readonly ChainNetworkParams[],
+    runtimeEvmNetworks?: readonly RuntimeEvmNetworkDefinition[],
 ) => readonly ChainNetwork[];
 
 const getInstanceKey = (params: ChainNetworkParams) =>
     JSON.stringify([params.backend.type, params.backend.urls, params.gapLimit ?? null]);
+
+const getRuntimeInstanceKey = (definition: RuntimeEvmNetworkDefinition) =>
+    JSON.stringify(definition);
 
 /**
  * The desktop composition of chain networks: the one place that knows which implementation serves
@@ -100,24 +112,38 @@ export const createDesktopChainNetworks = (
 
     // One instance per symbol: a network is rebuilt only when its backend settings change, so
     // consumers holding it (and the queries keyed by it) are not churned by unrelated updates.
+    // Runtime symbols never take a built-in one, so both kinds share the map.
     const instances = new Map<NetworkSymbol, { key: string; network: ChainNetwork }>();
 
-    return selection => {
-        const selectedSymbols = new Set(selection.map(params => params.symbol));
+    const getInstance = (symbol: NetworkSymbol, key: string, build: () => ChainNetwork) => {
+        const cached = instances.get(symbol);
+
+        if (cached?.key === key) return cached.network;
+
+        const network = build();
+        instances.set(symbol, { key, network });
+
+        return network;
+    };
+
+    return (selection, runtimeEvmNetworks = []) => {
+        const selectedSymbols = new Set([
+            ...selection.map(params => params.symbol),
+            ...runtimeEvmNetworks.map(definition => definition.symbol),
+        ]);
         [...instances.keys()]
             .filter(symbol => !selectedSymbols.has(symbol))
             .forEach(symbol => instances.delete(symbol));
 
-        return selection.map(params => {
-            const key = getInstanceKey(params);
-            const cached = instances.get(params.symbol);
-
-            if (cached?.key === key) return cached.network;
-
-            const network = create(params);
-            instances.set(params.symbol, { key, network });
-
-            return network;
-        });
+        return [
+            ...selection.map(params =>
+                getInstance(params.symbol, getInstanceKey(params), () => create(params)),
+            ),
+            ...runtimeEvmNetworks.map(definition =>
+                getInstance(definition.symbol, getRuntimeInstanceKey(definition), () =>
+                    deps.createRuntimeEvmChainNetwork(definition),
+                ),
+            ),
+        ];
     };
 };

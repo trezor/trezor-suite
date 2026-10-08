@@ -8,6 +8,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
+import { useSendSession } from 'src/support/chainSend/SendSessionContext';
 
 import { ConfirmActionModal } from './ConfirmActionModal';
 import { ConfirmFingerprintModal } from './ConfirmFingerprintModal';
@@ -30,6 +31,7 @@ export const DeviceContextModal = ({
     const intl = useIntl();
     const selectedAccount = useSelector(selectSelectedAccount);
     const popupCallState = useSelector(state => selectConnectPopupCall(state)?.state);
+    const session = useSendSession();
 
     if (!device) return null;
     const abort = () => TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
@@ -54,6 +56,11 @@ export const DeviceContextModal = ({
         }
         case 'ButtonRequest_Other': {
             if (data?.type === 'message') return <SignMessageModal device={device} {...data} />;
+            // A runtime network's send signs from the dashboard. Its EVM signing screens (e.g. the
+            // unknown-network warning) belong to its review, which the send session holds.
+            if (session?.kind === 'runtime') {
+                return <TransactionReviewModal type="sign-transaction" />;
+            }
 
             return <ConfirmActionModal device={device} />;
         }

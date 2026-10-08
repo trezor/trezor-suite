@@ -41,6 +41,7 @@ import { PingDevice } from './PingDevice';
 import { PlatformEncryption } from './PlatformEncryption';
 import { QuotaManagerSettings } from './QuotaManagerSettings';
 import { ResetThpCredentials } from './ResetThpCredentials';
+import { RuntimeEvmNetworks } from './RuntimeEvmNetworks';
 import { ShowBluetoothDebugInfo } from './ShowBluetoothDebugInfo';
 import { ThrowTestingError } from './ThrowTestingError';
 import { Tor } from './Tor';
@@ -136,6 +137,12 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Flags">
                 <Flags />
+            </SettingsSection>
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title="Custom EVM networks"
+            >
+                <RuntimeEvmNetworks />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Metadata">
                 <Metadata />

@@ -4548,6 +4548,10 @@ export const messages = defineMessages({
         id: 'TOAST_TX_SENT',
         defaultMessage: 'Sent from {account}',
     },
+    TOAST_RUNTIME_CHAIN_TX_SENT: {
+        id: 'TOAST_RUNTIME_CHAIN_TX_SENT',
+        defaultMessage: 'Sent {amount} {symbol}. Transaction ID: {txid}',
+    },
     TOAST_TX_EXCHANGE_BROADCASTED: {
         id: 'TOAST_TX_EXCHANGE_BROADCASTED',
         defaultMessage:

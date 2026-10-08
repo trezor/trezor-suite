@@ -72,4 +72,5 @@ export const createWebDesktopApi = (): DesktopApi => ({
     mcpSetEnabled: unavailableAsync('mcpSetEnabled'),
     mcpRegenerateToken: unavailableAsync('mcpRegenerateToken'),
     reloadBrowserWindow: unavailableAsync('reloadBrowserWindow'),
+    allowChainNodeHost: unavailableAsync('allowChainNodeHost'),
 });

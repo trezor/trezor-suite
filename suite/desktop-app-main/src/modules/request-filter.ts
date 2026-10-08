@@ -6,7 +6,9 @@ import { captureMessage } from '@sentry/electron/main';
 import { isWhitelistedHost } from '@trezor/utils';
 
 import { allowedDomains, silentlyBlockedDomains } from '../config';
+import { ipcMain } from '../ipcMain';
 import type { ModuleInit } from './module';
+import { validateWhitelistedHostname } from '../libs/validateWhitelistedHostname';
 
 export const SERVICE_NAME = 'request-filter';
 
@@ -18,6 +20,31 @@ export const SERVICE_NAME = 'request-filter';
  * The actual interception is done in `createElectronSessionInterceptor`, injected when loading modules.
  */
 export const init: ModuleInit = ({ interceptor, logger }) => {
+    // Nodes the renderer reads directly, e.g. those of a runtime network the user turned on. Like
+    // custom backends in the main process, they stay allowed until the app quits.
+    const chainNodeHosts: string[] = [];
+
+    ipcMain.handle('request-filter/allow-chain-node-host', (_, hostname: string) => {
+        const validatedHostname =
+            typeof hostname === 'string'
+                ? validateWhitelistedHostname({
+                      hostname,
+                      warn: message => logger.warn(SERVICE_NAME, message),
+                  })
+                : undefined;
+
+        if (validatedHostname === undefined) {
+            return { success: false, error: 'invalid hostname' };
+        }
+
+        if (!chainNodeHosts.includes(validatedHostname)) {
+            chainNodeHosts.push(validatedHostname);
+            logger.info(SERVICE_NAME, `${validatedHostname} was allowed as a chain node`);
+        }
+
+        return { success: true };
+    });
+
     interceptor.onBeforeRequest(details => {
         const { hostname } = new URL(details.url);
 
@@ -26,6 +53,13 @@ export const init: ModuleInit = ({ interceptor, logger }) => {
                 SERVICE_NAME,
                 `${details.url} was allowed because ${hostname} is in the exception list`,
             );
+
+            return;
+        }
+
+        if (isWhitelistedHost(hostname, chainNodeHosts)) {
+            // Only the host is logged: the request URL may carry an API key of the user's node.
+            logger.debug(SERVICE_NAME, `request to ${hostname} was allowed as a chain node`);
 
             return;
         }

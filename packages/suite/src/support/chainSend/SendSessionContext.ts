@@ -7,13 +7,19 @@ import {
     type GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
+import type { RuntimeEvmNetworkDefinition } from '@trezor/network-ethereum-suite-common';
+import type { ChainSendAccount } from '@trezor/network-module-suite-common-types';
 
-/**
- * The transaction being signed and broadcast through its chain network, from review until it is
- * broadcast or abandoned. It has the fields the review modal reads from the send form state.
- */
-export type SendSession = {
-    accountKey: AccountKey;
+/** A send on a runtime network: its account lives on no wallet page, only at a wallet account's address. */
+export type RuntimeSendTarget = {
+    network: RuntimeEvmNetworkDefinition;
+    account: ChainSendAccount;
+
+    /** The wallet account whose address and path the runtime account uses. */
+    walletAccountKey: AccountKey;
+};
+
+type SendSessionTransaction = {
     precomposedForm: FormState;
     precomposedTx: GeneralPrecomposedTransactionFinal;
 
@@ -24,6 +30,15 @@ export type SendSession = {
     /** The account nonce the device signs with, on networks that order by nonce; shown in the review. */
     preparedNonce?: string;
 };
+
+/**
+ * The transaction being signed and broadcast through its chain network, from review until it is
+ * broadcast or abandoned. It has the fields the review modal reads from the send form state. A
+ * wallet account's send is reviewed like any wallet send; a runtime network's has its own review.
+ */
+export type SendSession =
+    | (SendSessionTransaction & { kind: 'wallet'; accountKey: AccountKey })
+    | (SendSessionTransaction & { kind: 'runtime'; runtime: RuntimeSendTarget });
 
 export type SendSessionContextValue = {
     session: SendSession | undefined;

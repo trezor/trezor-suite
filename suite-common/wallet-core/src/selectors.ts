@@ -72,10 +72,24 @@ export const selectEnabledSupportedNetworks = createMemoizedSelector(
     },
 );
 
+const isSameChainNetworkParams = (a: ChainNetworkParams, b: ChainNetworkParams | undefined) =>
+    !!b &&
+    a.symbol === b.symbol &&
+    a.gapLimit === b.gapLimit &&
+    a.backend.type === b.backend.type &&
+    a.backend.urls.length === b.backend.urls.length &&
+    a.backend.urls.every((url, index) => url === b.backend.urls[index]);
+
+const isSameChainNetworkSelection = (
+    a: readonly ChainNetworkParams[],
+    b: readonly ChainNetworkParams[],
+) =>
+    a.length === b.length && a.every((params, index) => isSameChainNetworkParams(params, b[index]));
+
 /**
  * The networks to build chain networks for, each with the backend the user chose for it: the
- * enabled networks the device supports. A new array on every blockchain update, so consumers must
- * reuse their instances while an entry's values stay the same.
+ * enabled networks the device supports. The same array while the selection stays the same, so a
+ * new block (which updates the blockchain state it reads backends from) changes nothing.
  */
 export const selectChainNetworkSelection = createMemoizedSelector(
     [selectEnabledSupportedNetworks, selectBlockchainState],
@@ -90,6 +104,7 @@ export const selectChainNetworkSelection = createMemoizedSelector(
                 gapLimit: backends?.gapLimit,
             };
         }),
+    { memoizeOptions: { resultEqualityCheck: isSameChainNetworkSelection } },
 );
 
 /**

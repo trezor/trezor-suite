@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.11.0.1
+
+- add `runtimeNetworkPreferences` object store (networks the user defined and turned on at runtime)
+
 ## 26.11.0
 
 - backfill `manualCheckResult` to all `persistentDeviceData` entries (all previously known devices assumed confirmed)

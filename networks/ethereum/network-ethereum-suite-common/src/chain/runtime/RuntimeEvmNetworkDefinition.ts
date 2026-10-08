@@ -1,7 +1,8 @@
+import type { RuntimeNetworkSource } from '@trezor/network-module-suite-common-types';
 import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
 
 /** Who defined a runtime network: Trezor's signed list, or the user. */
-export type RuntimeEvmNetworkSource = 'trezor' | 'user';
+export type RuntimeEvmNetworkSource = RuntimeNetworkSource;
 
 /**
  * An EVM chain defined at runtime rather than built into the app. It is read and broadcast over
