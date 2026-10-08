@@ -25,6 +25,10 @@ import { SendOutputsScreenFooter } from '../components/SendOutputsScreenFooter';
 import { useSendForm } from '../hooks/useSendForm';
 import { useShowDeviceDisconnectedAlert } from '../hooks/useShowDeviceDisconnectedAlert';
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
+import {
+    type CardanoTokenSendRootState,
+    selectIsCardanoTokenSendAdaInsufficient,
+} from '../selectors';
 import { getOutputFieldName } from '../utils';
 
 export const SendOutputsScreen = ({
@@ -36,6 +40,9 @@ export const SendOutputsScreen = ({
     const sendForm = useSendForm(accountKey, tokenContract);
     const { totalSelectedAmount, selectedUtxos } = useUtxoSelection(accountKey);
     const feeLevels = useSelector(selectFeeLevels);
+    const isCardanoTokenSendAdaInsufficient = useSelector((state: CardanoTokenSendRootState) =>
+        selectIsCardanoTokenSendAdaInsufficient(state, accountKey, tokenContract),
+    );
 
     const isFeeReady = isFinalPrecomposedTransaction(feeLevels.normal);
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedAlert();
@@ -109,7 +116,7 @@ export const SendOutputsScreen = ({
                 <SendFeeSection
                     accountKey={accountKey}
                     tokenContract={tokenContract}
-                    isFormValid={isValid}
+                    isFormValid={isValid && !isCardanoTokenSendAdaInsufficient}
                 />
                 {isMissingUtxos ? (
                     <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
