@@ -25,9 +25,7 @@ export type TradeableAssetSearchFields = {
     contractAddress: string;
 };
 
-export type TradeableAssetSearchEntry = TradeableAssetSearchFields & { sortName: string };
-
-export type TradeableAssetSearchIndex<TAsset> = ReadonlyMap<TAsset, TradeableAssetSearchEntry>;
+export type TradeableAssetSearchIndex<TAsset> = ReadonlyMap<TAsset, TradeableAssetSearchFields>;
 type OrderTradeableAssetsByOwnershipParams<TAsset> = {
     assets: readonly TAsset[];
     balances: TradeableAssetBalances;
@@ -104,7 +102,6 @@ export const buildTradeableAssetSearchIndex = <TAsset extends object>({
                     networkName: normalizeForSearch(fields.networkName),
                     networkSymbol: normalizeForSearch(fields.networkSymbol),
                     contractAddress: normalizeForSearch(fields.contractAddress),
-                    sortName: fields.name,
                 },
             ];
         }),
@@ -195,16 +192,7 @@ export const filterTradeableAssetsBySearch = <TAsset extends object>({
         }
     });
 
-    return matchingAssets.sort((assetA, assetB) => {
-        const weightA = weightByAsset.get(assetA) ?? 0;
-        const weightB = weightByAsset.get(assetB) ?? 0;
-
-        if (weightA !== weightB) {
-            return weightA - weightB;
-        }
-
-        return (searchIndex.get(assetA)?.sortName ?? '').localeCompare(
-            searchIndex.get(assetB)?.sortName ?? '',
-        );
-    });
+    return matchingAssets.sort(
+        (assetA, assetB) => (weightByAsset.get(assetA) ?? 0) - (weightByAsset.get(assetB) ?? 0),
+    );
 };

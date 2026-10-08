@@ -110,14 +110,14 @@ describe('buySelectors', () => {
     describe('selectBuyTradeableAssets', () => {
         it('should select only coins with buy set to true', () => {
             expect(selectBuyTradeableAssets(state)).toEqual([
+                expect.objectContaining({ cryptoId: 'bitcoin' }),
+                expect.objectContaining({ cryptoId: 'ethereum' }),
                 expect.objectContaining({
                     cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
                 }),
                 expect.objectContaining({
                     cryptoId: 'base--0x0000000000000000000000000000000000000000',
                 }),
-                expect.objectContaining({ cryptoId: 'ethereum' }),
-                expect.objectContaining({ cryptoId: 'bitcoin' }),
             ]);
         });
 
