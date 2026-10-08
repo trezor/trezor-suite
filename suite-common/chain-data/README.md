@@ -102,6 +102,30 @@ form, RBF bump fee and cancel, token allowance, trading exchange and sell, and S
   flag-off path and the flows still on Redux run the same code. Those flows are staking, yield,
   WalletConnect and the native app.
 
+### Account nonce
+
+Networks that order an account's transactions by a nonce (EVM) resolve it themselves
+(`network.getAccountNonce`, `ChainAccountNonce`) from their backend and the account's pending sends.
+Nothing is read from Redux.
+
+- **Per backend.** Blockbook returns a pending-inclusive nonce and, on newer versions, the
+  mined-only one. Connect's JSON-RPC backend returns the mined-only nonce and the count of
+  transactions in the node's mempool. A runtime network asks its node for both counts.
+- **Pending sends.** A pending send keeps the nonce it was signed with. Networks read the account's
+  pending sends through `getChainPendingSends` (`GetChainPendingSendsDep`), which the app serves
+  from the cache (`createReadChainPendingSends`): the sends the history shows, neither listed nor
+  expired. They feed the next nonce and Blockbook's private-pending hint for gas estimation.
+- **The next nonce.** Every nonce below the backend's pending count is taken. The next nonce walks
+  past own pending sends and stops at the first gap. Without a mined-only count, the confirmed nonce
+  is lowered to the lowest own pending send. A replacement keeps its nonce, and signing refuses a
+  custom nonce below the confirmed one.
+- **Display.** `useChainAccountNonce` reads it under the account's key, so a broadcast reads it
+  again. The desktop send form, account details, transaction list and detail read it through
+  `useAccountEvmNonceInfo`. A pending transaction reads as superseded only when the history shown
+  lists a mined transaction at its nonce.
+- **Still on Redux.** The gas of a replaced transaction (RBF params), cancel composing, and the
+  native app.
+
 ## Adding a network
 
 The send and read paths above never branch on the network type; a lint rule
@@ -211,7 +235,7 @@ Still to edit for any new family: the `networkType` branches in the transaction 
 | 2   | Sync: invalidator wired to Connect block and notification events; `network.subscribe`; legacy refresh off when flagged  | No double fetching; `NETWORK_SYNC_INTERVALS` removed     |
 | 3   | Discovery: `network.discoverAccounts` returns chain accounts; Redux persists identities only (`PortfolioAccount` slice) | Redux accounts hold no balances or tokens                |
 | 4   | Transactions: list, detail, notifications done; export, graph, staking and send readers remain                          | Redux transactions slice is legacy only                  |
-| 5   | Send: desktop send pipeline done; staking, yield, WalletConnect and native remain                                       | No network-type switches in `sendFormThunks`             |
+| 5   | Send: desktop send pipeline and EVM nonce done; staking, yield, WalletConnect and native remain                         | No network-type switches in `sendFormThunks`             |
 | 6   | Done: every network family is a chain network                                                                           | The composition switch is exhaustive                     |
 | 7   | Remove network-type switches from `wallet-utils` and the other hotspots                                                 | Lint bans network-type branching outside composition     |
 | 8   | Persistence for remembered wallets, with the same consent as Redux storage                                              | A remembered wallet works offline without Redux balances |
