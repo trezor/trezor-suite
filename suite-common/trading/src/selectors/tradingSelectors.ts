@@ -580,11 +580,11 @@ const getFilteredCryptoIds = (
         return [];
     }
 
-    const uniqueSupportedCryptoIds = unique(supportedCryptoIds);
+    const supportedCryptoIdSet = new Set<string>(supportedCryptoIds);
     const supportedAddressValidatorSymbols = new Set(supportedCoins);
 
-    return uniqueSupportedCryptoIds
-        .filter(cryptoId => !!coins[cryptoId])
+    return Object.keys(coins)
+        .filter((cryptoId): cryptoId is CryptoId => supportedCryptoIdSet.has(cryptoId))
         .filter(cryptoId => cryptoIdToNetwork(cryptoId))
         .filter(cryptoId => {
             const prodCryptoId = testnetToProdCryptoId(cryptoId);
