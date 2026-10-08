@@ -253,13 +253,12 @@ export const transformTransaction = (
     const outgoing = filterTargets(myAddresses, inputs);
     const incoming = filterTargets(myAddresses, outputs);
     const internal = accountAddress ? filterTargets(accountAddress.change, outputs) : [];
+    const internalSet = new Set(internal);
     const totalInput = inputs.reduce(sumVinVout, 0);
     const totalOutput = outputs.reduce(sumVinVout, 0);
-    const allOutputsAreChange =
-        fullData &&
-        blockfrostTxData.txUtxos.outputs.every(o =>
-            accountAddress?.change.some(c => c.address === o.address),
-        );
+    // `internal` is the subset of `outputs` paid to a change address, so equal lengths mean
+    // every output is change.
+    const allOutputsAreChange = fullData && internal.length === outputs.length;
 
     if (outgoing.length === 0 && incoming.length === 0) {
         type = 'unknown';
@@ -271,7 +270,7 @@ export const transformTransaction = (
     ) {
         // all inputs and outputs are mine
         type = 'self';
-        targets = outputs.filter(o => !internal.includes(o));
+        targets = outputs.filter(o => !internalSet.has(o));
         // recalculate amount, amount spent is just a fee
         amount = blockfrostTxData.txData.fees;
 
@@ -300,7 +299,7 @@ export const transformTransaction = (
         }
     } else {
         type = 'sent';
-        targets = outputs.filter(o => !internal.includes(o));
+        targets = outputs.filter(o => !internalSet.has(o));
         // regular targets
         if (voutLength) {
             // bitcoin-like transaction

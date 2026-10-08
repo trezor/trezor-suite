@@ -35,6 +35,79 @@ const cardanoStaking = {
     },
 };
 
+const changeAddress =
+    'addr1q9f9jr6e48u63ym65esmrwgle84zspnrsew37gwe88e0zfy9ckxhkvuc5xj49rw6zrp443wlygmhv8gwcu38jk6ms6usxwwdwc';
+const usedAddress =
+    'addr1q8u5ktsj5zsmhvwv0ep9zuhfu39x3wyt9wxjnsn3cagsyy59ckxhkvuc5xj49rw6zrp443wlygmhv8gwcu38jk6ms6usrmcafl';
+const unusedAddress =
+    'addr1qxnthyxq8x9lv95h74k5av3sy3yzljr56ttxu4lggv8qstv9ckxhkvuc5xj49rw6zrp443wlygmhv8gwcu38jk6ms6us8mueja';
+const cardanoAccountAddress = {
+    change: [
+        {
+            address: changeAddress,
+            path: "m/1852'/1815'/i'/1/0",
+            transfers: 3,
+            received: '66253740',
+            sent: '40515743',
+        },
+    ],
+    used: [
+        {
+            address: usedAddress,
+            path: "m/1852'/1815'/i'/0/0",
+            transfers: 3,
+            received: '44208517',
+            sent: '42690000',
+        },
+    ],
+    unused: [
+        {
+            address: unusedAddress,
+            path: "m/1852'/1815'/i'/0/1",
+            transfers: 0,
+            received: '0',
+            sent: '0',
+        },
+    ],
+};
+
+const lovelace = (quantity: string) => ({ unit: 'lovelace', quantity });
+
+// Fee-only self transfer without certificates: `governance_delegation` is inferred from it
+// only when every output goes to a change address.
+const feeOnlySelfTxData = {
+    hash: '7c0b2e4f9a1d3c5e7f9b1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a1c3e5b7d9f1a3c',
+    block: '3e5b7d9f1a3c5e7b9d1f3a5c7e9b1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a1c3e5b',
+    block_height: 10500000,
+    block_time: 1713000000,
+    slot: 120000000,
+    index: 3,
+    output_amount: [lovelace('1800000')],
+    fees: '200000',
+    deposit: '0',
+    size: 300,
+    invalid_before: null,
+    invalid_hereafter: null,
+    utxo_count: 2,
+    withdrawal_count: 0,
+    mir_cert_count: 0,
+    delegation_count: 0,
+    stake_cert_count: 0,
+    pool_update_count: 0,
+    pool_retire_count: 0,
+    asset_mint_or_burn_count: 0,
+    redeemer_count: 0,
+    valid_contract: true,
+};
+const feeOnlySelfInput = {
+    address: usedAddress,
+    amount: [lovelace('2000000')],
+    tx_hash: '9a1c3e5b7d9f1a3c5e7b9d1f3a5c7e9b1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a1c',
+    output_index: 0,
+    collateral: false,
+    data_hash: null,
+};
+
 export default {
     transformUtxos: [
         {
@@ -1825,6 +1898,86 @@ export default {
                     size: 391,
                     totalInput: '1256046',
                     totalOutput: '1083241',
+                },
+            },
+        },
+        {
+            description: 'Transform transaction (self, governance delegation)',
+            accountAddress: cardanoAccountAddress,
+            data: {
+                address: usedAddress,
+                txData: feeOnlySelfTxData,
+                txUtxos: {
+                    hash: feeOnlySelfTxData.hash,
+                    inputs: [feeOnlySelfInput],
+                    outputs: [
+                        {
+                            address: changeAddress,
+                            amount: [lovelace('1800000')],
+                            output_index: 0,
+                            data_hash: null,
+                        },
+                    ],
+                },
+                txHash: feeOnlySelfTxData.hash,
+            },
+            result: {
+                type: 'self',
+                txid: feeOnlySelfTxData.hash,
+                amount: '200000',
+                fee: '200000',
+                targets: [],
+                tokens: [],
+                cardanoSpecific: {
+                    subtype: 'governance_delegation',
+                    withdrawal: undefined,
+                    deposit: undefined,
+                },
+            },
+        },
+        {
+            description:
+                'Transform transaction (self, fee-only transfer to an own receive address)',
+            accountAddress: cardanoAccountAddress,
+            data: {
+                address: usedAddress,
+                txData: {
+                    ...feeOnlySelfTxData,
+                    hash: '1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a1c3e5b7d9f1a3c5e7b9d1f3a5c7e9b1d3f',
+                },
+                txUtxos: {
+                    hash: '1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a1c3e5b7d9f1a3c5e7b9d1f3a5c7e9b1d3f',
+                    inputs: [feeOnlySelfInput],
+                    outputs: [
+                        {
+                            address: unusedAddress,
+                            amount: [lovelace('1800000')],
+                            output_index: 0,
+                            data_hash: null,
+                        },
+                    ],
+                },
+                txHash: '1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a1c3e5b7d9f1a3c5e7b9d1f3a5c7e9b1d3f',
+            },
+            result: {
+                type: 'self',
+                txid: '1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a1c3e5b7d9f1a3c5e7b9d1f3a5c7e9b1d3f',
+                amount: '200000',
+                fee: '200000',
+                targets: [
+                    {
+                        n: 0,
+                        addresses: [unusedAddress],
+                        isAddress: true,
+                        amount: '1800000',
+                        isAccountTarget: true,
+                    },
+                ],
+                tokens: [],
+                cardanoSpecific: {
+                    subtype: undefined,
+                    withdrawal: undefined,
+                    deposit: undefined,
                 },
             },
         },
