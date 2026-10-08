@@ -4,6 +4,7 @@ import { type AnalyticsDep, events as sharedEvents } from '@suite-common/analyti
 import {
     type DeviceRootState,
     deviceActions,
+    selectDeviceByState,
     selectDevices,
     selectSelectedDevice,
 } from '@suite-common/device';
@@ -37,13 +38,12 @@ import TrezorConnect, {
     DEVICE_EVENT,
     TRANSPORT_EVENT,
     UI_EVENT,
+    UI_EVENTS,
     UI_REQUEST,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import type { CreateLoggerDep } from '@trezor/logger';
-import { getSynchronize, isArrayMember } from '@trezor/utils';
 
-import { blacklist } from './blacklist';
 import {
     type ConnectInitSettingsDep,
     type GetDebugSettingsDep,
@@ -103,6 +103,16 @@ export const connectInitThunk = createThunk<
         },
     } = extra;
 
+    // The TrezorConnect.call wrapper below locks the device UI optimistically on every call (keyed by
+    // callId); connect-core releases it via DEVICE_UNLOCK. Track locked callIds so the event handler
+    // and the wrapper's safety net each release a given lock exactly once.
+    const optimisticallyLockedCallIds = new Set<string>();
+    const releaseOptimisticLock = (callId?: string) => {
+        if (callId !== undefined && optimisticallyLockedCallIds.delete(callId)) {
+            lockDevice(false);
+        }
+    };
+
     // set event listeners and dispatch as
     TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...eventData }) => {
         if (eventData.type === DEVICE.CONNECT || eventData.type === DEVICE.CONNECT_UNACQUIRED) {
@@ -129,6 +139,27 @@ export const connectInitThunk = createThunk<
     });
 
     TrezorConnect.on(UI_EVENT, ({ event: _, ...action }) => {
+        // Connect-core releases the host's optimistic device lock (see the TrezorConnect.call wrapper)
+        // by callId. Handle it before the scoped-callId guard below — the release is process-global and
+        // must run even for a device call made inside a scoped flow (e.g. passphrase-wallet discovery).
+        if (action.type === UI_EVENTS.DEVICE_UNLOCK) {
+            releaseOptimisticLock(action.payload.callId);
+            if (action.payload.device) {
+                dispatch(
+                    deviceActions.removeButtonRequests({
+                        // Clear button requests for the device the finished call actually used (carried
+                        // on the event), falling back to the selected device. Note: addButtonRequest
+                        // still keys off the selected device, so full add/remove symmetry is a follow-up.
+                        device:
+                            selectDeviceByState(getState(), action.payload.device.state) ??
+                            selectSelectedDevice(getState()),
+                    }),
+                );
+            }
+
+            return;
+        }
+
         // A bare `callId` is not proof of ownership — it doubles as the
         // cancellation token — so defer only events a scoped flow has registered.
         if ('callId' in action && action.callId && isScopedCallId(action.callId)) {
@@ -156,28 +187,24 @@ export const connectInitThunk = createThunk<
         dispatch(action);
     });
 
-    const synchronize = getSynchronize();
-
+    // Lock the device UI synchronously the moment a call is issued — before it crosses the desktop IPC
+    // boundary or lazy-loads a coin-method chunk, either of which would otherwise delay the lock by a
+    // full round-trip. useDevice isn't known here yet, so lock optimistically on every call;
+    // connect-core releases it via DEVICE_UNLOCK as soon as it knows the call doesn't hold the device
+    // (and, for a real device call, once the operation is done). The callId ties the lock to that
+    // release; generate one when the host didn't provide it so it is known here synchronously — it is
+    // also the identity connect uses to cancel the call.
     const original = TrezorConnect.call.bind(TrezorConnect);
-    TrezorConnect.call = async (params: CallMethodPayload) => {
-        if (isArrayMember(params.method, blacklist)) {
-            return original(params);
-        }
-
+    TrezorConnect.call = (params: CallMethodPayload) => {
+        const callId = params.callId ?? crypto.randomUUID();
+        optimisticallyLockedCallIds.add(callId);
         lockDevice(true);
 
-        const result = await synchronize(() => original(params));
-
-        lockDevice(false);
-        dispatch(
-            deviceActions.removeButtonRequests({
-                // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
-                // be the same re-selected device from this line. We should reuse device from params.
-                device: selectSelectedDevice(getState()),
-            }),
+        // Safety net: release if the call settles without a DEVICE_UNLOCK (e.g. it failed before the
+        // method was built). releaseOptimisticLock is idempotent, so it never double-releases.
+        return Promise.resolve(original({ ...params, callId })).finally(() =>
+            releaseOptimisticLock(callId),
         );
-
-        return result;
     };
 
     const binFilesBaseUrl = getBinFilesBaseUrl();

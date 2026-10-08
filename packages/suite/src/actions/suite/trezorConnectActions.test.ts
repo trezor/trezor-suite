@@ -20,7 +20,13 @@ import { type LockDevice } from '@suite-common/suite-types';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
+import TrezorConnect, {
+    BLOCKCHAIN_EVENT,
+    DEVICE_EVENT,
+    TRANSPORT_EVENT,
+    UI_EVENT,
+    UI_EVENTS,
+} from '@trezor/connect';
 import { noopCreateLogger } from '@trezor/logger';
 
 const getInitialState = (): ConnectInitThunkState => ({
@@ -88,17 +94,28 @@ describe('TrezorConnect Actions', () => {
         process.env.SUITE_TYPE = defaultSuiteType;
     });
 
-    it('Wrapped method', async () => {
+    it('locks the device optimistically on a call and releases it on DEVICE_UNLOCK', async () => {
         testMocks.setTrezorConnectFixtures();
         const lockDevice = mock<LockDevice>();
         const { services } = createTestRoot(lockDevice);
         await services.store.dispatch(connectInitThunk());
-        await testMocks.getTrezorConnectMock().getFeatures();
+        const { emitTestEvent } = testMocks.getTrezorConnectMock();
+        const callId = '00000000-0000-4000-8000-000000000000';
 
+        const call = TrezorConnect.call({ method: 'getFeatures', callId });
+        // locked synchronously when the call is issued
         expect(lockDevice).toHaveBeenNthCalledWith(1, true);
+
+        // connect-core releases it (keyed by callId) once it knows device usage; here we emit directly.
+        emitTestEvent(UI_EVENT, {
+            type: UI_EVENTS.DEVICE_UNLOCK,
+            payload: { callId, device: { state: { staticSessionId: 'session' } } },
+        });
         expect(lockDevice).toHaveBeenNthCalledWith(2, false);
         expect(services.store.getActions().pop()).toMatchObject({
             type: '@suite/device/removeButtonRequests',
         });
+
+        await call;
     });
 });

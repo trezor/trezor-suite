@@ -495,13 +495,15 @@ const observeSelectedDevice = [
 
 const acquireDevice = [
     {
+        // The optimistic lock is applied through the mocked lockDevice service (no redux action) and
+        // button-request cleanup is driven by connect's DEVICE_UNLOCK event (not emitted by the mocked
+        // connect here), so a successful acquire dispatches no filter-surviving actions of its own.
         description: `success`,
         state: {
             device: {
                 selectedDevice: SUITE_DEVICE,
             },
         },
-        result: '@suite/device/removeButtonRequests',
     },
     {
         description: `success with requestedDevice param`,
@@ -509,7 +511,6 @@ const acquireDevice = [
             device: {},
         },
         requestedDevice: SUITE_DEVICE,
-        result: '@suite/device/removeButtonRequests',
     },
     {
         description: `with TrezorConnect error`,
