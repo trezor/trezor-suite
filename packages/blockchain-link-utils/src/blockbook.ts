@@ -52,27 +52,29 @@ export const filterTokenTransfers = (
     if (!addresses || !Array.isArray(addresses) || !transfers || !Array.isArray(transfers))
         return [];
 
-    const all: (string | null)[] = addresses.map(a => {
-        if (typeof a === 'string') return a;
-        if (typeof a === 'object' && typeof a.address === 'string') return a.address;
+    const all = new Set(
+        addresses.map(a => {
+            if (typeof a === 'string') return a;
+            if (typeof a === 'object' && typeof a.address === 'string') return a.address;
 
-        return null;
-    });
+            return null;
+        }),
+    );
 
     return transfers
         .filter(transfer => {
             if (transfer && typeof transfer === 'object') {
                 return (
-                    (transfer.from && all.includes(transfer.from)) ||
-                    (transfer.to && all.includes(transfer.to))
+                    (transfer.from && all.has(transfer.from)) ||
+                    (transfer.to && all.has(transfer.to))
                 );
             }
 
             return false;
         })
         .map(transfer => {
-            const isIncoming = transfer.from && all.includes(transfer.from);
-            const isOutgoing = transfer.to && all.includes(transfer.to);
+            const isIncoming = transfer.from && all.has(transfer.from);
+            const isOutgoing = transfer.to && all.has(transfer.to);
 
             let type: TokenTransfer['type'];
             if (isIncoming && isOutgoing) {
@@ -235,8 +237,11 @@ export const transformTransaction = (
     const myTokens = filterTokenTransfers(myAddresses, tx.tokenTransfers);
     const myInternalTransfers = filterEthereumInternalTransfers(descriptor, tx.ethereumSpecific);
 
-    const isNonChangeOutput = (o: VinVout) =>
-        addresses ? !filterTargets(addresses.change, tx.vout).includes(o) : true;
+    // Keyed by output reference, not by address: `filterTargets` returns the `tx.vout` objects
+    // themselves, so `has(o)` is the identity match `.includes(o)` did, built once instead of per output.
+    const changeOutputs = addresses ? new Set(filterTargets(addresses.change, tx.vout)) : undefined;
+
+    const isNonChangeOutput = (o: VinVout) => !changeOutputs?.has(o);
 
     const isNonZero = (o: VinVout) => o.value && o.value !== '0';
 
@@ -367,17 +372,13 @@ export const transformTokenInfo = (
     tokens: BlockbookAccountInfo['tokens'],
 ): TokenInfo[] | undefined => {
     if (!tokens || !Array.isArray(tokens)) return undefined;
-    const info = tokens.reduce((arr, token) => {
-        if (token.type === 'XPUBAddress') return arr;
-
-        return arr.concat([
-            {
-                ...token,
-                decimals: token.decimals ?? DEFAULT_TOKEN_DECIMALS,
-                standard: token.standard,
-            },
-        ]);
-    }, [] as TokenInfo[]);
+    const info: TokenInfo[] = tokens
+        .filter(token => token.type !== 'XPUBAddress')
+        .map(token => ({
+            ...token,
+            decimals: token.decimals ?? DEFAULT_TOKEN_DECIMALS,
+            standard: token.standard,
+        }));
 
     return info.length > 0 ? info : undefined;
 };
@@ -386,24 +387,29 @@ export const transformAddresses = (
     tokens: BlockbookAccountInfo['tokens'],
 ): AccountAddresses | undefined => {
     if (!tokens || !Array.isArray(tokens)) return undefined;
-    const addresses = tokens.reduce((arr, t) => {
-        if (t.type !== 'XPUBAddress') return arr;
-
-        return arr.concat([
-            {
-                address: t.name,
-                path: t.path,
-                transfers: t.transfers,
-                balance: t.balance,
-                sent: t.totalSent,
-                received: t.totalReceived,
-            },
-        ]);
-    }, [] as Address[]);
+    const addresses: Address[] = tokens
+        .filter(token => token.type === 'XPUBAddress')
+        .map(token => ({
+            address: token.name,
+            path: token.path,
+            transfers: token.transfers,
+            balance: token.balance,
+            sent: token.totalSent,
+            received: token.totalReceived,
+        }));
 
     if (addresses.length < 1) return undefined;
-    const internal = addresses.filter(a => a.path.split('/')[4] === '1');
-    const external = addresses.filter(a => !internal.includes(a));
+
+    const internal: Address[] = [];
+    const external: Address[] = [];
+    for (const address of addresses) {
+        // BIP44 `m/purpose'/coin'/account'/change/index`: the change level is `1` for internal addresses.
+        if (address.path.split('/')[4] === '1') {
+            internal.push(address);
+        } else {
+            external.push(address);
+        }
+    }
 
     return {
         change: internal,
