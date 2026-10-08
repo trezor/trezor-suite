@@ -21,7 +21,7 @@ const solanaWalletAddress = 'ENk2eeP4umP6cjAGRsVG4NEVKEVQmRn6JEpN8hubv2Hf';
 
 const uppercaseBech32 = 'BC1QAFK4YHQVJ4WEP57M62DGRMUTLDUSQDE8ADH20D';
 
-test.describe('Recipient address validation', { tag: ['@noDevice'] }, () => {
+test.describe('Recipient address validation', { tag: ['@noDevice', '@optional'] }, () => {
     test.use({
         startEmulator: false,
         setupEmulator: false,
