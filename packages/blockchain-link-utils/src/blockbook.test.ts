@@ -1,5 +1,10 @@
 import * as fixtures from './__fixtures__/blockbook';
-import { filterTokenTransfers, transformTokenInfo, transformTransaction } from './blockbook';
+import {
+    filterTokenTransfers,
+    transformAddresses,
+    transformTokenInfo,
+    transformTransaction,
+} from './blockbook';
 
 describe('blockbook/utils', () => {
     describe('filterTokenTransfers', () => {
@@ -16,6 +21,14 @@ describe('blockbook/utils', () => {
         fixtures.transformTokenInfo.forEach(f => {
             it(f.description, () => {
                 expect(transformTokenInfo(f.tokens)).toEqual(f.parsed);
+            });
+        });
+    });
+
+    describe('transformAddresses', () => {
+        fixtures.transformAddresses.forEach(f => {
+            it(f.description, () => {
+                expect(transformAddresses(f.tokens)).toEqual(f.parsed);
             });
         });
     });
