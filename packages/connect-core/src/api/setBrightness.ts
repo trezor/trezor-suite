@@ -23,8 +23,6 @@ export default class SetBrightness extends AbstractMethod<'setBrightness', PROTO
         return [{ permission: 'management' }];
     }
 
-    init() {}
-
     async run() {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('SetBrightness', 'Success', this.params);

@@ -24,8 +24,6 @@ export default class ApplyFlags extends AbstractMethod<'applyFlags', PROTO.Apply
         return [{ permission: 'management' }];
     }
 
-    init() {}
-
     get confirmation() {
         return {
             view: 'device-management' as const,

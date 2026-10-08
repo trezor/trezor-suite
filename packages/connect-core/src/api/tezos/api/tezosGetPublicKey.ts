@@ -50,8 +50,6 @@ export default class TezosGetPublicKey extends AbstractMethod<
         return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
-    init() {}
-
     get info() {
         return 'Export Tezos public key';
     }

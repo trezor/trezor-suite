@@ -47,8 +47,6 @@ export default class BlockchainSubscribeFiatRates extends AbstractMethod<
         return [];
     }
 
-    init() {}
-
     async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(
             this.params.coinInfo,
