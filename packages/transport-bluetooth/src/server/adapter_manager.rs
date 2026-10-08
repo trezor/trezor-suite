@@ -540,7 +540,7 @@ impl AdapterManager {
                             let _ = self_ref.add_serviceless_device(&id, 0).await;
                         }
                     }
-                    CentralEvent::DeviceUpdated(id) => {
+                    CentralEvent::DeviceUpdated(id) | CentralEvent::RssiUpdate { id, .. } => {
                         if let Some(mut device) = self_ref.get_device(&id).await {
                             let mut emit_update = false;
                             if let Ok(peripheral) = self_ref.get_peripheral_by_id(&id).await {
