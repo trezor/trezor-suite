@@ -23,6 +23,8 @@ describe('resolveBlockaidEvmChain', () => {
     it.each([
         ['Ethereum Classic', getNetwork('etc').chainId],
         ['Ethereum Hoodi', getNetwork('thod').chainId],
+        ['Arc', getNetwork('arc').chainId],
+        ['Arc Testnet', getNetwork('tarc').chainId],
     ])('has no chain for %s', (_name, chainId) => {
         expect(resolveBlockaidEvmChain(chainId)).toBeNull();
     });
