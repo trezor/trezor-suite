@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
 import styled from 'styled-components';
 
@@ -46,6 +46,13 @@ export const UtxoSelectionList = ({
     const { account } = useSendFormContext();
 
     const accountTransactions = useSelector(state => selectAccountTransactions(state, account.key));
+    const transactionsByTxid = useMemo(
+        () =>
+            new Map(
+                accountTransactions.map(transaction => [transaction.txid, transaction] as const),
+            ),
+        [accountTransactions],
+    );
 
     return (
         <Column>
@@ -66,9 +73,7 @@ export const UtxoSelectionList = ({
                 {utxos.map(utxo => (
                     <UtxoSelection
                         key={`${utxo.txid}-${utxo.vout}`}
-                        transaction={accountTransactions.find(
-                            transaction => transaction.txid === utxo.txid,
-                        )}
+                        transaction={transactionsByTxid.get(utxo.txid)}
                         utxo={utxo}
                     />
                 ))}
