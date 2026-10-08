@@ -1,7 +1,11 @@
 export * from './client';
 export type * from './types';
 export { getNetworkByBlockaidChain } from './chains';
-export { getSimulationErrorRiskLevel, areTxSimulationMethods } from './utils';
+export {
+    getSimulationErrorRiskLevel,
+    areTxSimulationMethods,
+    isEvmTxSimulationSupported,
+} from './utils';
 export { getAssetDiffTransferAmount } from './utils/getAssetDiffTransferAmount';
 export { getGasLimitFromGasEstimation } from './utils/getGasLimitFromGasEstimation';
 export {
