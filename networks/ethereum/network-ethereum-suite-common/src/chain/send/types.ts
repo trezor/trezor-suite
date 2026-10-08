@@ -61,4 +61,12 @@ export type EvmSendAppDeps = {
 
     /** Reports a failed gas estimate; composing then falls back to a backup gas limit. */
     onEvmFeeEstimationFailed: (failure: EvmFeeEstimationFailure) => void;
+
+    /** Whether Trezor publishes a definition of the token, so the device can name it. */
+    isEvmTokenDefinitionKnown: (params: EvmTokenDefinitionParams) => Promise<boolean>;
+};
+
+export type EvmTokenDefinitionParams = {
+    chainId: number;
+    contract: string;
 };

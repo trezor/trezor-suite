@@ -20,6 +20,9 @@ export type SolanaSendAppDeps = {
      * composing does not ask the backend for a fresh one.
      */
     getSolanaBlockInfo: (symbol: NetworkSymbol) => SolanaBlockInfo;
+
+    /** Whether Trezor publishes a definition of the token (by mint), so the device can name it. */
+    isSolanaTokenDefinitionKnown: (mint: string) => Promise<boolean>;
 };
 
 type SolanaAccountMisc = { rent?: number };

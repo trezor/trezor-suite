@@ -13,6 +13,10 @@ import {
     createComposeSolanaFeeLevels,
 } from './createComposeSolanaFeeLevels';
 import {
+    type PrepareSolanaForReviewDeps,
+    createPrepareSolanaForReview,
+} from './createPrepareSolanaForReview';
+import {
     type SignSolanaTransactionDeps,
     createSignSolanaTransaction,
 } from './createSignSolanaTransaction';
@@ -20,7 +24,8 @@ import { getAccountSyncInterval, getNetworkConfig } from '../../networkConfig';
 
 export type SolanaChainSendDeps = ComposeSolanaFeeLevelsDeps &
     SignSolanaTransactionDeps &
-    PushConnectTransactionDeps;
+    PushConnectTransactionDeps &
+    PrepareSolanaForReviewDeps;
 
 /** The send of one Solana network, by symbol. */
 export type SolanaChainSend = (
@@ -30,6 +35,7 @@ export type SolanaChainSend = (
 /** Composing, signing and broadcasting on a Solana network. */
 export const createSolanaChainSend = (deps: SolanaChainSendDeps): SolanaChainSend => {
     const composeFeeLevels = createComposeSolanaFeeLevels(deps);
+    const prepareForReview = createPrepareSolanaForReview(deps);
     const sign = createSignSolanaTransaction(deps);
     const push = createPushConnectTransaction(deps);
 
@@ -46,6 +52,7 @@ export const createSolanaChainSend = (deps: SolanaChainSendDeps): SolanaChainSen
 
         return {
             composeFeeLevels: params => composeFeeLevels({ ...params, config }),
+            prepareForReview,
             sign,
             push: params => push({ ...params, useConnectionIdentity: false }),
         };

@@ -3,6 +3,8 @@ import {
     desktopApiCompositionRootAllowance,
     desktopApiRestrictedImports,
     eslint,
+    noNetworkTypeBranchingSyntax,
+    noRestrictedSyntax,
     selectorRestrictedImports,
 } from '@trezor/eslint';
 
@@ -38,4 +40,15 @@ export default [
         '**/eslint-local-rules/**', // Uses ts-node at runtime when loaded by ESLint
         'suite-common/icons/scripts/**', // Icon scripts are development tools.
     ]),
+    {
+        // Chain-data reads and sends through chain networks; the network decides family behaviour.
+        files: ['suite-common/chain-data/src/**/*.{ts,tsx}'],
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                ...noRestrictedSyntax,
+                ...noNetworkTypeBranchingSyntax,
+            ],
+        },
+    },
 ];

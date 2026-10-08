@@ -12,6 +12,7 @@ import type { StellarSendAppDeps } from '@trezor/network-stellar-suite-common';
 
 import { handleEvmFeeEstimationFailure } from './reportEthereumFeeEstimationError';
 import { ethereumGetCurrentNonceThunk } from './sendFormEthereumThunks';
+import { isEvmTokenDefinitionKnown, isSolanaTokenDefinitionKnown } from './tokenDefinitions';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
 import {
@@ -20,7 +21,10 @@ import {
 } from '../blockchain/blockchainReducer';
 import { selectBlockchainUrl } from '../blockchain/blockchainSelectors';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
-import { selectEvmPrivatePendingHint } from '../transactions/transactionsSelectors';
+import {
+    selectEvmPrivatePendingHint,
+    selectTransactions,
+} from '../transactions/transactionsSelectors';
 
 export type WalletChainSendDepsState = AccountsRootState &
     TransactionsRootState &
@@ -55,8 +59,15 @@ export const createWalletChainSendDeps = ({
 
     return {
         datetimeToLocktime,
+        getAccountTransactions: account => {
+            const walletAccount = getWalletAccount(account);
+
+            return walletAccount ? (selectTransactions(getState())[walletAccount.key] ?? []) : [];
+        },
         getStellarBackendUrl: symbol => selectBlockchainUrl(getState(), symbol),
         resolveStellarContractId,
+        isEvmTokenDefinitionKnown,
+        isSolanaTokenDefinitionKnown,
         getSolanaBlockInfo: symbol => {
             const { blockhash, blockHeight } = selectBlockchainBlockInfoBySymbol(
                 getState(),

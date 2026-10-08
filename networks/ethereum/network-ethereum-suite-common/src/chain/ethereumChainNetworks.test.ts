@@ -28,6 +28,7 @@ const sendAppDeps = {
     getEvmPrivatePendingHint: () => undefined,
     resolveEvmNonce: () => Promise.resolve({ nonce: '0', confirmedNonce: '0' }),
     onEvmFeeEstimationFailed: jest.fn(),
+    isEvmTokenDefinitionKnown: () => Promise.resolve(false),
 };
 
 const blockbookDeps: EthereumBlockbookChainNetworkDeps = {

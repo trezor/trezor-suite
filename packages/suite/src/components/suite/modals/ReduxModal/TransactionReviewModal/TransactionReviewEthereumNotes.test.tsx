@@ -49,7 +49,7 @@ describe(TransactionReviewEthereumNotes.name, () => {
             accountKey: account.key,
             precomposedForm: { ethereumNonce: '6' } as FormState,
             precomposedTx: tx,
-            resolvedEthereumNonce: '7',
+            preparedNonce: '7',
         });
 
         expect(screen.getByTestId('@modal/header/nonce/value')).toHaveTextContent('7');

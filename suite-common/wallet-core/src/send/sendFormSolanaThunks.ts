@@ -14,6 +14,7 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { isSolanaTokenDefinitionKnown } from './tokenDefinitions';
 import {
     type BlockchainRootState,
     selectBlockchainBlockInfoBySymbol,
@@ -27,6 +28,7 @@ const signSolanaTransaction = createSignSolanaTransaction(chainSendConnectDeps);
 
 const createSend = (getState: () => BlockchainRootState) =>
     createSolanaChainSend({
+        isSolanaTokenDefinitionKnown,
         ...chainSendConnectDeps,
         getSolanaBlockInfo: symbol => {
             const { blockhash, blockHeight } = selectBlockchainBlockInfoBySymbol(

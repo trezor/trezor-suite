@@ -7,6 +7,11 @@ export type { SolanaChainNetworkDeps } from './chain/createSolanaChainNetwork';
 export { createSolanaChainSend } from './chain/send/createSolanaChainSend';
 export type { SolanaChainSend, SolanaChainSendDeps } from './chain/send/createSolanaChainSend';
 export type { SolanaBlockInfo, SolanaSendAppDeps } from './chain/send/types';
+export { createPrepareSolanaForReview } from './chain/send/createPrepareSolanaForReview';
+export type {
+    PrepareSolanaForReview,
+    PrepareSolanaForReviewDeps,
+} from './chain/send/createPrepareSolanaForReview';
 export { createSignSolanaTransaction } from './chain/send/createSignSolanaTransaction';
 export type {
     SignSolanaTransaction,

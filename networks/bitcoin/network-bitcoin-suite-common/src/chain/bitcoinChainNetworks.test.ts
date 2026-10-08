@@ -40,6 +40,7 @@ const blockbookDeps: BitcoinBlockbookChainNetworkDeps = {
     fetchCoinGeckoCurrentRate,
     fetchCoinGeckoHistoricRates,
     datetimeToLocktime,
+    getAccountTransactions: () => [],
 };
 
 const electrumDeps: BitcoinElectrumChainNetworkDeps = {
@@ -49,6 +50,7 @@ const electrumDeps: BitcoinElectrumChainNetworkDeps = {
     fetchCoinGeckoHistoricRates,
     fetchBlockbookHttpHistoricRates,
     datetimeToLocktime,
+    getAccountTransactions: () => [],
 };
 
 const blockbook = { type: 'blockbook', urls: [] } as const;

@@ -68,7 +68,8 @@ export const usePushRawTransaction = () => {
                         style: { maxWidth: 'auto' },
                     }),
                 );
-                // The wallet's own sync still serves the views that read the store.
+                // Legacy bridge: the wallet's own sync still serves the views that read the store.
+                // Goes away with the sync migration (roadmap phase 2).
                 dispatch(syncAccountsWithBlockchainThunk(account.symbol));
 
                 return true;

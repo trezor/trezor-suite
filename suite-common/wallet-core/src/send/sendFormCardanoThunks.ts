@@ -38,13 +38,13 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
                 context: composeContext,
             });
 
-            notifyChainComposeLevels(dispatch, account, levels);
+            notifyChainComposeLevels(dispatch, levels);
 
             return levels;
         } catch (error) {
             if (!(error instanceof ChainSendError)) throw error;
 
-            notifyChainComposeFailure(dispatch, account, error);
+            notifyChainComposeFailure(dispatch, error);
 
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',

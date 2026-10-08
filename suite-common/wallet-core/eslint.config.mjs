@@ -1,4 +1,4 @@
-import { eslint } from '@trezor/eslint';
+import { eslint, noNetworkTypeBranchingSyntax, noRestrictedSyntax } from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -24,6 +24,17 @@ export default [
                     message:
                         'Do not add files to @suite-common/wallet-core/src/device. Add device code to @suite-common/device instead.',
                 },
+            ],
+        },
+    },
+    {
+        // What the wallet hands chain networks; the network decides family behaviour.
+        files: ['src/send/walletChainSend.ts'],
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                ...noRestrictedSyntax,
+                ...noNetworkTypeBranchingSyntax,
             ],
         },
     },

@@ -15,7 +15,7 @@ import { restoreOrigOutputsOrder } from './bitcoinSendHelpers';
 import type { BitcoinSendAppDeps, BitcoinSendConfig } from './types';
 
 export type SignBitcoinTransactionDeps = GetTrezorConnectDep<'signTransaction'> &
-    Pick<BitcoinSendAppDeps, 'datetimeToLocktime'>;
+    Pick<BitcoinSendAppDeps, 'datetimeToLocktime' | 'getAccountTransactions'>;
 
 export type SignBitcoinTransactionParams = SignChainTransactionParams & {
     config: BitcoinSendConfig;
@@ -72,7 +72,7 @@ export const createSignBitcoinTransaction =
             // passing them directly from tx history will prevent downloading them from the backend (in @trezor/connect)
             // this is essential step for coinjoin account to avoid leaking txid
             if (['coinjoin', 'taproot'].includes(account.accountType)) {
-                refTxs = (options.replacedTransactions ?? []).filter(tx => tx.txid === txid);
+                refTxs = deps.getAccountTransactions(account).filter(tx => tx.txid === txid);
             }
 
             // override inputs and outputs of precomposed transaction

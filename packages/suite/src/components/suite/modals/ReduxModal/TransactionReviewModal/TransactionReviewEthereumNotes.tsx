@@ -31,7 +31,7 @@ const selectReviewEthereumNonce = (state: AppState, session: SendSession | undef
     const yieldTxReview = selectYieldTxReview(state);
     if (yieldTxReview.precomposedTx) return yieldTxReview.precomposedForm?.ethereumNonce;
     // A send signed through its chain network keeps its nonce in the send session.
-    if (session) return session.resolvedEthereumNonce ?? session.precomposedForm.ethereumNonce;
+    if (session) return session.preparedNonce ?? session.precomposedForm.ethereumNonce;
     if (state.wallet.send?.precomposedTx) {
         // Send stores the resolved nonce; WalletConnect fills precomposedForm instead.
         return (

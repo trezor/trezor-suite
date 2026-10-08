@@ -42,7 +42,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
         } catch (error) {
             if (!(error instanceof ChainSendError)) throw error;
 
-            notifyChainComposeFailure(dispatch, account, error);
+            notifyChainComposeFailure(dispatch, error);
 
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',

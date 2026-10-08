@@ -46,15 +46,6 @@ jest.mock('@suite/modal', () => ({
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
-    enhancePrecomposedTransaction: ({
-        precomposedTransaction,
-    }: {
-        precomposedTransaction: PrecomposedTransactionFinal;
-    }) =>
-        Promise.resolve({
-            enhancedPrecomposedTransaction: precomposedTransaction,
-            isTokenKnown: undefined,
-        }),
     selectIsMevProtectionEnabled: () => false,
     selectWalletChainSignOptions: () => ({ device: { path: 'device-path' } }),
     showSentTransactionToastThunk: (payload: unknown) => ({ type: 'sentToast', payload }),

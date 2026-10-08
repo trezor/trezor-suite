@@ -80,6 +80,36 @@ export const noRestrictedSyntax = [
     ...noCastedObjectHelpersSyntax,
 ];
 
+const NETWORK_TYPE_BRANCHING_MESSAGE =
+    'Code built on chain networks must not branch on the network type or family. Let the network decide (a ChainNetwork member or a dependency it declares), or branch in the platform composition root.';
+
+/**
+ * Bans for code built on chain networks: anything the family decides belongs to the network, and
+ * the composition root is the only place that picks a family. Configs add these with
+ * `noRestrictedSyntax` for the folders that already follow the rule.
+ */
+export const noNetworkTypeBranchingSyntax = [
+    {
+        selector:
+            "BinaryExpression[operator=/^[!=]==?$/] > :matches(MemberExpression[property.name='networkType'], Identifier[name='networkType'])",
+        message: NETWORK_TYPE_BRANCHING_MESSAGE,
+    },
+    {
+        selector:
+            "SwitchStatement > :matches(MemberExpression[property.name='networkType'], Identifier[name='networkType']).discriminant",
+        message: NETWORK_TYPE_BRANCHING_MESSAGE,
+    },
+    {
+        selector: "CallExpression[callee.name='isCardanoTx']",
+        message: NETWORK_TYPE_BRANCHING_MESSAGE,
+    },
+    {
+        selector:
+            "TSTypeReference[typeName.name='Record'] > TSTypeParameterInstantiation > TSTypeReference:first-child[typeName.name='NetworkType']",
+        message: NETWORK_TYPE_BRANCHING_MESSAGE,
+    },
+];
+
 /** @type {Config[]} */
 export const javascriptConfig = [
     pluginJs.configs.recommended,

@@ -26,9 +26,12 @@ const fetchBlockbookHttpHistoricRates = jest.fn();
 const deps: DesktopChainNetworksDeps = {
     getTrezorConnect,
     datetimeToLocktime: jest.fn(),
+    getAccountTransactions: jest.fn(),
     getStellarBackendUrl: jest.fn(),
     resolveStellarContractId: jest.fn(),
     getSolanaBlockInfo: jest.fn(),
+    isSolanaTokenDefinitionKnown: jest.fn(),
+    isEvmTokenDefinitionKnown: jest.fn(),
     isApprovalFlowSupported: jest.fn(),
     getEvmPrivatePendingHint: jest.fn(),
     resolveEvmNonce: jest.fn(),
