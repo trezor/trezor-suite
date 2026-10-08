@@ -19,41 +19,45 @@ import { HOME_ASSET_CELL_PADDING } from './homeAssetTableLayout';
 
 type HomeAssetNetworkSectionProps = {
     symbol: NetworkSymbol;
+    isCapped: boolean;
 };
 
-export const HomeAssetNetworkSection = memo(({ symbol }: HomeAssetNetworkSectionProps) => {
-    const { BaseCurrencyAmountFormatter } = useFormatters();
-    const name = useSelector(state => selectNetworkName(state, symbol));
-    const fiatValue = useSelector(state => selectNetworkFiatValue(state, symbol));
-    const assetKeys = useSelector(state => selectShownWalletAssetKeysOfNetwork(state, symbol));
+export const HomeAssetNetworkSection = memo(
+    ({ symbol, isCapped }: HomeAssetNetworkSectionProps) => {
+        const { BaseCurrencyAmountFormatter } = useFormatters();
+        const name = useSelector(state => selectNetworkName(state, symbol));
+        const fiatValue = useSelector(state => selectNetworkFiatValue(state, symbol));
+        const assetKeys = useSelector(state =>
+            selectShownWalletAssetKeysOfNetwork(state, symbol, isCapped),
+        );
 
-    return (
-        <>
-            <Table.Row
-                isHighlightedOnHover={false}
-                data-testid={`@dashboard/home-asset-group/${symbol}`}
-            >
-                <Table.Cell colSpan={2} padding={HOME_ASSET_CELL_PADDING.first}>
-                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                        {/* The network store answers nothing until its modules load. */}
-                        {name ?? symbol.toUpperCase()}
-                    </Text>
-                </Table.Cell>
-                <Table.Cell align="end" padding={HOME_ASSET_CELL_PADDING.last}>
-                    {fiatValue !== undefined && (
+        return (
+            <>
+                <Table.Row
+                    isHighlightedOnHover={false}
+                    data-testid={`@dashboard/home-asset-group/${symbol}`}
+                >
+                    <Table.Cell colSpan={2} padding={HOME_ASSET_CELL_PADDING.first}>
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                            <HiddenPlaceholder>
-                                {BaseCurrencyAmountFormatter.format(
-                                    asBaseCurrencyAmount(new BigNumber(fiatValue)),
-                                )}
-                            </HiddenPlaceholder>
+                            {name ?? symbol.toUpperCase()}
                         </Text>
-                    )}
-                </Table.Cell>
-            </Table.Row>
-            {assetKeys.map(assetKey => (
-                <HomeAssetRow key={assetKey} assetKey={assetKey} hasBorderTop={false} />
-            ))}
-        </>
-    );
-});
+                    </Table.Cell>
+                    <Table.Cell align="end" padding={HOME_ASSET_CELL_PADDING.last}>
+                        {fiatValue !== undefined && (
+                            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                                <HiddenPlaceholder>
+                                    {BaseCurrencyAmountFormatter.format(
+                                        asBaseCurrencyAmount(new BigNumber(fiatValue)),
+                                    )}
+                                </HiddenPlaceholder>
+                            </Text>
+                        )}
+                    </Table.Cell>
+                </Table.Row>
+                {assetKeys.map(assetKey => (
+                    <HomeAssetRow key={assetKey} assetKey={assetKey} hasBorderTop={false} />
+                ))}
+            </>
+        );
+    },
+);

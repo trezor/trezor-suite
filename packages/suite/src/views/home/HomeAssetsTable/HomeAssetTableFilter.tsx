@@ -2,20 +2,40 @@ import { useRef } from 'react';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { type HomeAssetGrouping } from '@suite-common/assets';
+import { type HomeAssetGrouping, selectSmallBalanceSummary } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { GhostContainer, Icon, Menu, Popover, type PopoverRef, Row } from '@trezor/components';
+import {
+    GhostContainer,
+    Icon,
+    Menu,
+    Popover,
+    type PopoverRef,
+    Row,
+    Switch,
+} from '@trezor/components';
 import { CaretRightIcon, CheckIcon, FunnelSimpleIcon } from '@trezor/icons';
+
+import { useSelector } from 'src/hooks/suite';
+
+import { HomeAssetSmallBalancesLabel } from './HomeAssetSmallBalancesLabel';
 
 type HomeAssetTableFilterProps = {
     grouping: HomeAssetGrouping;
+    areSmallBalancesShown: boolean;
     onChange: (grouping: HomeAssetGrouping) => void;
+    onSmallBalancesChange: (areShown: boolean) => void;
 };
 
-const HomeAssetTableFilter = ({ grouping, onChange }: HomeAssetTableFilterProps) => {
+const HomeAssetTableFilter = ({
+    grouping,
+    areSmallBalancesShown,
+    onChange,
+    onSmallBalancesChange,
+}: HomeAssetTableFilterProps) => {
     const popoverRef = useRef<PopoverRef>(null);
     const { dispatch } = useServices(injectDispatch);
+    const smallBalances = useSelector(selectSmallBalanceSummary);
 
     const choose = (chosen: HomeAssetGrouping) => {
         onChange(chosen);
@@ -41,6 +61,23 @@ const HomeAssetTableFilter = ({ grouping, onChange }: HomeAssetTableFilterProps)
                             iconRight: grouping === 'networks' ? CheckIcon : undefined,
                             onClick: () => choose('networks'),
                             'data-testid': '@dashboard/home-asset/grouping/networks',
+                        },
+                        {
+                            label: <HomeAssetSmallBalancesLabel />,
+                            // The switch has to be seen changing, so this row leaves the menu open.
+                            rightContent: (
+                                <Row pointerEvents="none">
+                                    <Switch
+                                        size="small"
+                                        isChecked={areSmallBalancesShown}
+                                        data-testid="@dashboard/home-asset/small-balances"
+                                    />
+                                </Row>
+                            ),
+                            isHidden: smallBalances === undefined,
+                            hasSeparatorBefore: true,
+                            closeOnClick: false,
+                            onClick: () => onSmallBalancesChange(!areSmallBalancesShown),
                         },
                         {
                             label: <Translation id="TR_HIDDEN_TOKENS" />,
@@ -69,9 +106,9 @@ const HomeAssetTableFilter = ({ grouping, onChange }: HomeAssetTableFilterProps)
     );
 };
 
-export const HomeAssetTableFilterHeader = ({ grouping, onChange }: HomeAssetTableFilterProps) => (
+export const HomeAssetTableFilterHeader = (props: HomeAssetTableFilterProps) => (
     <Row gap={8} alignItems="center">
         <Translation id="TR_ASSET" />
-        <HomeAssetTableFilter grouping={grouping} onChange={onChange} />
+        <HomeAssetTableFilter {...props} />
     </Row>
 );

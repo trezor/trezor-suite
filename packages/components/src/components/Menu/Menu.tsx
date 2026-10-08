@@ -68,6 +68,7 @@ export type DropdownMenuItemProps = {
     onClick?: () => unknown | Promise<unknown>;
     icon?: IconComponent;
     iconRight?: IconComponent;
+    rightContent?: React.ReactNode;
     isDisabled?: boolean;
     isHidden?: boolean;
     hasSeparatorBefore?: boolean;
@@ -83,6 +84,7 @@ type MenuItemComponentProps = DropdownMenuItemProps & {
 const MenuItem = ({
     icon,
     iconRight,
+    rightContent,
     label,
     isDisabled,
     onClick,
@@ -110,6 +112,7 @@ const MenuItem = ({
             <Text intent="neutral" isDisabled={isDisabled} textWrap="nowrap">
                 {label}
             </Text>
+            {rightContent !== undefined && <Box margin={{ left: 'auto' }}>{rightContent}</Box>}
             {iconRight && (
                 <Icon
                     margin={{ left: 'auto' }}

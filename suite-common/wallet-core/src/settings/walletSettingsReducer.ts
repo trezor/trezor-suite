@@ -40,6 +40,7 @@ const initialState: WalletSettingsState = {
     isAutoEjectEnabled: false,
     addressDisplayType: AddressDisplayOptions.CHUNKED,
     homeAssetsTableGrouping: 'default',
+    areHomeAssetSmallBalancesShown: true,
 };
 export const initialWalletSettingsState: WalletSettingsState = initialState;
 
@@ -53,6 +54,7 @@ export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> 
     'isAutoEjectEnabled',
     'addressDisplayType',
     'homeAssetsTableGrouping',
+    'areHomeAssetSmallBalancesShown',
 ];
 
 export type WalletSettingsReducerDeps = ActionTypesDep<'storageLoad'> &
@@ -129,6 +131,15 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
                 state.homeAssetsTableGrouping = action.payload;
             },
         );
+        builder.addCase(
+            walletSettingsActions.showHomeAssetSmallBalances.type,
+            (
+                state,
+                action: ReturnType<typeof walletSettingsActions.showHomeAssetSmallBalances>,
+            ) => {
+                state.areHomeAssetSmallBalancesShown = action.payload;
+            },
+        );
     },
 );
 
@@ -154,6 +165,8 @@ export const selectBitcoinAmountUnit = (state: WalletSettingsRootState) =>
     state.wallet.settings.bitcoinAmountUnit;
 export const selectHomeAssetsTableGrouping = (state: WalletSettingsRootState) =>
     state.wallet.settings.homeAssetsTableGrouping;
+export const selectAreHomeAssetSmallBalancesShown = (state: WalletSettingsRootState) =>
+    state.wallet.settings.areHomeAssetSmallBalancesShown;
 export const selectIsDeviceAutoEjectEnabled = (state: WalletSettingsRootState) =>
     state.wallet.settings.isAutoEjectEnabled;
 
