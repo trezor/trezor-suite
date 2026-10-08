@@ -15,8 +15,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    name: Determine required checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      javascript: ${{ steps.checks.outputs.javascript }}
+      rust: ${{ steps.checks.outputs.rust }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - uses: ./.github/actions/required-checks
+        id: checks
+
   setup-and-cache:
     name: Setup and Cache Dependencies
+    needs: changes
+    if: needs.changes.outputs.javascript == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -89,15 +105,17 @@ jobs:
         run: yarn lint:js --output-style=stream
       - name: Lint Styles
         run: yarn lint:styles --output-style=stream
-      - name: Check rust files changes
-        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4
-        id: changes
-        with:
-          filters: |
-            rust: packages/transport-bluetooth/**/*.rs
+
+  lint-rust:
+    name: Rust formatting
+    needs: changes
+    if: needs.changes.outputs.rust == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
       - name: Lint Rust
-        if: steps.changes.outputs.rust == 'true'
-        run: yarn workspace @trezor/transport-bluetooth lint:rs
+        working-directory: packages/transport-bluetooth
+        run: cargo fmt --all -- --check
 
   test-madge-circular-imports:
     name: Check for new Circular Imports

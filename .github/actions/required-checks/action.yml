@@ -1,0 +1,27 @@
+name: "Determine required checks"
+description: "Keep JavaScript checks enabled unless only Bluetooth Rust sources or Cargo files changed."
+outputs:
+  javascript:
+    description: "Whether any changed file requires JavaScript checks"
+    value: ${{ steps.changes.outputs.javascript }}
+  rust:
+    description: "Whether Bluetooth Rust sources or Cargo files changed"
+    value: ${{ steps.changes.outputs.rust }}
+runs:
+  using: "composite"
+  steps:
+    - name: Classify changed files
+      id: changes
+      uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4
+      with:
+        # PRs use their base branch; pushes compare against the previous commit on the same branch.
+        base: ${{ github.ref }}
+        predicate-quantifier: some-with-excludes
+        filters: |
+          rust:
+            - 'packages/transport-bluetooth/**/*.rs'
+            - 'packages/transport-bluetooth/Cargo.{toml,lock}'
+          javascript:
+            - '**'
+            - '!packages/transport-bluetooth/**/*.rs'
+            - '!packages/transport-bluetooth/Cargo.{toml,lock}'
