@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
+import { useScrollDivider } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
@@ -14,7 +15,6 @@ import {
     Screen,
     type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
-import { useScrollDivider } from '@suite-native/scrollview';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
 type ScreenNavigationProps = StackToStackCompositeScreenProps<
