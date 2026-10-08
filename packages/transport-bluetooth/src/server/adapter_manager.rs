@@ -453,7 +453,7 @@ impl AdapterManager {
     ) -> Result<(), AdapterError> {
         let peripheral = self.get_peripheral_by_id(id).await?;
         if let Ok(Some(props)) = peripheral.properties().await {
-            if let Some(_name) = props.local_name {
+            if props.advertisement_name.is_some() {
                 let device = ServicelessDevice {
                     update_count,
                     timestamp: utils::get_timestamp(),
