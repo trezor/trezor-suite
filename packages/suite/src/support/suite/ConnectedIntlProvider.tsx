@@ -1,77 +1,19 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
-import { IntlProvider } from 'react-intl';
+import { type ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 
-import enMessages from '@suite/app-assets/files/translations/en-US.json';
-import { messages as definedMessages } from '@suite/intl';
+import { IntlProvider } from '@suite/intl';
 import { selectLanguage, selectShowTranslationKeys } from '@suite/settings';
-import type { Locale } from '@suite-common/suite-types';
-import { isDevEnv } from '@suite-common/suite-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
-import { getEffectiveIntlMessages } from './getEffectiveIntlMessages';
-
-const DEFINED_MESSAGE_IDS = Object.keys(definedMessages);
-
-const useFetchMessages = (locale: Locale) => {
-    const [messages, setMessages] = useState<{ [key: string]: any }>({});
-
-    useEffect(() => {
-        let active = true;
-        const fetchMessages = async () => {
-            const messages =
-                locale === 'en-US'
-                    ? {}
-                    : await import(
-                          /* webpackChunkName: "translations/[request]" */ `@suite/app-assets/files/translations/${locale}.json`
-                      )
-                          .then(res => res.default)
-                          .catch(() => ({}));
-            if (!active) return;
-            setMessages({ ...enMessages, ...messages });
-        };
-        fetchMessages();
-
-        return () => {
-            active = false;
-        };
-    }, [locale]);
-
-    return messages;
-};
-
-interface ConnectedIntlProviderProps {
+type ConnectedIntlProviderProps = {
     children: ReactNode;
-}
+};
 
 export const ConnectedIntlProvider = ({ children }: ConnectedIntlProviderProps) => {
     const locale = useSelector(selectLanguage);
     const showTranslationKeys = useSelector(selectShowTranslationKeys);
-    const messages = useFetchMessages(locale);
-    const effectiveMessages = useMemo(
-        () =>
-            getEffectiveIntlMessages({
-                localizedMessages: messages,
-                definedMessageIds: DEFINED_MESSAGE_IDS,
-                showTranslationKeys,
-            }),
-        [messages, showTranslationKeys],
-    );
 
     return (
-        <IntlProvider
-            locale={locale}
-            messages={effectiveMessages}
-            onError={err => {
-                if (isDevEnv) {
-                    // ignore, this expected
-                    if (err.message.includes('MISSING_TRANSLATION')) {
-                        return;
-                    }
-                    console.error(err);
-                }
-            }}
-        >
+        <IntlProvider locale={locale} showTranslationKeys={showTranslationKeys}>
             {children}
         </IntlProvider>
     );

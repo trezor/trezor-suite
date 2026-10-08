@@ -3,8 +3,15 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/react-query"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
             "path": "../../suite-common/suite-utils"
         },
+        { "path": "../app-assets" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {

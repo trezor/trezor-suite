@@ -21,7 +21,10 @@
     "dependencies": {
         "@crowdin/cli": "4.13.0",
         "@formatjs/cli": "6.12.2",
+        "@suite-common/react-query": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
+        "@suite/app-assets": "workspace:*",
         "@trezor/type-utils": "workspace:^",
         "@trezor/utils": "workspace:^",
         "react": "19.2.3",
