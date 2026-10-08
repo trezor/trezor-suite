@@ -1,4 +1,3 @@
-import type { UiRequestConfirmation } from '../events/ui-request';
 import type { PrecomposeResultFinal } from './api/bitcoin/composeTransaction';
 import type { CoinSymbol } from './coinInfo';
 
@@ -72,5 +71,11 @@ export type MethodInfo = {
     // Available after init.
     info: string;
     precomposed?: PrecomposeResultFinal;
-    confirmation?: UiRequestConfirmation['payload'];
+    confirmation?: {
+        label?: string;
+        customConfirmButton?: {
+            className: string;
+            label: string;
+        };
+    };
 };
