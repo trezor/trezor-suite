@@ -74,6 +74,16 @@ export const UI_EVENTS = {
     /** Account balance is insufficient for the transaction */
     ACCOUNT_INSUFFICIENT_FUNDS: 'ui-event_account_insufficient_funds',
 
+    // --- Device call lifecycle ---
+
+    /**
+     * Releases the device lock the host set optimistically when it issued the call (identified by
+     * `callId`). Emitted once per call as soon as connect knows the call does not hold the device
+     * (info probes, non-device methods) or, for a real device call, once it has finished. Replaces a
+     * host-side method blocklist: the host locks on every call and connect decides when to release.
+     */
+    DEVICE_UNLOCK: 'ui-event_device_unlock',
+
     // --- Generic ---
 
     /** Device is requesting a physical button press confirmation */
@@ -97,6 +107,18 @@ export type UiEventWithoutPayload =
           type: typeof UI_EVENTS.CLOSE_UI_WINDOW;
           payload?: never;
       };
+
+// Releases the host's optimistic device lock for the call identified by `callId`. `device` is the
+// device the call used; it is present only for real device calls (absent for info probes, non-device
+// methods, firmwareUpdate, or a call that failed before a device was assigned) and lets the host clear
+// that device's button requests.
+export interface UiEventDeviceUnlock {
+    type: typeof UI_EVENTS.DEVICE_UNLOCK;
+    payload: {
+        callId?: string;
+        device?: Device;
+    };
+}
 
 export type UiEventDeviceAction =
     | {
@@ -219,6 +241,7 @@ export interface UiEventFirmwareDownloaded {
 
 export type UiEvent =
     | UiEventWithoutPayload
+    | UiEventDeviceUnlock
     | UiEventDeviceAction
     | UiEventButtonRequest
     | UiEventUnexpectedDeviceMode

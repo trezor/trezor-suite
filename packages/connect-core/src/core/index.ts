@@ -224,7 +224,13 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         return Promise.resolve();
     }
 
+    // The host optimistically locked the device UI when it issued this call (it cannot know useDevice
+    // synchronously, before the IPC hop and the method-chunk import). Release that lock — keyed by the
+    // call's callId — as soon as we know the call does not hold the device: info probes and non-device
+    // methods release now, a real device call releases in onCallDevice's finally once it is done.
     if (message.payload.__info) {
+        sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK, { callId: method.callId }));
+
         let response: CoreEventMessage;
         // handleMessage only logs a rejected onCall, so the caller would get no response at all.
         try {
@@ -258,6 +264,9 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
 
     // this method is not using the device, there is no need to acquire
     if (!method.useDevice) {
+        // Release the host's optimistic lock before running the backend work (which may be a slow
+        // network fetch), not after it — otherwise frequent backend calls would hold the lock.
+        sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK, { callId: method.callId }));
         try {
             const response = await method.run({
                 sendCoreMessage: sendCoreMessageWithCallId,
@@ -271,7 +280,19 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         return Promise.resolve();
     }
 
-    return await onCallDevice(methodContext, message, method);
+    // A real device call holds the host's optimistic lock until the device operation settles; the
+    // `finally` releases it (keyed by callId) whether onCallDevice resolves or rejects. The device is
+    // assigned inside onCallDevice (method.setDevice), so DEVICE_UNLOCK can carry the device used.
+    try {
+        return await onCallDevice(methodContext, message, method);
+    } finally {
+        sendCoreMessage(
+            createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK, {
+                callId: method.callId,
+                device: method.device?.toMessageObject(),
+            }),
+        );
+    }
 };
 
 const onCallDevice = async (
@@ -863,6 +884,13 @@ export class Core extends EventEmitter {
                 // means that call immediately returns error.
                 if (message.payload.method === 'firmwareUpdate') {
                     if (message.payload.__info) {
+                        // An info probe never holds the device, so release the host's optimistic lock
+                        // immediately (keyed by callId), like the regular __info path in onCall.
+                        this.sendCoreMessage(
+                            createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK, {
+                                callId: message.payload.callId,
+                            }),
+                        );
                         this.sendCoreMessage(
                             createResponseMessage(message.id, true, {
                                 name: 'firmwareUpdate',
@@ -883,6 +911,8 @@ export class Core extends EventEmitter {
                         this.sendCoreMessage.bind(this),
                         message.payload.callId,
                     );
+                    // firmwareUpdate uses the device but bypasses onCall; it holds the host's
+                    // optimistic lock until the update settles, then releases it (keyed by callId).
                     onCallFirmwareUpdate({
                         params: message.payload,
                         context: {
@@ -903,6 +933,13 @@ export class Core extends EventEmitter {
                                 createResponseMessage(message.id, false, { error }),
                             );
                             this.coreLogger.error('onCallFirmwareUpdate', error);
+                        })
+                        .finally(() => {
+                            this.sendCoreMessage(
+                                createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK, {
+                                    callId: message.payload.callId,
+                                }),
+                            );
                         });
                 } else {
                     onCall(this.getCoreContext(), message).catch(error => {
