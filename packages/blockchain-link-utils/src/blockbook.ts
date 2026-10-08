@@ -27,6 +27,14 @@ import {
 // ERC-20 default when a token does not expose decimals(); avoids breaking amount formatting.
 const DEFAULT_TOKEN_DECIMALS = 18;
 
+// EIP-7708: every nonzero ETH transfer emits an ERC-20-shaped `Transfer` log from this
+// system address. Blockbook may index it as a token transfer of a pseudo-contract with
+// no name or symbol; it is not a real token — the ETH movement is already represented
+// by the transaction amount/targets and internal transfers. Keeping it would add an
+// unnamed token line to plain ETH transfers and trip the fake-token phishing detector
+// on ETH received through contract calls.
+export const EIP7708_SYSTEM_ADDRESS = '0xfffffffffffffffffffffffffffffffffffffffe';
+
 export const transformServerInfo = (payload: ServerInfo) => ({
     name: payload.name,
     shortcut: payload.shortcut,
@@ -62,6 +70,9 @@ export const filterTokenTransfers = (
     return transfers
         .filter(transfer => {
             if (transfer && typeof transfer === 'object') {
+                // EIP-7708 pseudo-token transfers are native ETH movements, not tokens.
+                if (transfer.contract?.toLowerCase() === EIP7708_SYSTEM_ADDRESS) return false;
+
                 return (
                     (transfer.from && all.includes(transfer.from)) ||
                     (transfer.to && all.includes(transfer.to))
