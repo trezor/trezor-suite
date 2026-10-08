@@ -23,10 +23,11 @@ const sendConnect = {
     pushTransaction: jest.fn(),
 };
 
+const getChainPendingSends = jest.fn();
+
 const sendAppDeps = {
     isApprovalFlowSupported: () => true,
-    getEvmPrivatePendingHint: () => undefined,
-    resolveEvmNonce: () => Promise.resolve({ nonce: '0', confirmedNonce: '0' }),
+    getChainPendingSends,
     onEvmFeeEstimationFailed: jest.fn(),
     isEvmTokenDefinitionKnown: () => Promise.resolve(false),
 };
@@ -61,6 +62,7 @@ const getRef = (symbol: 'eth' | 'base') =>
 describe('Ethereum chain networks', () => {
     beforeEach(() => {
         jest.resetAllMocks();
+        getChainPendingSends.mockReturnValue([]);
     });
 
     it('reads wei through the wallet connection on Blockbook', async () => {
@@ -249,5 +251,113 @@ describe('Ethereum chain networks', () => {
         });
 
         expect(network.getTransactions).toBeUndefined();
+    });
+
+    it('reads the nonce on Blockbook past the pending sends of its own backend', async () => {
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: { history: {}, misc: { nonce: '5', confirmedNonce: '5' } },
+        });
+        getChainPendingSends.mockReturnValue([
+            { txid: '0xmine', ethereumSpecific: { status: -1, nonce: 5, gasLimit: 21000 } },
+        ]);
+        const network = createEthereumBlockbookChainNetwork(blockbookDeps)({
+            symbol: asNetworkSymbol('eth'),
+            backend: { type: 'blockbook', urls: [] },
+        });
+
+        await expect(network.getAccountNonce!({ ref: getRef('eth'), signal })).resolves.toEqual({
+            confirmedNonce: 5,
+            nextNonce: 6,
+            pendingNonces: [5],
+        });
+        expect(getChainPendingSends).toHaveBeenCalledWith({
+            symbol: 'eth',
+            backendType: 'blockbook',
+            descriptor: '0xabc',
+        });
+        expect(getAccountInfo).toHaveBeenCalledWith(
+            expect.objectContaining({ confirmedNonce: true, identity: 'wallet-identity' }),
+        );
+    });
+
+    it('reads the nonce on a custom RPC node from its mined and mempool counts', async () => {
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: { history: { unconfirmed: 1 }, misc: { nonce: '5' } },
+        });
+        const network = createEthereumCustomRpcChainNetwork(customRpcDeps)({
+            symbol: asNetworkSymbol('eth'),
+            backend: { type: 'evm-rpc', urls: ['https://rpc.example'] },
+        });
+
+        await expect(network.getAccountNonce!({ ref: getRef('eth'), signal })).resolves.toEqual({
+            confirmedNonce: 5,
+            nextNonce: 6,
+            pendingNonces: [5],
+        });
+    });
+
+    it('signs at the nonce the network resolves', async () => {
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: { history: {}, misc: { nonce: '9', confirmedNonce: '8' } },
+        });
+        sendConnect.ethereumSignTransaction.mockResolvedValue({
+            success: true,
+            payload: { serializedTx: '0xsigned' },
+        });
+        const network = createEthereumBlockbookChainNetwork(blockbookDeps)({
+            symbol: asNetworkSymbol('eth'),
+            backend: { type: 'blockbook', urls: [] },
+        });
+
+        const signed = await network.send!.sign({
+            account: {
+                symbol: asNetworkSymbol('eth'),
+                descriptor: '0xabc',
+                index: 0,
+                path: "m/44'/60'/0'/0/0",
+                accountType: 'normal',
+                deviceState: 'wallet-identity',
+                balance: '1000000000000000000',
+                availableBalance: '1000000000000000000',
+                formattedBalance: '1',
+            },
+            draft: {
+                outputs: [
+                    {
+                        type: 'payment',
+                        address: '0x0000000000000000000000000000000000000001',
+                        amount: '0.1',
+                        fiat: '',
+                        currency: { value: 'usd', label: 'USD' },
+                        token: null,
+                    },
+                ],
+                feePerUnit: '1',
+                feeLimit: '21000',
+                options: [],
+                isCoinControlEnabled: false,
+                selectedUtxos: [],
+            },
+            precomposed: {
+                type: 'final',
+                fee: '21000000000000',
+                feePerByte: '1',
+                feeLimit: '21000',
+                totalSpent: '100021000000000000',
+                bytes: 0,
+                inputs: [],
+                outputs: [],
+                outputsPermutation: [],
+            } as never,
+            options: { device: { path: 'device' } as never },
+        });
+
+        expect(signed).toEqual({ serializedTx: '0xsigned', nonce: '9' });
+        expect(sendConnect.ethereumSignTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({ transaction: expect.objectContaining({ nonce: '0x9' }) }),
+        );
     });
 });

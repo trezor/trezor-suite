@@ -7,7 +7,7 @@ import {
     type ChainSendErrorCode,
     DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type FeeInfo,
-    buildPendingTransaction,
+    type GetChainPendingSendsDep,
     getChainSyncPolicy,
     getDisplayBalanceFiatValue,
     subunitsToUnits,
@@ -15,17 +15,16 @@ import {
 
 import type { CreateEvmJsonRpcClient, EvmFeesPerGas } from './EvmJsonRpcClient';
 import type { RuntimeEvmNetworkDefinition } from './RuntimeEvmNetworkDefinition';
+import { createEvmAccountNonce } from '../nonce/createEvmAccountNonce';
+import type { ReadEvmNonce } from '../nonce/readEvmNonce';
 import { createEvmChainSend } from '../send/createEvmChainSend';
+import { createEvmPendingTransaction } from '../send/createEvmPendingTransaction';
 import { fromWei } from '../send/evm/ethConverter';
-import type {
-    EstimateEvmGasLimit,
-    EvmSendAppDeps,
-    ResolveEvmNonceParams,
-    ResolvedEvmNonce,
-} from '../send/types';
+import type { EstimateEvmGasLimit, EvmSendAppDeps } from '../send/types';
 
 export type EvmJsonRpcChainNetworkDeps = GetTrezorConnectDep<'ethereumSignTransaction'> &
-    Pick<EvmSendAppDeps, 'onEvmFeeEstimationFailed'> & {
+    Pick<EvmSendAppDeps, 'onEvmFeeEstimationFailed'> &
+    GetChainPendingSendsDep & {
         createRpcClient: CreateEvmJsonRpcClient;
     };
 
@@ -115,23 +114,26 @@ export const createEvmJsonRpcChainNetwork =
             }
         };
 
-        const resolveEvmNonce = async ({
-            account,
-        }: ResolveEvmNonceParams): Promise<ResolvedEvmNonce> => {
-            const [pending, confirmed] = await Promise.all([
-                client.getTransactionCount(account.descriptor, 'pending'),
-                client.getTransactionCount(account.descriptor, 'latest'),
+        const readNonce: ReadEvmNonce = async ({ descriptor }) => {
+            const [pendingNonce, confirmedNonce] = await Promise.all([
+                client.getTransactionCount(descriptor, 'pending'),
+                client.getTransactionCount(descriptor, 'latest'),
             ]);
 
-            return { nonce: String(pending), confirmedNonce: String(confirmed) };
+            return { pendingNonce, confirmedNonce };
         };
+        const nonce = createEvmAccountNonce(
+            { readNonce, getChainPendingSends: deps.getChainPendingSends },
+            { symbol, backendType: 'evm-rpc' },
+        );
 
         const evmSend = createEvmChainSend({
             getTrezorConnect: deps.getTrezorConnect,
             estimateEvmGasLimit,
-            resolveEvmNonce,
+            resolveEvmNonce: nonce.resolveEvmNonce,
             onEvmFeeEstimationFailed: deps.onEvmFeeEstimationFailed,
-            // Runtime networks send the coin only: no approvals, tokens or private pending hints.
+            // Runtime networks send the coin only: no approvals or tokens. Their nodes estimate
+            // gas without private pending hints.
             isApprovalFlowSupported: () => false,
             getEvmPrivatePendingHint: () => undefined,
             isEvmTokenDefinitionKnown: () => Promise.resolve(false),
@@ -191,6 +193,11 @@ export const createEvmJsonRpcChainNetwork =
                     empty: wei === 0n,
                 };
             },
+            getAccountNonce: async params => {
+                assertOwnAccount(params.ref);
+
+                return await nonce.getAccountNonce(params);
+            },
             // Runtime networks have no rate source.
             getNativeFiatRate: () => Promise.resolve(null),
             getAccountFiatBalance: getDisplayBalanceFiatValue,
@@ -213,7 +220,7 @@ export const createEvmJsonRpcChainNetwork =
                     return evmSend.sign(params);
                 },
                 push: evmSend.push,
-                createPendingTransaction: buildPendingTransaction,
+                createPendingTransaction: createEvmPendingTransaction,
                 getFeeInfo,
             },
         };

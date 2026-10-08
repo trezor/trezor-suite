@@ -76,6 +76,24 @@ describe('buildConnectChainNetwork', () => {
         expect(fetchAccountBalance).not.toHaveBeenCalled();
     });
 
+    it('has no account nonce unless the network reads one', () => {
+        expect(buildConnectChainNetwork(getDefinition()).getAccountNonce).toBeUndefined();
+    });
+
+    it('reads the account nonce of its own accounts only', async () => {
+        const nonce = { confirmedNonce: 3, nextNonce: 4, pendingNonces: [3] };
+        const getAccountNonce = jest.fn().mockResolvedValue(nonce);
+        const network = buildConnectChainNetwork(getDefinition({ getAccountNonce }));
+
+        await expect(network.getAccountNonce!({ ref, signal })).resolves.toBe(nonce);
+        expect(getAccountNonce).toHaveBeenCalledWith({ ref, signal });
+
+        await expect(
+            network.getAccountNonce!({ ref: { ...ref, symbol: asNetworkSymbol('ltc') }, signal }),
+        ).rejects.toEqual(new ChainNetworkError('symbol-mismatch', asNetworkSymbol('btc')));
+        expect(getAccountNonce).toHaveBeenCalledTimes(1);
+    });
+
     it('asks the rate source for its own symbol', async () => {
         fetchFiatRate.mockResolvedValue({ rate: 1, timestamp: 2 });
         const network = buildConnectChainNetwork(getDefinition());

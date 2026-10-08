@@ -14,8 +14,10 @@ import {
 } from '@trezor/network-module-suite-common-types';
 
 import { getEthereumChainNetworkConfig, getEvmTokenRules } from './getEthereumChainNetworkConfig';
+import { createEvmAccountNonce } from './nonce/createEvmAccountNonce';
+import { createReadBlockbookEvmNonce } from './nonce/readEvmNonce';
 import {
-    type EthereumChainSendDeps,
+    type EthereumChainNetworkSendDeps,
     createEthereumChainSend,
 } from './send/createEthereumChainSend';
 
@@ -24,7 +26,7 @@ export type EthereumBlockbookChainNetworkDeps = FetchConnectAccountBalanceDeps &
     FetchConnectCurrentFiatRateDeps &
     FetchConnectTransactionsDeps &
     FetchConnectHistoricFiatRatesDeps &
-    EthereumChainSendDeps;
+    EthereumChainNetworkSendDeps;
 
 /**
  * EVM network served by Blockbook. Blockbook keeps one connection per wallet, so accounts are
@@ -39,10 +41,14 @@ export const createEthereumBlockbookChainNetwork = (
     const fetchConnectHistoricRates = createFetchConnectHistoricFiatRates(deps);
     const fetchConnectFiatRate = createFetchConnectCurrentFiatRate(deps);
     const fetchTokens = createFetchConnectTokens(deps);
-    const createSend = createEthereumChainSend(deps);
+    const readNonce = createReadBlockbookEvmNonce(deps);
 
     return params => {
         const config = getEthereumChainNetworkConfig(params.symbol);
+        const nonce = createEvmAccountNonce(
+            { readNonce, getChainPendingSends: deps.getChainPendingSends },
+            { symbol: params.symbol, backendType: params.backend.type },
+        );
         const fetchFiatRate = config.hasBlockbookRates
             ? fetchConnectFiatRate
             : deps.fetchCoinGeckoCurrentRate;
@@ -74,7 +80,8 @@ export const createEthereumBlockbookChainNetwork = (
                 protocols: ['erc4626'],
             },
             fetchHistoricFiatRates: config.hasFiatRate ? fetchHistoricRates : null,
-            send: createSend(params.symbol),
+            getAccountNonce: nonce.getAccountNonce,
+            send: createEthereumChainSend({ ...deps, ...nonce })(params.symbol),
         });
     };
 };

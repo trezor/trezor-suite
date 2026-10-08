@@ -9,6 +9,7 @@ import {
     type ComposeEvmFeeLevelsDeps,
     createComposeEvmFeeLevels,
 } from './createComposeEvmFeeLevels';
+import { createEvmPendingTransaction } from './createEvmPendingTransaction';
 import {
     type PrepareEvmForReviewDeps,
     createPrepareEvmForReview,
@@ -39,5 +40,6 @@ export const createEvmChainSend = (deps: EvmChainSendDeps): EvmChainSend => {
         prepareForReview: prepareForReview({ chainId: config.chainId }),
         sign: params => sign({ ...params, config }),
         push: deps.push,
+        createPendingTransaction: createEvmPendingTransaction,
     });
 };

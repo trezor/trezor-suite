@@ -3,6 +3,7 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import type { BackendType } from '../SuiteCommonNetworkConfig';
 import type { ChainAccountBalance } from './ChainAccountBalance';
+import type { ChainAccountNonce, GetAccountNonceParams } from './ChainAccountNonce';
 import type { ChainAccountRef } from './ChainAccountRef';
 import type { ChainSyncPolicy } from './ChainSyncPolicy';
 import type { ChainTokenBalance } from './ChainTokenBalance';
@@ -59,6 +60,9 @@ export type ChainNetwork = {
     readonly nativeAsset: ChainNativeAsset;
 
     getAccountBalance: (params: GetAccountBalanceParams) => Promise<ChainAccountBalance>;
+
+    /** Where the account's nonce stands. Absent on networks without account nonces. */
+    getAccountNonce?: (params: GetAccountNonceParams) => Promise<ChainAccountNonce>;
 
     /** Resolves `null` when no source knows the rate (testnets, unlisted coins). */
     getNativeFiatRate: (params: GetNativeFiatRateParams) => Promise<FiatRate | null>;

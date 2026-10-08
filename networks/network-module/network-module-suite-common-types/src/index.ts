@@ -48,6 +48,12 @@ export {
 
 export type { ChainAccountBalance } from './chain/ChainAccountBalance';
 export type { ChainAccountRef } from './chain/ChainAccountRef';
+export type {
+    ChainAccountNonce,
+    ChainPendingSendsParams,
+    GetAccountNonceParams,
+    GetChainPendingSendsDep,
+} from './chain/ChainAccountNonce';
 export type { ChainTokenBalance } from './chain/ChainTokenBalance';
 export type {
     ChainTransactionsCursor,
