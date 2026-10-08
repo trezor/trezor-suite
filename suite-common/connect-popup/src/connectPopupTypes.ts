@@ -147,7 +147,6 @@ type ConnectPopupCallLoaded = {
     // Common properties that are always present
     methodInfo: {
         methodTitle: string;
-        confirmLabel?: string;
         permissionTypes: PermissionRequest[];
         useUi: boolean;
     };

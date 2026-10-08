@@ -100,9 +100,7 @@ export const PermissionConfirmation = () => {
 
             <VStack spacing="sp12">
                 <Button testID="@popup/call-device" onPress={onConfirm}>
-                    {popupCall.methodInfo.confirmLabel || (
-                        <Translation id="moduleConnectPopup.confirm" />
-                    )}
+                    <Translation id="moduleConnectPopup.confirm" />
                 </Button>
                 <Button intent="neutral" priority="secondary" onPress={onClose}>
                     <Translation id="generic.buttons.close" />

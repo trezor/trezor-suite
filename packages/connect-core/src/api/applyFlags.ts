@@ -27,10 +27,6 @@ export default class ApplyFlags extends AbstractMethod<'applyFlags', PROTO.Apply
     get confirmation() {
         return {
             view: 'device-management' as const,
-            customConfirmButton: {
-                className: 'confirm',
-                label: 'Proceed',
-            },
             label: 'Do you really want to apply flags?',
         };
     }

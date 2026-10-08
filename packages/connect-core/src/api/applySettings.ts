@@ -33,10 +33,6 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
     get confirmation() {
         return {
             view: 'device-management' as const,
-            customConfirmButton: {
-                className: 'confirm',
-                label: 'Proceed',
-            },
             label: 'Do you really want to change device settings?',
         };
     }

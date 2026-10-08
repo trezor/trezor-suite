@@ -71,11 +71,5 @@ export type MethodInfo = {
     // Available after init.
     info: string;
     precomposed?: PrecomposeResultFinal;
-    confirmation?: {
-        label?: string;
-        customConfirmButton?: {
-            className: string;
-            label: string;
-        };
-    };
+    confirmation?: { label?: string };
 };

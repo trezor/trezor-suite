@@ -26,7 +26,7 @@ export const ConnectPermissionsModal = () => {
     if (!popupCall || popupCall?.state !== 'permission-request') return null;
 
     const { method, methodInfo, source } = popupCall;
-    const { confirmLabel, permissionTypes } = methodInfo;
+    const { permissionTypes } = methodInfo;
 
     const rememberPayload = {
         allowedPermissions: permissionTypes,
@@ -70,7 +70,7 @@ export const ConnectPermissionsModal = () => {
                             onClick={onConfirm}
                             data-testid="@connect-permissions-modal/confirm-button"
                         >
-                            {confirmLabel || <Translation id="TR_CONFIRM" />}
+                            <Translation id="TR_CONFIRM" />
                         </Modal.Button>
                         <Modal.Button
                             intent="neutral"

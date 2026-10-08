@@ -30,10 +30,6 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
     get confirmation() {
         return {
             view: 'device-management' as const,
-            customConfirmButton: {
-                className: 'confirm',
-                label: 'Proceed',
-            },
             label: 'Do you want to change language?',
         };
     }

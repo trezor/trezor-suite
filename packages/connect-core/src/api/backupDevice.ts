@@ -31,10 +31,6 @@ export default class BackupDevice extends AbstractMethod<'backupDevice', PROTO.B
     get confirmation() {
         return {
             view: 'device-management' as const,
-            customConfirmButton: {
-                className: 'confirm',
-                label: 'Proceed',
-            },
             label: 'Do you want to initiate backup procedure?',
         };
     }

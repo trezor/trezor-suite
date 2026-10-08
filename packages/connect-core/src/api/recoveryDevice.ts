@@ -39,10 +39,6 @@ export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PRO
     get confirmation() {
         return {
             view: 'device-management' as const,
-            customConfirmButton: {
-                className: 'confirm',
-                label: 'Proceed',
-            },
             label: 'Do you want to recover device from seed?',
         };
     }
