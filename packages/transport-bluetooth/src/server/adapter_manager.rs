@@ -37,8 +37,8 @@ pub struct AdapterManager {
     adapter: Arc<Mutex<Option<Adapter>>>,
     adapter_state: Arc<Mutex<AdapterState>>,
     manager_state: Arc<Mutex<ManagerState>>,
-    discovered_id: DashSet<String>,
-    serviceless_peripherals: DashMap<String, ServicelessDevice>,
+    discovered_id: Arc<DashSet<String>>,
+    serviceless_peripherals: Arc<DashMap<String, ServicelessDevice>>,
     serviceless_peripherals_prune_ts: Arc<Mutex<u128>>,
     notification_streams: NotificationRegistry,
 }
@@ -105,8 +105,8 @@ impl AdapterManager {
             adapter,
             adapter_state,
             manager_state,
-            discovered_id: DashSet::new(),
-            serviceless_peripherals: DashMap::new(),
+            discovered_id: Arc::new(DashSet::new()),
+            serviceless_peripherals: Arc::new(DashMap::new()),
             serviceless_peripherals_prune_ts: Arc::new(Mutex::new(0)),
             notification_streams: NotificationRegistry::default(),
         })
