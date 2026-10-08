@@ -1,13 +1,13 @@
 import { base58 } from '@scure/base';
 
-import { type TxSimulationAction } from '@suite-common/wallet-types';
+import { type TxSimulationMethod } from '@suite-common/wallet-types';
 
-import { getTxSimulationParams } from './getTxSimulationParams';
+import { getTxSimulationParams, isEvmTxSimulationSupported } from './getTxSimulationParams';
 
 const sourceOrigin = 'https://app.uniswap.org';
 const fromAddress = '0x0000000000000000000000000000000000001234';
 
-const createEvmAction = (chainId: number): TxSimulationAction => ({
+const createEvmAction = (chainId: number): TxSimulationMethod<'ethereumSignTransaction'> => ({
     method: 'ethereumSignTransaction',
     fromAddress,
     sourceOrigin,
@@ -23,6 +23,38 @@ const createEvmAction = (chainId: number): TxSimulationAction => ({
             gasPrice: '0x0',
         },
     },
+});
+
+const createTypedDataAction = (
+    chainId?: number | string,
+): TxSimulationMethod<'ethereumSignTypedData'> => ({
+    method: 'ethereumSignTypedData',
+    fromAddress,
+    sourceOrigin,
+    payload: {
+        path: "m/44'/60'/0'/0/0",
+        metamask_v4_compat: true,
+        data: {
+            types: { EIP712Domain: [] },
+            primaryType: 'EIP712Domain',
+            domain: { chainId },
+            message: {},
+        },
+    },
+});
+
+describe('isEvmTxSimulationSupported', () => {
+    it.each([
+        ['a scannable transaction chain', createEvmAction(1), true],
+        ['an unscannable transaction chain', createEvmAction(61), false],
+        ['transaction chainId 0', createEvmAction(0), false],
+        ['typed data without a domain chainId', createTypedDataAction(), true],
+        ['typed data with domain chainId "0"', createTypedDataAction('0'), false],
+        ['typed data on an unscannable chain', createTypedDataAction(61), false],
+    ])('agrees with getTxSimulationParams for %s', (_name, action, expected) => {
+        expect(isEvmTxSimulationSupported(action)).toBe(expected);
+        expect(getTxSimulationParams(action) !== null).toBe(expected);
+    });
 });
 
 describe('getTxSimulationParams', () => {

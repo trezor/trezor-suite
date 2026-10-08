@@ -12,12 +12,29 @@ import {
     resolveBlockaidStellarChain,
 } from '../chains';
 
-function transformPayloadOfEthereumSignTransaction({
-    payload: { transaction },
-    fromAddress,
-    sourceOrigin,
-}: TxSimulationMethod<'ethereumSignTransaction'>) {
-    const chain = resolveBlockaidEvmChain(transaction.chainId);
+type EvmSignRequest =
+    | Pick<TxSimulationMethod<'ethereumSignTransaction'>, 'method' | 'payload'>
+    | Pick<TxSimulationMethod<'ethereumSignTypedData'>, 'method' | 'payload'>;
+
+const resolveBlockaidEvmChainOfRequest = ({ method, payload }: EvmSignRequest) =>
+    method === 'ethereumSignTransaction'
+        ? resolveBlockaidEvmChain(payload.transaction.chainId)
+        : resolveBlockaidEvmChain(
+              payload.data.domain.chainId ? Number(payload.data.domain.chainId) : undefined,
+          );
+
+export const isEvmTxSimulationSupported = (request: EvmSignRequest) =>
+    resolveBlockaidEvmChainOfRequest(request) !== null;
+
+function transformPayloadOfEthereumSignTransaction(
+    action: TxSimulationMethod<'ethereumSignTransaction'>,
+) {
+    const {
+        payload: { transaction },
+        fromAddress,
+        sourceOrigin,
+    } = action;
+    const chain = resolveBlockaidEvmChainOfRequest(action);
 
     if (!chain) {
         return null;
@@ -49,14 +66,15 @@ function transformPayloadOfEthereumSignTransaction({
     } as const satisfies JsonRpcScanParams;
 }
 
-function transformPayloadOfEthereumSignTypedData({
-    payload: { data },
-    fromAddress,
-    sourceOrigin,
-}: TxSimulationMethod<'ethereumSignTypedData'>) {
-    const chain = resolveBlockaidEvmChain(
-        data.domain.chainId ? Number(data.domain.chainId) : undefined,
-    );
+function transformPayloadOfEthereumSignTypedData(
+    action: TxSimulationMethod<'ethereumSignTypedData'>,
+) {
+    const {
+        payload: { data },
+        fromAddress,
+        sourceOrigin,
+    } = action;
+    const chain = resolveBlockaidEvmChainOfRequest(action);
 
     if (!chain) {
         return null;

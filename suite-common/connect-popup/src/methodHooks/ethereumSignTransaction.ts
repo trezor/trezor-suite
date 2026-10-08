@@ -1,5 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { isEvmTxSimulationSupported } from '@suite-common/tx-simulation';
 import { asNetworkSymbol, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     accountsActions,
@@ -68,10 +69,12 @@ const preCallHook = async <M extends CallMethodKeys>({
         // Parse common parameters (path, chainId) from payload
         let path: Bip43Path;
         let chainId = 1;
+        let isSimulationSupported: boolean;
         if (method === 'ethereumSignTransaction') {
             const typedPayload = payload as any as EthereumSignTransaction;
             path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
             chainId = typedPayload.transaction.chainId || 1;
+            isSimulationSupported = isEvmTxSimulationSupported({ method, payload: typedPayload });
 
             if (txSigningPrecomposed) {
                 dispatch(_storePrecomposedTransaction({ typedPayload, txSigningPrecomposed }));
@@ -80,6 +83,7 @@ const preCallHook = async <M extends CallMethodKeys>({
             const typedPayload = payload as any as EthereumSignTypedData<any>;
             path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
             chainId = Number(typedPayload.data.domain.chainId) || 1;
+            isSimulationSupported = isEvmTxSimulationSupported({ method, payload: typedPayload });
         } else {
             return;
         }
@@ -113,7 +117,10 @@ const preCallHook = async <M extends CallMethodKeys>({
             }),
         );
 
-        if (source.type !== 'desktop-ws' && source.type !== 'web') {
+        // The simulation modal has nothing to render for a chain Blockaid can't scan, so opening it
+        // would leave the call waiting on a confirmation the user never sees. Decided from the raw
+        // payload, as the simulation is, not from the defaulted chainId above.
+        if (source.type !== 'desktop-ws' && source.type !== 'web' && isSimulationSupported) {
             // Display simulation
             const device = selectSelectedDevice(getState());
             if (!device) throw new Error('No device selected');
