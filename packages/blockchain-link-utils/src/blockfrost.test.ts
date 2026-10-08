@@ -1,5 +1,6 @@
 import fixtures from './__fixtures__/blockfrost';
 import {
+    filterTokenTransfers,
     parseAsset,
     transformAccountInfo,
     transformInputOutput,
@@ -39,6 +40,15 @@ describe('blockfrost/utils', () => {
             it(f.description, () => {
                 // @ts-expect-error incorrect params
                 expect(transformInputOutput(f.data, f.asset)).toEqual(f.result);
+            });
+        });
+    });
+
+    describe('filterTokenTransfers', () => {
+        fixtures.filterTokenTransfers.forEach(f => {
+            it(f.description, () => {
+                // @ts-expect-error incorrect params
+                expect(filterTokenTransfers(f.accountAddress, f.tx, f.type)).toEqual(f.result);
             });
         });
     });

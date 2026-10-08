@@ -35,6 +35,124 @@ const cardanoStaking = {
     },
 };
 
+const changeAddress =
+    'addr1q9f9jr6e48u63ym65esmrwgle84zspnrsew37gwe88e0zfy9ckxhkvuc5xj49rw6zrp443wlygmhv8gwcu38jk6ms6usxwwdwc';
+const usedAddress =
+    'addr1q8u5ktsj5zsmhvwv0ep9zuhfu39x3wyt9wxjnsn3cagsyy59ckxhkvuc5xj49rw6zrp443wlygmhv8gwcu38jk6ms6usrmcafl';
+const unusedAddress =
+    'addr1qxnthyxq8x9lv95h74k5av3sy3yzljr56ttxu4lggv8qstv9ckxhkvuc5xj49rw6zrp443wlygmhv8gwcu38jk6ms6us8mueja';
+const foreignAddress =
+    'addr1q9xs9lap3u85z7qvy4q5692x89apjw7pafmxp4n4x8jqzd9re5df3pzwwmyq946axfcejy5n4x0y99wqpgtp2gd0k09q75jn6n';
+const otherForeignAddress =
+    'addr1q9p4hlek40exjf07rxj7xcyu5hp9scrs3c6a7rwmhjrtgtare5df3pzwwmyq946axfcejy5n4x0y99wqpgtp2gd0k09qvgjjr8';
+
+const cardanoAccountAddress = {
+    change: [
+        {
+            address: changeAddress,
+            path: "m/1852'/1815'/i'/1/0",
+            transfers: 3,
+            received: '66253740',
+            sent: '40515743',
+        },
+    ],
+    used: [
+        {
+            address: usedAddress,
+            path: "m/1852'/1815'/i'/0/0",
+            transfers: 3,
+            received: '44208517',
+            sent: '42690000',
+        },
+    ],
+    unused: [
+        {
+            address: unusedAddress,
+            path: "m/1852'/1815'/i'/0/1",
+            transfers: 0,
+            received: '0',
+            sent: '0',
+        },
+    ],
+};
+
+const lovelace = (quantity: string) => ({ unit: 'lovelace', quantity });
+
+const snekUnit =
+    '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb14708776657465726e696b4e657a6a6564656e79';
+const snek = (quantity: string) => ({
+    unit: snekUnit,
+    quantity,
+    decimals: 0,
+    fingerprint: 'asset1eevmdlaz5424s3663ypw8w4vyxdlxkm3lefz06',
+    ticker: 'SNEK',
+    name: 'Snek',
+});
+const snekTransfer = {
+    name: 'Snek',
+    contract: snekUnit,
+    symbol: 'SNEK',
+    decimals: 0,
+    fingerprint: 'asset1eevmdlaz5424s3663ypw8w4vyxdlxkm3lefz06',
+    policyId: '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb147087',
+    standard: 'BLOCKFROST',
+};
+
+const spacecoinsUnit =
+    'd894897411707efa755a76deb66d26dfd50593f2e70863e1661e98a07370616365636f696e73';
+const spacecoins = (quantity: string) => ({
+    unit: spacecoinsUnit,
+    quantity,
+    decimals: 0,
+    fingerprint: 'asset1wq2wnhzp4nz7hqcrsx5nljgcnx4g6ucf5ktmx6',
+    ticker: null,
+    name: null,
+});
+const spacecoinsTransfer = {
+    name: 'spacecoins',
+    contract: spacecoinsUnit,
+    symbol: 'spacecoins',
+    decimals: 0,
+    fingerprint: 'asset1wq2wnhzp4nz7hqcrsx5nljgcnx4g6ucf5ktmx6',
+    policyId: 'd894897411707efa755a76deb66d26dfd50593f2e70863e1661e98a0',
+    standard: 'BLOCKFROST',
+};
+
+// Fee-only self transfer without certificates: `governance_delegation` is inferred from it
+// only when every output goes to a change address.
+const feeOnlySelfTxData = {
+    hash: '7c0b2e4f9a1d3c5e7f9b1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a1c3e5b7d9f1a3c',
+    block: '3e5b7d9f1a3c5e7b9d1f3a5c7e9b1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a1c3e5b',
+    block_height: 10500000,
+    block_time: 1713000000,
+    slot: 120000000,
+    index: 3,
+    output_amount: [lovelace('1800000')],
+    fees: '200000',
+    deposit: '0',
+    size: 300,
+    invalid_before: null,
+    invalid_hereafter: null,
+    utxo_count: 2,
+    withdrawal_count: 0,
+    mir_cert_count: 0,
+    delegation_count: 0,
+    stake_cert_count: 0,
+    pool_update_count: 0,
+    pool_retire_count: 0,
+    asset_mint_or_burn_count: 0,
+    redeemer_count: 0,
+    valid_contract: true,
+};
+const feeOnlySelfInput = {
+    address: usedAddress,
+    amount: [lovelace('2000000')],
+    tx_hash: '9a1c3e5b7d9f1a3c5e7b9d1f3a5c7e9b1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a1c',
+    output_index: 0,
+    collateral: false,
+    data_hash: null,
+};
+
 export default {
     transformUtxos: [
         {
@@ -753,6 +871,182 @@ export default {
         },
     ],
 
+    filterTokenTransfers: [
+        {
+            description:
+                'sent: skips the change output carrying the token and an asset without fingerprint',
+            type: 'sent',
+            accountAddress: cardanoAccountAddress,
+            tx: {
+                address: usedAddress,
+                txUtxos: {
+                    inputs: [
+                        {
+                            address: usedAddress,
+                            amount: [lovelace('5000000'), snek('10')],
+                            output_index: 0,
+                        },
+                    ],
+                    outputs: [
+                        {
+                            address: foreignAddress,
+                            amount: [
+                                lovelace('1500000'),
+                                snek('3'),
+                                { unit: spacecoinsUnit, quantity: '5' },
+                            ],
+                            output_index: 0,
+                        },
+                        {
+                            address: changeAddress,
+                            amount: [lovelace('3300000'), snek('7')],
+                            output_index: 1,
+                        },
+                    ],
+                },
+            },
+            result: [
+                {
+                    ...snekTransfer,
+                    type: 'sent',
+                    amount: '3',
+                    from: usedAddress,
+                    to: foreignAddress,
+                },
+            ],
+        },
+        {
+            description: 'self: reports only the output to an own receive address',
+            type: 'self',
+            accountAddress: cardanoAccountAddress,
+            tx: {
+                address: changeAddress,
+                txUtxos: {
+                    inputs: [
+                        {
+                            address: changeAddress,
+                            amount: [lovelace('5000000'), snek('10')],
+                            output_index: 1,
+                        },
+                    ],
+                    outputs: [
+                        {
+                            address: unusedAddress,
+                            amount: [lovelace('1500000'), snek('4')],
+                            output_index: 0,
+                        },
+                        {
+                            address: changeAddress,
+                            amount: [lovelace('3300000'), snek('6')],
+                            output_index: 1,
+                        },
+                    ],
+                },
+            },
+            result: [
+                {
+                    ...snekTransfer,
+                    type: 'self',
+                    amount: '4',
+                    from: changeAddress,
+                    to: unusedAddress,
+                },
+            ],
+        },
+        {
+            description:
+                'recv: from is the first input carrying each unit and a token to a foreign output is skipped',
+            type: 'recv',
+            accountAddress: cardanoAccountAddress,
+            tx: {
+                address: usedAddress,
+                txUtxos: {
+                    inputs: [
+                        {
+                            address: foreignAddress,
+                            amount: [lovelace('3000000'), snek('2')],
+                            output_index: 0,
+                        },
+                        {
+                            address: otherForeignAddress,
+                            amount: [lovelace('3000000'), snek('6'), spacecoins('125')],
+                            output_index: 1,
+                        },
+                    ],
+                    outputs: [
+                        {
+                            address: usedAddress,
+                            amount: [lovelace('1500000'), snek('7'), spacecoins('125')],
+                            output_index: 0,
+                        },
+                        {
+                            address: foreignAddress,
+                            amount: [lovelace('4300000'), snek('1')],
+                            output_index: 1,
+                        },
+                    ],
+                },
+            },
+            result: [
+                {
+                    ...snekTransfer,
+                    type: 'recv',
+                    amount: '7',
+                    from: foreignAddress,
+                    to: usedAddress,
+                },
+                {
+                    ...spacecoinsTransfer,
+                    type: 'recv',
+                    amount: '125',
+                    from: otherForeignAddress,
+                    to: usedAddress,
+                },
+            ],
+        },
+        {
+            description: 'ADA-only transaction has no token transfers',
+            type: 'sent',
+            accountAddress: cardanoAccountAddress,
+            tx: {
+                address: usedAddress,
+                txUtxos: {
+                    inputs: [
+                        { address: usedAddress, amount: [lovelace('5000000')], output_index: 0 },
+                    ],
+                    outputs: [
+                        { address: foreignAddress, amount: [lovelace('4800000')], output_index: 0 },
+                    ],
+                },
+            },
+            result: [],
+        },
+        {
+            description: 'transaction between foreign addresses has no token transfers',
+            type: 'sent',
+            accountAddress: cardanoAccountAddress,
+            tx: {
+                address: foreignAddress,
+                txUtxos: {
+                    inputs: [
+                        {
+                            address: foreignAddress,
+                            amount: [lovelace('5000000'), snek('10')],
+                            output_index: 0,
+                        },
+                    ],
+                    outputs: [
+                        {
+                            address: otherForeignAddress,
+                            amount: [lovelace('4800000'), snek('10')],
+                            output_index: 0,
+                        },
+                    ],
+                },
+            },
+            result: [],
+        },
+    ],
     transformTransaction: [
         {
             description: 'Transform transaction (recv)',
@@ -1825,6 +2119,86 @@ export default {
                     size: 391,
                     totalInput: '1256046',
                     totalOutput: '1083241',
+                },
+            },
+        },
+        {
+            description: 'Transform transaction (self, governance delegation)',
+            accountAddress: cardanoAccountAddress,
+            data: {
+                address: usedAddress,
+                txData: feeOnlySelfTxData,
+                txUtxos: {
+                    hash: feeOnlySelfTxData.hash,
+                    inputs: [feeOnlySelfInput],
+                    outputs: [
+                        {
+                            address: changeAddress,
+                            amount: [lovelace('1800000')],
+                            output_index: 0,
+                            data_hash: null,
+                        },
+                    ],
+                },
+                txHash: feeOnlySelfTxData.hash,
+            },
+            result: {
+                type: 'self',
+                txid: feeOnlySelfTxData.hash,
+                amount: '200000',
+                fee: '200000',
+                targets: [],
+                tokens: [],
+                cardanoSpecific: {
+                    subtype: 'governance_delegation',
+                    withdrawal: undefined,
+                    deposit: undefined,
+                },
+            },
+        },
+        {
+            description:
+                'Transform transaction (self, fee-only transfer to an own receive address)',
+            accountAddress: cardanoAccountAddress,
+            data: {
+                address: usedAddress,
+                txData: {
+                    ...feeOnlySelfTxData,
+                    hash: '1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a1c3e5b7d9f1a3c5e7b9d1f3a5c7e9b1d3f',
+                },
+                txUtxos: {
+                    hash: '1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a1c3e5b7d9f1a3c5e7b9d1f3a5c7e9b1d3f',
+                    inputs: [feeOnlySelfInput],
+                    outputs: [
+                        {
+                            address: unusedAddress,
+                            amount: [lovelace('1800000')],
+                            output_index: 0,
+                            data_hash: null,
+                        },
+                    ],
+                },
+                txHash: '1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a1c3e5b7d9f1a3c5e7b9d1f3a5c7e9b1d3f',
+            },
+            result: {
+                type: 'self',
+                txid: '1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a1c3e5b7d9f1a3c5e7b9d1f3a5c7e9b1d3f',
+                amount: '200000',
+                fee: '200000',
+                targets: [
+                    {
+                        n: 0,
+                        addresses: [unusedAddress],
+                        isAddress: true,
+                        amount: '1800000',
+                        isAccountTarget: true,
+                    },
+                ],
+                tokens: [],
+                cardanoSpecific: {
+                    subtype: undefined,
+                    withdrawal: undefined,
+                    deposit: undefined,
                 },
             },
         },
