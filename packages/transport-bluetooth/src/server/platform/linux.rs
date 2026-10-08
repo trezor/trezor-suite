@@ -205,16 +205,18 @@ async fn connect_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformE
     // watch cancellation
     let (cancel_task, _) = watch_abort(device.get_id(), broadcast);
     let timeout_task = watch_timeout(device.get_id(), params.timeout);
+    let mut guard = TaskGuard::default();
+    guard.track(cancel_task.abort_handle());
+    guard.track(timeout_task.abort_handle());
 
     // start connection
     let (conn, device_proxy) = get_device_proxy(device.get_id(), params.timeout)?;
+    guard.track(conn.abort_handle());
     let result: Result<(), dbus::Error> =
         device_proxy.method_call(DBUS_DEVICE, "Connect", ()).await;
 
     // clear watchers
-    conn.abort();
-    timeout_task.abort();
-    cancel_task.abort();
+    drop(guard);
 
     // check the result
     if let Err(err) = result {
@@ -227,15 +229,18 @@ async fn connect_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformE
     Ok(())
 }
 
-/// Stops the agent and aborts tracked tasks on every exit path, including `?` and future drop.
-struct PairingGuard {
-    agent_stop: mpsc::Sender<()>,
+/// Stops the agent (if any) and aborts tracked tasks on every exit path, including `?` and future drop.
+#[derive(Default)]
+struct TaskGuard {
+    agent_stop: Option<mpsc::Sender<()>>,
     tasks: Vec<AbortHandle>,
 }
 
-impl PairingGuard {
+impl TaskGuard {
     fn stop_agent(&self) {
-        let _ = self.agent_stop.send(());
+        if let Some(agent_stop) = &self.agent_stop {
+            let _ = agent_stop.send(());
+        }
     }
 
     fn track(&mut self, abort_handle: AbortHandle) {
@@ -243,7 +248,7 @@ impl PairingGuard {
     }
 }
 
-impl Drop for PairingGuard {
+impl Drop for TaskGuard {
     fn drop(&mut self) {
         self.stop_agent();
         for task in &self.tasks {
@@ -270,8 +275,8 @@ async fn pair_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformErro
         _ => false, // Ok(Err(_)) or Err(_)
     };
 
-    let mut guard = PairingGuard {
-        agent_stop,
+    let mut guard = TaskGuard {
+        agent_stop: Some(agent_stop),
         tasks: Vec::new(),
     };
 
