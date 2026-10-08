@@ -64,12 +64,7 @@ export function ExpandableAssetRowGroup({
         <Collapsible isOpen={expanded} data-testid={dataTestId}>
             <GroupContainer $height={getExpandableGroupHeight(expanded, items.length)}>
                 <Collapsible.Toggle
-                    onClick={() => {
-                        // The operation will be probably expensive. Ask for fresh frame before switching the state.
-                        requestAnimationFrame(() => {
-                            onExpandToggle(!expanded);
-                        });
-                    }}
+                    onClick={() => onExpandToggle(!expanded)}
                     data-testid={dataTestId ? `${dataTestId}/toggle` : undefined}
                 >
                     <Row
