@@ -37,7 +37,6 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
 
         super(message, params);
         this.useDevice = false;
-        this.useUi = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {

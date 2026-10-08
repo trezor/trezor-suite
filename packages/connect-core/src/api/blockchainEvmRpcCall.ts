@@ -41,7 +41,6 @@ export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmR
 
         super(message, params);
         this.useDevice = false;
-        this.useUi = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {

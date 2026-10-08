@@ -22,7 +22,6 @@ export default class CardanoComposeTransaction extends AbstractMethod<
         super(message, message.payload);
         this.useDevice = false;
         this.useDeviceState = false;
-        this.useUi = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {

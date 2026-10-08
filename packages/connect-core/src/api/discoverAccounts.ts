@@ -155,13 +155,16 @@ export default class DiscoverAccounts extends AbstractMethod<
         super(message, params);
         this.useDevice = true;
         this.useDeviceState = true;
-        this.useUi = false;
     }
     get requiredPermissions(): PermissionRequest[] {
         return this.coinPerms(
             'read_account_info',
             this.params.coins.map(c => c.coinInfo),
         );
+    }
+
+    get useUi() {
+        return false;
     }
 
     private progress: Partial<{ [key in ReturnType<typeof getAccountTypeKey>]: number }> = {};

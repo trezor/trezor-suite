@@ -40,7 +40,6 @@ export default class BlockchainSubscribeFiatRates extends AbstractMethod<
 
         super(message, params);
         this.useDevice = false;
-        this.useUi = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {

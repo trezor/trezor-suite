@@ -121,7 +121,10 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         return '';
     } // method info, displayed in popup info-panel
 
-    public useUi: boolean; // should use popup?
+    // whether the popup brings Suite to the foreground while the call is ongoing
+    protected get useUi() {
+        return this.useDevice;
+    }
 
     public useDevice: boolean; // use device
 
@@ -205,7 +208,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         // default values for all methods
         this.useDevice = true;
         this.useDeviceState = true;
-        this.useUi = true;
         this.useCardanoDerivation = false;
         this.confirmMissingBackup = false;
     }

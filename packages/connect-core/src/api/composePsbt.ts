@@ -35,7 +35,6 @@ export default class ComposePsbt extends AbstractMethod<'composePsbt', Params> {
         super(message, params);
 
         this.useDevice = false;
-        this.useUi = false;
         this.requiredFirmwareCoins = [coinInfo];
     }
 

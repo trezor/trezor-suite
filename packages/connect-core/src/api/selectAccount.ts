@@ -51,8 +51,11 @@ export default class SelectAccount extends AbstractMethod<'selectAccount', Param
         // selection once they confirm — the value returned here is only a placeholder.
         this.useDevice = false;
         this.useDeviceState = false;
-        this.useUi = true;
         this.requiredFirmwareCoins = [coinInfo];
+    }
+
+    get useUi() {
+        return true;
     }
 
     get requiredPermissions(): PermissionRequest[] {
