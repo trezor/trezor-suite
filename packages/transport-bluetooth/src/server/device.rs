@@ -123,6 +123,7 @@ impl TrezorDevice {
     pub async fn new(peripheral: Peripheral, is_known: bool) -> Result<Self, Box<dyn Error>> {
         let PeripheralProperties {
             local_name,
+            advertisement_name,
             manufacturer_data,
             rssi,
             ..
@@ -132,7 +133,10 @@ impl TrezorDevice {
             .ok_or("PeripheralProperties missing")?;
 
         let id = &peripheral.id();
-        let name = local_name.clone().unwrap_or("".to_string());
+        let name = advertisement_name
+            .clone()
+            .or_else(|| local_name.clone())
+            .unwrap_or_default();
         let data = manufacturer_data
             .get(&MANUFACTURER_DATA)
             .unwrap_or(&vec![])
@@ -239,6 +243,7 @@ impl TrezorDevice {
 
         let PeripheralProperties {
             local_name,
+            advertisement_name,
             manufacturer_data,
             rssi,
             ..
@@ -266,9 +271,12 @@ impl TrezorDevice {
             }
         }
 
-        // local_name may be changed
+        // advertisement_name may be changed
         // examples: bootloader, default label, device label change
-        let name = local_name.clone().unwrap_or("".to_string());
+        let name = advertisement_name
+            .clone()
+            .or_else(|| local_name.clone())
+            .unwrap_or_default();
         if props.name != name {
             props.name = name;
             is_updated = true;
