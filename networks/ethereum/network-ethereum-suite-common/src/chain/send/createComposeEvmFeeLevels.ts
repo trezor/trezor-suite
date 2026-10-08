@@ -1,11 +1,9 @@
-import type { GetTrezorConnectDep } from '@trezor/connect-common';
 import {
     ChainSendError,
     type ComposeFeeLevelsParams,
     type PrecomposedLevels,
     convertAmountSubunitsToUnits,
     getExternalComposeOutput,
-    toCoinSymbol,
 } from '@trezor/network-module-suite-common-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -18,13 +16,14 @@ import {
 import { isEvmApprovalTx } from './evm/evmHex';
 import { getTxStakeNameByDataHex } from './evm/evmStaking';
 import { getApprovalComposeOutput, getEthereumEstimateFeeParams } from './evm/evmTransaction';
-import type { EvmSendAppDeps, EvmSendConfig } from './types';
+import type { EstimateEvmGasLimit, EvmSendAppDeps, EvmSendConfig } from './types';
 
-export type ComposeEvmFeeLevelsDeps = GetTrezorConnectDep<'blockchainEstimateFee'> &
-    Pick<
-        EvmSendAppDeps,
-        'isApprovalFlowSupported' | 'getEvmPrivatePendingHint' | 'onEvmFeeEstimationFailed'
-    >;
+export type ComposeEvmFeeLevelsDeps = {
+    estimateEvmGasLimit: EstimateEvmGasLimit;
+} & Pick<
+    EvmSendAppDeps,
+    'isApprovalFlowSupported' | 'getEvmPrivatePendingHint' | 'onEvmFeeEstimationFailed'
+>;
 
 export type ComposeEvmFeeLevelsParams = ComposeFeeLevelsParams & { config: EvmSendConfig };
 
@@ -82,25 +81,16 @@ export const createComposeEvmFeeLevels =
 
         // gasLimit calculation based on address, amount and data size
         // amount in essential for a proper calculation of gasLimit (via blockbook/geth)
-        const estimatedFee = await deps.getTrezorConnect().blockchainEstimateFee({
-            coin: toCoinSymbol(account.symbol),
-            identity: account.deviceState,
-            request: {
-                blocks: [2],
-                specific: {
-                    from: account.descriptor,
-                    ...ethereumEstimateFeeParams,
-                    privatePending,
-                },
-            },
+        const estimatedFee = await deps.estimateEvmGasLimit({
+            account,
+            from: account.descriptor,
+            ...ethereumEstimateFeeParams,
+            privatePending,
         });
 
         let customFeeLimit: BigNumber;
         if (estimatedFee.success) {
-            const { levels } = estimatedFee.payload;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const firstLevel: (typeof levels)[number] = levels[0];
-            customFeeLimit = new BigNumber(firstLevel.feeLimit || '');
+            customFeeLimit = new BigNumber(estimatedFee.feeLimit || '');
         } else {
             customFeeLimit = new BigNumber(
                 tokenInfo || transactionData

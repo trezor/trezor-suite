@@ -15,7 +15,11 @@ type EvmChainId = Extract<NetworkConfig, { networkType: 'ethereum' }>['chainId']
 type BlockaidSolanaChain = NonNullable<MessageScanParams['chain']>;
 type BlockaidStellarChain = StellarScanParams['chain'];
 
-const BLOCKAID_EVM_CHAIN_BY_CHAIN_ID = {
+// Blockaid's name for each EVM chain it scans. A chain left out is not simulated, so a new network
+// needs an entry only once Blockaid supports it.
+const BLOCKAID_EVM_CHAIN_BY_CHAIN_ID: Readonly<
+    Partial<Record<EvmChainId, TransactionScanSupportedChain | null>>
+> = {
     [getNetwork('eth').chainId]: 'ethereum',
     [getNetwork('op').chainId]: 'optimism',
     [getNetwork('bsc').chainId]: 'bsc',
@@ -31,7 +35,7 @@ const BLOCKAID_EVM_CHAIN_BY_CHAIN_ID = {
     [getNetwork('thod').chainId]: null, // Hoodi is not a supported testnet
     [getNetwork('arc').chainId]: null, // Blockaid has no Arc chain
     [getNetwork('tarc').chainId]: null, // Blockaid has no Arc chain
-} as const satisfies Readonly<Record<EvmChainId, TransactionScanSupportedChain | null>>;
+};
 
 const BLOCKAID_SOLANA_CHAIN_BY_SYMBOL = {
     sol: 'mainnet',

@@ -10,18 +10,13 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 import { getNetworkConfig } from '../../networkConfig';
 import { getEthereumChainNetworkConfig } from '../getEthereumChainNetworkConfig';
 import {
-    type ComposeEvmFeeLevelsDeps,
-    createComposeEvmFeeLevels,
-} from './createComposeEvmFeeLevels';
-import {
-    type PrepareEvmForReviewDeps,
-    createPrepareEvmForReview,
-} from './createPrepareEvmForReview';
-import { type SignEvmTransactionDeps, createSignEvmTransaction } from './createSignEvmTransaction';
+    type ConnectEstimateEvmGasLimitDeps,
+    createConnectEstimateEvmGasLimit,
+} from './createConnectEstimateEvmGasLimit';
+import { type EvmChainSendDeps, createEvmChainSend } from './createEvmChainSend';
 
-export type EthereumChainSendDeps = ComposeEvmFeeLevelsDeps &
-    PrepareEvmForReviewDeps &
-    SignEvmTransactionDeps &
+export type EthereumChainSendDeps = Omit<EvmChainSendDeps, 'estimateEvmGasLimit' | 'push'> &
+    ConnectEstimateEvmGasLimitDeps &
     PushConnectTransactionDeps;
 
 /** The send of one EVM network, by symbol. */
@@ -30,31 +25,27 @@ export type EthereumChainSend = (
 ) => ChainNetworkSendDefinition<PrecomposedLevels>;
 
 /**
- * Composing, signing and broadcasting on an EVM network. Backends keep one connection per wallet,
- * so every call goes through the account's connection identity.
+ * Composing, signing and broadcasting on an EVM network Connect serves. Backends keep one
+ * connection per wallet, so every call goes through the account's connection identity.
  */
 export const createEthereumChainSend = (deps: EthereumChainSendDeps): EthereumChainSend => {
-    const composeFeeLevels = createComposeEvmFeeLevels(deps);
-    const prepareForReview = createPrepareEvmForReview(deps);
-    const sign = createSignEvmTransaction(deps);
-    const push = createPushConnectTransaction(deps);
+    const pushConnectTransaction = createPushConnectTransaction(deps);
+    const createSend = createEvmChainSend({
+        ...deps,
+        estimateEvmGasLimit: createConnectEstimateEvmGasLimit(deps),
+        push: params => pushConnectTransaction({ ...params, useConnectionIdentity: true }),
+    });
 
     return symbol => {
         const { decimals, nativeAsset, nativeTokenReserve } = getEthereumChainNetworkConfig(symbol);
-        const config = {
+
+        return createSend({
             decimals,
             displaySymbol: nativeAsset.symbol,
             nativeTokenReserve,
             chainId: isSupportedEthereumNetwork(symbol)
                 ? getNetworkConfig(symbol).chainId
                 : undefined,
-        };
-
-        return {
-            composeFeeLevels: params => composeFeeLevels({ ...params, config }),
-            prepareForReview: prepareForReview({ chainId: config.chainId }),
-            sign: params => sign({ ...params, config }),
-            push: params => push({ ...params, useConnectionIdentity: true }),
-        };
+        });
     };
 };
