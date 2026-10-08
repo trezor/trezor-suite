@@ -9,11 +9,9 @@ import {
     periodicCheckTokenDefinitionsThunk,
 } from '@suite-common/token-definitions';
 import {
-    type CreateImportedDeviceThunkState,
     type InitStakeDataThunkState,
     type PeriodicFetchFiatRatesThunkDeps,
     type PeriodicFetchFiatRatesThunkState,
-    createImportedDeviceThunk,
     initStakeDataThunk,
     periodicFetchFiatRatesThunk,
     selectBaseCurrency,
@@ -34,7 +32,6 @@ import {
     type ConnectAndBlockchainInitThunkState,
     connectAndBlockchainInitThunk,
 } from './connectAndBlockchainInitThunk';
-import { dispatchAndLogStartupThunk } from './startupLogger';
 
 const ACTION_PREFIX = '@suite-native/app';
 
@@ -43,7 +40,6 @@ export type PostOnboardingInitThunkState = MessageSystemRootState &
     InitTokenDefinitionsThunkState &
     InitStakeDataThunkState &
     PeriodicFetchFiatRatesThunkState &
-    CreateImportedDeviceThunkState &
     WalletConnectInitThunkState;
 
 export type PostOnboardingInitThunkDeps = ConnectAndBlockchainInitThunkDeps &
@@ -66,35 +62,21 @@ export const postOnboardingInitThunk = createThunk<
         return AppServicesInitializationStatus.Disabled;
     }
 
-    // Create Portfolio Tracker device before rendering the application shell.
-    void dispatchAndLogStartupThunk('createImportedDeviceThunk', () =>
-        dispatch(createImportedDeviceThunk()),
-    );
+    const connectAndBlockchainResult = await dispatch(connectAndBlockchainInitThunk());
 
-    const connectAndBlockchainResult = await dispatchAndLogStartupThunk(
-        'connectAndBlockchainInitThunk',
-        () => dispatch(connectAndBlockchainInitThunk()),
-    );
-
-    void dispatchAndLogStartupThunk('periodicCheckTokenDefinitionsThunk', () =>
-        dispatch(periodicCheckTokenDefinitionsThunk()),
-    );
-    void dispatchAndLogStartupThunk('initStakeDataThunk', () => dispatch(initStakeDataThunk()));
+    dispatch(periodicCheckTokenDefinitionsThunk());
+    dispatch(initStakeDataThunk());
 
     // These initializers could be skipped after
     // a Connect or blockchain failure if their dependent call sites were guarded individually.
-    void dispatchAndLogStartupThunk('periodicFetchFiatRatesThunk', () =>
-        dispatch(
-            periodicFetchFiatRatesThunk({
-                rateType: 'current',
-                localCurrency: selectBaseCurrency(getState()),
-            }),
-        ),
+    dispatch(
+        periodicFetchFiatRatesThunk({
+            rateType: 'current',
+            localCurrency: selectBaseCurrency(getState()),
+        }),
     );
 
-    void dispatchAndLogStartupThunk('walletConnectInitThunk', () =>
-        dispatch(walletConnectInitThunk()),
-    );
+    dispatch(walletConnectInitThunk());
 
     if (connectAndBlockchainInitThunk.rejected.match(connectAndBlockchainResult)) {
         return rejectWithValue(

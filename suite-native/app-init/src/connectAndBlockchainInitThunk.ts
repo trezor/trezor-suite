@@ -11,7 +11,6 @@ import {
 } from '@suite-common/wallet-core';
 
 import { AppServicesInitializationStatus } from './appTypes';
-import { dispatchAndLogStartupThunk } from './startupLogger';
 
 const ACTION_PREFIX = '@suite-native/app';
 
@@ -31,9 +30,7 @@ export const connectAndBlockchainInitThunk = createThunk<
         rejectValue: ConnectAndBlockchainInitializationError;
     }
 >(`${ACTION_PREFIX}/connectAndBlockchainInit`, async (_, { dispatch, rejectWithValue }) => {
-    const connectResult = await dispatchAndLogStartupThunk('connectInitThunk', () =>
-        dispatch(connectInitThunk()),
-    );
+    const connectResult = await dispatch(connectInitThunk());
 
     if (connectInitThunk.rejected.match(connectResult)) {
         console.error(`Connect init error: ${JSON.stringify(connectResult.error)}`);
@@ -41,9 +38,7 @@ export const connectAndBlockchainInitThunk = createThunk<
         return rejectWithValue(AppServicesInitializationStatus.ConnectError);
     }
 
-    const blockchainResult = await dispatchAndLogStartupThunk('initBlockchainThunk', () =>
-        dispatch(initBlockchainThunk()),
-    );
+    const blockchainResult = await dispatch(initBlockchainThunk());
 
     if (initBlockchainThunk.rejected.match(blockchainResult)) {
         console.error(`Blockchain init error: ${JSON.stringify(blockchainResult.error)}`);

@@ -11,7 +11,7 @@ import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
 import { ReactNativeQueryProvider } from '@suite-common/react-query/src/components/ReactNativeQueryProvider';
-import { logStartupOperation, selectIsAppInitialized } from '@suite-native/app-init';
+import { selectIsAppInitialized } from '@suite-native/app-init';
 import { selectShouldUserBeAuthenticated } from '@suite-native/biometrics';
 import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
@@ -42,14 +42,11 @@ const AppComponent = () => {
     useEffect(() => {
         if (isAppInitialized) {
             // Report the first usable frame even if the native splash API fails to resolve.
-            logStartupOperation('SplashScreen.hideAsync', 'dispatched');
             void SplashScreen.hideAsync().then(
                 () => {
-                    logStartupOperation('SplashScreen.hideAsync', 'fulfilled');
                     reportStartupAppLoaded();
                 },
                 () => {
-                    logStartupOperation('SplashScreen.hideAsync', 'rejected');
                     reportStartupAppLoaded();
                 },
             );

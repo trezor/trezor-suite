@@ -8,7 +8,12 @@ import {
     prepareCachedEnvData,
 } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import { initDevicesThunk } from '@suite-common/wallet-core';
+import {
+    type CreateImportedDeviceThunkState,
+    type InitDevicesThunkState,
+    createImportedDeviceThunk,
+    initDevicesThunk,
+} from '@suite-common/wallet-core';
 import {
     type InitAnalyticsThunkDeps,
     type InitAnalyticsThunkState,
@@ -31,6 +36,8 @@ const ACTION_PREFIX = '@suite-native/app';
 type ApplicationInitThunkState = SettingsSliceRootState &
     MessageSystemRootState &
     InitAnalyticsThunkState &
+    InitDevicesThunkState &
+    CreateImportedDeviceThunkState &
     PostOnboardingInitThunkState;
 
 type ApplicationInitThunkDeps = InitAnalyticsThunkDeps & PostOnboardingInitThunkDeps;
@@ -51,7 +58,8 @@ export const applicationInitThunk = createThunk<
     dispatch(initMessageSystemThunk());
 
     // Select the latest remembered device or Portfolio Tracker device.
-    dispatch(initDevicesThunk());
+    await dispatch(initDevicesThunk());
+    await dispatch(createImportedDeviceThunk());
 
     if (selectIsOnboardingFinished(getState())) {
         dispatch(postOnboardingInitThunk());
