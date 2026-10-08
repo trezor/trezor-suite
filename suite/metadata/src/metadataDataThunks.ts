@@ -49,10 +49,10 @@ export const disposeMetadataKeysThunk =
         const accounts = selectAccounts(getState());
 
         accounts.forEach(account => {
-            const updatedAccount = JSON.parse(JSON.stringify(account));
+            const { [METADATA_LABELING.ENCRYPTION_VERSION]: _disposedKeys, ...metadata } =
+                account.metadata;
 
-            delete updatedAccount.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
-            dispatch(setAccountAdd(updatedAccount));
+            dispatch(setAccountAdd({ ...account, metadata }));
         });
 
         devices.forEach(device => {
