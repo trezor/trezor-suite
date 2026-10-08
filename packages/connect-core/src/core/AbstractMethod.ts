@@ -281,9 +281,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     public getMethodInfo(): Promise<MethodInfo> {
         return Promise.resolve({
             useUi: this.useUi,
-            useDevice: this.useDevice,
-            useDeviceState: this.useDeviceState,
-            name: this.name,
             requiredPermissions: this.requiredPermissions,
             info: this.info,
             precomposed: undefined, // requested by a special flag,

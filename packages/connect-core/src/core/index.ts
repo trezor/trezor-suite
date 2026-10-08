@@ -135,9 +135,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
             sendCoreMessage(
                 createUiRequestMessage(
                     UI_REQUESTS.REQUEST_CONFIRMATION,
-                    {
-                        view: 'no-backup',
-                    },
+                    { view: 'no-backup' },
                     { requestId: uiPromise.requestId },
                 ),
             );
@@ -865,12 +863,9 @@ export class Core extends EventEmitter {
                     if (message.payload.__info) {
                         this.sendCoreMessage(
                             createResponseMessage(message.id, true, {
-                                name: 'firmwareUpdate',
                                 info: 'Update firmware',
                                 requiredPermissions: [{ permission: 'internal' }],
                                 useUi: true,
-                                useDevice: true,
-                                useDeviceState: false,
                             } satisfies MethodInfo),
                         );
                         break;
