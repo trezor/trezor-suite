@@ -24,7 +24,6 @@ export default class GetCoinInfo extends AbstractMethod<'getCoinInfo', Params> {
 
         super(message, params);
         this.useDevice = false;
-        this.useUi = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {

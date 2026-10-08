@@ -20,7 +20,6 @@ export default class TronComposeTransaction extends AbstractMethod<
 
         super(message, payload);
         this.useDevice = false;
-        this.useUi = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {

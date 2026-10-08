@@ -67,7 +67,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         super(message, params);
 
         this.useDevice = false;
-        this.useUi = false;
         this.requiredFirmwareCoins = [coinInfo];
     }
 

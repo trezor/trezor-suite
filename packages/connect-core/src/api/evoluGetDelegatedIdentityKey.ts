@@ -13,7 +13,6 @@ export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
     constructor(message: MethodMessage<'evoluGetDelegatedIdentityKey'>) {
         super(message, {});
         this.useDevice = true;
-        this.useUi = true;
     }
     get requiredPermissions(): PermissionRequest[] {
         return [{ permission: 'management' }];

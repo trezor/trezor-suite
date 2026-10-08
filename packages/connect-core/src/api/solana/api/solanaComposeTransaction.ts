@@ -32,7 +32,6 @@ export default class SolanaComposeTransaction extends AbstractMethod<
 
         super(message, params);
         this.useDevice = false;
-        this.useUi = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {

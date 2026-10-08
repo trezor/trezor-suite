@@ -95,7 +95,6 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         this.hasBundle = hasBundle;
         this.useDevice = willUseDevice;
         this.useDeviceState = willUseDevice;
-        this.useUi = willUseDevice;
         this.confirmMissingBackup = !params.every(batch => batch.suppressBackupWarning);
         this.requiredFirmwareCoins = params.map(({ coinInfo }) => coinInfo);
     }

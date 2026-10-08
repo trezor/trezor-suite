@@ -63,7 +63,6 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
 
         super(message, params);
         this.useDevice = false;
-        this.useUi = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {
