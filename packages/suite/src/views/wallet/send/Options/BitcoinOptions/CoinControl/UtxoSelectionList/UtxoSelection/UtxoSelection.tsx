@@ -13,7 +13,7 @@ import { injectDispatch, returnStableArrayIfEmpty } from '@suite-common/redux-ut
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, getUtxoOutpoint } from '@suite-common/wallet-utils';
 import {
     Checkbox,
     Column,
@@ -76,7 +76,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
         account,
         network,
         utxoSelection: {
-            selectedUtxos,
+            selectedUtxoOutpoints,
             coinjoinRegisteredUtxos,
             composedInputs,
             toggleUtxoSelection,
@@ -111,7 +111,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const anonymity = account.addresses?.anonymitySet?.[utxo.address];
 
     const isChecked = isCoinControlEnabled
-        ? selectedUtxos.some(selected => isSameUtxo(selected, utxo))
+        ? selectedUtxoOutpoints.has(getUtxoOutpoint(utxo))
         : composedInputs.some(u => u.prev_hash === utxo.txid && u.prev_index === utxo.vout);
 
     const unspendableTooltip = resolveUtxoSpendable({ utxo, coinjoinRegisteredUtxos });
