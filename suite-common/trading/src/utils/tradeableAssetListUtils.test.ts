@@ -164,23 +164,20 @@ describe('filterTradeableAssetsBySearch', () => {
         const wrappedEther = createAsset({
             cryptoId: 'ethereum--0xweth' as CryptoId,
             name: 'Wrapped Ether',
-            symbol: 'ETH',
+            symbol: 'WETH',
         });
 
         expect(searchAssets([wrappedEther, ethereum], 'eth')).toEqual([ethereum, wrappedEther]);
     });
 
-    it('falls back to the asset name for equally ranked matches', () => {
-        const zebraCoin = createAsset({
-            cryptoId: 'ethereum--0xzebra' as CryptoId,
-            name: 'Zebra Coin',
-        });
-        const alphaCoin = createAsset({
-            cryptoId: 'ethereum--0xalpha' as CryptoId,
-            name: 'Alpha Coin',
+    it('keeps the incoming order for equally ranked matches', () => {
+        const batcat = createAsset({
+            cryptoId: 'solana--0xbatcat' as CryptoId,
+            name: 'batcat',
+            symbol: 'BTC',
         });
 
-        expect(searchAssets([zebraCoin, alphaCoin], 'coin')).toEqual([alphaCoin, zebraCoin]);
+        expect(searchAssets([bitcoin, batcat], 'btc')).toEqual([bitcoin, batcat]);
     });
 
     it('ranks asset matches over network matches and contract matches last', () => {

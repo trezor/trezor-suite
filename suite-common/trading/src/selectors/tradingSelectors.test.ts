@@ -940,6 +940,25 @@ describe('tradingSelectors', () => {
             ]);
         });
 
+        it('should order coins as they come in info', () => {
+            const buyInfo = getBuyState().buyInfo!;
+
+            state.wallet.trading.buy.buyInfo = {
+                ...buyInfo,
+                supportedCryptoCurrencies: [
+                    'base--0x0000000000000000000000000000000000000000',
+                    'ethereum',
+                    'bitcoin',
+                ] as CryptoId[],
+            };
+
+            expect(selectTradingBuySupportedCryptoIds(state)).toEqual([
+                'bitcoin',
+                'ethereum',
+                'base--0x0000000000000000000000000000000000000000',
+            ]);
+        });
+
         it('should be stable', () => {
             const first = selectTradingBuySupportedCryptoIds(state);
             const second = selectTradingBuySupportedCryptoIds(state);
