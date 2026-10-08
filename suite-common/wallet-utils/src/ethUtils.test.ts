@@ -1,7 +1,11 @@
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    type PrecomposedTransactionFinal,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
+import { mockAccountToken } from '@suite-common/wallet-types/mocks';
 import { BigNumber } from '@trezor/utils';
 
 import {
@@ -10,6 +14,7 @@ import {
     getEvmTransactionPurpose,
     getEvmTransactionTextSignature,
     getNativeWrapTxKind,
+    getPrecomposedTxWithAccountToken,
     getUnwrapAmountByEthereumDataHex,
     getWrappedNativeTxTarget,
     isUnwrapNativeTx,
@@ -527,6 +532,114 @@ describe('eth utils', () => {
             expect(decoded).not.toBeNull();
             expect(decoded?.spender).toBe(VALID_SPENDER.toLowerCase());
             expect(decoded?.amount.toString()).toBe(amount);
+        });
+    });
+
+    describe('getPrecomposedTxWithAccountToken', () => {
+        const TOKEN_CONTRACT = '0x128cC466B61f542da60c70e3aA11c10e19B84EDB';
+        const RECIPIENT = '0x000000000000000000000000000000000000abcd';
+        const TRANSFER_AMOUNT = '1500000';
+        const TRANSFER_DATA = `a9059cbb${RECIPIENT.slice(2).padStart(64, '0')}${BigInt(
+            TRANSFER_AMOUNT,
+        )
+            .toString(16)
+            .padStart(64, '0')}`;
+        const accountToken = mockAccountToken({
+            contract: TOKEN_CONTRACT.toLowerCase(),
+            symbol: 'TKN',
+            decimals: 6,
+            balance: '5000000',
+        });
+
+        // The shape connect returns for a transfer of a token without a firmware definition:
+        // the contract stands in for the recipient and no value moves.
+        const buildContractCallPrecomposedTx = (): PrecomposedTransactionFinal => ({
+            type: 'final',
+            inputs: [],
+            outputsPermutation: [0],
+            outputs: [{ address: TOKEN_CONTRACT, amount: '0', script_type: 'PAYTOADDRESS' }],
+            totalSpent: '42000',
+            fee: '42000',
+            feePerByte: '20',
+            bytes: 0,
+            max: undefined,
+            isTokenKnown: false,
+        });
+
+        it('decodes a transfer of an account token connect has no definition for', () => {
+            const result = getPrecomposedTxWithAccountToken({
+                precomposedTx: buildContractCallPrecomposedTx(),
+                contract: TOKEN_CONTRACT,
+                data: TRANSFER_DATA,
+                accountTokens: [accountToken],
+            });
+
+            expect(result).toMatchObject({
+                outputs: [{ address: RECIPIENT, amount: TRANSFER_AMOUNT }],
+                totalSpent: TRANSFER_AMOUNT,
+                fee: '42000',
+                token: accountToken,
+                isTokenKnown: false,
+            });
+        });
+
+        it('accepts 0x-prefixed calldata', () => {
+            const result = getPrecomposedTxWithAccountToken({
+                precomposedTx: buildContractCallPrecomposedTx(),
+                contract: TOKEN_CONTRACT,
+                data: `0x${TRANSFER_DATA}`,
+                accountTokens: [accountToken],
+            });
+
+            expect(result.token).toBe(accountToken);
+        });
+
+        it('keeps a transaction connect already decoded from a token definition', () => {
+            const precomposedTx: PrecomposedTransactionFinal = {
+                ...buildContractCallPrecomposedTx(),
+                outputs: [
+                    { address: RECIPIENT, amount: TRANSFER_AMOUNT, script_type: 'PAYTOADDRESS' },
+                ],
+                token: accountToken,
+                isTokenKnown: true,
+            };
+
+            expect(
+                getPrecomposedTxWithAccountToken({
+                    precomposedTx,
+                    contract: TOKEN_CONTRACT,
+                    data: TRANSFER_DATA,
+                    accountTokens: [accountToken],
+                }),
+            ).toBe(precomposedTx);
+        });
+
+        it.each([
+            ['the account does not hold the token', [], TRANSFER_DATA, TOKEN_CONTRACT],
+            ['the calldata is not a transfer', [accountToken], 'deadbeef', TOKEN_CONTRACT],
+            ['there is no contract', [accountToken], TRANSFER_DATA, undefined],
+        ])('keeps the transaction when %s', (_, accountTokens, data, contract) => {
+            const precomposedTx = buildContractCallPrecomposedTx();
+
+            expect(
+                getPrecomposedTxWithAccountToken({ precomposedTx, contract, data, accountTokens }),
+            ).toBe(precomposedTx);
+        });
+
+        it('keeps the transaction when it also sends native value', () => {
+            const precomposedTx: PrecomposedTransactionFinal = {
+                ...buildContractCallPrecomposedTx(),
+                outputs: [{ address: TOKEN_CONTRACT, amount: '1', script_type: 'PAYTOADDRESS' }],
+            };
+
+            expect(
+                getPrecomposedTxWithAccountToken({
+                    precomposedTx,
+                    contract: TOKEN_CONTRACT,
+                    data: TRANSFER_DATA,
+                    accountTokens: [accountToken],
+                }),
+            ).toBe(precomposedTx);
         });
     });
 });
