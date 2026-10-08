@@ -437,11 +437,11 @@ export const networkConfigBySymbol = {
         decimals: 18,
         testnet: false,
         explorer: getExplorerUrls('https://explorer.arc.io'),
-        features: ['rbf', 'sign-verify', 'tokens', 'eip1559'],
+        features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'eip1559'],
         backendOptions: [{ type: 'evm-rpc', isExternalBackend: true }],
         accountTypes: {},
         // Arc's native asset is USDC, so the balance prices against the USDC market; the platform
-        // id only matters for tokens, which are not verified against a definitions list here.
+        // id only names the token definitions, which are built from CoinGecko's `arc` platform.
         coingeckoId: 'arc',
         tradeCryptoId: 'arc--0x0000000000000000000000000000000000000000',
         fiatRateCryptoId: 'usd-coin',
