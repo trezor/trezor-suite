@@ -13,6 +13,8 @@ import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { mockAddressValidator, mockGetNamedAddressSupport } from '@suite-common/address/mocks';
+import type { ChainNetworksStoreDep } from '@suite-common/chain-data';
+import { createStaticChainNetworksStore } from '@suite-common/chain-data/mocks/createStaticChainNetworksStore';
 import {
     type AddressValidatorDep,
     type GetNamedAddressSupportDep,
@@ -107,7 +109,8 @@ type SendFormTestServices = SuiteRouterHistoryDep &
     GetIsWindowVisibleDep &
     GetTradedAccountKeysDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
-    SuiteSyncDep & {
+    SuiteSyncDep &
+    ChainNetworksStoreDep & {
         networks: AddressValidatorDep & GetNamedAddressSupportDep & NetworkModuleRepositoryDep;
     };
 
@@ -125,6 +128,8 @@ const extraServices: SendFormTestServices = {
         networkModuleRepository: mockNetworkModuleRepository({ get: () => mockNetworkModule() }),
     },
     suiteSync: mockSuiteSync(),
+    // No network is read through chain networks: the send form reads the wallet store.
+    chainNetworksStore: createStaticChainNetworksStore([]),
 };
 const extraActions: OnModalCancelDep = { onModalCancel: closeModal };
 

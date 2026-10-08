@@ -20,7 +20,11 @@ import {
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
-import { type ChainNetworksStoreDep, createChainNetworksStore } from '@suite-common/chain-data';
+import {
+    type ChainNetworksStoreDep,
+    createChainNetworksStore,
+    createReadChainPendingSends,
+} from '@suite-common/chain-data';
 import {
     type ConnectInitSettings,
     type CreateTransports,
@@ -201,8 +205,13 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         builtIn: BUILT_IN_NETWORK_RESERVATIONS,
     });
 
+    const queryClient = createQueryClient('web');
+    // EVM networks read the account's pending sends from the cache to resolve their nonce.
+    const getChainPendingSends = createReadChainPendingSends({ queryClient });
+
     const createChainNetworks = createDesktopChainNetworks({
         ...createWalletChainSendDeps({ dispatch: deps.dispatch, getState: deps.getState }),
+        getChainPendingSends,
         getTrezorConnect: deps.getTrezorConnect,
         getNetworkConfig: networks.getNetworkConfig,
         fetchCoinGeckoCurrentRate: createFetchCoinGeckoCurrentRate(),
@@ -211,6 +220,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         fetchBlockbookHttpHistoricRates: createFetchBlockbookHttpHistoricRates(),
         createRuntimeEvmChainNetwork: createEvmJsonRpcChainNetwork({
             getTrezorConnect: deps.getTrezorConnect,
+            getChainPendingSends,
             // The app's fetch follows its proxy settings (Tor) to the network's own nodes.
             createRpcClient: createViemEvmJsonRpcClient({
                 fetch: createChainNodeFetch({
@@ -275,7 +285,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         networks,
         chainNetworksStore,
         runtimeEvmNetworkRegistry,
-        queryClient: createQueryClient('web'),
+        queryClient,
         suiteSync,
         bip329,
         migrateLegacyLabelsToSuiteSync,

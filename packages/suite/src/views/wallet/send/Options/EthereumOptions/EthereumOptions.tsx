@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { useEvmNonceInfo } from '@suite-common/wallet-core';
 import { type AccountWithNetworkType, type FormOptions } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 import { ETHEREUM_DATA_MAX_BYTES } from '@trezor/network-ethereum/constants';
 
 import { useSendFormContext } from 'src/hooks/wallet';
+import { useAccountEvmNonceInfo } from 'src/hooks/wallet/chainData/useAccountEvmNonceInfo';
 
 import { EthereumNonce } from './EthereumNonce';
 import { TransactionData } from '../shared/TransactionData';
@@ -34,9 +34,12 @@ export const EthereumOptions = () => {
     // (signEthereumSendFormTransactionThunk) is worth paying for here too, since a stale display
     // both misleads the user and can suggest a nonce that's already in use. This component only
     // ever renders for ethereum accounts (see Options.tsx), hence the cast.
-    const { nonceInfo } = useEvmNonceInfo(account as AccountWithNetworkType<'ethereum'>, {
-        enabled: isEditingNonce,
-    });
+    const { nonceInfo, isQueryOwned } = useAccountEvmNonceInfo(
+        account as AccountWithNetworkType<'ethereum'>,
+        {
+            enabled: isEditingNonce,
+        },
+    );
     const displayNonce = nonceInfo?.nextNonce.toString();
     const confirmedNonce = nonceInfo?.confirmedNonce.toString();
 
@@ -73,6 +76,7 @@ export const EthereumOptions = () => {
                 <EthereumNonce
                     displayNonce={displayNonce}
                     confirmedNonce={confirmedNonce}
+                    pendingNonces={isQueryOwned ? nonceInfo?.pendingNonces : undefined}
                     onCancel={cancelNonceOverride}
                 />
             )}

@@ -8,6 +8,7 @@ import {
 } from '@suite-common/chain-data';
 import {
     type TransactionsByAccount,
+    selectAccountTransactions,
     selectAllPendingTransactions,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
@@ -35,9 +36,13 @@ export type AccountTransactionLookup = {
 
     /** Pending transactions of every account, this one's included, to find chained ones. */
     pendingTransactions: TransactionsByAccount;
+
+    /** The account's history, as loaded where the transaction comes from. */
+    accountTransactions: readonly WalletAccountTransaction[];
 };
 
 const NO_ACCOUNTS: readonly Account[] = [];
+const NO_TRANSACTIONS: readonly WalletAccountTransaction[] = [];
 
 /**
  * One transaction of an account, for views opened by txid (detail, notifications). With the
@@ -69,6 +74,9 @@ export const useAccountTransaction = (
         account ? selectTransactionByAccountKeyAndTxid(state, account.key, txid) : null,
     );
     const storedPending = useSelector(selectAllPendingTransactions);
+    const storedTransactions = useSelector(state =>
+        account && !isQueryOwned ? selectAccountTransactions(state, account.key) : NO_TRANSACTIONS,
+    );
 
     return useMemo(() => {
         if (!isQueryOwned || !account) {
@@ -76,6 +84,7 @@ export const useAccountTransaction = (
                 transaction: storedTransaction ?? null,
                 historicRates: null,
                 pendingTransactions: storedPending,
+                accountTransactions: storedTransactions,
             };
         }
 
@@ -85,11 +94,12 @@ export const useAccountTransaction = (
             ? enhanceChainTransactions([loaded], account, addresses)[0]
             : storedTransaction;
 
-        const loadedPending = enhanceChainTransactions(
-            history.transactions.filter(isPending),
+        const accountTransactions = enhanceChainTransactions(
+            history.transactions,
             account,
             addresses,
         );
+        const loadedPending = accountTransactions.filter(isPending);
         const loadedTxids = new Set(loadedPending.map(pending => pending.txid));
         const justSent = (storedPending[account.key] ?? []).filter(
             pending => pending.deadline !== undefined && !loadedTxids.has(pending.txid),
@@ -102,6 +112,7 @@ export const useAccountTransaction = (
                 ...storedPending,
                 [account.key]: [...justSent, ...loadedPending],
             },
+            accountTransactions,
         };
     }, [
         isQueryOwned,
@@ -112,5 +123,6 @@ export const useAccountTransaction = (
         historicRates,
         storedTransaction,
         storedPending,
+        storedTransactions,
     ]);
 };

@@ -51,10 +51,21 @@ export type { CachedChainAccount } from './getCachedChainTransaction';
 export {
     PENDING_SEND_TTL_MS,
     addChainPendingSend,
+    createReadChainPendingSends,
     getChainPendingSendsQueryOptions,
     getVisiblePendingSends,
 } from './chainPendingSends';
-export type { AddChainPendingSendParams, ChainPendingSend } from './chainPendingSends';
+export type {
+    AddChainPendingSendParams,
+    ChainPendingSend,
+    ReadChainPendingSends,
+    ReadChainPendingSendsDeps,
+} from './chainPendingSends';
+export { getChainAccountNonceQueryOptions, useChainAccountNonce } from './useChainAccountNonce';
+export type {
+    ChainAccountNonceQueryParams,
+    UseChainAccountNonceParams,
+} from './useChainAccountNonce';
 export {
     getChainComposeFeeLevelsQueryOptions,
     useChainComposeFeeLevels,
