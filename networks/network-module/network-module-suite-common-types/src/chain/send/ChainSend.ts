@@ -4,12 +4,7 @@ import type {
     TokenInfo,
     Transaction,
 } from '@trezor/blockchain-link-types';
-import type {
-    AccountTransaction,
-    AccountUtxo,
-    DeviceIdentity,
-    PROTO,
-} from '@trezor/connect-common';
+import type { AccountUtxo, DeviceIdentity, PROTO } from '@trezor/connect-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import type {
@@ -140,12 +135,6 @@ export type ChainSignOptions = {
     readonly amountUnit?: PROTO.AmountUnit;
 
     /**
-     * The transaction a replacement (RBF) spends again, from the wallet's own history. Signing
-     * then need not ask the backend for it, which would tell the backend which one is replaced.
-     */
-    readonly replacedTransactions?: AccountTransaction[];
-
-    /**
      * Called with what is about to be signed, before the device asks the user, so the app can show
      * it next to the device prompt.
      */
@@ -192,6 +181,23 @@ export type CreatePendingTransactionParams = {
     txid: string;
 };
 
+export type PrepareForReviewParams = {
+    account: ChainSendAccount;
+    draft: ChainSendDraft;
+    precomposed: GeneralPrecomposedTransactionFinal;
+};
+
+export type PreparedForReview = {
+    /** The transaction to show and sign. */
+    precomposed: GeneralPrecomposedTransactionFinal;
+
+    /** Whether the device knows the sent token's definition; `undefined` for coins. */
+    isTokenKnown?: boolean;
+};
+
+/** Readies a composed transaction for the user's review and for signing. */
+export type PrepareForReview = (params: PrepareForReviewParams) => Promise<PreparedForReview>;
+
 /**
  * Composing, signing and broadcasting on one network. Each call talks to the device or the
  * backend and returns plain data, so the app decides what to keep and where.
@@ -202,6 +208,7 @@ export type ChainNetworkSend<TLevels extends GeneralPrecomposedLevels = GeneralP
     {
         /** Fee levels for the draft; problems with the draft come back as error levels. */
         composeFeeLevels: (params: ComposeFeeLevelsParams) => Promise<TLevels>;
+        prepareForReview: PrepareForReview;
         sign: (params: SignChainTransactionParams) => Promise<ChainSignedTransaction>;
         push: (params: PushChainTransactionParams) => Promise<PushedChainTransaction>;
 
@@ -209,8 +216,11 @@ export type ChainNetworkSend<TLevels extends GeneralPrecomposedLevels = GeneralP
         createPendingTransaction: (params: CreatePendingTransactionParams) => Transaction;
     };
 
-/** What a network implements; a generic pending transaction is used unless it builds its own. */
+/**
+ * What a network implements. Unless it brings its own, review preparation only tags replacements
+ * and the pending transaction is the generic one.
+ */
 export type ChainNetworkSendDefinition<
     TLevels extends GeneralPrecomposedLevels = GeneralPrecomposedLevels,
-> = Omit<ChainNetworkSend<TLevels>, 'createPendingTransaction'> &
-    Partial<Pick<ChainNetworkSend<TLevels>, 'createPendingTransaction'>>;
+> = Omit<ChainNetworkSend<TLevels>, 'createPendingTransaction' | 'prepareForReview'> &
+    Partial<Pick<ChainNetworkSend<TLevels>, 'createPendingTransaction' | 'prepareForReview'>>;

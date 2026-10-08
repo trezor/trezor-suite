@@ -3,6 +3,8 @@ import {
     desktopApiCompositionRootAllowance,
     desktopApiRestrictedImports,
     eslint,
+    noNetworkTypeBranchingSyntax,
+    noRestrictedSyntax,
     selectorRestrictedImports,
 } from '@trezor/eslint';
 
@@ -37,4 +39,15 @@ export default [
         '**/connect-examples/**', // This must be here, connect-examples are not a package
         '**/eslint-local-rules/**', // Uses ts-node at runtime when loaded by ESLint
     ]),
+    {
+        // Chain-data reads and sends through chain networks; the network decides family behaviour.
+        files: ['suite-common/chain-data/src/**/*.{ts,tsx}'],
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                ...noRestrictedSyntax,
+                ...noNetworkTypeBranchingSyntax,
+            ],
+        },
+    },
 ];

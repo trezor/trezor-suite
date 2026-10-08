@@ -4,6 +4,7 @@ import {
     type ComposeFeeLevelsParams,
     type PrecomposedLevelsCardano,
     type PrecomposedTransactionCardano,
+    getComposeFailureNotice,
 } from '@trezor/network-module-suite-common-types';
 
 import {
@@ -75,6 +76,7 @@ export const createComposeCardanoFeeLevels =
                 account.symbol,
                 response.error.message,
                 response.error.code,
+                getComposeFailureNotice(response.error.code),
             );
         }
 

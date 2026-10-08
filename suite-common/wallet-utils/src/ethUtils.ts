@@ -7,8 +7,12 @@ import {
 } from '@suite-common/wallet-types';
 import { type EthereumSpecific, type TokenInfo } from '@trezor/blockchain-link-types';
 import {
+    type EvmApprovalPurpose,
+    getEvmTransactionTextSignature,
     isEip1559,
     isEvmApprovalTx,
+    isEvmApprovalTxByTextSignature,
+    isEvmYieldTxByTextSignature,
     isWrappedNativeToken,
     padLeftEven,
     sanitizeHex,
@@ -50,23 +54,6 @@ export const isWrapNativeTx = ({ networkSymbol, to, data }: WrappedNativeTxParam
 export const isUnwrapNativeTx = ({ networkSymbol, to, data }: WrappedNativeTxParams): boolean =>
     isWrappedNativeToken(networkSymbol, to) &&
     Calldata.evm.weth.withdraw.decode(data ?? undefined) !== null;
-
-export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPurpose => {
-    if (!data) return '';
-
-    if (Calldata.evm.erc20.transfer.decode(data)) return 'transfer';
-
-    const approve = Calldata.evm.erc20.approve.decode(data);
-    if (approve) return approve.amount === 0n ? 'revoke' : 'approve';
-
-    if (Calldata.evm.erc4626.deposit.decode(data)) return 'deposit';
-    if (Calldata.evm.erc4626.withdraw.decode(data)) return 'withdraw';
-    if (Calldata.evm.erc4626.redeem.decode(data)) return 'redeem';
-
-    if (Calldata.evm.distributor.claim.decode(data)) return 'claim';
-
-    return 'unknown';
-};
 
 /**
  * Purpose of an EVM transaction resolved from its full context. Extends the calldata-only
@@ -123,14 +110,12 @@ export const getNativeWrapTxKind = (
 export const getErc20ApproveSpender = (data?: string): string | undefined =>
     Calldata.evm.erc20.approve.decode(data)?.spender;
 
-export type EvmApprovalPurpose = Extract<EvmTransactionPurpose, 'approve' | 'revoke'>;
-
-export const isEvmApprovalTxByTextSignature = (
-    textSignature?: EvmTransactionPurpose,
-): textSignature is EvmApprovalPurpose => textSignature === 'approve' || textSignature === 'revoke';
-
-export const isEvmYieldTxByTextSignature = (textSignature?: EvmTransactionPurpose) =>
-    textSignature === 'deposit' || textSignature === 'withdraw' || textSignature === 'redeem';
+export type { EvmApprovalPurpose };
+export {
+    getEvmTransactionTextSignature,
+    isEvmApprovalTxByTextSignature,
+    isEvmYieldTxByTextSignature,
+};
 
 /**
  * DeFi yield flow transactions: vault deposit/withdraw/redeem, rewards claim, and the native

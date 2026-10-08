@@ -9,7 +9,6 @@ import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    enhancePrecomposedTransaction,
     selectIsMevProtectionEnabled,
     selectWalletChainSignOptions,
     showSentTransactionToastThunk,
@@ -88,13 +87,14 @@ export const useSignAndPushTransaction = () => {
             { formState, precomposedTransaction, paymentRequests }: SignAndPushTransactionParams,
         ): Promise<SignAndPushTransactionResult> => {
             const device = selectSelectedDevice(getState());
-            if (!device) return;
+            const { send } = network;
+            if (!device || !send) return;
 
-            const { enhancedPrecomposedTransaction, isTokenKnown } =
-                await enhancePrecomposedTransaction({
-                    transactionFormValues: formState,
-                    precomposedTransaction,
-                    selectedAccount,
+            const { precomposed: enhancedPrecomposedTransaction, isTokenKnown } =
+                await send.prepareForReview({
+                    account: selectedAccount,
+                    draft: formState,
+                    precomposed: precomposedTransaction,
                 });
             const reviewedTransaction: GeneralPrecomposedTransactionFinal = {
                 ...enhancedPrecomposedTransaction,
@@ -126,7 +126,6 @@ export const useSignAndPushTransaction = () => {
                     precomposed: enhancedPrecomposedTransaction,
                     options: {
                         ...selectWalletChainSignOptions(getState() as AppState, {
-                            account: selectedAccount,
                             device,
                             paymentRequests,
                         }),
@@ -134,9 +133,7 @@ export const useSignAndPushTransaction = () => {
                         onPrepared: ({ nonce }) => {
                             if (!nonce) return;
                             preparedNonce = nonce;
-                            setSession(
-                                current => current && { ...current, resolvedEthereumNonce: nonce },
-                            );
+                            setSession(current => current && { ...current, preparedNonce: nonce });
                         },
                     },
                 });
@@ -242,6 +239,8 @@ export const useSignAndPushTransaction = () => {
                     txid,
                 }),
             );
+            // Legacy bridge: views still reading the wallet store (coin control, nonces, staking)
+            // learn of the send from its sync. Goes away with the sync migration (roadmap phase 2).
             dispatch(
                 synchronizeSentTransactionThunk({
                     selectedAccount,

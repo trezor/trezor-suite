@@ -1,7 +1,6 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    type Account,
     AddressDisplayOptions,
     type ComposeActionContext,
     type GeneralPrecomposedLevels,
@@ -21,87 +20,70 @@ import {
     selectBitcoinAmountUnit,
     selectIsNetworkReserveEnabled,
 } from '../settings/walletSettingsReducer';
-import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
-import { selectTransactions } from '../transactions/transactionsSelectors';
 
 type NotifyDispatch = (action: ReturnType<typeof notificationsActions.addToast>) => unknown;
 
-/** What a chain network composes with: the form's context and the user's settings. */
+/**
+ * What a chain network composes with: the form's context and every user setting that can affect
+ * composing. Each network reads the settings it supports.
+ */
 export const selectWalletChainComposeContext = (
     state: WalletSettingsRootState,
-    { account, network: _network, ...composeContext }: ComposeActionContext,
+    { account: _account, network: _network, ...composeContext }: ComposeActionContext,
 ): ChainComposeContext => ({
     ...composeContext,
-    ...(account.networkType === 'ethereum' || account.networkType === 'solana'
-        ? { isNetworkReserveEnabled: selectIsNetworkReserveEnabled(state) }
-        : {}),
-    ...(account.networkType === 'bitcoin'
-        ? { isSmallestUnitEnabled: selectAreSatsAmountUnit(state) }
-        : {}),
+    isNetworkReserveEnabled: selectIsNetworkReserveEnabled(state),
+    isSmallestUnitEnabled: selectAreSatsAmountUnit(state),
 });
 
-/** Composed levels that failed for a reason the form cannot show are reported as a toast. */
+/**
+ * Composed levels that failed for a reason the form cannot show (no `errorMessage`) are reported as
+ * a toast. Networks give every error the form can show a message, so only unexpected ones remain.
+ */
 export const notifyChainComposeLevels = (
     dispatch: NotifyDispatch,
-    account: Pick<Account, 'networkType'>,
     levels: GeneralPrecomposedLevels,
 ) => {
-    if (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') return;
-
     Object.values(levels).forEach(tx => {
         if (tx?.type === 'error' && !tx.errorMessage) {
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
-                    // A bitcoin coin selection error ('COINSELECT') carries its details as a message.
+                    // Coin selection errors ('COINSELECT') carry their details as a message.
                     error:
-                        account.networkType === 'bitcoin' && 'message' in tx
-                            ? tx.message
-                            : tx.error,
+                        'message' in tx && typeof tx.message === 'string' ? tx.message : tx.error,
                 }),
             );
         }
     });
 };
 
-/** A compose that failed outright is reported as a toast where the family reported it so. */
-export const notifyChainComposeFailure = (
-    dispatch: NotifyDispatch,
-    account: Pick<Account, 'networkType'>,
-    error: ChainSendError,
-) => {
-    if (account.networkType === 'bitcoin' || account.networkType === 'cardano') {
-        const isConnectFailure = error.connectErrorCode !== undefined;
-        if (isConnectFailure && error.connectErrorCode !== 'Method_InvalidParameter') {
-            dispatch(
-                notificationsActions.addToast({ type: 'sign-tx-error', error: error.message }),
-            );
-        }
+/** A compose that failed outright is reported as the network asked, or not at all. */
+export const notifyChainComposeFailure = (dispatch: NotifyDispatch, error: ChainSendError) => {
+    if (error.notify === 'message') {
+        dispatch(notificationsActions.addToast({ type: 'sign-tx-error', error: error.message }));
     }
 
-    if (account.networkType === 'tron' && error.code === 'fee-estimation-failed') {
+    if (error.notify === 'fee-estimation') {
         dispatch(notificationsActions.addToast({ type: 'estimated-fee-error' }));
     }
 };
 
 export type SelectWalletChainSignOptionsParams = {
-    account: Account;
     device: TrezorDevice;
     paymentRequests?: PROTO.PaymentRequest[];
 };
 
-/** How the device signs: where, how addresses are shown, and what the user's settings say. */
+/**
+ * How the device signs: where, how addresses are shown, and every user setting that can affect
+ * signing. Each network reads the settings it supports.
+ */
 export const selectWalletChainSignOptions = (
-    state: WalletSettingsRootState & TransactionsRootState,
-    { account, device, paymentRequests }: SelectWalletChainSignOptionsParams,
+    state: WalletSettingsRootState,
+    { device, paymentRequests }: SelectWalletChainSignOptionsParams,
 ): ChainSignOptions => ({
     device: toChainSendDevice(device),
     chunkify: selectAddressDisplayType(state) === AddressDisplayOptions.CHUNKED,
     paymentRequests,
-    ...(account.networkType === 'bitcoin'
-        ? {
-              amountUnit: selectBitcoinAmountUnit(state),
-              replacedTransactions: selectTransactions(state)[account.key] || [],
-          }
-        : {}),
+    amountUnit: selectBitcoinAmountUnit(state),
 });

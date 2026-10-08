@@ -131,7 +131,11 @@ describe('createTronChainSend', () => {
 
         await expect(
             send.composeFeeLevels({ account, draft: draft({ token: USDT }), context }),
-        ).rejects.toMatchObject({ code: 'fee-estimation-failed', message: 'estimate failed' });
+        ).rejects.toMatchObject({
+            code: 'fee-estimation-failed',
+            message: 'estimate failed',
+            notify: 'fee-estimation',
+        });
     });
 
     it('signs on the latest block and returns the serialized transaction', async () => {

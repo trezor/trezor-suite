@@ -17,9 +17,12 @@ const connect = {
     pushTransaction: jest.fn(),
 };
 
+const getAccountTransactions = jest.fn(() => [] as never[]);
+
 const send = createBitcoinChainSend({
     getTrezorConnect: () => connect,
     datetimeToLocktime: () => undefined,
+    getAccountTransactions,
 })(asNetworkSymbol('btc'));
 
 const utxo = (txid: string, vout: number) =>
@@ -152,6 +155,7 @@ describe('createBitcoinChainSend', () => {
             payload: { serializedTx: 'signed', signedTransaction: { txid: 'new' } },
         });
         const replaced = { txid: 'orig' };
+        getAccountTransactions.mockReturnValue([replaced, { txid: 'other' }] as never[]);
 
         const signed = await send.sign({
             account: { ...account, accountType: 'coinjoin' },
@@ -185,10 +189,7 @@ describe('createBitcoinChainSend', () => {
                     { address_n: [1], amount: '1', script_type: 'PAYTOWITNESS' },
                 ],
             } as unknown as PrecomposedTransactionFinal,
-            options: {
-                device: { path: 'device' as DeviceUniquePath },
-                replacedTransactions: [replaced, { txid: 'other' }] as never,
-            },
+            options: { device: { path: 'device' as DeviceUniquePath } },
         });
 
         expect(signed).toEqual({ serializedTx: 'signed', signedTransaction: { txid: 'new' } });
@@ -265,6 +266,50 @@ describe('createBitcoinChainSend', () => {
             txid: 'new',
             amount: '1000',
             fee: '200',
+        });
+    });
+
+    it('asks the app to show a failed Connect compose, but not invalid input', async () => {
+        connect.composeTransaction.mockResolvedValueOnce({
+            success: false,
+            payload: { error: 'backend down', code: 'Backend_Error' },
+            error: { message: 'backend down', code: 'Backend_Error' },
+        });
+        connect.composeTransaction.mockResolvedValueOnce({
+            success: false,
+            payload: { error: 'bad', code: 'Method_InvalidParameter' },
+            error: { message: 'bad', code: 'Method_InvalidParameter' },
+        });
+
+        await expect(
+            send.composeFeeLevels({ account, draft: draft(), context }),
+        ).rejects.toMatchObject({ notify: 'message', message: 'backend down' });
+        await expect(
+            send.composeFeeLevels({ account, draft: draft(), context }),
+        ).rejects.toMatchObject({ notify: undefined });
+    });
+
+    it('marks a fee bump as replacing in place', async () => {
+        const { precomposed } = await send.prepareForReview!({
+            account,
+            draft: draft({
+                rbfParams: {
+                    type: 'bitcoin',
+                    txid: 'orig',
+                    utxo: [],
+                    outputs: [],
+                    feeRate: '1',
+                    baseFee: 100,
+                },
+            }),
+            precomposed: final() as unknown as PrecomposedTransactionFinal,
+        });
+
+        expect(precomposed).toMatchObject({
+            rbfType: 'bump-fee',
+            prevTxid: 'orig',
+            feeDifference: '100',
+            useNativeRbf: true,
         });
     });
 });

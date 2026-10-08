@@ -1,4 +1,9 @@
-import { allowDevDependenciesIn, eslint } from '@trezor/eslint';
+import {
+    allowDevDependenciesIn,
+    eslint,
+    noNetworkTypeBranchingSyntax,
+    noRestrictedSyntax,
+} from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -16,4 +21,19 @@ export default [
         },
     },
     allowDevDependenciesIn(['**/src/support/tests/**', '**/src/support/test-utils/**']),
+    {
+        // Views built on chain networks; the network decides family behaviour.
+        files: [
+            'src/hooks/wallet/chainData/**/*.{ts,tsx}',
+            'src/hooks/wallet/chainSend/**/*.{ts,tsx}',
+            'src/support/chainSend/**/*.{ts,tsx}',
+        ],
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                ...noRestrictedSyntax,
+                ...noNetworkTypeBranchingSyntax,
+            ],
+        },
+    },
 ];

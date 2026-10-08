@@ -16,8 +16,6 @@ import {
     type PrecomposedLevels,
     type PrecomposedLevelsCardano,
     type PrecomposedTransactionFinal,
-    type PrecomposedTransactionFinalBumpFeeRbf,
-    type PrecomposedTransactionFinalCancelRbf,
     type PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
 import {
@@ -26,23 +24,24 @@ import {
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
     getAccountDecimals,
-    getEvmTransactionTextSignature,
     getMevProtectedTxData,
     getPendingAccount,
     hasNetworkFeatures,
     isAllowanceUnlimited,
     isCardanoTx,
-    isEvmApprovalTxByTextSignature,
-    isEvmYieldTxByTextSignature,
     isExchangeTradingForm,
-    isRbfCancelTransaction,
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type PROTO } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { getSolanaTokenDefinition } from '@trezor/connect-core/src/api/solana/solanaDefinitions';
+import { createPrepareEvmForReview } from '@trezor/network-ethereum-suite-common';
+import {
+    type PrepareForReview,
+    createPrepareReplacementForReview,
+} from '@trezor/network-module-suite-common-types';
+import { createPrepareSolanaForReview } from '@trezor/network-solana-suite-common';
 import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
 
@@ -82,6 +81,7 @@ import {
     type SignTransactionError,
     type SignTransactionTimeoutError,
 } from './sendFormTypes';
+import { isEvmTokenDefinitionKnown, isSolanaTokenDefinitionKnown } from './tokenDefinitions';
 import { accountsActions } from '../accounts/accountsActions';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
@@ -857,92 +857,39 @@ export type EnhancedPrecomposedTransaction = {
     isTokenKnown: boolean | undefined;
 };
 
+// Each family's review preparation, for the flows that still compose and sign through thunks. The
+// chain networks run the same functions (`network.send.prepareForReview`).
+const prepareEvmForReview = createPrepareEvmForReview({ isEvmTokenDefinitionKnown });
+const prepareSolanaForReview = createPrepareSolanaForReview({ isSolanaTokenDefinitionKnown });
+const prepareBitcoinForReview = createPrepareReplacementForReview({ useNativeRbf: true });
+const prepareReplacementForReview = createPrepareReplacementForReview({ useNativeRbf: false });
+
+const getPrepareForReview = (account: Account): PrepareForReview => {
+    switch (account.networkType) {
+        case 'bitcoin':
+            return prepareBitcoinForReview;
+        case 'ethereum':
+            return prepareEvmForReview({ chainId: getNetwork(account.symbol).chainId });
+        case 'solana':
+            return prepareSolanaForReview;
+        default:
+            return prepareReplacementForReview;
+    }
+};
+
 /** Prepares a composed transaction for signing and review. */
 export const enhancePrecomposedTransaction = async ({
-    transactionFormValues: formValues,
+    transactionFormValues,
     precomposedTransaction,
     selectedAccount,
 }: EnhancePrecomposedTransactionParams): Promise<EnhancedPrecomposedTransaction> => {
-    const selectedAccountNetwork = getNetwork(selectedAccount.symbol);
+    const { precomposed, isTokenKnown } = await getPrepareForReview(selectedAccount)({
+        account: selectedAccount,
+        draft: transactionFormValues,
+        precomposed: precomposedTransaction,
+    });
 
-    const createRbfEnhancedTransaction = (): GeneralPrecomposedTransactionFinal => {
-        if (!isCardanoTx(selectedAccount, precomposedTransaction) && formValues.rbfParams) {
-            // A cancel (zero-value replace) tx is already tagged rbfType: 'cancel' by its own
-            // compose step (e.g. useEthereumCancelTxCompose) — preserve that instead of always
-            // relabeling as 'bump-fee', which mislabels the review modal/analytics for cancels.
-            if (isRbfCancelTransaction(precomposedTransaction)) {
-                const enhancedCancelPrecomposedTx: PrecomposedTransactionFinalCancelRbf = {
-                    ...precomposedTransaction,
-                    rbfType: 'cancel',
-                    prevTxid: formValues.rbfParams.txid,
-                };
-
-                return enhancedCancelPrecomposedTx;
-            }
-
-            const enhancedRbfPrecomposedTx: PrecomposedTransactionFinalBumpFeeRbf = {
-                ...precomposedTransaction,
-                rbfType: 'bump-fee',
-                prevTxid: formValues.rbfParams.txid,
-                feeDifference: new BigNumber(precomposedTransaction.fee)
-                    .minus(
-                        formValues.rbfParams.type === 'bitcoin' ? formValues.rbfParams.baseFee : 0,
-                    )
-                    .toFixed(),
-                useNativeRbf: selectedAccount.networkType === 'bitcoin',
-            };
-
-            return enhancedRbfPrecomposedTx;
-        }
-
-        return precomposedTransaction;
-    };
-
-    let enhancedPrecomposedTransaction = createRbfEnhancedTransaction();
-
-    // Contract calldata (e.g. DEX swap) must not carry `token` on the precomposed object:
-    // signing uses prepareEthereumTransaction, which would replace calldata with an ERC-20
-    // transfer if `token` is set.
-    const sig = getEvmTransactionTextSignature(formValues.transactionData);
-    if (
-        selectedAccount.networkType === 'ethereum' &&
-        formValues.transactionData &&
-        !isEvmApprovalTxByTextSignature(sig) &&
-        !isEvmYieldTxByTextSignature(sig)
-    ) {
-        enhancedPrecomposedTransaction = cloneObject(enhancedPrecomposedTransaction);
-        delete (enhancedPrecomposedTransaction as { token?: unknown }).token;
-    }
-
-    let isTokenKnown;
-    if (
-        !isCardanoTx(selectedAccount, enhancedPrecomposedTransaction) &&
-        selectedAccount.networkType === 'ethereum' &&
-        enhancedPrecomposedTransaction.token?.contract &&
-        selectedAccountNetwork.chainId
-    ) {
-        isTokenKnown = await fetch(
-            `https://data.trezor.io/firmware/definitions/eth/chain-id/${
-                selectedAccountNetwork.chainId
-            }/token-${enhancedPrecomposedTransaction.token.contract.substring(2).toLowerCase()}.dat`,
-            { method: 'HEAD' },
-        )
-            .then(response => response.ok)
-            .catch(() => false);
-    }
-
-    if (
-        selectedAccount.networkType === 'solana' &&
-        enhancedPrecomposedTransaction.token?.contract
-    ) {
-        const tokenDefinition = await getSolanaTokenDefinition({
-            mintAddress: enhancedPrecomposedTransaction.token.contract,
-        });
-
-        isTokenKnown = !!tokenDefinition;
-    }
-
-    return { enhancedPrecomposedTransaction, isTokenKnown };
+    return { enhancedPrecomposedTransaction: precomposed, isTokenKnown };
 };
 
 export type EnhancePrecomposedTransactionThunkState = DeviceRootState;

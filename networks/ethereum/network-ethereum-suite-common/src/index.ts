@@ -72,6 +72,21 @@ export type { EvmMaxReserve } from './chain/send/calculateEvmTransfer';
 export type {
     EvmFeeEstimationFailure,
     EvmSendAppDeps,
+    EvmTokenDefinitionParams,
     ResolveEvmNonceParams,
     ResolvedEvmNonce,
 } from './chain/send/types';
+export { createPrepareEvmForReview } from './chain/send/createPrepareEvmForReview';
+export type {
+    PrepareEvmForReview,
+    PrepareEvmForReviewDeps,
+} from './chain/send/createPrepareEvmForReview';
+export {
+    getEvmTransactionTextSignature,
+    isEvmApprovalTxByTextSignature,
+    isEvmYieldTxByTextSignature,
+} from './chain/send/evm/evmTransactionPurpose';
+export type {
+    EvmApprovalPurpose,
+    EvmTransactionPurpose,
+} from './chain/send/evm/evmTransactionPurpose';

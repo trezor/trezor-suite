@@ -15,6 +15,9 @@ import type {
 import { getDisplayBalanceFiatValue } from './getDisplayBalanceFiatValue';
 import type { ChainNetworkSendDefinition } from './send/ChainSend';
 import { buildPendingTransaction } from './send/buildPendingTransaction';
+import { createPrepareReplacementForReview } from './send/prepareReplacementForReview';
+
+const prepareReplacementForReview = createPrepareReplacementForReview({ useNativeRbf: false });
 
 export type ConnectChainNetworkTokens = {
     fetchTokens: FetchConnectTokens;
@@ -125,6 +128,11 @@ export const buildConnectChainNetwork = (
                     assertOwnAccount(params.account);
 
                     return await send.composeFeeLevels(params);
+                },
+                prepareForReview: async params => {
+                    assertOwnAccount(params.account);
+
+                    return await (send.prepareForReview ?? prepareReplacementForReview)(params);
                 },
                 sign: async params => {
                     assertOwnAccount(params.account);

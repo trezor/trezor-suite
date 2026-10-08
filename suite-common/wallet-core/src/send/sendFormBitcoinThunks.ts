@@ -1,6 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { AddressDisplayOptions, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { datetimeToLocktime } from '@suite-common/wallet-utils';
+import { type AccountTransaction } from '@trezor/connect';
 import { createBitcoinChainSend } from '@trezor/network-bitcoin-suite-common';
 import {
     ChainSendError,
@@ -25,7 +26,13 @@ import {
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import { selectTransactions } from '../transactions/transactionsSelectors';
 
-const createSend = createBitcoinChainSend({ ...chainSendConnectDeps, datetimeToLocktime });
+// Composing reads no transactions; signing reads the signed account's own.
+const createSend = (accountTransactions: readonly AccountTransaction[] = []) =>
+    createBitcoinChainSend({
+        ...chainSendConnectDeps,
+        datetimeToLocktime,
+        getAccountTransactions: () => accountTransactions,
+    });
 
 type ComposeBitcoinTransactionFeeLevelsThunkState = WalletSettingsRootState;
 
@@ -42,7 +49,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
         const { account } = composeContext;
 
         try {
-            const levels = await createSend(account.symbol).composeFeeLevels({
+            const levels = await createSend()(account.symbol).composeFeeLevels({
                 account,
                 draft: formState,
                 context: {
@@ -51,13 +58,13 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
                 },
             });
 
-            notifyChainComposeLevels(dispatch, account, levels);
+            notifyChainComposeLevels(dispatch, levels);
 
             return levels;
         } catch (error) {
             if (!(error instanceof ChainSendError)) throw error;
 
-            notifyChainComposeFailure(dispatch, account, error);
+            notifyChainComposeFailure(dispatch, error);
 
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
@@ -82,10 +89,10 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
         { getState, rejectWithValue },
     ) => {
-        const transactions = selectTransactions(getState());
+        const accountTransactions = selectTransactions(getState())[selectedAccount.key] || [];
 
         try {
-            const { serializedTx, signedTransaction } = await createSend(
+            const { serializedTx, signedTransaction } = await createSend(accountTransactions)(
                 selectedAccount.symbol,
             ).sign({
                 account: selectedAccount,
@@ -97,7 +104,6 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
                         selectAddressDisplayType(getState()) === AddressDisplayOptions.CHUNKED,
                     paymentRequests,
                     amountUnit: selectBitcoinAmountUnit(getState()),
-                    replacedTransactions: transactions[selectedAccount.key] || [],
                 },
             });
 

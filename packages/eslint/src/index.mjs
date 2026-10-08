@@ -15,6 +15,7 @@ import {
 import {
     javascriptConfig,
     noCastedObjectHelpersSyntax,
+    noNetworkTypeBranchingSyntax,
     noRestrictedSyntax,
 } from './javascriptConfig.mjs';
 import { javascriptNodejsConfig } from './javascriptNodejsConfig.mjs';
@@ -33,6 +34,7 @@ export {
     desktopApiCompositionRootAllowance,
     desktopApiRestrictedImports,
     noCastedObjectHelpersSyntax,
+    noNetworkTypeBranchingSyntax,
     noRestrictedSyntax,
     restrictedImportsPatterns,
     selectorRestrictedImports,

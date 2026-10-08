@@ -144,14 +144,17 @@ export type {
     ChainSigningPrepared,
     ComposeFeeLevelsParams,
     CreatePendingTransactionParams,
+    PrepareForReview,
+    PrepareForReviewParams,
+    PreparedForReview,
     PushChainTransactionParams,
     PushedChainTransaction,
     SendFormOption,
     SignChainTransactionParams,
     UtxoSorting,
 } from './chain/send/ChainSend';
-export { ChainSendError } from './chain/send/ChainSendError';
-export type { ChainSendErrorCode } from './chain/send/ChainSendError';
+export { ChainSendError, getComposeFailureNotice } from './chain/send/ChainSendError';
+export type { ChainSendErrorCode, ChainSendNotice } from './chain/send/ChainSendError';
 export { toMevProtectedPushData } from './chain/send/toMevProtectedPushData';
 export type { MevProtectedPushData } from './chain/send/toMevProtectedPushData';
 export { createPushConnectTransaction } from './chain/send/createPushConnectTransaction';
@@ -183,3 +186,8 @@ export type { ComposeAccountTransferLevelsParams } from './chain/send/accountTra
 export { getMaxAmountWithReserve, isNetworkReserveApplicable } from './chain/send/networkReserve';
 export type { GetMaxAmountWithReserveParams } from './chain/send/networkReserve';
 export { buildPendingTransaction } from './chain/send/buildPendingTransaction';
+export {
+    createPrepareReplacementForReview,
+    tagReplacement,
+} from './chain/send/prepareReplacementForReview';
+export type { TagReplacementOptions } from './chain/send/prepareReplacementForReview';

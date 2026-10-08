@@ -5,6 +5,7 @@ import {
     type PrecomposedLevels,
     type PushConnectTransactionDeps,
     buildPendingTransaction,
+    createPrepareReplacementForReview,
     createPushConnectTransaction,
 } from '@trezor/network-module-suite-common-types';
 import type { NetworkSymbol } from '@trezor/network-module-types';
@@ -46,6 +47,8 @@ export const createBitcoinChainSend = (deps: BitcoinChainSendDeps): BitcoinChain
     const composeFeeLevels = createComposeBitcoinFeeLevels(deps);
     const sign = createSignBitcoinTransaction(deps);
     const push = createPushConnectTransaction(deps);
+    // Bitcoin replaces in place (BIP-125).
+    const prepareForReview = createPrepareReplacementForReview({ useNativeRbf: true });
 
     return symbol => {
         const config: BitcoinSendConfig = {
@@ -55,6 +58,7 @@ export const createBitcoinChainSend = (deps: BitcoinChainSendDeps): BitcoinChain
 
         return {
             composeFeeLevels: params => composeFeeLevels({ ...params, config }),
+            prepareForReview,
             sign: params => sign({ ...params, config }),
             push: params => push({ ...params, useConnectionIdentity: false }),
             createPendingTransaction: params =>

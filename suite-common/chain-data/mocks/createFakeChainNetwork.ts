@@ -87,6 +87,10 @@ export const createFakeChainNetwork = (params: FakeChainNetworkParams) => {
             ReturnType<Send['composeFeeLevels']>,
             Parameters<Send['composeFeeLevels']>
         >(),
+        prepareForReview: jest.fn<
+            ReturnType<Send['prepareForReview']>,
+            Parameters<Send['prepareForReview']>
+        >(({ precomposed }) => Promise.resolve({ precomposed })),
         sign: jest.fn<ReturnType<Send['sign']>, Parameters<Send['sign']>>(),
         push: jest.fn<ReturnType<Send['push']>, Parameters<Send['push']>>(),
         createPendingTransaction: jest.fn<

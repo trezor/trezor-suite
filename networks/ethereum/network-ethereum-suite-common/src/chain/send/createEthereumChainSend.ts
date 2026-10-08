@@ -13,9 +13,14 @@ import {
     type ComposeEvmFeeLevelsDeps,
     createComposeEvmFeeLevels,
 } from './createComposeEvmFeeLevels';
+import {
+    type PrepareEvmForReviewDeps,
+    createPrepareEvmForReview,
+} from './createPrepareEvmForReview';
 import { type SignEvmTransactionDeps, createSignEvmTransaction } from './createSignEvmTransaction';
 
 export type EthereumChainSendDeps = ComposeEvmFeeLevelsDeps &
+    PrepareEvmForReviewDeps &
     SignEvmTransactionDeps &
     PushConnectTransactionDeps;
 
@@ -30,6 +35,7 @@ export type EthereumChainSend = (
  */
 export const createEthereumChainSend = (deps: EthereumChainSendDeps): EthereumChainSend => {
     const composeFeeLevels = createComposeEvmFeeLevels(deps);
+    const prepareForReview = createPrepareEvmForReview(deps);
     const sign = createSignEvmTransaction(deps);
     const push = createPushConnectTransaction(deps);
 
@@ -46,6 +52,7 @@ export const createEthereumChainSend = (deps: EthereumChainSendDeps): EthereumCh
 
         return {
             composeFeeLevels: params => composeFeeLevels({ ...params, config }),
+            prepareForReview: prepareForReview({ chainId: config.chainId }),
             sign: params => sign({ ...params, config }),
             push: params => push({ ...params, useConnectionIdentity: true }),
         };

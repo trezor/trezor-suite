@@ -22,6 +22,7 @@ const connect = {
 const send = createSolanaChainSend({
     getTrezorConnect: () => connect,
     getSolanaBlockInfo: () => ({ blockHash: 'known-hash', blockHeight: 100 }),
+    isSolanaTokenDefinitionKnown: () => Promise.resolve(false),
 })(asNetworkSymbol('sol'));
 
 const account: ChainSendAccount = {

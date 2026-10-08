@@ -45,6 +45,7 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { isEvmTokenDefinitionKnown } from './tokenDefinitions';
 import {
     type WalletSettingsRootState,
     selectAddressDisplayType,
@@ -271,6 +272,7 @@ type EvmSendThunkApi = {
 const createSend = (account: Account, { dispatch, getState, device }: EvmSendThunkApi) =>
     createEthereumChainSend({
         ...chainSendConnectDeps,
+        isEvmTokenDefinitionKnown,
         isApprovalFlowSupported: () => isApprovalFlowSupported(device),
         getEvmPrivatePendingHint: () => selectEvmPrivatePendingHint(getState(), account.key),
         resolveEvmNonce: ({ rbfParams, fetchConfirmedNonce }) =>

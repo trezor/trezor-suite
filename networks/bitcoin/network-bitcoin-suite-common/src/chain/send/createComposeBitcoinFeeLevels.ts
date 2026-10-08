@@ -6,6 +6,7 @@ import {
     type PrecomposedLevels,
     type PrecomposedTransaction,
     formatCoinAmount,
+    getComposeFailureNotice,
     getRequestedFeeLevels,
     toCoinSymbol,
 } from '@trezor/network-module-suite-common-types';
@@ -114,6 +115,7 @@ export const createComposeBitcoinFeeLevels =
                     symbol,
                     psbtResponse.error.message,
                     psbtResponse.error.code,
+                    getComposeFailureNotice(psbtResponse.error.code),
                 );
             }
 
@@ -128,6 +130,7 @@ export const createComposeBitcoinFeeLevels =
                     symbol,
                     response.error.message,
                     response.error.code,
+                    getComposeFailureNotice(response.error.code),
                 );
             }
 

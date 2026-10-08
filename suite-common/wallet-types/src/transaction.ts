@@ -51,18 +51,7 @@ export type FeesState = {
 
 export type { EthTransactionData } from '@trezor/network-ethereum-suite-common';
 
-export type EvmTransactionPurpose =
-    | 'transfer'
-    | 'approve'
-    | 'revoke'
-    | 'unknown'
-    | 'deposit'
-    | 'withdraw'
-    | 'redeem'
-    | 'claim'
-    | 'wrap'
-    | 'unwrap'
-    | '';
+export type { EvmTransactionPurpose } from '@trezor/network-ethereum-suite-common';
 
 export interface WalletAccountTransaction extends AccountTransaction {
     deviceState: StaticSessionId;

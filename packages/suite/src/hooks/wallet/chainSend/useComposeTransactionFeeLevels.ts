@@ -15,8 +15,7 @@ import {
 import {
     type ComposeActionContext,
     type FormState,
-    type PrecomposedLevels,
-    type PrecomposedLevelsCardano,
+    type GeneralPrecomposedLevels,
 } from '@suite-common/wallet-types';
 import { ChainSendError } from '@trezor/network-module-suite-common-types';
 
@@ -40,7 +39,7 @@ export const useComposeTransactionFeeLevels = () => {
         async (
             formState: FormState,
             composeContext: ComposeActionContext,
-        ): Promise<PrecomposedLevels | PrecomposedLevelsCardano | undefined> => {
+        ): Promise<GeneralPrecomposedLevels | undefined> => {
             const { account } = composeContext;
             const network = getSendChainNetwork(account);
 
@@ -64,12 +63,12 @@ export const useComposeTransactionFeeLevels = () => {
                         ),
                     }),
                 );
-                notifyChainComposeLevels(dispatch, account, levels);
+                notifyChainComposeLevels(dispatch, levels);
 
                 return levels;
             } catch (error) {
                 if (error instanceof ChainSendError) {
-                    notifyChainComposeFailure(dispatch, account, error);
+                    notifyChainComposeFailure(dispatch, error);
                 }
 
                 return undefined;

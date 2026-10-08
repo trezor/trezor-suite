@@ -20,6 +20,7 @@ const deps: SolanaChainNetworkDeps = {
     fetchCoinGeckoCurrentRate,
     fetchCoinGeckoHistoricRates,
     getSolanaBlockInfo: () => ({ blockHash: 'hash', blockHeight: 1 }),
+    isSolanaTokenDefinitionKnown: () => Promise.resolve(false),
 };
 
 const backend = { type: 'solana', urls: [] } as const;

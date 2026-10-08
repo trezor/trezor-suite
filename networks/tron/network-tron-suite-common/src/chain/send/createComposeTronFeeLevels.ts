@@ -144,7 +144,13 @@ export const createComposeTronFeeLevels = (
                   });
 
         if ('error' in feeLevel) {
-            throw new ChainSendError('fee-estimation-failed', symbol, feeLevel.error);
+            throw new ChainSendError(
+                'fee-estimation-failed',
+                symbol,
+                feeLevel.error,
+                undefined,
+                'fee-estimation',
+            );
         }
 
         const tx = calculate(

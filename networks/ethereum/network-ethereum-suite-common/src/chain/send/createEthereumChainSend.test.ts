@@ -26,6 +26,7 @@ const send = createEthereumChainSend({
     getEvmPrivatePendingHint,
     resolveEvmNonce,
     onEvmFeeEstimationFailed,
+    isEvmTokenDefinitionKnown: () => Promise.resolve(false),
 })(asNetworkSymbol('eth'));
 
 const account: ChainSendAccount = {

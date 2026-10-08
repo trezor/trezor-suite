@@ -21,8 +21,8 @@ export type SendSession = {
     serializedTx?: SerializedTx;
     signedTx?: BlockbookTransaction;
 
-    /** The EVM nonce the device signs with, shown in the review. */
-    resolvedEthereumNonce?: string;
+    /** The account nonce the device signs with, on networks that order by nonce; shown in the review. */
+    preparedNonce?: string;
 };
 
 export type SendSessionContextValue = {
