@@ -2,8 +2,7 @@ import { rescanCoinjoinAccountThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { Row } from '@trezor/components';
-import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import type { Account } from 'src/types/wallet';
 
@@ -15,19 +14,17 @@ export const RescanAccount = ({ account }: RescanAccountProps) => {
     const { dispatch } = useServices(injectDispatch);
 
     return (
-        <Row>
-            <TextColumn
-                title={<Translation id="TR_COINJOIN_ACCOUNT_RESCAN_TITLE" />}
-                description={<Translation id="TR_COINJOIN_ACCOUNT_RESCAN_DESCRIPTION" />}
-            />
-            <ActionColumn>
-                <ActionButton
+        <SectionItem
+            title={<Translation id="TR_COINJOIN_ACCOUNT_RESCAN_TITLE" />}
+            description={<Translation id="TR_COINJOIN_ACCOUNT_RESCAN_DESCRIPTION" />}
+            actions={
+                <SectionItem.Button
                     isDisabled={account.status === 'initial' || account.syncing}
                     onClick={() => dispatch(rescanCoinjoinAccountThunk(account.key, true))}
                 >
                     <Translation id="TR_COINJOIN_ACCOUNT_RESCAN_ACTION" />
-                </ActionButton>
-            </ActionColumn>
-        </Row>
+                </SectionItem.Button>
+            }
+        />
     );
 };

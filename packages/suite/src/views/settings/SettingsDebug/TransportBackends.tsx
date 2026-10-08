@@ -1,7 +1,7 @@
 import { injectDesktopApi } from '@suite/desktop-app-api';
 import { useServices } from '@suite-common/dependency-injection';
 import { Checkbox } from '@trezor/components';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
@@ -25,32 +25,31 @@ export const TransportBackends = () => {
 
     return (
         <>
-            <SectionItem data-testid="@settings/debug/processes">
-                <TextColumn
-                    title="Transport backends"
-                    description="You may need to restart your application after changes are made."
-                />
-            </SectionItem>
-            <SectionItem data-testid="@settings/debug/processes/Bridge">
-                <TextColumn
-                    title="Bridge server"
-                    description={bridge?.version ? `version: ${bridge.version}` : 'not running'}
-                />
-                <ActionColumn>
+            <SectionItem
+                data-testid="@settings/debug/processes"
+                title="Transport backends"
+                description="You may need to restart your application after changes are made."
+            />
+
+            <SectionItem
+                data-testid="@settings/debug/processes/Bridge"
+                title="Bridge server"
+                description={bridge?.version ? `version: ${bridge.version}` : 'not running'}
+                actions={
                     <Checkbox
                         isChecked={bridgeProcess.process}
                         onChange={() => {
                             toggleBridge();
                         }}
                     />
-                </ActionColumn>
-            </SectionItem>
-            <SectionItem data-testid="@settings/debug/processes/runOnStartUp">
-                <TextColumn
-                    title="Run on startup"
-                    description="This is useful for testing of other Transport clients"
-                />
-                <ActionColumn>
+                }
+            />
+
+            <SectionItem
+                data-testid="@settings/debug/processes/runOnStartUp"
+                title="Run on startup"
+                description="This is useful for testing of other Transport clients"
+                actions={
                     <Checkbox
                         isChecked={!bridgeSettings.doNotStartOnStartup}
                         onChange={() => {
@@ -59,14 +58,14 @@ export const TransportBackends = () => {
                             });
                         }}
                     />
-                </ActionColumn>
-            </SectionItem>
-            <SectionItem data-testid="@settings/debug/processes/usbImplementation">
-                <TextColumn
-                    title="USB implementation (experimental)"
-                    description="Switch the bundled bridge between the legacy usb 2.x (default, known-good) and the new nusb (usb 3.x). Applies after an app restart."
-                />
-                <ActionColumn>
+                }
+            />
+
+            <SectionItem
+                data-testid="@settings/debug/processes/usbImplementation"
+                title="USB implementation (experimental)"
+                description="Switch the bundled bridge between the legacy usb 2.x (default, known-good) and the new nusb (usb 3.x). Applies after an app restart."
+                actions={
                     <Checkbox
                         isChecked={(bridgeSettings.usbImplementation ?? 'legacy') === 'nusb'}
                         onChange={() => {
@@ -78,19 +77,19 @@ export const TransportBackends = () => {
                             });
                         }}
                     />
-                </ActionColumn>
-            </SectionItem>
-            <SectionItem data-testid="@settings/debug/processes/usbRestart">
-                <TextColumn
-                    title="Apply USB implementation change"
-                    description="Restarts Trezor Suite so the selected USB implementation takes effect."
-                />
-                <ActionColumn>
-                    <ActionButton intent="brand" onClick={() => desktopApi.appRestart()}>
+                }
+            />
+
+            <SectionItem
+                data-testid="@settings/debug/processes/usbRestart"
+                title="Apply USB implementation change"
+                description="Restarts Trezor Suite so the selected USB implementation takes effect."
+                actions={
+                    <SectionItem.Button intent="brand" onClick={() => desktopApi.appRestart()}>
                         Restart now
-                    </ActionButton>
-                </ActionColumn>
-            </SectionItem>
+                    </SectionItem.Button>
+                }
+            />
         </>
     );
 };

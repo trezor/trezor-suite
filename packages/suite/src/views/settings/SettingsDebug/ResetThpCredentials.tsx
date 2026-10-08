@@ -5,7 +5,7 @@ import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -33,22 +33,23 @@ export const ResetThpCredentials = () => {
     };
 
     return (
-        <SectionItem data-testid="@settings/debug/reset-thp-credentials">
-            <TextColumn
-                title="Reset THP credentials"
-                description="Delete all THP credentials stored in the Suite for the connected device."
-            />
-            <ActionColumn>
-                <ActionButton
-                    isTooltipActive={!device}
-                    tooltipContent="Connect device to reset THP credentials"
+        <SectionItem
+            data-testid="@settings/debug/reset-thp-credentials"
+            title="Reset THP credentials"
+            description="Delete all THP credentials stored in the Suite for the connected device."
+            actions={
+                <SectionItem.Button
+                    tooltip={{
+                        isActive: !device,
+                        content: 'Connect device to reset THP credentials',
+                    }}
                     isDisabled={!device}
                     onClick={onClick}
                     isLoading={isLoading}
                 >
                     Reset
-                </ActionButton>
-            </ActionColumn>
-        </SectionItem>
+                </SectionItem.Button>
+            }
+        />
     );
 };

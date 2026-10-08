@@ -12,7 +12,7 @@ import {
     fiatBaseCurrencies,
     valuablesBaseCurrencies,
 } from '@trezor/blockchain-link-types';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -49,6 +49,7 @@ export const BaseCurrency = () => {
                 ),
             },
         ],
+
         [translationString],
     );
 
@@ -59,18 +60,17 @@ export const BaseCurrency = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn title={<Translation id="TR_BASE_CURRENCY" />} />
-                    <ActionColumn>
-                        <ActionSelect
+                    title={<Translation id="TR_BASE_CURRENCY" />}
+                    actions={
+                        <SectionItem.Select
                             isSearchable
                             onChange={handleChange}
                             value={value}
                             options={options}
                             data-testid="@settings/fiat-select"
                         />
-                    </ActionColumn>
-                </SectionItem>
+                    }
+                />
             )}
         </Anchor>
     );

@@ -25,14 +25,9 @@ import {
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
 import { injectTurnOffSuiteSync, injectTurnOnSuiteSync } from '@suite-common/suite-sync-types';
-import { Box, Column, LoadingContent, SelectOption, Tooltip } from '@trezor/components';
-import {
-    ActionColumn,
-    ActionSelect,
-    SectionItem,
-    SettingsRequirementBanner,
-    TextColumn,
-} from '@trezor/product-components';
+import { Banner, Box, Column, LoadingContent, SelectOption, Tooltip } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
+import { SectionItem } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 import { typedObjectValues } from '@trezor/utils';
@@ -220,37 +215,37 @@ export const LabelingSettings = () => {
                     }}
                 />
             )}
-
             <Anchor anchorId={SettingsAnchor.Labeling}>
                 {({ anchorId, anchorRef, shouldHighlight }) => (
                     <SectionItem
                         data-testid={anchorId}
                         ref={anchorRef}
                         shouldHighlight={shouldHighlight}
-                    >
-                        <TextColumn
-                            title={
-                                <LoadingContent
-                                    isLoading={legacyMetadataState.initiating}
-                                    isSuccessful={legacyMetadataState.enabled}
-                                >
-                                    <Translation id="TR_LABELING_ENABLED" />
-                                </LoadingContent>
-                            }
-                            description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
-                            bottomContent={
-                                <Column gap={8} alignItems="flex-start">
-                                    {showSuiteSync && isSuiteSyncUnsupported && (
-                                        <SettingsRequirementBanner>
+                        title={
+                            <LoadingContent
+                                isLoading={legacyMetadataState.initiating}
+                                isSuccessful={legacyMetadataState.enabled}
+                            >
+                                <Translation id="TR_LABELING_ENABLED" />
+                            </LoadingContent>
+                        }
+                        description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
+                        bottomContent={
+                            <Column gap={8} alignItems="flex-start">
+                                {showSuiteSync && isSuiteSyncUnsupported && (
+                                    <Banner
+                                        intent="neutral"
+                                        icon={InfoIcon}
+                                        description={
                                             <Translation id="TR_NOT_SUPPORTED_ON_THIS_DEVICE" />
-                                        </SettingsRequirementBanner>
-                                    )}
-                                    <LearnMoreButton url={HELP_CENTER_LABELING} />
-                                </Column>
-                            }
-                        />
-                        <ActionColumn>
-                            <ActionSelect
+                                        }
+                                    />
+                                )}
+                                <LearnMoreButton url={HELP_CENTER_LABELING} />
+                            </Column>
+                        }
+                        actions={
+                            <SectionItem.Select
                                 options={translatedOptions}
                                 value={getSelectedOption()}
                                 onChange={handleOnChange}
@@ -259,8 +254,8 @@ export const LabelingSettings = () => {
                                 isDisabled={isDeviceLabelingDisabled && !showSuiteSync}
                                 isOptionDisabled={option => isOptionDisabled(option.value)}
                             />
-                        </ActionColumn>
-                    </SectionItem>
+                        }
+                    />
                 )}
             </Anchor>
             {isSuiteSyncEnabled && <SuiteSyncServers />}
