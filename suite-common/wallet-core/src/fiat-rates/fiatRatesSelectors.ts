@@ -5,7 +5,7 @@ import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     type CryptoBaseCurrencyPair,
     type Rate,
@@ -179,6 +179,7 @@ export const selectTickerFromAccounts = (
         A.filter(
             ticker =>
                 !ticker.tokenAddress ||
+                !getNetworkFeatures(ticker.symbol).includes('coin-definitions') ||
                 selectIsSpecificCoinDefinitionKnown(state, ticker.symbol, ticker.tokenAddress),
         ),
         A.uniqBy(ticker =>
