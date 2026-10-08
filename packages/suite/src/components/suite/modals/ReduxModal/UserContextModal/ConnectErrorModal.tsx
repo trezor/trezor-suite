@@ -144,8 +144,6 @@ export const ConnectErrorModal = () => {
 
         if (popupCall.error?.message === UI_EVENTS.DEVICE_IN_BOOTLOADER)
             return <Translation id="TR_DEVICE_IN_BOOTLOADER" />;
-        if (popupCall.error?.message === UI_EVENTS.DEVICE_NOT_IN_BOOTLOADER)
-            return <Translation id="TR_RECONNECT_IN_BOOTLOADER" />;
         if (popupCall.error?.message === UI_EVENTS.DEVICE_SEEDLESS)
             return <Translation id="TR_YOUR_DEVICE_IS_SEEDLESS" />;
         if (popupCall.error?.message === UI_EVENTS.DEVICE_NOT_INITIALIZED)

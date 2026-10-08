@@ -6,7 +6,6 @@ import {
     CORE_CALL_CANCEL,
     CORE_EVENT,
     DEVICE,
-    POPUP,
     RESPONSE_EVENT,
     SET_ENABLED_NETWORKS,
     UI_EVENT,
@@ -126,44 +125,26 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     method.checkDeviceCapability();
 
     const deviceNeedsBackup = device.features.backup_availability === 'Required';
-    if (deviceNeedsBackup) {
-        if (method.confirmMissingBackup) {
-            // initialize user response promise
-            const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_CONFIRMATION, device);
+    if (deviceNeedsBackup && method.confirmMissingBackup) {
+        // initialize user response promise
+        const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_CONFIRMATION, device);
 
-            // request confirmation view
-            sendCoreMessage(
-                createUiRequestMessage(
-                    UI_REQUESTS.REQUEST_CONFIRMATION,
-                    { view: 'no-backup' },
-                    { requestId: uiPromise.requestId },
-                ),
-            );
+        // request confirmation view
+        sendCoreMessage(
+            createUiRequestMessage(
+                UI_REQUESTS.REQUEST_CONFIRMATION,
+                { view: 'no-backup' },
+                { requestId: uiPromise.requestId },
+            ),
+        );
 
-            // wait for user action
-            const permitted = await uiPromise.promise.then(({ payload }) => payload);
+        // wait for user action
+        const permitted = await uiPromise.promise.then(({ payload }) => payload);
 
-            if (!permitted) {
-                // interrupt process and go to "final" block
-                return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
-            }
+        if (!permitted) {
+            // interrupt process and go to "final" block
+            return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
         }
-        // show notification
-        sendCoreMessage(
-            createUiEventMessage(UI_EVENTS.DEVICE_NEEDS_BACKUP, {
-                device: device.toMessageObject(),
-            }),
-        );
-    }
-
-    // notify if firmware is outdated but not required
-    if (device.firmwareStatus === 'outdated') {
-        // show notification
-        sendCoreMessage(
-            createUiEventMessage(UI_EVENTS.FIRMWARE_OUTDATED, {
-                device: device.toMessageObject(),
-            }),
-        );
     }
 
     // Make sure that device will display pin/passphrase
@@ -281,10 +262,6 @@ const onCallDevice = async (
     try {
         tempDevice = selectDevice(context, message.payload.device);
     } catch (error) {
-        if (error.code === 'Transport_Missing') {
-            // show message about transport
-            sendCoreMessage(createUiEventMessage(UI_EVENTS.TRANSPORT_MISSING));
-        }
         // TODO: this should not be returned here before user agrees on "read" perms...
         sendCoreMessage(createResponseMessage(responseID, false, { error }));
         throw error;
@@ -706,11 +683,6 @@ const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: str
     cleanup(context);
 };
 
-// Handle genuine popup window close (always produces Method_Interrupted)
-const onPopupClosed = (context: CoreContext) => {
-    abortRunningCall(context, ERRORS.TypedError('Method_Interrupted'));
-};
-
 // Handle an explicit cancel() call (always produces Method_Cancel)
 const onCallCancel = (context: CoreContext, reason?: string, callId?: string) => {
     abortRunningCall(context, ERRORS.TypedError('Method_Cancel', reason), callId);
@@ -798,10 +770,6 @@ export class Core extends EventEmitter {
         this.coreLogger.debug('handleMessage', message.type);
 
         switch (message.type) {
-            case POPUP.CLOSED:
-                onPopupClosed(this.getCoreContext());
-                break;
-
             case CORE_CALL_CANCEL:
                 onCallCancel(
                     this.getCoreContext(),
