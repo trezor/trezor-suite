@@ -170,6 +170,131 @@ describe('transactionSigning', () => {
         });
     });
 
+    it('getTransactionData: outputs of all allowed types sorted by script bytes', async () => {
+        const response = await transactionSigning(
+            createCoinjoinRound(
+                [
+                    createInput(
+                        'account-A',
+                        '1b5b1feea4dfed4253db5f639011a744a337b25a67975310439233bd8a1dc49f00000000',
+                    ),
+                ],
+                {
+                    ...server?.requestOptions,
+                    round: {
+                        phase: 3,
+                        affiliateRequest,
+                        addresses: [
+                            {
+                                accountKey: 'account-A',
+                                path: "m/10025'/0'/0'/0'/1/0",
+                                address:
+                                    'bc1pkeah0fx2ex3jc337twlqcm9lh2eusm94j5vw2eshvczku6n7sjwqrfyfj2',
+                                scriptPubKey:
+                                    '1 b67b77a4cac9a32c463e5bbe0c6cbfbab3c86cb59518e5661766056e6a7e849c',
+                            },
+                        ],
+                        coinjoinState: {
+                            Type: '',
+                            Events: [
+                                {
+                                    Type: 'InputAdded',
+                                    Coin: {
+                                        Outpoint:
+                                            '1B5B1FEEA4DFED4253DB5F639011A744A337B25A67975310439233BD8A1DC49F00000000',
+                                        TxOut: {
+                                            ScriptPubKey:
+                                                '1 6a6daebd9abae25cdd376b811190163eb00c58e87da1867ba8546229098231c3',
+                                            Value: 12300000,
+                                        },
+                                    },
+                                    OwnershipProof: 'not-relevant',
+                                },
+                                // all outputs have equal value, order is given by the script bytes
+                                {
+                                    Type: 'OutputAdded', // external P2SH output
+                                    Output: {
+                                        ScriptPubKey:
+                                            'OP_HASH160 b472a266d0bd89c13706a4132ccfb16f7c3b9fcb OP_EQUAL',
+                                        Value: 1000000,
+                                    },
+                                },
+                                {
+                                    Type: 'OutputAdded', // internal Taproot output
+                                    Output: {
+                                        ScriptPubKey:
+                                            '1 b67b77a4cac9a32c463e5bbe0c6cbfbab3c86cb59518e5661766056e6a7e849c',
+                                        Value: 1000000,
+                                    },
+                                },
+                                {
+                                    Type: 'OutputAdded', // external P2WSH output
+                                    Output: {
+                                        ScriptPubKey:
+                                            '0 a60869f0dbcf1dc659c9cecbaf8050135ea9e8cdc487053f1dc6880949dc684c',
+                                        Value: 1000000,
+                                    },
+                                },
+                                {
+                                    Type: 'OutputAdded', // external P2PKH output
+                                    Output: {
+                                        ScriptPubKey:
+                                            'OP_DUP OP_HASH160 751e76e8199196d454941c45d1b3a323f1433bd6 OP_EQUALVERIFY OP_CHECKSIG',
+                                        Value: 1000000,
+                                    },
+                                },
+                                {
+                                    Type: 'OutputAdded', // external P2WPKH output
+                                    Output: {
+                                        ScriptPubKey: '0 b586ae30647c6ab84aa1a285d505155711509914',
+                                        Value: 1000000,
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                },
+            ),
+            [], // Account is not relevant for this test
+            { ...server?.requestOptions, network: networks.bitcoin },
+        );
+
+        expect(response.transactionData?.outputs).toEqual([
+            {
+                path: undefined,
+                address: 'bc1qkkr2uvry034tsj4p52za2pg42ug4pxg5qfxyfa',
+                amount: 1000000,
+                scriptPubKey: '0014b586ae30647c6ab84aa1a285d505155711509914',
+            },
+            {
+                path: undefined,
+                address: 'bc1q5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxquwd2ql',
+                amount: 1000000,
+                scriptPubKey:
+                    '0020a60869f0dbcf1dc659c9cecbaf8050135ea9e8cdc487053f1dc6880949dc684c',
+            },
+            {
+                path: "m/10025'/0'/0'/0'/1/0",
+                address: 'bc1pkeah0fx2ex3jc337twlqcm9lh2eusm94j5vw2eshvczku6n7sjwqrfyfj2',
+                amount: 1000000,
+                scriptPubKey:
+                    '5120b67b77a4cac9a32c463e5bbe0c6cbfbab3c86cb59518e5661766056e6a7e849c',
+            },
+            {
+                path: undefined,
+                address: '1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH',
+                amount: 1000000,
+                scriptPubKey: '76a914751e76e8199196d454941c45d1b3a323f1433bd688ac',
+            },
+            {
+                path: undefined,
+                address: '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy',
+                amount: 1000000,
+                scriptPubKey: 'a914b472a266d0bd89c13706a4132ccfb16f7c3b9fcb87',
+            },
+        ]);
+    });
+
     it('getTransactionData: missing registered outputs', async () => {
         const response = await transactionSigning(
             createCoinjoinRound(
