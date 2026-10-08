@@ -165,7 +165,7 @@ const registerInput = async (
             [vsize, 0],
             vsizeCredentials,
             round.vsizeCredentialIssuerParameters,
-            roundParameters.MaxVsizeCredentialValue,
+            roundParameters.MaxVsizeAllocationPerAlice,
             { baseUrl: middlewareUrl },
         );
 

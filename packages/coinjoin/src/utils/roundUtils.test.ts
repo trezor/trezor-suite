@@ -10,6 +10,7 @@ import {
     transformStatus,
 } from './roundUtils';
 import {
+    DEFAULT_ROUND,
     ROUND_CREATION_EVENT,
     STATUS_EVENT,
     STATUS_TRANSFORMED,
@@ -51,6 +52,16 @@ describe('roundUtils', () => {
             const status = transformStatus(STATUS_EVENT);
 
             expect(status).toEqual(STATUS_TRANSFORMED);
+        });
+
+        it('without fee rate medians uses mining fee rate of the last round', () => {
+            const status = transformStatus({
+                ...STATUS_EVENT,
+                CoinJoinFeeRateMedians: [],
+                RoundStates: [DEFAULT_ROUND],
+            });
+
+            expect(status.feeRateMedian).toEqual(129);
         });
     });
 

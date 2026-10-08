@@ -439,8 +439,8 @@ describe('Status', () => {
     });
 
     it('a poll whose transformStatus throws does not advance the anchor', async () => {
-        // Regression guard: a poll can fetch successfully but fail to transform (e.g. empty
-        // CoinJoinFeeRateMedians). Such a poll must NOT become the "previous poll" for the anchor --
+        // Regression guard: a poll can fetch successfully but fail to transform (e.g. a malformed
+        // round). Such a poll must NOT become the "previous poll" for the anchor --
         // its snapshot may already show the signing phase, so using its request time would place the
         // anchor after the real phase start and let a witness be scheduled past the phase end.
         jest.useFakeTimers();
@@ -459,11 +459,10 @@ describe('Status', () => {
                 });
             }
             if (statusCall === 2) {
-                // signing observed, but transformStatus throws (empty medians) -> not committed
+                // signing observed, but transformStatus throws (no CoinjoinState) -> not committed
                 return Promise.resolve({
                     ...STATUS_EVENT,
-                    CoinJoinFeeRateMedians: [],
-                    RoundStates: [{ ...DEFAULT_ROUND, Phase: 3 }],
+                    RoundStates: [{ ...DEFAULT_ROUND, Phase: 3, CoinjoinState: undefined }],
                 });
             }
 
@@ -480,7 +479,8 @@ describe('Status', () => {
         await status.start(); // poll #1 @1_000_000 (phase 2)
 
         jest.setSystemTime(1_020_000);
-        await status.getStatus().catch(() => {}); // poll #2: transformStatus throws, uncommitted
+        // poll #2: transformStatus throws, uncommitted
+        await expect(status.getStatus()).rejects.toThrow('Status processing');
 
         jest.setSystemTime(1_040_000);
         await status.getStatus(); // poll #3: phase 3, valid
