@@ -1,7 +1,7 @@
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 import { err, ok } from '@trezor/type-utils';
 
-import { REQUEST_RETRIES } from '../constants';
+import { REQUEST_RETRIES, REQUEST_TIMEOUT_MS } from '../constants';
 
 jest.mock('@trezor/blockchain-link-utils', () => ({
     ...jest.requireActual('@trezor/blockchain-link-utils'),
@@ -198,6 +198,46 @@ describe('getContractAddress', () => {
 
             expect(await resultPromise).toEqual(ok(usdc));
             expect(fetchMock).toHaveBeenCalledTimes(2);
+        });
+
+        // The wait must not count against the request timeout, or the request would be aborted
+        // while it waits, instead of retried.
+        it('should retry a rate limited lookup that asks to wait longer than the request timeout', async () => {
+            jest.useFakeTimers();
+            jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+            // Node schedules `AbortSignal.timeout` outside the timers Jest fakes, so without this
+            // the request timeout would never elapse in the test.
+            jest.spyOn(AbortSignal, 'timeout').mockImplementation(timeout => {
+                const controller = new AbortController();
+                setTimeout(
+                    () =>
+                        controller.abort(
+                            new DOMException(
+                                'The operation was aborted due to timeout',
+                                'TimeoutError',
+                            ),
+                        ),
+                    timeout,
+                );
+
+                return controller.signal;
+            });
+            const retryAfterSeconds = REQUEST_TIMEOUT_MS / 1_000 + 10;
+            mockStellarExpert(
+                new Response('Too Many Requests', {
+                    status: 429,
+                    headers: { 'retry-after': String(retryAfterSeconds) },
+                }),
+                assetResponse(),
+            );
+
+            const resultPromise = getContractAddress('stellar', { stellar: sorobanAddress });
+            await jest.runAllTimersAsync();
+
+            expect(await resultPromise).toEqual(ok(usdc));
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+            // Without the faked timeout in play, this test would pass with the bug as well.
+            expect(AbortSignal.timeout).toHaveBeenCalledWith(REQUEST_TIMEOUT_MS);
         });
 
         it('should report a failed lookup, so the asset is never silently dropped', async () => {
