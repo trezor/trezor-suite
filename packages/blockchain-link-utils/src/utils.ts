@@ -1,37 +1,54 @@
 import type { EnhancedVinVout, Transaction, VinVout } from '@trezor/blockchain-link-types';
-import { isNotUndefined, topologicalSort } from '@trezor/utils';
+import { topologicalSort } from '@trezor/utils';
 import { BigNumber, type BigNumberValue } from '@trezor/utils/src/bigNumber';
 
 export type Addresses = ({ address: string } | string)[] | string;
 
-export const isAccountOwned = (addresses: string[]) => (vinVout: VinVout) =>
-    Array.isArray(vinVout?.addresses) && vinVout.addresses.some(a => addresses.includes(a));
+export const isAccountOwned = (addresses: ReadonlySet<string>) => (vinVout: VinVout) =>
+    Array.isArray(vinVout?.addresses) && vinVout.addresses.some(a => addresses.has(a));
 
-export const filterTargets = (addresses: Addresses, targets: VinVout[]): VinVout[] => {
-    if (typeof addresses === 'string') {
-        addresses = [addresses];
+/**
+ * Normalises an address list into the membership index `isAccountOwned` queries. Build it once
+ * per transaction and reuse it through `filterTargetsBySet` and `enhanceVinVout`.
+ */
+export const toAddressSet = (addresses: Addresses): Set<string> => {
+    if (typeof addresses === 'string') return new Set([addresses]);
+    // The list comes straight off the wire, so it is not guaranteed to match its type.
+    if (!addresses || !Array.isArray(addresses)) return new Set();
+
+    const set = new Set<string>();
+    for (const a of addresses) {
+        if (typeof a === 'string') {
+            set.add(a);
+        } else if (typeof a === 'object' && typeof a.address === 'string') {
+            set.add(a.address);
+        }
     }
-    // neither addresses or targets are missing
-    if (!addresses || !Array.isArray(addresses) || !targets || !Array.isArray(targets)) return [];
 
-    const all = addresses
-        .map(a => {
-            if (typeof a === 'string') return a;
-            if (typeof a === 'object' && typeof a.address === 'string') return a.address;
-
-            return undefined;
-        })
-        .filter(isNotUndefined);
-
-    return targets.filter(isAccountOwned(all));
+    return set;
 };
 
-export const enhanceVinVout =
-    (addresses: string[]) =>
-    (vinVout: VinVout): EnhancedVinVout => ({
+export const filterTargetsBySet = (
+    addresses: ReadonlySet<string>,
+    targets: VinVout[],
+): VinVout[] => {
+    // Targets are not guaranteed to match their type at runtime either.
+    if (!targets || !Array.isArray(targets)) return [];
+
+    return targets.filter(isAccountOwned(addresses));
+};
+
+export const filterTargets = (addresses: Addresses, targets: VinVout[]): VinVout[] =>
+    filterTargetsBySet(toAddressSet(addresses), targets);
+
+export const enhanceVinVout = (addresses: ReadonlySet<string>) => {
+    const isOwned = isAccountOwned(addresses);
+
+    return (vinVout: VinVout): EnhancedVinVout => ({
         ...vinVout,
-        isAccountOwned: isAccountOwned(addresses)(vinVout) || undefined,
+        isAccountOwned: isOwned(vinVout) || undefined,
     });
+};
 
 export const sumVinVout = (sum: BigNumberValue, { value }: VinVout): BigNumberValue =>
     typeof value === 'string' ? new BigNumber(value || '0').plus(sum) : sum;

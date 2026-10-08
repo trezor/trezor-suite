@@ -18,7 +18,13 @@ import {
 import { isNotNullOrUndefined } from '@trezor/utils';
 import { BigNumber, type BigNumberValue } from '@trezor/utils/src/bigNumber';
 
-import { enhanceVinVout, filterTargets, sumVinVout, transformTarget } from './utils';
+import {
+    enhanceVinVout,
+    filterTargets,
+    filterTargetsBySet,
+    sumVinVout,
+    transformTarget,
+} from './utils';
 
 export const transformUtxos = (utxos: BlockfrostUtxos[]): Utxo[] => {
     const result: Utxo[] = [];
@@ -228,11 +234,15 @@ export const transformTransaction = (
             ? [addressesOrDescriptor, undefined]
             : [undefined, addressesOrDescriptor];
 
-    const myAddresses = accountAddress
-        ? accountAddress.change
-              .concat(accountAddress.used, accountAddress.unused)
-              .map(a => a.address)
-        : (descriptor && [descriptor]) || [];
+    // The membership index is built once per transaction rather than once per `filterTargets` /
+    // `enhanceVinVout` call.
+    const myAddressSet = new Set(
+        accountAddress
+            ? accountAddress.change
+                  .concat(accountAddress.used, accountAddress.unused)
+                  .map(a => a.address)
+            : (descriptor && [descriptor]) || [],
+    );
 
     let type: Transaction['type'];
     let targets: VinVout[] = [];
@@ -250,8 +260,8 @@ export const transformTransaction = (
     const outputs = fullData ? transformInputOutput(blockfrostTxData.txUtxos.outputs) : [];
     const vinLength = Array.isArray(inputs) ? inputs.length : 0;
     const voutLength = Array.isArray(outputs) ? outputs.length : 0;
-    const outgoing = filterTargets(myAddresses, inputs);
-    const incoming = filterTargets(myAddresses, outputs);
+    const outgoing = filterTargetsBySet(myAddressSet, inputs);
+    const incoming = filterTargetsBySet(myAddressSet, outputs);
     const internal = accountAddress ? filterTargets(accountAddress.change, outputs) : [];
     const totalInput = inputs.reduce(sumVinVout, 0);
     const totalOutput = outputs.reduce(sumVinVout, 0);
@@ -335,8 +345,8 @@ export const transformTransaction = (
         },
         feeRate: undefined,
         details: {
-            vin: inputs.map(enhanceVinVout(myAddresses)),
-            vout: outputs.map(enhanceVinVout(myAddresses)),
+            vin: inputs.map(enhanceVinVout(myAddressSet)),
+            vout: outputs.map(enhanceVinVout(myAddressSet)),
             size: blockfrostTxData.txData.size,
             totalInput: totalInput.toString(),
             totalOutput: totalOutput.toString(),

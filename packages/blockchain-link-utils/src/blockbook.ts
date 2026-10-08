@@ -20,6 +20,7 @@ import {
     enhanceVinVout,
     filterShadowedPendingTxsByNonce,
     filterTargets,
+    filterTargetsBySet,
     sumVinVout,
     transformTarget,
 } from './utils';
@@ -221,15 +222,19 @@ export const transformTransaction = (
     const myAddresses = addresses
         ? addresses.change.concat(addresses.used, addresses.unused).map(a => a.address)
         : (descriptor && [descriptor]) || [];
+    // The membership index is built once per transaction rather than once per `filterTargets` /
+    // `enhanceVinVout` call. `myAddresses` stays an array for `filterTokenTransfers` and the
+    // synthetic TRON staking target below.
+    const myAddressSet = new Set(myAddresses);
 
     const inputs = Array.isArray(tx.vin) ? tx.vin : [];
     const totalInput = inputs.reduce(sumVinVout, 0);
-    const myInputs = filterTargets(myAddresses, tx.vin);
+    const myInputs = filterTargetsBySet(myAddressSet, tx.vin);
     const myTotalInput = myInputs.reduce(sumVinVout, 0);
 
     const outputs = Array.isArray(tx.vout) ? tx.vout : [];
     const totalOutput = outputs.reduce(sumVinVout, 0);
-    const myOutputs = filterTargets(myAddresses, tx.vout);
+    const myOutputs = filterTargetsBySet(myAddressSet, tx.vout);
     const myTotalOutput = myOutputs.reduce(sumVinVout, 0);
 
     const myTokens = filterTokenTransfers(myAddresses, tx.tokenTransfers);
@@ -354,8 +359,8 @@ export const transformTransaction = (
         tronSpecific:
             tx.chainExtraData?.payloadType === 'tron' ? tx.chainExtraData.payload : undefined,
         details: {
-            vin: inputs.map(enhanceVinVout(myAddresses)),
-            vout: outputs.map(enhanceVinVout(myAddresses)),
+            vin: inputs.map(enhanceVinVout(myAddressSet)),
+            vout: outputs.map(enhanceVinVout(myAddressSet)),
             size,
             totalInput: totalInput.toString(),
             totalOutput: totalOutput.toString(),
