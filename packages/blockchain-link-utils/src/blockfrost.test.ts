@@ -1,5 +1,6 @@
 import fixtures from './__fixtures__/blockfrost';
 import {
+    createTransactionTransformer,
     parseAsset,
     transformAccountInfo,
     transformInputOutput,
@@ -49,6 +50,17 @@ describe('blockfrost/utils', () => {
                 expect(
                     // @ts-expect-error incorrect params
                     transformTransaction(f.data, f.accountAddress ?? f.descriptor),
+                ).toMatchObject(f.result);
+            });
+        });
+    });
+
+    describe('createTransactionTransformer', () => {
+        fixtures.transformTransaction.forEach(f => {
+            it(f.description, () => {
+                expect(
+                    // @ts-expect-error incorrect params
+                    createTransactionTransformer(f.accountAddress ?? f.descriptor)(f.data),
                 ).toMatchObject(f.result);
             });
         });

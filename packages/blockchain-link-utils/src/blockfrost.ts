@@ -18,7 +18,13 @@ import {
 import { isNotNullOrUndefined } from '@trezor/utils';
 import { BigNumber, type BigNumberValue } from '@trezor/utils/src/bigNumber';
 
-import { enhanceVinVout, filterTargets, sumVinVout, transformTarget } from './utils';
+import {
+    enhanceVinVout,
+    filterTargets,
+    filterTargetsBySet,
+    sumVinVout,
+    transformTarget,
+} from './utils';
 
 export const transformUtxos = (utxos: BlockfrostUtxos[]): Utxo[] => {
     const result: Utxo[] = [];
@@ -215,24 +221,40 @@ export const filterTokenTransfers = (
     return transfers.filter(isNotNullOrUndefined);
 };
 
-export const transformTransaction = (
-    blockfrostTxData: BlockfrostTransaction | Pick<BlockfrostTransaction, 'txData'>,
-    // TODO does 'descriptor' branch make sense for Cardano or was it just copypaste from blockbook?
-    addressesOrDescriptor?: AccountAddresses | string,
-): Transaction => {
-    const fullData = ((data: typeof blockfrostTxData): data is BlockfrostTransaction =>
-        'txUtxos' in data)(blockfrostTxData);
+// The account side of `transformTransaction`, indexed once per account page instead of once per
+// transaction.
+type AccountAddressIndex = {
+    accountAddress?: AccountAddresses;
+    allSet: ReadonlySet<string>;
+};
 
+// TODO does 'descriptor' branch make sense for Cardano or was it just copypaste from blockbook?
+const indexAccountAddresses = (
+    addressesOrDescriptor?: AccountAddresses | string,
+): AccountAddressIndex => {
     const [accountAddress, descriptor] =
         typeof addressesOrDescriptor === 'object'
             ? [addressesOrDescriptor, undefined]
             : [undefined, addressesOrDescriptor];
 
-    const myAddresses = accountAddress
-        ? accountAddress.change
-              .concat(accountAddress.used, accountAddress.unused)
-              .map(a => a.address)
-        : (descriptor && [descriptor]) || [];
+    return {
+        accountAddress,
+        allSet: new Set(
+            accountAddress
+                ? accountAddress.change
+                      .concat(accountAddress.used, accountAddress.unused)
+                      .map(a => a.address)
+                : (descriptor && [descriptor]) || [],
+        ),
+    };
+};
+
+const transformIndexedTransaction = (
+    blockfrostTxData: BlockfrostTransaction | Pick<BlockfrostTransaction, 'txData'>,
+    { accountAddress, allSet: myAddressSet }: AccountAddressIndex,
+): Transaction => {
+    const fullData = ((data: typeof blockfrostTxData): data is BlockfrostTransaction =>
+        'txUtxos' in data)(blockfrostTxData);
 
     let type: Transaction['type'];
     let targets: VinVout[] = [];
@@ -250,8 +272,8 @@ export const transformTransaction = (
     const outputs = fullData ? transformInputOutput(blockfrostTxData.txUtxos.outputs) : [];
     const vinLength = Array.isArray(inputs) ? inputs.length : 0;
     const voutLength = Array.isArray(outputs) ? outputs.length : 0;
-    const outgoing = filterTargets(myAddresses, inputs);
-    const incoming = filterTargets(myAddresses, outputs);
+    const outgoing = filterTargetsBySet(myAddressSet, inputs);
+    const incoming = filterTargetsBySet(myAddressSet, outputs);
     const internal = accountAddress ? filterTargets(accountAddress.change, outputs) : [];
     const totalInput = inputs.reduce(sumVinVout, 0);
     const totalOutput = outputs.reduce(sumVinVout, 0);
@@ -335,14 +357,32 @@ export const transformTransaction = (
         },
         feeRate: undefined,
         details: {
-            vin: inputs.map(enhanceVinVout(myAddresses)),
-            vout: outputs.map(enhanceVinVout(myAddresses)),
+            vin: inputs.map(enhanceVinVout(myAddressSet)),
+            vout: outputs.map(enhanceVinVout(myAddressSet)),
             size: blockfrostTxData.txData.size,
             totalInput: totalInput.toString(),
             totalOutput: totalOutput.toString(),
         },
     };
 };
+
+/**
+ * Indexes the account's addresses once and returns the transform to map over a page of its
+ * transactions; `transformTransaction` rebuilds that index on every call.
+ */
+export const createTransactionTransformer = (addressesOrDescriptor?: AccountAddresses | string) => {
+    const index = indexAccountAddresses(addressesOrDescriptor);
+
+    return (
+        blockfrostTxData: BlockfrostTransaction | Pick<BlockfrostTransaction, 'txData'>,
+    ): Transaction => transformIndexedTransaction(blockfrostTxData, index);
+};
+
+export const transformTransaction = (
+    blockfrostTxData: BlockfrostTransaction | Pick<BlockfrostTransaction, 'txData'>,
+    addressesOrDescriptor?: AccountAddresses | string,
+): Transaction =>
+    transformIndexedTransaction(blockfrostTxData, indexAccountAddresses(addressesOrDescriptor));
 
 const parseCardanoStakingInfo = (staking: unknown): CardanoStakingInfo | undefined => {
     const result = cardanoStakingInfoSchema.safeParse(staking);
@@ -362,8 +402,8 @@ export const transformAccountInfo = (info: BlockfrostAccountInfo): AccountInfo =
             ...info.history,
             transactions: !blockfrostTxs
                 ? []
-                : blockfrostTxs?.map(tx =>
-                      transformTransaction(tx, info.addresses ?? info.descriptor),
+                : blockfrostTxs.map(
+                      createTransactionTransformer(info.addresses ?? info.descriptor),
                   ),
         },
     };
