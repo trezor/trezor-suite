@@ -27,7 +27,6 @@ const InstallButton = ({ children, ...rest }: ButtonProps) => (
     <Tooltip
         cursor="default"
         isActive={rest.isDisabled}
-        maxWidth={200}
         placement="bottom"
         content={<Translation id="TR_INSTALL_FW_DISABLED_MULTIPLE_DEVICES" />}
     >
