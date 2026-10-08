@@ -358,6 +358,31 @@ describe('Metadata Actions', () => {
         });
     });
 
+    it('disposeMetadataKeys - dispatches every account without its encryption keys', async () => {
+        const account = {
+            deviceState: '1stTestnetAddress@device_id:0',
+            key: 'account-key',
+            metadata: { key: 'xpub', 1: { fileName: 'foo', aesKey: 'bar' } },
+        };
+        const store = initStore(
+            getInitialState({
+                device: { state: { staticSessionId: '1stTestnetAddress@device_id:0' } },
+                accounts: [account],
+                suite: {},
+            }),
+        );
+
+        await store.dispatch(metadataThunks.disposeMetadataKeysThunk());
+
+        const disposedAccounts = store
+            .getActions()
+            .filter(metadataActions.setAccountAdd.match)
+            .map(action => action.payload);
+        expect(disposedAccounts).toEqual([{ ...account, metadata: { key: 'xpub' } }]);
+        // The account held by the previous state keeps its keys.
+        expect(account.metadata[1]).toEqual({ fileName: 'foo', aesKey: 'bar' });
+    });
+
     it('marks wallet as migrated after legacy labeling migration succeeds', () => {
         const walletDescriptor = asWalletDescriptor('wallet-descriptor');
         const store = initStore(getInitialState());
