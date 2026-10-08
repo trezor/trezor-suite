@@ -1,17 +1,22 @@
-import { type AccountType } from '@suite-common/wallet-config';
+import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
+import { MIN_CARDANO_AMOUNT_FOR_SEND } from '@suite-common/wallet-constants';
 import {
     type Account,
+    type GeneralPrecomposedTransaction,
     type Output,
     type PrecomposedTransactionFinal,
     type PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
 import { CARDANO, type CardanoCertificate, PROTO } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils';
 
+import { type AmountSubunit, asAmountSubunit, asAmountUnit } from './AmountTypes';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
     networkAmountToSmallestUnit,
+    unitsToSubunits,
 } from './amountUtils';
 
 export const getDerivationType = (accountType: AccountType) => {
@@ -161,3 +166,40 @@ export const getCardanoFingerprint = (
 
     return token?.fingerprint;
 };
+
+type GetCardanoTokenSendMinAdaAmountParams = {
+    symbol: NetworkSymbol;
+    outputs: Pick<Output, 'token' | 'amount'>[];
+    composedFeeLevel?: GeneralPrecomposedTransaction;
+};
+
+export const getCardanoTokenSendMinAdaAmount = ({
+    symbol,
+    outputs,
+    composedFeeLevel,
+}: GetCardanoTokenSendMinAdaAmountParams): AmountSubunit => {
+    if (composedFeeLevel && composedFeeLevel.type !== 'error') {
+        return asAmountSubunit(new BigNumber(composedFeeLevel.totalSpent));
+    }
+
+    const adaOutputsAmount = outputs.reduce(
+        (acc, output) => (!output.token && output.amount ? acc.plus(output.amount) : acc),
+        new BigNumber(0),
+    );
+
+    return asAmountSubunit(
+        MIN_CARDANO_AMOUNT_FOR_SEND.times(outputs.length).plus(
+            unitsToSubunits({ symbol, value: asAmountUnit(adaOutputsAmount) }),
+        ),
+    );
+};
+
+type IsCardanoTokenSendAdaInsufficientParams = {
+    balance: string;
+    minAdaAmount: AmountSubunit;
+};
+
+export const isCardanoTokenSendAdaInsufficient = ({
+    balance,
+    minAdaAmount,
+}: IsCardanoTokenSendAdaInsufficientParams): boolean => new BigNumber(balance).lt(minAdaAmount);

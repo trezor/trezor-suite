@@ -1,12 +1,15 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO, PROTO } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils';
 
+import { asAmountSubunit } from './AmountTypes';
 import * as fixtures from './__fixtures__/cardanoUtils';
 import { getUnusedChangeAddress } from './accountUtils';
 import {
     formatMaxOutputAmount,
     getAddressParameters,
     getAddressType,
+    getCardanoTokenSendMinAdaAmount,
     getDelegationCertificates,
     getDerivationType,
     getNetworkId,
@@ -14,6 +17,7 @@ import {
     getShortFingerprint,
     getStakingPath,
     getVotingCertificates,
+    isCardanoTokenSendAdaInsufficient,
     isCardanoTx,
     transformUserOutputs,
 } from './cardanoUtils';
@@ -101,6 +105,63 @@ describe('cardano utils', () => {
     fixtures.getVotingCertificates.forEach(f => {
         it(`getVotingCertificates: ${f.description}`, () => {
             expect(getVotingCertificates(f.stakingPath, f.dRep)).toMatchObject(f.result);
+        });
+    });
+
+    describe('getCardanoTokenSendMinAdaAmount', () => {
+        const symbol = asNetworkSymbol('ada');
+        const tokenOutput = { token: 'policyIdAssetName', amount: '10' };
+
+        it('returns totalSpent of the composed transaction', () => {
+            expect(
+                getCardanoTokenSendMinAdaAmount({
+                    symbol,
+                    outputs: [tokenOutput],
+                    composedFeeLevel: {
+                        type: 'nonfinal',
+                        fee: '170000',
+                        feePerByte: '44',
+                        bytes: 0,
+                        totalSpent: '1340000',
+                        max: undefined,
+                    },
+                }).toFixed(),
+            ).toBe('1340000');
+        });
+
+        it('estimates 1 ADA per output plus ADA amounts when not composed', () => {
+            expect(
+                getCardanoTokenSendMinAdaAmount({
+                    symbol,
+                    outputs: [tokenOutput, { token: null, amount: '2.5' }],
+                }).toFixed(),
+            ).toBe('4500000');
+        });
+
+        it('estimates when compose failed', () => {
+            expect(
+                getCardanoTokenSendMinAdaAmount({
+                    symbol,
+                    outputs: [tokenOutput],
+                    composedFeeLevel: { type: 'error', error: 'UTXO_BALANCE_INSUFFICIENT' },
+                }).toFixed(),
+            ).toBe('1000000');
+        });
+    });
+
+    describe('isCardanoTokenSendAdaInsufficient', () => {
+        const minAdaAmount = asAmountSubunit(new BigNumber(1340000));
+
+        it('returns false when the balance covers the minimum ADA', () => {
+            expect(isCardanoTokenSendAdaInsufficient({ balance: '1340000', minAdaAmount })).toBe(
+                false,
+            );
+        });
+
+        it('returns true when the balance is below the minimum ADA', () => {
+            expect(isCardanoTokenSendAdaInsufficient({ balance: '1339999', minAdaAmount })).toBe(
+                true,
+            );
         });
     });
 });
