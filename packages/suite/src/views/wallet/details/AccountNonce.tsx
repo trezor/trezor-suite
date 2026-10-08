@@ -1,14 +1,15 @@
 import { Translation } from '@suite/intl';
-import { useEvmNonceInfo } from '@suite-common/wallet-core';
 import { type AccountWithNetworkType } from '@suite-common/wallet-types';
 import { Paragraph, Skeleton } from '@trezor/components';
+
+import { useAccountEvmNonceInfo } from 'src/hooks/wallet/chainData/useAccountEvmNonceInfo';
 
 type AccountNonceProps = {
     account: AccountWithNetworkType<'ethereum'>;
 };
 
 export const AccountNonce = ({ account }: AccountNonceProps) => {
-    const { nonceInfo, isLoading } = useEvmNonceInfo(account);
+    const { nonceInfo, isLoading } = useAccountEvmNonceInfo(account);
 
     if (isLoading) return <Skeleton width={80} height={16} />;
 

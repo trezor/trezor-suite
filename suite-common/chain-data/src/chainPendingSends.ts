@@ -1,12 +1,18 @@
 import {
     CONFIDENTIAL_QUERY_META,
+    type InfiniteData,
     type QueryClient,
+    type QueryClientDep,
     chainQueryKeys,
     queryOptions,
     skipToken,
 } from '@suite-common/react-query';
 import type { Transaction } from '@trezor/blockchain-link-types';
-import type { ChainNetwork } from '@trezor/network-module-suite-common-types';
+import type {
+    ChainNetwork,
+    ChainTransactionsPage,
+    GetChainPendingSendsDep,
+} from '@trezor/network-module-suite-common-types';
 
 /** How long a broadcast transaction is shown before the backend lists it, as the wallet did. */
 export const PENDING_SEND_TTL_MS = 15 * 60 * 1000;
@@ -71,3 +77,31 @@ export const getVisiblePendingSends = (
     pendingSends.filter(
         send => !listedTxids.has(send.transaction.txid) && now - send.sentAt < PENDING_SEND_TTL_MS,
     );
+
+export type ReadChainPendingSendsDeps = QueryClientDep;
+
+export type ReadChainPendingSends = GetChainPendingSendsDep['getChainPendingSends'];
+
+/**
+ * The account's pending sends for its network to read, as the history shows them: neither listed
+ * in the loaded history nor expired. Reads the cache only; nothing is fetched.
+ */
+export const createReadChainPendingSends =
+    (deps: ReadChainPendingSendsDeps): ReadChainPendingSends =>
+    ({ symbol, backendType, descriptor }) => {
+        const pendingSends = deps.queryClient.getQueryData(
+            getChainPendingSendsQueryOptions({ symbol, backendType }, descriptor).queryKey,
+        );
+        if (!pendingSends?.length) return [];
+
+        const history = deps.queryClient.getQueryData<InfiniteData<ChainTransactionsPage>>(
+            chainQueryKeys.accountTransactions(symbol, backendType, descriptor),
+        );
+        const listedTxids = new Set(
+            history?.pages.flatMap(page => page.transactions.map(({ txid }) => txid)),
+        );
+
+        return getVisiblePendingSends(pendingSends, listedTxids, Date.now()).map(
+            send => send.transaction,
+        );
+    };

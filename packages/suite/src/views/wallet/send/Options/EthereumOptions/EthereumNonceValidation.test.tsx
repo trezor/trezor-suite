@@ -18,11 +18,11 @@ import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState
 
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as any;
 
-type Props = { displayNonce?: string; confirmedNonce?: string };
+type Props = { displayNonce?: string; confirmedNonce?: string; pendingNonces?: number[] };
 
 const changeFeeLevelMock = jest.fn();
 
-const Harness = ({ displayNonce, confirmedNonce }: Props) => {
+const Harness = ({ displayNonce, confirmedNonce, pendingNonces }: Props) => {
     const methods = useForm<any>({ mode: 'onChange', defaultValues: { ethereumNonce: '' } });
     // Reading errors here subscribes this host to formState so it re-renders on validation changes.
     const { errors } = methods.formState;
@@ -57,6 +57,7 @@ const Harness = ({ displayNonce, confirmedNonce }: Props) => {
             <EthereumNonce
                 displayNonce={displayNonce}
                 confirmedNonce={confirmedNonce}
+                pendingNonces={pendingNonces}
                 onCancel={jest.fn()}
             />
         </SendContext.Provider>
@@ -124,6 +125,17 @@ describe('EthereumNonce validation', () => {
     it('warns about a replacement when the nonce lands on a pending tx', async () => {
         render(STATE);
         await typeNonce('6');
+
+        expect(screen.getByTestId('@send/ethereum-nonce-warning')).toHaveTextContent(
+            /replaces a pending transaction/i,
+        );
+    });
+
+    it('warns about a replacement at a pending nonce the account’s chain network resolves', async () => {
+        // A send waiting behind a gap at 10, which the wallet stores no transaction for: the same
+        // nonce reads as a gap without the network's pending nonces (see the gap case above).
+        render({ ...STATE, pendingNonces: [5, 6, 7, 10] });
+        await typeNonce('10');
 
         expect(screen.getByTestId('@send/ethereum-nonce-warning')).toHaveTextContent(
             /replaces a pending transaction/i,

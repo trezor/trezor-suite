@@ -1,6 +1,5 @@
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import TrezorConnect from '@trezor/connect';
 
 import { confirmedNonces, ethAccount, evmTx } from './__fixtures__/evmFixtures';
 import { type WalletChainSendDepsState, createWalletChainSendDeps } from './walletChainSendDeps';
@@ -24,35 +23,13 @@ const initDeps = () => {
 };
 
 describe(createWalletChainSendDeps.name, () => {
-    afterEach(() => jest.restoreAllMocks());
-
-    it('finds the wallet account a send account is, for its own pending sends', () => {
+    it('finds the wallet account a send account is, for its known transactions', () => {
         const deps = initDeps();
 
-        expect(deps.getEvmPrivatePendingHint(ethAccount)).toMatchObject({ nonces: [3] });
+        expect(deps.getAccountTransactions(ethAccount)).toHaveLength(4);
         expect(
-            deps.getEvmPrivatePendingHint({ ...ethAccount, descriptor: '0xsomeone-else' }),
-        ).toBeUndefined();
-    });
-
-    it('resolves the nonce from the backend and the transactions the wallet knows', async () => {
-        jest.spyOn(TrezorConnect, 'getAccountInfo').mockResolvedValue({
-            success: true,
-            payload: { misc: { confirmedNonce: '3' } },
-        } as any);
-
-        await expect(
-            initDeps().resolveEvmNonce({ account: ethAccount, fetchConfirmedNonce: true }),
-        ).resolves.toEqual({ nonce: '4', confirmedNonce: '3' });
-    });
-
-    it('refuses to resolve a nonce for an account the wallet does not have', () => {
-        expect(() =>
-            initDeps().resolveEvmNonce({
-                account: { ...ethAccount, descriptor: '0xsomeone-else' },
-                fetchConfirmedNonce: true,
-            }),
-        ).toThrow('Account not found.');
+            deps.getAccountTransactions({ ...ethAccount, descriptor: '0xsomeone-else' }),
+        ).toEqual([]);
     });
 
     it('gives Solana the latest block the wallet knows', () => {

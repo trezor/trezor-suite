@@ -2,11 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { getNetwork } from '@suite-common/wallet-config';
-import {
-    getInstantStakeType,
-    selectAccountByKey,
-    useEvmNonceInfo,
-} from '@suite-common/wallet-core';
+import { getInstantStakeType, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     type WalletAccountTransactionWithRequiredRbfParams,
     createAccountKey,
@@ -23,9 +19,14 @@ import { Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import {
+    type AccountEvmNonceInfo,
+    useAccountEvmNonceInfo,
+} from 'src/hooks/wallet/chainData/useAccountEvmNonceInfo';
+import {
     type AccountTransactionLookup,
     useAccountTransaction,
 } from 'src/hooks/wallet/chainData/useAccountTransaction';
+import { EvmNonceInfoProvider } from 'src/hooks/wallet/transactions/EvmNonceInfoContext';
 import { HistoricFiatRatesProvider } from 'src/hooks/wallet/transactions/HistoricFiatRatesContext';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
@@ -48,7 +49,10 @@ type TxDetailModalProps = {
     onCancel: () => void;
 };
 
-type TxDetailModalViewProps = TxDetailModalProps & { lookup: AccountTransactionLookup };
+type TxDetailModalViewProps = TxDetailModalProps & {
+    lookup: AccountTransactionLookup;
+    accountNonce: AccountEvmNonceInfo;
+};
 
 const TxDetailModalView = ({
     descriptor,
@@ -58,6 +62,7 @@ const TxDetailModalView = ({
     showCancelButton,
     onCancel,
     lookup,
+    accountNonce,
 }: TxDetailModalViewProps) => {
     const [section, setSection] = useState<TxDetailModalProps['flow']>(flow);
     const [tab, setTab] = useState<TabID | undefined>(undefined);
@@ -102,8 +107,7 @@ const TxDetailModalView = ({
     }, [resolvedTx, filteredInternalTransfers]);
 
     const account = useSelector(state => selectAccountByKey(state, accountKey));
-    const nonceAccount = account?.networkType === 'ethereum' ? account : undefined;
-    const { nonceInfo: fetchedNonceInfo } = useEvmNonceInfo(nonceAccount);
+    const fetchedNonceInfo = accountNonce.nonceInfo;
 
     const transactions = lookup.pendingTransactions;
     // const confirmations = getConfirmations(tx, blockchain.blockHeight);
@@ -225,10 +229,22 @@ export const TxDetailModal = (props: TxDetailModalProps) => {
     });
     const account = useSelector(state => selectAccountByKey(state, accountKey));
     const lookup = useAccountTransaction(account ?? undefined, props.txid);
+    const accountNonce = useAccountEvmNonceInfo(
+        account?.networkType === 'ethereum' ? account : undefined,
+        { transactions: lookup.accountTransactions },
+    );
+    // The chained transactions shown in the modal read the same nonce.
+    const { isQueryOwned: isNonceQueryOwned, nonceInfo } = accountNonce;
+    const providedNonceInfo = useMemo(
+        () => (isNonceQueryOwned ? { nonceInfo } : null),
+        [isNonceQueryOwned, nonceInfo],
+    );
 
     return (
         <HistoricFiatRatesProvider rates={lookup.historicRates}>
-            <TxDetailModalView {...props} lookup={lookup} />
+            <EvmNonceInfoProvider value={providedNonceInfo}>
+                <TxDetailModalView {...props} lookup={lookup} accountNonce={accountNonce} />
+            </EvmNonceInfoProvider>
         </HistoricFiatRatesProvider>
     );
 };

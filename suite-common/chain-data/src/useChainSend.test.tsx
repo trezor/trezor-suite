@@ -14,6 +14,7 @@ import type {
 } from '@trezor/network-module-suite-common-types';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
+import { useChainAccountNonce } from './useChainAccountNonce';
 import { useChainAccountTransactions } from './useChainAccountTransactions';
 import { useChainComposeFeeLevels } from './useChainComposeFeeLevels';
 import { useChainFeeInfo } from './useChainFeeInfo';
@@ -68,6 +69,8 @@ const precomposed = {
     outputs: [{ address: 'bc1recipient', amount: '500', script_type: 'PAYTOADDRESS' }],
 } as unknown as PrecomposedTransactionFinal;
 
+const accountNonce = { confirmedNonce: 4, nextNonce: 5, pendingNonces: [4] };
+
 const createNetwork = (history: readonly Transaction[] = [tx('old')]) =>
     createFakeChainNetwork({
         symbol: account.symbol,
@@ -75,6 +78,7 @@ const createNetwork = (history: readonly Transaction[] = [tx('old')]) =>
         rate: null,
         history: { zpub: [{ transactions: history, nextCursor: null, total: history.length }] },
         canSend: true,
+        accountNonce,
     });
 
 // Mutations are retried by default in production; sending must opt out.
@@ -159,6 +163,34 @@ describe('useChainFeeInfo', () => {
     });
 });
 
+describe('useChainAccountNonce', () => {
+    it('reads the nonce the network resolves for the account', async () => {
+        const network = createNetwork();
+
+        const { result } = renderHookWithQueryClient(() =>
+            useChainAccountNonce({ network: network.network, ref, enabled: true }),
+        );
+
+        await waitFor(() => expect(result.current.data).toEqual(accountNonce));
+        expect(network.getAccountNonce).toHaveBeenCalledWith({ ref, signal: expect.anything() });
+    });
+
+    it('asks nothing of a network without account nonces', () => {
+        const network = createFakeChainNetwork({
+            symbol: account.symbol,
+            balances: {},
+            rate: null,
+        });
+
+        const { result } = renderHookWithQueryClient(() =>
+            useChainAccountNonce({ network: network.network, ref, enabled: true }),
+        );
+
+        expect(result.current.fetchStatus).toBe('idle');
+        expect(network.getAccountNonce).not.toHaveBeenCalled();
+    });
+});
+
 describe('useChainSignTransaction', () => {
     it('asks the device once, whatever the answer', async () => {
         const btc = createNetwork();
@@ -229,6 +261,31 @@ describe('useChainPushTransaction', () => {
             fee: '100',
         });
         expect(btc.getTransactions).toHaveBeenCalledTimes(2);
+    });
+
+    it('reads the account nonce again once the broadcast send is cached', async () => {
+        const btc = createNetwork();
+        btc.send.push.mockResolvedValue({ txid: 'new' });
+        const { result } = renderHookWithQueryClient(
+            () => ({
+                push: useChainPushTransaction(),
+                nonce: useChainAccountNonce({ network: btc.network, ref, enabled: true }),
+            }),
+            { queryClient: retryingQueryClient() },
+        );
+        await waitFor(() => expect(result.current.nonce.data).toEqual(accountNonce));
+
+        await act(() =>
+            result.current.push.mutateAsync({
+                network: btc.network,
+                account,
+                serializedTx: 'signed',
+                isMevProtectionEnabled: false,
+                origin: { precomposed, signed: { serializedTx: 'signed' } },
+            }),
+        );
+
+        await waitFor(() => expect(btc.getAccountNonce).toHaveBeenCalledTimes(2));
     });
 
     it('hides the replaced transaction and leaves it to the backend once listed', async () => {

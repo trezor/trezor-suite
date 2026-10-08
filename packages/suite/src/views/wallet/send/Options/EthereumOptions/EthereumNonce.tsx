@@ -27,11 +27,19 @@ type EthereumNonceProps = {
     // The confirmed (mined-only) nonce — i.e. the count of confirmed txs. A custom nonce below this
     // has already been mined and would be rejected as "nonce too low".
     confirmedNonce?: string;
+    // Nonces of the account's pending transactions, where the account's chain network resolves
+    // them; otherwise read from the transactions the wallet stores.
+    pendingNonces?: number[];
     // Clears the override and closes the input (the "cancel overriding" cross).
     onCancel: () => void;
 };
 
-export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: EthereumNonceProps) => {
+export const EthereumNonce = ({
+    displayNonce,
+    confirmedNonce,
+    pendingNonces: resolvedPendingNonces,
+    onCancel,
+}: EthereumNonceProps) => {
     const {
         control,
         register,
@@ -89,9 +97,11 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
 
     const pendingSentTxs = transactions.filter(isPending).filter(isSignedByAccount);
 
-    const pendingNonces = pendingSentTxs
-        .map(tx => tx.ethereumSpecific?.nonce)
-        .filter((nonce): nonce is number => typeof nonce === 'number');
+    const pendingNonces =
+        resolvedPendingNonces ??
+        pendingSentTxs
+            .map(tx => tx.ethereumSpecific?.nonce)
+            .filter((nonce): nonce is number => typeof nonce === 'number');
 
     // Non-blocking warnings, computed only for an otherwise-valid nonce so they never overlap with
     // the blocking error above. Shares `getEvmNonceStatus` with the account's transaction list

@@ -1,4 +1,5 @@
 import {
+    type ChainAccountNonce,
     type ChainNetwork,
     type ChainTokenBalance,
     type ChainTransactionsPage,
@@ -32,6 +33,9 @@ type FakeChainNetworkParams = {
 
     /** Fee levels the network quotes itself, as runtime networks do; none when left out. */
     feeInfo?: FeeInfo;
+
+    /** The accounts' nonce; a network without it has no account nonces. */
+    accountNonce?: ChainAccountNonce;
 };
 
 /** A network answering from memory, with spies on what shared code asks it. */
@@ -85,6 +89,12 @@ export const createFakeChainNetwork = (params: FakeChainNetworkParams) => {
         );
     });
 
+    const { accountNonce } = params;
+    const getAccountNonce = jest.fn<
+        ReturnType<NonNullable<ChainNetwork['getAccountNonce']>>,
+        Parameters<NonNullable<ChainNetwork['getAccountNonce']>>
+    >(() => (accountNonce ? Promise.resolve(accountNonce) : Promise.reject(new Error('No nonce'))));
+
     type Send = NonNullable<ChainNetwork['send']>;
     const { feeInfo } = params;
     const send = {
@@ -121,6 +131,7 @@ export const createFakeChainNetwork = (params: FakeChainNetworkParams) => {
         getHistoricFiatRates,
         ...(params.tokens ? { getTokens, getTokenFiatRate } : {}),
         ...(params.history ? { getTransactions } : {}),
+        ...(accountNonce ? { getAccountNonce } : {}),
         ...(params.canSend ? { send } : {}),
     };
 
@@ -132,6 +143,7 @@ export const createFakeChainNetwork = (params: FakeChainNetworkParams) => {
         getTokenFiatRate,
         getTransactions,
         getHistoricFiatRates,
+        getAccountNonce,
         send,
     };
 };

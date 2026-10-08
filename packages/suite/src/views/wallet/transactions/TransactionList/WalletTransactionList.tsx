@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
@@ -6,7 +6,9 @@ import { selectIsHideSuspiciousTransactions } from '@suite-common/wallet-core';
 import { Card, Column, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
+import { useAccountEvmNonceInfo } from 'src/hooks/wallet/chainData/useAccountEvmNonceInfo';
 import { useAccountTransactionsSource } from 'src/hooks/wallet/chainData/useAccountTransactionsSource';
+import { EvmNonceInfoProvider } from 'src/hooks/wallet/transactions/EvmNonceInfoContext';
 import { HistoricFiatRatesProvider } from 'src/hooks/wallet/transactions/HistoricFiatRatesContext';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
@@ -51,22 +53,35 @@ export const WalletTransactionList = ({
         enableFiltering: fraudTransactionPossible,
     });
 
+    // Read once for every transaction below, against the history they come from.
+    const evmNonce = useAccountEvmNonceInfo(
+        account.networkType === 'ethereum' ? account : undefined,
+        { transactions: source.transactions, withStoreFallback: false },
+    );
+    const { isQueryOwned: isNonceQueryOwned, nonceInfo } = evmNonce;
+    const providedNonceInfo = useMemo(
+        () => (isNonceQueryOwned ? { nonceInfo } : null),
+        [isNonceQueryOwned, nonceInfo],
+    );
+
     return (
         <HistoricFiatRatesProvider rates={source.isQueryOwned ? source.historicRates : null}>
-            <TransactionList
-                key={account.key} // NOTE: ensure that transaction list is unmounted when account key changes
-                areAllTransactionsLoaded={source.areAllLoaded}
-                customPageFetching={fraudTransactionPossible}
-                customNoTransactions={<NoVisibleTransactions />}
-                source={source}
-                transactions={result.visibleTransactions}
-                symbol={symbol}
-                account={account}
-                isLoading={result.isFetching}
-                customTotalItems={customTotalItems ?? result.visibleTotal}
-                isExportable={isExportable}
-                onPageRequested={setVisiblePages}
-            />
+            <EvmNonceInfoProvider value={providedNonceInfo}>
+                <TransactionList
+                    key={account.key} // NOTE: ensure that transaction list is unmounted when account key changes
+                    areAllTransactionsLoaded={source.areAllLoaded}
+                    customPageFetching={fraudTransactionPossible}
+                    customNoTransactions={<NoVisibleTransactions />}
+                    source={source}
+                    transactions={result.visibleTransactions}
+                    symbol={symbol}
+                    account={account}
+                    isLoading={result.isFetching}
+                    customTotalItems={customTotalItems ?? result.visibleTotal}
+                    isExportable={isExportable}
+                    onPageRequested={setVisiblePages}
+                />
+            </EvmNonceInfoProvider>
         </HistoricFiatRatesProvider>
     );
 };

@@ -6,12 +6,11 @@ import {
 import { datetimeToLocktime, resolveStellarContractId } from '@suite-common/wallet-utils';
 import type { BitcoinSendAppDeps } from '@trezor/network-bitcoin-suite-common';
 import type { EvmSendAppDeps } from '@trezor/network-ethereum-suite-common';
-import { type ChainSendAccount, ChainSendError } from '@trezor/network-module-suite-common-types';
+import type { ChainSendAccount } from '@trezor/network-module-suite-common-types';
 import type { SolanaSendAppDeps } from '@trezor/network-solana-suite-common';
 import type { StellarSendAppDeps } from '@trezor/network-stellar-suite-common';
 
 import { handleEvmFeeEstimationFailure } from './reportEthereumFeeEstimationError';
-import { ethereumGetCurrentNonceThunk } from './sendFormEthereumThunks';
 import { isEvmTokenDefinitionKnown, isSolanaTokenDefinitionKnown } from './tokenDefinitions';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
@@ -21,10 +20,7 @@ import {
 } from '../blockchain/blockchainReducer';
 import { selectBlockchainUrl } from '../blockchain/blockchainSelectors';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
-import {
-    selectEvmPrivatePendingHint,
-    selectTransactions,
-} from '../transactions/transactionsSelectors';
+import { selectTransactions } from '../transactions/transactionsSelectors';
 
 export type WalletChainSendDepsState = AccountsRootState &
     TransactionsRootState &
@@ -36,8 +32,9 @@ export type CreateWalletChainSendDepsParams = {
     getState: () => WalletChainSendDepsState;
 };
 
+// EVM networks resolve the nonce themselves, from their backend and the pending sends.
 export type WalletChainSendDeps = BitcoinSendAppDeps &
-    EvmSendAppDeps &
+    Omit<EvmSendAppDeps, 'resolveEvmNonce' | 'getEvmPrivatePendingHint'> &
     SolanaSendAppDeps &
     StellarSendAppDeps;
 
@@ -77,28 +74,6 @@ export const createWalletChainSendDeps = ({
             return { blockHash: blockhash, blockHeight };
         },
         isApprovalFlowSupported: () => isApprovalFlowSupported(selectSelectedDevice(getState())),
-        getEvmPrivatePendingHint: account => {
-            const walletAccount = getWalletAccount(account);
-
-            return walletAccount
-                ? selectEvmPrivatePendingHint(getState(), walletAccount.key)
-                : undefined;
-        },
-        resolveEvmNonce: ({ account, rbfParams, fetchConfirmedNonce }) => {
-            const walletAccount = getWalletAccount(account);
-
-            if (walletAccount?.networkType !== 'ethereum') {
-                throw new ChainSendError('sign-failed', account.symbol, 'Account not found.');
-            }
-
-            return dispatch(
-                ethereumGetCurrentNonceThunk({
-                    selectedAccount: walletAccount,
-                    rbfParams,
-                    fetchConfirmedNonce,
-                }),
-            ).unwrap();
-        },
         onEvmFeeEstimationFailed: failure => {
             const walletAccount = getWalletAccount(failure.account);
             if (walletAccount) handleEvmFeeEstimationFailure(dispatch, walletAccount, failure);

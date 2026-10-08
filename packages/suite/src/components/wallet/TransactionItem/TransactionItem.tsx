@@ -30,6 +30,7 @@ import { OutlineHighlight } from '@trezor/product-components';
 
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
+import { useProvidedEvmNonceInfo } from 'src/hooks/wallet/transactions/EvmNonceInfoContext';
 import { usePhishingResult } from 'src/hooks/wallet/transactions/useTransactionReaders';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
@@ -98,11 +99,16 @@ export const TransactionItem = memo(
         // Fetched once (on mount) from the backend rather than derived from the account's local
         // sync state, so a stuck/gapped nonce is found using the account's real confirmed nonce as
         // the counting base instead of local data that can itself be incomplete or stale — see
-        // useEvmNonceInfo.
+        // useEvmNonceInfo. Where the account's chain network resolves the nonce, the list reads it
+        // once for all its transactions.
+        const providedNonceInfo = useProvidedEvmNonceInfo();
         const rawNonceAccount = useSelector(state => selectAccountByKey(state, accountKey));
         const nonceAccount =
             rawNonceAccount?.networkType === 'ethereum' ? rawNonceAccount : undefined;
-        const { nonceInfo: fetchedNonceInfo } = useEvmNonceInfo(nonceAccount);
+        const { nonceInfo: storeNonceInfo } = useEvmNonceInfo(nonceAccount, {
+            enabled: providedNonceInfo === null,
+        });
+        const fetchedNonceInfo = providedNonceInfo ? providedNonceInfo.nonceInfo : storeNonceInfo;
 
         const evmNonce =
             network.networkType === 'ethereum' ? transaction.ethereumSpecific?.nonce : undefined;

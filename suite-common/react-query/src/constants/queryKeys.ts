@@ -107,6 +107,15 @@ export const chainQueryKeys = {
         descriptor,
         'transactions',
     ],
+    /** Where the account's nonce stands, on networks with account nonces. */
+    accountNonce: (symbol: string, backendType: string, descriptor: string) => [
+        'chain',
+        symbol,
+        backendType,
+        'account',
+        descriptor,
+        'nonce',
+    ],
     /** Transactions the wallet broadcast that the backend does not list yet; kept in memory only. */
     accountPendingSends: (symbol: string, backendType: string, descriptor: string) => [
         'chain',
