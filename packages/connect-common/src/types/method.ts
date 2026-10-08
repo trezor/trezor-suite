@@ -55,20 +55,14 @@ export const GRANTABLE_PERMISSIONS: readonly MethodPermission[] = [
 ];
 
 /**
- * Static and runtime metadata describing a `@trezor/connect` method call.
+ * Metadata describing a `@trezor/connect` method call.
  *
- * Returned by `AbstractMethod.getMethodInfo()` and consumed by the connect
- * popup and host integrations to render the permission/confirmation UI and
- * decide whether a method needs the device, popup or device-state checks.
+ * Returned by `AbstractMethod.getMethodInfo()` for `__info` calls and consumed by
+ * the connect popup to render the permission UI.
  */
 export type MethodInfo = {
-    // Static fields.
     useUi: boolean;
-    useDevice: boolean;
-    useDeviceState: boolean;
-    name: string;
     requiredPermissions: PermissionRequest[];
-    // Available after init.
     info: string;
     precomposed?: PrecomposeResultFinal;
 };

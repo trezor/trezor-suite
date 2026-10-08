@@ -47,7 +47,7 @@ describe('__info common param', () => {
 
             if (__info) {
                 expect(result.payload).toMatchObject({
-                    useDevice: true,
+                    requiredPermissions: [{ permission: 'read_address' }],
                 });
             } else {
                 expect(result.payload).toMatchObject({
