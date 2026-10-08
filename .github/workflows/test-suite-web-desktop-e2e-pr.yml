@@ -25,8 +25,8 @@ on:
       - "**.md"
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+  group: suite-web-deploy-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ github.ref_name != 'develop' }}
 
 env:
   DEV_SERVER_URL: "https://dev.suite.sldev.cz"
