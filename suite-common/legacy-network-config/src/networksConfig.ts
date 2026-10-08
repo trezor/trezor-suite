@@ -36,36 +36,27 @@ export type LegacyNetworkConfigs = {
     [Symbol in keyof ModuleConfigs]: LegacyNetworkConfig<Symbol, ModuleConfigs[Symbol]>;
 };
 
+type LegacyNetworkConfigsOf<TConfigs extends Record<string, SuiteCommonNetworkConfig>> = {
+    [Symbol in keyof TConfigs & string]: LegacyNetworkConfig<Symbol, TConfigs[Symbol]>;
+};
+
+// Every network a family package configures, keyed by symbol: a network added there needs no edit here.
+const withSymbols = <TConfigs extends Record<string, SuiteCommonNetworkConfig>>(
+    configs: TConfigs,
+): LegacyNetworkConfigsOf<TConfigs> =>
+    Object.fromEntries(
+        Object.entries(configs).map(([symbol, config]) => [symbol, withSymbol(symbol, config)]),
+    ) as LegacyNetworkConfigsOf<TConfigs>;
+
 // Compatibility for callers still using wallet-config. New consumers select metadata from Redux.
 export const networks: LegacyNetworkConfigs = {
-    btc: withSymbol('btc', bitcoinConfigs.btc),
-    eth: withSymbol('eth', ethereumConfigs.eth),
-    pol: withSymbol('pol', ethereumConfigs.pol),
-    bsc: withSymbol('bsc', ethereumConfigs.bsc),
-    arb: withSymbol('arb', ethereumConfigs.arb),
-    base: withSymbol('base', ethereumConfigs.base),
-    op: withSymbol('op', ethereumConfigs.op),
-    rhc: withSymbol('rhc', ethereumConfigs.rhc),
-    hype: withSymbol('hype', ethereumConfigs.hype),
-    avax: withSymbol('avax', ethereumConfigs.avax),
-    sol: withSymbol('sol', solanaConfigs.sol),
-    trx: withSymbol('trx', tronConfigs.trx),
-    ada: withSymbol('ada', cardanoConfigs.ada),
-    etc: withSymbol('etc', ethereumConfigs.etc),
-    xrp: withSymbol('xrp', rippleConfigs.xrp),
-    xlm: withSymbol('xlm', stellarConfigs.xlm),
-    ltc: withSymbol('ltc', bitcoinConfigs.ltc),
-    bch: withSymbol('bch', bitcoinConfigs.bch),
-    doge: withSymbol('doge', bitcoinConfigs.doge),
-    zec: withSymbol('zec', bitcoinConfigs.zec),
-    test: withSymbol('test', bitcoinConfigs.test),
-    regtest: withSymbol('regtest', bitcoinConfigs.regtest),
-    tsep: withSymbol('tsep', ethereumConfigs.tsep),
-    thod: withSymbol('thod', ethereumConfigs.thod),
-    dsol: withSymbol('dsol', solanaConfigs.dsol),
-    txrp: withSymbol('txrp', rippleConfigs.txrp),
-    txlm: withSymbol('txlm', stellarConfigs.txlm),
-    ttrx: withSymbol('ttrx', tronConfigs.ttrx),
+    ...withSymbols(bitcoinConfigs),
+    ...withSymbols(ethereumConfigs),
+    ...withSymbols(solanaConfigs),
+    ...withSymbols(tronConfigs),
+    ...withSymbols(cardanoConfigs),
+    ...withSymbols(rippleConfigs),
+    ...withSymbols(stellarConfigs),
 } satisfies Networks;
 
 export type LegacyNetworkSymbol = keyof typeof networks;

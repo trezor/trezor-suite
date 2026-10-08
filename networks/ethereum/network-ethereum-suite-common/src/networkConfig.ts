@@ -8,19 +8,17 @@ import {
 } from '@trezor/network-module-suite-common-types';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-const syncIntervalBySymbol: Readonly<Record<EthereumNetworkSymbol, number>> = {
-    eth: DEFAULT_ACCOUNT_SYNC_INTERVAL,
-    pol: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    bsc: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    arb: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    base: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    op: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    rhc: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    hype: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    avax: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    etc: DEFAULT_ACCOUNT_SYNC_INTERVAL,
-    tsep: DEFAULT_ACCOUNT_SYNC_INTERVAL,
-    thod: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+// Faster chains are polled more often; any other network uses the default interval.
+const L2_SYNC_INTERVAL = DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5;
+const syncIntervalBySymbol: Readonly<Partial<Record<EthereumNetworkSymbol, number>>> = {
+    pol: L2_SYNC_INTERVAL,
+    bsc: L2_SYNC_INTERVAL,
+    arb: L2_SYNC_INTERVAL,
+    base: L2_SYNC_INTERVAL,
+    op: L2_SYNC_INTERVAL,
+    rhc: L2_SYNC_INTERVAL,
+    hype: L2_SYNC_INTERVAL,
+    avax: L2_SYNC_INTERVAL,
 };
 
 const getExplorerUrls = (baseUrl: string): Explorer => ({
@@ -468,4 +466,4 @@ export const getNetworkConfig = (symbol: EthereumNetworkSymbol): SuiteCommonNetw
     networkConfigBySymbol[symbol];
 
 export const getAccountSyncInterval = (symbol: EthereumNetworkSymbol): number =>
-    syncIntervalBySymbol[symbol];
+    syncIntervalBySymbol[symbol] ?? DEFAULT_ACCOUNT_SYNC_INTERVAL;

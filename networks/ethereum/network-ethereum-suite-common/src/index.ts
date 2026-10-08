@@ -63,6 +63,9 @@ export {
 } from './chain/send/evm/evmTransaction';
 export type { EthTransactionData } from './chain/send/evm/evmTransaction';
 export { createEthereumChainSend } from './chain/send/createEthereumChainSend';
+export { createEvmChainSend } from './chain/send/createEvmChainSend';
+export type { EvmChainSend, EvmChainSendDeps } from './chain/send/createEvmChainSend';
+export { createConnectEstimateEvmGasLimit } from './chain/send/createConnectEstimateEvmGasLimit';
 export type {
     EthereumChainSend,
     EthereumChainSendDeps,
@@ -70,8 +73,12 @@ export type {
 export { calculateEvmTransfer } from './chain/send/calculateEvmTransfer';
 export type { EvmMaxReserve } from './chain/send/calculateEvmTransfer';
 export type {
+    EstimateEvmGasLimit,
+    EstimateEvmGasLimitParams,
     EvmFeeEstimationFailure,
+    EvmGasLimitEstimate,
     EvmSendAppDeps,
+    EvmSendConfig,
     EvmTokenDefinitionParams,
     ResolveEvmNonceParams,
     ResolvedEvmNonce,

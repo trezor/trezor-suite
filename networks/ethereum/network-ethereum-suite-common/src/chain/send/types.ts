@@ -27,6 +27,29 @@ export type EvmFeeEstimationFailure = {
     error: { message: string; code: ERRORS.ErrorCode };
 };
 
+export type EstimateEvmGasLimitParams = {
+    account: ChainSendAccount;
+    from: string;
+    to: string;
+
+    /** Hex encoded wei. */
+    value: string;
+    data: string;
+
+    /** The wallet's own pending sends the backend may not see yet. */
+    privatePending?: PrivatePendingParams;
+};
+
+/** The gas the transaction needs, or why it could not be estimated. */
+export type EvmGasLimitEstimate =
+    | { success: true; feeLimit: string | undefined }
+    | { success: false; error: EvmFeeEstimationFailure['error'] };
+
+/** Estimates gas against the network's backend. */
+export type EstimateEvmGasLimit = (
+    params: EstimateEvmGasLimitParams,
+) => Promise<EvmGasLimitEstimate>;
+
 export type ResolveEvmNonceParams = {
     account: ChainSendAccount;
 
