@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-09-16T12:00:00+00:00",
-    "sequence": 158,
+    "timestamp": "2026-10-08T12:00:00+00:00",
+    "sequence": 159,
     "actions": [
         {
             "conditions": [
@@ -1618,6 +1618,46 @@
                     {
                         "domain": "dashboard.promoBanner",
                         "visibleBanner": "eth-vault",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=26.10.1",
+                        "mobile": ">=26.10.1",
+                        "web": ">=26.10.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "7589ccfa-553e-4614-bb3d-c4d259593139",
+                "priority": 6,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "trading-experience",
                         "flag": true
                     }
                 ]
