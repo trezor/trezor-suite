@@ -170,6 +170,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                     ? {
                           onClick: handleTransactionClick,
                           label: 'TOAST_TX_BUTTON',
+                          dataTestId: `${toastTestIdPrefix}/view-details`,
                       }
                     : undefined
             }
