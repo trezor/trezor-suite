@@ -50,6 +50,7 @@ export type {
 export { ChainNetworkError } from './chain/ChainNetworkError';
 export type { ChainNetworkErrorCode } from './chain/ChainNetworkError';
 export { getChainSyncPolicy } from './chain/ChainSyncPolicy';
+export { subunitsToUnits } from './chain/subunitsToUnits';
 export type { ChainSyncPolicy } from './chain/ChainSyncPolicy';
 export type {
     FetchBlockbookHttpCurrentRateDep,
@@ -144,6 +145,7 @@ export type {
     ChainSigningPrepared,
     ComposeFeeLevelsParams,
     CreatePendingTransactionParams,
+    GetFeeInfoParams,
     PrepareForReview,
     PrepareForReviewParams,
     PreparedForReview,

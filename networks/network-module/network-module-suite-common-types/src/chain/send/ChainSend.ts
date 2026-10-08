@@ -214,7 +214,17 @@ export type ChainNetworkSend<TLevels extends GeneralPrecomposedLevels = GeneralP
 
         /** The broadcast transaction as the account's history shows it until the backend lists it. */
         createPendingTransaction: (params: CreatePendingTransactionParams) => Transaction;
+
+        /**
+         * The network's fee levels now. Present on networks whose fees the app does not track
+         * itself (runtime networks); others compose with the fee levels the app passes in.
+         */
+        getFeeInfo?: (params: GetFeeInfoParams) => Promise<FeeInfo>;
     };
+
+export type GetFeeInfoParams = {
+    signal?: AbortSignal;
+};
 
 /**
  * What a network implements. Unless it brings its own, review preparation only tags replacements

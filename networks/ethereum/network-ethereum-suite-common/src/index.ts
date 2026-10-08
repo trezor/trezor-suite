@@ -97,3 +97,31 @@ export type {
     EvmApprovalPurpose,
     EvmTransactionPurpose,
 } from './chain/send/evm/evmTransactionPurpose';
+
+export { createEvmJsonRpcChainNetwork } from './chain/runtime/createEvmJsonRpcChainNetwork';
+export type {
+    EvmJsonRpcChainNetwork,
+    EvmJsonRpcChainNetworkDeps,
+} from './chain/runtime/createEvmJsonRpcChainNetwork';
+export { createViemEvmJsonRpcClient } from './chain/runtime/createViemEvmJsonRpcClient';
+export type {
+    ViemEvmJsonRpcClient,
+    ViemEvmJsonRpcClientDeps,
+} from './chain/runtime/createViemEvmJsonRpcClient';
+export type {
+    CreateEvmJsonRpcClient,
+    EvmFeesPerGas,
+    EvmGasEstimateRequest,
+    EvmJsonRpcClient,
+} from './chain/runtime/EvmJsonRpcClient';
+export {
+    isValidRuntimeRpcUrl,
+    validateRuntimeEvmNetworkDefinition,
+} from './chain/runtime/RuntimeEvmNetworkDefinition';
+export type {
+    RuntimeEvmNetworkDefinition,
+    RuntimeEvmNetworkDefinitionError,
+    RuntimeEvmNetworkDefinitionValidation,
+    RuntimeEvmNetworkSource,
+    ValidateRuntimeEvmNetworkDefinitionOptions,
+} from './chain/runtime/RuntimeEvmNetworkDefinition';
