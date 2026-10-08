@@ -16,6 +16,7 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { useChainAccountTransactions } from './useChainAccountTransactions';
 import { useChainComposeFeeLevels } from './useChainComposeFeeLevels';
+import { useChainFeeInfo } from './useChainFeeInfo';
 import { useChainPushTransaction, useChainSignTransaction } from './useChainSendMutations';
 import { createFakeChainNetwork } from '../mocks/createFakeChainNetwork';
 
@@ -124,6 +125,37 @@ describe('useChainComposeFeeLevels', () => {
         );
 
         expect(btc.send.composeFeeLevels).not.toHaveBeenCalled();
+    });
+});
+
+describe('useChainFeeInfo', () => {
+    it('reads the fee levels a network quotes itself', async () => {
+        const feeInfo = { ...context.feeInfo, blockHeight: 42 };
+        const runtime = createFakeChainNetwork({
+            symbol: asNetworkSymbol('abc'),
+            balances: {},
+            rate: null,
+            canSend: true,
+            feeInfo,
+        });
+
+        const { result } = renderHookWithQueryClient(() =>
+            useChainFeeInfo({ network: runtime.network, enabled: true }),
+        );
+
+        await waitFor(() => expect(result.current.data).toEqual(feeInfo));
+        expect(runtime.send.getFeeInfo).toHaveBeenCalledTimes(1);
+    });
+
+    it('asks nothing of a network that quotes no fees', () => {
+        const btc = createNetwork();
+
+        const { result } = renderHookWithQueryClient(() =>
+            useChainFeeInfo({ network: btc.network, enabled: true }),
+        );
+
+        expect(result.current.fetchStatus).toBe('idle');
+        expect(result.current.data).toBeUndefined();
     });
 });
 

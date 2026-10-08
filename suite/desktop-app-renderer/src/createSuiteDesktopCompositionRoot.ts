@@ -43,6 +43,7 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
         desktopApi,
         dispatch: store.dispatch,
         getState: store.getState,
+        subscribe: store.subscribe,
         history,
         platformEncryption,
         createLogger: undefined,

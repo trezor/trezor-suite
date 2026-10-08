@@ -5,7 +5,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { flagsInitialState } from '@suite/flags';
-import { ServicesProvider, asGetter } from '@suite-common/dependency-injection';
+import { createStaticChainNetworksStore } from '@suite-common/chain-data/mocks/createStaticChainNetworksStore';
+import { ServicesProvider } from '@suite-common/dependency-injection';
 import { QueryClient, QueryClientProvider } from '@suite-common/react-query';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -90,7 +91,7 @@ const createWrapper = (queryChainData: boolean) => {
     });
     const services = {
         store,
-        getSelectedChainNetworks: asGetter(() => [btcNetwork]),
+        chainNetworksStore: createStaticChainNetworksStore([btcNetwork]),
     };
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 

@@ -2,6 +2,7 @@ import {
     type ChainNetwork,
     type ChainTokenBalance,
     type ChainTransactionsPage,
+    type FeeInfo,
     type FiatRate,
     type HistoricFiatRates,
     buildPendingTransaction,
@@ -28,6 +29,9 @@ type FakeChainNetworkParams = {
 
     /** Whether the network can send; its send answers with spies set up by the test. */
     canSend?: boolean;
+
+    /** Fee levels the network quotes itself, as runtime networks do; none when left out. */
+    feeInfo?: FeeInfo;
 };
 
 /** A network answering from memory, with spies on what shared code asks it. */
@@ -82,6 +86,7 @@ export const createFakeChainNetwork = (params: FakeChainNetworkParams) => {
     });
 
     type Send = NonNullable<ChainNetwork['send']>;
+    const { feeInfo } = params;
     const send = {
         composeFeeLevels: jest.fn<
             ReturnType<Send['composeFeeLevels']>,
@@ -97,6 +102,9 @@ export const createFakeChainNetwork = (params: FakeChainNetworkParams) => {
             ReturnType<Send['createPendingTransaction']>,
             Parameters<Send['createPendingTransaction']>
         >(buildPendingTransaction),
+        getFeeInfo: feeInfo
+            ? jest.fn<Promise<FeeInfo>, []>(() => Promise.resolve(feeInfo))
+            : undefined,
     };
 
     const network: ChainNetwork = {

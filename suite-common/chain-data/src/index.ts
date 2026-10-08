@@ -22,13 +22,15 @@ export { useChainAssets } from './useChainAssets';
 export type { ChainAssets, UseChainAssetsParams } from './useChainAssets';
 export type { UseChainAccountBalanceParams } from './useChainAccountBalance';
 export {
-    injectGetSelectedChainNetworks,
+    createChainNetworksStore,
+    injectChainNetworksStore,
     useSelectedChainNetworks,
-} from './GetSelectedChainNetworks';
+} from './ChainNetworksStore';
 export type {
-    GetSelectedChainNetworks,
-    GetSelectedChainNetworksDep,
-} from './GetSelectedChainNetworks';
+    ChainNetworksStore,
+    ChainNetworksStoreDep,
+    ChainNetworksStoreDeps,
+} from './ChainNetworksStore';
 export { createChainQueryInvalidator } from './createChainQueryInvalidator';
 export type {
     ChainQueryInvalidator,
@@ -61,6 +63,8 @@ export type {
     ChainComposeFeeLevelsQueryParams,
     UseChainComposeFeeLevelsParams,
 } from './useChainComposeFeeLevels';
+export { getChainFeeInfoQueryOptions, useChainFeeInfo } from './useChainFeeInfo';
+export type { UseChainFeeInfoParams } from './useChainFeeInfo';
 export { useChainPushTransaction, useChainSignTransaction } from './useChainSendMutations';
 export type {
     PushChainTransactionVariables,

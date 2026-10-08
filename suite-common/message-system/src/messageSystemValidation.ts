@@ -98,6 +98,18 @@ export const validateTradingSurvey = (parsed: unknown) =>
         strict: true,
     });
 
+// Each entry is checked again, fully, by the Ethereum network package before it is used.
+const runtimeEvmNetworksPayloadSchema = yup
+    .object({
+        networks: yup.array(yup.object().noUnknown(false)).required(),
+    })
+    .noUnknown(false);
+
+export type RuntimeEvmNetworksPayload = yup.InferType<typeof runtimeEvmNetworksPayloadSchema>;
+
+export const validateRuntimeEvmNetworksPayload = (parsed: unknown) =>
+    runtimeEvmNetworksPayloadSchema.validateSync(parsed, { abortEarly: false, strict: true });
+
 const featureItemSchema = yup
     .object({
         domain: yup
@@ -108,6 +120,9 @@ const featureItemSchema = yup
         payload: yup.lazy((_value, { parent }) => {
             if (parent.domain === 'trading.survey') {
                 return surveyPayloadSchema;
+            }
+            if (parent.domain === 'networks.evm.runtime') {
+                return runtimeEvmNetworksPayloadSchema;
             }
 
             return yup.object().optional().noUnknown(false);

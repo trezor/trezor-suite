@@ -48,7 +48,7 @@ export const TransactionReviewModalBody = ({
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const session = useSendSession();
     const sessionAccount = useSelector(state =>
-        session ? selectAccountByKey(state, session.accountKey) : undefined,
+        session?.kind === 'wallet' ? selectAccountByKey(state, session.accountKey) : undefined,
     );
     const chosenAccount = useSelector(selectAccountIncludingChosenInTrading);
     // The send session's account is the one under review, as the send form state's would be.

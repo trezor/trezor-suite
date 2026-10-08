@@ -244,6 +244,20 @@ describe(selectChainNetworkSelection.name, () => {
         });
     });
 
+    it('stays the same while only the block changes', () => {
+        const state = getSelectionState(blockchainInitialState);
+        const selection = selectChainNetworkSelection(state);
+
+        expect(
+            selectChainNetworkSelection(
+                withBlockchain(state, {
+                    ...blockchainInitialState,
+                    btc: { ...blockchainInitialState.btc, blockHeight: 900_000 },
+                }),
+            ),
+        ).toBe(selection);
+    });
+
     it('leaves out networks that are not enabled', () => {
         const state = getSelectionState(blockchainInitialState);
 

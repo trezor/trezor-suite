@@ -5,6 +5,7 @@ import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity
 import { type BluetoothDep, createBluetoothCompositionRoot } from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { rerunFwAuthenticityChecksThunk } from '@suite/device';
+import { selectIsQueryChainDataEnabled } from '@suite/flags';
 import { lockDevice } from '@suite/locks';
 import { selectLabelingDataForAccount } from '@suite/metadata';
 import {
@@ -19,7 +20,7 @@ import {
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
-import { type GetSelectedChainNetworksDep } from '@suite-common/chain-data';
+import { type ChainNetworksStoreDep, createChainNetworksStore } from '@suite-common/chain-data';
 import {
     type ConnectInitSettings,
     type CreateTransports,
@@ -40,7 +41,6 @@ import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authentic
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type QueryClientDep, createQueryClient } from '@suite-common/react-query';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
     createSuiteSyncWriteLabels,
@@ -50,6 +50,7 @@ import {
 } from '@suite-common/suite-sync';
 import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/suite-types';
 import { type ThpHostNameDep } from '@suite-common/thp';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectTradedAccountKeys } from '@suite-common/trading';
 import {
     createWalletChainSendDeps,
@@ -59,15 +60,29 @@ import {
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import type { CreateLoggerDep } from '@trezor/logger';
+import {
+    type RuntimeEvmNetworkRegistryDep,
+    type RuntimeEvmNetworkRegistrySnapshot,
+    createEvmJsonRpcChainNetwork,
+    createRuntimeEvmNetworkRegistry,
+    createViemEvmJsonRpcClient,
+} from '@trezor/network-ethereum-suite-common';
 
 import { type SuiteReduxStore } from 'src/reducers/createReduxStore';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { type DbDep } from 'src/storage/createDb';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
+import { createChainNodeFetch } from './chainNetworks/createChainNodeFetch';
 import { createDesktopChainNetworks } from './chainNetworks/createDesktopChainNetworks';
 import { createConnectInitDeviceEventHooks } from './createConnectInitDeviceEventHooks';
 import { createConnectInitUIEventHooks } from './createConnectInitUIEventHooks';
+import { createReduxSource } from './createReduxSource';
+import {
+    BUILT_IN_NETWORK_RESERVATIONS,
+    selectTrezorListedRuntimeEvmNetworks,
+} from './runtimeEvmNetworks/runtimeEvmNetworkSources';
+import { createIdbRuntimeNetworkPreferencesStore } from './runtimeNetworks/createIdbRuntimeNetworkPreferencesStore';
 import { type AppState } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
@@ -89,10 +104,11 @@ export type SuiteServices = CommonServices &
     SuiteRouterHistoryDep &
     TransportsDep &
     BluetoothDep &
-    GetSelectedChainNetworksDep &
+    ChainNetworksStoreDep &
+    RuntimeEvmNetworkRegistryDep &
     QueryClientDep;
 
-export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch'>;
+export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch' | 'subscribe'>;
 
 export type SuiteAppDeps = StoreAPIDep &
     DbDep &
@@ -164,6 +180,27 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
     });
 
+    // Runtime EVM networks: Trezor's signed list and the user's preferences, which this platform
+    // keeps in its own IndexedDB store, outside Redux.
+    const runtimeNetworksLogger = deps.createLogger?.('runtime-networks');
+    const reduxStore = { getState: deps.getState, subscribe: deps.subscribe };
+    const runtimeEvmNetworkRegistry = createRuntimeEvmNetworkRegistry({
+        preferences: createIdbRuntimeNetworkPreferencesStore({
+            db: deps.db,
+            onStorageError: error =>
+                runtimeNetworksLogger?.warn(
+                    'Runtime network preferences storage failed:',
+                    error instanceof Error ? error.name : 'unknown error',
+                ),
+        }),
+        trezorListed: createReduxSource({
+            ...reduxStore,
+            select: selectTrezorListedRuntimeEvmNetworks,
+        }),
+        isActive: createReduxSource({ ...reduxStore, select: selectIsQueryChainDataEnabled }),
+        builtIn: BUILT_IN_NETWORK_RESERVATIONS,
+    });
+
     const createChainNetworks = createDesktopChainNetworks({
         ...createWalletChainSendDeps({ dispatch: deps.dispatch, getState: deps.getState }),
         getTrezorConnect: deps.getTrezorConnect,
@@ -172,11 +209,52 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         fetchBlockbookHttpCurrentRate: createFetchBlockbookHttpCurrentRate(),
         fetchCoinGeckoHistoricRates: createFetchCoinGeckoHistoricRates(),
         fetchBlockbookHttpHistoricRates: createFetchBlockbookHttpHistoricRates(),
+        createRuntimeEvmChainNetwork: createEvmJsonRpcChainNetwork({
+            getTrezorConnect: deps.getTrezorConnect,
+            // The app's fetch follows its proxy settings (Tor) to the network's own nodes.
+            createRpcClient: createViemEvmJsonRpcClient({
+                fetch: createChainNodeFetch({
+                    fetch: globalThis.fetch.bind(globalThis),
+                    allowHost: async hostname =>
+                        !deps.desktopApi.available ||
+                        (await deps.desktopApi.allowChainNodeHost(hostname)).success,
+                }),
+            }),
+            // Not reported: the error comes from a node the app does not run.
+            onEvmFeeEstimationFailed: () => {
+                deps.dispatch(notificationsActions.addToast({ type: 'estimated-fee-error' }));
+            },
+        }),
     });
-    const selectSelectedChainNetworks = createWeakMapSelector.withTypes<AppState>()(
-        [selectChainNetworkSelection],
-        createChainNetworks,
-    );
+
+    // Built once a source changed: the selection (still kept in Redux settings) or the runtime
+    // networks. Unchanged inputs return the same networks, so the store publishes nothing.
+    let built:
+        | {
+              selection: ReturnType<typeof selectChainNetworkSelection>;
+              runtime: RuntimeEvmNetworkRegistrySnapshot['enabledDefinitions'];
+              networks: ReturnType<typeof createChainNetworks>;
+          }
+        | undefined;
+    const chainNetworksStore = createChainNetworksStore({
+        subscribeToSources: onChange => {
+            const unsubscribes = [
+                deps.subscribe(onChange),
+                runtimeEvmNetworkRegistry.subscribe(onChange),
+            ];
+
+            return () => unsubscribes.forEach(unsubscribe => unsubscribe());
+        },
+        getNetworks: () => {
+            const selection = selectChainNetworkSelection(deps.getState());
+            const runtime = runtimeEvmNetworkRegistry.getSnapshot().enabledDefinitions;
+            if (built?.selection !== selection || built.runtime !== runtime) {
+                built = { selection, runtime, networks: createChainNetworks(selection, runtime) };
+            }
+
+            return built.networks;
+        },
+    });
 
     const createTransports: CreateTransports = transports => {
         const factories = deps.getTransportsFactories();
@@ -195,7 +273,8 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         db: deps.db,
         desktopApi: deps.desktopApi,
         networks,
-        getSelectedChainNetworks: toGetter(deps.getState, selectSelectedChainNetworks),
+        chainNetworksStore,
+        runtimeEvmNetworkRegistry,
         queryClient: createQueryClient('web'),
         suiteSync,
         bip329,

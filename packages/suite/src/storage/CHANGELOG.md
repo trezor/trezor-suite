@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.10.0.3
+
+- add `runtimeNetworkPreferences` object store (networks the user defined and turned on at runtime)
+
 ## 26.10.0.2
 
 - add `stellarContractTokens` object store (Soroban contract ids watched per account)

@@ -26,8 +26,9 @@ import {
 import { cancelSignTronFreezeTxThunk } from 'src/actions/wallet/tron-stake/cancelSignTronFreezeTx';
 import { useSelector } from 'src/hooks/suite';
 import { useSignAndPushTransaction } from 'src/hooks/wallet/chainSend/useSignAndPushTransaction';
-import { useSendSessionContext } from 'src/support/chainSend/SendSessionContext';
+import { type SendSession, useSendSessionContext } from 'src/support/chainSend/SendSessionContext';
 
+import { RuntimeChainTransactionReview } from './RuntimeChainTransactionReview';
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';
 import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
@@ -48,6 +49,27 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     const { session, setSession } = useSendSessionContext();
     const signAndPushTransaction = useSignAndPushTransaction();
 
+    // A transaction signed and broadcast through its chain network: interrupt signing, or just
+    // close the review once signed.
+    const cancelSessionSignTx = (serializedTx: SendSession['serializedTx']) => {
+        setSession(undefined);
+        if (!serializedTx) {
+            TrezorConnect.cancel({ reason: 'tx-cancelled' });
+        } else {
+            dispatch(closeModal());
+        }
+    };
+
+    if (session?.kind === 'runtime') {
+        return (
+            <RuntimeChainTransactionReview
+                session={session}
+                decision={decision}
+                cancelSignTx={() => cancelSessionSignTx(session.serializedTx)}
+            />
+        );
+    }
+
     const getReviewSource = (): {
         txInfoState: TxInfoState;
         precomposedForm: FormState | undefined;
@@ -67,20 +89,12 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
                 cancelSignTx: () => dispatch(cancelSignYieldTxThunk()),
             };
         }
-        // A transaction signed and broadcast through its chain network.
+        // A wallet account's transaction signed and broadcast through its chain network.
         if (session) {
             return {
                 txInfoState: session,
                 precomposedForm: session.precomposedForm,
-                cancelSignTx: () => {
-                    setSession(undefined);
-                    // Interrupt signing, or just close the review once signed.
-                    if (!session.serializedTx) {
-                        TrezorConnect.cancel({ reason: 'tx-cancelled' });
-                    } else {
-                        dispatch(closeModal());
-                    }
-                },
+                cancelSignTx: () => cancelSessionSignTx(session.serializedTx),
             };
         }
         if (send?.precomposedTx) {

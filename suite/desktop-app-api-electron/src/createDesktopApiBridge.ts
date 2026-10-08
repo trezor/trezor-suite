@@ -227,4 +227,13 @@ export const createDesktopApiBridge = <R extends StrictIpcRenderer<any, IpcRende
 
     // Browser Window
     reloadBrowserWindow: () => ipcRenderer.invoke('browser-window/reload'),
+
+    // Request filter
+    allowChainNodeHost: hostname => {
+        if (validation.isPrimitive('string', hostname)) {
+            return ipcRenderer.invoke('request-filter/allow-chain-node-host', hostname);
+        }
+
+        return Promise.resolve({ success: false, error: 'invalid params' });
+    },
 });

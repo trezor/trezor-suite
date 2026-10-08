@@ -38,6 +38,7 @@ import type {
 } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
+import type { RuntimeNetworkPreferences } from '@trezor/network-module-suite-common-types';
 
 import type { BioAuthState } from 'src/reducers/bioAuth';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
@@ -233,5 +234,10 @@ export interface SuiteDBSchema extends DBSchema {
     debug: {
         key: 'debug';
         value: DebugState;
+    };
+    /** Networks the user defined and turned on at runtime; read and written outside Redux. */
+    runtimeNetworkPreferences: {
+        key: 'preferences';
+        value: RuntimeNetworkPreferences;
     };
 }

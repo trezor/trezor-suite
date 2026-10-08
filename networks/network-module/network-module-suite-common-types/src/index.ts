@@ -10,6 +10,26 @@ export type { NetworkSuiteCommonModuleApi } from './NetworkSuiteCommonModuleApi'
 export { asProtocol } from './Protocol';
 export type { Protocol } from './Protocol';
 export type { SuiteCommonNetworkModule } from './SuiteCommonNetworkModule';
+export type { ExternalStore } from './ExternalStore';
+export {
+    EMPTY_RUNTIME_NETWORK_PREFERENCES,
+    getRuntimeNetworkKey,
+    withEnabled,
+    withUserDefinition,
+    withoutUserDefinition,
+} from './runtime/RuntimeNetworkPreferences';
+export { createInMemoryRuntimeNetworkPreferencesStore } from './runtime/createInMemoryRuntimeNetworkPreferencesStore';
+export type {
+    InMemoryRuntimeNetworkPreferencesStore,
+    InMemoryRuntimeNetworkPreferencesStoreDeps,
+} from './runtime/createInMemoryRuntimeNetworkPreferencesStore';
+export type {
+    RuntimeNetworkKey,
+    RuntimeNetworkPreferences,
+    RuntimeNetworkPreferencesStore,
+    RuntimeNetworkSource,
+    RuntimeNetworkUserDefinition,
+} from './runtime/RuntimeNetworkPreferences';
 
 export {
     TREZOR_CONNECT_BACKENDS,

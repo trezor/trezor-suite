@@ -116,6 +116,8 @@ export const chainQueryKeys = {
         descriptor,
         'pending-sends',
     ],
+    /** Fee levels a network quotes itself, for networks the wallet keeps no fee state for. */
+    feeInfo: (symbol: string, backendType: string) => ['chain', symbol, backendType, 'fee-info'],
     /** Fee levels for one send draft; the input key holds the draft, so it is confidential. */
     composeFeeLevels: (
         symbol: string,

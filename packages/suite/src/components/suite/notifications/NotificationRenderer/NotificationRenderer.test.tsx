@@ -4,8 +4,8 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { type GetSelectedChainNetworksDep } from '@suite-common/chain-data';
-import { asGetter } from '@suite-common/dependency-injection';
+import { type ChainNetworksStoreDep } from '@suite-common/chain-data';
+import { createStaticChainNetworksStore } from '@suite-common/chain-data/mocks/createStaticChainNetworksStore';
 import { createTestCompositionRoot, fireEvent, screen } from '@suite-common/test-utils';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -24,7 +24,7 @@ type WrapNotification = Extract<LocalizedNotificationEntry, { type: 'tx-wrap' | 
 
 const ethSymbol = asNetworkSymbol('eth');
 
-type NotificationTestDeps = { services: DesktopAnalyticsDep & GetSelectedChainNetworksDep };
+type NotificationTestDeps = { services: DesktopAnalyticsDep & ChainNetworksStoreDep };
 
 const mockReport = jest.fn();
 const analytics = mockDesktopAnalytics(mockReport);
@@ -70,7 +70,7 @@ const renderNotification = (notification: LocalizedNotificationEntry) => {
             },
         },
         serializableCheck: { ignoredActions: [] },
-        services: () => ({ analytics, getSelectedChainNetworks: asGetter(() => []) }),
+        services: () => ({ analytics, chainNetworksStore: createStaticChainNetworksStore([]) }),
     });
 
     return renderWithProviders(
@@ -83,7 +83,7 @@ const renderTradingError = (payload: Omit<TradingErrorNotification, 'context' | 
     const { services } = createTestCompositionRoot<NotificationTestDeps, AppState>({
         preloadedState: mockInitialAppState,
         serializableCheck: { ignoredActions: [] },
-        services: () => ({ analytics, getSelectedChainNetworks: asGetter(() => []) }),
+        services: () => ({ analytics, chainNetworksStore: createStaticChainNetworksStore([]) }),
     });
 
     return renderWithProviders(
@@ -97,7 +97,7 @@ const renderWrapToast = (payload: Omit<WrapNotification, 'context' | 'id'>) => {
     const { services } = createTestCompositionRoot<NotificationTestDeps, AppState>({
         preloadedState: mockInitialAppState,
         serializableCheck: { ignoredActions: [] },
-        services: () => ({ analytics, getSelectedChainNetworks: asGetter(() => []) }),
+        services: () => ({ analytics, chainNetworksStore: createStaticChainNetworksStore([]) }),
     });
     renderWithProviders(
         services,

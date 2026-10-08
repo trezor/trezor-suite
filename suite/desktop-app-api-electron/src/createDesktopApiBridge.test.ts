@@ -286,5 +286,21 @@ describe(createDesktopApiBridge.name, () => {
             // @ts-expect-error param expected
             api.loadModules();
         });
+
+        it('DesktopApi.allowChainNodeHost', async () => {
+            const spy = jest
+                .spyOn(ipcRenderer, 'invoke')
+                .mockImplementation(() => Promise.resolve({ success: true }));
+            await api.allowChainNodeHost('rpc.example.com');
+            expect(spy).toHaveBeenCalledWith(
+                'request-filter/allow-chain-node-host',
+                'rpc.example.com',
+            );
+
+            // @ts-expect-error invalid params
+            const fail = await api.allowChainNodeHost(1);
+            expect(fail).toEqual({ success: false, error: 'invalid params' });
+            expect(spy).toHaveBeenCalledTimes(1); // invalid param not processed
+        });
     });
 });

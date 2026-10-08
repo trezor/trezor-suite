@@ -46,6 +46,7 @@ const renderNotes = (session: SendSession | undefined) => {
 describe(TransactionReviewEthereumNotes.name, () => {
     it('shows the nonce a send is signed with through its chain network', () => {
         renderNotes({
+            kind: 'wallet',
             accountKey: account.key,
             precomposedForm: { ethereumNonce: '6' } as FormState,
             precomposedTx: tx,

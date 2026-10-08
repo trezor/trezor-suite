@@ -9,7 +9,8 @@ import { flagsInitialState } from '@suite/flags';
 import { openDeferredModal } from '@suite/modal';
 import { getChainPendingSendsQueryOptions } from '@suite-common/chain-data';
 import { createFakeChainNetwork } from '@suite-common/chain-data/mocks/createFakeChainNetwork';
-import { ServicesProvider, asGetter } from '@suite-common/dependency-injection';
+import { createStaticChainNetworksStore } from '@suite-common/chain-data/mocks/createStaticChainNetworksStore';
+import { ServicesProvider } from '@suite-common/dependency-injection';
 import { QueryClient, QueryClientProvider, useQuery } from '@suite-common/react-query';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { synchronizeSentTransactionThunk } from '@suite-common/wallet-core';
@@ -19,13 +20,17 @@ import {
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { ChainSendError } from '@trezor/network-module-suite-common-types';
+import type { RuntimeEvmNetworkDefinition } from '@trezor/network-ethereum-suite-common';
+import { type ChainSendAccount, ChainSendError } from '@trezor/network-module-suite-common-types';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useSendSession } from 'src/support/chainSend/SendSessionContext';
 import { SendSessionProvider } from 'src/support/chainSend/SendSessionProvider';
 
-import { useSignAndPushTransaction } from './useSignAndPushTransaction';
+import {
+    useSignAndPushThroughNetwork,
+    useSignAndPushTransaction,
+} from './useSignAndPushTransaction';
 
 const device = { path: 'device-path', instance: 1, state: undefined };
 
@@ -96,9 +101,36 @@ const createDecision = () => {
     return { decision, decide };
 };
 
-const renderSend = (queryChainData: boolean) => {
+const runtimeDefinition: RuntimeEvmNetworkDefinition = {
+    symbol: asNetworkSymbol('abc'),
+    chainId: 777,
+    name: 'Example Chain',
+    nativeSymbol: 'EXC',
+    decimals: 18,
+    rpcUrls: ['https://rpc.example.com'],
+    source: 'user',
+};
+
+const runtimeAccount: ChainSendAccount = {
+    symbol: runtimeDefinition.symbol,
+    descriptor: '0xabc',
+    index: 0,
+    path: "m/44'/60'/0'/0/0",
+    accountType: 'normal',
+    deviceState: 'state',
+    balance: '1000000000000000000',
+    availableBalance: '1000000000000000000',
+    formattedBalance: '1',
+};
+
+const runtimeFormState = {
+    outputs: [{ address: '0xrecipient', amount: '0.5' }],
+} as FormState;
+
+const renderSend = (queryChainData: boolean, symbol = account.symbol) => {
+    const report = jest.fn();
     const btc = createFakeChainNetwork({
-        symbol: account.symbol,
+        symbol,
         balances: {},
         rate: null,
         canSend: true,
@@ -119,8 +151,8 @@ const renderSend = (queryChainData: boolean) => {
     });
     const services = {
         store,
-        analytics: mockDesktopAnalytics(),
-        getSelectedChainNetworks: asGetter(() => [btc.network]),
+        analytics: mockDesktopAnalytics(report),
+        chainNetworksStore: createStaticChainNetworksStore([btc.network]),
     };
     const queryClient = new QueryClient({
         defaultOptions: { queries: { retry: false }, mutations: { retry: 3 } },
@@ -137,8 +169,11 @@ const renderSend = (queryChainData: boolean) => {
     const { result } = renderHook(
         () => ({
             signAndPush: useSignAndPushTransaction(),
+            signAndPushThroughNetwork: useSignAndPushThroughNetwork(),
             session: useSendSession(),
             pendingSends: useQuery(getChainPendingSendsQueryOptions(btc.network, 'zpub')).data,
+            runtimePendingSends: useQuery(getChainPendingSendsQueryOptions(btc.network, '0xabc'))
+                .data,
         }),
         { wrapper },
     );
@@ -150,9 +185,24 @@ const renderSend = (queryChainData: boolean) => {
                 selectedAccount: account,
             }),
         );
+    const runtimeSendParams = {
+        network: btc.network,
+        target: {
+            kind: 'runtime',
+            runtime: {
+                network: runtimeDefinition,
+                account: runtimeAccount,
+                walletAccountKey: account.key,
+            },
+        },
+        formState: runtimeFormState,
+        precomposedTransaction,
+    } as const;
+    const sendOnRuntime = () =>
+        act(() => result.current.signAndPushThroughNetwork(runtimeSendParams));
     const actionTypes = () => actions.map(({ type }) => type);
 
-    return { btc, result, send, actionTypes };
+    return { btc, result, send, sendOnRuntime, runtimeSendParams, actions, actionTypes, report };
 };
 
 describe(useSignAndPushTransaction.name, () => {
@@ -281,5 +331,99 @@ describe(useSignAndPushTransaction.name, () => {
         expect(result.current.session?.serializedTx).toBeUndefined();
         expect(result.current.pendingSends).toBeUndefined();
         expect(actionTypes()).toContain('@common/in-app-notifications/addToast');
+    });
+
+    describe('on a runtime network', () => {
+        it('signs at the wallet address, broadcasts, and leaves the wallet out of it', async () => {
+            const { btc, result, sendOnRuntime, actions, actionTypes, report } = renderSend(
+                true,
+                runtimeDefinition.symbol,
+            );
+            mockDecision(Promise.resolve(true));
+            btc.send.sign.mockResolvedValue(signed);
+            btc.send.push.mockResolvedValue({ txid: 'runtime-txid' });
+
+            expect(await sendOnRuntime()).toEqual({
+                success: true,
+                payload: { txid: 'runtime-txid' },
+            });
+
+            expect(btc.send.sign).toHaveBeenCalledWith(
+                expect.objectContaining({ account: runtimeAccount, draft: runtimeFormState }),
+            );
+            expect(btc.send.push).toHaveBeenCalledWith({
+                account: runtimeAccount,
+                serializedTx: 'signed-hex',
+                isMevProtectionEnabled: false,
+            });
+            expect(result.current.runtimePendingSends?.map(send => send.transaction.txid)).toEqual([
+                'runtime-txid',
+            ]);
+            expect(synchronizeSentTransactionThunk).not.toHaveBeenCalled();
+            expect(actionTypes()).not.toEqual(
+                expect.arrayContaining(['sentToast', 'metadataLabels', 'rbfLabels']),
+            );
+            expect(actions).toContainEqual(
+                expect.objectContaining({
+                    payload: expect.objectContaining({
+                        type: 'runtime-chain-tx-sent',
+                        amount: '0.5',
+                        displaySymbol: 'EXC',
+                        txid: 'runtime-txid',
+                    }),
+                }),
+            );
+            // Which runtime network was used stays on the device.
+            expect(report.mock.calls.map(([event]) => event.payload)).toEqual([
+                { assetSymbol: 'runtime-evm' },
+                { assetSymbol: 'runtime-evm' },
+            ]);
+        });
+
+        it('holds a runtime session while reviewing, in React state only', async () => {
+            const { btc, result, runtimeSendParams, actionTypes } = renderSend(
+                true,
+                runtimeDefinition.symbol,
+            );
+            const { decision, decide } = createDecision();
+            mockDecision(decision);
+            btc.send.sign.mockResolvedValue(signed);
+            btc.send.push.mockResolvedValue({ txid: 'runtime-txid' });
+
+            let outcome: Promise<unknown> = Promise.resolve();
+            act(() => {
+                outcome = result.current.signAndPushThroughNetwork(runtimeSendParams);
+            });
+
+            await waitFor(() => expect(result.current.session?.serializedTx).toBeDefined());
+            expect(result.current.session).toMatchObject({
+                kind: 'runtime',
+                runtime: { network: runtimeDefinition, walletAccountKey: account.key },
+            });
+            // Nothing about the runtime send goes to the store but the modal it opens.
+            expect(actionTypes()).toEqual(['@modal/preserve']);
+
+            await act(async () => {
+                decide(false);
+                await outcome;
+            });
+            expect(btc.send.push).not.toHaveBeenCalled();
+        });
+
+        it('closes the review when the device fails', async () => {
+            const { btc, result, sendOnRuntime, actionTypes } = renderSend(
+                true,
+                runtimeDefinition.symbol,
+            );
+            btc.send.sign.mockRejectedValue(
+                new ChainSendError('sign-failed', runtimeDefinition.symbol, 'device-disconnected'),
+            );
+
+            expect(await sendOnRuntime()).toBeUndefined();
+
+            expect(result.current.session).toBeUndefined();
+            expect(actionTypes()).toContain('@modal/close');
+            expect(btc.send.push).not.toHaveBeenCalled();
+        });
     });
 });

@@ -37,6 +37,16 @@ type RawSentTransactionNotification = {
     type: 'raw-tx-sent';
 } & BaseTransactionNotificationPayload;
 
+/** A send on a runtime network, which no wallet account or explorer config of the app knows. */
+type RuntimeChainSentTransactionNotification = {
+    type: 'runtime-chain-tx-sent';
+    /** Whole units of the coin, unformatted. */
+    amount: string;
+    /** The coin's symbol as the runtime network defines it. */
+    displaySymbol: string;
+    txid: string;
+};
+
 type RevokeTransactionNotification = {
     type: 'tx-revoked';
     token: TokenInfo;
@@ -198,6 +208,7 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | WrapTransactionNotification
     | UnwrapTransactionNotification
     | RawSentTransactionNotification
+    | RuntimeChainSentTransactionNotification
     | ErrorToastPayload
     | {
           type: 'trading-error';

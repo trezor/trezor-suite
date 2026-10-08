@@ -1,4 +1,6 @@
+import { createFakeChainNetwork } from '@suite-common/chain-data/mocks/createFakeChainNetwork';
 import { type NetworkType, asNetworkSymbol } from '@suite-common/wallet-config';
+import type { RuntimeEvmNetworkDefinition } from '@trezor/network-ethereum-suite-common';
 import type { ChainNetworkParams } from '@trezor/network-module-suite-common-types';
 
 import {
@@ -22,6 +24,9 @@ const fetchCoinGeckoCurrentRate = jest.fn();
 const fetchBlockbookHttpCurrentRate = jest.fn();
 const fetchCoinGeckoHistoricRates = jest.fn();
 const fetchBlockbookHttpHistoricRates = jest.fn();
+const createRuntimeEvmChainNetwork = jest.fn();
+const createFakeRuntimeNetwork = (definition: RuntimeEvmNetworkDefinition) =>
+    createFakeChainNetwork({ symbol: definition.symbol, balances: {}, rate: null }).network;
 
 const deps: DesktopChainNetworksDeps = {
     getTrezorConnect,
@@ -40,6 +45,7 @@ const deps: DesktopChainNetworksDeps = {
     fetchBlockbookHttpCurrentRate,
     fetchCoinGeckoHistoricRates,
     fetchBlockbookHttpHistoricRates,
+    createRuntimeEvmChainNetwork,
     getNetworkConfig: symbol =>
         ({ networkType: NETWORK_TYPES[symbol] }) as ReturnType<
             DesktopChainNetworksDeps['getNetworkConfig']
@@ -52,11 +58,25 @@ const select = (
     urls: string[] = [],
 ): ChainNetworkParams => ({ symbol: asNetworkSymbol(symbol), backend: { type, urls } });
 
+const runtime = (
+    symbol: string,
+    rpcUrl = 'https://rpc.example.com',
+): RuntimeEvmNetworkDefinition => ({
+    symbol: asNetworkSymbol(symbol),
+    chainId: 777,
+    name: symbol,
+    nativeSymbol: symbol.toUpperCase(),
+    decimals: 18,
+    rpcUrls: [rpcUrl],
+    source: 'user',
+});
+
 const { signal } = new AbortController();
 
 describe('createDesktopChainNetworks', () => {
     beforeEach(() => {
         jest.resetAllMocks();
+        createRuntimeEvmChainNetwork.mockImplementation(createFakeRuntimeNetwork);
     });
 
     it('builds a network for every selected network of every family', () => {
@@ -199,5 +219,31 @@ describe('createDesktopChainNetworks', () => {
         const [second] = createChainNetworks([select('btc', 'blockbook')]);
 
         expect(second).not.toBe(first);
+    });
+
+    it('adds the runtime EVM networks after the built-in ones', () => {
+        const networks = createDesktopChainNetworks(deps)(
+            [select('eth', 'blockbook')],
+            [runtime('abc'), runtime('xyz')],
+        );
+
+        expect(networks.map(({ symbol }) => symbol)).toEqual(['eth', 'abc', 'xyz']);
+        expect(createRuntimeEvmChainNetwork).toHaveBeenCalledWith(runtime('abc'));
+        expect(getTrezorConnect).not.toHaveBeenCalled();
+    });
+
+    it('keeps a runtime network while its definition is unchanged, and rebuilds it on a change', () => {
+        const createChainNetworks = createDesktopChainNetworks(deps);
+
+        const [first] = createChainNetworks([], [runtime('abc')]);
+        const [same] = createChainNetworks([], [runtime('abc')]);
+        const [changed] = createChainNetworks([], [runtime('abc', 'https://other.example.com')]);
+        createChainNetworks([], []);
+        const [again] = createChainNetworks([], [runtime('abc', 'https://other.example.com')]);
+
+        expect(same).toBe(first);
+        expect(changed).not.toBe(first);
+        expect(again).not.toBe(changed);
+        expect(createRuntimeEvmChainNetwork).toHaveBeenCalledTimes(3);
     });
 });

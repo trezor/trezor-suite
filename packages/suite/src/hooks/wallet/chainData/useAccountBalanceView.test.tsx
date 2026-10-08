@@ -5,8 +5,9 @@ import { configureStore } from '@reduxjs/toolkit';
 import { renderHook, waitFor } from '@testing-library/react';
 
 import { flagsInitialState } from '@suite/flags';
-import { type GetSelectedChainNetworksDep } from '@suite-common/chain-data';
-import { ServicesProvider, asGetter } from '@suite-common/dependency-injection';
+import { type ChainNetworksStoreDep } from '@suite-common/chain-data';
+import { createStaticChainNetworksStore } from '@suite-common/chain-data/mocks/createStaticChainNetworksStore';
+import { ServicesProvider } from '@suite-common/dependency-injection';
 import { QueryClient, QueryClientProvider } from '@suite-common/react-query';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
@@ -48,8 +49,8 @@ const renderBalanceView = (queryChainData: boolean, networks: readonly ChainNetw
             wallet: () => ({ settings: { localCurrency: 'usd' }, stellarContractTokens: {} }),
         },
     });
-    const services: GetSelectedChainNetworksDep = {
-        getSelectedChainNetworks: asGetter(() => networks),
+    const services: ChainNetworksStoreDep = {
+        chainNetworksStore: createStaticChainNetworksStore(networks),
     };
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 

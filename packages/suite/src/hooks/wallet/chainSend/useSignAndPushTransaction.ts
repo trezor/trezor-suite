@@ -23,9 +23,11 @@ import { isRbfBumpFeeTransaction, isRbfTransaction } from '@suite-common/wallet-
 import { type PROTO } from '@trezor/connect';
 import {
     type ChainNetwork,
+    type ChainSendAccount,
     ChainSendError,
     type ChainSignedTransaction,
 } from '@trezor/network-module-suite-common-types';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 import { type Err, type Ok } from '@trezor/type-utils';
 
 import { asStateBeforePush } from 'src/actions/labels/moveLabelsForRbfThunk';
@@ -35,7 +37,11 @@ import {
     signAndPushSendFormTransactionThunk,
     updateRbfLabelsThunk,
 } from 'src/actions/wallet/send/sendFormThunks';
-import { useSendSessionContext } from 'src/support/chainSend/SendSessionContext';
+import {
+    type RuntimeSendTarget,
+    type SendSession,
+    useSendSessionContext,
+} from 'src/support/chainSend/SendSessionContext';
 import { type AppState } from 'src/types/suite';
 
 import { useGetSendChainNetwork } from './useGetSendChainNetwork';
@@ -44,6 +50,18 @@ export type SignAndPushTransactionParams = {
     formState: FormState;
     precomposedTransaction: GeneralPrecomposedTransactionFinal;
     selectedAccount?: Account;
+    paymentRequests?: PROTO.PaymentRequest[];
+};
+
+/** Whose send it is: a wallet account's, or a runtime network's at a wallet account's address. */
+export type ChainSendTarget =
+    { kind: 'wallet'; account: Account } | { kind: 'runtime'; runtime: RuntimeSendTarget };
+
+export type SignAndPushThroughNetworkParams = {
+    network: ChainNetwork;
+    target: ChainSendTarget;
+    formState: FormState;
+    precomposedTransaction: GeneralPrecomposedTransactionFinal;
     paymentRequests?: PROTO.PaymentRequest[];
 };
 
@@ -58,41 +76,133 @@ export type SignAndPushTransactionResult =
 const SIGN_TIMEOUT_REASON = 'tx-timeout';
 const SIGN_CANCEL_REASON = 'tx-cancelled';
 
+// Runtime networks are reported under one name: which networks a user added stays on the device.
+const RUNTIME_ANALYTICS_SYMBOL = asNetworkSymbol('runtime-evm');
+
 const getErrorMessage = (error: unknown) =>
     error instanceof ChainSendError ? error.message : 'unknown-error';
 
+const getTargetAccount = (target: ChainSendTarget): ChainSendAccount =>
+    target.kind === 'wallet' ? target.account : target.runtime.account;
+
+type ReviewedTransaction = Pick<SendSession, 'precomposedForm' | 'precomposedTx'>;
+
+const createSession = (target: ChainSendTarget, reviewed: ReviewedTransaction): SendSession =>
+    target.kind === 'wallet'
+        ? { kind: 'wallet', accountKey: target.account.key, ...reviewed }
+        : { kind: 'runtime', runtime: target.runtime, ...reviewed };
+
 /**
- * Signs a composed transaction on the device, asks the user to confirm it, and broadcasts it.
- *
- * With the `queryChainData` flag on, the account's chain network signs and broadcasts through
- * mutations and the transaction under review lives in the send session, not in the store. The
- * wallet's own sync is still told about the sent transaction for the views that read the store.
- * Otherwise the wallet's thunk does all of it.
+ * Signs a composed transaction on the device through its chain network, asks the user to confirm
+ * it, and broadcasts it. The transaction under review lives in the send session, not in the
+ * store. A wallet account's send is then followed up by the wallet (toast, sync, labels); a
+ * runtime network's send only gets its own toast.
  */
-export const useSignAndPushTransaction = () => {
+export const useSignAndPushThroughNetwork = () => {
     const { dispatch, getState, analytics } = useServices(
         injectDispatch,
         injectGetState,
         injectDesktopAnalytics,
     );
     const { setSession } = useSendSessionContext();
-    const getSendChainNetwork = useGetSendChainNetwork();
     const { mutateAsync: signTransaction } = useChainSignTransaction();
     const { mutateAsync: pushTransaction } = useChainPushTransaction();
 
+    /**
+     * The wallet's own follow-up of a broadcast: its toast, its sync, labels. A runtime network's
+     * send has none of it: the wallet does not track its account.
+     */
+    const onWalletBroadcast = useCallback(
+        ({
+            selectedAccount,
+            formState,
+            precomposedTransaction,
+            reviewedTransaction,
+            enhancedPrecomposedTransaction,
+            signed,
+            preparedNonce,
+            txid,
+            stateBeforePush,
+        }: {
+            selectedAccount: Account;
+            formState: FormState;
+            precomposedTransaction: GeneralPrecomposedTransactionFinal;
+            reviewedTransaction: GeneralPrecomposedTransactionFinal;
+            enhancedPrecomposedTransaction: GeneralPrecomposedTransactionFinal;
+            signed: ChainSignedTransaction;
+            preparedNonce: string | undefined;
+            txid: string;
+            stateBeforePush: ReturnType<typeof asStateBeforePush>;
+        }) => {
+            const device = selectSelectedDevice(getState());
+            dispatch(
+                showSentTransactionToastThunk({
+                    selectedAccount,
+                    precomposedTransaction: reviewedTransaction,
+                    precomposedForm: formState,
+                    txid,
+                }),
+            );
+            // Legacy bridge: views still reading the wallet store (coin control, nonces, staking)
+            // learn of the send from its sync. Goes away with the sync migration (roadmap phase 2).
+            dispatch(
+                synchronizeSentTransactionThunk({
+                    selectedAccount,
+                    precomposedTransaction: reviewedTransaction,
+                    precomposedForm: formState,
+                    txid,
+                    ethereumNonce: signed.nonce ?? preparedNonce,
+                    signedTransaction: signed.signedTransaction,
+                }),
+            );
+
+            if (isRbfBumpFeeTransaction(enhancedPrecomposedTransaction)) {
+                const deviceStaticSessionId = device?.state?.staticSessionId;
+                if (deviceStaticSessionId) {
+                    dispatch(
+                        updateRbfLabelsThunk({
+                            deviceStaticSessionId,
+                            precomposedTransaction: enhancedPrecomposedTransaction,
+                            txid,
+                            stateBeforePush,
+                            prevTxid: enhancedPrecomposedTransaction.prevTxid,
+                            signedTransaction: signed.signedTransaction,
+                        }),
+                    );
+                }
+            }
+
+            dispatch(
+                applySendFormMetadataLabelsThunk({
+                    selectedAccount,
+                    formState,
+                    precomposedTransaction,
+                    txid,
+                }),
+            );
+        },
+        [dispatch, getState],
+    );
+
     const signAndPushThroughNetwork = useCallback(
-        async (
-            network: ChainNetwork,
-            selectedAccount: Account,
-            { formState, precomposedTransaction, paymentRequests }: SignAndPushTransactionParams,
-        ): Promise<SignAndPushTransactionResult> => {
+        async ({
+            network,
+            target,
+            formState,
+            precomposedTransaction,
+            paymentRequests,
+        }: SignAndPushThroughNetworkParams): Promise<SignAndPushTransactionResult> => {
             const device = selectSelectedDevice(getState());
             const { send } = network;
             if (!device || !send) return;
 
+            const account = getTargetAccount(target);
+            const isRuntime = target.kind === 'runtime';
+            const assetSymbol = isRuntime ? RUNTIME_ANALYTICS_SYMBOL : account.symbol;
+
             const { precomposed: enhancedPrecomposedTransaction, isTokenKnown } =
                 await send.prepareForReview({
-                    account: selectedAccount,
+                    account,
                     draft: formState,
                     precomposed: precomposedTransaction,
                 });
@@ -101,27 +211,25 @@ export const useSignAndPushTransaction = () => {
                 createdTimestamp: new Date().getTime(),
                 isTokenKnown,
             };
-            setSession({
-                accountKey: selectedAccount.key,
-                precomposedForm: formState,
-                precomposedTx: reviewedTransaction,
-            });
+            setSession(
+                createSession(target, {
+                    precomposedForm: formState,
+                    precomposedTx: reviewedTransaction,
+                }),
+            );
 
             // The review modal shows signing and then broadcasting; Connect closing its UI after
             // signing must not close it.
             dispatch(preserveModal());
 
-            analytics.report({
-                type: events.sendInitialisedEvent.name,
-                payload: { assetSymbol: selectedAccount.symbol },
-            });
+            analytics.report({ type: events.sendInitialisedEvent.name, payload: { assetSymbol } });
 
             let preparedNonce: string | undefined;
             let signed: ChainSignedTransaction;
             try {
                 signed = await signTransaction({
                     network,
-                    account: selectedAccount,
+                    account,
                     draft: formState,
                     precomposed: enhancedPrecomposedTransaction,
                     options: {
@@ -140,7 +248,7 @@ export const useSignAndPushTransaction = () => {
             } catch (error) {
                 analytics.report({
                     type: events.sendConfirmedOnDeviceEvent.name,
-                    payload: { assetSymbol: selectedAccount.symbol },
+                    payload: { assetSymbol },
                 });
 
                 const message = getErrorMessage(error);
@@ -173,14 +281,14 @@ export const useSignAndPushTransaction = () => {
 
             analytics.report({
                 type: events.sendConfirmedOnDeviceEvent.name,
-                payload: { assetSymbol: selectedAccount.symbol },
+                payload: { assetSymbol },
             });
 
             setSession(
                 current =>
                     current && {
                         ...current,
-                        serializedTx: { tx: signed.serializedTx, symbol: selectedAccount.symbol },
+                        serializedTx: { tx: signed.serializedTx, symbol: account.symbol },
                         signedTx: signed.signedTransaction,
                     },
             );
@@ -190,7 +298,9 @@ export const useSignAndPushTransaction = () => {
             );
             if (!isPushConfirmed) return;
 
+            // A runtime network's nodes offer no private relay.
             const isMevProtectionEnabled =
+                !isRuntime &&
                 selectIsMevProtectionEnabled(getState()) &&
                 selectIsMevProtectionFeatureEnabled(getState());
             // Moving labels of a replaced transaction compares against the state before the push.
@@ -200,7 +310,7 @@ export const useSignAndPushTransaction = () => {
             try {
                 ({ txid } = await pushTransaction({
                     network,
-                    account: selectedAccount,
+                    account,
                     serializedTx: signed.serializedTx,
                     isMevProtectionEnabled,
                     origin: {
@@ -231,58 +341,60 @@ export const useSignAndPushTransaction = () => {
             }
 
             dispatch(closeModal());
-            dispatch(
-                showSentTransactionToastThunk({
-                    selectedAccount,
-                    precomposedTransaction: reviewedTransaction,
-                    precomposedForm: formState,
-                    txid,
-                }),
-            );
-            // Legacy bridge: views still reading the wallet store (coin control, nonces, staking)
-            // learn of the send from its sync. Goes away with the sync migration (roadmap phase 2).
-            dispatch(
-                synchronizeSentTransactionThunk({
-                    selectedAccount,
-                    precomposedTransaction: reviewedTransaction,
-                    precomposedForm: formState,
-                    txid,
-                    ethereumNonce: signed.nonce ?? preparedNonce,
-                    signedTransaction: signed.signedTransaction,
-                }),
-            );
 
-            if (isRbfBumpFeeTransaction(enhancedPrecomposedTransaction)) {
-                const deviceStaticSessionId = device.state?.staticSessionId;
-                if (deviceStaticSessionId) {
-                    dispatch(
-                        updateRbfLabelsThunk({
-                            deviceStaticSessionId,
-                            precomposedTransaction: enhancedPrecomposedTransaction,
-                            txid,
-                            stateBeforePush,
-                            prevTxid: enhancedPrecomposedTransaction.prevTxid,
-                            signedTransaction: signed.signedTransaction,
-                        }),
-                    );
-                }
-            }
-
-            dispatch(
-                applySendFormMetadataLabelsThunk({
-                    selectedAccount,
+            if (target.kind === 'wallet') {
+                onWalletBroadcast({
+                    selectedAccount: target.account,
                     formState,
                     precomposedTransaction,
+                    reviewedTransaction,
+                    enhancedPrecomposedTransaction,
+                    signed,
+                    preparedNonce,
                     txid,
-                }),
-            );
+                    stateBeforePush,
+                });
+            } else {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'runtime-chain-tx-sent',
+                        amount: formState.outputs[0]?.amount ?? '',
+                        displaySymbol: target.runtime.network.nativeSymbol,
+                        txid,
+                    }),
+                );
+            }
 
             setSession(undefined);
 
             return { success: true, payload: { txid } };
         },
-        [analytics, dispatch, getState, pushTransaction, setSession, signTransaction],
+        [
+            analytics,
+            dispatch,
+            getState,
+            onWalletBroadcast,
+            pushTransaction,
+            setSession,
+            signTransaction,
+        ],
     );
+
+    return signAndPushThroughNetwork;
+};
+
+/**
+ * Signs a composed transaction of a wallet account on the device, asks the user to confirm it,
+ * and broadcasts it.
+ *
+ * With the `queryChainData` flag on, the account's chain network signs and broadcasts through
+ * mutations (see `useSignAndPushThroughNetwork`); the wallet's own sync is still told about the
+ * sent transaction for the views that read the store. Otherwise the wallet's thunk does all of it.
+ */
+export const useSignAndPushTransaction = () => {
+    const { dispatch } = useServices(injectDispatch);
+    const getSendChainNetwork = useGetSendChainNetwork();
+    const signAndPushThroughNetwork = useSignAndPushThroughNetwork();
 
     return useCallback(
         (params: SignAndPushTransactionParams): Promise<SignAndPushTransactionResult> => {
@@ -290,7 +402,11 @@ export const useSignAndPushTransaction = () => {
             const network = getSendChainNetwork(selectedAccount);
 
             if (network && selectedAccount) {
-                return signAndPushThroughNetwork(network, selectedAccount, params);
+                return signAndPushThroughNetwork({
+                    ...params,
+                    network,
+                    target: { kind: 'wallet', account: selectedAccount },
+                });
             }
 
             return dispatch(signAndPushSendFormTransactionThunk(params)).unwrap();

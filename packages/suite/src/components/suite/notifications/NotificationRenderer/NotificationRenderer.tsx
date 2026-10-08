@@ -204,6 +204,18 @@ export const NotificationRenderer = ({
                 />
             );
 
+        case 'runtime-chain-tx-sent':
+            return renderNotificationView(render, notification, {
+                variant: 'warning',
+                icon: ArrowUpIcon,
+                message: 'TOAST_RUNTIME_CHAIN_TX_SENT',
+                values: {
+                    amount: notification.amount,
+                    symbol: notification.displaySymbol,
+                    txid: notification.txid,
+                },
+            });
+
         case 'cardano-delegate-error':
             return renderNotificationView(render, notification, {
                 variant: 'error',

@@ -118,6 +118,23 @@ export {
     isValidRuntimeRpcUrl,
     validateRuntimeEvmNetworkDefinition,
 } from './chain/runtime/RuntimeEvmNetworkDefinition';
+export { resolveRuntimeEvmNetworks } from './chain/runtime/resolveRuntimeEvmNetworks';
+export type {
+    ResolveRuntimeEvmNetworksParams,
+    RuntimeEvmNetwork,
+    RuntimeEvmNetworkReservations,
+    RuntimeEvmNetworkResolution,
+} from './chain/runtime/resolveRuntimeEvmNetworks';
+export {
+    createRuntimeEvmNetworkRegistry,
+    injectRuntimeEvmNetworkRegistry,
+} from './chain/runtime/createRuntimeEvmNetworkRegistry';
+export type {
+    RuntimeEvmNetworkRegistry,
+    RuntimeEvmNetworkRegistryDep,
+    RuntimeEvmNetworkRegistryDeps,
+    RuntimeEvmNetworkRegistrySnapshot,
+} from './chain/runtime/createRuntimeEvmNetworkRegistry';
 export type {
     RuntimeEvmNetworkDefinition,
     RuntimeEvmNetworkDefinitionError,

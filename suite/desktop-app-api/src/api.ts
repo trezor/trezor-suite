@@ -176,6 +176,9 @@ export interface InvokeChannels {
 
     // Browser Window
     'browser-window/reload': () => void;
+
+    // Request filter: lets the renderer reach the nodes a network reads directly (e.g. a runtime network).
+    'request-filter/allow-chain-node-host': (hostname: string) => InvokeResult;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -267,4 +270,7 @@ export type DesktopApi = {
 
     // Browser Window
     reloadBrowserWindow: DesktopApiInvoke<'browser-window/reload'>;
+
+    // Request filter
+    allowChainNodeHost: DesktopApiInvoke<'request-filter/allow-chain-node-host'>;
 };
