@@ -76,7 +76,7 @@ export function SelectTokenAssetModal({
         account,
         expandedHiddenTokensGroups: expandedGroupKeys,
     });
-    const filteredOptions = useFilterAccountsWithTokens(options, search);
+    const filteredOptions = useFilterAccountsWithTokens({ accountsWithTokens: options, search });
 
     useListScrollReset(listRef, search);
 
