@@ -67,15 +67,24 @@ const retryAfterMs = (response: Response | undefined) => {
 // Any other status is an answer the server means, so repeating it would only waste the quota.
 const retryTransientFailures: NonNullable<ApiClientOptions['retry']> = {
     attempts: REQUEST_RETRIES,
-    delay: ({ attempt, response }) =>
-        retryAfterMs(response) ?? REQUEST_RETRY_BASE_DELAY_MS * 3 ** (attempt - 1),
+    // up-fetch runs `delay` under the timeout of the attempt that failed, so a wait longer than what
+    // is left of REQUEST_TIMEOUT_MS would abort the request instead of retrying it. `waitBeforeRetry`
+    // waits instead, and the retry then starts with a timeout of its own.
+    delay: 0,
     when: ({ response }) => !response || response.status === 429 || response.status >= 500,
 };
 
-const warnAboutRetry: NonNullable<ApiClientOptions['onRetry']> = ({ request, response }) => {
+const waitBeforeRetry: NonNullable<ApiClientOptions['onRetry']> = async ({
+    attempt,
+    request,
+    response,
+}) => {
     const cause = response ? `status ${response.status}` : 'no response';
+    const waitFor = retryAfterMs(response) ?? REQUEST_RETRY_BASE_DELAY_MS * 3 ** (attempt - 1);
 
-    console.warn(`Request to ${request.url} failed (${cause}), retrying.`);
+    console.warn(`Request to ${request.url} failed (${cause}), retrying in ${waitFor} ms.`);
+
+    await resolveAfter(waitFor);
 };
 
 type CreateApiClientParams = {
@@ -93,7 +102,7 @@ const createApiClient = ({ baseUrl, headers }: CreateApiClientParams) =>
         timeout: REQUEST_TIMEOUT_MS,
         retry: retryTransientFailures,
         onRequest: paceRequestsPerHost,
-        onRetry: warnAboutRetry,
+        onRetry: waitBeforeRetry,
     });
 
 export const coinGeckoApi = createApiClient({ baseUrl: COINGECKO_API_URL });
