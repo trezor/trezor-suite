@@ -105,10 +105,6 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     }
 
     get info() {
-        return 'Export account info';
-    }
-
-    get confirmation() {
         const keys: {
             [coin: string]: { coinInfo: CoinInfo; values: DerivationPath[] };
         } = {};
@@ -140,10 +136,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             });
         });
 
-        return {
-            view: 'export-account-info' as const,
-            label: `Export info for: ${str.join('')}`,
-        };
+        return `Export info for: ${str.join('')}`;
     }
 
     async run(context: MethodContext) {

@@ -32,17 +32,6 @@ export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadD
         return [{ permission: 'management' }];
     }
 
-    get info() {
-        return 'Load seed and related internal settings.';
-    }
-
-    get confirmation() {
-        return {
-            view: 'device-management' as const,
-            label: 'Do you really you want to load device?',
-        };
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('LoadDevice', 'Success', this.params);

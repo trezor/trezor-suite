@@ -121,10 +121,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         return '';
     } // method info, displayed in popup info-panel
 
-    protected get confirmation(): MethodInfo['confirmation'] {
-        return undefined;
-    }
-
     public useUi: boolean; // should use popup?
 
     public useDevice: boolean; // use device
@@ -291,7 +287,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             requiredPermissions: this.requiredPermissions,
             info: this.info,
             precomposed: undefined, // requested by a special flag,
-            confirmation: this.confirmation,
         });
     }
 

@@ -13,11 +13,7 @@ export default class TezosGetAddress extends AbstractMiscGetAddress<'tezosGetAdd
     }
 
     get info() {
-        return this.getInfo('Tezos', true);
-    }
-
-    get confirmation() {
-        return this.getConfirmation('Tezos');
+        return this.getInfo('Tezos');
     }
 
     async _call({ proto }: MiscGetAddressParams) {

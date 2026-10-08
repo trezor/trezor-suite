@@ -87,24 +87,14 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
     }
 
     get info() {
-        return 'Export public key';
-    }
-
-    get confirmation() {
         if (this.params.length > 1) {
-            return {
-                view: 'export-xpub' as const,
-                label: 'Export multiple public keys',
-            };
+            return 'Export multiple public keys';
         }
         const { params } = this;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const first: (typeof params)[number] = params[0];
 
-        return {
-            view: 'export-xpub' as const,
-            label: getPublicKeyLabel(first.proto.address_n, first.coinInfo),
-        };
+        return getPublicKeyLabel(first.proto.address_n, first.coinInfo);
     }
 
     async run({ sendCoreMessage }: MethodContext) {

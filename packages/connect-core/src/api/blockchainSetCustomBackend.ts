@@ -44,10 +44,6 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
         return [{ permission: 'internal' }];
     }
 
-    get info() {
-        return '';
-    }
-
     async run() {
         setCustomBackend(this.params.coinInfo, this.params.blockchainLink);
 

@@ -122,15 +122,6 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         }
     }
 
-    get confirmation() {
-        return !this.useUi
-            ? undefined
-            : {
-                  view: 'export-address' as const,
-                  label: this.info,
-              };
-    }
-
     async _call({ proto, coinInfo, unlockPath }: Params) {
         const cmd = this.getDevice().getCommands();
         if (unlockPath) {

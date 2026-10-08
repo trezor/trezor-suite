@@ -23,10 +23,6 @@ export default class EvoluGetNode extends AbstractMethod<'evoluGetNode', PROTO.E
         return [{ permission: 'management' }];
     }
 
-    get info() {
-        return 'Evolu get node';
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('EvoluGetNode', 'EvoluNode', this.params);

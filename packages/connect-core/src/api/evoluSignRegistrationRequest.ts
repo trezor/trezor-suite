@@ -29,10 +29,6 @@ export default class EvoluSignRegistrationRequest extends AbstractMethod<
         return [{ permission: 'management' }];
     }
 
-    get info() {
-        return 'Evolu sign registration request';
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall(

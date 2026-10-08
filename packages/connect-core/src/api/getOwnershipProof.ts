@@ -70,14 +70,9 @@ export default class GetOwnershipProof extends AbstractMethod<
     }
 
     get info() {
-        return 'Export ownership proof';
-    }
-
-    get confirmation() {
-        return {
-            view: 'export-address' as const,
-            label: this.params.length > 1 ? 'Export multiple ownership proofs' : this.info,
-        };
+        return this.params.length > 1
+            ? 'Export multiple ownership proofs'
+            : 'Export ownership proof';
     }
 
     async run({ sendCoreMessage }: MethodContext) {

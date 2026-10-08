@@ -36,21 +36,10 @@ export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PRO
         return [{ permission: 'management' }];
     }
 
-    get confirmation() {
-        return {
-            view: 'device-management' as const,
-            label: 'Do you want to recover device from seed?',
-        };
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('RecoveryDevice', 'Success', this.params);
 
         return response.message;
-    }
-
-    get info() {
-        return 'Recover device';
     }
 }

@@ -22,10 +22,6 @@ export default class CancelCoinjoinAuthorization extends AbstractMethod<'cancelC
         return [{ permission: 'internal' }];
     }
 
-    get info() {
-        return 'Cancel Coinjoin Authorization';
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
 

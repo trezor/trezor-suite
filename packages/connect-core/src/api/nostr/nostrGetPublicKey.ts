@@ -33,14 +33,7 @@ export default class NostrGetPublicKey extends AbstractMethod<
     }
 
     get info() {
-        return 'Export nostr public key';
-    }
-
-    get confirmation() {
-        return {
-            view: 'export-xpub' as const,
-            label: 'Export Nostr public key',
-        };
+        return 'Export Nostr public key';
     }
 
     async run() {

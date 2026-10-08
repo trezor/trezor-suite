@@ -72,13 +72,6 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
         return 'Export multiple public keys';
     }
 
-    get confirmation() {
-        return {
-            view: 'export-xpub' as const,
-            label: this.info,
-        };
-    }
-
     async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.getDevice().getCommands();
