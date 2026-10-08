@@ -15,7 +15,7 @@ const tradingCardSectionStyle = prepareNativeStyle<TradingCardSectionStyleProps>
         paddingHorizontal: spacings.sp20,
         paddingTop: spacings.sp12,
         paddingBottom: spacings.sp12,
-        gap: spacings.sp4,
+        gap: spacings.sp8,
         extend: [
             {
                 condition: bottomBorder,

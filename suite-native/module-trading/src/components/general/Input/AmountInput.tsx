@@ -5,6 +5,7 @@ import {
     Pressable,
     TextInput,
     type TextInputProps,
+    View,
 } from 'react-native';
 
 import { BoxSkeleton, HStack, TEXT_MAX_FONT_MULTIPLIER, Text } from '@suite-native/atoms';
@@ -77,6 +78,11 @@ const contentStyle = prepareNativeStyle<{ lineHeight: number }>((_, { lineHeight
     minHeight: lineHeight,
 }));
 
+const skeletonWrapperStyle = prepareNativeStyle<{ height: number }>((_, { height }) => ({
+    height,
+    justifyContent: 'center',
+}));
+
 type TextStyleParams = {
     sizeConfig: AmountInputSizeConfig;
     fontSize: number;
@@ -107,6 +113,7 @@ const useInputLayoutControls = (value: string | undefined, sizeConfig: AmountInp
 
     const [availableWidth, setAvailableWidth] = useState(minWidth + shrinkThreshold);
     const [measuredFontSize, setFontSize] = useState(maxFontSize);
+    const [contentHeight, setContentHeight] = useState<number>();
 
     const fontSize = Math.min(Math.max(measuredFontSize, minFontSize), maxFontSize);
 
@@ -117,7 +124,8 @@ const useInputLayoutControls = (value: string | undefined, sizeConfig: AmountInp
 
     const handleFontSizeOnContentChange = useCallback(
         ({ nativeEvent }: LayoutChangeEvent) => {
-            const contentWidth = nativeEvent.layout.width;
+            const { width: contentWidth, height } = nativeEvent.layout;
+            setContentHeight(height);
 
             if (contentWidth === 0 || availableWidth === 0 || !value) {
                 setFontSize(maxFontSize);
@@ -156,6 +164,7 @@ const useInputLayoutControls = (value: string | undefined, sizeConfig: AmountInp
 
     return {
         fontSize,
+        contentHeight,
         onBoxLayout: handleAvailableWith,
         onContentLayout: handleFontSizeOnContentChange,
     };
@@ -184,7 +193,10 @@ export const AmountInput = ({
 
     const sizeConfig = amountInputSizes[size];
     const { applyStyle, utils } = useNativeStyles();
-    const { fontSize, onBoxLayout, onContentLayout } = useInputLayoutControls(value, sizeConfig);
+    const { fontSize, contentHeight, onBoxLayout, onContentLayout } = useInputLayoutControls(
+        value,
+        sizeConfig,
+    );
 
     const handleTextChange = useCallback(
         (text: string) => {
@@ -203,12 +215,20 @@ export const AmountInput = ({
     const wrapperOnPress = onPress ?? focusInputCallback;
 
     if (isLoading) {
+        const skeletonHeight = getLineHeight(sizeConfig.maxFontSize, sizeConfig);
+
         return (
-            <BoxSkeleton
-                height={getLineHeight(sizeConfig.maxFontSize, sizeConfig)}
-                width={sizeConfig.minWidth}
-                accessibilityLabel={loadingAccessibilityLabel}
-            />
+            <View
+                style={applyStyle(skeletonWrapperStyle, {
+                    height: Math.max(contentHeight ?? 0, skeletonHeight),
+                })}
+            >
+                <BoxSkeleton
+                    height={skeletonHeight}
+                    width={sizeConfig.minWidth}
+                    accessibilityLabel={loadingAccessibilityLabel}
+                />
+            </View>
         );
     }
 
