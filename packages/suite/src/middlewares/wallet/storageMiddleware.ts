@@ -82,6 +82,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { findAccountDevice, isAccountSuccessful } from '@suite-common/wallet-utils';
 import { walletConnectActions } from '@suite-common/walletconnect';
 import { DEVICE, isDeviceEventOfType } from '@trezor/connect';
+import { Throttler } from '@trezor/utils';
 
 import * as storageActions from 'src/actions/suite/storageActions';
 import {
@@ -114,6 +115,17 @@ const getDeviceByAccountKey = (accountKey: AccountKey, state: StorageMiddlewareS
     return account ? findAccountDevice(account, selectDevices(state)) : undefined;
 };
 
+// Persisting an account's transactions deletes and re-puts every persisted row of the account, and
+// persisting its historic rates re-derives the whole rate map, so neither may run once per page of
+// fetchAllTransactionsForAccountThunk. Handlers that declare a coalesce key are throttled per key
+// instead: the first write goes through immediately and the following ones collapse into a single
+// trailing write per interval. The handlers read the state when they run, so the trailing write
+// always persists the latest state.
+export const STORAGE_WRITE_THROTTLE_MS = 1000;
+
+const getAccountTransactionsWriteKey = (accountKey: AccountKey) => `transactions:${accountKey}`;
+const getAccountHistoricRatesWriteKey = (accountKey: AccountKey) => `historicRates:${accountKey}`;
+
 type RememberedDeviceSaveParams<TAction> = {
     action: TAction;
     device: TrezorDevice;
@@ -127,6 +139,8 @@ type RememberedDeviceSaveDeps = DbDep & {
 type RememberedDeviceHandler = {
     match: ReadonlyArray<(action: UnknownAction) => boolean>;
     getDevice: (action: any, state: StorageMiddlewareState) => TrezorDevice | undefined;
+    // Saves sharing a key are coalesced, see STORAGE_WRITE_THROTTLE_MS.
+    getCoalesceKey?: (action: any) => string | undefined;
     save: (params: RememberedDeviceSaveParams<any>, deps: RememberedDeviceSaveDeps) => void;
 };
 
@@ -136,6 +150,7 @@ const defineRememberedDeviceHandler = <Matchers extends ReadonlyArray<TypeGuard<
         action: ActionFromMatcher<Matchers[number]>,
         state: StorageMiddlewareState,
     ) => TrezorDevice | undefined;
+    getCoalesceKey?: (action: ActionFromMatcher<Matchers[number]>) => string | undefined;
     save: (
         params: RememberedDeviceSaveParams<ActionFromMatcher<Matchers[number]>>,
         deps: RememberedDeviceSaveDeps,
@@ -232,6 +247,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         ],
         getDevice: (action, state) =>
             findAccountDevice(action.payload.account, selectDevices(state)),
+        getCoalesceKey: action => getAccountTransactionsWriteKey(action.payload.account.key),
         save: ({ action }, deps) => {
             const { account } = action.payload;
 
@@ -259,6 +275,11 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
             const { account } = action.payload;
 
             return account ? getDeviceByAccountKey(account.key, state) : undefined;
+        },
+        getCoalesceKey: action => {
+            const { account } = action.payload;
+
+            return account ? getAccountHistoricRatesWriteKey(account.key) : undefined;
         },
         save: ({ action }, deps) => {
             const { account } = action.payload;
@@ -352,272 +373,316 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
     }),
 ];
 
-export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
-    StorageMiddlewareDeps,
-    UnknownAction,
-    StorageMiddlewareState
->((action, api) => {
-    // pass action
-    api.next(action);
+export const prepareStorageMiddleware = (getExtra: () => StorageMiddlewareDeps | null) => {
+    // One coalescer per store: the pending writes belong to the store whose state they persist.
+    const storageWriteThrottler = new Throttler(STORAGE_WRITE_THROTTLE_MS);
 
-    // IMPORTANT: The single place enforcing that device-scoped data is persisted only for
-    //            remembered devices (see rememberedDeviceHandlers above).
-    rememberedDeviceHandlers.forEach(({ match, getDevice, save }) => {
-        if (!match.some(matcher => matcher(action))) {
+    // A pending coalesced write would put the rows straight back after they were deleted outright,
+    // so every explicit removal of an account's rows cancels it first.
+    const cancelAccountStorageWrites = (accountKey: AccountKey) => {
+        storageWriteThrottler.cancel(getAccountTransactionsWriteKey(accountKey));
+        storageWriteThrottler.cancel(getAccountHistoricRatesWriteKey(accountKey));
+    };
+
+    const cancelDeviceStorageWrites = (device: TrezorDevice, state: StorageMiddlewareState) => {
+        const staticSessionId = device.state?.staticSessionId;
+
+        if (!staticSessionId) {
             return;
         }
 
-        const device = getDevice(action, api.getState());
-
-        if (device && getIsDeviceRemembered(device)) {
-            save(
-                { action, device },
-                { db: api.extra.services.db, dispatch: api.dispatch, getState: api.getState },
-            );
-        }
-    });
-
-    if (accountsActions.removeAccount.match(action)) {
-        action.payload.forEach(
-            storageActions.removeAccountWithDependencies({
-                db: api.extra.services.db,
-                getState: api.getState,
-            }),
+        selectAccountsByDeviceState(state, staticSessionId).forEach(account =>
+            cancelAccountStorageWrites(account.key),
         );
-    }
+    };
 
-    if (changeNetworks.match(action)) {
-        api.dispatch(storageActions.saveWalletSettingsThunk());
-    }
+    return createMiddlewareWithExtraDeps<
+        StorageMiddlewareDeps,
+        UnknownAction,
+        StorageMiddlewareState
+    >((action, api) => {
+        // pass action
+        api.next(action);
 
-    if (transactionsActions.resetTransaction.match(action)) {
-        const { account } = action.payload;
+        // IMPORTANT: The single place enforcing that device-scoped data is persisted only for
+        //            remembered devices (see rememberedDeviceHandlers above).
+        rememberedDeviceHandlers.forEach(({ match, getDevice, getCoalesceKey, save }) => {
+            if (!match.some(matcher => matcher(action))) {
+                return;
+            }
 
-        storageActions.removeAccountTransactions(api.extra.services, account);
-        storageActions.removeAccountHistoricRates(api.extra.services, account.key);
-        storageActions.removeAccountPhishing(api.extra.services, account.key);
-    }
+            // The check runs when the save actually runs, so a coalesced save that was deferred
+            // past the device being forgotten is dropped instead of persisting it again.
+            const persist = () => {
+                const device = getDevice(action, api.getState());
 
-    if (phishingActions.setDustPhishing.match(action)) {
-        api.dispatch(
-            storageActions.savePhishingMetadataThunk({
-                dustPhishing: action.payload,
-            }),
-        );
-    }
+                if (device && getIsDeviceRemembered(device)) {
+                    save(
+                        { action, device },
+                        {
+                            db: api.extra.services.db,
+                            dispatch: api.dispatch,
+                            getState: api.getState,
+                        },
+                    );
+                }
+            };
 
-    if (blockchainActions.setBackend.match(action)) {
-        api.dispatch(storageActions.saveBackendThunk(action.payload.symbol));
-    }
+            const coalesceKey = getCoalesceKey?.(action);
 
-    if (blockchainActions.setBackendGapLimit.match(action)) {
-        api.dispatch(storageActions.saveBackendThunk(action.payload.symbol));
-    }
-
-    if (explorerActions.setExplorer.match(action)) {
-        storageActions.saveExplorer(api.extra.services, action.payload);
-    }
-
-    if (
-        isAnyOf(
-            messageSystemActions.fetchSuccessUpdate,
-            messageSystemActions.dismissMessage,
-            messageSystemActions.setConfigSource,
-        )(action)
-    ) {
-        api.dispatch(storageActions.saveMessageSystemThunk());
-    }
-
-    if (
-        isAnyOf(
-            analyticsActions.initAnalytics,
-            analyticsActions.enableAnalytics,
-            analyticsActions.disableAnalytics,
-            analyticsActions.setCustomAnalyticsUrl,
-            analyticsActions.setLoggerEnabled,
-        )(action)
-    ) {
-        api.dispatch(storageActions.saveAnalyticsThunk());
-    }
-
-    if (
-        isAnyOf(
-            updateSuiteSyncDebugEnabled,
-            updateSuiteSyncEnabled,
-            dismissUnsupportedDeviceBanner,
-            setSuiteSyncRelayUrl,
-        )(action)
-    ) {
-        api.dispatch(storageActions.saveSuiteSyncSettingsThunk());
-    }
-
-    if (setSuiteSyncOwner.match(action)) {
-        api.dispatch(storageActions.saveSuiteSyncOwnerThunk(action.payload));
-    }
-
-    if (
-        isAnyOf(
-            suiteSyncQuotaManagerActions.quotaManagerDeviceFetched,
-            suiteSyncQuotaManagerActions.updateQuotaManagerBaseUrl,
-            suiteSyncQuotaManagerActions.enforceQuotaManagerUpdated,
-            suiteSyncQuotaManagerActions.eraseFetchedData,
-        )(action)
-    ) {
-        api.dispatch(storageActions.saveSuiteSyncQuotaManagerThunk());
-    }
-
-    if (deviceActions.setRememberDevice.match(action)) {
-        const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(api.getState());
-
-        if (action.payload.remember && !isAutoEjectEnabled) {
-            api.dispatch(storageActions.rememberDeviceThunk(action.payload.device));
-        } else {
-            api.dispatch(storageActions.forgetDeviceThunk(action.payload.device));
-        }
-    }
-
-    if (deviceActions.forgetDevice.match(action)) {
-        api.dispatch(storageActions.forgetDeviceThunk(action.payload.device));
-    }
-
-    if (tokenDefinitionsActions.setTokenStatus.match(action)) {
-        api.dispatch(
-            storageActions.saveTokenManagementThunk(
-                action.payload.symbol,
-                action.payload.type,
-                TokenManagementAction.HIDE,
-            ),
-        );
-        api.dispatch(
-            storageActions.saveTokenManagementThunk(
-                action.payload.symbol,
-                action.payload.type,
-                TokenManagementAction.SHOW,
-            ),
-        );
-    }
-
-    if (
-        isAnyOf(
-            deviceActions.connectDevice, // Known device is stored
-            deviceActions.connectUnacquiredDevice, // Known device is stored
-            bluetoothActions.knownDevicesUpdateAction,
-            bluetoothActions.removeKnownDeviceAction,
-            bluetoothActions.deviceUpdateAction, // Known devices may be updated
-        )(action)
-    ) {
-        api.dispatch(storageActions.saveKnownDevicesThunk());
-    }
-
-    if (
-        isAnyOf(
-            connectPopupActions.rememberAppPermissions,
-            connectPopupActions.forgetAppPermissions,
-            connectPopupActions.forgetAppPermission,
-            connectPopupActions.setAppSilentMode,
-            walletConnectActions.saveSession,
-            walletConnectActions.removeSession,
-        )(action)
-    ) {
-        api.dispatch(storageActions.saveConnectSettingsThunk());
-    }
-
-    if (firmwareActions.setFirmwareChannel.match(action)) {
-        api.dispatch(storageActions.saveFirmwareSettingsThunk());
-    }
-
-    if (isAnyOf(featureUsed, feedbackRequested, feedbackDismissed)(action)) {
-        api.dispatch(storageActions.saveFeatureFeedbackThunk());
-    }
-
-    if (
-        thpActions.removeCredentials.match(action) ||
-        isDeviceEventOfType(action, DEVICE.THP_CREDENTIALS_CHANGED) ||
-        (isDeviceEventOfType(action, DEVICE.THP_PAIRING_STATUS_CHANGED) &&
-            action.payload.status === 'finished')
-    ) {
-        api.dispatch(storageActions.saveThpCredentialsThunk());
-    }
-
-    if (
-        isAnyOf(
-            deviceActions.connectDevice,
-            deviceActions.deviceChanged,
-            persistentDeviceDataActions.setEntropyCheckResult,
-            persistentDeviceDataActions.setDeviceAuthenticityResult,
-            persistentDeviceDataActions.setManualDeviceCheckSuccess,
-            persistentDeviceDataActions.clearDevicePersistentData,
-            persistentDeviceDataActions.forgetDevicePersistentData,
-        )(action)
-    ) {
-        api.dispatch(storageActions.savePersistentDeviceDataThunk());
-    }
-
-    if (discreetModeActions.setDiscreetMode.match(action)) {
-        api.dispatch(storageActions.saveDiscreetModeThunk());
-    }
-
-    if (
-        isAnyOf(
-            setBaseCurrency,
-            setBitcoinAmountUnits,
-            setMevProtection,
-            setNetworkReserve,
-            setAutoEjectEnabled,
-            setAddressDisplayType,
-            setHomeAssetsTableGrouping,
-            setSuspiciousTransactionsFilter,
-        )(action)
-    ) {
-        api.dispatch(storageActions.saveWalletSettingsThunk());
-    } else if (
-        isAnyOf(
-            suiteSettingsActions.setLanguage,
-            setFlag,
-            markNewContentIndicatorAsSeen,
-            setNewContentIndicatorSeen,
-            suiteSettingsActions.setDebugMode,
-            suiteSettingsActions.setExperimentalFeatures,
-            suiteSettingsActions.setOnionLinks,
-            suiteSettingsActions.setTheme,
-            suiteSettingsActions.setAutodetect,
-            suiteSettingsActions.setSidebarWidth,
-            suiteSettingsActions.toggleDeviceAuthenticityCheck,
-            suiteSettingsActions.toggleFirmwareRevisionCheck,
-            suiteSettingsActions.toggleFirmwareHashCheck,
-            suiteSettingsActions.toggleDeviceMetaChecks,
-            suiteSettingsActions.setIsCoinsFilterVisible,
-            closeEvmExplanationBanner,
-            confirmEvmExplanationModal,
-        )(action)
-    ) {
-        api.dispatch(storageActions.saveSuiteSettingsThunk());
-    } else if (debugActions.setShowDebugMenu.match(action)) {
-        api.dispatch(storageActions.saveDebugSettingsThunk());
-    } else if (tradingActions.saveTrade.match(action)) {
-        storageActions.saveTradingTrade(api.extra.services, action.payload);
-    } else if (
-        metadataActions.enableMetadata.match(action) ||
-        metadataActions.disableMetadata.match(action) ||
-        metadataActions.addMetadataProvider.match(action) ||
-        metadataActions.removeMetadataProvider.match(action)
-    ) {
-        api.dispatch(storageActions.saveMetadataSettingsThunk());
-    } else if (setDebugSettings.match(action)) {
-        api.dispatch(storageActions.saveCoinjoinDebugSettingsThunk());
-    } else if (clientOnPrisonEvent.match(action)) {
-        // Not a rememberedDeviceHandlers entry: unlike those handlers (one action ->
-        // one device), this one action affects multiple accounts on potentially
-        // different devices, so the remembered-device check must be applied per account.
-        const affectedAccounts = action.payload.map(inmate => inmate.accountKey as AccountKey);
-        const state = api.getState();
-        affectedAccounts.forEach(key => {
-            const device = getDeviceByAccountKey(key, state);
-            if (device && getIsDeviceRemembered(device)) {
-                api.dispatch(storageActions.saveCoinjoinAccountThunk(key));
+            if (coalesceKey === undefined) {
+                persist();
+            } else {
+                storageWriteThrottler.throttle(coalesceKey, persist);
             }
         });
-    }
 
-    return action;
-});
+        if (accountsActions.removeAccount.match(action)) {
+            action.payload.forEach(account => cancelAccountStorageWrites(account.key));
+            action.payload.forEach(
+                storageActions.removeAccountWithDependencies({
+                    db: api.extra.services.db,
+                    getState: api.getState,
+                }),
+            );
+        }
+
+        if (changeNetworks.match(action)) {
+            api.dispatch(storageActions.saveWalletSettingsThunk());
+        }
+
+        if (transactionsActions.resetTransaction.match(action)) {
+            const { account } = action.payload;
+
+            cancelAccountStorageWrites(account.key);
+            storageActions.removeAccountTransactions(api.extra.services, account);
+            storageActions.removeAccountHistoricRates(api.extra.services, account.key);
+            storageActions.removeAccountPhishing(api.extra.services, account.key);
+        }
+
+        if (phishingActions.setDustPhishing.match(action)) {
+            api.dispatch(
+                storageActions.savePhishingMetadataThunk({
+                    dustPhishing: action.payload,
+                }),
+            );
+        }
+
+        if (blockchainActions.setBackend.match(action)) {
+            api.dispatch(storageActions.saveBackendThunk(action.payload.symbol));
+        }
+
+        if (blockchainActions.setBackendGapLimit.match(action)) {
+            api.dispatch(storageActions.saveBackendThunk(action.payload.symbol));
+        }
+
+        if (explorerActions.setExplorer.match(action)) {
+            storageActions.saveExplorer(api.extra.services, action.payload);
+        }
+
+        if (
+            isAnyOf(
+                messageSystemActions.fetchSuccessUpdate,
+                messageSystemActions.dismissMessage,
+                messageSystemActions.setConfigSource,
+            )(action)
+        ) {
+            api.dispatch(storageActions.saveMessageSystemThunk());
+        }
+
+        if (
+            isAnyOf(
+                analyticsActions.initAnalytics,
+                analyticsActions.enableAnalytics,
+                analyticsActions.disableAnalytics,
+                analyticsActions.setCustomAnalyticsUrl,
+                analyticsActions.setLoggerEnabled,
+            )(action)
+        ) {
+            api.dispatch(storageActions.saveAnalyticsThunk());
+        }
+
+        if (
+            isAnyOf(
+                updateSuiteSyncDebugEnabled,
+                updateSuiteSyncEnabled,
+                dismissUnsupportedDeviceBanner,
+                setSuiteSyncRelayUrl,
+            )(action)
+        ) {
+            api.dispatch(storageActions.saveSuiteSyncSettingsThunk());
+        }
+
+        if (setSuiteSyncOwner.match(action)) {
+            api.dispatch(storageActions.saveSuiteSyncOwnerThunk(action.payload));
+        }
+
+        if (
+            isAnyOf(
+                suiteSyncQuotaManagerActions.quotaManagerDeviceFetched,
+                suiteSyncQuotaManagerActions.updateQuotaManagerBaseUrl,
+                suiteSyncQuotaManagerActions.enforceQuotaManagerUpdated,
+                suiteSyncQuotaManagerActions.eraseFetchedData,
+            )(action)
+        ) {
+            api.dispatch(storageActions.saveSuiteSyncQuotaManagerThunk());
+        }
+
+        if (deviceActions.setRememberDevice.match(action)) {
+            const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(api.getState());
+
+            if (action.payload.remember && !isAutoEjectEnabled) {
+                api.dispatch(storageActions.rememberDeviceThunk(action.payload.device));
+            } else {
+                cancelDeviceStorageWrites(action.payload.device, api.getState());
+                api.dispatch(storageActions.forgetDeviceThunk(action.payload.device));
+            }
+        }
+
+        if (deviceActions.forgetDevice.match(action)) {
+            cancelDeviceStorageWrites(action.payload.device, api.getState());
+            api.dispatch(storageActions.forgetDeviceThunk(action.payload.device));
+        }
+
+        if (tokenDefinitionsActions.setTokenStatus.match(action)) {
+            api.dispatch(
+                storageActions.saveTokenManagementThunk(
+                    action.payload.symbol,
+                    action.payload.type,
+                    TokenManagementAction.HIDE,
+                ),
+            );
+            api.dispatch(
+                storageActions.saveTokenManagementThunk(
+                    action.payload.symbol,
+                    action.payload.type,
+                    TokenManagementAction.SHOW,
+                ),
+            );
+        }
+
+        if (
+            isAnyOf(
+                deviceActions.connectDevice, // Known device is stored
+                deviceActions.connectUnacquiredDevice, // Known device is stored
+                bluetoothActions.knownDevicesUpdateAction,
+                bluetoothActions.removeKnownDeviceAction,
+                bluetoothActions.deviceUpdateAction, // Known devices may be updated
+            )(action)
+        ) {
+            api.dispatch(storageActions.saveKnownDevicesThunk());
+        }
+
+        if (
+            isAnyOf(
+                connectPopupActions.rememberAppPermissions,
+                connectPopupActions.forgetAppPermissions,
+                connectPopupActions.forgetAppPermission,
+                connectPopupActions.setAppSilentMode,
+                walletConnectActions.saveSession,
+                walletConnectActions.removeSession,
+            )(action)
+        ) {
+            api.dispatch(storageActions.saveConnectSettingsThunk());
+        }
+
+        if (firmwareActions.setFirmwareChannel.match(action)) {
+            api.dispatch(storageActions.saveFirmwareSettingsThunk());
+        }
+
+        if (isAnyOf(featureUsed, feedbackRequested, feedbackDismissed)(action)) {
+            api.dispatch(storageActions.saveFeatureFeedbackThunk());
+        }
+
+        if (
+            thpActions.removeCredentials.match(action) ||
+            isDeviceEventOfType(action, DEVICE.THP_CREDENTIALS_CHANGED) ||
+            (isDeviceEventOfType(action, DEVICE.THP_PAIRING_STATUS_CHANGED) &&
+                action.payload.status === 'finished')
+        ) {
+            api.dispatch(storageActions.saveThpCredentialsThunk());
+        }
+
+        if (
+            isAnyOf(
+                deviceActions.connectDevice,
+                deviceActions.deviceChanged,
+                persistentDeviceDataActions.setEntropyCheckResult,
+                persistentDeviceDataActions.setDeviceAuthenticityResult,
+                persistentDeviceDataActions.setManualDeviceCheckSuccess,
+                persistentDeviceDataActions.clearDevicePersistentData,
+                persistentDeviceDataActions.forgetDevicePersistentData,
+            )(action)
+        ) {
+            api.dispatch(storageActions.savePersistentDeviceDataThunk());
+        }
+
+        if (discreetModeActions.setDiscreetMode.match(action)) {
+            api.dispatch(storageActions.saveDiscreetModeThunk());
+        }
+
+        if (
+            isAnyOf(
+                setBaseCurrency,
+                setBitcoinAmountUnits,
+                setMevProtection,
+                setNetworkReserve,
+                setAutoEjectEnabled,
+                setAddressDisplayType,
+                setHomeAssetsTableGrouping,
+                setSuspiciousTransactionsFilter,
+            )(action)
+        ) {
+            api.dispatch(storageActions.saveWalletSettingsThunk());
+        } else if (
+            isAnyOf(
+                suiteSettingsActions.setLanguage,
+                setFlag,
+                markNewContentIndicatorAsSeen,
+                setNewContentIndicatorSeen,
+                suiteSettingsActions.setDebugMode,
+                suiteSettingsActions.setExperimentalFeatures,
+                suiteSettingsActions.setOnionLinks,
+                suiteSettingsActions.setTheme,
+                suiteSettingsActions.setAutodetect,
+                suiteSettingsActions.setSidebarWidth,
+                suiteSettingsActions.toggleDeviceAuthenticityCheck,
+                suiteSettingsActions.toggleFirmwareRevisionCheck,
+                suiteSettingsActions.toggleFirmwareHashCheck,
+                suiteSettingsActions.toggleDeviceMetaChecks,
+                suiteSettingsActions.setIsCoinsFilterVisible,
+                closeEvmExplanationBanner,
+                confirmEvmExplanationModal,
+            )(action)
+        ) {
+            api.dispatch(storageActions.saveSuiteSettingsThunk());
+        } else if (debugActions.setShowDebugMenu.match(action)) {
+            api.dispatch(storageActions.saveDebugSettingsThunk());
+        } else if (tradingActions.saveTrade.match(action)) {
+            storageActions.saveTradingTrade(api.extra.services, action.payload);
+        } else if (
+            metadataActions.enableMetadata.match(action) ||
+            metadataActions.disableMetadata.match(action) ||
+            metadataActions.addMetadataProvider.match(action) ||
+            metadataActions.removeMetadataProvider.match(action)
+        ) {
+            api.dispatch(storageActions.saveMetadataSettingsThunk());
+        } else if (setDebugSettings.match(action)) {
+            api.dispatch(storageActions.saveCoinjoinDebugSettingsThunk());
+        } else if (clientOnPrisonEvent.match(action)) {
+            // Not a rememberedDeviceHandlers entry: unlike those handlers (one action ->
+            // one device), this one action affects multiple accounts on potentially
+            // different devices, so the remembered-device check must be applied per account.
+            const affectedAccounts = action.payload.map(inmate => inmate.accountKey as AccountKey);
+            const state = api.getState();
+            affectedAccounts.forEach(key => {
+                const device = getDeviceByAccountKey(key, state);
+                if (device && getIsDeviceRemembered(device)) {
+                    api.dispatch(storageActions.saveCoinjoinAccountThunk(key));
+                }
+            });
+        }
+
+        return action;
+    })(getExtra);
+};

@@ -32,10 +32,12 @@ import {
     type ChangeCoinVisibilityThunkState,
     blockchainInitialState,
     changeCoinVisibilityThunk,
+    selectBaseCurrency,
     transactionsActions,
+    updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
@@ -44,6 +46,7 @@ import { storageLoad } from 'src/actions/suite/storageLifecycleActions';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
 import {
+    STORAGE_WRITE_THROTTLE_MS,
     type StorageMiddlewareState,
     prepareStorageMiddleware,
 } from 'src/middlewares/wallet/storageMiddleware';
@@ -148,6 +151,25 @@ const tx2 = getWalletTransaction({
     descriptor: asAccountDescriptor('desc2'),
     symbol: btcSymbol,
 });
+
+const TRANSACTIONS_PER_PAGE = 3;
+
+// One page of fetchAllTransactionsForAccountThunk: distinct txids, descending block heights.
+const getTransactionsPage = (account: Account, page: number) =>
+    Array.from({ length: TRANSACTIONS_PER_PAGE }, (_, index) =>
+        getWalletTransaction({
+            deviceState: account.deviceState,
+            descriptor: account.descriptor,
+            symbol: account.symbol,
+            txid: `txid-page${page}-${index}`,
+            blockHeight: 1000 - (page - 1) * TRANSACTIONS_PER_PAGE - index,
+        }),
+    );
+
+// The storage middleware persists without awaiting, so wait for every write the spied db methods
+// have started.
+const settleStorageWrites = (...spies: jest.SpyInstance[]) =>
+    Promise.all(spies.flatMap(spy => spy.mock.results.map(result => result.value)));
 
 // The tested thunks and the storage middleware declare the persisted slices; the sync slices are
 // kept so that their reducers can apply the loaded storage.
@@ -551,6 +573,158 @@ describe('Storage actions', () => {
         expect(acc2Txs.length).toEqual(1);
         await store.dispatch(storageActions.forgetDeviceThunk(dev1));
         await store.dispatch(storageActions.forgetDeviceThunk(dev2));
+    });
+
+    describe('transaction writes of a remembered device', () => {
+        const getRememberedDeviceState = () =>
+            getInitialState({
+                device: {
+                    devices: [dev1],
+                    isConnectionModalOpen: false,
+                    defaultConnectionMode: 'cable',
+                },
+                wallet: {
+                    accounts: [acc1],
+                },
+            });
+
+        const addTransactionsPage = (store: ReturnType<typeof mockStore>, page: number) =>
+            store.dispatch(
+                transactionsActions.addTransaction({
+                    transactions: getTransactionsPage(acc1, page),
+                    account: acc1,
+                    page,
+                    perPage: TRANSACTIONS_PER_PAGE,
+                }),
+            );
+
+        const reloadTransactions = async (account: Account) => {
+            const reloadedStore = mockStore(db, getInitialState());
+            reloadedStore.dispatch((await preloadStore())!);
+
+            return getAccountTransactions(
+                account.key,
+                reloadedStore.getState().wallet.transactions.transactions,
+            );
+        };
+
+        beforeEach(() => {
+            // The repo defaults to legacy fake timers; advancing the write throttle needs the
+            // modern ones. The fake IndexedDB schedules its work with setImmediate, so that one
+            // keeps running for real.
+            jest.useFakeTimers({
+                legacyFakeTimers: false,
+                doNotFake: ['setImmediate', 'clearImmediate', 'nextTick', 'queueMicrotask'],
+            });
+        });
+
+        afterEach(() => {
+            jest.useRealTimers();
+        });
+
+        it('persists transactions added to an already remembered device right away', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const addItemsSpy = jest.spyOn(db, 'addItems');
+            const removeItemByIndexSpy = jest.spyOn(db, 'removeItemByIndex');
+
+            store.dispatch(
+                transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }),
+            );
+
+            expect(removeItemByIndexSpy).toHaveBeenCalledTimes(1);
+            expect(addItemsSpy).toHaveBeenCalledTimes(1);
+            await settleStorageWrites(removeItemByIndexSpy, addItemsSpy);
+
+            expect(await reloadTransactions(acc1)).toEqual([tx1]);
+        });
+
+        it('coalesces the per-page writes of a transaction history load', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const addItemsSpy = jest.spyOn(db, 'addItems');
+            const removeItemByIndexSpy = jest.spyOn(db, 'removeItemByIndex');
+
+            [1, 2, 3, 4].forEach(page => addTransactionsPage(store, page));
+
+            // The first page went through immediately, the others wait for the trailing write.
+            expect(removeItemByIndexSpy).toHaveBeenCalledTimes(1);
+            expect(addItemsSpy).toHaveBeenCalledTimes(1);
+
+            jest.advanceTimersByTime(STORAGE_WRITE_THROTTLE_MS);
+
+            expect(removeItemByIndexSpy).toHaveBeenCalledTimes(2);
+            expect(addItemsSpy).toHaveBeenCalledTimes(2);
+            await settleStorageWrites(removeItemByIndexSpy, addItemsSpy);
+
+            // Nothing is pending once the interval ran idle.
+            jest.advanceTimersByTime(STORAGE_WRITE_THROTTLE_MS);
+            expect(addItemsSpy).toHaveBeenCalledTimes(2);
+
+            const transactions = getAccountTransactions(
+                acc1.key,
+                store.getState().wallet.transactions.transactions,
+            );
+            expect(transactions).toHaveLength(4 * TRANSACTIONS_PER_PAGE);
+            expect(await reloadTransactions(acc1)).toEqual(transactions);
+        });
+
+        it('drops a pending write when the account transactions are reset', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const addItemsSpy = jest.spyOn(db, 'addItems');
+            const removeItemByIndexSpy = jest.spyOn(db, 'removeItemByIndex');
+
+            addTransactionsPage(store, 1);
+            addTransactionsPage(store, 2);
+            store.dispatch(transactionsActions.resetTransaction({ account: acc1 }));
+
+            jest.advanceTimersByTime(STORAGE_WRITE_THROTTLE_MS);
+
+            expect(addItemsSpy).toHaveBeenCalledTimes(1);
+            await settleStorageWrites(removeItemByIndexSpy, addItemsSpy);
+
+            expect(await reloadTransactions(acc1)).toEqual([]);
+        });
+
+        it('drops a pending write when the device is forgotten', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const addItemsSpy = jest.spyOn(db, 'addItems');
+            const removeItemByIndexSpy = jest.spyOn(db, 'removeItemByIndex');
+
+            addTransactionsPage(store, 1);
+            addTransactionsPage(store, 2);
+            store.dispatch(deviceActions.forgetDevice({ device: dev1 }));
+
+            jest.advanceTimersByTime(STORAGE_WRITE_THROTTLE_MS);
+
+            expect(addItemsSpy).toHaveBeenCalledTimes(1);
+            await settleStorageWrites(removeItemByIndexSpy, addItemsSpy);
+
+            expect(await reloadTransactions(acc1)).toEqual([]);
+        });
+
+        it('coalesces the per-batch writes of historic fiat rates', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const addItemSpy = jest.spyOn(db, 'addItem');
+            const getHistoricRatesWrites = () =>
+                addItemSpy.mock.calls.filter(([storeName]) => storeName === 'historicRates');
+            const ratesUpdated = updateTxsFiatRatesThunk.fulfilled(
+                { account: acc1, rates: [] },
+                'requestId',
+                {
+                    accountKey: acc1.key,
+                    txs: [],
+                    baseCurrencyCode: selectBaseCurrency(store.getState()),
+                },
+            );
+
+            [1, 2, 3].forEach(() => store.dispatch(ratesUpdated));
+
+            expect(getHistoricRatesWrites()).toHaveLength(1);
+
+            jest.advanceTimersByTime(STORAGE_WRITE_THROTTLE_MS);
+
+            expect(getHistoricRatesWrites()).toHaveLength(2);
+            await settleStorageWrites(addItemSpy);
+        });
     });
 
     it('should ignore stored accounts of networks unknown to this build', async () => {
