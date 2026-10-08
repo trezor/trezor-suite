@@ -8,7 +8,7 @@ import {
     View,
 } from 'react-native';
 
-import { BoxSkeleton, HStack, TEXT_MAX_FONT_MULTIPLIER, Text } from '@suite-native/atoms';
+import { Box, BoxSkeleton, HStack, TEXT_MAX_FONT_MULTIPLIER, Text } from '@suite-native/atoms';
 import { truncateDecimals } from '@suite-native/helpers';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeTypographyStyle, typographyStylesBase } from '@trezor/theme';
@@ -106,6 +106,16 @@ const textStyle = prepareNativeStyle<TextStyleParams>(
 
 const inputStyle = prepareNativeStyle<TextStyleParams>((_, { sizeConfig }) => ({
     minWidth: sizeConfig.minWidth,
+    padding: 0,
+    textAlignVertical: 'center',
+}));
+
+const placeholderContainerStyle = prepareNativeStyle(() => ({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    justifyContent: 'center',
 }));
 
 const useInputLayoutControls = (value: string | undefined, sizeConfig: AmountInputSizeConfig) => {
@@ -170,6 +180,45 @@ const useInputLayoutControls = (value: string | undefined, sizeConfig: AmountInp
     };
 };
 
+type AmountInputPlaceholderProps = {
+    placeholder: string;
+    sizeConfig: AmountInputSizeConfig;
+    fontSize: number;
+    hasError: boolean;
+};
+
+const AmountInputPlaceholder = ({
+    placeholder,
+    sizeConfig,
+    fontSize,
+    hasError,
+}: AmountInputPlaceholderProps) => {
+    const { applyStyle } = useNativeStyles();
+
+    return (
+        <Box
+            style={applyStyle(placeholderContainerStyle)}
+            pointerEvents="none"
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+        >
+            <Text
+                variant={sizeConfig.typography}
+                style={applyStyle(textStyle, {
+                    sizeConfig,
+                    fontSize,
+                    hasError,
+                    isPlaceholder: true,
+                })}
+                maxFontSizeMultiplier={TEXT_MAX_FONT_MULTIPLIER}
+                numberOfLines={1}
+            >
+                {placeholder}
+            </Text>
+        </Box>
+    );
+};
+
 export const AmountInput = ({
     onPress,
     value,
@@ -185,6 +234,7 @@ export const AmountInput = ({
     size = 'medium',
     prefix,
     hitSlop,
+    placeholder = '0.0',
     ref,
     ...inputProps
 }: AmountInputProps) => {
@@ -192,7 +242,7 @@ export const AmountInput = ({
     useImperativeHandle(ref, () => innerRef.current!, []);
 
     const sizeConfig = amountInputSizes[size];
-    const { applyStyle, utils } = useNativeStyles();
+    const { applyStyle } = useNativeStyles();
     const { fontSize, contentHeight, onBoxLayout, onContentLayout } = useInputLayoutControls(
         value,
         sizeConfig,
@@ -269,22 +319,32 @@ export const AmountInput = ({
                         {prefix}
                     </Text>
                 )}
-                <TextInput
-                    ref={innerRef}
-                    style={applyStyle([textStyle, inputStyle], textStyleParams)}
-                    maxFontSizeMultiplier={TEXT_MAX_FONT_MULTIPLIER}
-                    keyboardType="decimal-pad"
-                    inputMode="decimal"
-                    placeholder="0.0"
-                    placeholderTextColor={utils.colors.contentDisabled}
-                    value={value}
-                    maxLength={maxLength}
-                    onChangeText={handleTextChange}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                    onPress={onPress}
-                    {...inputProps}
-                />
+                <Box>
+                    {!value && (
+                        <AmountInputPlaceholder
+                            placeholder={placeholder}
+                            sizeConfig={sizeConfig}
+                            fontSize={fontSize}
+                            hasError={hasError}
+                        />
+                    )}
+                    <TextInput
+                        ref={innerRef}
+                        style={applyStyle([textStyle, inputStyle], textStyleParams)}
+                        maxFontSizeMultiplier={TEXT_MAX_FONT_MULTIPLIER}
+                        keyboardType="decimal-pad"
+                        inputMode="decimal"
+                        placeholder={placeholder}
+                        placeholderTextColor="transparent"
+                        value={value}
+                        maxLength={maxLength}
+                        onChangeText={handleTextChange}
+                        onFocus={onFocus}
+                        onBlur={onBlur}
+                        onPress={onPress}
+                        {...inputProps}
+                    />
+                </Box>
             </HStack>
         </Pressable>
     );
