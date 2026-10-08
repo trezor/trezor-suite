@@ -78,6 +78,12 @@ export const localRulesConfig = [
                         /^@(?:suite-native|suite|suite-common|trezor)\/[^/]+\/mocks$/,
                         // Suite test setup imports global polyfills through this side-effect-only entry point.
                         /^@suite-common\/test-utils\/globalOverrides$/,
+                        // The query client providers are TSX, so they stay out of the package
+                        // index that Node-only consumers import.
+                        /^@suite-common\/react-query\/src\/components\/\w+QueryProvider$/,
+                        // `@suite/app-assets` has no entry point; it ships files that are imported
+                        // by path, such as the translation catalogs.
+                        /^@suite\/app-assets\/files\/translations\/[\w-]+\.json$/,
                         // The applications import the Webpack pieces they share from this
                         // build-only entry point; it is never part of an application bundle.
                         /^@trezor\/suite\/webpack\/[\w/-]+$/,

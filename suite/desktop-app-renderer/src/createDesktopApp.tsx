@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { initBluetoothThunk } from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { ServicesProvider } from '@suite-common/dependency-injection';
+import { ReactQueryProvider } from '@suite-common/react-query/src/components/ReactQueryProvider';
 import TrezorConnect from '@trezor/connect-electron';
 
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
@@ -65,9 +66,11 @@ export const createDesktopApp =
                 root.render(
                     <ServicesProvider services={deps.services}>
                         <ReduxProvider store={deps.services.store}>
-                            <ConnectedIntlProvider>
-                                <TorLoadingScreen callback={resolve} />
-                            </ConnectedIntlProvider>
+                            <ReactQueryProvider>
+                                <ConnectedIntlProvider>
+                                    <TorLoadingScreen callback={resolve} />
+                                </ConnectedIntlProvider>
+                            </ReactQueryProvider>
                         </ReduxProvider>
                     </ServicesProvider>,
                 );
