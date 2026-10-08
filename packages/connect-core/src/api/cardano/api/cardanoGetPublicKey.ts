@@ -60,15 +60,8 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
     }
 
     get info() {
-        return 'Export Cardano public key';
-    }
-
-    get confirmation() {
         if (this.params.length > 1) {
-            return {
-                view: 'export-xpub' as const,
-                label: 'Export multiple Cardano public keys',
-            };
+            return 'Export multiple Cardano public keys';
         }
         const { params } = this;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
@@ -77,10 +70,7 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const accountIndex: number = addressN[2];
 
-        return {
-            view: 'export-xpub' as const,
-            label: `Export Cardano public key for account #${fromHardenedPathPart(accountIndex) + 1}`,
-        };
+        return `Export Cardano public key for account #${fromHardenedPathPart(accountIndex) + 1}`;
     }
 
     async run({ sendCoreMessage }: MethodContext) {

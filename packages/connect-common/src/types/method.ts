@@ -71,5 +71,4 @@ export type MethodInfo = {
     // Available after init.
     info: string;
     precomposed?: PrecomposeResultFinal;
-    confirmation?: { label?: string };
 };

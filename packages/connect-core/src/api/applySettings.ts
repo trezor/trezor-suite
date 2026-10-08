@@ -30,13 +30,6 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
         return [{ permission: 'management' }];
     }
 
-    get confirmation() {
-        return {
-            view: 'device-management' as const,
-            label: 'Do you really want to change device settings?',
-        };
-    }
-
     async run() {
         const device = this.getDevice();
         const cmd = device.getCommands();

@@ -44,17 +44,6 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         return [{ permission: 'management' }];
     }
 
-    get info() {
-        return 'Setup device';
-    }
-
-    get confirmation() {
-        return {
-            view: 'device-management' as const,
-            label: 'Do you really you want to create a new wallet?',
-        };
-    }
-
     // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#simple-resetdevice-workflow
     private async resetDeviceWorkflow() {
         const cmd = this.getDevice().getCommands();

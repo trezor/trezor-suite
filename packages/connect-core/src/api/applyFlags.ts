@@ -24,13 +24,6 @@ export default class ApplyFlags extends AbstractMethod<'applyFlags', PROTO.Apply
         return [{ permission: 'management' }];
     }
 
-    get confirmation() {
-        return {
-            view: 'device-management' as const,
-            label: 'Do you really want to apply flags?',
-        };
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('ApplyFlags', 'Success', this.params);

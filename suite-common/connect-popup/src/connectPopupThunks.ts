@@ -123,8 +123,7 @@ export const connectPopupCallInnerThunk = createThunk<
                 connectPopupActions.initiateCall({
                     method,
                     methodInfo: {
-                        methodTitle:
-                            methodInfoPayload.confirmation?.label ?? methodInfoPayload.info,
+                        methodTitle: methodInfoPayload.info,
                         permissionTypes: consentPermissions,
                         useUi: methodInfoPayload.useUi,
                     },

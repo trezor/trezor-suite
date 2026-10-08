@@ -19,10 +19,6 @@ export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
         return [{ permission: 'management' }];
     }
 
-    get info() {
-        return 'Evolu get delegated identity key';
-    }
-
     async run() {
         const thpState = this.getDevice().getThpState();
         if (thpState) {

@@ -62,22 +62,19 @@ export abstract class AbstractMiscGetAddress<
         return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
-    protected getInfo(coinName: string, showAccountInInfo: boolean) {
+    protected getInfo(coinName: string) {
         if (this.params.length > 1) {
             return `Export multiple ${coinName} addresses`;
         }
-        if (showAccountInInfo) {
-            const { params } = this;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const firstParam: (typeof params)[number] = params[0];
-            const { address_n } = firstParam.proto;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const accountIndex: number = address_n[2];
 
-            return `Export ${coinName} address for account #${fromHardenedPathPart(accountIndex) + 1}`;
-        }
+        const { params } = this;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstParam: (typeof params)[number] = params[0];
+        const { address_n } = firstParam.proto;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const accountIndex: number = address_n[2];
 
-        return `Export ${coinName} address`;
+        return `Export ${coinName} address for account #${fromHardenedPathPart(accountIndex) + 1}`;
     }
 
     getButtonRequestData(code: string) {
@@ -92,27 +89,6 @@ export abstract class AbstractMiscGetAddress<
                 address: currentParam.address || 'not-set',
             };
         }
-    }
-
-    protected getConfirmation(coinName: string) {
-        if (this.params.length > 1) {
-            return {
-                view: 'export-address' as const,
-                label: `Export multiple ${coinName} addresses`,
-            };
-        }
-
-        const { params } = this;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstParam: (typeof params)[number] = params[0];
-        const { address_n } = firstParam.proto;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const accountIndex: number = address_n[2];
-
-        return {
-            view: 'export-address' as const,
-            label: `Export ${coinName} address for account #${fromHardenedPathPart(accountIndex) + 1}`,
-        };
     }
 
     protected abstract _call(

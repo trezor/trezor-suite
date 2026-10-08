@@ -27,13 +27,6 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
         return [{ permission: 'management' }];
     }
 
-    get confirmation() {
-        return {
-            view: 'device-management' as const,
-            label: 'Do you want to change language?',
-        };
-    }
-
     run() {
         const { language, binary } = this.params;
 

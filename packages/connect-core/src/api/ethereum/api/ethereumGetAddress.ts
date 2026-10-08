@@ -123,13 +123,6 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         }
     }
 
-    get confirmation() {
-        return {
-            view: 'export-address' as const,
-            label: this.info,
-        };
-    }
-
     // Networks that are not well-known need a definition. Its version depends on the device
     // firmware, so it is fetched here, once the device is known.
     private async getEncodedNetwork(path: number[]) {
