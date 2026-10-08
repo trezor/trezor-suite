@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import type { UtilityProcess } from 'electron';
+import { type UtilityProcess, utilityProcess } from 'electron';
 import path from 'path';
 
 import type {
@@ -23,11 +23,7 @@ export class WinHelloProcessManager implements WinHelloManager {
     >();
     private isReady = false;
 
-    public create({
-        resourcesPath,
-        logger,
-        forkChildProcess,
-    }: WinHelloManagerOptions): Promise<void> {
+    public create({ resourcesPath, logger }: WinHelloManagerOptions): Promise<void> {
         if (this.childProcess) {
             throw new Error('Child process already exists. Call destroy() first.');
         }
@@ -40,7 +36,8 @@ export class WinHelloProcessManager implements WinHelloManager {
 
             try {
                 logger.info('win-hello', 'Creating child process...');
-                this.childProcess = forkChildProcess(childPath, [], {
+                // Node's `child_process.fork` cannot be used, because it requires the `RunAsNode` fuse.
+                this.childProcess = utilityProcess.fork(childPath, [], {
                     env: {
                         ...process.env,
                         RESOURCES_PATH: resourcesPath,

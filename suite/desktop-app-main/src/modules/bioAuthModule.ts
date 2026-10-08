@@ -1,4 +1,4 @@
-import { systemPreferences, utilityProcess } from 'electron';
+import { systemPreferences } from 'electron';
 
 import { createWinHelloManager } from '@suite/desktop-app-native-bindings';
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
@@ -152,8 +152,6 @@ class BioAuthWindows extends BioAuth {
             createWinHelloManager({
                 resourcesPath: process.resourcesPath,
                 logger: this.logger,
-                forkChildProcess: (modulePath, args, options) =>
-                    utilityProcess.fork(modulePath, args, options),
             }),
             new Promise<never>((_, reject) =>
                 setTimeout(() => reject(new Error('WinHello initialization timeout')), 40_000),

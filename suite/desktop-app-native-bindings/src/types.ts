@@ -1,5 +1,3 @@
-import type { utilityProcess } from 'electron';
-
 /**
  * IPC message types for Windows Hello child process communication
  */
@@ -45,18 +43,11 @@ export interface Logger {
 }
 
 /**
- * Electron's `utilityProcess.fork`, injected to keep this package free of runtime Electron imports.
- * Node's `child_process.fork` cannot be used, because it requires the `RunAsNode` fuse.
- */
-export type ForkWinHelloChildProcess = typeof utilityProcess.fork;
-
-/**
  * Manager creation options
  */
 export interface WinHelloManagerOptions {
     resourcesPath: string;
     logger: Logger;
-    forkChildProcess: ForkWinHelloChildProcess;
 }
 
 /**
