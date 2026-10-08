@@ -69,6 +69,143 @@ export const filterTargets = [
     },
 ];
 
+export const toAddressSet = [
+    {
+        description: 'addresses as string',
+        addresses: 'A',
+        parsed: ['A'],
+    },
+    {
+        description: 'addresses as array of strings, deduplicated in order',
+        addresses: ['A', 'B', 'A'],
+        parsed: ['A', 'B'],
+    },
+    {
+        description: 'addresses as array of mixed objects',
+        addresses: ['A', 1, undefined, 'C', { address: 'B', path: '', transfers: 0, decimal: 0 }],
+        parsed: ['A', 'C', 'B'],
+    },
+    {
+        description: 'addresses as unexpected object (number)',
+        addresses: 1,
+        parsed: [],
+    },
+    {
+        description: 'addresses as unexpected object (null)',
+        addresses: null,
+        parsed: [],
+    },
+    {
+        description: 'addresses as unexpected object (array of numbers)',
+        addresses: [1],
+        parsed: [],
+    },
+    {
+        description: 'addresses as unexpected object (array of unexpected objects)',
+        addresses: [{ foo: 'bar' }],
+        parsed: [],
+    },
+];
+
+export const filterTargetsBySet = [
+    {
+        description: 'keeps the owned targets in their original order',
+        addresses: ['A', 'C'],
+        targets: [{ addresses: ['A'] }, { addresses: ['B'] }, { addresses: ['D', 'C'] }],
+        parsed: [{ addresses: ['A'] }, { addresses: ['D', 'C'] }],
+    },
+    {
+        description: 'targets not found',
+        addresses: ['A'],
+        targets: [{ addresses: ['B'] }, { addresses: ['C'] }],
+        parsed: [],
+    },
+    {
+        description: 'targets as unexpected object (string)',
+        addresses: ['A'],
+        targets: 'A',
+        parsed: [],
+    },
+    {
+        description: 'targets as unexpected object (null)',
+        addresses: ['A'],
+        targets: null,
+        parsed: [],
+    },
+    {
+        description: 'targets as unexpected object (array of unexpected objects)',
+        addresses: ['A'],
+        targets: ['A', null, 1, {}],
+        parsed: [],
+    },
+];
+
+export const isAccountOwned = [
+    {
+        description: 'owned when any of its addresses is in the index',
+        addresses: ['A', 'B'],
+        vinVout: { n: 0, isAddress: true, addresses: ['X', 'B'] },
+        owned: true,
+    },
+    {
+        description: 'not owned when none of its addresses is in the index',
+        addresses: ['A', 'B'],
+        vinVout: { n: 0, isAddress: true, addresses: ['X'] },
+        owned: false,
+    },
+    {
+        description: 'coinbase vin without addresses is not owned',
+        addresses: ['A'],
+        vinVout: { n: 0, isAddress: false, coinbase: '03a08b0d' },
+        owned: false,
+    },
+    {
+        description: 'addresses as unexpected object (string) are not owned',
+        addresses: ['A'],
+        vinVout: { n: 0, isAddress: true, addresses: 'A' },
+        owned: false,
+    },
+    {
+        description: 'vinVout as unexpected object (null) is not owned',
+        addresses: ['A'],
+        vinVout: null,
+        owned: false,
+    },
+    {
+        description: 'empty index owns nothing',
+        addresses: [],
+        vinVout: { n: 0, isAddress: true, addresses: ['A'] },
+        owned: false,
+    },
+];
+
+export const enhanceVinVout = [
+    {
+        description: 'marks an owned vout and keeps its fields',
+        addresses: ['A'],
+        vinVout: { n: 1, isAddress: true, addresses: ['A'], value: '50' },
+        enhanced: { n: 1, isAddress: true, addresses: ['A'], value: '50', isAccountOwned: true },
+    },
+    {
+        description: 'leaves isAccountOwned undefined on a foreign vout',
+        addresses: ['A'],
+        vinVout: { n: 1, isAddress: true, addresses: ['B'], value: '50' },
+        enhanced: {
+            n: 1,
+            isAddress: true,
+            addresses: ['B'],
+            value: '50',
+            isAccountOwned: undefined,
+        },
+    },
+    {
+        description: 'leaves isAccountOwned undefined on a coinbase vin',
+        addresses: ['A'],
+        vinVout: { n: 0, isAddress: false, coinbase: '03a08b0d' },
+        enhanced: { n: 0, isAddress: false, coinbase: '03a08b0d', isAccountOwned: undefined },
+    },
+];
+
 export const unsortedTxs = [
     { txid: 'e', blockHeight: 30, details: { vin: [{ txid: 'f' }, { txid: 'g' }] } },
     { txid: 'h', blockHeight: 20, details: { vin: [{ txid: 'e' }] } },
