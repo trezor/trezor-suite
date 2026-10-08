@@ -753,6 +753,19 @@ impl AdapterManager {
         let Ok(peripheral) = self.get_peripheral_or_die(&stream.device_id).await else {
             return;
         };
+        if !peripheral.is_connected().await.unwrap_or(false) {
+            return;
+        }
+        // linux: each lookup returns a new Peripheral without resolved services
+        if peripheral.characteristics().is_empty() {
+            if let Err(err) = peripheral.discover_services().await {
+                info!(
+                    "Unsubscribe {} discover_services error: {err}",
+                    stream.device_id
+                );
+                return;
+            }
+        }
         let uuid = stream.characteristic.to_uuid();
         let Some(characteristic) = peripheral
             .characteristics()
