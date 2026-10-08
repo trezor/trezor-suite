@@ -134,6 +134,8 @@ jobs:
             cargo-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-
       - name: Rust Formatting
         run: cargo fmt --all -- --check
+      - name: Create UI build placeholder
+        run: mkdir -p build && touch build/index.html
       - name: Clippy
         run: cargo clippy --all-targets --locked -- -D warnings
       - name: Rust Tests
