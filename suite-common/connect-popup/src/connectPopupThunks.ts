@@ -92,7 +92,6 @@ export const connectPopupCallInnerThunk = createThunk<
                 ...payload,
                 method,
                 __info: true,
-                __precomposed: true,
             } as CallMethodPayload);
             if (!methodInfo.success) {
                 throw methodInfo.error;

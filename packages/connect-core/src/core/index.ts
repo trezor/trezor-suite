@@ -227,10 +227,6 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         // handleMessage only logs a rejected onCall, so the caller would get no response at all.
         try {
             const info = await method.getMethodInfo();
-
-            if (message.payload.__precomposed) {
-                info.precomposed = await method.payloadToPrecomposed();
-            }
             response = createResponseMessage(method.responseID, true, info);
         } catch (error) {
             response = createResponseMessage(method.responseID, false, { error });

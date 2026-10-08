@@ -192,8 +192,8 @@ export default class EthereumSignTransaction extends AbstractMethod<
         });
     }
 
-    // Only `__info` names the network and token, so only `__info` downloads their definitions to
-    // decode them. payloadToPrecomposed reads them too; core resolves getMethodInfo before it.
+    // Only `__info` names the network and token and previews the transfer, so only `__info`
+    // downloads their definitions to decode them.
     async getMethodInfo() {
         const definitions = await this.getDefinitions();
         if (definitions) {
