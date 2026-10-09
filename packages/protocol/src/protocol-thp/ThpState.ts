@@ -216,7 +216,9 @@ export class ThpState {
         }
 
         // check if nonce should be updated
+        // The send nonce is advanced when a message is encrypted (see encodeProtobufMessage).
         const updateNonce =
+            type === 'recv' &&
             updateSyncBit &&
             ![
                 'ThpHandshakeInitRequest',
