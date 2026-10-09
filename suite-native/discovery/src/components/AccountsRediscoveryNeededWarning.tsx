@@ -14,14 +14,15 @@ import {
 import { BannerInline, Box } from '@suite-native/atoms';
 import { deviceModelToIconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import type { NativeSpacing } from '@trezor/theme';
 
 type RediscoveryNeededWarningProps = {
-    hasPadding?: boolean;
+    margin?: NativeSpacing;
+    marginHorizontal?: NativeSpacing;
+    marginBottom?: NativeSpacing;
 };
 
-export const AccountsRediscoveryNeededWarning = ({
-    hasPadding = false,
-}: RediscoveryNeededWarningProps) => {
+export const AccountsRediscoveryNeededWarning = (props: RediscoveryNeededWarningProps) => {
     const device = useSelector(selectSelectedDevice);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
@@ -42,11 +43,12 @@ export const AccountsRediscoveryNeededWarning = ({
         !deviceModel ||
         isDeviceConnected ||
         isPortfolioTrackerDevice
-    )
+    ) {
         return null;
+    }
 
     return (
-        <Box padding={hasPadding ? 'sp8' : undefined}>
+        <Box {...props}>
             <BannerInline
                 title={<Translation id="assets.rediscoveryNeeded" />}
                 intent="warning"

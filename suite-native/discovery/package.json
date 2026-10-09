@@ -33,6 +33,7 @@
         "@suite-native/tokens": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",

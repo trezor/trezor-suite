@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 
 import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
-import { useScrollDivider } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
@@ -24,8 +23,6 @@ type ScreenNavigationProps = StackToStackCompositeScreenProps<
 >;
 
 export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => {
-    const { scrollDivider, handleScroll } = useScrollDivider();
-
     const networksFilter = useMemo(
         () => route.params?.networksFilter ?? [],
         [route.params?.networksFilter],
@@ -55,16 +52,14 @@ export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => 
             noHorizontalPadding
             noBottomPadding
         >
-            {scrollDivider}
             <AccountsListWithFilter
                 title={<Translation id="moduleAccountManagement.accountsScreen.accountsTitle" />}
                 onSelectAccount={handleSelectAccount}
                 flowType="accounts"
                 networksFilter={networksFilter}
-                onScroll={handleScroll}
                 noHeaderPaddingTop
             >
-                <AccountsRediscoveryNeededWarning />
+                <AccountsRediscoveryNeededWarning marginHorizontal="sp16" marginBottom="sp16" />
             </AccountsListWithFilter>
         </Screen>
     );
