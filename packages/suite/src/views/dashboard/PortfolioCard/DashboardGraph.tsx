@@ -5,13 +5,13 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { Box, Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { RepeatIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 
 import { updateGraphDataThunk } from 'src/actions/wallet/graphActions';

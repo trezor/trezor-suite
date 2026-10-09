@@ -1,8 +1,8 @@
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const UdevDescription = () => {
     const { dispatch } = useServices(injectDispatch);

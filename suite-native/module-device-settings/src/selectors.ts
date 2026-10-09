@@ -1,6 +1,6 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type ThpRootState, selectThpCredentials } from '@suite-common/thp';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState & ThpRootState>();
 

@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import {
     type FormDraftRootState,
     REVOKE_ALLOWANCE_AMOUNT,
@@ -20,6 +19,7 @@ import {
     type UpdateSelectedFeeLevelThunkParams,
     selectFeeLevels,
 } from '@suite-native/transaction-management';
+import { createThunk } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { EARN_MODULE_PREFIX } from '../../constants';

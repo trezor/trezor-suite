@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { BannerFull } from '@suite-native/atoms';
 import {
     selectIsSolanaLimitedHistoryBannerClosed,
@@ -8,6 +7,7 @@ import {
 } from '@suite-native/banners';
 import { useTranslate } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const SolanaLimitedHistoryBanner = () => {
     const { translate } = useTranslate();

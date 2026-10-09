@@ -13,10 +13,10 @@ import {
     buildUserFeedbackData,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { EmojiRatingSelector } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 
 import { setView } from 'src/actions/suite/guideActions';

@@ -1,12 +1,12 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
+import { type AccountKey, type EarnOpportunityKey } from '@suite-common/wallet-types';
 import {
     type ActionTypesDep,
     type ReducersDep,
     createSliceWithExtraDeps,
-} from '@suite-common/redux-utils';
-import { type AccountKey, type EarnOpportunityKey } from '@suite-common/wallet-types';
+} from '@trezor/redux-utils';
 
 import { accountsActions } from './accountsActions';
 

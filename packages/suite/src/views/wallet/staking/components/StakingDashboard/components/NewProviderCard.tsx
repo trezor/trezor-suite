@@ -1,6 +1,5 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { isCardanoStakedWithFiveBinaries, selectPoolStatsApy } from '@suite-common/wallet-core';
@@ -8,6 +7,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { Banner, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useSelector } from 'src/hooks/suite';

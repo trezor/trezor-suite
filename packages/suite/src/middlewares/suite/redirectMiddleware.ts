@@ -10,7 +10,7 @@ import {
     selectRouterParams,
 } from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { type Dispatch } from '@suite-common/redux-utils';
+import { type Dispatch } from '@trezor/redux-utils';
 
 import { type AppState, type TrezorDevice } from 'src/types/suite';
 

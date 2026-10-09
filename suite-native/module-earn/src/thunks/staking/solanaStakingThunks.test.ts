@@ -1,7 +1,6 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { type MessageSystemState, messageSystemInitialState } from '@suite-common/message-system';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { type SendState, prepareSendFormReducer } from '@suite-common/wallet-core';
@@ -11,6 +10,7 @@ import {
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { signSolanaStakingTransactionThunk } from './solanaStakingThunks';
 

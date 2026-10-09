@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
     type Explorer,
@@ -23,6 +22,7 @@ import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/compo
 import { useServices } from '@trezor/dependency-injection';
 import { CaretDownIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';

@@ -1,5 +1,5 @@
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 const NATIVE_FIRMWARE_MODULE_PREFIX = 'nativeFirmware';
 

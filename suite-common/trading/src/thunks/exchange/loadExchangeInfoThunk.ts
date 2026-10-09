@@ -1,6 +1,6 @@
 import { type CryptoId, type ExchangeProviderInfo } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 import { unique } from '@trezor/utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';

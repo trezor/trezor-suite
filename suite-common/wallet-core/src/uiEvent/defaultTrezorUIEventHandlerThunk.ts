@@ -1,8 +1,8 @@
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type ConnectInitUIEventHooksDep } from '@suite-common/suite-types';
 import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 import type { PopupEventMessage, UiEventMessage, UiRequestMessage } from '@trezor/connect-common';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { type Without } from '@trezor/type-utils';
 
 const MODULE = '@common/wallet-core/uiEvent';

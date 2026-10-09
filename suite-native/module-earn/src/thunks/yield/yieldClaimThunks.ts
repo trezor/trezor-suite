@@ -4,7 +4,6 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
-import { createThunk } from '@suite-common/redux-utils';
 import {
     type FormDraftRootState,
     type SynchronizeSentTransactionThunkDeps,
@@ -23,6 +22,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { type UpdateSelectedFeeLevelThunkParams } from '@suite-native/transaction-management';
+import { createThunk } from '@trezor/redux-utils';
 
 import { getPushErrorType } from './yieldTransactionThunks';
 import type { YieldPushTransactionError } from './yieldTransactionThunks';

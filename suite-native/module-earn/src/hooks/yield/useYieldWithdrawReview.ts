@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type FormDraftRootState,
     type YieldFlowDisplayToken,
@@ -21,6 +20,7 @@ import type {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useYieldReviewAnalytics } from './useYieldReviewAnalytics';
 import {

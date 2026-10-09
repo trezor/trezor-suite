@@ -4,7 +4,6 @@ import { selectHasSeenDisconnectTooltip, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
@@ -20,6 +19,7 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { EjectIcon } from '@trezor/icons';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import {
     addDeviceIdToSeenDisconnectNotification,

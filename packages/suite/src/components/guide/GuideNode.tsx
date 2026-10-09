@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectLanguage } from '@suite/settings';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { CardList, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { type IconComponent } from '@trezor/components';
@@ -19,6 +18,7 @@ import {
     GearIcon,
     PiggyBankIcon,
 } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useSelector } from 'src/hooks/suite';

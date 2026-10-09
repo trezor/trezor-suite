@@ -1,7 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { type ReduxStoreWithThunk } from '@suite-common/redux-utils';
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type LoadInitialDataThunkDeps,
@@ -24,6 +22,8 @@ import {
 } from '@suite-native/test-utils-store';
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { type TradingRootState, tradingSlice } from '@suite-native/trading-state';
+import { type ReduxStoreWithThunk } from '@trezor/redux-utils';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { useSellData } from './useSellData';
 

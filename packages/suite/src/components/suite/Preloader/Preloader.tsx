@@ -16,9 +16,9 @@ import {
     useRetryFwAuthenticityChecks,
 } from '@suite-common/firmware-authenticity';
 import { selectActiveKillswitchMessage } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Card } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { initThunk } from 'src/actions/suite/initAction';

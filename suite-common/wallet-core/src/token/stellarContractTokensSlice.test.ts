@@ -1,5 +1,5 @@
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import {
     type StellarContractTokensState,

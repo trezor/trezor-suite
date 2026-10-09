@@ -1,10 +1,10 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { createSuiteSyncOutputId } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor, TxTargetId } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 import type { WalletDescriptor } from '@trezor/device-utils';
 import { parseStaticSessionId } from '@trezor/device-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type SuiteSyncDataRootState } from '../suiteSyncDataReducer';
 import { selectAllOutputsForWallet } from '../wallet/suiteSyncWalletSelectors';

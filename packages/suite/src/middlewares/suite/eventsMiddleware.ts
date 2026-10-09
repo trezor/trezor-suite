@@ -3,11 +3,11 @@ import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { routerAppChanged } from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { type Dispatch } from '@suite-common/redux-utils';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
 import { DEVICE, isDeviceEventOfType } from '@trezor/connect';
+import { type Dispatch } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/types/suite';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';

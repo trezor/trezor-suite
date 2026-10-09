@@ -8,7 +8,6 @@
         { "path": "../device" },
         { "path": "../mev" },
         { "path": "../networks" },
-        { "path": "../redux-utils" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../toast-notifications" },
@@ -25,6 +24,7 @@
         {
             "path": "../../networks/stellar/network-stellar"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]

@@ -6,11 +6,6 @@ import {
     selectSupportedNetworkSymbols,
 } from '@suite-common/networks';
 import {
-    createWeakMapSelector,
-    returnStableArrayIfEmpty,
-    weakMapMemoize,
-} from '@suite-common/redux-utils';
-import {
     type NetworkSymbol,
     PROD_STAKING_SYMBOLS,
     STAKING_SYMBOLS,
@@ -62,6 +57,11 @@ import {
 import { type YieldClaimVaultParams } from '@suite-native/navigation';
 import { type SettingsSliceRootState, selectAreTestnetsEnabled } from '@suite-native/settings';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import {
+    createWeakMapSelector,
+    returnStableArrayIfEmpty,
+    weakMapMemoize,
+} from '@trezor/redux-utils';
 import { BigNumber, isNotNull } from '@trezor/utils';
 
 import {

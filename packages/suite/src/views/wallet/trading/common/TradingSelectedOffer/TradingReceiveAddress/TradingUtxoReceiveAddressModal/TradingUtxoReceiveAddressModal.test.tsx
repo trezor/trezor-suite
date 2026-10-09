@@ -5,7 +5,6 @@ import { fireEvent, screen } from '@testing-library/react';
 import { initialMetadataState } from '@suite/metadata';
 import { mockAddressValidator } from '@suite-common/address/mocks';
 import { type AddressValidatorDep } from '@suite-common/networks';
-import { type WithServices } from '@suite-common/redux-utils';
 import { createSuiteSyncAddressId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -14,6 +13,7 @@ import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
 import { type Address } from '@trezor/blockchain-link-types';
 import { type WalletDescriptor } from '@trezor/device-utils';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';

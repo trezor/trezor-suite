@@ -9,7 +9,6 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { selectIsDeviceRemembered } from '@suite-common/device';
 import { injectAddressValidator, injectGetNamedAddressSupport } from '@suite-common/networks';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
 import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -64,6 +63,7 @@ import {
 } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 import { TRANSPORT_ERROR } from '@trezor/transport-common';
 
 import { selectDestinationTagFromDraft } from '../selectors';

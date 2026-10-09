@@ -1,6 +1,5 @@
 import { type Store, combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -26,6 +25,7 @@ import {
     prepareSendFormReducer,
 } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { useTradingOutputsReviewScreenControls } from './useTradingOutputsReviewScreenControls';
 import { type TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';

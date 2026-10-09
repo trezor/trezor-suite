@@ -1,8 +1,8 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { type FeeInfo } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 import { isNotUndefined, resolveAfter, typedObjectFromEntries } from '@trezor/utils';
 
 import { FEES_MODULE_PREFIX, feesActions } from './feesActions';

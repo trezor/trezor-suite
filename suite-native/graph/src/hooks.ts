@@ -5,7 +5,6 @@ import { type PrimitiveAtom, useSetAtom } from 'jotai';
 
 import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { type AccountItem, type FiatGraphPoint } from '@suite-common/graph';
-import { injectDispatch, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
@@ -13,6 +12,7 @@ import {
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { type RefetchGraphThunkParams } from './graphThunkTypes';
 import { refetchGraphThunk } from './graphThunks';

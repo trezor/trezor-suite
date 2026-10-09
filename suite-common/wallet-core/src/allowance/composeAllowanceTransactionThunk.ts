@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
@@ -10,6 +9,7 @@ import {
 import { findToken, getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 import { BigNumber, typedObjectFromEntries } from '@trezor/utils';
 
 import { ALLOWANCE_MODULE_PREFIX } from './allowanceConstants';

@@ -2,7 +2,6 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetworksWithNativeTokenReserve } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
 import { Column, Switch } from '@trezor/components';
@@ -13,6 +12,7 @@ import {
     SettingsRequirementBanner,
     TextColumn,
 } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { NETWORK_RESERVE_URL } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';

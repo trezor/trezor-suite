@@ -1,7 +1,7 @@
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, type FeesState } from '@suite-common/wallet-types';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 export type FeesRootState = { wallet: { fees: FeesState } };
 

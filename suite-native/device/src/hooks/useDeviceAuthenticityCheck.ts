@@ -11,7 +11,6 @@ import {
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import {
     type DeviceAuthenticityCheckResult,
@@ -25,6 +24,7 @@ import { captureSentryException, withSentryScope } from '@suite-native/sentry';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect, { type AuthenticateDeviceResult, type Response } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { isArrayMember } from '@trezor/utils';
 
 type RawResult = Awaited<Response<AuthenticateDeviceResult>>;

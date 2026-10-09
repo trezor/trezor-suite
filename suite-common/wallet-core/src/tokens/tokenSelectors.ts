@@ -1,10 +1,10 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type TokenAddress, type TokenInfoBranded } from '@suite-common/wallet-types';
 import { getFiatRateKey, isErc4626, toFiatCurrency } from '@suite-common/wallet-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type GetTokensOutputType, getTokens } from './tokenUtils';
 import { type AccountsRootState } from '../accounts/accountsReducer';

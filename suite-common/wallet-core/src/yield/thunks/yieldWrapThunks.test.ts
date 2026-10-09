@@ -1,8 +1,8 @@
-import { createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type TokenInfo } from '@trezor/connect';
+import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import {
     type TrackWrappedNativeTokenThunkState,

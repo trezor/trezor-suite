@@ -1,5 +1,4 @@
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
@@ -8,6 +7,7 @@ import {
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { selectBuyQuoteThunk } from 'src/actions/wallet/trading/buy/selectBuyQuoteThunk';
 import { useSelector } from 'src/hooks/suite';

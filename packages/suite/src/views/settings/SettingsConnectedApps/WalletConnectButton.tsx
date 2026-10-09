@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
 import { Button, Input, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const WalletConnectButton = () => {
     const { dispatch } = useServices(injectDispatch);

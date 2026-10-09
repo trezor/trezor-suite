@@ -1,10 +1,10 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getStatus } from '@suite-common/suite-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     DeviceRootState & NetworksRootState

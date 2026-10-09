@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useAtomValue, useSetAtom } from 'jotai';
 
 import { type FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
@@ -22,6 +21,7 @@ import {
     useGraphGestureHandlers,
 } from '@suite-native/graph';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { AccountDetailGraphTimeSwitch } from './AccountDetailGraphTimeSwitch';
 import { selectAccountItemForGraph } from '../selectors';

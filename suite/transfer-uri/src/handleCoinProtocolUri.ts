@@ -2,10 +2,10 @@ import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type NetworksRootState, selectNetworkSymbolForProtocol } from '@suite-common/networks';
-import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 import type { Protocol } from '@trezor/network-module-suite-common-types';
+import { type WithServices } from '@trezor/redux-utils';
 
 /** Flat transfer fields, matching the send-form state the protocol reducer persists. */
 export type CoinProtocol = {

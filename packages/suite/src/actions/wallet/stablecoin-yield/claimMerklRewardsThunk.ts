@@ -12,7 +12,6 @@ import {
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { createThunk } from '@suite-common/redux-utils';
 import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
 import {
     type EthereumGetCurrentNonceThunkState,
@@ -34,6 +33,7 @@ import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types'
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 
 import {
     PUSH_TRANSACTION_FAILED_CAUSE,

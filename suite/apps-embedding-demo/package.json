@@ -13,7 +13,6 @@
     },
     "dependencies": {
         "@suite-common/apps-embedding": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite/apps-embedding-web": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/settings": "workspace:*",
@@ -21,6 +20,7 @@
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/product-components": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0",

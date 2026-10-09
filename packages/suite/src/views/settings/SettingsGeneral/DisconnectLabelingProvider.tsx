@@ -5,9 +5,9 @@ import {
     selectSelectedProviderForLabels,
 } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

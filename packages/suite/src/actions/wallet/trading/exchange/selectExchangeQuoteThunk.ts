@@ -2,7 +2,6 @@ import { type ExchangeTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
     cryptoIdToNetworkSymbolAndContractAddress,
@@ -11,6 +10,7 @@ import {
     selectTradingExchangeInfo,
     selectTradingExchangeQuotesRequest,
 } from '@suite-common/trading';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 type SelectExchangeQuoteThunkProps = {
     quote: ExchangeTrade;

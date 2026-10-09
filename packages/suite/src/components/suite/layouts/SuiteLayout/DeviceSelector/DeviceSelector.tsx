@@ -4,11 +4,11 @@ import styled, { css } from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Icon, Row, ShortcutBadge, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { commonFocusStyles, focusStyleTransition } from '@trezor/components/src/utils/utils';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretCircleDownIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { zIndices } from '@trezor/theme';
 
 import { setRecentlyConnectedDevicePath } from 'src/actions/suite/suiteActions';

@@ -1,4 +1,3 @@
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import {
     selectBitcoinAmountUnit,
@@ -7,6 +6,7 @@ import {
 } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

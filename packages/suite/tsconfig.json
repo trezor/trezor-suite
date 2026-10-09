@@ -92,9 +92,6 @@
             "path": "../../suite-common/react-query"
         },
         { "path": "../../suite-common/receive" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../../suite-common/sentry" },
         {
             "path": "../../suite-common/suite-config"
@@ -238,9 +235,7 @@
         { "path": "../connect" },
         { "path": "../connect-common" },
         { "path": "../crypto-utils" },
-        {
-            "path": "../dependency-injection"
-        },
+        { "path": "../dependency-injection" },
         { "path": "../device-utils" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
@@ -269,6 +264,7 @@
         },
         { "path": "../product-components" },
         { "path": "../react-utils" },
+        { "path": "../redux-utils" },
         { "path": "../styles" },
         { "path": "../suite-storage" },
         { "path": "../theme" },

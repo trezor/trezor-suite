@@ -18,9 +18,6 @@
             "path": "../../suite-common/metadata-types"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-rbf-labels-migrations-types"
         },
         {
@@ -64,6 +61,7 @@
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/eslint" },
         { "path": "../../packages/icons" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../../packages/requirements" }

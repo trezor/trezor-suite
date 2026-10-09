@@ -1,9 +1,9 @@
 import { selectDefinitionsChannel, suiteSettingsActions } from '@suite/settings';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type DefinitionsChannel } from '@trezor/connect-common';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

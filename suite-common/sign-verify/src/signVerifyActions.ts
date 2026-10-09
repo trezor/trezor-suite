@@ -2,7 +2,6 @@ import { type Dispatch } from 'redux';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { type WithServices } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type WalletSettingsRootState, selectAddressDisplayType } from '@suite-common/wallet-core';
@@ -17,6 +16,7 @@ import {
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { asCoinSymbol, getSerializedPath } from '@trezor/connect-common';
 import { type ErrorCode, type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type WithServices } from '@trezor/redux-utils';
 import { type Result } from '@trezor/type-utils';
 
 import * as SIGN_VERIFY from './signVerifyConstants';

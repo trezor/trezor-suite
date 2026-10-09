@@ -1,11 +1,11 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { closeModal } from '@suite/modal';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { confirmEvmExplanationModal } from 'src/actions/suite/suiteActions';
 import { useSelector } from 'src/hooks/suite';

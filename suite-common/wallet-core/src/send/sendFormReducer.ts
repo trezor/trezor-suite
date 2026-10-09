@@ -1,9 +1,4 @@
 import {
-    type ActionTypesDep,
-    type ReducersDep,
-    createReducerWithExtraDeps,
-} from '@suite-common/redux-utils';
-import {
     type AccountKey,
     type FormState,
     type GeneralPrecomposedTransactionFinal,
@@ -11,6 +6,11 @@ import {
 } from '@suite-common/wallet-types';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+} from '@trezor/redux-utils';
 import { cloneObject } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';

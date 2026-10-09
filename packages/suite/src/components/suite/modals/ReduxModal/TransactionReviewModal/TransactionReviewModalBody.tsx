@@ -6,7 +6,6 @@ import { closeModal, preserveModalOnTxTimeout } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useYieldVaultName } from '@suite-common/earn-stablecoin';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { selectYieldTxReview } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -17,6 +16,7 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { type Deferred } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

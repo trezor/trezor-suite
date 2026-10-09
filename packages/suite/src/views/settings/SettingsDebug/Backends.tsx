@@ -2,13 +2,13 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { type ConnectionStatus } from '@suite-common/wallet-types';
 import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem, TokenIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 
 import { StatusLight } from 'src/components/suite';

@@ -5,7 +5,6 @@ import { locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { type GotoThunkState, type SuiteRouterHistoryDep, routerReducer } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
-import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type TradingRootState,
@@ -16,6 +15,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { useTradingExchangeConfirm } from './useTradingExchangeConfirm';
 

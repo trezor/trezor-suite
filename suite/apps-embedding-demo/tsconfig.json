@@ -5,9 +5,6 @@
         {
             "path": "../../suite-common/apps-embedding"
         },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../apps-embedding-web" },
         { "path": "../debug" },
         { "path": "../settings" },
@@ -19,6 +16,7 @@
         {
             "path": "../../packages/product-components"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" }
     ]
 }

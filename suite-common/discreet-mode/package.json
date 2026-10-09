@@ -13,8 +13,8 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
-        "@suite-common/redux-utils": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0"
     }

@@ -4,7 +4,6 @@ import {
     selectLabelingDataForWallet,
 } from '@suite/metadata';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type SuiteSyncDataRootState,
     type WithSuiteSyncAndDeviceState,
@@ -13,6 +12,7 @@ import {
 } from '@suite-common/suite-sync';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 type SelectWalletLabelParams = {
     deviceStaticId: StaticSessionId | null;

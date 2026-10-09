@@ -12,10 +12,10 @@ import {
     useConditionControls,
     validateExperimentForm,
 } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Experiments } from '@suite-common/suite-types';
 import { Button, Column, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { MessageSystemJsonEditor } from './MessageSystemJsonEditor';
 import { MessageSystemExperimentToolbar } from '../MessageSystemExperiment/MessageSystemExperimentToolbar';

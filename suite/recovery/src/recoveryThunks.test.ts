@@ -1,9 +1,9 @@
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { deviceInitialState } from '@suite-common/device';
-import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { type RecoveryState, recoveryReducer } from './recoveryReducer';
 import { type RecoverDeviceThunkState, checkSeedThunk, recoverDeviceThunk } from './recoveryThunks';

@@ -6,7 +6,7 @@ import {
     fetchCountryCodeThunk,
     selectCountryCode,
 } from '@suite-common/geolocation';
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import { shouldFetchCountryCode } from './geolocation';
 

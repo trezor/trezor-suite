@@ -3,12 +3,10 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/test-utils"
         },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/utils" }
     ]
 }

@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
     getNetworkOptional,
@@ -17,6 +16,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type BlockchainNotification } from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 const BLOCKCHAIN_MODULE_PREFIX = '@suite-native/blockchain';
 

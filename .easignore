@@ -59,6 +59,7 @@
 !/packages/protocol
 !/packages/react-native-usb
 !/packages/react-utils
+!/packages/redux-utils
 !/packages/requirements
 !/packages/schema-utils
 !/packages/styles-common
@@ -118,7 +119,6 @@
 !/suite-common/platform-encryption
 !/suite-common/react-query
 !/suite-common/receive
-!/suite-common/redux-utils
 !/suite-common/schemas
 !/suite-common/sentry
 !/suite-common/sign-verify

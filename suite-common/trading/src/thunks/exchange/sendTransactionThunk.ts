@@ -1,7 +1,7 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
 import { type ExchangeTrade } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 import { tradingThunks } from '../common';
 import {

@@ -2,7 +2,6 @@ import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectIsDeviceAuthenticityCheckEnabled } from '@suite/settings';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import {
@@ -12,6 +11,7 @@ import {
     SettingsRequirementBanner,
     TextColumn,
 } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 
 import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';

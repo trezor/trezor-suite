@@ -15,9 +15,6 @@
         },
         { "path": "../../suite-common/graph" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-sync"
         },
         {
@@ -71,6 +68,7 @@
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

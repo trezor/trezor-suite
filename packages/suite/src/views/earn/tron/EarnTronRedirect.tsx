@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
 import { gotoThunk } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const EarnTronRedirect = () => {
     const { dispatch } = useServices(injectDispatch);

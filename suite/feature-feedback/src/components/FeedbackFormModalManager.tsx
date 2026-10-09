@@ -14,10 +14,10 @@ import {
     selectPendingFeedbackFeature,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { SmileyIcon } from '@trezor/icons';
 import { SidebarBanner } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { feedbackDismissed } from '../featureFeedbackSlice';
 import { FeedbackFormModal } from './FeedbackFormModal';

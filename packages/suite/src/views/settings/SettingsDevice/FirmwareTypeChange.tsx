@@ -3,7 +3,6 @@ import { getSuiteFirmwareTypeString } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
 import { firmwareActions } from '@suite-common/firmware';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import {
@@ -12,6 +11,7 @@ import {
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 
 interface FirmwareTypeProps {

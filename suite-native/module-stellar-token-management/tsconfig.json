@@ -4,9 +4,6 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/token-definitions"
         },
         {
@@ -39,6 +36,7 @@
         {
             "path": "../../networks/stellar/network-stellar"
         },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

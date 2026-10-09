@@ -4,10 +4,10 @@ import { metadataReducer, selectLabelingDataForAccount } from '@suite/metadata';
 import { prepareSuiteSettingsReducer } from '@suite/settings';
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations-types/mocks';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
 import { createTestCompositionRoot, initPreloadedState } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { accountsReducer } from 'src/reducers/wallet';
 

@@ -1,6 +1,6 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { EXPLORER_MODULE_PREFIX, explorerActions } from './explorerActions';
 import { type ExplorerState } from './explorerReducer';

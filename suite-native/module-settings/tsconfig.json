@@ -15,9 +15,6 @@
         { "path": "../../suite-common/logger" },
         { "path": "../../suite-common/mev" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-constants"
         },
         {
@@ -73,6 +70,7 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

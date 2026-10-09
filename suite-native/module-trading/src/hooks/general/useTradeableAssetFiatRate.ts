@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type FiatRatesRootState,
     type WalletSettingsRootState,
@@ -13,6 +12,7 @@ import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { selectFiatRateByTradeableAsset } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type UseTradeableAssetFiatRateOptions = {
     // Fetches the current rate when the asset or base currency changes. Only needed for assets the

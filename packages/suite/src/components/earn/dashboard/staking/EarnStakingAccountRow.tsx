@@ -3,7 +3,6 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { useFormatters } from '@suite-common/formatters';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -22,6 +21,7 @@ import { getAccountTotalStakingBalance, isPending } from '@suite-common/wallet-u
 import { Card, Column, Icon, Paragraph, Row, Table, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';

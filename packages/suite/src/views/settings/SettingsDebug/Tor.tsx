@@ -1,7 +1,7 @@
 import { toggleTorThunk } from '@suite/tor-desktop';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const Tor = () => {
     const { dispatch } = useServices(injectDispatch);

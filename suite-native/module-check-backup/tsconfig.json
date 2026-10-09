@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/device" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
@@ -24,6 +21,7 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/device-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

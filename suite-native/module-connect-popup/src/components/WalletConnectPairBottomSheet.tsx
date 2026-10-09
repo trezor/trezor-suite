@@ -2,13 +2,13 @@ import { useState } from 'react';
 
 import * as Clipboard from 'expo-clipboard';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
 import { type BottomSheetModalRef, Button, Loader, TextDivider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ScanQRBottomSheet } from '@suite-native/qr-code';
 import { useToast } from '@suite-native/toasts';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export type WalletConnectPairBottomSheetProps = {
     onClose: () => void;

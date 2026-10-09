@@ -7,7 +7,6 @@ import { closeModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -33,6 +32,7 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { ShieldCheckFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { NetworkIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useSelector } from 'src/hooks/suite';

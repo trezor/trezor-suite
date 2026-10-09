@@ -4,7 +4,6 @@ import {
 } from '@suite-common/delegated-identity-key';
 import { type ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
 import { DeviceError } from '@suite-common/device';
-import { type Dispatch } from '@suite-common/redux-utils';
 import { type QuotaManagerCommunicationFailedErrType } from '@suite-common/suite-sync-types';
 import {
     type DelegatedIdentityKey,
@@ -13,6 +12,7 @@ import {
 } from '@suite-common/suite-types';
 import { type GetTrezorConnectDep } from '@trezor/connect-common';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
+import { type Dispatch } from '@trezor/redux-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 import { versionUtils } from '@trezor/utils';
 

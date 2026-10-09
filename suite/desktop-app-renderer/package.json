@@ -16,7 +16,6 @@
     },
     "dependencies": {
         "@sentry/electron": "^7.16.0",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/bluetooth": "workspace:*",
         "@suite/debug": "workspace:*",
@@ -34,6 +33,7 @@
         "@trezor/connect-electron": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/icons": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/suite": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/urls": "workspace:*",

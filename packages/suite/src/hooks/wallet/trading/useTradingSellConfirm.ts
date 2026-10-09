@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 
 import { gotoThunk } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingSellActiveTrade,
     selectTradingSellIsFromRedirect,
@@ -11,6 +10,7 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';

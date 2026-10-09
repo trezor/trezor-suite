@@ -6,8 +6,8 @@ import {
     type PasswordManagerState,
     type WalletLabels,
 } from '@suite-common/metadata-types';
-import { type Dispatch } from '@suite-common/redux-utils';
 import { selectAccounts } from '@suite-common/wallet-core';
+import { type Dispatch } from '@trezor/redux-utils';
 
 import {
     disableMetadata as disableMetadataAction,

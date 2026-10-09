@@ -11,9 +11,6 @@
     "include": ["."],
     "references": [
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-utils"
         },
         { "path": "../debug" },
@@ -28,6 +25,7 @@
         },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/logger" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/suite" },
         {
             "path": "../../packages/transport-common"

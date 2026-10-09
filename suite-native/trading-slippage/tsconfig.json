@@ -20,13 +20,11 @@
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
-        { "path": "../trading-fixtures" }
+        { "path": "../trading-fixtures" },
+        { "path": "../../packages/redux-utils" }
     ]
 }

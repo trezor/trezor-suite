@@ -4,9 +4,6 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/token-definitions"
         },
         {
@@ -23,6 +20,7 @@
         },
         {
             "path": "../../packages/blockchain-link"
-        }
+        },
+        { "path": "../../packages/redux-utils" }
     ]
 }

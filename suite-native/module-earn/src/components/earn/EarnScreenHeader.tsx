@@ -2,9 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { type DeviceRootState } from '@suite-common/device';
 import { type NetworksRootState } from '@suite-common/networks';
-import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
+import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { EarnBalanceCard } from './EarnBalanceCard';
 import {

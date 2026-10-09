@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { EXPERIMENTAL_FEATURES } from '@suite-native/experimental-features';
@@ -13,6 +12,7 @@ import {
     toggleExperimentalFeature,
 } from '@suite-native/settings';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type ExperimentalFeatureRowProps = {
     feature: ExperimentalFeature;

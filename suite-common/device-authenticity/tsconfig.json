@@ -5,11 +5,11 @@
         { "path": "../device" },
         { "path": "../message-system" },
         { "path": "../persistent-device-data" },
-        { "path": "../redux-utils" },
         { "path": "../suite-types" },
         { "path": "../test-utils" },
         { "path": "../toast-notifications" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" }
     ]
 }

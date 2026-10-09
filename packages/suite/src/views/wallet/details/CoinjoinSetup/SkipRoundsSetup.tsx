@@ -2,9 +2,9 @@ import styled from 'styled-components';
 
 import { coinjoinAccountToggleSkipRounds, selectCurrentCoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { H3, Paragraph, Switch, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

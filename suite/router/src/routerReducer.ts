@@ -2,7 +2,7 @@ import { type PayloadAction, type Reducer, createAction, createSlice } from '@re
 
 import { type LocksRootState, selectIsRouterOrUiLocked } from '@suite/locks';
 import { type ModalRootState, selectHasActiveModal } from '@suite/modal';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type AnchorType } from './anchors';
 import { type RouterPath, type RouterPathOptional } from './router';

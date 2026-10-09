@@ -1,5 +1,4 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
 import { type OpenModalDep } from '@suite-common/suite-types';
 import {
     type ConfirmAddressOnDeviceThunkState,
@@ -8,6 +7,7 @@ import {
     selectAddressDisplayType,
 } from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
 
 import { logErrorThunk } from './logErrorThunk';
 import { TRADING_THUNK_PREFIX } from '../../constants';

@@ -2,10 +2,10 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Icon, Row, ShortcutBadge, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useDiscovery } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';

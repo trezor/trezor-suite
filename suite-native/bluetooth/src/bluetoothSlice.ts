@@ -6,7 +6,7 @@ import {
     prepareBluetoothReducerCreator,
     prepareInitialState,
 } from '@suite-common/bluetooth';
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { createSliceWithExtraDeps } from '@trezor/redux-utils';
 
 import { type BluetoothDevice, type BluetoothPermissionStatus } from './types';
 

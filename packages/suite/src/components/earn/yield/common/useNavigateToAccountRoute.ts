@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
 import { gotoThunk } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export type AccountOverviewRoute = 'wallet-index' | 'wallet-tokens';
 

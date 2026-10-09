@@ -1,8 +1,8 @@
 import { type Draft, type PayloadAction, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type DeviceConnectActionPayload, deviceActions } from '@suite-common/device';
-import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { type BluetoothDeviceId, TrezorPushNotificationType } from '@trezor/connect';
+import { type ActionTypesDep, createReducerWithExtraDeps } from '@trezor/redux-utils';
 
 import { bluetoothActions } from './bluetoothActions';
 import { deserializeBluetoothDeviceSerialization } from './deserializeBluetoothDeviceSerialization';

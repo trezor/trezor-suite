@@ -18,7 +18,6 @@
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-rbf-labels-migrations-types": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -26,7 +25,8 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
-        "@trezor/logger": "workspace:*"
+        "@trezor/logger": "workspace:*",
+        "@trezor/redux-utils": "workspace:*"
     },
     "devDependencies": {
         "@trezor/requirements": "workspace:*"

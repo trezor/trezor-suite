@@ -3,7 +3,6 @@ import type { ReactElement } from 'react';
 import { type Store, combineReducers } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type LocaleSliceRootState, localeInitialState, localeReducer } from '@suite-native/intl';
 import {
@@ -16,6 +15,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { getInitializedTradingState, mercuryoDexQuote } from '@suite-native/trading-fixtures';
 import { type TradingRootState, tradingSlice } from '@suite-native/trading-state';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 type State = TradingRootState & LocaleSliceRootState;
 

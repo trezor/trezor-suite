@@ -2,7 +2,6 @@ import { A, D, F, G, O, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { type Dispatch, unwrapWithError } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestampThunk } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
@@ -11,6 +10,7 @@ import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/bl
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type AccountInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { type Dispatch, unwrapWithError } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';

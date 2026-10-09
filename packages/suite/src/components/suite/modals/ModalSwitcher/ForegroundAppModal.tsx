@@ -2,8 +2,8 @@ import { type FunctionComponent } from 'react';
 
 import { CreateWalletBackupModal } from '@suite/backup';
 import { closeModalAppThunk } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import type { ForegroundAppRoute } from 'src/types/suite';
 import { Backup } from 'src/views/backup/Backup';

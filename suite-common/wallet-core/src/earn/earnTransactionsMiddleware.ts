@@ -1,13 +1,13 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type NotificationsRootState,
     notificationsActions,
     selectEarnTransactionNotifications,
 } from '@suite-common/toast-notifications';
 import { findAccountDevice, isPending } from '@suite-common/wallet-utils';
+import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import {
     EARN_TRANSACTION_TOAST_TYPE,

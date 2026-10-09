@@ -3,8 +3,8 @@ import {
     type DeviceRootState,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
 import { type Device } from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import { selectRecentlyConnectedDevice } from 'src/selectors/suite/suiteSelectors';

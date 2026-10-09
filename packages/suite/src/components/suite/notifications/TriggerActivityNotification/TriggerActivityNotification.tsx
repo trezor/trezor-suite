@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { AUTH_DEVICE, notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -9,6 +8,7 @@ import { Checkbox, Column, Select } from '@trezor/components';
 import { DEVICE } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 const MOCK_TX = {
     amount: '0.05',

@@ -4,9 +4,9 @@ import { openSystemSettingsThunk } from '@suite/bluetooth';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectAdapterStatus } from '@suite-common/bluetooth';
 import { type BluetoothAdapterStatus } from '@suite-common/bluetooth/src/types';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

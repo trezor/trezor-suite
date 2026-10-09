@@ -31,7 +31,6 @@ import {
     persistentDeviceDataActions,
     selectPersistentDeviceDataById,
 } from '@suite-common/persistent-device-data';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type AcquiredDevice,
     type OpenModalDep,
@@ -62,6 +61,7 @@ import TrezorConnect, {
     type Device,
     asBluetoothDeviceId,
 } from '@trezor/connect';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
 

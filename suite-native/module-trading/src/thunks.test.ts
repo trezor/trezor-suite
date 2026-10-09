@@ -1,6 +1,5 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
-import { type ReduxStoreWithThunk } from '@suite-common/redux-utils';
 import {
     tradingBuyActions,
     tradingExchangeActions,
@@ -10,6 +9,7 @@ import { type Account, type TokenAddress, type TokenInfoBranded } from '@suite-c
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
 import { eth1NormalAccount, invityDexQuote } from '@suite-native/trading-fixtures';
+import { type ReduxStoreWithThunk } from '@trezor/redux-utils';
 
 import { createTradingTestStore } from './test-utils/tradingTestUtils';
 import {

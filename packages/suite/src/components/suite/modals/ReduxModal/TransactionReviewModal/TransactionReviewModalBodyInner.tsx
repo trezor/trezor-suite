@@ -5,7 +5,6 @@ import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectRouteName } from '@suite/router';
 import type { DeviceRootState } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type SerializedTx,
     selectIsTxOutputInternal,
@@ -31,6 +30,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Modal, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { type Deferred } from '@trezor/utils';
 
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';

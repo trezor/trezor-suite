@@ -1,8 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState, selectSelectedDevice } from '@suite-common/device';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type OpenModalDep } from '@suite-common/suite-types';
 import { mockOpenModal } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -11,6 +9,8 @@ import {
     prepareWalletSettingsReducer,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import type { LogErrorThunkProps } from './logErrorThunk';
 import { type VerifyAddressThunkState } from './verifyAddressThunk';

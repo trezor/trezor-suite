@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceConnected, selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { forgetDeviceThunk } from '@suite-common/wallet-core';
 import { selectIsKnownBluetoothDevice, useBluetoothDevice } from '@suite-native/bluetooth';
 import { useTranslate } from '@suite-native/intl';
@@ -19,6 +18,7 @@ import {
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceSettingsStackParamList,

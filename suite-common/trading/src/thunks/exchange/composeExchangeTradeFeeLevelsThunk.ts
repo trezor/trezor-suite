@@ -1,7 +1,7 @@
 import { isRejected } from '@reduxjs/toolkit';
 
-import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
 
 import { buildExchangeComposeInputs } from './buildExchangeComposeInputs';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';

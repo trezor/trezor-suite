@@ -1,5 +1,5 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
 
 import { STAKE_MODULE_PREFIX } from './stakingActions';
 import { type AccountsRootState } from '../accounts/accountsReducer';

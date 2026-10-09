@@ -1,5 +1,4 @@
 import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type SuiteSyncDataRootState,
     selectSuiteSyncAccountAddressesByAccount,
@@ -13,6 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, type ReceiveInfo } from '@suite-common/wallet-types';
 import { parseStaticSessionId } from '@trezor/device-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 export type ReceiveAddressRootState = AccountsRootState & TransactionsRootState & ReceiveRootState;
 export type ReceiveAddressListRootState = ReceiveAddressRootState & SuiteSyncDataRootState;

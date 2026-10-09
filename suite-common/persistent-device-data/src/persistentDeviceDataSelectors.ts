@@ -1,5 +1,5 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import type { TrezorDevice } from '@suite-common/suite-types';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import {
     deviceInvariabilityCheck,

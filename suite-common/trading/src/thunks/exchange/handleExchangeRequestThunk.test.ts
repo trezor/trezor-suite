@@ -2,14 +2,14 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { type AddressValidatorDep } from '@suite-common/networks';
-import { type WithServices } from '@suite-common/redux-utils';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { type WithServices } from '@trezor/redux-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import { cloneObject, mergeDeepObject } from '@trezor/utils';
 
 import { type HandleExchangeRequestThunkState } from './handleExchangeRequestThunk';

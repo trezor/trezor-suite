@@ -3,12 +3,6 @@ import { type PayloadAction } from '@reduxjs/toolkit';
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
-    type ActionTypesDep,
-    type ReducersDep,
-    createReducerWithExtraDeps,
-    createWeakMapSelector,
-} from '@suite-common/redux-utils';
-import {
     type NetworkSymbol,
     getNetworkOptional,
     networksCollection,
@@ -22,6 +16,12 @@ import {
     type BlockchainReconnecting,
     BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,
 } from '@trezor/connect';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+    createWeakMapSelector,
+} from '@trezor/redux-utils';
 
 import { blockchainActions } from './blockchainActions';
 import {

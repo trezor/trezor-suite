@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
-import { injectStore } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectStore } from '@trezor/redux-utils';
 
 /**
  * Utility for running tests in Playwright.

@@ -2,10 +2,10 @@ import { useCallback } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { type FormDraftRootState, formDraftActions } from './formDraftSlice';
 import { selectDeepCopyOfFormDraft } from './selectors';

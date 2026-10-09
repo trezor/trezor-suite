@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingExchangeAmountLimitProps,
     exchangeThunks,
@@ -27,6 +26,7 @@ import {
 } from '@suite-native/trading-state';
 import type { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
 import { setExchangeSendCryptoAmount } from '../../utils/exchange/exchangeSendAmountUtils';

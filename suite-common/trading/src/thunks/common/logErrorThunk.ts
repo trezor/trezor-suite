@@ -1,5 +1,5 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { type ErrorToastPayload, notificationsActions } from '@suite-common/toast-notifications';
+import { createThunk } from '@trezor/redux-utils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { type TradingType } from '../../types';

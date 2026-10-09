@@ -8,10 +8,10 @@ import {
     selectFeatureConfig,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getInputSize, getOutputSize } from '@trezor/coinjoin';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { type CoinjoinState } from './coinjoinTypes';

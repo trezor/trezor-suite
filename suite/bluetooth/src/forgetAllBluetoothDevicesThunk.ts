@@ -1,5 +1,5 @@
 import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { type BluetoothDep } from './bluetoothServiceTypes';
 

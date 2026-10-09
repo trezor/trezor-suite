@@ -6,7 +6,6 @@ import { type CryptoId, type ExchangeTrade } from 'invity-api';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type AddressValidatorDep } from '@suite-common/networks';
-import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     TRADING_EXCHANGE_FORM_CEX,
@@ -22,6 +21,7 @@ import {
     toNetworkSymbolNonTestnet,
 } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/reducers/store';
 

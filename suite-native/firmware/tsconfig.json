@@ -8,9 +8,6 @@
             "path": "../../suite-common/message-system"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-types"
         },
         {
@@ -34,6 +31,7 @@
         {
             "path": "../../packages/react-native-usb"
         },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

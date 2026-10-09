@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type YieldFlowType, yieldActions } from '@suite-common/wallet-core';
 import { type TxKeyPath } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useShowYieldAlert } from './useShowYieldAlert';
 

@@ -1,6 +1,6 @@
 import { getStakingBatch } from '@suite-common/earn-staking-api';
-import { createThunk } from '@suite-common/redux-utils';
 import { PROD_STAKING_SYMBOLS, asNetworkSymbol } from '@suite-common/wallet-config';
+import { createThunk } from '@trezor/redux-utils';
 import { type TimerId } from '@trezor/type-utils';
 
 import { stakeDataActions } from './stakingDataSlice';

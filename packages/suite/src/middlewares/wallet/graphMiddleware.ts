@@ -1,8 +1,8 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
-import { type Dispatch } from '@suite-common/redux-utils';
 import { accountsActions, discoveryActions } from '@suite-common/wallet-core';
+import { type Dispatch } from '@trezor/redux-utils';
 
 import * as graphActions from 'src/actions/wallet/graphActions';
 import { type AppState } from 'src/types/suite';

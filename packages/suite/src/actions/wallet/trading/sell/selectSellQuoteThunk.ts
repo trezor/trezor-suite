@@ -2,7 +2,6 @@ import { type SellFiatTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     cryptoIdToNetworkSymbolAndContractAddress,
     selectTradingSellInfo,
@@ -11,6 +10,7 @@ import {
     sellThunks,
     sellUtils,
 } from '@suite-common/trading';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { type RequestSellTradeThunkState, requestSellTradeThunk } from './requestSellTradeThunk';
 

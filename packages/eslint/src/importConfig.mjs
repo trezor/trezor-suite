@@ -56,7 +56,7 @@ export const selectorRestrictedImports = [
         name: '@reduxjs/toolkit',
         importNames: ['createSelector'],
         message:
-            'Use createWeakMapSelector.withTypes<RootState>() from @suite-common/redux-utils to define a typed createMemoizedSelector factory instead.',
+            'Use createWeakMapSelector.withTypes<RootState>() from @trezor/redux-utils to define a typed createMemoizedSelector factory instead.',
     },
 ];
 

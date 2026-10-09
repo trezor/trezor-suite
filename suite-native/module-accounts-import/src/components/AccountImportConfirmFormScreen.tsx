@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     selectFilterKnownTokens,
@@ -30,6 +29,7 @@ import {
 } from '@suite-native/navigation';
 import { type AccountInfo, type TokenInfo } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { useShowImportError } from '../useShowImportError';

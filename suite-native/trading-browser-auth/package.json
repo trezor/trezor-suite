@@ -40,12 +40,12 @@
         "react-redux": "9.3.0"
     },
     "devDependencies": {
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@types/invity-api": "^1.1.22"
     }
 }

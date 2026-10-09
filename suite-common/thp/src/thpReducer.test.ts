@@ -1,9 +1,9 @@
 import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { mockConnectDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { DEVICE, type DeviceEventMessage, createDeviceMessage } from '@trezor/connect';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { createCredential, createDeviceThp } from '../mocks';
 import { thpActions } from './thpActions';

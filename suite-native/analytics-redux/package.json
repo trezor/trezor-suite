@@ -12,11 +12,11 @@
     },
     "dependencies": {
         "@suite-common/analytics-redux": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/sentry": "workspace:*",
         "@trezor/analytics-uploader": "workspace:*",
-        "@trezor/env-utils": "workspace:*"
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*"
     }
 }

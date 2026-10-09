@@ -13,7 +13,6 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
-import { type WithServices } from '@suite-common/redux-utils';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -52,6 +51,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type WithServices } from '@trezor/redux-utils';
 import { type Err } from '@trezor/type-utils';
 
 import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';

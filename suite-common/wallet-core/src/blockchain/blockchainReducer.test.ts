@@ -1,7 +1,7 @@
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type BackendSettings } from '@suite-common/wallet-types';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { type SetBackendPayload, blockchainActions } from './blockchainActions';
 import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';

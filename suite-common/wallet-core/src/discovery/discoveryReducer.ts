@@ -1,6 +1,6 @@
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { type Discovery, type DiscoveryStatus } from '@suite-common/wallet-types';
 import { type DeviceUniquePath } from '@trezor/connect';
+import { createReducerWithExtraDeps } from '@trezor/redux-utils';
 
 import { discoveryActions } from './discoveryActions';
 

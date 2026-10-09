@@ -1,5 +1,4 @@
 import { type DeviceRootState } from '@suite-common/device';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { aggregateTradeableAssetBalances } from '@suite-common/trading';
 import {
     type AccountsRootState,
@@ -9,6 +8,7 @@ import {
     selectCurrentFiatRates,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 type TradeableAssetBalancesRootState = AccountsRootState &
     DeviceRootState &

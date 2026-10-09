@@ -1,7 +1,7 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { getSuiteVersion } from '@trezor/env-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 import { versionUtils } from '@trezor/utils';
 
 import {

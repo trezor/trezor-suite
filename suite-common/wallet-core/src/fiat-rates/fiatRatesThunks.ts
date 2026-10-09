@@ -3,7 +3,6 @@ import {
     fetchErc4626UnderlyingAsset,
     fetchLastWeekFiatRates,
 } from '@suite-common/fiat-services';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import {
     type TokenDefinitionsRootState,
@@ -29,6 +28,7 @@ import {
     isTestnet,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { type TimerId, exhaustive } from '@trezor/type-utils';
 import { BigNumber, isNotUndefined, typedObjectKeys } from '@trezor/utils';
 

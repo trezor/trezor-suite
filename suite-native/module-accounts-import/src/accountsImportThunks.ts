@@ -1,6 +1,5 @@
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type GetTokenDefinitionsEnabledNetworksDep,
     type TokenDefinitionsRootState,
@@ -25,6 +24,7 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type AccountInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { convertTaprootXpub } from '@trezor/utils';
 import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 

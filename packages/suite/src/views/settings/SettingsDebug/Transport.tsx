@@ -5,13 +5,13 @@ import {
     selectDebugTransports,
     suiteSettingsActions,
 } from '@suite/settings';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { injectTransports } from '@suite-common/suite-types';
 import { Checkbox } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { type ArrayElement } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';

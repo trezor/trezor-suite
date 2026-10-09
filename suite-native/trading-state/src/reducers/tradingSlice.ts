@@ -1,6 +1,5 @@
 import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type TradeServerEnvironment,
     type TradingReducerDeps,
@@ -11,6 +10,7 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import type { ProviderConfirmationStatus, TradingState } from '@suite-native/trading-types';
+import { createSliceWithExtraDeps } from '@trezor/redux-utils';
 
 import { TRADING_BUY, buyActions, buyReducer } from './buySlice';
 import { TRADING_EXCHANGE, exchangeActions, exchangeReducer } from './exchangeSlice';

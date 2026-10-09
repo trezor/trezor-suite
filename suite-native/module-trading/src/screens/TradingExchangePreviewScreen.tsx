@@ -4,7 +4,6 @@ import { useSelector, useStore } from 'react-redux';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
     hasEip712SignData,
@@ -30,6 +29,7 @@ import {
 import { useSubscribeForSolanaBlockUpdates } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import {
     ExchangePreviewFooter,

@@ -8,9 +8,9 @@ import { closeModal } from '@suite/modal';
 import { closeModalAppThunk } from '@suite/router';
 import { ThpPairingStep } from '@suite/thp';
 import { acquireDeviceThunk, selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModalManager';

@@ -1,6 +1,6 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { type ActionTypesDep, createReducerWithExtraDeps } from '@trezor/redux-utils';
 
 import { walletConnectActions } from './walletConnectActions';
 import { type PendingConnectionProposal, type WalletConnectSession } from './walletConnectTypes';

@@ -3,7 +3,6 @@ import {
     isApprovalFlowSupported,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
 import { type EvmGasParamsGwei } from '@suite-common/schemas/src/evm';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -50,6 +49,7 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { reportEthereumFeeEstimationFailed } from './reportEthereumFeeEstimationError';

@@ -19,7 +19,6 @@
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/networks": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
@@ -38,6 +37,7 @@
         "@suite-native/trading-consts": "workspace:*",
         "@suite-native/trading-types": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react-native": "0.86.3"

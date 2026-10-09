@@ -1,4 +1,4 @@
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';

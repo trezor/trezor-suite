@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
 import { selectRouteName } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { closeEvmExplanationBanner } from 'src/actions/suite/suiteActions';
 import { useSelector } from 'src/hooks/suite';

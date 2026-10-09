@@ -8,11 +8,6 @@ import {
 } from '@suite-common/device';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
-    createWeakMapSelector,
-    returnStableArrayIfEmpty,
-    weakMapMemoize,
-} from '@suite-common/redux-utils';
-import {
     type SuiteSyncDataRootState,
     selectAccountsWithSuiteSyncLabel,
     selectSuiteSyncAccountLabel,
@@ -65,6 +60,11 @@ import { type CombinedLabelingState, selectIsLabellingAllowed } from '@suite-nat
 import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
+import {
+    createWeakMapSelector,
+    returnStableArrayIfEmpty,
+    weakMapMemoize,
+} from '@trezor/redux-utils';
 
 import { type AccountListSection } from './types';
 import {

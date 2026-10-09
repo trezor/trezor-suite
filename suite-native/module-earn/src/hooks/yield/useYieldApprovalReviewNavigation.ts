@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     cancelSignSendFormTransactionThunk,
     handleYieldApproveCancelThunk,
@@ -10,6 +9,7 @@ import {
 } from '@suite-common/wallet-core';
 import { useDisableIOSGesture } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useShowYieldReviewCancellationAlert } from './useShowYieldReviewCancellationAlert';
 import { type YieldAllowanceFormDraftTransactionType } from '../../types';

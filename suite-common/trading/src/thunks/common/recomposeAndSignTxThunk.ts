@@ -1,12 +1,12 @@
 import { isRejected } from '@reduxjs/toolkit';
 
-import { createThunk } from '@suite-common/redux-utils';
 import { type FormState } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     isCompleteTradingForm,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
+import { createThunk } from '@trezor/redux-utils';
 import { type Ok } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 

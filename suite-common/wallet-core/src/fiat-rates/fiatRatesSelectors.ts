@@ -1,6 +1,5 @@
 import { A, F, pipe } from '@mobily/ts-belt';
 
-import { createWeakMapSelector, weakMapMemoize } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
@@ -21,6 +20,7 @@ import {
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { createWeakMapSelector, weakMapMemoize } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { MAX_AGE } from './fiatRatesConstants';

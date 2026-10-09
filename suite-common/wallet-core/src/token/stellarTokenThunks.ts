@@ -1,7 +1,6 @@
 import { G } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
 import {
     DefinitionType,
     TokenManagementAction,
@@ -18,6 +17,7 @@ import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import stellar from '@trezor/network-stellar/runtime';
 import { StellarAssetType } from '@trezor/protobuf/src/definitions';
+import { createThunk } from '@trezor/redux-utils';
 
 import { stellarContractTokensActions } from './stellarContractTokensSlice';
 import { type AccountsRootState } from '../accounts/accountsReducer';

@@ -4,7 +4,6 @@
     "references": [
         { "path": "../analytics" },
         { "path": "../device" },
-        { "path": "../redux-utils" },
         { "path": "../suite-types" },
         { "path": "../test-utils" },
         { "path": "../toast-notifications" },
@@ -19,6 +18,7 @@
         {
             "path": "../../packages/connect-common"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" }
     ]
 }

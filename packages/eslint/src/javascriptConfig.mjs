@@ -50,7 +50,7 @@ export const noRestrictedSyntax = [
     },
     {
         message:
-            "Please don't use createAsyncThunk. Use createThunk from @suite-common/redux-utils instead.",
+            "Please don't use createAsyncThunk. Use createThunk from @trezor/redux-utils instead.",
         selector: "CallExpression[callee.name='createAsyncThunk']",
     },
     {

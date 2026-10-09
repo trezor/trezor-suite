@@ -2,9 +2,9 @@ import { useCallback, useEffect } from 'react';
 
 import { injectDesktopApi } from '@suite/desktop-app-api';
 import { selectURLSearchParams } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop, isWeb } from '@trezor/env-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import * as protocolActions from 'src/actions/suite/protocolActions';
 import { useSelector } from 'src/hooks/suite';

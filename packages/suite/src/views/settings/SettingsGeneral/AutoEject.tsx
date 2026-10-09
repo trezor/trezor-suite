@@ -4,11 +4,11 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectDevices } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
 import { Modal, Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { setAutoEjectEnabledThunk } from 'src/actions/suite/autoEjectThunks';
 import { useSelector } from 'src/hooks/suite';

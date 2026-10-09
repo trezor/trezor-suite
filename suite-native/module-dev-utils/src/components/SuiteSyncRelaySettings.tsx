@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncState,
     getSuiteSyncDefaultRelayUrl,
@@ -13,6 +12,7 @@ import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atom
 import { Form, TextInputField, useForm, yup } from '@suite-native/forms';
 import { useToast } from '@suite-native/toasts';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 const DEFAULT_CUSTOM_RELAY_URL = '';
 

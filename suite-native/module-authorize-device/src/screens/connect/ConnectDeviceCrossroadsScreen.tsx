@@ -1,5 +1,4 @@
 import { bluetoothActions } from '@suite-common/bluetooth';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     Card,
@@ -20,6 +19,7 @@ import {
     type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectDeviceScreen } from '../../components/connect/ConnectDeviceScreen';
 

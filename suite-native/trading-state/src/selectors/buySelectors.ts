@@ -2,7 +2,6 @@ import { Platform } from 'react-native';
 
 import type { BuyTrade } from 'invity-api';
 
-import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TradingCountryCode,
     type TradingPaymentMethodProps,
@@ -26,6 +25,7 @@ import {
     getReceiveAccountFromAccountAndAddressString,
 } from '@suite-native/trading-atoms';
 import { type BuyFormValues, type FiatCurrencyItem } from '@suite-native/trading-types';
+import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { unique } from '@trezor/utils';
 
 import { getAssetByEnabledNetworksFilter, getDefaultFiatCurrency } from '../utils';

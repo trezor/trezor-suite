@@ -7,9 +7,6 @@
             "path": "../../suite-common/metadata-types"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-sync"
         },
         {
@@ -44,6 +41,7 @@
         {
             "path": "../../packages/product-components"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]

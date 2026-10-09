@@ -1,7 +1,7 @@
 import { closeModal } from '@suite/modal';
-import { createThunk } from '@suite-common/redux-utils';
 import { YIELD_PREFIX, type YieldRootState, selectYieldTxReview } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 type CancelSignYieldTxThunkState = YieldRootState;
 

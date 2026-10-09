@@ -7,7 +7,6 @@ import { openModal } from '@suite/modal';
 import { type EarnParams, gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type EarnAnalyticsStep,
     EarnFlow,
@@ -19,6 +18,7 @@ import { Button, IconButton, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon, InfoIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';

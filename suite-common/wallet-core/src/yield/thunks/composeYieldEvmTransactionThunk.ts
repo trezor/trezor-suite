@@ -1,7 +1,7 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 import {
     type GetOrFetchRawFeeInfoThunkState,

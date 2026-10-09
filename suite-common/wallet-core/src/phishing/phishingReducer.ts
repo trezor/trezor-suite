@@ -1,9 +1,9 @@
+import { DUST_PHISHING_THRESHOLD } from '@suite-common/token-definitions';
 import {
     type ActionTypesDep,
     type ReducersDep,
     createReducerWithExtraDeps,
-} from '@suite-common/redux-utils';
-import { DUST_PHISHING_THRESHOLD } from '@suite-common/token-definitions';
+} from '@trezor/redux-utils';
 
 import { phishingActions } from './phishingActions';
 import { type PhishingState } from './phishingReducerTypes';

@@ -4,7 +4,6 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { selectSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     DefinitionType,
@@ -24,6 +23,7 @@ import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SpinnerIcon, WarningIcon } from '@trezor/icons';
 import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';

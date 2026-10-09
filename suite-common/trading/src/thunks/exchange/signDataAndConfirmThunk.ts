@@ -1,12 +1,12 @@
 import { type ExchangeTrade } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, {
     type EthereumSignTypedDataMessage,
     type EthereumSignTypedDataTypes,
 } from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';

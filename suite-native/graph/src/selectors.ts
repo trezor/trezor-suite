@@ -2,7 +2,6 @@ import { A } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { type AccountItem, isIgnoredBalanceHistoryCoin } from '@suite-common/graph';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     filterKnownTokens,
@@ -18,6 +17,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { deepEqual } from '@trezor/utils';
 
 type GraphCommonRootState = DeviceRootState & AccountsRootState & TokenDefinitionsRootState;

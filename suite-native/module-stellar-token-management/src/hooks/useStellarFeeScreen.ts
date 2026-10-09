@@ -9,7 +9,6 @@ import {
     selectDeviceButtonRequestsCodes,
     selectIsDeviceConnectedAndAuthorized,
 } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type FormDraftRootState,
@@ -42,6 +41,7 @@ import {
 } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { getStellarTokenFormDraftKey, updateStellarTokenSelectedFeeLevelThunk } from '../thunks';

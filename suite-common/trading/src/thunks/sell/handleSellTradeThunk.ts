@@ -1,7 +1,7 @@
 import { type SellFiatTrade, type SellFiatTradeResponse } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { tradingSellActions } from '../../reducers/sellReducer';

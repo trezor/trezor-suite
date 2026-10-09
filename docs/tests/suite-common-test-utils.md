@@ -29,7 +29,7 @@ Do not create a store merely to obtain `dispatch`, `getState`, or `extra`. A thu
 function, so call that function with those three dependencies directly:
 
 ```ts
-import { createMockDispatch } from '@suite-common/redux-utils/mocks';
+import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 const state: XyzThunkState = {
     // Only the state required by xyzThunk.

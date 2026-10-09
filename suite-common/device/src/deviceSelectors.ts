@@ -1,6 +1,5 @@
 import { A, pipe } from '@mobily/ts-belt';
 
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import {
     type BackupType,
@@ -33,6 +32,7 @@ import {
     hasBitcoinOnlyFirmware,
 } from '@trezor/device-utils';
 import { getSuiteVersion } from '@trezor/env-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { versionUtils } from '@trezor/utils';
 
 import {

@@ -16,7 +16,6 @@ import { Anchor, SettingsAnchor } from '@suite/router';
 import { SuiteSyncServers, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     selectIsSuiteSyncEnabled,
@@ -33,6 +32,7 @@ import {
     SettingsRequirementBanner,
     TextColumn,
 } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 import { typedObjectValues } from '@trezor/utils';

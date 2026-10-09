@@ -4,7 +4,6 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
-import { createThunk } from '@suite-common/redux-utils';
 import {
     type SynchronizeSentTransactionThunkDeps,
     type SynchronizeSentTransactionThunkState,
@@ -24,6 +23,7 @@ import {
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type EvmSelectedFee } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
 
 import { EARN_MODULE_PREFIX } from '../../constants';
 import {

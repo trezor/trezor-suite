@@ -6,8 +6,8 @@ import {
     analyticsActions,
     analyticsInitialState,
 } from '@suite-common/analytics-redux';
-import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { initThunk } from 'src/actions/suite/analyticsActions';
 

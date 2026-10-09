@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { Metadata } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
