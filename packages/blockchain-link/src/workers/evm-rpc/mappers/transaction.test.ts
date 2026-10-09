@@ -10,6 +10,8 @@ const OTHER = '0x1111111111111111111111111111111111111111';
 const CONTRACT = '0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a';
 const SENTINEL = '0xfffffffffffffffffffffffffffffffffffffffe';
 const NATIVE_VIEW = '0x3600000000000000000000000000000000000000';
+// Swap(address,address,int256,int256,uint160,uint128,int24)
+const UNISWAP_V3_SWAP_TOPIC = '0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67';
 
 const NATIVE_SOURCES: readonly NativeLogSource[] = [
     { address: SENTINEL, decimals: 18 },
@@ -168,6 +170,34 @@ describe(mapTransaction.name, () => {
 
         expect(result.tokens).toEqual([]);
         expect(result.type).toBe('unknown');
+    });
+
+    it('reads only the transfers of a swap, not the pool event that looks like one', () => {
+        const ROUTER = '0x3333333333333333333333333333333333333333';
+        const POOL = '0x4444444444444444444444444444444444444444';
+        const swapLog = {
+            address: POOL,
+            // Swap(address indexed sender, address indexed recipient, int256 amount0, ...)
+            topics: [UNISWAP_V3_SWAP_TOPIC, topic(ROUTER), topic(ME)],
+            data: `${word(2n ** 256n - 12n)}${word(10_000n).slice(2)}`,
+        } as unknown as TransactionReceipt['logs'][number];
+
+        const result = map(
+            makeTx({ from: ME, to: ROUTER, value: 0n }),
+            makeReceipt({
+                logs: [
+                    transferLog(CONTRACT, ME, POOL, 10_000n),
+                    transferLog(OTHER, POOL, ME, 12n),
+                    swapLog,
+                ],
+            }),
+        );
+
+        expect(result.type).toBe('sent');
+        expect(result.tokens).toEqual([
+            expect.objectContaining({ type: 'sent', amount: '10000' }),
+            expect.objectContaining({ type: 'recv', amount: '12' }),
+        ]);
     });
 
     it('treats a mirrored native transfer as the transaction it belongs to, not a token', () => {
