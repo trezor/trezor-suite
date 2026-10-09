@@ -17,8 +17,8 @@ runs:
       id: changes
       uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4
       with:
-        # PRs use their base branch; pushes compare against the previous commit on the same branch.
-        base: ${{ github.ref }}
+        # Pushes compare against the pre-push commit; PRs use the GitHub API file list.
+        base: ${{ github.event_name == 'push' && github.ref || '' }}
         predicate-quantifier: some-with-excludes
         # Keep the javascript excludes in sync with the other lists.
         filters: |
