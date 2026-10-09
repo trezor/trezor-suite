@@ -1,15 +1,8 @@
-import { type AFFILIATION_ID } from '../constants';
 import { type EndRoundState, type RoundPhase } from '../enums';
-
-export type AffiliationId = keyof typeof AFFILIATION_ID;
 
 export interface CoinjoinStatus {
     RoundStates: Round[];
     CoinJoinFeeRateMedians: FeeRateMedians[];
-    AffiliateInformation?: {
-        RunningAffiliateServers: AffiliationId[];
-        AffiliateData: Record<string, Record<AffiliationId, string>>;
-    };
 }
 
 export interface SoftwareVersion {
@@ -161,16 +154,9 @@ export interface Round {
     InputRegistrationStart: string;
     InputRegistrationTimeout: string;
     InputRegistrationEnd: string;
-    AffiliateRequest?: string; // conditionally added by ./client/Status
 }
 
-interface CoinjoinAffiliateFields {
-    mask_public_key: string;
-    coinjoin_flags_array: number[];
-    signature: string;
-}
-
-export interface CoinjoinAffiliateRequest extends CoinjoinAffiliateFields {
+export interface CoinjoinRequest {
     fee_rate: number;
     no_fee_threshold: number;
     min_registrable_amount: number;

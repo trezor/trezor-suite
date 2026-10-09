@@ -1,4 +1,3 @@
-import type { AffiliationId } from './coordinator';
 import type { CoinjoinPrisonInmate } from './prison';
 
 interface BaseSettings {
@@ -19,7 +18,6 @@ export interface CoinjoinClientSettings extends BaseSettings {
     coordinatorUrl: string;
     coordinatorName: string; // identifier used in commitment data and ownership proof
     middlewareUrl: string;
-    affiliationId?: AffiliationId;
     prison?: CoinjoinPrisonInmate[];
 }
 
