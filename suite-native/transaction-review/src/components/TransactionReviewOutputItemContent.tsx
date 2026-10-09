@@ -1,9 +1,11 @@
 import { type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
-import { Box, HStack, Text } from '@suite-native/atoms';
+import { Text, VStack } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 
+import { TransactionReviewCardanoTokenDetails } from './TransactionReviewCardanoTokenDetails';
 import { TransactionReviewOutputHexData } from './TransactionReviewOutputHexData';
+import { TransactionReviewOutputItemRow } from './TransactionReviewOutputItemRow';
 import { TransactionReviewOutputItemValues } from './TransactionReviewOutputItemValues';
 import { useTransactionReview } from '../hooks/useTransactionReview';
 
@@ -21,12 +23,17 @@ export const TransactionReviewOutputItemContent = ({
     switch (output.type) {
         case 'amount':
             return (
-                <TransactionReviewOutputItemValues
-                    accountKey={review.account.key}
-                    tokenContract={review.tokenContract}
-                    value={output.value}
-                    translationKey="transactionManagement.review.outputs.amountLabel"
-                />
+                <VStack spacing="sp12">
+                    <TransactionReviewOutputItemValues
+                        accountKey={review.account.key}
+                        tokenContract={review.tokenContract}
+                        value={output.value}
+                        translationKey="transactionManagement.review.outputs.amountLabel"
+                    />
+                    {review.account.networkType === 'cardano' && (
+                        <TransactionReviewCardanoTokenDetails value={output.value} />
+                    )}
+                </VStack>
             );
         case 'destination-tag':
             return (
@@ -72,16 +79,9 @@ export const TransactionReviewOutputItemContent = ({
 
         case 'fee-limit':
             return (
-                <HStack>
-                    <Box flex={0.4} justifyContent="center">
-                        <Text variant="body-sm">
-                            <Translation id="transactionManagement.review.outputs.feeLimitLabel" />
-                        </Text>
-                    </Box>
-                    <Box flex={0.6} alignItems="flex-end">
-                        <Text variant="body-sm">{Number(output.value).toLocaleString()} SUN</Text>
-                    </Box>
-                </HStack>
+                <TransactionReviewOutputItemRow translationKey="transactionManagement.review.outputs.feeLimitLabel">
+                    {Number(output.value).toLocaleString()} SUN
+                </TransactionReviewOutputItemRow>
             );
         case 'swap_intent':
             return (
