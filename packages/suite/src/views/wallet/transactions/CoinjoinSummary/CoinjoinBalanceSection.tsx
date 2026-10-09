@@ -1,19 +1,21 @@
 import { useMemo } from 'react';
 
-import styled, { useTheme } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
 import { selectHasAnonymitySetError } from '@suite/coinjoin';
 import { selectHasAccountTransactionHistory } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Card, Column } from '@trezor/components';
+import { breakpoints } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
+import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown/BalancePrivacyBreakdown';
 import { CoinjoinBalanceError, type CoinjoinBalanceErrorProps } from './CoinjoinBalanceError';
 import { CoinjoinStatusWheel } from './CoinjoinStatusWheel/CoinjoinStatusWheel';
 
-export const Container = styled.div`
+export const Container = styled.div<{ $isStacked: boolean }>`
     display: flex;
     justify-content: space-between;
     gap: 8px;
@@ -24,7 +26,20 @@ export const Container = styled.div`
     & > :last-child {
         width: initial;
         height: 100%;
+        flex-shrink: 0;
     }
+
+    ${({ $isStacked }) =>
+        $isStacked &&
+        css`
+            flex-direction: column;
+            align-items: stretch;
+            height: auto;
+
+            & > :last-child {
+                height: 200px;
+            }
+        `}
 `;
 
 interface CoinjoinBalanceSectionProps {
@@ -38,6 +53,7 @@ export const CoinjoinBalanceSection = ({ accountKey }: CoinjoinBalanceSectionPro
     );
 
     const theme = useTheme();
+    const isStacked = useIsContentBelowBreakpoint(breakpoints.tablet);
 
     const errorMessageConfig = useMemo<CoinjoinBalanceErrorProps | undefined>(() => {
         if (hasAnonymitySetError) {
@@ -57,9 +73,9 @@ export const CoinjoinBalanceSection = ({ accountKey }: CoinjoinBalanceSectionPro
     }, [theme, hasAnonymitySetError, hasAccountTransactionHistory]);
 
     return (
-        <Container>
+        <Container $isStacked={isStacked}>
             <Card width="100%" height="100%">
-                <Column justifyContent="center" alignItems="center" flex="1">
+                <Column justifyContent="center" alignItems="center" height="100%">
                     {errorMessageConfig ? (
                         <CoinjoinBalanceError {...errorMessageConfig} />
                     ) : (

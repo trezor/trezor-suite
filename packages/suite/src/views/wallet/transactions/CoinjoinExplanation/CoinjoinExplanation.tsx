@@ -16,11 +16,8 @@ const Heading = styled.div`
 `;
 
 const Steps = styled.div`
-    box-shadow: none;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    justify-content: space-between;
-    margin-bottom: 24px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         display: block;

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { lighten, rgba } from 'polished';
+import { lighten } from 'polished';
 import styled, { type DefaultTheme, css, keyframes } from 'styled-components';
 
 import {
@@ -73,38 +73,42 @@ const Wheel = styled.div<{
     height: 94px;
     border-radius: 50%;
     background: ${({ theme, $progress }) =>
-        `conic-gradient(${theme.elementFillBrandBold} ${3.6 * $progress}deg, ${rgba(
-            theme.borderNeutral,
-            0.6,
-        )} 0)`};
+        `conic-gradient(${theme.elementFillBrandBold} ${3.6 * $progress}deg, ${theme.borderNeutral} 0)`};
     transition:
         background 0.1s,
         opacity 0.05s;
     user-select: none;
 
-    ${({ $isHoverDisabled }) =>
+    ${({ $isHoverDisabled, $isWithoutProgressOutline, theme }) =>
         !$isHoverDisabled &&
         css`
             cursor: pointer;
 
             &:active {
                 ${ProgressContentContainer} {
-                    background: ${({ theme }) => lighten(0.02, theme.surfaceFillRaised)};
+                    background: ${
+                        $isWithoutProgressOutline
+                            ? theme.elementFillBrandBoldPressed
+                            : lighten(0.02, theme.surfaceFillRaised)
+                    };
                 }
             }
         `}
 
-    ${({ $isWithoutProgressOutline }) =>
+    ${({ $isWithoutProgressOutline, $isGreyedOut, theme }) =>
         $isWithoutProgressOutline &&
         css`
             background: none;
-            color: ${({ theme }) => theme.contentBrand};
+            color: ${theme.contentButtonBrandPrimary};
 
             ${ProgressContentContainer} {
-                background: ${({ theme }) => theme.elementFillBrandBold};
+                background: ${theme.elementFillBrandBold};
 
                 path {
-                    fill: ${({ theme }) => theme.contentBrand};
+                    fill: ${
+                        // A greyed-out wheel drops the brand fill, so the icon needs the brand colour again.
+                        $isGreyedOut ? theme.contentBrand : theme.contentButtonBrandPrimary
+                    };
                 }
             }
         `}
@@ -117,7 +121,7 @@ const Wheel = styled.div<{
             cursor: not-allowed;
         `}
 
-    ${({ $isStartable, $isPaused, $hasCriticalError, theme }) =>
+    ${({ $isStartable, $isPaused, $hasCriticalError, $isWithoutProgressOutline, theme }) =>
         ($isStartable || $isPaused) &&
         !$hasCriticalError &&
         css`
@@ -127,7 +131,11 @@ const Wheel = styled.div<{
                     height: calc(100% - 12px);
 
                     span {
-                        color: ${theme.contentBrand};
+                        color: ${
+                            $isWithoutProgressOutline
+                                ? theme.contentButtonBrandPrimary
+                                : theme.contentBrand
+                        };
                     }
                 }
             }
@@ -136,10 +144,7 @@ const Wheel = styled.div<{
     ${({ $isPaused, $hasCriticalError, theme, $progress }) =>
         $isPaused &&
         css`
-            background: ${`conic-gradient(${theme.surfaceFillPage} ${3.6 * $progress}deg, ${rgba(
-                theme.borderNeutral,
-                0.6,
-            )} 0)`};
+            background: ${`conic-gradient(${theme.elementFillNeutralBold} ${3.6 * $progress}deg, ${theme.borderNeutral} 0)`};
 
             &:hover {
                 path {
