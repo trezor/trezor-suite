@@ -15,7 +15,6 @@ import type {
     ExchangeTradeQuoteRequest,
     ExchangeTradeQuoteResponse,
     ExchangeTradeSigned,
-    InfoResponse,
     SellFiatTrade,
     SellFiatTradeQuoteRequest,
     SellFiatTradeQuoteResponse,
@@ -32,12 +31,14 @@ import { getOsName, getSuiteVersion, isDesktop, isNative } from '@trezor/env-uti
 import {
     type TradeServerEnvironment,
     type TradeServers,
+    type TradingInfoResponse,
     type TradingOTC,
     type TradingPaymentMethodType,
     type TradingTradeType,
     type TradingType,
     type TradingWatchTradeResponsePropsMap,
 } from './types';
+import { parseBtcSwapComposeTemplate } from './utils/exchange/btcSwapComposeTemplateSchema';
 
 type BodyType =
     | BuyTrade
@@ -203,11 +204,18 @@ class TradeApi {
         });
     }
 
-    getInfo = async (): Promise<InfoResponse | undefined> => {
+    getInfo = async (): Promise<TradingInfoResponse | undefined> => {
         try {
             const response = await this.request(this.INFO, {}, 'GET');
             if (response) {
-                return response;
+                return {
+                    ...response,
+                    config: {
+                        btcSwapComposeTemplate: parseBtcSwapComposeTemplate(
+                            response.config?.btcSwapComposeTemplate,
+                        ),
+                    },
+                };
             }
         } catch (error) {
             console.error('[getInfo]', error);
