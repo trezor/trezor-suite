@@ -16,7 +16,7 @@ import { BigNumber } from '@trezor/utils';
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
 import {
     NUMBER_OF_POINTS,
-    isIgnoredBalanceHistoryCoin,
+    isIgnoredBalanceHistoryAccount,
     isLocalBalanceHistoryCoin,
 } from './constants';
 import {
@@ -168,7 +168,7 @@ const getAccountBalanceHistory = async ({
     }
 
     const getBalanceHistory = async () => {
-        if (isIgnoredBalanceHistoryCoin(symbol)) {
+        if (isIgnoredBalanceHistoryAccount(accountItem)) {
             return {
                 main: [],
                 tokens: {},
@@ -399,7 +399,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
 > => {
     const accountsWithBalanceHistory = await Promise.all(
         accounts
-            .filter(a => !isIgnoredBalanceHistoryCoin(a.symbol))
+            .filter(a => !isIgnoredBalanceHistoryAccount(a))
             .map(accountItem => {
                 const { symbol } = accountItem;
 

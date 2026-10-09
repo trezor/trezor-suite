@@ -1,7 +1,7 @@
 import { A } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { type AccountItem, isIgnoredBalanceHistoryCoin } from '@suite-common/graph';
+import { type AccountItem, isIgnoredBalanceHistoryAccount } from '@suite-common/graph';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -43,6 +43,7 @@ export const selectPortfolioGraphAccountItems = createMemoizedSelector(
 
                     return {
                         symbol: account.symbol,
+                        backendType: account.backendType,
                         descriptor: account.descriptor,
                         identity: tryGetAccountIdentity(account),
                         accountKey: account.key,
@@ -76,13 +77,17 @@ export const selectHasPortfolioGraphAccounts = (state: PortfolioGraphRootState):
 export const selectHasDeviceHistoryEnabledAccounts = createMemoizedSelector(
     [selectDeviceMainnetAccounts],
     (accounts): boolean =>
-        A.isNotEmpty(accounts.filter(a => !isIgnoredBalanceHistoryCoin(a.symbol))),
+        A.isNotEmpty(accounts.filter(account => !isIgnoredBalanceHistoryAccount(account))),
 );
 
 export const selectDeviceHistoryIgnoredNetworkSymbols = createMemoizedSelector(
     [selectDeviceMainnetAccounts],
     (accounts): readonly NetworkSymbol[] =>
-        A.uniq(accounts.filter(a => isIgnoredBalanceHistoryCoin(a.symbol)).map(a => a.symbol)),
+        A.uniq(
+            accounts
+                .filter(account => isIgnoredBalanceHistoryAccount(account))
+                .map(account => account.symbol),
+        ),
 );
 
 export const selectIsHistoryEnabledAccountByAccountKey = (
@@ -95,5 +100,5 @@ export const selectIsHistoryEnabledAccountByAccountKey = (
         return false;
     }
 
-    return !isIgnoredBalanceHistoryCoin(account.symbol);
+    return !isIgnoredBalanceHistoryAccount(account);
 };
