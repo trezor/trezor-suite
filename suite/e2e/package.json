@@ -47,7 +47,6 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite/analytics": "workspace:*",
-        "@suite/app-assets": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/desktop-app": "workspace:*",
         "@suite/flags": "workspace:*",
