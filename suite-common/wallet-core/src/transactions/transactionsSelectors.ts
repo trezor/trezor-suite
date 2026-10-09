@@ -165,11 +165,6 @@ export const selectTransactionTargets = createMemoizedSelector(
     transaction => transaction?.targets,
 );
 
-export const selectTransactionFirstTargetAddress = createMemoizedSelector(
-    [selectTransactionTargets],
-    targets => targets?.[0]?.addresses?.[0],
-);
-
 export const selectIsTransactionPending = createMemoizedSelector(
     [selectTransactionByAccountKeyAndTxid],
     transaction => (transaction ? isPending(transaction) : false),
@@ -264,11 +259,6 @@ export const selectAccountStakeTypeTransactions = createMemoizedSelector(
 export const selectAccountYieldTypeTransactions = createMemoizedSelector(
     [selectAccountTransactions],
     transactions => returnStableArrayIfEmpty(transactions.filter(isYieldTypeTx)),
-);
-
-export const selectAccountPendingStakeTypeTransactions = createMemoizedSelector(
-    [selectAccountStakeTypeTransactions],
-    transactions => transactions.filter(tx => isPending(tx)),
 );
 
 export const hasPendingStakeTypeTransaction = createMemoizedSelector(

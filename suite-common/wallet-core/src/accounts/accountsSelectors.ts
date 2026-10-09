@@ -298,11 +298,6 @@ export const selectDeviceAccountByDescriptorAndNetworkSymbol = createMemoizedSel
     },
 );
 
-export const selectDeviceAccountKeyByDescriptorAndNetworkSymbol = createMemoizedSelector(
-    [selectDeviceAccountByDescriptorAndNetworkSymbol],
-    account => account?.key ?? null,
-);
-
 export const selectAccountsSymbols = createMemoizedSelector([selectAccounts], accounts =>
     pipe(
         accounts,
@@ -322,15 +317,6 @@ export const selectSolAccountHasStaked = createMemoizedSelector([selectAccountBy
 
     return !!account.misc.solStakingAccounts?.length;
 });
-
-export const selectSolExternalStakingAccounts = createMemoizedSelector(
-    [selectAccountByKey],
-    account => {
-        if (!account?.misc || account.networkType !== 'solana') return [];
-
-        return account.misc.solExternalStakingAccounts ?? [];
-    },
-);
 
 export const selectHasSolExternalStakingAccounts = createMemoizedSelector(
     [selectAccountByKey],

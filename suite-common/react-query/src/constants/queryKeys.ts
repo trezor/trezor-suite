@@ -24,11 +24,6 @@ export const commonQueryKeys = {
         'by-address',
         params,
     ],
-    yieldOpportunitiesPages: (params: { limit: number; sort: string }) => [
-        'yield-opportunities',
-        'pages',
-        params,
-    ],
     merklRewards: (...args: any[]) => ['merkl-rewards', ...args],
     missingRateTickers: (...args: any[]) => ['missing-rate-tickers', ...args],
     // `lastKnownNonce` (account.misc.nonce) is part of the key, not just an input to the fetcher —

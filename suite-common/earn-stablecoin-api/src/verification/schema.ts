@@ -9,8 +9,6 @@ export const UnsignedEvmTransactionSchema = z.object({
     chainId: z.number(),
 });
 
-export type UnsignedEvmTransaction = z.infer<typeof UnsignedEvmTransactionSchema>;
-
 export const UnsignedEvmTransactionForSigningSchema = UnsignedEvmTransactionSchema.extend({
     gasLimit: evmHexString,
     nonce: z.union([
@@ -27,18 +25,6 @@ export const UnsignedEvmTransactionForSigningSchema = UnsignedEvmTransactionSche
 export type UnsignedEvmTransactionForSigning = z.infer<
     typeof UnsignedEvmTransactionForSigningSchema
 >;
-
-export const parseUnsignedEvmTransaction = (raw: unknown): UnsignedEvmTransaction | null => {
-    if (typeof raw !== 'string') {
-        return null;
-    }
-
-    try {
-        return UnsignedEvmTransactionSchema.parse(JSON.parse(raw));
-    } catch {
-        return null;
-    }
-};
 
 export const parseUnsignedEvmTransactionForSigning = (
     raw: unknown,

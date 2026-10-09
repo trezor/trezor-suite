@@ -2,7 +2,6 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
-    type GeneralPrecomposedTransaction,
     type SupportedTronNetworkSymbols,
     type TronResourceType,
     type WalletAccountTransaction,
@@ -134,28 +133,4 @@ export const getResourceGain = (
     if (!limit || !weight) return null;
 
     return trx.times(limit).div(weight).toNumber();
-};
-
-const getRequiredFreezeTrx = (deficit: number, limit: number, weight: number): string | null =>
-    deficit > 0 && limit && weight
-        ? new BigNumber(deficit)
-              .times(weight)
-              .div(limit)
-              .integerValue(BigNumber.ROUND_CEIL)
-              .toString()
-        : null;
-
-export const calculateTronFreezeSuggestion = (
-    tx: GeneralPrecomposedTransaction | undefined,
-    resources: TronAccountExtraData | undefined,
-): string | null => {
-    if (!tx || tx.type === 'error' || !('bytes' in tx) || !resources) return null;
-
-    const energyConsumed = 'energyConsumed' in tx ? (tx.energyConsumed ?? 0) : 0;
-
-    return getRequiredFreezeTrx(
-        energyConsumed - resources.availableEnergy,
-        resources.totalEnergyLimit,
-        resources.totalEnergyWeight,
-    );
 };
