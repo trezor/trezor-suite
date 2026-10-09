@@ -1,11 +1,11 @@
 import {
     appReducer,
     appSliceInitialState,
-    selectCanUseBlockchain,
-    selectCanUseTrezorConnect,
     selectIsAppInitialized,
+    selectIsBlockchainInitialized,
+    selectIsTrezorConnectInitialized,
 } from './appSlice';
-import { AppServicesInitializationStatus } from './appTypes';
+import { ConnectAndBlockchainInitializationStatus } from './appTypes';
 import { applicationInitThunk } from './applicationInitThunk';
 import { postOnboardingInitThunk } from './postOnboardingInitThunk';
 
@@ -21,81 +21,83 @@ describe('appSlice', () => {
         expect(selectIsAppInitialized({ app: state })).toBe(true);
     });
 
-    it('tracks when services initialization starts', () => {
+    it('tracks when Connect and blockchain initialization starts', () => {
         const state = appReducer(
             appSliceInitialState,
             postOnboardingInitThunk.pending(requestId, undefined),
         );
 
-        expect(state.appServicesInitializationStatus).toBe(
-            AppServicesInitializationStatus.Initializing,
+        expect(state.connectAndBlockchainInitializationStatus).toBe(
+            ConnectAndBlockchainInitializationStatus.Initializing,
         );
     });
 
     it.each([
-        AppServicesInitializationStatus.Ready,
-        AppServicesInitializationStatus.Disabled,
-    ] as const)('tracks the fulfilled services initialization result: %s', status => {
+        ConnectAndBlockchainInitializationStatus.Ready,
+        ConnectAndBlockchainInitializationStatus.Disabled,
+    ] as const)('tracks the fulfilled Connect and blockchain initialization result: %s', status => {
         const state = appReducer(
             appSliceInitialState,
             postOnboardingInitThunk.fulfilled(status, requestId, undefined),
         );
 
-        expect(state.appServicesInitializationStatus).toBe(status);
+        expect(state.connectAndBlockchainInitializationStatus).toBe(status);
     });
 
-    it('tracks unexpected services initialization failures', () => {
+    it('tracks unexpected Connect and blockchain initialization failures', () => {
         const state = appReducer(
             appSliceInitialState,
             postOnboardingInitThunk.rejected(new Error('Unexpected error'), requestId, undefined),
         );
 
-        expect(state.appServicesInitializationStatus).toBe(AppServicesInitializationStatus.Error);
+        expect(state.connectAndBlockchainInitializationStatus).toBe(
+            ConnectAndBlockchainInitializationStatus.Error,
+        );
     });
 
     it.each([
-        AppServicesInitializationStatus.ConnectError,
-        AppServicesInitializationStatus.BlockchainError,
-    ] as const)('tracks the rejected services initialization result: %s', status => {
+        ConnectAndBlockchainInitializationStatus.ConnectError,
+        ConnectAndBlockchainInitializationStatus.BlockchainError,
+    ] as const)('tracks the rejected Connect and blockchain initialization result: %s', status => {
         const state = appReducer(
             appSliceInitialState,
             postOnboardingInitThunk.rejected(null, requestId, undefined, status),
         );
 
-        expect(state.appServicesInitializationStatus).toBe(status);
+        expect(state.connectAndBlockchainInitializationStatus).toBe(status);
     });
 
     it.each([
-        [AppServicesInitializationStatus.Idle, false],
-        [AppServicesInitializationStatus.Initializing, false],
-        [AppServicesInitializationStatus.Ready, true],
-        [AppServicesInitializationStatus.ConnectError, false],
-        [AppServicesInitializationStatus.BlockchainError, true],
-        [AppServicesInitializationStatus.Error, false],
-        [AppServicesInitializationStatus.Disabled, false],
-    ] as const)('allows Connect calls in the %s state: %s', (status, expected) => {
+        [ConnectAndBlockchainInitializationStatus.Idle, false],
+        [ConnectAndBlockchainInitializationStatus.Initializing, false],
+        [ConnectAndBlockchainInitializationStatus.Ready, true],
+        [ConnectAndBlockchainInitializationStatus.ConnectError, false],
+        [ConnectAndBlockchainInitializationStatus.BlockchainError, true],
+        [ConnectAndBlockchainInitializationStatus.Error, false],
+        [ConnectAndBlockchainInitializationStatus.Disabled, false],
+    ] as const)('reports TrezorConnect initialized in the %s state: %s', (status, expected) => {
         const state = {
             ...appSliceInitialState,
-            appServicesInitializationStatus: status,
+            connectAndBlockchainInitializationStatus: status,
         };
 
-        expect(selectCanUseTrezorConnect({ app: state })).toBe(expected);
+        expect(selectIsTrezorConnectInitialized({ app: state })).toBe(expected);
     });
 
     it.each([
-        [AppServicesInitializationStatus.Idle, false],
-        [AppServicesInitializationStatus.Initializing, false],
-        [AppServicesInitializationStatus.Ready, true],
-        [AppServicesInitializationStatus.ConnectError, false],
-        [AppServicesInitializationStatus.BlockchainError, false],
-        [AppServicesInitializationStatus.Error, false],
-        [AppServicesInitializationStatus.Disabled, false],
-    ] as const)('allows blockchain calls in the %s state: %s', (status, expected) => {
+        [ConnectAndBlockchainInitializationStatus.Idle, false],
+        [ConnectAndBlockchainInitializationStatus.Initializing, false],
+        [ConnectAndBlockchainInitializationStatus.Ready, true],
+        [ConnectAndBlockchainInitializationStatus.ConnectError, false],
+        [ConnectAndBlockchainInitializationStatus.BlockchainError, false],
+        [ConnectAndBlockchainInitializationStatus.Error, false],
+        [ConnectAndBlockchainInitializationStatus.Disabled, false],
+    ] as const)('reports blockchain initialized in the %s state: %s', (status, expected) => {
         const state = {
             ...appSliceInitialState,
-            appServicesInitializationStatus: status,
+            connectAndBlockchainInitializationStatus: status,
         };
 
-        expect(selectCanUseBlockchain({ app: state })).toBe(expected);
+        expect(selectIsBlockchainInitialized({ app: state })).toBe(expected);
     });
 });

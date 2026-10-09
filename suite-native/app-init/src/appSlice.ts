@@ -1,16 +1,16 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import {
-    type AppServicesInitializationError,
-    type AppServicesInitializationResult,
-    AppServicesInitializationStatus,
+    type ConnectAndBlockchainInitializationError,
+    type ConnectAndBlockchainInitializationResult,
+    ConnectAndBlockchainInitializationStatus,
 } from './appTypes';
 import { applicationInitThunk } from './applicationInitThunk';
 import { postOnboardingInitThunk } from './postOnboardingInitThunk';
 
 type AppState = {
     isAppInitialized: boolean;
-    appServicesInitializationStatus: AppServicesInitializationStatus;
+    connectAndBlockchainInitializationStatus: ConnectAndBlockchainInitializationStatus;
 };
 
 type AppRootState = {
@@ -19,7 +19,41 @@ type AppRootState = {
 
 export const appSliceInitialState: AppState = {
     isAppInitialized: false,
-    appServicesInitializationStatus: AppServicesInitializationStatus.Idle,
+    connectAndBlockchainInitializationStatus: ConnectAndBlockchainInitializationStatus.Idle,
+};
+
+const initializationReadinessByStatus: Record<
+    ConnectAndBlockchainInitializationStatus,
+    { isTrezorConnectInitialized: boolean; isBlockchainInitialized: boolean }
+> = {
+    [ConnectAndBlockchainInitializationStatus.Idle]: {
+        isTrezorConnectInitialized: false,
+        isBlockchainInitialized: false,
+    },
+    [ConnectAndBlockchainInitializationStatus.Initializing]: {
+        isTrezorConnectInitialized: false,
+        isBlockchainInitialized: false,
+    },
+    [ConnectAndBlockchainInitializationStatus.Ready]: {
+        isTrezorConnectInitialized: true,
+        isBlockchainInitialized: true,
+    },
+    [ConnectAndBlockchainInitializationStatus.ConnectError]: {
+        isTrezorConnectInitialized: false,
+        isBlockchainInitialized: false,
+    },
+    [ConnectAndBlockchainInitializationStatus.BlockchainError]: {
+        isTrezorConnectInitialized: true,
+        isBlockchainInitialized: false,
+    },
+    [ConnectAndBlockchainInitializationStatus.Error]: {
+        isTrezorConnectInitialized: false,
+        isBlockchainInitialized: false,
+    },
+    [ConnectAndBlockchainInitializationStatus.Disabled]: {
+        isTrezorConnectInitialized: false,
+        isBlockchainInitialized: false,
+    },
 };
 
 const appSlice = createSlice({
@@ -29,23 +63,26 @@ const appSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(postOnboardingInitThunk.pending, (state: AppState) => {
-                state.appServicesInitializationStatus =
-                    AppServicesInitializationStatus.Initializing;
+                state.connectAndBlockchainInitializationStatus =
+                    ConnectAndBlockchainInitializationStatus.Initializing;
             })
             .addCase(
                 postOnboardingInitThunk.fulfilled,
-                (state: AppState, { payload }: PayloadAction<AppServicesInitializationResult>) => {
-                    state.appServicesInitializationStatus = payload;
+                (
+                    state: AppState,
+                    { payload }: PayloadAction<ConnectAndBlockchainInitializationResult>,
+                ) => {
+                    state.connectAndBlockchainInitializationStatus = payload;
                 },
             )
             .addCase(
                 postOnboardingInitThunk.rejected,
                 (
                     state: AppState,
-                    { payload }: PayloadAction<AppServicesInitializationError | undefined>,
+                    { payload }: PayloadAction<ConnectAndBlockchainInitializationError | undefined>,
                 ) => {
-                    state.appServicesInitializationStatus =
-                        payload ?? AppServicesInitializationStatus.Error;
+                    state.connectAndBlockchainInitializationStatus =
+                        payload ?? ConnectAndBlockchainInitializationStatus.Error;
                 },
             )
             .addCase(applicationInitThunk.fulfilled, (state: AppState) => {
@@ -55,19 +92,19 @@ const appSlice = createSlice({
 });
 
 export const selectIsAppInitialized = (state: AppRootState) => state.app.isAppInitialized;
-export const selectAppServicesInitializationStatus = (state: AppRootState) =>
-    state.app.appServicesInitializationStatus;
+export const selectConnectAndBlockchainInitializationStatus = (state: AppRootState) =>
+    state.app.connectAndBlockchainInitializationStatus;
 
-export const selectCanUseTrezorConnect = (state: AppRootState): boolean => {
-    const status = selectAppServicesInitializationStatus(state);
+export const selectIsTrezorConnectInitialized = (state: AppRootState): boolean => {
+    const status = selectConnectAndBlockchainInitializationStatus(state);
 
-    return (
-        status === AppServicesInitializationStatus.Ready ||
-        status === AppServicesInitializationStatus.BlockchainError
-    );
+    return initializationReadinessByStatus[status].isTrezorConnectInitialized;
 };
 
-export const selectCanUseBlockchain = (state: AppRootState): boolean =>
-    selectAppServicesInitializationStatus(state) === AppServicesInitializationStatus.Ready;
+export const selectIsBlockchainInitialized = (state: AppRootState): boolean => {
+    const status = selectConnectAndBlockchainInitializationStatus(state);
+
+    return initializationReadinessByStatus[status].isBlockchainInitialized;
+};
 
 export const appReducer = appSlice.reducer;

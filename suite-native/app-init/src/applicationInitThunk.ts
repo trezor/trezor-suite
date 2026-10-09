@@ -25,28 +25,27 @@ import {
     selectIsOnboardingFinished,
 } from '@suite-native/settings';
 
+import { APP_INIT_ACTION_PREFIX } from './appInitConstants';
 import {
     type PostOnboardingInitThunkDeps,
     type PostOnboardingInitThunkState,
     postOnboardingInitThunk,
 } from './postOnboardingInitThunk';
 
-const ACTION_PREFIX = '@suite-native/app';
-
-type ApplicationInitThunkState = SettingsSliceRootState &
+export type ApplicationInitThunkState = SettingsSliceRootState &
     MessageSystemRootState &
     InitAnalyticsThunkState &
     InitDevicesThunkState &
     CreateImportedDeviceThunkState &
     PostOnboardingInitThunkState;
 
-type ApplicationInitThunkDeps = InitAnalyticsThunkDeps & PostOnboardingInitThunkDeps;
+export type ApplicationInitThunkDeps = InitAnalyticsThunkDeps & PostOnboardingInitThunkDeps;
 
 export const applicationInitThunk = createThunk<
     void,
     void,
     { state: ApplicationInitThunkState; extra: ApplicationInitThunkDeps }
->(`${ACTION_PREFIX}/applicationInit`, async (_, { dispatch, getState }) => {
+>(`${APP_INIT_ACTION_PREFIX}/applicationInit`, async (_, { dispatch, getState }) => {
     await prepareCachedEnvData();
 
     // Apply the earn yield worker base URL from debug settings (or the default for this build).

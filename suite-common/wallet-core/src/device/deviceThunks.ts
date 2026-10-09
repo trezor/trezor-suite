@@ -203,7 +203,7 @@ export const observeSelectedDeviceThunk = createThunk<
     },
 );
 
-type InitDevicesThunkState = DeviceRootState;
+export type InitDevicesThunkState = DeviceRootState;
 
 export const initDevicesThunk = createThunk<void, void, { state: InitDevicesThunkState }>(
     `${DEVICE_MODULE_PREFIX}/initDevices`,

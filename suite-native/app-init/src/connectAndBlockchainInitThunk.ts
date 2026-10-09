@@ -10,16 +10,16 @@ import {
     initBlockchainThunk,
 } from '@suite-common/wallet-core';
 
-import { AppServicesInitializationStatus } from './appTypes';
-
-const ACTION_PREFIX = '@suite-native/app';
+import { APP_INIT_ACTION_PREFIX } from './appInitConstants';
+import { ConnectAndBlockchainInitializationStatus } from './appTypes';
 
 export type ConnectAndBlockchainInitThunkState = ConnectInitThunkState & InitBlockchainThunkState;
 
 export type ConnectAndBlockchainInitThunkDeps = ConnectInitThunkDeps & InitBlockchainThunkDeps;
 
-type ConnectAndBlockchainInitializationError =
-    AppServicesInitializationStatus.ConnectError | AppServicesInitializationStatus.BlockchainError;
+type ConnectAndBlockchainInitThunkError =
+    | ConnectAndBlockchainInitializationStatus.ConnectError
+    | ConnectAndBlockchainInitializationStatus.BlockchainError;
 
 export const connectAndBlockchainInitThunk = createThunk<
     void,
@@ -27,22 +27,25 @@ export const connectAndBlockchainInitThunk = createThunk<
     {
         state: ConnectAndBlockchainInitThunkState;
         extra: ConnectAndBlockchainInitThunkDeps;
-        rejectValue: ConnectAndBlockchainInitializationError;
+        rejectValue: ConnectAndBlockchainInitThunkError;
     }
->(`${ACTION_PREFIX}/connectAndBlockchainInit`, async (_, { dispatch, rejectWithValue }) => {
-    const connectResult = await dispatch(connectInitThunk());
+>(
+    `${APP_INIT_ACTION_PREFIX}/connectAndBlockchainInit`,
+    async (_, { dispatch, rejectWithValue }) => {
+        const connectResult = await dispatch(connectInitThunk());
 
-    if (connectInitThunk.rejected.match(connectResult)) {
-        console.error(`Connect init error: ${JSON.stringify(connectResult.error)}`);
+        if (connectInitThunk.rejected.match(connectResult)) {
+            console.error(`Connect init error: ${JSON.stringify(connectResult.error)}`);
 
-        return rejectWithValue(AppServicesInitializationStatus.ConnectError);
-    }
+            return rejectWithValue(ConnectAndBlockchainInitializationStatus.ConnectError);
+        }
 
-    const blockchainResult = await dispatch(initBlockchainThunk());
+        const blockchainResult = await dispatch(initBlockchainThunk());
 
-    if (initBlockchainThunk.rejected.match(blockchainResult)) {
-        console.error(`Blockchain init error: ${JSON.stringify(blockchainResult.error)}`);
+        if (initBlockchainThunk.rejected.match(blockchainResult)) {
+            console.error(`Blockchain init error: ${JSON.stringify(blockchainResult.error)}`);
 
-        return rejectWithValue(AppServicesInitializationStatus.BlockchainError);
-    }
-});
+            return rejectWithValue(ConnectAndBlockchainInitializationStatus.BlockchainError);
+        }
+    },
+);

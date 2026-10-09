@@ -1,4 +1,4 @@
-export enum AppServicesInitializationStatus {
+export enum ConnectAndBlockchainInitializationStatus {
     Idle = 'idle',
     Initializing = 'initializing',
     Ready = 'ready',
@@ -8,10 +8,11 @@ export enum AppServicesInitializationStatus {
     Disabled = 'disabled',
 }
 
-export type AppServicesInitializationResult =
-    AppServicesInitializationStatus.Ready | AppServicesInitializationStatus.Disabled;
+export type ConnectAndBlockchainInitializationResult =
+    | ConnectAndBlockchainInitializationStatus.Ready
+    | ConnectAndBlockchainInitializationStatus.Disabled;
 
-export type AppServicesInitializationError =
-    | AppServicesInitializationStatus.ConnectError
-    | AppServicesInitializationStatus.BlockchainError
-    | AppServicesInitializationStatus.Error;
+export type ConnectAndBlockchainInitializationError =
+    | ConnectAndBlockchainInitializationStatus.ConnectError
+    | ConnectAndBlockchainInitializationStatus.BlockchainError
+    | ConnectAndBlockchainInitializationStatus.Error;
