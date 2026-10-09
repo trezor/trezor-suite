@@ -278,8 +278,8 @@ export const selectSmallBalanceSummary = createMemoizedSelector(
         }
 
         const fiatValue = [...small].reduce(
-            (total, assetKey) => total.plus(values.get(assetKey) ?? ZERO_FIAT_VALUE),
-            ZERO_FIAT_VALUE,
+            (total, assetKey) => total.plus(values.get(assetKey) ?? ZERO),
+            ZERO,
         );
 
         return { assetCount: small.size, fiatValue };
