@@ -10,8 +10,11 @@ import {
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Column, Text } from '@trezor/components';
 
+import { TruncatedAmount } from 'src/components/earn/yield/common/TruncatedAmount';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+
+import { HOME_ASSET_BALANCE_MAX_WIDTH } from './homeAssetTableLayout';
 
 type HomeAssetBalanceProps = {
     assetKey: WalletAssetKey;
@@ -31,14 +34,22 @@ export const HomeAssetBalance = memo(({ assetKey }: HomeAssetBalanceProps) => {
     return (
         <Column alignItems="flex-end" gap={2}>
             <BaseCurrencyValue amount={amount} symbol={symbol} tokenAddress={contractAddress} />
-            <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
-                <FormattedCryptoAmount
-                    value={amount}
-                    symbol={tokenSymbol ?? symbol}
-                    contractAddress={contractAddress}
-                    tokenDecimals={tokenDecimals}
-                    isCompact
-                />
+            <Text
+                intent="neutral"
+                priority="secondary"
+                typographyStyle="body-sm"
+                ellipsisLineCount={1}
+                maxWidth={HOME_ASSET_BALANCE_MAX_WIDTH}
+            >
+                <TruncatedAmount>
+                    <FormattedCryptoAmount
+                        value={amount}
+                        symbol={tokenSymbol ?? symbol}
+                        contractAddress={contractAddress}
+                        tokenDecimals={tokenDecimals}
+                        isCompact
+                    />
+                </TruncatedAmount>
             </Text>
         </Column>
     );

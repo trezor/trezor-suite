@@ -7,7 +7,10 @@ import { Card, Column, Table, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { HomeAssetRow } from 'src/views/home/HomeAssetsTable/HomeAssetRow';
-import { HOME_ASSET_CELL_PADDING } from 'src/views/home/HomeAssetsTable/homeAssetTableLayout';
+import {
+    HOME_ASSET_CELL_PADDING,
+    HOME_ASSET_COL_WIDTHS,
+} from 'src/views/home/HomeAssetsTable/homeAssetTableLayout';
 
 import { UnhideAssetModal } from './UnhideAssetModal';
 
@@ -40,7 +43,7 @@ export const HiddenTokensCard = ({
                 >
                     {heading}
                 </Text>
-                <Table isRowHighlightedOnHover colWidths={[{ minWidth: '200px' }, {}, {}]}>
+                <Table isRowHighlightedOnHover colWidths={HOME_ASSET_COL_WIDTHS}>
                     <Table.Header>
                         <Table.Row>
                             <Table.Cell padding={HOME_ASSET_CELL_PADDING.first}>
