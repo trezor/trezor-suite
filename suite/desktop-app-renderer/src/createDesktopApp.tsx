@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { initBluetoothThunk } from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { ServicesProvider } from '@suite-common/dependency-injection';
-import { ReactQueryProvider } from '@suite-common/react-query/src/components/ReactQueryProvider';
+import { ReactQueryProvider } from '@suite-common/react-query/react';
 import TrezorConnect from '@trezor/connect-electron';
 
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
