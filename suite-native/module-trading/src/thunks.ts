@@ -51,11 +51,7 @@ import {
     type PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
-import {
-    buildApprovalTransactionData,
-    getAllowanceAmount,
-    tryGetAccountIdentity,
-} from '@suite-common/wallet-utils';
+import { buildApprovalTransactionData, getAllowanceAmount } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { getErrorStrFromThunkRejectedValue } from '@suite-native/trading-quote-utils';
@@ -68,9 +64,6 @@ import {
     transactionManagementActions,
 } from '@suite-native/transaction-management';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
-import TrezorConnect from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Ok } from '@trezor/type-utils';
 
 import { createFormStateForSendForm } from './utils';
@@ -102,38 +95,6 @@ export const clearTradingStateThunk = createThunk<void, void, void>(
         dispatch(tradingSellActions.setLastErrorMessage(undefined));
         dispatch(tradingExchangeActions.setLastErrorMessage(undefined));
         dispatch(tradingBuyActions.setLastErrorMessage(undefined));
-    },
-);
-
-type PushTradingTxnThunkParams = {
-    serializedTx: string;
-    account: Account;
-};
-
-export const pushTradingTxnThunk = createThunk<
-    Ok<{ txid: string }>,
-    PushTradingTxnThunkParams,
-    { rejectValue: SerializedError | string }
->(
-    `${NATIVE_TRADING_EXCHANGE_THUNK_PREFIX}/pushTransaction`,
-    async ({ serializedTx, account }, { rejectWithValue, fulfillWithValue }) => {
-        try {
-            const pushTxResponse = await TrezorConnect.pushTransaction({
-                tx: serializedTx,
-                coin: asCoinSymbol(account.symbol),
-                identity: tryGetAccountIdentity(account),
-            });
-
-            if (!pushTxResponse.success) {
-                return rejectWithValue(pushTxResponse.error ?? 'Push transaction failed');
-            }
-
-            return fulfillWithValue(pushTxResponse);
-        } catch (error) {
-            console.error('Push trading transaction error:', error);
-
-            return rejectWithValue(error instanceof Error ? error.message : 'Unknown error');
-        }
     },
 );
 

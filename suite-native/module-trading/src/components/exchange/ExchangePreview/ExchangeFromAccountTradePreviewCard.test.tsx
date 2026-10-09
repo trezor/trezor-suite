@@ -47,7 +47,7 @@ describe('ExchangeFromAccountTradePreviewCard', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render TradeSideCard otherwise', async () => {
+    it('should render TradingAccountCard otherwise', async () => {
         const { getByText } = await renderExchangeFromAccountTradePreviewCard({
             quote: mercuryoFixedWorstQuote,
         });

@@ -4,7 +4,6 @@
     "references": [
         { "path": "../../suite-common/trading" },
         { "path": "../atoms" },
-        { "path": "../clipboard" },
         { "path": "../feature-flags" },
         { "path": "../trading-state" },
         {
