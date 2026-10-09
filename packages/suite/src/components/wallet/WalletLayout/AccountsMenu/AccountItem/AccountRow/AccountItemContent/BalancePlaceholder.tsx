@@ -1,24 +1,29 @@
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { Column, Skeleton } from '@trezor/components';
+import { Row, Skeleton } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 
-type BalancePlaceholderProps = {
+export function BalancePlaceholder() {
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
+
+    // Fills the 20px line of the loaded balance, so the row keeps its height once discovery ends.
+    return <Skeleton width={100} height={16} margin={{ vertical: 2 }} animate={shouldAnimate} />;
+}
+
+type FiatBalancePlaceholderProps = {
     networkSymbol: NetworkSymbol;
 };
 
-export function BalancePlaceholder({ networkSymbol }: BalancePlaceholderProps) {
+export function FiatBalancePlaceholder({ networkSymbol }: FiatBalancePlaceholderProps) {
     const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
 
-    return (
-        <Column gap={8}>
-            <Skeleton width={100} height={16} animate={shouldAnimate} />
+    if (isTestnet(networkSymbol)) return null;
 
-            {!isTestnet(networkSymbol) && (
-                <Skeleton width={100} height={16} animate={shouldAnimate} />
-            )}
-        </Column>
+    return (
+        <Row flex="none">
+            <Skeleton width={48} height={16} animate={shouldAnimate} />
+        </Row>
     );
 }
