@@ -4,7 +4,7 @@ import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { getFormattedAccountType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { orderedAccountTypes, sendDisabledNetworkTypes } from '@suite-native/config';
+import { orderedAccountTypes } from '@suite-native/config';
 
 const accountTypeToSectionHeader: Readonly<Partial<Record<AccountType, string>>> = {
     normal: 'default',
@@ -77,12 +77,7 @@ export const filterAccountsByNetworkSymbols = (
 };
 
 export const filterSendAvailableAccounts = <T extends Account>(accounts: readonly T[]) =>
-    A.filter(
-        accounts,
-        account =>
-            !sendDisabledNetworkTypes.includes(account.networkType) &&
-            Number(account.availableBalance) > 0,
-    );
+    A.filter(accounts, account => Number(account.availableBalance) > 0);
 
 export const sortAccountsByNetworksAndAccountTypes = <T extends Account>(
     accounts: readonly T[],
