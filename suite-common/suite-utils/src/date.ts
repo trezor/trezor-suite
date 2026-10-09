@@ -17,6 +17,24 @@ import {
 export const formatDurationStrict = (seconds: number, locale?: Locale) =>
     formatDistanceStrict(0, seconds * 1000, { locale });
 
+const RELATIVE_TIME_UNITS = [
+    { unit: 'year', seconds: 365 * 24 * 60 * 60 },
+    { unit: 'month', seconds: 30 * 24 * 60 * 60 },
+    { unit: 'day', seconds: 24 * 60 * 60 },
+    { unit: 'hour', seconds: 60 * 60 },
+    { unit: 'minute', seconds: 60 },
+] as const;
+
+// For Intl.RelativeTimeFormat, which formats a value in a given unit but does not pick the unit.
+export const getRelativeTimeUnit = (secondsFromNow: number) => {
+    const absoluteSeconds = Math.abs(secondsFromNow);
+    const { unit, seconds } =
+        RELATIVE_TIME_UNITS.find(candidate => absoluteSeconds >= candidate.seconds) ??
+        ({ unit: 'second', seconds: 1 } as const);
+
+    return { value: Math.trunc(secondsFromNow / seconds), unit };
+};
+
 export const calcTicks = (startDate: Date, endDate: Date) => {
     const timestamps =
         differenceInMonths(endDate, startDate) <= 1

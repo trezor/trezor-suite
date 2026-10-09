@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FormattedRelativeTime } from 'react-intl';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
@@ -24,12 +25,16 @@ import {
 } from '@suite-common/networks';
 import { useQueryClient } from '@suite-common/react-query';
 import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
+import { getRelativeTimeUnit } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 import {
     ADDRESS_MAX_LENGTH,
     NAMED_ADDRESS_RESOLVE_DEBOUNCE_MS,
+    getRecipientLastSentTime,
+    getRecipientRisk,
     getResolveNamedAddressQueryOptions,
+    selectAccountRecipientHistory,
     useResolveNamedAddress,
 } from '@suite-common/wallet-core';
 import type { Output } from '@suite-common/wallet-types';
@@ -38,10 +43,18 @@ import {
     convertAmountSubunitsToUnits,
     isProgramDerivedAccount,
 } from '@suite-common/wallet-utils';
-import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
+import { Column, Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { CheckIcon, InfoIcon, QrCodeIcon, WarningCircleIcon, XIcon } from '@trezor/icons';
+import {
+    CheckIcon,
+    ClockCounterClockwiseIcon,
+    InfoIcon,
+    QrCodeIcon,
+    WarningCircleIcon,
+    WarningIcon,
+    XIcon,
+} from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 import { type TimerId } from '@trezor/type-utils';
 import {
@@ -49,6 +62,7 @@ import {
     HELP_CENTER_EVM_ADDRESS_CHECKSUM,
     HELP_CENTER_EVM_SEND_TO_CONTRACT_URL,
     HELP_CENTER_SOLANA_HELP_URL,
+    HELP_CENTER_ZERO_VALUE_ATTACKS,
 } from '@trezor/urls';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
@@ -67,6 +81,24 @@ const autocorrectTranslationKeys: Record<NonNullable<AddressCorrection>['type'],
     lowercase: 'TR_CONVERTED_TO_LOWERCASE',
     bchPrefix: 'TR_ADDED_BITCOINCASH_PREFIX',
 };
+
+const getRelativeTimeUnitFromNow = (unixTime: number) =>
+    getRelativeTimeUnit(unixTime - Date.now() / 1000);
+
+type AddressHintRowProps = {
+    icon: ReactNode;
+    children: ReactNode;
+    'data-testid': string;
+};
+
+const AddressHintRow = ({ icon, children, 'data-testid': dataTestId }: AddressHintRowProps) => (
+    <Row gap={4} data-testid={dataTestId}>
+        {icon}
+        <Column flex="1" minWidth={0}>
+            {children}
+        </Column>
+    </Row>
+);
 
 type AddressProps = {
     outputId: number;
@@ -154,7 +186,43 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const [isExternalAddressCheckWarningDismissed, setIsExternalAddressCheckWarningDismissed] =
         useState(false);
 
+    // A ref because the validators read it from the closure of the previous render.
+    const poisoningWarningDismissedAddress = useRef<string | undefined>(undefined);
+
     const isExternalAddressCheckEnabled = ['ethereum', 'solana', 'tron'].includes(networkType);
+
+    const recipientHistory = useSelector(state =>
+        selectAccountRecipientHistory(state, account.key),
+    );
+    const getRisk = (value: string) =>
+        recipientHistory
+            ? getRecipientRisk({ address: value, history: recipientHistory, networkType })
+            : undefined;
+    const isPossiblePoisoning = (recipient: string) =>
+        recipient !== poisoningWarningDismissedAddress.current &&
+        getRisk(recipient) === 'poisoning';
+    const recipientAddress = resolvedNamedAddress ?? address;
+    // The risk check scans every counterparty, and this component re-renders on any form change.
+    const isNewRecipient = useMemo(
+        () =>
+            !!recipientAddress &&
+            !!recipientHistory &&
+            addressValidator.isAddressValid(recipientAddress, symbol) &&
+            getRecipientRisk({
+                address: recipientAddress,
+                history: recipientHistory,
+                networkType,
+            }) === 'new',
+        [recipientAddress, recipientHistory, addressValidator, symbol, networkType],
+    );
+    const lastSentTime =
+        recipientAddress && recipientHistory
+            ? getRecipientLastSentTime({
+                  address: recipientAddress,
+                  history: recipientHistory,
+                  networkType,
+              })
+            : undefined;
 
     useEffect(() => {
         setIsExternalAddressCheckWarningDismissed(false);
@@ -285,6 +353,21 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         return;
     }
 
+    const getPoisoningWarningProps = (
+        checkedAddressName: typeof inputName | typeof resolvedAddressInputName,
+    ) => ({
+        buttonProps: {
+            onClick: async () => {
+                poisoningWarningDismissedAddress.current = getValues(checkedAddressName);
+                if (await trigger(inputName)) {
+                    composeTransaction();
+                }
+            },
+            text: translationString('TR_I_UNDERSTAND_THE_RISK'),
+        },
+        learnMoreUrl: HELP_CENTER_ZERO_VALUE_ATTACKS,
+    });
+
     const getInputErrorProps = (): {
         learnMoreUrl?: InputErrorProps['learnMoreUrl'];
         buttonProps?: InputErrorProps['buttonProps'];
@@ -343,6 +426,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
                 return {};
             }
+            case 'addressPoisoning':
+                return getPoisoningWarningProps(inputName);
+            case 'resolvedAddressPoisoning':
+                return getPoisoningWarningProps(resolvedAddressInputName);
             case 'solAssociatedAccountCheck':
                 if (!isExternalAddressCheckWarningDismissed) {
                     return {
@@ -418,6 +505,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
                 if (!addressValidator.isAddressValid(value, symbol)) {
                     return translationString('RECIPIENT_IS_NOT_VALID');
+                }
+            },
+            addressPoisoning: (value: string) => {
+                if (!namedAddress.isNameLike(value) && isPossiblePoisoning(value)) {
+                    return translationString('TR_ADDRESS_POSSIBLE_POISONING');
                 }
             },
             evmChecks: async (checkedAddress: string) => {
@@ -510,6 +602,17 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     if (isContract) {
                         return translationString('TR_EVM_ADDRESS_IS_CONTRACT');
                     }
+                }
+            },
+            // A name only resolves to the address it sends to in evmChecks, so this must follow it.
+            resolvedAddressPoisoning: (value: string) => {
+                const resolvedAddress = getValues(resolvedAddressInputName);
+                if (
+                    namedAddress.isNameLike(value) &&
+                    resolvedAddress &&
+                    isPossiblePoisoning(resolvedAddress)
+                ) {
+                    return translationString('TR_ADDRESS_POSSIBLE_POISONING');
                 }
             },
             solAssociatedAccountCheck: async (value: string) => {
@@ -628,6 +731,77 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         return undefined;
     };
 
+    const getRecipientHistoryNote = () => {
+        if (addressError || isAddressWithLabel) return undefined;
+
+        if (isNewRecipient) {
+            return {
+                text: <Translation id="TR_ADDRESS_NEW_RECIPIENT" />,
+                icon: <Icon as={WarningIcon} size={16} intent="warning" />,
+            };
+        }
+
+        if (lastSentTime !== undefined) {
+            return {
+                text: (
+                    <Translation
+                        id="TR_ADDRESS_LAST_SENT"
+                        values={{
+                            relativeTime: (
+                                <FormattedRelativeTime
+                                    {...getRelativeTimeUnitFromNow(lastSentTime)}
+                                    numeric="auto"
+                                />
+                            ),
+                        }}
+                    />
+                ),
+                icon: <Icon as={ClockCounterClockwiseIcon} size={16} />,
+            };
+        }
+    };
+
+    const getSecondaryHint = () => {
+        // The warning asks to check every character, which needs the address the name resolved to.
+        if (addressError?.type === 'resolvedAddressPoisoning' && resolvedNamedAddress) {
+            return {
+                text: (
+                    <Translation
+                        id="TR_ENS_WALLET_ADDRESS"
+                        values={{ address: resolvedNamedAddress }}
+                    />
+                ),
+                icon: undefined,
+            };
+        }
+
+        return getRecipientHistoryNote();
+    };
+
+    const primaryHint = getBottomText();
+    const secondaryHint = getSecondaryHint();
+    // Rows of their own, so the secondary hint never replaces what a name resolved to.
+    const bottomText = (primaryHint || secondaryHint) && (
+        <Column gap={4}>
+            {primaryHint && (
+                <AddressHintRow
+                    icon={getBottomTextIconComponent()}
+                    data-testid="@send/address/hint"
+                >
+                    {primaryHint}
+                </AddressHintRow>
+            )}
+            {secondaryHint && (
+                <AddressHintRow
+                    icon={secondaryHint.icon}
+                    data-testid="@send/address/secondary-hint"
+                >
+                    {secondaryHint.text}
+                </AddressHintRow>
+            )}
+        </Column>
+    );
+
     return (
         <Input
             hasError={!!addressError}
@@ -698,8 +872,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     )}
                 </Row>
             }
-            bottomText={getBottomText()}
-            bottomTextIconComponent={getBottomTextIconComponent()}
+            bottomText={bottomText}
             data-testid={inputName}
             defaultValue={addressValue}
             maxLength={ADDRESS_MAX_LENGTH}

@@ -2424,6 +2424,20 @@ export const messages = defineMessages({
         defaultMessage: "You're sending funds to a contract address.",
         id: 'TR_EVM_ADDRESS_IS_CONTRACT',
     },
+    TR_ADDRESS_POSSIBLE_POISONING: {
+        defaultMessage:
+            'This address appears in suspected scam transactions or closely resembles an address in your history. Check every character before sending.',
+        id: 'TR_ADDRESS_POSSIBLE_POISONING',
+    },
+    TR_ADDRESS_NEW_RECIPIENT: {
+        defaultMessage:
+            "You haven't transacted with this address before. Double-check it before sending.",
+        id: 'TR_ADDRESS_NEW_RECIPIENT',
+    },
+    TR_ADDRESS_LAST_SENT: {
+        defaultMessage: 'Last sent {relativeTime}',
+        id: 'TR_ADDRESS_LAST_SENT',
+    },
     TR_I_UNDERSTAND_THE_RISK: {
         defaultMessage: 'I understand',
         id: 'TR_I_UNDERSTAND_THE_RISK',
