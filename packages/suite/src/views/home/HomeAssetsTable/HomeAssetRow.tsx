@@ -19,6 +19,7 @@ import { HOME_ASSET_CELL_PADDING } from './homeAssetTableLayout';
 type HomeAssetRowProps = {
     assetKey: WalletAssetKey;
     hasBorderTop?: boolean;
+    isHidden?: boolean;
     /** Takes the key so the caller can hand over a stable callback, which `memo` needs to hold. */
     onSelect?: (assetKey: WalletAssetKey) => void;
     /** The asset the row stands for is appended to it, so every row has an id of its own. */
@@ -28,13 +29,18 @@ type HomeAssetRowProps = {
 export const HomeAssetRow = memo(function HomeAssetRow({
     assetKey,
     hasBorderTop,
+    isHidden,
     onSelect,
     testIdPrefix = '@dashboard/home-asset-item',
 }: HomeAssetRowProps) {
     const { NetworkNameFormatter } = useFormatters();
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
-    const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
-    const displaySymbol = useSelector(state => selectWalletAssetDisplaySymbol(state, assetKey));
+    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey, isHidden));
+    const contractAddress = useSelector(state =>
+        selectWalletAssetContractAddress(state, assetKey, isHidden),
+    );
+    const displaySymbol = useSelector(state =>
+        selectWalletAssetDisplaySymbol(state, assetKey, isHidden),
+    );
 
     if (symbol === undefined) {
         return null;
@@ -74,7 +80,7 @@ export const HomeAssetRow = memo(function HomeAssetRow({
             </Table.Cell>
 
             <Table.Cell align="end" padding={HOME_ASSET_CELL_PADDING.last}>
-                <HomeAssetBalance assetKey={assetKey} />
+                <HomeAssetBalance assetKey={assetKey} isHidden={isHidden} />
             </Table.Cell>
         </Table.Row>
     );

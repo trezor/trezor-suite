@@ -18,14 +18,21 @@ import { HOME_ASSET_BALANCE_MAX_WIDTH } from './homeAssetTableLayout';
 
 type HomeAssetBalanceProps = {
     assetKey: WalletAssetKey;
+    isHidden?: boolean;
 };
 
-export const HomeAssetBalance = memo(({ assetKey }: HomeAssetBalanceProps) => {
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
-    const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
-    const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
-    const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
-    const amount = useSelector(state => selectWalletAssetAmount(state, assetKey));
+export const HomeAssetBalance = memo(({ assetKey, isHidden }: HomeAssetBalanceProps) => {
+    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey, isHidden));
+    const contractAddress = useSelector(state =>
+        selectWalletAssetContractAddress(state, assetKey, isHidden),
+    );
+    const tokenSymbol = useSelector(state =>
+        selectWalletAssetTokenSymbol(state, assetKey, isHidden),
+    );
+    const tokenDecimals = useSelector(state =>
+        selectWalletAssetTokenDecimals(state, assetKey, isHidden),
+    );
+    const amount = useSelector(state => selectWalletAssetAmount(state, assetKey, isHidden));
 
     if (symbol === undefined || amount === undefined) {
         return null;

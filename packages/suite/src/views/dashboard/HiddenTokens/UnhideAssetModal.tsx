@@ -24,9 +24,13 @@ type UnhideAssetModalProps = {
 
 export const UnhideAssetModal = ({ assetKey, reason, onCancel }: UnhideAssetModalProps) => {
     const { dispatch } = useServices(injectDispatch);
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
-    const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
-    const displaySymbol = useSelector(state => selectWalletAssetDisplaySymbol(state, assetKey));
+    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey, true));
+    const contractAddress = useSelector(state =>
+        selectWalletAssetContractAddress(state, assetKey, true),
+    );
+    const displaySymbol = useSelector(state =>
+        selectWalletAssetDisplaySymbol(state, assetKey, true),
+    );
 
     const handleUnhide = () => {
         if (symbol !== undefined && contractAddress !== undefined) {

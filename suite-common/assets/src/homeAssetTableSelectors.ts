@@ -286,34 +286,47 @@ export const selectNetworkFiatValue = createMemoizedSelector(
     (worth, symbol) => worth.get(symbol)?.toFixed(),
 );
 
-const selectWalletAsset = (state: HomeAssetTableState, assetKey: WalletAssetKey) =>
-    selectWalletAssets(state).get(assetKey) ?? selectHiddenWalletAssets(state).get(assetKey);
+const selectWalletAsset = (
+    state: HomeAssetTableState,
+    assetKey: WalletAssetKey,
+    isHidden = false,
+) => (isHidden ? selectHiddenWalletAssets(state) : selectWalletAssets(state)).get(assetKey);
 
-export const selectWalletAssetSymbol = (state: HomeAssetTableState, assetKey: WalletAssetKey) =>
-    selectWalletAsset(state, assetKey)?.symbol;
+export const selectWalletAssetSymbol = (
+    state: HomeAssetTableState,
+    assetKey: WalletAssetKey,
+    isHidden?: boolean,
+) => selectWalletAsset(state, assetKey, isHidden)?.symbol;
 
 export const selectWalletAssetContractAddress = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey,
-) => selectWalletAsset(state, assetKey)?.contractAddress;
+    isHidden?: boolean,
+) => selectWalletAsset(state, assetKey, isHidden)?.contractAddress;
 
 export const selectWalletAssetDisplaySymbol = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey,
-) => selectWalletAsset(state, assetKey)?.displaySymbol;
+    isHidden?: boolean,
+) => selectWalletAsset(state, assetKey, isHidden)?.displaySymbol;
 
-export const selectWalletAssetAmount = (state: HomeAssetTableState, assetKey: WalletAssetKey) =>
-    selectWalletAsset(state, assetKey)?.amount;
+export const selectWalletAssetAmount = (
+    state: HomeAssetTableState,
+    assetKey: WalletAssetKey,
+    isHidden?: boolean,
+) => selectWalletAsset(state, assetKey, isHidden)?.amount;
 
 export const selectWalletAssetTokenSymbol = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey,
-) => selectWalletAsset(state, assetKey)?.tokenSymbol;
+    isHidden?: boolean,
+) => selectWalletAsset(state, assetKey, isHidden)?.tokenSymbol;
 
 export const selectWalletAssetTokenDecimals = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey,
-) => selectWalletAsset(state, assetKey)?.tokenDecimals;
+    isHidden?: boolean,
+) => selectWalletAsset(state, assetKey, isHidden)?.tokenDecimals;
 
 const byCryptoBalance =
     (assets: ReadonlyMap<WalletAssetKey, WalletAsset>) =>

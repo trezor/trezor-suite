@@ -62,6 +62,7 @@ export const HiddenTokensCard = ({
                             <HomeAssetRow
                                 key={assetKey}
                                 assetKey={assetKey}
+                                isHidden
                                 onSelect={setAssetKeyToUnhide}
                                 testIdPrefix="@hidden-tokens/item"
                             />
