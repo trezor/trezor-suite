@@ -15,7 +15,6 @@ import {
     selectShownNetworkSymbols,
     selectShownWalletAssetKeys,
     selectShownWalletAssetKeysOfNetwork,
-    selectSmallBalanceFiatThreshold,
     selectSmallBalanceSummary,
     selectWalletAssetAmount,
 } from './homeAssetTableSelectors';
@@ -608,7 +607,6 @@ describe('the small balances the switch hides', () => {
         it('draws the line at a dollar, not at one of the currency', () => {
             const state = stateInCzk(100);
 
-            expect(selectSmallBalanceFiatThreshold(state)?.toFixed()).toBe('20');
             expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`]);
             expect(selectSmallBalanceSummary(state)?.fiatValue.toFixed()).toBe('10');
         });
@@ -616,9 +614,41 @@ describe('the small balances the switch hides', () => {
         it('hides nothing until the dollar can be converted', () => {
             const state = stateInCzk();
 
-            expect(selectSmallBalanceFiatThreshold(state)).toBeUndefined();
             expect(selectSmallBalanceSummary(state)).toBeUndefined();
             expect(selectDisplayedWalletAssetKeys(state)).toHaveLength(3);
+        });
+    });
+
+    describe('an asset nothing can price', () => {
+        // The shown token has no rate: it is not on CoinGecko, so it is taken for dust.
+        const stateWithAnUnpricedToken = (areSmallBalancesShown: boolean) =>
+            createState({
+                accounts: [
+                    mockAccount({
+                        symbol: ETH,
+                        balance: '0',
+                        tokens: [{ contract: UNKNOWN_TOKEN, balance: '999999' }],
+                    }),
+                    mockAccount({ symbol: BTC, index: 1, balance: '2' }),
+                ],
+                rates: { ...mockRate(BTC, 1), ...mockRate(ETH, 1) },
+                shownTokens: [UNKNOWN_TOKEN],
+                areSmallBalancesShown,
+            });
+
+        it('goes below everything that can be priced, even what is worth nothing', () => {
+            expect(selectDisplayedWalletAssetKeys(stateWithAnUnpricedToken(true))).toEqual([
+                `${ALICE}/btc/`,
+                `${ALICE}/eth/`,
+                `${ALICE}/eth/${UNKNOWN_TOKEN}`,
+            ]);
+        });
+
+        it('counts as a small balance and leaves with them', () => {
+            const state = stateWithAnUnpricedToken(false);
+
+            expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`]);
+            expect(selectSmallBalanceSummary(state)?.assetCount).toBe(2);
         });
     });
 

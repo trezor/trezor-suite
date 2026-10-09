@@ -27,14 +27,12 @@ import { HomeAssetNewBanner } from './HomeAssetNewBanner';
 import { HomeAssetRow } from './HomeAssetRow';
 import { HomeAssetTableFilterHeader } from './HomeAssetTableFilter';
 import { HOME_ASSET_CELL_PADDING, HOME_ASSET_COL_WIDTHS } from './homeAssetTableLayout';
-import { useSmallBalanceThresholdRates } from './useSmallBalanceThresholdRates';
 
 const NO_NETWORKS: readonly NetworkSymbol[] = [];
 
 export const HomeAssetTable = () => {
     const { dispatch } = useServices(injectDispatch);
     const [isExpanded, setIsExpanded] = useState(false);
-    useSmallBalanceThresholdRates();
     const grouping = useSelector(selectHomeAssetsTableGrouping);
     const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesShown);
     const heldAssetKeys = useSelector(selectShownWalletAssetKeys);

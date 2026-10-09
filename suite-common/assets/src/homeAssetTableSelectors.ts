@@ -21,7 +21,6 @@ import {
     selectCurrentFiatRates,
     selectDeviceAssetAccounts,
     selectEnabledNetworks,
-    selectFiatRatesByFiatRateKey,
     selectHiddenAssetAccountKeySet,
     selectHiddenTokenReasons,
     selectLastWeekFiatRates,
@@ -168,6 +167,13 @@ const selectHiddenWalletAssetValues = createMemoizedSelector(
 const byValue =
     (values: ReadonlyMap<WalletAssetKey, BigNumber>) =>
     (left: WalletAssetKey, right: WalletAssetKey) => {
+        // What nothing can price goes below everything that can, even below what is worth zero.
+        const isPriced = (assetKey: WalletAssetKey) => values.has(assetKey);
+
+        if (isPriced(left) !== isPriced(right)) {
+            return isPriced(left) ? -1 : 1;
+        }
+
         const worth = (assetKey: WalletAssetKey) => values.get(assetKey) ?? ZERO;
 
         // `comparedTo` is typed to answer null for a NaN side, which `toFiatCurrency` rules out.
@@ -189,45 +195,43 @@ export const selectShownWalletAssetKeys = createMemoizedSelector(
 const SMALL_BALANCE_USD_VALUE = new BigNumber(1);
 const BTC = asNetworkSymbol('btc');
 
-const selectBtcUsdRate = (state: HomeAssetTableState) =>
-    selectFiatRatesByFiatRateKey(state, getFiatRateKey(BTC, 'usd'))?.rate;
-
-const selectBtcBaseCurrencyRate = (state: HomeAssetTableState) =>
-    selectFiatRatesByFiatRateKey(state, getFiatRateKey(BTC, selectBaseCurrency(state)))?.rate;
-
 /**
- * A small balance is under a dollar whatever the chosen currency, and rates are fetched in the chosen
- * currency only, so the dollar is converted through what a bitcoin is worth in each. Undefined until
- * both rates are known.
+ * A small balance is under a dollar whatever the chosen currency. Rates are fetched in the chosen
+ * currency only, so the dollar is converted through what a bitcoin is worth in each; while either
+ * rate is missing nothing is fetched just for this and only the unpriced assets count as small.
  */
-export const selectSmallBalanceFiatThreshold = createMemoizedSelector(
-    [selectBaseCurrency, selectBtcUsdRate, selectBtcBaseCurrencyRate],
-    (baseCurrency, btcUsdRate, btcBaseCurrencyRate): BigNumber | undefined => {
-        if (baseCurrency === 'usd') {
-            return SMALL_BALANCE_USD_VALUE;
-        }
-
-        if (!btcUsdRate || !btcBaseCurrencyRate) {
-            return undefined;
-        }
-
-        return SMALL_BALANCE_USD_VALUE.times(btcBaseCurrencyRate).div(btcUsdRate);
-    },
-);
-
 const selectSmallBalanceAssetKeySet = createMemoizedSelector(
-    [selectShownWalletAssetKeys, selectWalletAssetValues, selectSmallBalanceFiatThreshold],
-    (assetKeys, values, threshold): ReadonlySet<WalletAssetKey> => {
-        const small = new Set<WalletAssetKey>();
+    [
+        selectShownWalletAssetKeys,
+        selectWalletAssetValues,
+        selectCurrentFiatRates,
+        selectBaseCurrency,
+    ],
+    (assetKeys, values, rates, baseCurrency): ReadonlySet<WalletAssetKey> => {
+        const btcUsdRate = rates?.[getFiatRateKey(BTC, 'usd')]?.rate;
+        const btcBaseCurrencyRate = rates?.[getFiatRateKey(BTC, baseCurrency)]?.rate;
+        let threshold: BigNumber | undefined;
 
-        if (threshold === undefined) {
-            return small;
+        if (baseCurrency === 'usd') {
+            threshold = SMALL_BALANCE_USD_VALUE;
+        } else if (btcUsdRate && btcBaseCurrencyRate) {
+            threshold = SMALL_BALANCE_USD_VALUE.times(btcBaseCurrencyRate).div(btcUsdRate);
         }
+
+        const small = new Set<WalletAssetKey>();
 
         assetKeys.forEach(assetKey => {
             const fiatValue = values.get(assetKey);
 
-            if (fiatValue?.abs().lt(threshold)) {
+            // Without a rate the asset is unknown to the price feeds (it is not even on CoinGecko),
+            // so it is taken for dust rather than left to crowd out what the wallet is worth.
+            if (fiatValue === undefined) {
+                small.add(assetKey);
+
+                return;
+            }
+
+            if (threshold !== undefined && fiatValue.abs().lt(threshold)) {
                 small.add(assetKey);
             }
         });
