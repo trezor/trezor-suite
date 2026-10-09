@@ -16528,8 +16528,6 @@ __metadata:
 "@suite/experimental@workspace:*, @suite/experimental@workspace:suite/experimental":
   version: 0.0.0-use.local
   resolution: "@suite/experimental@workspace:suite/experimental"
-  dependencies:
-    "@suite/intl": "workspace:*"
   languageName: unknown
   linkType: soft
 
