@@ -1,10 +1,5 @@
-import { TRANSFER_TOPIC } from './constants';
-
-export type TransferLogFields = {
-    address: string;
-    topics: readonly (string | null | undefined)[];
-    data: string;
-};
+import { TRANSFER_EVENT } from './constants';
+import { type EventLogFields, decodeEventLogAs } from '../utils/eventLog';
 
 export type ParsedTransfer = {
     contract: string;
@@ -13,34 +8,21 @@ export type ParsedTransfer = {
     value: bigint;
 };
 
-const topicToAddress = (topic: string) => `0x${topic.slice(-40).toLowerCase()}`;
-
 /**
- * Only fungible transfers. `Transfer(address,address,uint256)` carries the amount in `data` with
- * three topics, while the ERC-721 event of the same name indexes the token id into a fourth topic
- * and leaves `data` empty - those are dropped, since this worker serves no NFT-enabled network.
- *
- * Receipts carry every event of a transaction, and other events share that shape - a Uniswap V3
- * `Swap(sender, recipient, int256 amount0, ...)` would read as a transfer of `2^256 - amount` to
- * the recipient - so the event signature has to match too.
+ * Only fungible transfers. The ERC-721 `Transfer` shares the ERC-20 selector but indexes the token
+ * id into a fourth topic and leaves `data` empty, so it does not decode against the ERC-20 ABI -
+ * which is fine, since this worker serves no NFT-enabled network.
  */
-export const parseTransferLog = (log: TransferLogFields): ParsedTransfer | undefined => {
-    if (log.topics.length !== 3 || log.data.length < 66) return undefined;
+export const parseTransferLog = (log: EventLogFields): ParsedTransfer | undefined => {
+    const decoded = decodeEventLogAs(TRANSFER_EVENT, log);
+    if (!decoded) return undefined;
 
-    const [eventTopic, fromTopic, toTopic] = log.topics;
-    if (eventTopic?.toLowerCase() !== TRANSFER_TOPIC || !fromTopic || !toTopic) return undefined;
-
-    let value: bigint;
-    try {
-        value = BigInt(log.data.slice(0, 66));
-    } catch {
-        return undefined;
-    }
+    const { from, to, value } = decoded.args;
 
     return {
         contract: log.address.toLowerCase(),
-        from: topicToAddress(fromTopic),
-        to: topicToAddress(toTopic),
+        from: from.toLowerCase(),
+        to: to.toLowerCase(),
         value,
     };
 };
