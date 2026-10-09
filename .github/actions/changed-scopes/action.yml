@@ -26,6 +26,8 @@ runs:
             - '**/*.md'
             - 'docs/**'
             - '.github/ISSUE_TEMPLATE/**'
+            # Prettier-checked, see .prettierignore
+            - '.vscode/**'
           rust:
             - '**/{*.rs,Cargo.toml,Cargo.lock}'
             - 'packages/transport-bluetooth/scripts/{Dockerfile,build.sh}'
@@ -35,6 +37,7 @@ runs:
             - '!**/*.md'
             - '!docs/**'
             - '!.github/ISSUE_TEMPLATE/**'
+            - '!.vscode/**'
             # rust excludes
             - '!**/{*.rs,Cargo.toml,Cargo.lock}'
             - '!packages/transport-bluetooth/scripts/{Dockerfile,build.sh}'
@@ -43,5 +46,4 @@ runs:
             - '!.nix/**'
             - '!nixos-fix-binaries.sh'
             - '!.husky/**'
-            - '!.vscode/**'
             - '!CODEOWNERS'
