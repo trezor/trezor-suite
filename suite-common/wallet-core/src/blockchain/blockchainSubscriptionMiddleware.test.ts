@@ -1,11 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { prepareBlockchainSubscriptionMiddleware } from './blockchainSubscriptionMiddleware';
 import { mockSetAccountAddMetadata } from '../../mocks';

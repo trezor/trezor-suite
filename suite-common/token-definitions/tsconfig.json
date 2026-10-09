@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../redux-utils" },
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
@@ -17,6 +16,7 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../http-client" },

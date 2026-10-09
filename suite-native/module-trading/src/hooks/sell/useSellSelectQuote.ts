@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingSellInfo,
     selectTradingSellIsLoading,
@@ -22,6 +21,7 @@ import { useSellAnalyticReportCallback } from '@suite-native/trading-analytics';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 import { type SellFormType } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,

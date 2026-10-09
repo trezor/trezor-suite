@@ -6,10 +6,10 @@ import {
     useConditionControls,
     useMessageSystemMessageForm,
 } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Category, type Condition } from '@suite-common/suite-types';
 import { Button, Input, Select, Text, VStack } from '@suite-native/atoms';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const MessageSystemAddMessageForm = () => {
     const { dispatch } = useServices(injectDispatch);

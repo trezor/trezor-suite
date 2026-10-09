@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldRootState,
     getYieldWithdrawCompletedValues,
@@ -20,6 +19,7 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
 import { getYieldWithdrawCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';

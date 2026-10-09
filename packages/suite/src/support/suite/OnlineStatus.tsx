@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
 import { updateOnlineStatus } from '@suite/suite-lifecycle';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 /**
  * Navigator online/offline handler

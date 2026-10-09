@@ -5,11 +5,11 @@ import {
     type SellFiatTradeSigned,
 } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type PROTO } from '@trezor/connect';
 import { getSlip44ByPath, validatePath } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { type GetNonceThunkState, getNonceThunk } from './getNonce';

@@ -2,7 +2,6 @@ import { useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TokenInfo,
     type TokenManagementAction,
@@ -18,6 +17,7 @@ import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { TokenIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
 import {

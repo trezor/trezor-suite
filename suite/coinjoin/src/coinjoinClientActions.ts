@@ -8,7 +8,6 @@ import {
     type MessageSystemRootState,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import { type Dispatch } from '@suite-common/redux-utils';
 import { getDeviceInstances } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -33,6 +32,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { getOsName } from '@trezor/env-utils';
+import { type Dispatch } from '@trezor/redux-utils';
 import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
 
 import * as COINJOIN from './coinjoinConstants';

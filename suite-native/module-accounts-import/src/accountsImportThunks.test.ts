@@ -1,12 +1,12 @@
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
 import { mockNetworksState } from '@suite-common/networks/mocks';
-import { createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions, blockchainInitialState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type AccountInfo } from '@trezor/connect';
 import { asGetter, createMockDeps } from '@trezor/dependency-injection';
+import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import {
     type ImportAccountThunkDeps,

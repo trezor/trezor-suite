@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../redux-utils" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/urls" }
     ]
 }

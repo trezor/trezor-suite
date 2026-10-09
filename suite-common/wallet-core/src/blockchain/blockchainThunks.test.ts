@@ -1,9 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
 import { type SetCustomBackendThunkState, setCustomBackendThunk } from './blockchainThunks';

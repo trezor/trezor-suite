@@ -7,7 +7,6 @@ import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldAllowanceStatus,
     type YieldApproveModalState,
@@ -33,6 +32,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef, useFreshRef } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import {
     submitYieldDepositThunk,

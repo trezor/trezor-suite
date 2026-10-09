@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import { TrezorLogoIcon } from '@trezor/icons';
 import { QuickActionButton, mapTrezorModelToIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { UpdateTooltip } from './UpdateTooltip';
 import { selectUpdateStatus } from './selectUpdateStatus';

@@ -8,12 +8,12 @@ import {
     type MessageSystemRootState,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import '@suite-common/test-utils/globalOverrides';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { fixtures } from './__fixtures__/coinjoinMiddleware';
 import { coinjoinMiddleware } from './coinjoinMiddleware';

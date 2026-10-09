@@ -1,6 +1,5 @@
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -27,6 +26,7 @@ import {
     type UpdateSelectedFeeLevelThunkParams,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
+import { createThunk } from '@trezor/redux-utils';
 
 const STELLAR_TOKEN_MODULE_PREFIX = '@suite-native/stellar-token';
 

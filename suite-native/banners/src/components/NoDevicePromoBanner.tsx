@@ -1,9 +1,9 @@
 import { events as commonAnalyticsEvents } from '@suite-common/analytics';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { useGetTrezorEshopCta } from '@suite-native/link';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { setIsGetTrezorBannerClosed } from '../bannerFlagsSlice';
 import { Banner } from './Banner';

@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { selectIsConnectionModalOpen, setConnectionModal, setConnectionMode } from '@suite/device';
 import { gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

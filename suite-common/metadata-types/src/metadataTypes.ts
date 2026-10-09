@@ -1,5 +1,5 @@
-import { type SuiteCompatibleThunk } from '@suite-common/redux-utils';
 import type { StaticSessionId, WalletDescriptor } from '@trezor/device-utils';
+import { type SuiteCompatibleThunk } from '@trezor/redux-utils';
 
 export type FetchAndSaveMetadataThunk = SuiteCompatibleThunk<StaticSessionId>;
 

@@ -4,11 +4,11 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { TrezorBodyIcon } from '@trezor/icons';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
 import {
     enableOnboardingReducer,

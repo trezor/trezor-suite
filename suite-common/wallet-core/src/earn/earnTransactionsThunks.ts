@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type NotificationsRootState,
@@ -6,6 +5,7 @@ import {
     selectEarnTransactionNotifications,
 } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
 
 import {
     EARN_TRANSACTION_TOAST_TYPE,

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { Translation } from '@suite/intl';
 import { selectIsTorError, selectTorBootstrap, torActions } from '@suite/tor';
 import { TorStatus } from '@suite/tor-types';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Banner,
     Card,
@@ -18,6 +17,7 @@ import {
 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ClockClockwiseIcon, RepeatIcon, TorBrowserIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { toggleTorThunk } from '../toggleTorThunk';
 

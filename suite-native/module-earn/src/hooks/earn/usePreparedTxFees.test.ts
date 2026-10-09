@@ -1,6 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { formDraftReducer } from '@suite-common/wallet-core';
 import {
@@ -16,6 +15,7 @@ import {
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { prepareSendFormReducer } from '@suite-native/transaction-management';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import { createDeferred } from '@trezor/utils';
 
 import { type ComposeTxResult, type ComposedTxBase, usePreparedTxFees } from './usePreparedTxFees';

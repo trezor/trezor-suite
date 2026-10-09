@@ -20,7 +20,6 @@ import {
 import { onSuiteReady } from '@suite/suite-lifecycle';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { firmwareUpdateThunk } from '@suite-common/firmware';
-import { type WithServices, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
     getIsDeviceDescriptorApiTypeBluetooth,
@@ -48,6 +47,7 @@ import {
     hasBitcoinOnlyFirmware,
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
+import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';

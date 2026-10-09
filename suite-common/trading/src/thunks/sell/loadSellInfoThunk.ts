@@ -1,6 +1,6 @@
 import { type CryptoId, type FiatCurrencyCode, type SellProviderInfo } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 import { unique } from '@trezor/utils';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';

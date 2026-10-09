@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradeServerEnvironment, tradeApi } from '@suite-common/trading';
 import { Select, type SelectItemType } from '@suite-native/atoms';
 import { selectTradingEnvironment, tradingActions } from '@suite-native/trading-state';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 const tradingEnvironmentItems: SelectItemType<TradeServerEnvironment>[] = Object.keys(
     tradeApi.SERVERS,

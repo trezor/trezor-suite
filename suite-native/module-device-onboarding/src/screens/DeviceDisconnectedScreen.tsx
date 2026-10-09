@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import {
     ConnectAndUnlockDeviceScreenContent,
@@ -21,6 +20,7 @@ import {
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const DeviceDisconnectedScreen = ({
     route,

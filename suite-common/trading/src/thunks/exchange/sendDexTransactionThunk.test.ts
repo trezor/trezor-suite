@@ -1,10 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { type SendDexTransactionThunkState } from './sendDexTransactionThunk';

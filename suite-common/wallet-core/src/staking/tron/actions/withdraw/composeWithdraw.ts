@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import {
     type Account,
     type PrecomposedLevels,
@@ -6,6 +5,7 @@ import {
 } from '@suite-common/wallet-types';
 import { computeBandwidthFeeLevel } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 import { buildWithdrawContract } from './withdrawContract';
 import {

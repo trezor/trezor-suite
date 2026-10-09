@@ -1,7 +1,7 @@
-import { createThunk } from '@suite-common/redux-utils';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import TrezorConnect from '@trezor/connect';
 import type { ThpCredentials } from '@trezor/protocol';
+import { createThunk } from '@trezor/redux-utils';
 
 import { THP_PREFIX, thpActions } from './thpActions';
 

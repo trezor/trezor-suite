@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import { reloadAppAsync } from 'expo';
 
 import { firmwareActions, selectFirmwareChannel } from '@suite-common/firmware';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Select, type SelectItemType } from '@suite-native/atoms';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 const options: SelectItemType<FirmwareChannel>[] = [
     { label: 'Production', value: 'production' },

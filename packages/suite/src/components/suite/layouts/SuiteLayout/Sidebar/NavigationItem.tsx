@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components';
 
 import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Badge,
     Icon,
@@ -20,6 +19,7 @@ import {
 } from '@trezor/components';
 import { commonFocusStyles } from '@trezor/components/src/utils/utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';

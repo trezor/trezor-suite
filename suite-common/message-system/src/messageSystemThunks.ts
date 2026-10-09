@@ -1,7 +1,7 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { type MessageSystem } from '@suite-common/suite-types';
 import { PollingController, decodeJws, verifyJws } from '@suite-common/suite-utils';
 import { isCodesignBuild, isNative } from '@trezor/env-utils';
+import { createThunk } from '@trezor/redux-utils';
 import { scheduleAction } from '@trezor/utils';
 
 import { ACTION_PREFIX, messageSystemActions } from './messageSystemActions';

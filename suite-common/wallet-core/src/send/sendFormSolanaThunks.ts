@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -26,6 +25,7 @@ import { solanaUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { SOL_COMPUTE_UNIT_LIMIT } from '@trezor/network-solana/constants';
+import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';

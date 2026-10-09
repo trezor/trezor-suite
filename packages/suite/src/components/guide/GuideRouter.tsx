@@ -3,11 +3,11 @@ import { FreeFocusInside } from 'react-focus-lock';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type ActiveView } from '@suite-common/suite-types';
 import { Box, Modal, ResizableBox, variables } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { useOnce } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 import { zIndices } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 

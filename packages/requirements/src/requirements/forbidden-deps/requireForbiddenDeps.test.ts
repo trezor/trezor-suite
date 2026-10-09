@@ -127,10 +127,10 @@ describe(getForbiddenDependencyErrors.name, () => {
                         },
                     ],
                 },
-                workspaceName: '@suite-common/redux-utils',
+                workspaceName: '@trezor/redux-utils',
             }),
         ).toEqual([
-            '@suite-common/redux-utils: "@suite-common/extra-dependencies" is forbidden in dependencies. Reason: Redux utilities must stay domain-independent.',
+            '@trezor/redux-utils: "@suite-common/extra-dependencies" is forbidden in dependencies. Reason: Redux utilities must stay domain-independent.',
         ]);
     });
 
@@ -149,10 +149,10 @@ describe(getForbiddenDependencyErrors.name, () => {
                         },
                     ],
                 },
-                workspaceName: '@suite-common/redux-utils',
+                workspaceName: '@trezor/redux-utils',
             }),
         ).toEqual([
-            '@suite-common/redux-utils: "@suite-common/wallet-core" is forbidden in dependencies. Reason: Redux utilities must stay domain-independent.',
+            '@trezor/redux-utils: "@suite-common/wallet-core" is forbidden in dependencies. Reason: Redux utilities must stay domain-independent.',
         ]);
     });
 });

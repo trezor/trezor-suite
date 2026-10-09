@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { IconButton, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { BasicName } from './BasicName';
 

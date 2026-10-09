@@ -1,10 +1,10 @@
+import { type Timestamp } from '@suite-common/wallet-types';
+import { getFiatRateKeyFromTicker, isTestnet } from '@suite-common/wallet-utils';
 import {
     type ActionTypesDep,
     type ReducersDep,
     createReducerWithExtraDeps,
-} from '@suite-common/redux-utils';
-import { type Timestamp } from '@suite-common/wallet-types';
-import { getFiatRateKeyFromTicker, isTestnet } from '@suite-common/wallet-utils';
+} from '@trezor/redux-utils';
 
 import { updateFiatRatesThunk, updateTxsFiatRatesThunk } from './fiatRatesThunks';
 import { type FiatRatesState } from './fiatRatesTypes';

@@ -14,7 +14,6 @@ import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type WithSuiteSyncState, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
@@ -44,6 +43,7 @@ import {
 } from '@suite-common/wallet-types';
 import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils';
 import { type PROTO, type StaticSessionId } from '@trezor/connect';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { getSynchronize } from '@trezor/utils';
 
 import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';

@@ -4,14 +4,12 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/test-utils"
         },
         { "path": "../analytics" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" }
     ]
 }

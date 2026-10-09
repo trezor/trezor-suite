@@ -4,10 +4,10 @@ import styled, { css } from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { H3, IconButton, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowLeftIcon, XIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { zIndices } from '@trezor/theme';
 
 import { close } from 'src/actions/suite/guideActions';

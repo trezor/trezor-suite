@@ -13,7 +13,6 @@ import {
     type PersistentDeviceDataState,
     persistentDeviceDataInitialState,
 } from '@suite-common/persistent-device-data';
-import { type WithServices } from '@suite-common/redux-utils';
 import {
     type AcquiredDevice,
     type GetAllowPrereleaseDep,
@@ -33,6 +32,7 @@ import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TransportInfo } from '@trezor/connect';
 import { isLinux } from '@trezor/env-utils';
+import { type WithServices } from '@trezor/redux-utils';
 import { type DeepPartial } from '@trezor/type-utils';
 
 import { type AppState } from 'src/reducers/store';

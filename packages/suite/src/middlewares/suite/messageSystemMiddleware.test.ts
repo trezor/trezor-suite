@@ -13,9 +13,9 @@ import {
     getValidExperimentIds,
     getValidMessages,
 } from '@suite-common/message-system/src/messageSystemUtils';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type Action } from '@suite-common/suite-types';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import suiteReducer, { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { type WalletState, walletReducers } from 'src/reducers/wallet';

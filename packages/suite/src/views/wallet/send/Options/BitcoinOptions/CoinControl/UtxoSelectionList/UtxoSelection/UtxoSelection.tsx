@@ -8,7 +8,6 @@ import {
     selectLabelingDataForSelectedAccount,
 } from '@suite/metadata';
 import { openModal } from '@suite/modal';
-import { injectDispatch, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -28,6 +27,7 @@ import {
 import { type AccountUtxo } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { ChangeIcon, ClockIcon, TagFilledIcon, TagIcon, XCircleIcon } from '@trezor/icons';
+import { injectDispatch, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';

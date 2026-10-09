@@ -1,7 +1,6 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { TorStatus, selectIsTorDisabled, selectTorStatus } from '@suite/tor';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, Icon, type IconComponent, type UIIntent } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
@@ -14,6 +13,7 @@ import {
     XIcon,
 } from '@trezor/icons';
 import { QuickActionButton, TooltipRow } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

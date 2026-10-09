@@ -1,9 +1,9 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { networksActions, networksReducer } from '@suite-common/networks';
 import { mockNetworkMetadata } from '@suite-common/networks/mocks';
-import { createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { type LockDevice } from '@suite-common/suite-types';
 import { mock } from '@trezor/dependency-injection';
+import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import * as protocolConstants from './constants/protocolConstants';
 import * as protocolActions from './protocolActions';

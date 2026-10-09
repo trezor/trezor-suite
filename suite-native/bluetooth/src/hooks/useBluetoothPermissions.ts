@@ -10,8 +10,8 @@ import {
 
 import Constants from 'expo-constants';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { updatePermissionStatus } from '../bluetoothSlice';
 import { type BluetoothPermissionStatus } from '../types';

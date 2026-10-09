@@ -1,14 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     confirmAddressOnDeviceThunk,
     prepareWalletSettingsReducer,
 } from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { type GetRefundAddressThunkState, getRefundAddressThunk } from './getRefundAddress';
 import { accounts } from '../../reducers/__fixtures__/account';

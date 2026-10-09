@@ -13,7 +13,6 @@ import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
     DefinitionType,
@@ -74,6 +73,7 @@ import {
     isNativeTokenWrappable,
     isWrappedNativeToken,
 } from '@trezor/network-ethereum-suite-common';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { setSendFormPrefill, setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';

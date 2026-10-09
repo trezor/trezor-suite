@@ -32,7 +32,6 @@ import {
     selectIsDeviceInvariabilityCheckSuccess,
     selectIsEntropyCheckFailed,
 } from '@suite-common/persistent-device-data';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type ThpRootState, selectThpAutoconnectStep } from '@suite-common/thp';
 import {
     type AccountsRootState,
@@ -65,6 +64,7 @@ import {
 } from '@suite-native/settings';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type Device } from '@trezor/connect';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 import { getIsDeviceSetupSupported, isFirmwareVersionSupported } from './utils';

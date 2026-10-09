@@ -1,11 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, type FeesState } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { DEFAULT_FEE_INFO } from './feesConstants';
 import { feesReducer } from './feesReducer';

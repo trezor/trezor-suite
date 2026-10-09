@@ -2,7 +2,6 @@
 import { useSelector } from 'react-redux';
 
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     isSuiteSyncSupportedByDevice,
@@ -15,6 +14,7 @@ import { type AcquiredDevice } from '@suite-common/suite-types';
 import { Code, Row, Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { parseStaticSessionId } from '@trezor/device-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type SuiteSyncWalletDebugProps = {
     device: AcquiredDevice;

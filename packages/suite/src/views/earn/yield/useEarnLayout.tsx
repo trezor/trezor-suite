@@ -4,7 +4,6 @@ import { type TranslationKey } from '@suite/intl';
 import { type EarnParams, gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2, useGetVaultByAddress } from '@suite-common/earn-stablecoin-api';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type EarnAnalyticsStep } from '@suite-common/suite-types/src/staking';
 import { getNetworkByYieldXyzId, getNetworkOptional } from '@suite-common/wallet-config';
@@ -16,6 +15,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { YieldPageHeader } from 'src/components/earn';
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';

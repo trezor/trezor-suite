@@ -1,10 +1,10 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectIsTorEnabled } from '@suite/tor';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
 import { Banner, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';

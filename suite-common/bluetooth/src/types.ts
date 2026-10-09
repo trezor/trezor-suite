@@ -1,6 +1,6 @@
-import { type SuiteCompatibleThunk } from '@suite-common/redux-utils';
 import { type BluetoothDeviceId } from '@trezor/connect';
 import { type DeviceModelInternal } from '@trezor/device-utils';
+import { type SuiteCompatibleThunk } from '@trezor/redux-utils';
 
 export type BluetoothAdapterStatus =
     | 'unknown'

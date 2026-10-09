@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import { useFirmware } from '@suite-native/firmware';
@@ -20,6 +19,7 @@ import {
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackParamList,

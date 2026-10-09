@@ -10,7 +10,6 @@
         { "path": "../metadata-types" },
         { "path": "../networks" },
         { "path": "../platform-encryption" },
-        { "path": "../redux-utils" },
         {
             "path": "../suite-rbf-labels-migrations-types"
         },
@@ -23,6 +22,7 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/logger" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/requirements" }
     ]
 }

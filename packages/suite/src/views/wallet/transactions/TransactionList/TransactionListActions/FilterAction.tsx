@@ -3,7 +3,6 @@ import { type ReactNode } from 'react';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectHasActiveModal } from '@suite/modal';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectSuspiciousTransactionsFilter,
@@ -27,6 +26,7 @@ import {
 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { FunnelSimpleIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { zIndices } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';

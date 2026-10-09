@@ -4,7 +4,6 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTradeBuySellType,
     cryptoIdToNetworkAndContractAddress,
@@ -15,6 +14,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { Banner, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { localizeNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

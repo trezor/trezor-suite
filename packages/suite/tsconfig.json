@@ -92,9 +92,6 @@
             "path": "../../suite-common/react-query"
         },
         { "path": "../../suite-common/receive" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../../suite-common/sentry" },
         {
             "path": "../../suite-common/suite-config"
@@ -268,6 +265,7 @@
         },
         { "path": "../product-components" },
         { "path": "../react-utils" },
+        { "path": "../redux-utils" },
         { "path": "../styles" },
         { "path": "../suite-storage" },
         { "path": "../theme" },

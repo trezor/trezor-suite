@@ -7,9 +7,6 @@
             "path": "../../suite-common/firmware-authenticity"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-types"
         },
         {
@@ -32,6 +29,7 @@
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/transport-native-bluetooth"
         },

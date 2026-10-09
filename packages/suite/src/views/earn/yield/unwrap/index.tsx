@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { gotoThunk } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { getWrappedNativeToken, isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
 import { WrappedNativePageHeader } from 'src/components/earn/yield/common/WrappedNativePageHeader';

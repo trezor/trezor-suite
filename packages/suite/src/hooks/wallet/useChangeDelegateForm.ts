@@ -1,7 +1,6 @@
 import { createContext, useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getStakeFormsDefaultValues,
     getStakingContractAddress,
@@ -16,6 +15,7 @@ import {
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { signTransactionThunk } from 'src/actions/wallet/stakeActions';
 import { useSelector } from 'src/hooks/suite';

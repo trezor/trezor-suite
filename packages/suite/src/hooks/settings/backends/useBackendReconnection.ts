@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { reconnectBlockchainThunk } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const useBackendReconnection = (
     symbol: NetworkSymbol,

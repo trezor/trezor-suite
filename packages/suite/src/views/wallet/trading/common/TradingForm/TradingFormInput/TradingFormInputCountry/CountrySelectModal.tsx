@@ -3,7 +3,6 @@ import { type UseFormSetValue } from 'react-hook-form';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { useGetCountryName } from '@suite/trading';
 import { getCountryFlag } from '@suite-common/flags';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
@@ -15,6 +14,7 @@ import { Column, Flag, Icon, Input, Modal, Paragraph, Row } from '@trezor/compon
 import { useServices } from '@trezor/dependency-injection';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 import { CardList } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { type TradingTradeBuySellType } from 'src/types/trading/trading';

@@ -1,11 +1,11 @@
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type ForgetDeviceThunkDeps,
     type ForgetDeviceThunkState,
     forgetDeviceThunk,
 } from '@suite-common/wallet-core';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import * as storageActions from 'src/actions/suite/storageActions';
 import { type DbDep } from 'src/storage/createDb';

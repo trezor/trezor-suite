@@ -1,8 +1,8 @@
-import { createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { btc1NormalAccount, btc2legacyAccount } from '@suite-native/trading-fixtures';
 import { selectExchangeSelectedReceiveAccount, tradingActions } from '@suite-native/trading-state';
+import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import { useTradingReceiveAccountSelection } from './useTradingReceiveAccountSelection';
 import { createTradingTestStore } from '../../test-utils/tradingTestUtils';

@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 import { selectIsDebugModeActive } from '@suite/debug';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

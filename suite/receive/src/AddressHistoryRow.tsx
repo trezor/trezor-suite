@@ -7,12 +7,12 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { type SelectIsLabelActionEnabledState, selectIsLabelActionEnabled } from '@suite/labeling';
 import { type ReceiveRootState, selectCurrentFreshAddress } from '@suite-common/receive';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { IconButton, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CopyIcon, ShareNetworkIcon, ShieldCheckIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
 import { type ReceiveAddressItem } from './address/buildReceiveAddressItems';

@@ -2,11 +2,11 @@ import { type RefObject, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { gotoThunk, parseDashboardParams, selectRouterParams } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import {
     globalSendReceiveFiltersActions,

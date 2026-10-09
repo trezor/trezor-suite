@@ -1,8 +1,8 @@
 import { selectIsTorEnabled } from '@suite/tor';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectCountryCode } from '@suite-common/geolocation';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/types/suite';
 

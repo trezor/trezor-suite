@@ -17,11 +17,6 @@ import {
     selectEntropyCheckResultByDeviceId,
 } from '@suite-common/persistent-device-data';
 import {
-    type SuiteCompatibleThunk,
-    type WithServices,
-    createThunk,
-} from '@suite-common/redux-utils';
-import {
     type AcquiredDevice,
     type AuthorizedDevice,
     type TrezorDevice,
@@ -42,6 +37,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { type DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/account/discoverAccounts';
 import type { Bip43Path } from '@trezor/crypto-utils';
+import { type SuiteCompatibleThunk, type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { type DiscoveryRootState } from './discoveryReducer';

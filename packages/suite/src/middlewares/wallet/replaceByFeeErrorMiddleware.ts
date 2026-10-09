@@ -1,9 +1,9 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
-import { type Dispatch } from '@suite-common/redux-utils';
 import { transactionsActions } from '@suite-common/wallet-core/';
 import { isPending, isRbfTransaction } from '@suite-common/wallet-utils';
+import { type Dispatch } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/types/suite';
 

@@ -1,8 +1,8 @@
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TickerId, type Timestamp } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { updateFiatRatesThunk } from './fiatRatesThunks';
 

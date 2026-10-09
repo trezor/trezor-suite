@@ -1,8 +1,8 @@
 import { type BuyTrade, type BuyTradeQuoteRequest } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';

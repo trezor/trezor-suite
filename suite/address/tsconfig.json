@@ -10,9 +10,6 @@
             "path": "../../suite-common/message-system"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-sync"
         },
         {
@@ -41,6 +38,7 @@
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/dom-utils" },
         { "path": "../../packages/icons" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/theme" }
     ]
 }

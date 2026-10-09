@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-types"
         },
         {
@@ -14,6 +11,7 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/utils" }
     ]
 }

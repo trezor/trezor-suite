@@ -6,7 +6,6 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import { events } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -18,6 +17,7 @@ import {
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProps = StackNavigationProps<
     DeviceSettingsStackParamList,

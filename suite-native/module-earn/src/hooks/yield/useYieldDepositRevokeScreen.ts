@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     REVOKE_ALLOWANCE_AMOUNT,
@@ -17,6 +16,7 @@ import {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useRefreshYieldDepositAllowanceOnIdle } from './useRefreshYieldDepositAllowanceOnIdle';
 import { useShowYieldAlert } from './useShowYieldAlert';

@@ -8,9 +8,6 @@
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/firmware" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/toast-notifications"
         },
         { "path": "../desktop-app-api" },
@@ -18,6 +15,7 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/transport-bluetooth"
         },

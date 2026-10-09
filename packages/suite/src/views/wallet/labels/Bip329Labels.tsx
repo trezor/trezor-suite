@@ -7,7 +7,6 @@ import { selectIsMetadataEnabled } from '@suite/metadata';
 import { suiteSyncErrorHandler } from '@suite/suite-sync';
 import { shouldDisplayExportImportBip329Labels } from '@suite-common/bip329';
 import { type Bip329Label, bip329LabelSchema, injectBip329 } from '@suite-common/bip329-types';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';
@@ -25,6 +24,7 @@ import {
     type JsonlReaderError,
     formatJsonlReaderError,
 } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_BIP329_URL } from '@trezor/urls';
 
 import { exportMetadataToBip329FileThunk } from 'src/actions/labels/exportMetadataToBip329File';

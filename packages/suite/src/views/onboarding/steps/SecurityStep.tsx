@@ -7,10 +7,10 @@ import { CreateNfcBackup, NoNfcTags } from '@suite/nfc';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { gotoThunk } from '@suite/router';
 import { selectIsDeviceBackupRequired, selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Badge, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CheckIcon, TrezorBackupIcon, WalletIcon, WarningIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { resetDeviceThunk } from 'src/actions/settings/deviceSettingsActions';

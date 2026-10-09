@@ -1,7 +1,7 @@
-import { type Dispatch } from '@suite-common/redux-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type AccountBalanceHistory } from '@trezor/blockchain-link';
+import { type Dispatch } from '@trezor/redux-utils';
 
 import {
     formatBalanceMovementEventsAmounts,

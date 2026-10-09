@@ -10,10 +10,10 @@ import {
     type PersistentDeviceDataRootState,
     selectDeviceAuthenticityByDeviceId,
 } from '@suite-common/persistent-device-data';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, Grid, Icon, type IconComponent, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useLayoutSize } from 'src/hooks/suite';
 

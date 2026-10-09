@@ -8,7 +8,6 @@
         { "path": "../geolocation" },
         { "path": "../networks" },
         { "path": "../react-query" },
-        { "path": "../redux-utils" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../toast-notifications" },
@@ -40,6 +39,7 @@
             "path": "../../networks/solana/network-solana"
         },
         { "path": "../../packages/react-utils" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" }

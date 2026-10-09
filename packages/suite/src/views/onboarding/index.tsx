@@ -4,9 +4,9 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectThpStep } from '@suite-common/thp';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { OnboardingLayout } from 'src/components/onboarding/OnboardingLayout';

@@ -1,6 +1,5 @@
 import { useCallback, useRef } from 'react';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountKey,
     type FeeLevelLabel,
@@ -10,6 +9,7 @@ import {
 import { useBottomSheetModal } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { getFeeAvailability } from './feeAvailability';
 import { type CustomFeeParams } from './useFeeSelection';

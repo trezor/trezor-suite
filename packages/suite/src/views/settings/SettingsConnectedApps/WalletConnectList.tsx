@@ -1,6 +1,5 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getSessionNetworks,
     selectSessions,
@@ -14,6 +13,7 @@ import {
     ShieldWarningFilledIcon,
     XCircleIcon,
 } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useSelector } from 'src/hooks/suite';

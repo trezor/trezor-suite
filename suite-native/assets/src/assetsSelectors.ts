@@ -6,7 +6,6 @@ import {
 } from '@suite-common/assets';
 import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     getAccountCryptoBalanceWithStaking,
@@ -18,6 +17,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { type AssetFiatPercentage, type AssetType, type AssetsRootState } from './types';

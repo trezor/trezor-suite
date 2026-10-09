@@ -2,10 +2,10 @@ import { type MouseEventHandler } from 'react';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CpuIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 

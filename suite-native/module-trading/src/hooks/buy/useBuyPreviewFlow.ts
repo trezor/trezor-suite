@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import type { BuyTradeResponse } from 'invity-api';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
     buyThunks,
@@ -25,6 +24,7 @@ import {
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { tradingActions } from '@suite-native/trading-state';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
 

@@ -7,11 +7,11 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Card, HStack, IconButton, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const AddressConfirmation = () => {
     const { dispatch } = useServices(injectDispatch);

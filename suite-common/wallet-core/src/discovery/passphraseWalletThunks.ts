@@ -1,7 +1,7 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import TrezorConnect, { UI_EVENT, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
 import type { PopupEventMessage, UiEventMessage, UiRequestMessage } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';

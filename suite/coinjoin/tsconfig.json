@@ -10,9 +10,6 @@
         },
         { "path": "../../suite-common/networks" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-constants"
         },
         {
@@ -49,6 +46,7 @@
         },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/ipc-proxy" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {

@@ -7,7 +7,6 @@ import {
     selectIsDeviceInitialized,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 import { selectIsDeviceSetupSupported } from '@suite-native/device';
@@ -20,6 +19,7 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList,

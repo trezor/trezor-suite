@@ -1,8 +1,8 @@
 import { gotoThunk } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { CheckIcon, DatabaseIcon } from '@trezor/icons';
 import { QuickActionButton } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { NavBackends } from './NavBackends';
 import { useEnabledBackends } from '../../utils';

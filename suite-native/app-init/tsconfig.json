@@ -12,9 +12,6 @@
             "path": "../../suite-common/message-system"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/token-definitions"
         },
         {
@@ -25,6 +22,7 @@
         },
         { "path": "../analytics-redux" },
         { "path": "../settings" },
-        { "path": "../state" }
+        { "path": "../state" },
+        { "path": "../../packages/redux-utils" }
     ]
 }

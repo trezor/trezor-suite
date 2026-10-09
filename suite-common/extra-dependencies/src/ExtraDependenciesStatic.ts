@@ -1,10 +1,10 @@
 import { type ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
 
 import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
-import { type SuiteCompatibleThunk } from '@suite-common/redux-utils';
 import { type OnModalCancelDep, type OpenModalDep } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
 import { type BluetoothDeviceId } from '@trezor/connect';
+import { type SuiteCompatibleThunk } from '@trezor/redux-utils';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;

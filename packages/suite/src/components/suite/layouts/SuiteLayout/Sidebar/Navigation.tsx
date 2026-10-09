@@ -10,7 +10,6 @@ import {
 } from '@suite/flags';
 import { type Route, selectRouteName } from '@suite/router';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -22,6 +21,7 @@ import {
     PiggyBankIcon,
     RepeatIcon,
 } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 

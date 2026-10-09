@@ -1,6 +1,6 @@
 import { type BuyProviderInfo, type CryptoId, type FiatCurrencyCode } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { type BuyInfo } from '../../reducers/buyReducer';

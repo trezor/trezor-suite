@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 
 import type { BuyCryptoPaymentMethod, BuyTrade } from 'invity-api';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingAmountLimitProps,
     cryptoIdToNetwork,
@@ -27,6 +26,7 @@ import {
 } from '@suite-native/trading-state';
 import { type BuyFormType, type BuyFormValues } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';

@@ -1,4 +1,3 @@
-import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     type Account,
@@ -40,6 +39,7 @@ import TrezorConnect, {
 import { asCoinSymbol } from '@trezor/connect-common';
 import { LOVELACE_UNIT } from '@trezor/network-cardano/constants';
 import { SOLANA_SLOT_TIME_MS } from '@trezor/network-solana/constants';
+import { createSingleInstanceThunk, createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';

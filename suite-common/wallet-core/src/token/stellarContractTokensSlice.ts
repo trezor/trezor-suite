@@ -1,12 +1,12 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     type ActionTypesDep,
     type ReducersDep,
     createSliceWithExtraDeps,
     returnStableArrayIfEmpty,
-} from '@suite-common/redux-utils';
-import { type AccountKey } from '@suite-common/wallet-types';
+} from '@trezor/redux-utils';
 
 /** Contract tokens the user added by hand, per account; nothing on-chain lists them. */
 export interface StellarContractTokensState {

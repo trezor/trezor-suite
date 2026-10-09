@@ -1,6 +1,5 @@
 import { useSelector, useStore } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type HandleExchangeRequestThunkProps,
@@ -22,6 +21,7 @@ import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { exchangeActions, selectExchangeQuotes } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { noop } from '@trezor/utils';
 
 import { getBitcoinExchangeFromAddress } from '../../utils/exchange/bitcoinExchangeUtils';

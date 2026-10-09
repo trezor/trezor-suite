@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     cancelDiscoveryThunk,
     selectIsCreatingNewPassphraseWallet,
@@ -26,6 +25,7 @@ import {
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProp = StackToTabCompositeProps<
     AuthorizeDeviceStackParamList,

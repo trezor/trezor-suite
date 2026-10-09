@@ -1,6 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -11,6 +10,7 @@ import {
 } from '@suite-common/wallet-types/mocks';
 import { type AccountInfo } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { accountsActions } from './accountsActions';
 import { type AccountsRootState, prepareAccountsReducer } from './accountsReducer';

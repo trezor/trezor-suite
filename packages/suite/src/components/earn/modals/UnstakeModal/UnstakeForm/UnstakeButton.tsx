@@ -1,11 +1,11 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
 import { useSelector } from 'src/hooks/suite';

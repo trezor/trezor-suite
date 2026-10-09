@@ -8,7 +8,6 @@ import { type TorRootState } from '@suite/tor';
 import { type DeviceRootState, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { type Dispatch } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
@@ -30,6 +29,7 @@ import {
 import { type BroadcastedTransactionDetails, type ScanAccountProgress } from '@trezor/coinjoin';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { type Dispatch } from '@trezor/redux-utils';
 import { promiseAllSequence } from '@trezor/utils';
 
 import * as coinjoinClientActions from './coinjoinClientActions';

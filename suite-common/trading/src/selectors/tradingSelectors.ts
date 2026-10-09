@@ -20,7 +20,6 @@ import {
     type NetworksRootState,
     selectSupportedNetworkSymbols,
 } from '@suite-common/networks';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     selectTokenDefinitions,
@@ -42,6 +41,7 @@ import {
     type AccountKey,
     type SelectedAccountStatus,
 } from '@suite-common/wallet-types';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { unique, versionUtils } from '@trezor/utils';
 

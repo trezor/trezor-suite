@@ -8,9 +8,6 @@
         },
         { "path": "../../suite-common/networks" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-sync"
         },
         {
@@ -42,6 +39,7 @@
         { "path": "../trading-consts" },
         { "path": "../trading-types" },
         { "path": "../../packages/device-utils" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../trading-fixtures" }

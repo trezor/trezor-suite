@@ -6,8 +6,8 @@ import {
     selectIsDeviceProtectedByPassphrase,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { getSuiteVersion } from '@trezor/env-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 import { HELP_CENTER_WHAT_IS_TREZOR_SUITE_URL, withOpenChat, withUtmParams } from '@trezor/urls';
 
 import { type SupportChatUtmParams } from './types';

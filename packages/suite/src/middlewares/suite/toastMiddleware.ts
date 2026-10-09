@@ -1,6 +1,6 @@
 import { type TranslationKey } from '@suite/intl';
-import { createMiddleware } from '@suite-common/redux-utils';
 import { type NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
+import { createMiddleware } from '@trezor/redux-utils';
 
 import { dismissToast, showToast } from 'src/components/suite';
 

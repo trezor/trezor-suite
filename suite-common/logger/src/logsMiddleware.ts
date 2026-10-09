@@ -3,7 +3,6 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { deviceActions } from '@suite-common/device';
 import { discreetModeActions } from '@suite-common/discreet-mode';
-import { createMiddleware } from '@suite-common/redux-utils';
 import {
     accountsActions,
     blockchainActions,
@@ -12,6 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { getAccountIdentifier } from '@suite-common/wallet-utils';
 import { TRANSPORT, isTransportEventOfType } from '@trezor/connect';
+import { createMiddleware } from '@trezor/redux-utils';
 
 import { addLog } from './logsSlice';
 

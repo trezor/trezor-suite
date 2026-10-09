@@ -1,7 +1,6 @@
 import { G } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectDeviceButtonRequests } from '@suite-common/device';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountKey,
@@ -10,6 +9,7 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { PAYMENT_REQUEST_BUTTON_NAMES } from './sendFormConstants';
 import { type SendFormDrafts, type SendRootState } from './sendFormReducer';

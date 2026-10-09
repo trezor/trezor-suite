@@ -6,7 +6,6 @@ import {
     getInclusionFromInstanceId,
     messageSystemActions,
 } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Column, Icon, InfoItem, Range } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import {
@@ -17,6 +16,7 @@ import {
     UsersIcon,
 } from '@trezor/icons';
 import { useDebounce } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type MessageSystemExperimentInfoProps = {
     experiment: ExperimentsItemType;

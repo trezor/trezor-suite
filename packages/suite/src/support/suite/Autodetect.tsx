@@ -8,9 +8,9 @@ import {
     selectTheme,
     suiteSettingsActions,
 } from '@suite/settings';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { getOsTheme, watchOsTheme } from 'src/utils/suite/env';

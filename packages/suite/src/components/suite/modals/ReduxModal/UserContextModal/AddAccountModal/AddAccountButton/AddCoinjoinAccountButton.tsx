@@ -7,13 +7,13 @@ import { openDeferredModal, openModal } from '@suite/modal';
 import { selectIsTorEnabled } from '@suite/tor';
 import { toggleTorThunk } from '@suite/tor-desktop';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { type Network, type NetworkAccount, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 import { resolveAfter } from '@trezor/utils';
 
 import { type Account } from 'src/types/wallet';

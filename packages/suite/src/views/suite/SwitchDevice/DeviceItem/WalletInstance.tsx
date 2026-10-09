@@ -7,7 +7,6 @@ import { selectIsLegacyLabelingVisible, selectLabelingValueBeingEdited } from '@
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { useWalletLabel } from '@suite/wallet';
 import { selectDeviceThunk } from '@suite-common/device';
-import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import {
     getAccountsByDeviceState,
     selectAccounts,
@@ -31,6 +30,7 @@ import {
 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { AsteriskIcon, EjectIcon, XIcon } from '@trezor/icons';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';

@@ -27,7 +27,6 @@ import {
     prepareCachedEnvData,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
-import { type WithServices } from '@suite-common/redux-utils';
 import {
     type InitTokenDefinitionsThunkDeps,
     type InitTokenDefinitionsThunkState,
@@ -54,6 +53,7 @@ import {
 } from '@suite-common/walletconnect';
 import * as walletConnectActions from '@suite-common/walletconnect';
 import { isDesktop } from '@trezor/env-utils';
+import { type WithServices } from '@trezor/redux-utils';
 
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';

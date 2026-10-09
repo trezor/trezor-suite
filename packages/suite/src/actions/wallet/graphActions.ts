@@ -1,6 +1,5 @@
 import { type Dispatch, createAction } from '@reduxjs/toolkit';
 
-import { createThunk } from '@suite-common/redux-utils';
 import { resetTime } from '@suite-common/suite-utils';
 import {
     type BlockchainRootState,
@@ -12,6 +11,7 @@ import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 
 import { type GraphState } from 'src/reducers/wallet/graphReducer';
 import { type Account } from 'src/types/wallet';

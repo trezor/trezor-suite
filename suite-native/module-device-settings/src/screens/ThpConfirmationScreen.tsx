@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceThpLocked } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectThpAutoconnectStep, selectThpStep } from '@suite-common/thp';
 import { Box } from '@suite-native/atoms';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
@@ -19,6 +18,7 @@ import {
 } from '@suite-native/navigation';
 import { useThpAutoconnectAlert } from '@suite-native/thp';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProp = StackNavigationProps<
     FirmwareUpdateStackParamList,

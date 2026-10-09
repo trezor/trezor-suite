@@ -4,9 +4,6 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-constants"
         },
         {
@@ -32,6 +29,7 @@
         {
             "path": "../../packages/product-components"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/utils" }
     ]
 }

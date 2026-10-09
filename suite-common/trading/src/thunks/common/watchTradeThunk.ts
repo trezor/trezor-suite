@@ -1,5 +1,5 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { typedObjectKeys } from '@trezor/utils';
 

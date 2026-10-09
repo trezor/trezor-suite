@@ -1,5 +1,4 @@
 import { type DeviceRootState } from '@suite-common/device';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     selectTokenDefinitions,
@@ -9,6 +8,7 @@ import { type Account, type AccountKey, type TokenAddress } from '@suite-common/
 import { isNftToken } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { type Branded } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 

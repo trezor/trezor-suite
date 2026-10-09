@@ -16,12 +16,12 @@
         "@suite-common/earn-stablecoin-api": "workspace:*",
         "@suite-common/earn-stablecoin-defs": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite/desktop-app-api": "workspace:*",
         "@suite/experimental": "workspace:*",
         "@trezor/connect-common": "workspace:*",
-        "@trezor/env-utils": "workspace:*"
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*"
     }
 }

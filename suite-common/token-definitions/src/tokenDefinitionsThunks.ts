@@ -1,7 +1,7 @@
 import { D } from '@mobily/ts-belt';
 
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { type TimerId } from '@trezor/type-utils';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';

@@ -2,8 +2,8 @@ import { selectCoinjoinAccounts } from '@suite/coinjoin';
 import { openDeferredModal } from '@suite/modal';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { TorSettings } from '@suite/tor-desktop';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

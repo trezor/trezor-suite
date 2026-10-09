@@ -1,6 +1,5 @@
 import { type Store, combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type TradingType } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
@@ -15,6 +14,7 @@ import {
     selectEnabledTradingTypes,
     tradingSlice,
 } from '@suite-native/trading-state';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { useActiveTradingTypeReaction } from './useActiveTradingTypeReaction';
 
