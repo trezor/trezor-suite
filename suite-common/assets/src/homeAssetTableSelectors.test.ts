@@ -2,6 +2,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getWalletAssetKey } from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
@@ -14,6 +15,7 @@ import {
     selectShownNetworkSymbols,
     selectShownWalletAssetKeys,
     selectShownWalletAssetKeysOfNetwork,
+    selectSmallBalanceFiatThreshold,
     selectSmallBalanceSummary,
     selectWalletAssetAmount,
 } from './homeAssetTableSelectors';
@@ -58,8 +60,13 @@ const mockAccount = ({
         tokens,
     }) as unknown as Account;
 
-const mockRate = (symbol: Account['symbol'], rate: number, contract?: TokenAddress) => ({
-    [getFiatRateKey(symbol, 'usd', contract)]: { rate },
+const mockRate = (
+    symbol: Account['symbol'],
+    rate: number,
+    contract?: TokenAddress,
+    currency: BaseCurrencyCode = 'usd',
+) => ({
+    [getFiatRateKey(symbol, currency, contract)]: { rate },
 });
 
 type MockStateParams = {
@@ -70,6 +77,7 @@ type MockStateParams = {
     hiddenTokens?: TokenAddress[];
     areSmallBalancesShown?: boolean;
     shownTokens?: TokenAddress[];
+    localCurrency?: BaseCurrencyCode;
 };
 
 const createState = ({
@@ -80,6 +88,7 @@ const createState = ({
     hiddenTokens = [],
     areSmallBalancesShown = true,
     shownTokens = [],
+    localCurrency = 'usd',
 }: MockStateParams): HomeAssetTableState => {
     const definitions = {
         coin: { data: knownTokens, hide: hiddenTokens, show: shownTokens },
@@ -91,7 +100,7 @@ const createState = ({
             accounts,
             settings: {
                 enabledNetworks,
-                localCurrency: 'usd',
+                localCurrency,
                 areHomeAssetSmallBalancesShown: areSmallBalancesShown,
             },
             fiat: { current: rates, lastWeek: {}, historic: {} },
@@ -572,6 +581,45 @@ describe('the small balances the switch hides', () => {
         });
 
         expect(selectSmallBalanceSummary(state)).toBeUndefined();
+    });
+
+    describe('in a currency other than the dollar', () => {
+        // A bitcoin is $100 and 2000 CZK, so a dollar is 20 CZK. The Ethereum token is worth 10 CZK.
+        const stateInCzk = (btcUsdRate?: number) =>
+            createState({
+                accounts: [
+                    mockAccount({
+                        symbol: ETH,
+                        balance: '0',
+                        tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }],
+                    }),
+                    mockAccount({ symbol: BTC, index: 1, balance: '1' }),
+                ],
+                rates: {
+                    ...mockRate(BTC, 2000, undefined, 'czk'),
+                    ...mockRate(ETH, 1, undefined, 'czk'),
+                    ...mockRate(ETH, 1, USDC_ON_ETH, 'czk'),
+                    ...(btcUsdRate === undefined ? {} : mockRate(BTC, btcUsdRate)),
+                },
+                localCurrency: 'czk',
+                areSmallBalancesShown: false,
+            });
+
+        it('draws the line at a dollar, not at one of the currency', () => {
+            const state = stateInCzk(100);
+
+            expect(selectSmallBalanceFiatThreshold(state)?.toFixed()).toBe('20');
+            expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`]);
+            expect(selectSmallBalanceSummary(state)?.fiatValue.toFixed()).toBe('10');
+        });
+
+        it('hides nothing until the dollar can be converted', () => {
+            const state = stateInCzk();
+
+            expect(selectSmallBalanceFiatThreshold(state)).toBeUndefined();
+            expect(selectSmallBalanceSummary(state)).toBeUndefined();
+            expect(selectDisplayedWalletAssetKeys(state)).toHaveLength(3);
+        });
     });
 
     it('says nothing when every balance is worth having', () => {

@@ -3,7 +3,12 @@ import { shallowEqual } from 'react-redux';
 import { type DeviceRootState } from '@suite-common/device';
 import { type NetworksRootState, selectNetworkNamesMap } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { type NetworkSymbol, getAssetName, getDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    asNetworkSymbol,
+    getAssetName,
+    getDisplaySymbol,
+} from '@suite-common/wallet-config';
 import {
     type AssetAccount,
     type AssetAccountsRootState,
@@ -16,6 +21,7 @@ import {
     selectCurrentFiatRates,
     selectDeviceAssetAccounts,
     selectEnabledNetworks,
+    selectFiatRatesByFiatRateKey,
     selectHiddenAssetAccountKeySet,
     selectHiddenTokenReasons,
     selectLastWeekFiatRates,
@@ -180,16 +186,48 @@ export const selectShownWalletAssetKeys = createMemoizedSelector(
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
-const SMALL_BALANCE_FIAT_VALUE = new BigNumber(1);
+const SMALL_BALANCE_USD_VALUE = new BigNumber(1);
+const BTC = asNetworkSymbol('btc');
+
+const selectBtcUsdRate = (state: HomeAssetTableState) =>
+    selectFiatRatesByFiatRateKey(state, getFiatRateKey(BTC, 'usd'))?.rate;
+
+const selectBtcBaseCurrencyRate = (state: HomeAssetTableState) =>
+    selectFiatRatesByFiatRateKey(state, getFiatRateKey(BTC, selectBaseCurrency(state)))?.rate;
+
+/**
+ * A small balance is under a dollar whatever the chosen currency, and rates are fetched in the chosen
+ * currency only, so the dollar is converted through what a bitcoin is worth in each. Undefined until
+ * both rates are known.
+ */
+export const selectSmallBalanceFiatThreshold = createMemoizedSelector(
+    [selectBaseCurrency, selectBtcUsdRate, selectBtcBaseCurrencyRate],
+    (baseCurrency, btcUsdRate, btcBaseCurrencyRate): BigNumber | undefined => {
+        if (baseCurrency === 'usd') {
+            return SMALL_BALANCE_USD_VALUE;
+        }
+
+        if (!btcUsdRate || !btcBaseCurrencyRate) {
+            return undefined;
+        }
+
+        return SMALL_BALANCE_USD_VALUE.times(btcBaseCurrencyRate).div(btcUsdRate);
+    },
+);
+
 const selectSmallBalanceAssetKeySet = createMemoizedSelector(
-    [selectShownWalletAssetKeys, selectWalletAssetValues],
-    (assetKeys, values): ReadonlySet<WalletAssetKey> => {
+    [selectShownWalletAssetKeys, selectWalletAssetValues, selectSmallBalanceFiatThreshold],
+    (assetKeys, values, threshold): ReadonlySet<WalletAssetKey> => {
         const small = new Set<WalletAssetKey>();
+
+        if (threshold === undefined) {
+            return small;
+        }
 
         assetKeys.forEach(assetKey => {
             const fiatValue = values.get(assetKey);
 
-            if (fiatValue?.abs().lt(SMALL_BALANCE_FIAT_VALUE)) {
+            if (fiatValue?.abs().lt(threshold)) {
                 small.add(assetKey);
             }
         });
