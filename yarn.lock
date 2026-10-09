@@ -13892,7 +13892,6 @@ __metadata:
     "@suite-native/bip329": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/feature-feedback": "workspace:*"
-    "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/graph": "workspace:*"

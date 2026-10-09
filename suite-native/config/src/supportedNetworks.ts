@@ -1,11 +1,6 @@
 import { A } from '@mobily/ts-belt';
 
-import {
-    type AccountType,
-    type Network,
-    type NetworkSymbol,
-    type NetworkType,
-} from '@suite-common/wallet-config';
+import { type AccountType, type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
 
 export const orderedAccountTypes: AccountType[] = [
@@ -16,8 +11,6 @@ export const orderedAccountTypes: AccountType[] = [
     'ledger',
     'root',
 ];
-
-export const sendDisabledNetworkTypes: NetworkType[] = ['cardano'];
 
 export const sortNetworks = (
     networksToSort: Network[],

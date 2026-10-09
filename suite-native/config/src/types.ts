@@ -1,7 +1,6 @@
 export type LaunchArguments = {
     detoxURLBlacklistRegex?: string;
     DTXDisableMainRunLoopSync?: boolean;
-    isCardanoSendEnabled?: boolean;
     isDebugKeysAllowed?: boolean;
     isTradingBuyEnabled?: boolean;
     isTradingExchangeEnabled?: boolean;

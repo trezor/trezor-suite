@@ -17,7 +17,6 @@ describe('featureFlagsSlice', () => {
             expect(initialState).toEqual({
                 areDebugOnlyNetworksEnabled: false,
                 areExperimentalOnlyNetworksEnabled: false,
-                isCardanoSendEnabled: false,
                 isDebugKeysAllowed: false,
                 isTradingResidenceCheckEnabled: true,
                 isTradingDebugEnabled: false,
@@ -34,7 +33,6 @@ describe('featureFlagsSlice', () => {
             expect(initialState).toEqual({
                 areDebugOnlyNetworksEnabled: false,
                 areExperimentalOnlyNetworksEnabled: false,
-                isCardanoSendEnabled: false,
                 isDebugKeysAllowed: false,
                 isTradingResidenceCheckEnabled: false,
                 isTradingDebugEnabled: false,

@@ -50,7 +50,6 @@
         { "path": "../bip329" },
         { "path": "../device" },
         { "path": "../feature-feedback" },
-        { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../graph" },
