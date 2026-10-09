@@ -1,0 +1,49 @@
+name: "Determine changed scopes"
+description: "Classify changes into default, Rust, and docs scopes."
+outputs:
+  default:
+    description: "Requires standard CI checks for changes outside specialized or ignored scopes."
+    value: ${{ steps.changes.outputs.default }}
+  rust:
+    description: "Requires Rust checks"
+    value: ${{ steps.changes.outputs.rust }}
+  docs:
+    description: "Requires Docs checks"
+    value: ${{ steps.changes.outputs.docs }}
+runs:
+  using: "composite"
+  steps:
+    - name: Classify changed files
+      id: changes
+      uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4
+      with:
+        # Pushes compare against the pre-push commit; PRs use the GitHub API file list.
+        base: ${{ github.event_name == 'push' && github.ref || '' }}
+        predicate-quantifier: some-with-excludes
+        # Keep the default excludes in sync with the other lists.
+        filters: |
+          docs:
+            - '**/*.md'
+            - 'docs/**'
+            - '.github/ISSUE_TEMPLATE/**'
+            # Prettier-checked, see .prettierignore
+            - '.vscode/**'
+          rust:
+            - '**/{*.rs,Cargo.toml,Cargo.lock}'
+            - 'packages/transport-bluetooth/scripts/{Dockerfile,build.sh}'
+          default:
+            - '**'
+            # docs excludes
+            - '!**/*.md'
+            - '!docs/**'
+            - '!.github/ISSUE_TEMPLATE/**'
+            - '!.vscode/**'
+            # rust excludes
+            - '!**/{*.rs,Cargo.toml,Cargo.lock}'
+            - '!packages/transport-bluetooth/scripts/{Dockerfile,build.sh}'
+            # dev - not used by any CI job.
+            - '!**/*.nix'
+            - '!.nix/**'
+            - '!nixos-fix-binaries.sh'
+            - '!.husky/**'
+            - '!CODEOWNERS'
