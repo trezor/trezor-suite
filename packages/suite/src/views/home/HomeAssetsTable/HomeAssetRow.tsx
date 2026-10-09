@@ -4,14 +4,23 @@ import {
     selectWalletAssetContractAddress,
     selectWalletAssetDisplaySymbol,
     selectWalletAssetSymbol,
+    selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
-import { Column, Row, Table, Text } from '@trezor/components';
+import {
+    Column,
+    Row,
+    TOOLTIP_DELAY_LONG,
+    Table,
+    Text,
+    TruncateWithTooltip,
+} from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
 import { PriceTicker, TrendTicker } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 import { HomeAssetBalance } from './HomeAssetBalance';
 import { HOME_ASSET_CELL_PADDING, HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
@@ -41,6 +50,9 @@ export const HomeAssetRow = memo(function HomeAssetRow({
     const displaySymbol = useSelector(state =>
         selectWalletAssetDisplaySymbol(state, assetKey, isHidden),
     );
+    const tokenSymbol = useSelector(state =>
+        selectWalletAssetTokenSymbol(state, assetKey, isHidden),
+    );
 
     if (symbol === undefined) {
         return null;
@@ -61,9 +73,16 @@ export const HomeAssetRow = memo(function HomeAssetRow({
                         showNetworkIcon
                         placeholder={displaySymbol ?? ''}
                     />
-                    <Column alignItems="flex-start" gap={HOME_ASSET_LINE_GAP}>
-                        <Text typographyStyle="body-md" data-testid="@dashboard/home-asset/name">
-                            {displaySymbol}
+                    <Column alignItems="flex-start" gap={HOME_ASSET_LINE_GAP} flex="1" minWidth={0}>
+                        <Text
+                            typographyStyle="body-md"
+                            ellipsisLineCount={1}
+                            maxWidth="100%"
+                            data-testid="@dashboard/home-asset/name"
+                        >
+                            <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
+                                <BlurUrls text={tokenSymbol ?? displaySymbol} />
+                            </TruncateWithTooltip>
                         </Text>
                         <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                             <NetworkNameFormatter value={symbol} />
