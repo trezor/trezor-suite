@@ -8,6 +8,8 @@ const allowedEntryPointPatterns = [
     /^@suite-common\/bluetooth\/mocks$/,
     /^@suite-common\/thp\/mocks$/,
     /^@suite-common\/test-utils\/globalOverrides$/,
+    /^@suite-common\/react-query\/react$/,
+    /^@suite-common\/react-query\/react-native$/,
 ];
 
 ruleTester.run('no-package-deep-imports', noPackageDeepImportsRule, {
@@ -24,6 +26,15 @@ ruleTester.run('no-package-deep-imports', noPackageDeepImportsRule, {
         },
         {
             code: "import { mock } from '@suite-common/thp/mocks';",
+            options: [{ allowedEntryPointPatterns }],
+        },
+        // Platform-specific React entry points are allowed
+        {
+            code: "import { ReactQueryProvider } from '@suite-common/react-query/react';",
+            options: [{ allowedEntryPointPatterns }],
+        },
+        {
+            code: "import { ReactNativeQueryProvider } from '@suite-common/react-query/react-native';",
             options: [{ allowedEntryPointPatterns }],
         },
         // Non-restricted scopes are allowed regardless of depth
@@ -99,6 +110,20 @@ ruleTester.run('no-package-deep-imports', noPackageDeepImportsRule, {
                     data: {
                         sourcePath: '@suite-common/bluetooth/mocks/createBluetoothDeviceCommon',
                         packageImportPath: '@suite-common/bluetooth/mocks',
+                    },
+                },
+            ],
+        },
+        // Deep imports below a platform entry point should suggest that entry point
+        {
+            code: "import { ReactQueryProvider } from '@suite-common/react-query/react/ReactQueryProvider';",
+            options: [{ allowedEntryPointPatterns }],
+            errors: [
+                {
+                    messageId: 'doNotImportPackageDeepPath',
+                    data: {
+                        sourcePath: '@suite-common/react-query/react/ReactQueryProvider',
+                        packageImportPath: '@suite-common/react-query/react',
                     },
                 },
             ],
