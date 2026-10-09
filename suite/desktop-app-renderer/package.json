@@ -17,6 +17,7 @@
     "dependencies": {
         "@sentry/electron": "^7.16.0",
         "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/react-query": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/bluetooth": "workspace:*",

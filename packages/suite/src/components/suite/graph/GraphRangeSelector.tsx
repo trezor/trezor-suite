@@ -20,7 +20,7 @@ import {
     Timerange,
 } from '@trezor/components';
 
-import { useGraph, useLocales } from 'src/hooks/suite';
+import { useConnectedDateFnsLocale, useGraph } from 'src/hooks/suite';
 import { type GraphRange } from 'src/types/wallet/graph';
 
 const END_OF_TODAY = endOfToday();
@@ -86,7 +86,7 @@ export const GraphRangeSelector = ({
     placement,
 }: GraphRangeSelectorProps) => {
     const { selectedRange, setSelectedRange } = useGraph();
-    const locale = useLocales();
+    const locale = useConnectedDateFnsLocale();
     const [customTimerangeStart, setCustomTimerangeStart] = useState<Date>();
     const [customTimerangeEnd, setCustomTimerangeEnd] = useState<Date>();
     const [isCustomRangePickerOpen, setIsCustomRangePickerOpen] = useState(false);

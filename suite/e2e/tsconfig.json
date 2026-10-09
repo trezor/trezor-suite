@@ -59,7 +59,6 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../analytics" },
-        { "path": "../app-assets" },
         { "path": "../debug" },
         { "path": "../desktop-app" },
         { "path": "../flags" },

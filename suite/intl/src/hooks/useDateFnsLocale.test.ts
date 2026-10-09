@@ -1,6 +1,6 @@
 import { LANGUAGES, type Locale as SuiteLocale } from '@suite-common/suite-types';
 
-import { loadDateFnsLocale } from './useLocales';
+import { loadDateFnsLocale } from './useDateFnsLocale';
 
 // Which date-fns locale a language maps to cannot be checked by the type system - pointing
 // 'ja-JP' at the Spanish subpath would compile fine - so the resolved code is pinned here.

@@ -11,6 +11,4 @@ export { useAnonymityStatus } from './useAnonymityStatus';
 export { useDisplayMode } from './useDisplayMode';
 export { useAppShortcuts } from './useAppShortcuts';
 export { useSelector } from './useSelector';
-
-// replaced in suite-native
-export { useLocales } from 'src/hooks/suite/useLocales';
+export { useConnectedDateFnsLocale } from './useConnectedDateFnsLocale';

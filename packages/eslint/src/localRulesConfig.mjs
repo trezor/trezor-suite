@@ -74,10 +74,15 @@ export const localRulesConfig = [
                         ...packagesWithSectionEntryPoints,
                     ],
                     allowedEntryPointPatterns: [
-                        // Packages expose reusable test mocks through dedicated public entry points.
-                        /^@(?:suite-native|suite|suite-common|trezor)\/[^/]+\/mocks$/,
+                        // Packages expose reusable test mocks (`/mocks`) and platform-specific React
+                        // bindings (`/react` for web and desktop, `/react-native` for native) through
+                        // dedicated public entry points.
+                        /^@(?:suite-native|suite|suite-common|trezor)\/[^/]+\/(?:mocks|react|react-native)$/,
                         // Suite test setup imports global polyfills through this side-effect-only entry point.
                         /^@suite-common\/test-utils\/globalOverrides$/,
+                        // `@suite/intl` ships the translation catalogs as files next to its sources;
+                        // e2e tests import a catalog by path to assert translated text.
+                        /^@suite\/intl\/translations\/[\w-]+\.json$/,
                         // The applications import the Webpack pieces they share from this
                         // build-only entry point; it is never part of an application bundle.
                         /^@trezor\/suite\/webpack\/[\w/-]+$/,

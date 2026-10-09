@@ -6,7 +6,7 @@ import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Column, InfoItem, type StepListItemState } from '@trezor/components';
 
-import { useLocales, useSelector } from 'src/hooks/suite';
+import { useConnectedDateFnsLocale, useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
 import { TradingDetailTransactionIdRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTransactionIdRow';
@@ -33,7 +33,7 @@ export const TradingDetailSendingStep = ({
     txId,
     composedTransaction,
 }: TradingDetailSendingStepProps) => {
-    const locale = useLocales();
+    const locale = useConnectedDateFnsLocale();
     const rawFeeInfo = useSelector(reduxState =>
         account ? selectRawNetworkFeeInfo(reduxState, account.symbol) : undefined,
     );

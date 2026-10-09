@@ -15,4 +15,5 @@ export {
 } from '@tanstack/react-query';
 export * from './constants/queryKeys';
 export * from './constants/mutationKeys';
-// QueryClientProvider wrappers are not exported here, to keep this package compatible with nodeJS-only environments (which can't parse .tsx)
+// The query client providers are platform-specific React components, so they live in the
+// `./react` and `./react-native` entry points and this index stays importable from Node-only code.

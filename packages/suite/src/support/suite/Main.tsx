@@ -1,13 +1,12 @@
 import { HelmetProvider } from 'react-helmet-async';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { ReactQueryProvider } from '@suite-common/react-query/src/components/ReactQueryProvider';
+import { ReactQueryProvider } from '@suite-common/react-query/react';
 import { injectStore } from '@suite-common/redux-utils';
 import { SelectCacheProvider } from '@trezor/components';
 import { NetworkDisplayProvider } from '@trezor/product-components';
 
 import Autodetect from 'src/support/suite/Autodetect';
-import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 import { ErrorBoundary } from 'src/support/suite/ErrorBoundary';
 import OnlineStatus from 'src/support/suite/OnlineStatus';
@@ -17,6 +16,7 @@ import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 
 import { ConnectPopupModals } from './ConnectPopupModals';
 import { ConnectedFormatterProvider } from './ConnectedFormatterProvider';
+import { ConnectedIntlProvider } from './ConnectedIntlProvider';
 import { RouterHandler } from './RouterHandler';
 
 type MainProps = {
