@@ -6,14 +6,6 @@ interface LayoutSizeOnlyProps {
     children: ReactNode;
 }
 
-export const BelowTabletOnly = memo(({ children }: LayoutSizeOnlyProps) => {
-    const { isBelowTablet } = useLayoutSize();
-
-    return isBelowTablet ? children : null;
-});
-
-BelowTabletOnly.displayName = 'BelowTabletOnly';
-
 export const AboveTabletOnly = memo(({ children }: LayoutSizeOnlyProps) => {
     const { isBelowTablet } = useLayoutSize();
 
