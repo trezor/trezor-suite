@@ -6,8 +6,6 @@ import { expect } from '../../testExtends/customMatchers';
 export class TradingQuotesSection {
     readonly list: Locator;
     readonly provider: Locator;
-    readonly providerOfQuote = (provider: string) =>
-        this.page.getByTestId(`@trading/offers/quote-${provider}`);
     readonly providerInList: Locator;
     readonly selectedProvider: Locator;
     readonly selectedProviderName: Locator;
