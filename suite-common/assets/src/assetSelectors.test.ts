@@ -6,7 +6,6 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 
 import {
     type AssetsRootState,
-    selectAssetAccountBalances,
     selectAssetAvailableCryptoBalance,
     selectAssetHasStakingBalance,
     selectAssetName,
@@ -56,31 +55,6 @@ describe('asset selectors', () => {
     it('selects the ticker and name of a token', () => {
         expect(selectAssetTicker(state, ethereumSymbol, tokenContract)).toBe('USDC');
         expect(selectAssetName(state, ethereumSymbol, tokenContract)).toBe('USD Coin');
-    });
-
-    it('selects balances for every native asset account', () => {
-        expect(selectAssetAccountBalances(state, ethereumSymbol)).toEqual([
-            {
-                accountKey: accountWithToken.key,
-                accountLabel: accountWithToken.accountLabel,
-                cryptoBalance: '0',
-            },
-            {
-                accountKey: accountWithoutToken.key,
-                accountLabel: accountWithoutToken.accountLabel,
-                cryptoBalance: '0',
-            },
-        ]);
-    });
-
-    it('selects balances only for accounts containing a token', () => {
-        expect(selectAssetAccountBalances(state, ethereumSymbol, tokenContract)).toEqual([
-            {
-                accountKey: accountWithToken.key,
-                accountLabel: accountWithToken.accountLabel,
-                cryptoBalance: '2',
-            },
-        ]);
     });
 
     it('splits a native asset balance into available and staking balances', () => {

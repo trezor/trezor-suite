@@ -2368,9 +2368,6 @@ export const messages = {
                 available: 'Available',
                 staking: 'Staking',
             },
-            accountsSection: {
-                title: '{count, plural, one {Account} other {Accounts}}',
-            },
         },
     },
     device: {

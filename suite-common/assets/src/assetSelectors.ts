@@ -10,53 +10,12 @@ import {
     getAccountCryptoBalanceWithStaking,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 export type AssetsRootState = AccountsRootState & DeviceRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<AssetsRootState>();
-
-type AssetAccountBalanceEntry = {
-    accountKey: AccountKey;
-    accountLabel?: string;
-    cryptoBalance: string;
-};
-
-export const selectAssetAccountBalances = createMemoizedSelector(
-    [
-        selectVisibleDeviceAccountsByNetworkSymbol,
-        (_state: AssetsRootState, _networkSymbol: NetworkSymbol, tokenContract?: TokenAddress) =>
-            tokenContract,
-    ],
-    (accounts, tokenContract): AssetAccountBalanceEntry[] => {
-        if (!tokenContract) {
-            return accounts.map(account => ({
-                accountKey: account.key,
-                accountLabel: account.accountLabel,
-                cryptoBalance: getAccountCryptoBalanceWithStaking(account),
-            }));
-        }
-
-        const normalizedTokenContract = tokenContract.toLowerCase();
-
-        return accounts.reduce<AssetAccountBalanceEntry[]>((accountBalances, account) => {
-            for (const token of account.tokens ?? []) {
-                if (token.contract.toLowerCase() === normalizedTokenContract) {
-                    accountBalances.push({
-                        accountKey: account.key,
-                        accountLabel: account.accountLabel,
-                        cryptoBalance: token.balance ?? '0',
-                    });
-
-                    break;
-                }
-            }
-
-            return accountBalances;
-        }, []);
-    },
-);
 
 const selectAssetBalanceBreakdown = createMemoizedSelector(
     [selectVisibleDeviceAccountsByNetworkSymbol],

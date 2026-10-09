@@ -1,6 +1,5 @@
 import { Divider, VStack } from '@suite-native/atoms';
 
-import { AssetDetailAccounts } from './AssetDetailAccounts';
 import { AssetDetailBalance } from './AssetDetailBalance';
 import { AssetDetailPriceSection } from './AssetDetailPriceSection';
 
@@ -9,7 +8,5 @@ export const AssetDetailHeader = () => (
         <AssetDetailPriceSection />
         <Divider />
         <AssetDetailBalance />
-        <Divider />
-        <AssetDetailAccounts />
     </VStack>
 );
