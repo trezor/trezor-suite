@@ -7,10 +7,10 @@ import { onDeviceConnecting } from '../pageObjects/deviceConnectingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { exchangeOutputsReviewActions } from '../pageObjects/trading/outputsReviewActions';
 import { sellCompletionActions } from '../pageObjects/trading/sellCompletionActions';
 import { sellPreviewActions } from '../pageObjects/trading/sellPreviewActions';
 import { tradingSellActions } from '../pageObjects/trading/tradingSellActions';
+import { sellTransactionReviewActions } from '../pageObjects/trading/transactionReviewActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 import { waitForVisible } from '../support/utils';
 
@@ -69,8 +69,8 @@ describe('Trade Sell [@androidOnly]', () => {
             await tradingSellActions.confirmTradingForm();
             await sellPreviewActions.continueToProvider();
 
-            await exchangeOutputsReviewActions.expectConnectTrezorInfo();
-            await exchangeOutputsReviewActions.cancelConnectTrezorInfo();
+            await sellTransactionReviewActions.expectConnectTrezorInfo();
+            await sellTransactionReviewActions.cancelConnectTrezorInfo();
 
             await tradingSellActions.waitForTradeDataToLoad();
         });

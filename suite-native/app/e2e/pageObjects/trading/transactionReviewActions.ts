@@ -5,16 +5,16 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { TradingActions } from './TradingActions';
 import { waitForVisible } from '../../support/utils';
 
-class OutputsReviewActions extends TradingActions {
+class TransactionReviewActions extends TradingActions {
     constructor(private readonly screenName: string) {
-        super('outputs-review');
+        super('transaction-review');
     }
 
     getScreen() {
         return element(by.id(`@screen/${this.screenName}`));
     }
 
-    async expectOutputsReviewScreenToBeVisible() {
+    async expectTrtansactionReviewScreenToBeVisible() {
         await waitForVisible(this.getScreen());
     }
 
@@ -83,8 +83,10 @@ class OutputsReviewActions extends TradingActions {
     }
 }
 
-export const exchangeOutputsReviewActions = new OutputsReviewActions(
-    'TradingExchangeOutputsReview',
+export const exchangeTransactionReviewActions = new TransactionReviewActions(
+    'TradingExchangeTransactionReview',
 );
 
-export const sellOutputsReviewActions = new OutputsReviewActions('TradingSellOutputsReview');
+export const sellTransactionReviewActions = new TransactionReviewActions(
+    'TradingSellOutputsReview',
+);
