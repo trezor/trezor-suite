@@ -58,7 +58,7 @@ The component structure in this file may seem confusing at first, but it has its
 can undergo a Manual Device Check in three distinct cases:
   A) uninitialized device without FW (fresh or factory-reset)
   B) uninitialized device with FW (after a wipe or partial onboarding)
-  C) initialized device with FW (shown only once in fresh suite)
+  C) initialized device with FW, which hasn't been confirmed yet
 
 Of course, an initialized device without FW is impossible (just for completness).
 
@@ -70,6 +70,8 @@ The complexity is there because of the overlap:
   B) shows suspicious UI, goes to onboarding.
   C) shows suspicious UI, goes to suite.
 */
+
+type CommonManualDeviceCheckProps = { onSuccess: () => void };
 
 const firmwareInstalledChecklist = [
     {
@@ -306,7 +308,7 @@ const TakesManyMinutesTooltip = ({ children }: PropsWithChildren) => {
 /**
  * Manual Device Check for an uninitialized device, which starts the onboarding flow.
  */
-export const UninitializedManualDeviceCheck = () => {
+const UninitializedManualDeviceCheck = ({ onSuccess }: CommonManualDeviceCheckProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const recoveryStatus = useSelector(selectRecoveryStatus);
     const device = useSelector(selectSelectedDevice);
@@ -329,6 +331,7 @@ export const UninitializedManualDeviceCheck = () => {
     }, [isRecoveryInProgress, updateAnalytics]);
 
     const handleSetupButtonClick = () => {
+        onSuccess();
         dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
         analytics.report(
             {
@@ -362,14 +365,10 @@ export const UninitializedManualDeviceCheck = () => {
     );
 };
 
-type InitializedManualDeviceCheckProps = {
-    onSuccess: () => void;
-};
-
 /**
  * Manual Device Check for an already initialized device, which is simply dismissed on success.
  */
-export const InitializedManualDeviceCheck = ({ onSuccess }: InitializedManualDeviceCheckProps) => {
+const InitializedManualDeviceCheck = ({ onSuccess }: CommonManualDeviceCheckProps) => {
     const { dispatch } = useServices(injectDispatch);
     const device = useSelector(selectSelectedDevice);
     const deviceId = device?.id;
@@ -388,10 +387,10 @@ export const InitializedManualDeviceCheck = ({ onSuccess }: InitializedManualDev
     );
 };
 
-type ManualDeviceCheckProps = { onSuccess: () => void };
-
-// TODO this will be removed in subsequent refactoring, but in this commit, it works just like before!
-export const ManualDeviceCheck = ({ onSuccess }: ManualDeviceCheckProps) => {
+/**
+ * Manual Device Check either for uninitialized, or initialized device (see subcomponents for their different behaviors).
+ */
+export const ManualDeviceCheck = ({ onSuccess }: CommonManualDeviceCheckProps) => {
     const device = useSelector(selectSelectedDevice);
 
     const initialized = !!device?.features?.initialized;
@@ -399,6 +398,6 @@ export const ManualDeviceCheck = ({ onSuccess }: ManualDeviceCheckProps) => {
     return initialized ? (
         <InitializedManualDeviceCheck onSuccess={onSuccess} />
     ) : (
-        <UninitializedManualDeviceCheck />
+        <UninitializedManualDeviceCheck onSuccess={onSuccess} />
     );
 };

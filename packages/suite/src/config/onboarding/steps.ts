@@ -1,4 +1,6 @@
+import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { typedObjectEntries } from '@trezor/utils';
 
 import * as STEP from 'src/constants/onboarding/steps';
 import { type Step, type StepCategory } from 'src/types/onboarding';
@@ -21,6 +23,12 @@ const afterInitializePrerequisites: Step['prerequisites'] = [
     'device-different',
 ];
 
+const MODELS_SUPPORTING_DEVICE_AUTHENTICITY_CHECK = typedObjectEntries(
+    SUPPORTS_DEVICE_AUTHENTICITY_CHECK,
+)
+    .filter(([_, doesSupport]) => doesSupport)
+    .map(([model]) => model);
+
 export const stepCategories: StepCategory[] = [
     {
         id: 'device',
@@ -41,12 +49,7 @@ export const stepCategories: StepCategory[] = [
             },
             {
                 id: STEP.ID_AUTHENTICATE_DEVICE_STEP,
-                supportedModels: [
-                    DeviceModelInternal.T2B1,
-                    DeviceModelInternal.T3B1,
-                    DeviceModelInternal.T3T1,
-                    DeviceModelInternal.T3W1,
-                ],
+                supportedModels: MODELS_SUPPORTING_DEVICE_AUTHENTICITY_CHECK,
                 prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
             },
             {

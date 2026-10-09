@@ -130,15 +130,14 @@ describe('Router thunks', () => {
 
     fixtures.initialRedirection.forEach(f => {
         it(`initialRedirection: ${f.description}`, () => {
-            const state = getInitialState(f.state);
-            const { store, suiteRouterHistory } = initStore(state);
+            const { store, suiteRouterHistory } = initStore(getInitialState());
 
             suiteRouterHistory.navigate({
                 ...defaultLocation,
                 pathname: f.pathname || '/',
             });
 
-            store.dispatch(initialRedirectionThunk({ isInitialRun: f.isInitialRun }));
+            store.dispatch(initialRedirectionThunk());
             expect(store.getState().router.app).toEqual(f.app);
         });
     });

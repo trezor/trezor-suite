@@ -59,6 +59,13 @@ import { Transactions } from 'src/views/wallet/transactions/Transactions';
 
 export const desktopComponents: Record<PageName, ComponentType> = {
     'suite-index': Dashboard,
+    /*
+     Compatibility fallback after removing the `suite-start` as a fullscreen app.
+     It used to be a route dedicated as a starting point for onboarding devices.
+     Now that screen is rendered declaratively so we don't need a route for it.
+    */
+    // TODO PROPAGATE THIS CHANGE, REMOVE ALL `suite-start` mentions!
+    'suite-start': Dashboard,
     'suite-earn': Earn,
     'earn-yield-deposit': EarnDeposit,
     'earn-yield-withdraw': EarnWithdraw,

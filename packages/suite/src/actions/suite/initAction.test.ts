@@ -121,31 +121,23 @@ global.fetch = jest.fn().mockImplementation(() =>
 
 const EMPTY_ACTION = { type: 'foo' } as any;
 
-const getInitialState = (initialRun?: boolean): InitThunkState => {
-    const initialFlagsState = flagsReducer(undefined, EMPTY_ACTION);
-
-    return {
-        networks: mockNetworksState(mockGetSupportedNetworks()),
-        suite: suiteReducer(undefined, EMPTY_ACTION),
-        suiteSettings: suiteSettingsInitialState,
-        flags: {
-            ...(initialRun !== undefined
-                ? { ...initialFlagsState, initialRun }
-                : { ...initialFlagsState }),
-        },
-        locks: locksInitialState,
-        router: routerReducer(undefined, EMPTY_ACTION),
-        modal: modalReducer(undefined, EMPTY_ACTION),
-        wallet: walletReducers(undefined, EMPTY_ACTION),
-        messageSystem: messageSystemReducer(undefined, EMPTY_ACTION),
-        tokenDefinitions: tokenDefinitionsInitialState,
-        connectPopup: connectPopupInitialState,
-        walletConnect: walletConnectInitialState,
-        device: deviceReducer(undefined, EMPTY_ACTION),
-        metadata: metadataReducer(undefined, EMPTY_ACTION),
-        firmware: firmwareInitialState,
-    };
-};
+const getInitialState = (): InitThunkState => ({
+    networks: mockNetworksState(mockGetSupportedNetworks()),
+    suite: suiteReducer(undefined, EMPTY_ACTION),
+    suiteSettings: suiteSettingsInitialState,
+    flags: flagsReducer(undefined, EMPTY_ACTION),
+    locks: locksInitialState,
+    router: routerReducer(undefined, EMPTY_ACTION),
+    modal: modalReducer(undefined, EMPTY_ACTION),
+    wallet: walletReducers(undefined, EMPTY_ACTION),
+    messageSystem: messageSystemReducer(undefined, EMPTY_ACTION),
+    tokenDefinitions: tokenDefinitionsInitialState,
+    connectPopup: connectPopupInitialState,
+    walletConnect: walletConnectInitialState,
+    device: deviceReducer(undefined, EMPTY_ACTION),
+    metadata: metadataReducer(undefined, EMPTY_ACTION),
+    firmware: firmwareInitialState,
+});
 
 type Fixture = {
     description: string;
@@ -153,73 +145,16 @@ type Fixture = {
     options: {
         initialPath?: string;
         expectedApp?: InitThunkState['router']['app'];
-        initialRun?: boolean;
         trezorConnectError?: string;
     };
 };
 
 const fixtures: Fixture[] = [
     {
-        description: 'Successful initial run',
-        options: {
-            initialPath: '/accounts',
-            expectedApp: 'start',
-        },
-        actions: [
-            onSuiteInit.type,
-            initDevicesThunk.pending.type,
-            initDevicesThunk.fulfilled.type,
-            suiteSettingsActions.setLanguage.type,
-            initMessageSystemThunk.pending.type,
-            fetchConfigThunk.pending.type,
-            messageSystemActions.fetchSuccessUpdate.type,
-            fetchConfigThunk.fulfilled.type,
-            initMessageSystemThunk.fulfilled.type,
-            initialRedirectionThunk.pending.type,
-            gotoThunk.pending.type,
-            onLocationChangeThunk.pending.type,
-            routerLocationChange.type,
-            routerAppChanged.type,
-            lockRouter.type,
-            connectInitThunk.pending.type,
-            onLocationChangeThunk.fulfilled.type,
-            gotoThunk.fulfilled.type,
-            initialRedirectionThunk.fulfilled.type,
-            connectInitThunk.fulfilled.type,
-            initBlockchainThunk.pending.type,
-            preloadFeeInfoThunk.pending.type,
-            feesActions.updateMultipleFees.type,
-            preloadFeeInfoThunk.fulfilled.type,
-            initBlockchainThunk.fulfilled.type,
-            periodicCheckTokenDefinitionsThunk.pending.type,
-            initTokenDefinitionsThunk.pending.type,
-            initTokenDefinitionsThunk.fulfilled.type,
-            periodicCheckTokenDefinitionsThunk.fulfilled.type,
-            periodicFetchFiatRatesThunk.pending.type,
-            fetchFiatRatesThunk.pending.type,
-            fetchFiatRatesThunk.fulfilled.type,
-            periodicFetchFiatRatesThunk.fulfilled.type,
-            periodicFetchFiatRatesThunk.pending.type,
-            fetchFiatRatesThunk.pending.type,
-            fetchFiatRatesThunk.fulfilled.type,
-            periodicFetchFiatRatesThunk.fulfilled.type,
-            updateMissingTxFiatRatesThunk.pending.type,
-            updateMissingTxFiatRatesThunk.fulfilled.type,
-            routerInitThunk.pending.type,
-            periodicCheckStakeDataThunk.pending.type,
-            initStakeDataThunk.pending.type,
-            stakeDataActions.fetchStakeDataRequest.type,
-            walletConnectInitThunk.pending.type,
-            onSuiteReady.type,
-            stakeDataActions.fetchStakeDataFailure.type,
-        ],
-    },
-    {
-        description: 'Successful non-initial run',
+        description: 'Successful normal run',
         options: {
             initialPath: '/accounts',
             expectedApp: 'wallet',
-            initialRun: false,
         },
         actions: [
             onSuiteInit.type,
@@ -415,7 +350,7 @@ const initStore = (state: InitThunkState) => {
 describe('Suite init thunk', () => {
     fixtures.forEach(({ description, options, actions }) => {
         it(description, async () => {
-            const { store, suiteRouterHistory } = initStore(getInitialState(options.initialRun));
+            const { store, suiteRouterHistory } = initStore(getInitialState());
 
             if (options?.initialPath) {
                 suiteRouterHistory.navigate({ pathname: options.initialPath as PathString });

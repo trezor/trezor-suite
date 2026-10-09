@@ -8,6 +8,17 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             ({ Dashboard }) => ({ default: Dashboard }),
         ),
     ),
+    /*
+     Compatibility fallback after removing the `suite-start` as a fullscreen app.
+     It used to be a route dedicated as a starting point for onboarding devices.
+     Now that screen is rendered declaratively so we don't need a route for it.
+    */
+    // TODO PROPAGATE THIS CHANGE, REMOVE ALL `suite-start` mentions!
+    'suite-start': lazy(() =>
+        import(/* webpackChunkName: "dashboard" */ 'src/views/dashboard/index').then(
+            ({ Dashboard }) => ({ default: Dashboard }),
+        ),
+    ),
     'suite-earn': lazy(() =>
         import(/* webpackChunkName: "earn" */ 'src/views/earn/index').then(({ Earn }) => ({
             default: Earn,

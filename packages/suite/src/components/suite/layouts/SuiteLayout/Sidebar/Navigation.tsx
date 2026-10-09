@@ -6,7 +6,6 @@ import { selectIsAppsEmbeddingAvailable } from '@suite/apps-embedding-demo';
 import {
     NewContentIndicatorId,
     markNewContentIndicatorAsSeen,
-    selectIsInitialRun,
     selectIsNewContentIndicatorVisible,
 } from '@suite/flags';
 import { type Route, selectRouteName } from '@suite/router';
@@ -67,8 +66,7 @@ export const Navigation = ({ children }: NavigationProps) => {
     const { isSidebarCollapsed } = useResponsiveContext();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
-    const isInitialRun = useSelector(selectIsInitialRun);
-    const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
+    const startRoute: Route['name'] = 'suite-index';
 
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
     const isAppsEmbeddingAvailable = useSelector(selectIsAppsEmbeddingAvailable);

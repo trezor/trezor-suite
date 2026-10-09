@@ -173,23 +173,15 @@ export const closeModalAppThunk = createThunk<
     }
 });
 
-/**
- * Called from `@suite-middlewares/suiteMiddleware`
- * Redirects to requested modal app or welcome screen if `suite.flags.initialRun` is set to true
- */
-type InitialRedirectionThunkParams = {
-    isInitialRun?: boolean;
-};
-
 type InitialRedirectionThunkState = GotoThunkState;
 
 type InitialRedirectionThunkDeps = GotoThunkDeps;
 
 export const initialRedirectionThunk = createThunk<
     void,
-    InitialRedirectionThunkParams,
+    void,
     { state: InitialRedirectionThunkState; extra: InitialRedirectionThunkDeps }
->('@suite/initial-redirection', ({ isInitialRun = true }, { dispatch, extra }) => {
+>('@suite/initial-redirection', (_, { dispatch, extra }) => {
     const location = extra.services.suiteRouterHistory.getLocation();
     const route = findRoute(location.pathname);
 
@@ -201,7 +193,5 @@ export const initialRedirectionThunk = createThunk<
 
     if (route.isForegroundApp) {
         dispatch(gotoThunk({ routeName: route.name }));
-    } else if (isInitialRun) {
-        dispatch(gotoThunk({ routeName: 'suite-start' }));
     }
 });

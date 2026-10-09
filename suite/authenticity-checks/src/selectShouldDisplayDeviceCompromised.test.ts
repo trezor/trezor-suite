@@ -8,10 +8,8 @@ import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suit
 import * as deviceUtils from '@suite-common/suite-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import {
-    type AuthenticityChecksRootState,
-    selectShouldDisplayDeviceCompromised,
-} from './authenticityChecksSelectors';
+import { selectShouldDisplayDeviceCompromised } from './authenticityChecksSelectors';
+import { type AuthenticityChecksRootState } from './types';
 
 type Fixture = {
     description: string;
