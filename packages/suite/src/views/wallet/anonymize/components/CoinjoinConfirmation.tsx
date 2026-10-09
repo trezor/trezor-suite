@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FormattedNumber } from 'react-intl';
 
 import styled from 'styled-components';
 
@@ -23,14 +24,14 @@ import { Tile, type TileProps } from './Tile';
 const TopFeeRow = styled.div`
     display: flex;
     justify-content: space-between;
+    gap: 8px;
     margin-bottom: 8px;
 `;
 
 const FeeWrapper = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     border-top: 1px solid ${({ theme }) => theme.borderNeutral};
-    margin: 24px 0;
-    padding: 16px 0;
+    margin-top: 24px;
+    padding-top: 16px;
 `;
 
 const Tiles = styled.div`
@@ -39,14 +40,6 @@ const Tiles = styled.div`
     grid-template-columns: repeat(3, 1fr);
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        grid-template-columns: none;
-    }
-
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-    ${variables.SCREEN_QUERY.MOBILE} {
         grid-template-columns: none;
     }
 `;
@@ -101,7 +94,6 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     }
 
     const isDisabled = isCoinjoinSessionBlocked;
-    const coordinatorFeePercentage = `${coinjoinClient.coordinationFeeRate.rate * 100}%`;
 
     const getButtonTooltipMessage = () => {
         if (coinjoinSessionBlockedMessage) {
@@ -135,7 +127,11 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                             <Translation id="TR_SERVICE_FEE" />
                         </Paragraph>
                         <Paragraph typographyStyle="body-md-strong">
-                            {coordinatorFeePercentage}
+                            <FormattedNumber
+                                value={coinjoinClient.coordinationFeeRate.rate}
+                                style="percent"
+                                maximumFractionDigits={3}
+                            />
                         </Paragraph>
                     </TopFeeRow>
                     <Note>
@@ -144,13 +140,8 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                 </FeeWrapper>
             </Card>
 
-            <Tooltip content={getButtonTooltipMessage()}>
-                <Button
-                    onClick={anonymize}
-                    isDisabled={isDisabled}
-                    isLoading={isLoading}
-                    margin={{ top: 24 }}
-                >
+            <Tooltip content={getButtonTooltipMessage()} width="fit-content">
+                <Button onClick={anonymize} isDisabled={isDisabled} isLoading={isLoading}>
                     <Translation id="TR_START_COINJOIN" />
                 </Button>
             </Tooltip>

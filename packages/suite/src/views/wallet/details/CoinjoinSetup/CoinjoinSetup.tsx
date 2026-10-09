@@ -14,14 +14,10 @@ import { AnonymityLevelSetup } from './AnonymityLevelSetup';
 import { MaxMiningFeeSetup } from './MaxMiningFeeSetup';
 import { SkipRoundsSetup } from './SkipRoundsSetup';
 
-const SetupContainer = styled.div`
-    padding: 20px;
-`;
-
 const SetupOptions = styled.div`
     display: flex;
     flex-wrap: wrap;
-    gap: 40px;
+    gap: 12px 40px;
 `;
 
 const CustomSetup = styled.div`
@@ -62,49 +58,48 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
                 <Banner
                     intent="info"
                     description={<Translation id="TR_DISABLED_ANONYMITY_CHANGE_MESSAGE" />}
+                    margin={{ bottom: 16 }}
                 />
             )}
-            <SetupContainer>
-                <SetupOptions>
-                    <Radio
-                        isChecked={!coinjoinAccount.setup}
-                        onChange={setRecommendedSetup}
-                        isDisabled={hasSession}
+            <SetupOptions>
+                <Radio
+                    isChecked={!coinjoinAccount.setup}
+                    onChange={setRecommendedSetup}
+                    isDisabled={hasSession}
+                >
+                    <Translation id="TR_RECOMMENDED" />
+                </Radio>
+                <Radio
+                    isChecked={!!coinjoinAccount.setup}
+                    onChange={setCustomSetup}
+                    isDisabled={hasSession}
+                >
+                    <Translation id="TR_CUSTOM" />
+                </Radio>
+            </SetupOptions>
+            <AnimatePresence initial={!coinjoinAccount.setup}>
+                {coinjoinAccount.setup && (
+                    <motion.div
+                        {...motionAnimation.expand}
+                        transition={{ duration: 0.4, ease: motionEasing.transition }}
                     >
-                        <Translation id="TR_RECOMMENDED" />
-                    </Radio>
-                    <Radio
-                        isChecked={!!coinjoinAccount.setup}
-                        onChange={setCustomSetup}
-                        isDisabled={hasSession}
-                    >
-                        <Translation id="TR_CUSTOM" />
-                    </Radio>
-                </SetupOptions>
-                <AnimatePresence initial={!coinjoinAccount.setup}>
-                    {coinjoinAccount.setup && (
-                        <motion.div
-                            {...motionAnimation.expand}
-                            transition={{ duration: 0.4, ease: motionEasing.transition }}
-                        >
-                            <CustomSetup>
-                                <AnonymityLevelSetup
-                                    accountKey={accountKey}
-                                    targetAnonymity={coinjoinAccount.setup.targetAnonymity}
-                                />
-                                <MaxMiningFeeSetup
-                                    accountKey={accountKey}
-                                    maxMiningFee={coinjoinAccount.setup.maxFeePerVbyte}
-                                />
-                                <SkipRoundsSetup
-                                    accountKey={accountKey}
-                                    skipRounds={coinjoinAccount.setup.skipRounds}
-                                />
-                            </CustomSetup>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </SetupContainer>
+                        <CustomSetup>
+                            <AnonymityLevelSetup
+                                accountKey={accountKey}
+                                targetAnonymity={coinjoinAccount.setup.targetAnonymity}
+                            />
+                            <MaxMiningFeeSetup
+                                accountKey={accountKey}
+                                maxMiningFee={coinjoinAccount.setup.maxFeePerVbyte}
+                            />
+                            <SkipRoundsSetup
+                                accountKey={accountKey}
+                                skipRounds={coinjoinAccount.setup.skipRounds}
+                            />
+                        </CustomSetup>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </Card>
     );
 };

@@ -35,9 +35,9 @@ const RedText = styled.span`
 `;
 
 const expandAnimation: Partial<MotionProps> = {
-    initial: { height: 0, marginTop: 0, opacity: 0 },
-    animate: { height: 'auto', marginTop: 24, opacity: 1 },
-    exit: { height: 0, marginTop: 0, opacity: 0 },
+    initial: { height: 0, marginTop: 0, opacity: 0, overflow: 'hidden' },
+    animate: { height: 'auto', marginTop: 24, opacity: 1, transitionEnd: { overflow: 'unset' } },
+    exit: { height: 0, marginTop: 0, opacity: 0, overflow: 'hidden' },
     transition: {
         duration: 0.3,
         ease: motionEasing.transition,
