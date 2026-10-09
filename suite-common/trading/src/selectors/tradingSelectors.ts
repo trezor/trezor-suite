@@ -64,10 +64,10 @@ import {
     groupTradingExchangeQuotesProjection,
 } from './utils/groupTradingExchangeQuotesProjection';
 import { bestQuotePerPaymentMethodProjection } from './utils/quotePerPaymentMethodProjection';
-import { type BuyInfo, type TradingBuyState } from '../reducers/buyReducer';
-import { type ExchangeInfo, type TradingExchangeState } from '../reducers/exchangeReducer';
-import { type SellInfo, type TradingSellState } from '../reducers/sellReducer';
-import type { TradingRootState, TradingState } from '../reducers/tradingCommonReducer';
+import { type BuyInfo } from '../reducers/buyReducer';
+import { type ExchangeInfo } from '../reducers/exchangeReducer';
+import { type SellInfo } from '../reducers/sellReducer';
+import type { TradingRootState } from '../reducers/tradingCommonReducer';
 import {
     type SelectedTradingAsset,
     type TradingBuyPaymentMethodProps,
@@ -131,17 +131,9 @@ export type TradingBuyInfoSelector = Omit<
     supportedFiatCurrencies: Set<FiatCurrencyCode>;
 };
 
-export type TradingBuyStateSelector = Omit<TradingBuyState, 'buyInfo'> & {
-    buyInfo?: TradingBuyInfoSelector;
-};
-
 export type TradingExchangeInfoSelector = Omit<ExchangeInfo, 'buyCryptoIds' | 'sellCryptoIds'> & {
     buyCryptoIds: Set<CryptoId>;
     sellCryptoIds: Set<CryptoId>;
-};
-
-export type TradingExchangeStateSelector = Omit<TradingExchangeState, 'exchangeInfo'> & {
-    exchangeInfo?: TradingExchangeInfoSelector;
 };
 
 export type TradingSellInfoSelector = Omit<
@@ -150,14 +142,6 @@ export type TradingSellInfoSelector = Omit<
 > & {
     supportedCryptoCurrencies: Set<CryptoId>;
     supportedFiatCurrencies: Set<FiatCurrencyCode>;
-};
-
-export type TradingSellStateSelector = Omit<TradingSellState, 'sellInfo'>;
-
-export type TradingStateSelector = Omit<TradingState, 'buy' | 'exchange' | 'sell'> & {
-    buy: TradingBuyStateSelector;
-    exchange: TradingExchangeStateSelector;
-    sell: TradingSellStateSelector;
 };
 
 const createNetworkMemoizedSelector = createWeakMapSelector.withTypes<
@@ -294,15 +278,6 @@ export const selectTradingSell = createMemoizedSelector(
     (sell, sellInfo) => ({
         ...sell,
         sellInfo,
-    }),
-);
-
-export const selectTrading = createMemoizedSelector(
-    [state => state.wallet.trading, selectTradingBuy, selectTradingExchange],
-    (trading, buy, exchange): TradingStateSelector => ({
-        ...trading,
-        buy,
-        exchange,
     }),
 );
 
@@ -466,21 +441,6 @@ export const selectTradedAccountKeys = createMemoizedSelector([selectTradingTrad
     ),
 );
 
-export const selectTradingTradesForSelectedDevice = createMemoizedSelectorWithDeviceAndAccounts(
-    [selectAccounts, state => state.wallet.selectedAccount, selectTradingTrades],
-    (accounts, selectedAccount, trades): TradingTransaction[] =>
-        trades.filter(tx => {
-            const txDeviceId = accounts.find(account => {
-                const transactionAccountKey =
-                    'selectedAccountKey' in tx ? tx.selectedAccountKey : tx.sendAccountKey;
-
-                return transactionAccountKey === account.key;
-            })?.deviceState;
-
-            return txDeviceId === selectedAccount.account?.deviceState;
-        }),
-);
-
 export const selectDeviceTradingTrades: (
     state: TradingRootStateWithDeviceAndAccounts,
 ) => TradingTransaction[] = createMemoizedSelectorWithDeviceAndAccounts(
@@ -545,19 +505,6 @@ export const selectTradingPlatformByCryptoId = (
 
     return getTradingPlatformsInfoByCryptoId(platforms, cryptoId);
 };
-
-export const selectTradingNativeCoinSymbolByCryptoId: (
-    state: TradingRootState,
-    cryptoId: CryptoId,
-) => string | undefined = createMemoizedSelector(
-    [
-        selectTradingCoins,
-        ({ wallet }: TradingRootState) => wallet.trading.info.platforms,
-        (_: TradingRootState, cryptoId: CryptoId) => cryptoId,
-    ],
-    (coins, platforms, cryptoId) =>
-        getTradingNativeCoinSymbolByCryptoId(platforms ?? {}, coins ?? {}, cryptoId),
-);
 
 export const selectTradingSymbolAndContractAddressByCryptoId: (
     state: TradingRootState,
@@ -644,22 +591,6 @@ const createExchangeCryptoIdsSelector = (key: 'buyCryptoIds' | 'sellCryptoIds') 
 export const selectTradingExchangeSellCryptoIds = createExchangeCryptoIdsSelector('sellCryptoIds');
 export const selectTradingExchangeBuyCryptoIds = createExchangeCryptoIdsSelector('buyCryptoIds');
 
-export const selectTradingSellSellCryptoIds = createNetworkMemoizedSelector(
-    [
-        selectTradingCoins,
-        ({ wallet }) => wallet.trading.info.platforms,
-        ({ wallet }) => wallet.trading.sell.sellInfo?.supportedCryptoCurrencies,
-        selectSupportedNetworkSymbols,
-    ],
-    (coins, platforms, supportedCryptoIds, supportedCoins) =>
-        getFilteredCryptoIds(
-            returnStableArrayIfEmpty<CryptoId>(supportedCryptoIds),
-            coins,
-            platforms,
-            supportedCoins,
-        ),
-);
-
 export const selectTradingBuyIsLoading = (state: TradingRootState) =>
     state.wallet.trading.buy.isLoading;
 
@@ -684,11 +615,6 @@ export const selectTradingBuyOfferQuotes = createMemoizedSelector(
     [selectTradingBuyQuotesByPaymentMethod],
     quotes => returnStableArrayIfEmpty(getTradingQuotesDedupedByProvider(quotes)),
 );
-
-export const selectTradingBuyQuoteByOrderId = (
-    state: TradingRootState,
-    orderId: string | undefined,
-) => (orderId ? state.wallet.trading.buy.quotes.find(q => q.orderId === orderId) : undefined);
 
 export const selectTradingExchangeIsLoading = (state: TradingRootState) =>
     state.wallet.trading.exchange.isLoading;
@@ -715,9 +641,6 @@ export const selectTradingExchangeCexQuotes = createMemoizedSelector(
     [selectTradingExchangeQuotes],
     quotes => returnStableArrayIfEmpty(quotes.filter(quote => !quote.isDex)),
 );
-
-export const selectTradingExchangeDexQuoteApprovalPrefetchLoading = (state: TradingRootState) =>
-    !!state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId;
 
 export const selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId = (
     state: TradingRootState,

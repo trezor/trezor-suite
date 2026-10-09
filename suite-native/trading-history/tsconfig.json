@@ -34,7 +34,6 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
-        { "path": "../device" },
         { "path": "../feedback-form" },
         { "path": "../icons" },
         { "path": "../intl" },

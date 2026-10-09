@@ -27,7 +27,6 @@ import {
     selectGroupedTradingExchangeQuotes,
     selectIsTradingNetworkFeeMissing,
     selectTradedAccountKeys,
-    selectTrading,
     selectTradingAccountAccordingActiveSection,
     selectTradingAccountKeyByTradeType,
     selectTradingActiveSection,
@@ -41,7 +40,6 @@ import {
     selectTradingBuyOfferQuotes,
     selectTradingBuyPaymentMethods,
     selectTradingBuyProviders,
-    selectTradingBuyQuoteByOrderId,
     selectTradingBuyQuotes,
     selectTradingBuyQuotesByPaymentMethod,
     selectTradingBuyQuotesPerPaymentMethod,
@@ -58,7 +56,6 @@ import {
     selectTradingExchangeAmountLimits,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeCexQuotes,
-    selectTradingExchangeDexQuoteApprovalPrefetchLoading,
     selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId,
     selectTradingExchangeDexQuotes,
     selectTradingExchangeFormStep,
@@ -81,7 +78,6 @@ import {
     selectTradingIsSlip24SellAllowed,
     selectTradingLastErrorMessageByTradeType,
     selectTradingModalAccountKey,
-    selectTradingNativeCoinSymbolByCryptoId,
     selectTradingPaymentMethodsByType,
     selectTradingPlatformByCryptoId,
     selectTradingPrefilledFromAccount,
@@ -109,14 +105,12 @@ import {
     selectTradingSellQuotesPerPaymentMethod,
     selectTradingSellQuotesRequest,
     selectTradingSellSelectedQuote,
-    selectTradingSellSellCryptoIds,
     selectTradingSellSupportedCryptoIds,
     selectTradingSupportedFiatCurrenciesByTradeType,
     selectTradingSupportedSymbols,
     selectTradingSymbolAndContractAddressByCryptoId,
     selectTradingTradeByOrderId,
     selectTradingTrades,
-    selectTradingTradesForSelectedDevice,
     selectValidTradingBuyQuotes,
     selectValidTradingSellQuotes,
 } from './tradingSelectors';
@@ -557,44 +551,6 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTrading.name, () => {
-        it('should return correct data', () => {
-            const {
-                wallet: { trading },
-            } = getState() as Record<string, any>;
-
-            trading.buy.buyInfo.supportedCryptoCurrencies = new Set([
-                'eos',
-                'bitcoin',
-                'ethereum',
-                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                'base--0x0000000000000000000000000000000000000000',
-                'ethereum--0xWithoutObjectInCoinsInfo',
-            ]);
-            trading.buy.buyInfo.supportedFiatCurrencies = new Set(['usd', 'eur', 'czk']);
-            trading.buy.buyInfo.buyInfo.defaultAmountsOfFiatCurrencies = new Map([
-                ['usd', '150'],
-                ['eur', '100'],
-            ]);
-            trading.exchange.exchangeInfo.buyCryptoIds = new Set(['bitcoin']);
-            trading.exchange.exchangeInfo.sellCryptoIds = new Set([
-                'eos',
-                'bitcoin',
-                'ethereum',
-                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                'base--0x0000000000000000000000000000000000000000',
-                'ethereum--0xWithoutObjectInCoinsInfo',
-            ]);
-            trading.exchange.tradingAccountKey = accountEth.key;
-
-            expect(selectTrading(state)).toEqual(trading);
-        });
-
-        it('should be stable', () => {
-            expect(selectTrading(state)).toBe(selectTrading(state));
-        });
-    });
-
     describe(selectTradingBuyProviders.name, () => {
         it('should return correct data', () => {
             expect(selectTradingBuyProviders(state)).toEqual(
@@ -665,12 +621,6 @@ describe('tradingSelectors', () => {
 
     it('selectTradingExchangeQuotes should return correct data', () => {
         expect(selectTradingExchangeQuotes(state)).toBe(state.wallet.trading.exchange.quotes);
-    });
-
-    it('selectTradingExchangeDexQuoteApprovalPrefetchLoading should return correct data', () => {
-        expect(selectTradingExchangeDexQuoteApprovalPrefetchLoading(state)).toBe(
-            !!state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId,
-        );
     });
 
     it('selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId should return correct data', () => {
@@ -893,17 +843,6 @@ describe('tradingSelectors', () => {
         });
     });
 
-    it.each([
-        ['bitcoin', 'btc'],
-        ['ethereum', 'eth'],
-        ['ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', 'eth'],
-    ] as [CryptoId, string][])(
-        'selectTradingNativeCoinSymbolByCryptoId should return native coin symbol for cryptoId [%s]',
-        (cryptoId, expected) => {
-            expect(selectTradingNativeCoinSymbolByCryptoId(state, cryptoId)).toBe(expected);
-        },
-    );
-
     describe(selectTradingSymbolAndContractAddressByCryptoId.name, () => {
         it.each([
             ['bitcoin', { coinSymbol: 'BTC', contractAddress: undefined }],
@@ -999,42 +938,6 @@ describe('tradingSelectors', () => {
             state.wallet.trading.sell.sellInfo = undefined;
 
             expect(selectTradingSellSupportedCryptoIds(state)).toEqual([]);
-        });
-    });
-
-    describe(selectTradingSellSellCryptoIds.name, () => {
-        it('should select only coins presented in sellInfo and info', () => {
-            expect(selectTradingSellSellCryptoIds(state)).toEqual([
-                'bitcoin',
-                'ethereum',
-                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                'base--0x0000000000000000000000000000000000000000',
-            ]);
-        });
-
-        it('should be stable', () => {
-            const first = selectTradingSellSellCryptoIds(state);
-            const second = selectTradingSellSellCryptoIds(state);
-
-            expect(first).toBe(second);
-        });
-
-        it('should be empty array when platforms are not set', () => {
-            state.wallet.trading.info.platforms = undefined;
-
-            expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
-        });
-
-        it('should be empty array when coins are not set', () => {
-            state.wallet.trading.info.coins = undefined;
-
-            expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
-        });
-
-        it('should be empty array when supportedCryptoCurrencies are not set', () => {
-            state.wallet.trading.sell.sellInfo = undefined;
-
-            expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
         });
     });
 
@@ -1213,23 +1116,6 @@ describe('tradingSelectors', () => {
                 expect.objectContaining({ orderId: 'orderId3' }),
                 expect.objectContaining({ orderId: 'orderId1' }),
             ]);
-        });
-    });
-
-    describe(selectTradingBuyQuoteByOrderId.name, () => {
-        it('should return undefined when orderId is not provided', () => {
-            const result = selectTradingBuyQuoteByOrderId(state, undefined);
-            expect(result).toBeUndefined();
-        });
-
-        it('should return undefined when quote with orderId is not found', () => {
-            const result = selectTradingBuyQuoteByOrderId(state, 'non_existent_id');
-            expect(result).toBeUndefined();
-        });
-
-        it('should return correct quote', () => {
-            const result = selectTradingBuyQuoteByOrderId(state, 'orderId1');
-            expect(result?.orderId).toBe('orderId1');
         });
     });
 
@@ -2586,74 +2472,6 @@ describe('tradingSelectors', () => {
             expect(() =>
                 selectTradingProviderByNameAndTradeType(state, 'provider1', 'invalid' as any),
             ).toThrow('Unreachable case: ["invalid"]');
-        });
-    });
-
-    describe(selectTradingTradesForSelectedDevice.name, () => {
-        it('should return trades for the selected device', () => {
-            const mockState = {
-                wallet: {
-                    selectedAccount: {
-                        account: { deviceState: 'device1' },
-                    },
-                    accounts: [
-                        { key: 'key1', deviceState: 'device1' },
-                        { key: 'key2', deviceState: 'device2' },
-                    ],
-                    trading: {
-                        trades: [
-                            { selectedAccountKey: 'key1', tradeType: 'buy' },
-                            { sendAccountKey: 'key2', tradeType: 'sell' },
-                        ],
-                    },
-                },
-            } as unknown as TradingRootStateWithDeviceAndAccounts;
-
-            const result = selectTradingTradesForSelectedDevice(mockState);
-
-            expect(result).toEqual([{ selectedAccountKey: 'key1', tradeType: 'buy' }]);
-        });
-
-        it('should return an empty array if no trades match the selected device', () => {
-            const mockState = {
-                wallet: {
-                    selectedAccount: {
-                        account: { deviceState: 'device3' },
-                    },
-                    accounts: [
-                        { key: 'key1', deviceState: 'device1' },
-                        { key: 'key2', deviceState: 'device2' },
-                    ],
-                    trading: {
-                        trades: [{ tradeType: 'buy' }, { tradeType: 'sell' }],
-                    },
-                },
-            } as unknown as TradingRootStateWithDeviceAndAccounts;
-
-            const result = selectTradingTradesForSelectedDevice(mockState);
-
-            expect(result).toEqual([]);
-        });
-
-        it('should return an empty array if there are no trades', () => {
-            const mockState = {
-                wallet: {
-                    selectedAccount: {
-                        account: { deviceState: 'device1' },
-                    },
-                    accounts: [
-                        { key: 'key1', deviceState: 'device1' },
-                        { key: 'key2', deviceState: 'device2' },
-                    ],
-                    trading: {
-                        trades: [],
-                    },
-                },
-            } as unknown as TradingRootStateWithDeviceAndAccounts;
-
-            const result = selectTradingTradesForSelectedDevice(mockState);
-
-            expect(result).toEqual([]);
         });
     });
 

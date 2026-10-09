@@ -13,14 +13,12 @@ export * from './components/Error/WarningCard';
 export * from './components/TradeInfo/NetworkAndAccountCard';
 export * from './components/TradeInfo/TradeInfoHeader';
 export * from './components/TradeInfo/TradeInfoRow';
-export * from './components/TradeInfo/TradeSideCard';
 
 export * from './components/AmountEditingDoneButton';
 export * from './components/BottomSheetSectionList';
 export * from './components/CardTitle';
 export * from './components/EmptyComponent';
 export * from './components/ExplanationText';
-export * from './components/FilterTabs';
 export * from './components/FiatCurrencyIcon';
 export * from './components/IconByCryptoId';
 export * from './components/NetworkBadge';

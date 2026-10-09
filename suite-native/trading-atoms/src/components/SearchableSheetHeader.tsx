@@ -24,7 +24,6 @@ export type SearchableSheetHeaderProps = {
     autoCorrect?: boolean;
 };
 
-export const SEARCHABLE_SHEET_HEADER_DEFAULT_HEIGHT = 160 as const;
 export const FOCUS_ANIMATION_DURATION = 300 as const;
 
 const noOp = () => {};
