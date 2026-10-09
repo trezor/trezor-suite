@@ -14,7 +14,7 @@ import { PriceTicker, TrendTicker } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
 import { HomeAssetBalance } from './HomeAssetBalance';
-import { HOME_ASSET_CELL_PADDING } from './homeAssetTableLayout';
+import { HOME_ASSET_CELL_PADDING, HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
 
 type HomeAssetRowProps = {
     assetKey: WalletAssetKey;
@@ -61,7 +61,7 @@ export const HomeAssetRow = memo(function HomeAssetRow({
                         showNetworkIcon
                         placeholder={displaySymbol ?? ''}
                     />
-                    <Column alignItems="flex-start" gap={2}>
+                    <Column alignItems="flex-start" gap={HOME_ASSET_LINE_GAP}>
                         <Text typographyStyle="body-md" data-testid="@dashboard/home-asset/name">
                             {displaySymbol}
                         </Text>
@@ -73,7 +73,7 @@ export const HomeAssetRow = memo(function HomeAssetRow({
             </Table.Cell>
 
             <Table.Cell align="end">
-                <Column alignItems="flex-end" gap={2}>
+                <Column alignItems="flex-end" gap={HOME_ASSET_LINE_GAP}>
                     <PriceTicker symbol={symbol} contractAddress={contractAddress} />
                     <TrendTicker symbol={symbol} contractAddress={contractAddress} />
                 </Column>

@@ -14,7 +14,7 @@ import { TruncatedAmount } from 'src/components/earn/yield/common/TruncatedAmoun
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
-import { HOME_ASSET_BALANCE_MAX_WIDTH } from './homeAssetTableLayout';
+import { HOME_ASSET_BALANCE_MAX_WIDTH, HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
 
 type HomeAssetBalanceProps = {
     assetKey: WalletAssetKey;
@@ -39,7 +39,7 @@ export const HomeAssetBalance = memo(({ assetKey, isHidden }: HomeAssetBalancePr
     }
 
     return (
-        <Column alignItems="flex-end" gap={2}>
+        <Column alignItems="flex-end" gap={HOME_ASSET_LINE_GAP}>
             <BaseCurrencyValue amount={amount} symbol={symbol} tokenAddress={contractAddress} />
             <Text
                 intent="neutral"
