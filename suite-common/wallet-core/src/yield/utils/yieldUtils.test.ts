@@ -18,7 +18,6 @@ import {
     getYieldFlowStepSequence,
     getYieldVaultForOutputToken,
     getYieldVaultsForInputToken,
-    getYieldWrapAmount,
     hasYieldVaultPosition,
     isYieldVaultOperational,
     splitYieldPendingTransaction,
@@ -458,22 +457,6 @@ describe('yieldUtils', () => {
                     reserve: '0.1',
                 }),
             ).toBe('kept');
-        });
-    });
-
-    describe('getYieldWrapAmount', () => {
-        it('wraps the shortfall between the deposit total and held WETH', () => {
-            expect(getYieldWrapAmount({ totalAmount: '2', matchedWethBalance: '1.5' })).toBe('0.5');
-        });
-
-        it('returns 0 when held WETH already covers the total', () => {
-            expect(getYieldWrapAmount({ totalAmount: '1', matchedWethBalance: '2' })).toBe('0');
-        });
-
-        it('wraps the whole total when no WETH is held', () => {
-            expect(getYieldWrapAmount({ totalAmount: '1', matchedWethBalance: undefined })).toBe(
-                '1',
-            );
         });
     });
 

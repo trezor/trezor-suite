@@ -58,12 +58,6 @@ const stakeDataSlice = createSlice({
             state.error = action.payload;
             state.isLoading = false;
         },
-        fetchStakeDataReset: state => {
-            state.error = null;
-            state.isLoading = false;
-            state.lastSuccessAt = null;
-            state.data = stakeDataInitialState.data;
-        },
     },
 });
 

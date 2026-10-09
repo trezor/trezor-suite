@@ -3,7 +3,6 @@ export * from './config';
 export * from './verification';
 export * from './hooks/useAllYieldOpportunities';
 export * from './hooks/useYieldOpportunity';
-export * from './hooks/useGetYieldOpportunities';
 export * from './hooks/useGetVaultByAddress';
 export * from './hooks/merkl-rewards';
 export * from './utils/sortRewardsByUnderlyingToken';

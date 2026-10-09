@@ -440,18 +440,6 @@ export const getYieldDepositableBalance = ({
     return new BigNumber(tokenDepositBalance).plus(nativeFormattedBalance || '0').toString();
 };
 
-type GetYieldWrapAmountParams = {
-    totalAmount: string;
-    matchedWethBalance?: string | null;
-};
-
-/** Native portion of a deposit that must be wrapped — the total minus already-held WETH. */
-export const getYieldWrapAmount = ({
-    totalAmount,
-    matchedWethBalance,
-}: GetYieldWrapAmountParams): string =>
-    BigNumber.max(0, new BigNumber(totalAmount || '0').minus(matchedWethBalance || '0')).toString();
-
 type GetYieldDepositAvailableBalanceParams = {
     tokenBalance?: string | null;
     wrappedAmount?: string | null;
