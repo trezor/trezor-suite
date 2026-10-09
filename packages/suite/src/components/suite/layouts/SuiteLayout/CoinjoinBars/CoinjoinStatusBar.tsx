@@ -15,12 +15,14 @@ import { typography } from '@trezor/theme';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
+import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 
 const SPACING = 6;
 
 const ViewText = styled.div`
-    margin-left: auto;
+    flex-shrink: 0;
+    padding-left: ${SPACING}px;
     color: ${({ theme }) => theme.contentSecondary};
     transition: transform 0.15s ease-in-out;
 `;
@@ -28,9 +30,9 @@ const ViewText = styled.div`
 const Container = styled.div<{ $isClickable: boolean }>`
     display: flex;
     align-self: stretch;
+    justify-content: center;
     align-items: center;
     height: 28px;
-    padding: 0 ${SPACING}px;
     background: ${({ theme }) => theme.surfaceFillSunken};
     border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     ${typography['body-xs']}
@@ -39,6 +41,7 @@ const Container = styled.div<{ $isClickable: boolean }>`
         $isClickable &&
         css`
             cursor: pointer;
+            -webkit-app-region: no-drag;
 
             &:hover {
                 background: ${theme.surfaceFillPage};
@@ -50,12 +53,27 @@ const Container = styled.div<{ $isClickable: boolean }>`
         `}
 `;
 
-const StatusText = styled.span`
-    color: ${({ theme }) => theme.contentBrand};
+// Mirrors ContentContainer, so the bar content lines up with the page content at every width.
+const Inner = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: ${MAX_CONTENT_WIDTH};
+    padding: 0 ${HORIZONTAL_LAYOUT_PADDINGS};
 `;
 
-const Note = styled.span`
+// The bar has a fixed height, so on narrow windows the text is truncated instead of wrapped.
+const Content = styled.div`
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     color: ${({ theme }) => theme.contentSecondary};
+`;
+
+const StatusText = styled.span`
+    color: ${({ theme }) => theme.contentBrand};
 `;
 
 const Separator = styled.span`
@@ -141,50 +159,54 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
             onClick={isStatusBarClickable ? handleViewAccount : undefined}
             $isClickable={isStatusBarClickable}
         >
-            <ProgressPie valueInPercents={sessionProgress} margin={{ right: 8 }} />
+            <Inner>
+                <ProgressPie valueInPercents={sessionProgress} margin={{ right: 8 }} />
 
-            <StatusText>
-                {getSessionStatusMessage()}
+                <Content>
+                    <StatusText>
+                        {getSessionStatusMessage()}
 
-                {sessionDeadline && (
-                    <>
-                        <Separator>•</Separator>
-                        <CountdownTimer
-                            deadline={sessionDeadline}
-                            unitDisplay="long"
-                            minUnit="hour"
-                            minUnitValue={roundsDurationInHours}
-                            message="TR_COINJOIN_SESSION_COUNTDOWN_PLURAL"
-                        />
-                    </>
+                        {sessionDeadline && (
+                            <>
+                                <Separator>•</Separator>
+                                <CountdownTimer
+                                    deadline={sessionDeadline}
+                                    unitDisplay="long"
+                                    minUnit="hour"
+                                    minUnitValue={roundsDurationInHours}
+                                    message="TR_COINJOIN_SESSION_COUNTDOWN_PLURAL"
+                                />
+                            </>
+                        )}
+                    </StatusText>
+
+                    {roundPhase !== undefined && !paused && roundPhaseDeadline && (
+                        <>
+                            <Separator>•</Separator>
+                            {/* The overtime copy is only the time value, not a replacement for the sentence. */}
+                            <CountdownTimer
+                                isApproximate
+                                deadline={roundPhaseDeadline}
+                                message="TR_COINJOIN_ROUND_COUNTDOWN_PLURAL"
+                                pastDeadlineValueMessage="TR_COINJOIN_ROUND_COUNTDOWN_OVERTIME"
+                            />
+                        </>
+                    )}
+
+                    {!isSingle && (
+                        <>
+                            <Separator>•</Separator>
+                            <WalletLabeling device={relatedDevice} shouldUseDeviceLabel />
+                        </>
+                    )}
+                </Content>
+
+                {isStatusBarClickable && (
+                    <ViewText>
+                        <Translation id="TR_VIEW" />
+                    </ViewText>
                 )}
-            </StatusText>
-
-            {roundPhase !== undefined && !paused && roundPhaseDeadline && (
-                <Note>
-                    <Separator>•</Separator>
-
-                    <CountdownTimer
-                        isApproximate
-                        deadline={roundPhaseDeadline}
-                        message="TR_COINJOIN_ROUND_COUNTDOWN_PLURAL"
-                        pastDeadlineMessage="TR_COINJOIN_ROUND_COUNTDOWN_OVERTIME"
-                    />
-                </Note>
-            )}
-
-            {!isSingle && (
-                <Note>
-                    <Separator>•</Separator>
-                    <WalletLabeling device={relatedDevice} shouldUseDeviceLabel />
-                </Note>
-            )}
-
-            {isStatusBarClickable && (
-                <ViewText>
-                    <Translation id="TR_VIEW" />
-                </ViewText>
-            )}
+            </Inner>
         </Container>
     );
 };
