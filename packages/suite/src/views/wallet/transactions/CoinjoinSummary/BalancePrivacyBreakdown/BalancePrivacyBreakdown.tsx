@@ -17,15 +17,14 @@ import { CryptoAmountWithHeader } from './CryptoAmountWithHeader';
 const BalanceContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
     align-self: normal;
     gap: 12px;
     padding: 0 10px;
 `;
 
 const StyledCryptoAmountWithHeader = styled(CryptoAmountWithHeader)`
-    flex-grow: 1;
-    max-width: 50%;
+    flex: 1 1 160px;
     margin-bottom: -4px;
 `;
 
@@ -57,7 +56,7 @@ export const BalancePrivacyBreakdown = () => {
     const getBalanceIcon = () => {
         if (hasSession) {
             if (currentSession.paused) {
-                return <Icon as={PauseIcon} size={12} />;
+                return <Icon as={PauseIcon} size={15} />;
             }
 
             return <Icon as={ShuffleIcon} size={15} />;

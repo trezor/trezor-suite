@@ -147,7 +147,7 @@ export const CoinjoinProgressContent = ({
             if (isCriticalPhase) {
                 return (
                     <Tooltip
-                        maxWidth={160}
+                        tooltipMaxWidth={160}
                         offset={40}
                         cursor="pointer"
                         content={<Translation id="TR_AUTO_STOP_TOOLTIP" />}
