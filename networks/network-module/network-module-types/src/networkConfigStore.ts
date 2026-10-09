@@ -7,6 +7,7 @@ export type NetworkConfig = {
     readonly settlementLayer?: NetworkSymbol;
     readonly coingeckoId?: string;
     readonly tradeCryptoId?: string;
+    readonly nativeAssetCryptoId?: string;
 };
 
 export type NetworkConfigs = Readonly<Record<NetworkSymbol, NetworkConfig>> | null;
