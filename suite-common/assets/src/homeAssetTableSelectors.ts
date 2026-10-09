@@ -48,93 +48,68 @@ type WalletAsset = {
     tokenDecimals: number | undefined;
 };
 
-const selectAllWalletAssets = createMemoizedSelector(
-    [selectDeviceAssetAccounts],
-    (assetAccounts): ReadonlyMap<WalletAssetKey, WalletAsset> => {
-        const byKey = new Map<WalletAssetKey, [AssetAccount, ...AssetAccount[]]>();
+const groupWalletAssets = (
+    assetAccounts: readonly AssetAccount[],
+): ReadonlyMap<WalletAssetKey, WalletAsset> => {
+    const byKey = new Map<WalletAssetKey, [AssetAccount, ...AssetAccount[]]>();
 
-        assetAccounts.forEach(assetAccount => {
-            const held = byKey.get(assetAccount.assetKey);
+    assetAccounts.forEach(assetAccount => {
+        const held = byKey.get(assetAccount.assetKey);
 
-            if (held === undefined) {
-                byKey.set(assetAccount.assetKey, [assetAccount]);
-            } else {
-                held.push(assetAccount);
-            }
-        });
+        if (held === undefined) {
+            byKey.set(assetAccount.assetKey, [assetAccount]);
+        } else {
+            held.push(assetAccount);
+        }
+    });
 
-        const assets = new Map<WalletAssetKey, WalletAsset>();
+    const assets = new Map<WalletAssetKey, WalletAsset>();
 
-        byKey.forEach((held, assetKey) => {
-            const [{ symbol, contractAddress }] = held;
-            const { cryptoBalance, tokenInfo } = sumAssetAccounts(held);
+    byKey.forEach((held, assetKey) => {
+        const [{ symbol, contractAddress }] = held;
+        const { cryptoBalance, tokenInfo } = sumAssetAccounts(held);
 
-            assets.set(assetKey, {
-                assetKey,
+        assets.set(assetKey, {
+            assetKey,
+            symbol,
+            contractAddress,
+            cryptoBalance,
+            amount: cryptoBalance.toFixed(),
+            displaySymbol: getDisplaySymbol(tokenInfo?.symbol ?? symbol, contractAddress),
+            name: getAssetName({
                 symbol,
-                contractAddress,
-                cryptoBalance,
-                amount: cryptoBalance.toFixed(),
-                displaySymbol: getDisplaySymbol(tokenInfo?.symbol ?? symbol, contractAddress),
-                name: getAssetName({
-                    symbol,
-                    tokenName: tokenInfo?.name,
-                    tokenSymbol: tokenInfo?.symbol,
-                }),
+                tokenName: tokenInfo?.name,
                 tokenSymbol: tokenInfo?.symbol,
-                tokenDecimals: tokenInfo?.decimals,
-            });
+            }),
+            tokenSymbol: tokenInfo?.symbol,
+            tokenDecimals: tokenInfo?.decimals,
         });
+    });
 
-        return assets;
-    },
-);
+    return assets;
+};
 
-const selectHiddenWalletAssetKeySet = createMemoizedSelector(
+const selectPartitionedAssetAccounts = createMemoizedSelector(
     [selectDeviceAssetAccounts, selectHiddenAssetAccountKeySet],
-    (assetAccounts, hiddenAccounts): ReadonlySet<WalletAssetKey> => {
-        const hidden = new Set<WalletAssetKey>();
+    (assetAccounts, hiddenAccounts) => {
+        const shown: AssetAccount[] = [];
+        const hidden: AssetAccount[] = [];
 
         assetAccounts.forEach(assetAccount => {
-            if (hiddenAccounts.has(assetAccount.assetAccountKey)) {
-                hidden.add(assetAccount.assetKey);
-            }
+            (hiddenAccounts.has(assetAccount.assetAccountKey) ? hidden : shown).push(assetAccount);
         });
 
-        return hidden;
+        return { shown, hidden };
     },
 );
 
-const selectWalletAssets = createMemoizedSelector(
-    [selectAllWalletAssets, selectHiddenWalletAssetKeySet],
-    (assets, hidden): ReadonlyMap<WalletAssetKey, WalletAsset> => {
-        const shown = new Map<WalletAssetKey, WalletAsset>();
-
-        assets.forEach((asset, assetKey) => {
-            if (!hidden.has(assetKey)) {
-                shown.set(assetKey, asset);
-            }
-        });
-
-        return shown;
-    },
+const selectWalletAssets = createMemoizedSelector([selectPartitionedAssetAccounts], ({ shown }) =>
+    groupWalletAssets(shown),
 );
 
 const selectHiddenWalletAssets = createMemoizedSelector(
-    [selectAllWalletAssets, selectHiddenWalletAssetKeySet],
-    (assets, hidden): ReadonlyMap<WalletAssetKey, WalletAsset> => {
-        const held = new Map<WalletAssetKey, WalletAsset>();
-
-        hidden.forEach(assetKey => {
-            const asset = assets.get(assetKey);
-
-            if (asset !== undefined) {
-                held.set(assetKey, asset);
-            }
-        });
-
-        return held;
-    },
+    [selectPartitionedAssetAccounts],
+    ({ hidden }) => groupWalletAssets(hidden),
 );
 
 const priceAssets = (
@@ -311,10 +286,8 @@ export const selectNetworkFiatValue = createMemoizedSelector(
     (worth, symbol) => worth.get(symbol)?.toFixed(),
 );
 
-const selectWalletAsset = createMemoizedSelector(
-    [selectAllWalletAssets, (_state: HomeAssetTableState, assetKey: WalletAssetKey) => assetKey],
-    (assets, assetKey) => assets.get(assetKey),
-);
+const selectWalletAsset = (state: HomeAssetTableState, assetKey: WalletAssetKey) =>
+    selectWalletAssets(state).get(assetKey) ?? selectHiddenWalletAssets(state).get(assetKey);
 
 export const selectWalletAssetSymbol = (state: HomeAssetTableState, assetKey: WalletAssetKey) =>
     selectWalletAsset(state, assetKey)?.symbol;
@@ -363,25 +336,21 @@ const byFiatThenCryptoBalance = (
 
 const selectHiddenWalletAssetKeysByReason = createMemoizedSelector(
     [
-        selectAllWalletAssets,
-        selectHiddenWalletAssetKeySet,
+        selectHiddenWalletAssets,
         selectHiddenWalletAssetValues,
         selectHiddenTokenReasons,
         selectEnabledNetworks,
     ],
     (
         assets,
-        hiddenKeys,
         values,
         reasons,
         enabledNetworks,
     ): ReadonlyMap<HiddenTokenReason, readonly WalletAssetKey[]> => {
         const byReason = new Map<HiddenTokenReason, WalletAssetKey[]>();
 
-        hiddenKeys.forEach(assetKey => {
-            const asset = assets.get(assetKey);
-
-            if (asset?.contractAddress === undefined || !enabledNetworks.includes(asset.symbol)) {
+        assets.forEach((asset, assetKey) => {
+            if (asset.contractAddress === undefined || !enabledNetworks.includes(asset.symbol)) {
                 return;
             }
 
