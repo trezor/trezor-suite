@@ -195,29 +195,42 @@ export const selectShownWalletAssetKeys = createMemoizedSelector(
 const SMALL_BALANCE_USD_VALUE = new BigNumber(1);
 const BTC = asNetworkSymbol('btc');
 
-/**
- * A small balance is under a dollar whatever the chosen currency. Rates are fetched in the chosen
- * currency only, so the dollar is converted through what a bitcoin is worth in each; while either
- * rate is missing nothing is fetched just for this and only the unpriced assets count as small.
- */
-const selectSmallBalanceAssetKeySet = createMemoizedSelector(
-    [
-        selectShownWalletAssetKeys,
-        selectWalletAssetValues,
-        selectCurrentFiatRates,
-        selectBaseCurrency,
-    ],
-    (assetKeys, values, rates, baseCurrency): ReadonlySet<WalletAssetKey> => {
-        const btcUsdRate = rates?.[getFiatRateKey(BTC, 'usd')]?.rate;
-        const btcBaseCurrencyRate = rates?.[getFiatRateKey(BTC, baseCurrency)]?.rate;
-        let threshold: BigNumber | undefined;
+// Rates are fetched and stored in the chosen currency only (`eth-czk`, never `eth-usd`), so no asset
+// can be priced in dollars directly. Bitcoin serves as the cross rate instead: it is what it is worth
+// in dollars and in the chosen currency that turns the dollar into the chosen currency, the same way
+// `usePreferredCurrencyUsdThreshold` does for trading. Bitcoin is used because nothing else is as
+// likely to have both rates at hand; the asset being judged does not have to be bitcoin at all.
+// Each input reads a single number, so a write to any other rate — and the fiat state is written on
+// every fetch, a pending flag included — leaves the threshold and everything after it untouched.
+const selectBtcUsdRate = (state: HomeAssetTableState) =>
+    selectCurrentFiatRates(state)?.[getFiatRateKey(BTC, 'usd')]?.rate;
 
+const selectBtcBaseCurrencyRate = (state: HomeAssetTableState) =>
+    selectCurrentFiatRates(state)?.[getFiatRateKey(BTC, selectBaseCurrency(state))]?.rate;
+
+/**
+ * A dollar in the chosen currency: what a small balance is under. Undefined while either bitcoin
+ * rate is missing — nothing is fetched just for this — so until then only the unpriced count as small.
+ */
+const selectSmallBalanceFiatThreshold = createMemoizedSelector(
+    [selectBaseCurrency, selectBtcUsdRate, selectBtcBaseCurrencyRate],
+    (baseCurrency, btcUsdRate, btcBaseCurrencyRate): BigNumber | undefined => {
         if (baseCurrency === 'usd') {
-            threshold = SMALL_BALANCE_USD_VALUE;
-        } else if (btcUsdRate && btcBaseCurrencyRate) {
-            threshold = SMALL_BALANCE_USD_VALUE.times(btcBaseCurrencyRate).div(btcUsdRate);
+            return SMALL_BALANCE_USD_VALUE;
         }
 
+        if (!btcUsdRate || !btcBaseCurrencyRate) {
+            return undefined;
+        }
+
+        // $1 × (CZK per BTC) / (USD per BTC) = CZK per $1.
+        return SMALL_BALANCE_USD_VALUE.times(btcBaseCurrencyRate).div(btcUsdRate);
+    },
+);
+
+const selectSmallBalanceAssetKeySet = createMemoizedSelector(
+    [selectShownWalletAssetKeys, selectWalletAssetValues, selectSmallBalanceFiatThreshold],
+    (assetKeys, values, threshold): ReadonlySet<WalletAssetKey> => {
         const small = new Set<WalletAssetKey>();
 
         assetKeys.forEach(assetKey => {
