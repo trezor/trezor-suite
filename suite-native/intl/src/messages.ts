@@ -2218,6 +2218,8 @@ export const messages = {
         send: 'Send',
         more: 'Load more',
         loadOlder: 'Load older transactions',
+        historyCoveredSince: 'Showing transactions since {date}',
+        loadOlderFailed: 'Couldn’t load older transactions. Try again.',
         status: {
             pending: 'Pending',
             confirmed: 'Confirmed',
@@ -2241,6 +2243,9 @@ export const messages = {
         emptyState: {
             title: 'No transactions',
             subtitle: 'Get started by receiving assets.',
+            recentWindowTitle: 'No recent transactions',
+            recentWindowSubtitle:
+                'Only recent history is loaded by default. Use the button below to load older transactions.',
             button: 'Receive',
         },
         detail: {
