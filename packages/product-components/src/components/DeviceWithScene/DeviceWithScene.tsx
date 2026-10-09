@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import {
     type FrameProps,
     type FramePropsKeys,
@@ -68,7 +67,7 @@ const Ghost = ({ rotate, x, y }: { rotate: number; x: string; y: string }) => (
 );
 
 export const DeviceWithScene = ({
-    deviceModel = DEFAULT_FLAGSHIP_MODEL,
+    deviceModel,
     scene,
     unitColor,
     objectFit,
