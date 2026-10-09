@@ -17,11 +17,13 @@ import { AssetPriceCard } from './AssetPriceCard';
 type AccountDetailEmptyStateProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
+    isRecentWindowEmpty: boolean;
 };
 
 export const AccountDetailEmptyState = ({
     accountKey,
     tokenContract,
+    isRecentWindowEmpty,
 }: AccountDetailEmptyStateProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -36,7 +38,7 @@ export const AccountDetailEmptyState = ({
 
     return (
         <VStack spacing="sp24">
-            <TransactionsEmptyState />
+            <TransactionsEmptyState isRecentWindowEmpty={isRecentWindowEmpty} />
             <Box paddingHorizontal="sp16">
                 <AccountDetailActionButtons accountKey={accountKey} tokenContract={tokenContract} />
             </Box>

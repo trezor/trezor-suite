@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { fetchTransactionsPageThunk } from '@suite-common/wallet-core';
-import { getOlderHistoryFrom } from '@suite-common/wallet-utils';
+import { getHistoryCoveredSince, getOlderHistoryFrom } from '@suite-common/wallet-utils';
 import { Button, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
@@ -55,8 +55,7 @@ export const LoadOlderHistory = ({ account, loadedCount }: LoadOlderHistoryProps
     };
 
     // A step can find nothing, so the date the list reaches back to is what shows the press worked.
-    const coveredSince =
-        account.networkType === 'ethereum' ? account.misc.historyCoveredSince : undefined;
+    const coveredSince = getHistoryCoveredSince(account);
 
     return (
         <Column gap={32}>

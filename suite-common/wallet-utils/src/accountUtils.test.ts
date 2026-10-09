@@ -19,6 +19,8 @@ import {
     getAccountIdentifier,
     getAccountSpecific,
     getBip43Type,
+    getDirectRpcHistoryState,
+    getHistoryCoveredSince,
     getNetworkAccountFeatures,
     getOlderHistoryFrom,
     getUtxoFromSignedTransaction,
@@ -609,6 +611,32 @@ describe(getOlderHistoryFrom.name, () => {
     });
 });
 
+describe(getHistoryCoveredSince.name, () => {
+    it('reads how far back a direct-RPC scan reaches', () => {
+        const account: Account = {
+            ...mockWalletAccount(
+                { symbol: ethSymbol },
+                { misc: { historyCoveredSince: 1_700_000_000 } },
+            ),
+            backendType: 'evm-rpc',
+        };
+
+        expect(getHistoryCoveredSince(account)).toBe(1_700_000_000);
+    });
+
+    it('is undefined on a backend that serves the whole history', () => {
+        const account: Account = {
+            ...mockWalletAccount(
+                { symbol: ethSymbol },
+                { misc: { historyCoveredSince: 1_700_000_000 } },
+            ),
+            backendType: 'blockbook',
+        };
+
+        expect(getHistoryCoveredSince(account)).toBeUndefined();
+    });
+});
+
 describe(isDirectRpcHistoryUnscanned.name, () => {
     const withHistory = (backendType: 'evm-rpc' | 'blockbook', total: number): Account => ({
         ...mockWalletAccount({ symbol: ethSymbol, history: { total, unconfirmed: 0 } }),
@@ -622,6 +650,36 @@ describe(isDirectRpcHistoryUnscanned.name, () => {
 
     it('ignores backends that report a real count', () => {
         expect(isDirectRpcHistoryUnscanned(withHistory('blockbook', -1))).toBe(false);
+    });
+});
+
+describe(getDirectRpcHistoryState.name, () => {
+    const withHistory = (
+        backendType: 'evm-rpc' | 'blockbook',
+        total: number,
+        olderHistoryFrom?: number,
+    ): Account => ({
+        ...mockWalletAccount(
+            { symbol: ethSymbol, history: { total, unconfirmed: 0 } },
+            { misc: { olderHistoryFrom } },
+        ),
+        backendType,
+    });
+
+    it('is unscanned until a direct-RPC backend has looked at the history once', () => {
+        expect(getDirectRpcHistoryState(withHistory('evm-rpc', -1))).toBe('unscanned');
+    });
+
+    it('reports an empty recent window while older history is still reachable', () => {
+        expect(getDirectRpcHistoryState(withHistory('evm-rpc', 0, 1000))).toBe('recentWindowEmpty');
+    });
+
+    it('is not an empty window while the scanned range holds transactions, loaded or not', () => {
+        expect(getDirectRpcHistoryState(withHistory('evm-rpc', 3, 1000))).toBeUndefined();
+    });
+
+    it('is nothing special for a backend that serves the whole history', () => {
+        expect(getDirectRpcHistoryState(withHistory('blockbook', 0))).toBeUndefined();
     });
 });
 

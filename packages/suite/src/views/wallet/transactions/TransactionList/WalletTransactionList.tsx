@@ -5,8 +5,8 @@ import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-defini
 import {
     selectAreAllTransactionsLoaded,
     selectIsHideSuspiciousTransactions,
+    useDirectRpcHistoryState,
 } from '@suite-common/wallet-core';
-import { getOlderHistoryFrom, isDirectRpcHistoryUnscanned } from '@suite-common/wallet-utils';
 import { Card, Column, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -62,8 +62,8 @@ export const WalletTransactionList = ({
 
     // A direct-RPC backend only looked at a recent window, so finding nothing there is not the same
     // as the account having no transactions.
-    const isRecentWindowEmpty =
-        result.allTransactions.length === 0 && getOlderHistoryFrom(account) !== undefined;
+    const directRpcHistoryState = useDirectRpcHistoryState(account.key);
+    const isRecentWindowEmpty = directRpcHistoryState === 'recentWindowEmpty';
 
     return (
         <TransactionList
@@ -81,7 +81,7 @@ export const WalletTransactionList = ({
             transactions={result.visibleTransactions}
             symbol={symbol}
             account={account}
-            isLoading={result.isFetching || isDirectRpcHistoryUnscanned(account)}
+            isLoading={result.isFetching || directRpcHistoryState === 'unscanned'}
             customTotalItems={customTotalItems ?? result.visibleTotal}
             isExportable={isExportable}
             onPageRequested={setVisiblePages}

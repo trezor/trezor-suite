@@ -130,6 +130,7 @@ export * from './token/stellarContractTokensSlice';
 export * from './token/stellarTokenThunks';
 export * from './tokens/tokenSelectors';
 export * from './tokens/tokenUtils';
+export * from './transactions/hooks/useDirectRpcHistoryState';
 export * from './transactions/hooks/useEvmPendingTxStatus';
 export * from './transactions/target/createTargets';
 export type * from './transactions/target/Target';
