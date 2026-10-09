@@ -7,7 +7,7 @@ import {
     selectRoute,
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { ExperimentId, useExperiment } from '@suite-common/message-system';
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -18,7 +18,10 @@ import { HiddenTokensName } from './HiddenTokensName';
 import { SettingsName } from './SettingsName';
 
 export const PageName = () => {
-    const { activeExperimentVariant } = useExperiment(ExperimentId.assetFirstHomeTable);
+    const isHomeTableActive = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
     const route = useSelector(selectRoute);
     const { suiteRouterHistory } = useServices(injectSuiteRouterHistory);
     const currentRoute = resolveEffectiveBackgroundRouteName(
@@ -75,9 +78,7 @@ export const PageName = () => {
     // the name follows what the experiment put on the page.
     return (
         <BasicName>
-            <Translation
-                id={activeExperimentVariant?.variant === 'B' ? 'TR_HOME' : 'TR_DASHBOARD'}
-            />
+            <Translation id={isHomeTableActive ? 'TR_HOME' : 'TR_DASHBOARD'} />
         </BasicName>
     );
 };
