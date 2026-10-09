@@ -12,8 +12,6 @@ type BitcoinExchangeComposeParams = {
     feeInfo: FeeInfo | null;
 };
 
-// Desktop no longer offers a fee choice in the swap form, so the swap is composed at the
-// normal fee level there as well.
 const getNormalFeePerUnit = (feeInfo: FeeInfo | null) =>
     feeInfo?.levels.find(level => level.label === 'normal')?.feePerUnit;
 
