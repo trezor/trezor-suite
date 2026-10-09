@@ -2,7 +2,7 @@ import { type PropsWithChildren, useMemo } from 'react';
 
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { isDevEnv } from '../config';
+import { isDevEnv } from '../src/config';
 
 /**
  * Fail fast during development, retry in production

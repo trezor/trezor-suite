@@ -1,6 +1,6 @@
 import { HelmetProvider } from 'react-helmet-async';
 
-import { ReactQueryProvider } from '@suite-common/react-query/src/components/ReactQueryProvider';
+import { ReactQueryProvider } from '@suite-common/react-query/react';
 import { injectStore } from '@suite-common/redux-utils';
 import { SelectCacheProvider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
