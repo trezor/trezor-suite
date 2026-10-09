@@ -1,5 +1,7 @@
+// Bare domains take any Unicode letter, as scam tokens spell them in lookalikes, e.g.
+// "ᴄʟᴀɪᴍ👉ᴡᴡᴡ.ᴡɪɴᴘʜᴀɴᴛᴏᴍ.ᴄᴏᴍ". `\b` only knows ASCII, hence the lookahead after the domain.
 const URL_REGEX =
-    /\b(?:https?:\/\/|www\.)[a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=%]+\b|(?:[a-zA-Z0-9-]+\s?\.\s?)+[a-zA-Z]{2,}(?=\b|\s|$|\])/gi;
+    /\b(?:https?:\/\/|www\.)[a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=%]+\b|(?:[\p{L}\p{N}-]+\s?\.\s?)+\p{L}{2,}(?![\p{L}\p{N}_])/giu;
 
 export const extractUrlsFromText = (text: string) => {
     const urls: string[] = [];
