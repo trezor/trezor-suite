@@ -84,7 +84,7 @@ fn get_device_proxy(
     ),
     dbus::Error,
 > {
-    let device_path = format!("/org/bluez/{}", id);
+    let device_path = format!("/org/bluez/{id}");
     let (resource, conn) = dbus_tokio::connection::new_system_sync()?;
     let connection_task = tokio::spawn(resource);
     let timeout = Duration::from_millis(timeout.into());
@@ -178,7 +178,7 @@ fn watch_abort(
 /// watch timeout event
 fn watch_timeout(id: String, timeout: u32) -> tokio::task::JoinHandle<()> {
     tokio::spawn(async move {
-        info!("Start connection with timeout {:?}", timeout);
+        info!("Start connection with timeout {timeout:?}");
         sleep(Duration::from_millis(timeout.into())).await;
         info!("Connection timeout. disconnecting device");
         disconnect_device(id).await;
@@ -312,10 +312,7 @@ async fn pair_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformErro
         // NOTE: there is no way to abort device_proxy.method_call
         let result: Result<(), dbus::Error> =
             device_proxy.method_call(DBUS_DEVICE, "Pair", ()).await;
-        match result {
-            Ok(_) => None,
-            Err(error) => Some(error),
-        }
+        result.err()
     });
 
     tokio::select! {

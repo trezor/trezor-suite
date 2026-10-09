@@ -64,7 +64,7 @@ pub async fn open_device(
     let mut notification_stream = peripheral.notifications().await?;
     let device_id = id.clone();
     let current_ch = characteristic.clone();
-    let current_uuid = characteristic_uuid.clone();
+    let current_uuid = characteristic_uuid;
     let stream_task = tokio::spawn(async move {
         info!("{device_id} start {current_ch:?} stream");
         while let Some(data) = notification_stream.next().await {
@@ -114,7 +114,7 @@ pub async fn open_device(
             // check if id should be disconnected
             let maybe_id = match event {
                 ChannelMessage::Abort(AbortProcess::NotificationStream(id, maybe_ch)) => {
-                    let matches_ch = maybe_ch.map_or(true, |ch| ch == current_ch);
+                    let matches_ch = maybe_ch.is_none_or(|ch| ch == current_ch);
                     matches_ch.then_some(id)
                 }
                 ChannelMessage::Abort(AbortProcess::DeviceDisconnected(id)) => Some(id),

@@ -21,6 +21,7 @@ It sorts changed files into three scopes:
 
 - `rust`: Bluetooth server sources in `packages/transport-bluetooth`.
   Runs **Rust checks**: `cargo fmt`, `cargo clippy` and `cargo test`.
+  The crate has no tests yet, so `cargo test` only verifies that the test build compiles and links.
 - `docs`: Markdown files, `docs/**` and `.github/ISSUE_TEMPLATE/**`.
   Runs **Docs checks**: Prettier (`format:verify`) and the Markdown link check.
 - `javascript`: everything else, except local development files

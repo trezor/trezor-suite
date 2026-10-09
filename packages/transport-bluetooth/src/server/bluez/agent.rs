@@ -75,10 +75,10 @@ fn run_agent(
                 let (tx, rx) = mpsc::channel();
                 let manager = manager.clone();
                 let device_id = device_id.to_string();
-                let pin = format!("{:06}", passkey);
+                let pin = format!("{passkey:06}");
 
                 handle.spawn({
-                    info!("Agent PIN {:?}", pin);
+                    info!("Agent PIN {pin:?}");
 
                     async move {
                         let accepted = match manager.get_device_or_die(device_id).await {
@@ -144,7 +144,7 @@ pub fn create_agent(ctx: ConnectDeviceContext) -> (oneshot::Receiver<()>, mpsc::
 
     std::thread::spawn(move || {
         if let Err(e) = run_agent(ctx, tokio_handle, ready_tx, abort_rx) {
-            info!("Agent listener failed: {:?}", e);
+            info!("Agent listener failed: {e:?}");
         }
     });
 
