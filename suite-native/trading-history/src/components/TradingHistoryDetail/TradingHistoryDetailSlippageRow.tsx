@@ -1,5 +1,8 @@
+import { useSelector } from 'react-redux';
+
+import { formatSlippagePercent } from '@suite-common/trading';
 import { Text } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, selectLocale } from '@suite-native/intl';
 import { ExplanationText, TradeInfoRow } from '@suite-native/trading-atoms';
 
 const TEST_ID = '@trading/history/detail/info';
@@ -10,17 +13,23 @@ type TradingHistoryDetailSlippageRowProps = {
 
 export const TradingHistoryDetailSlippageRow = ({
     swapSlippage,
-}: TradingHistoryDetailSlippageRowProps) => (
-    <TradeInfoRow>
-        <ExplanationText
-            title={<Translation id="moduleTrading.tradeHistory.detail.info.maximumSlippage" />}
-            description={
-                <Translation id="moduleTrading.tradeHistory.detail.info.explanation.maximumSlippage.description" />
-            }
-            testID={`${TEST_ID}/slippage-explanation`}
-        >
-            <Translation id="moduleTrading.tradeHistory.detail.info.maximumSlippage" />
-        </ExplanationText>
-        <Text variant="body-sm">{swapSlippage}%</Text>
-    </TradeInfoRow>
-);
+}: TradingHistoryDetailSlippageRowProps) => {
+    const locale = useSelector(selectLocale);
+
+    const formattedSlippage = formatSlippagePercent({ slippage: swapSlippage, locale });
+
+    return (
+        <TradeInfoRow>
+            <ExplanationText
+                title={<Translation id="moduleTrading.tradeHistory.detail.info.maximumSlippage" />}
+                description={
+                    <Translation id="moduleTrading.tradeHistory.detail.info.explanation.maximumSlippage.description" />
+                }
+                testID={`${TEST_ID}/slippage-explanation`}
+            >
+                <Translation id="moduleTrading.tradeHistory.detail.info.maximumSlippage" />
+            </ExplanationText>
+            <Text variant="body-sm">{formattedSlippage}</Text>
+        </TradeInfoRow>
+    );
+};

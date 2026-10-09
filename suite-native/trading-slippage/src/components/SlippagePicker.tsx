@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
+    formatSlippagePercent,
     selectTradingExchangeSelectedQuoteIsDex,
     selectTradingExchangeSelectedQuoteSwapSlippage,
 } from '@suite-common/trading';
@@ -31,20 +31,11 @@ export const SlippagePicker = ({ receiveAmount, onSlippageConfirmed }: SlippageP
     const locale = useSelector(selectLocale);
     const { applyStyle } = useNativeStyles();
 
-    const percentFormatter = useMemo(
-        () =>
-            new Intl.NumberFormat(locale, {
-                style: 'percent',
-                maximumFractionDigits: 2,
-            }),
-        [locale],
-    );
-
     if (!isDex || !swapSlippage) {
         return null;
     }
 
-    const percent = percentFormatter.format(Number(swapSlippage) / 100);
+    const percent = formatSlippagePercent({ slippage: swapSlippage, locale });
 
     return (
         <>
