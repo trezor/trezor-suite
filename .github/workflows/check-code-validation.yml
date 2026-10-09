@@ -156,6 +156,8 @@ jobs:
         uses: ./.github/actions/minimal-yarn-install
       - name: Check Files for Correct Formatting
         run: yarn format:verify
+      - name: Verify Requirements
+        run: yarn requirements:verify --only=docs-summary-exhaustive
       - name: Collect Markdown link inputs
         run: |
           git ls-files -s -- '*.md' | awk '$1 != "120000" { print $4 }' > "$RUNNER_TEMP/markdown-link-inputs.txt"
