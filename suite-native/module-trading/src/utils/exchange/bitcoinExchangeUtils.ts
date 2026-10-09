@@ -6,7 +6,7 @@ import { type Account, type FeeInfo } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-type BitcoinExchangeComposeParams = {
+type GetBitcoinExchangeMaxAmountParams = {
     account: Account;
     btcSwapComposeTemplate: BtcSwapComposeTemplate | undefined;
     feeInfo: FeeInfo | null;
@@ -15,7 +15,7 @@ type BitcoinExchangeComposeParams = {
 const getNormalFeePerUnit = (feeInfo: FeeInfo | null) =>
     feeInfo?.levels.find(level => level.label === 'normal')?.feePerUnit;
 
-type GetBitcoinExchangeFromAddressParams = BitcoinExchangeComposeParams & {
+type GetBitcoinExchangeFromAddressParams = GetBitcoinExchangeMaxAmountParams & {
     sendCryptoAmount: string;
     shouldSendInSats: boolean;
 };
@@ -57,7 +57,7 @@ export const getBitcoinExchangeMaxAmount = async ({
     account,
     btcSwapComposeTemplate,
     feeInfo,
-}: BitcoinExchangeComposeParams): Promise<string | undefined> => {
+}: GetBitcoinExchangeMaxAmountParams): Promise<string | undefined> => {
     if (account.networkType !== 'bitcoin') {
         return undefined;
     }
