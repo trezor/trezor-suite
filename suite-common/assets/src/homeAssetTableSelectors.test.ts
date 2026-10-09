@@ -1,6 +1,6 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getWalletAssetKey } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type Rate, type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
@@ -26,6 +26,7 @@ const BTC = asNetworkSymbol('btc');
 const ETH = asNetworkSymbol('eth');
 const POL = asNetworkSymbol('pol');
 const DSOL = asNetworkSymbol('dsol');
+const TEST = asNetworkSymbol('test');
 
 const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 const USDC_ON_POL = '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359' as TokenAddress;
@@ -59,19 +60,21 @@ const mockAccount = ({
         tokens,
     }) as unknown as Account;
 
+// A current rate carries the dollar rate too; in dollars the two are the same number.
 const mockRate = (
     symbol: Account['symbol'],
     rate: number,
     contract?: TokenAddress,
     currency: BaseCurrencyCode = 'usd',
+    usdRate: number | undefined = currency === 'usd' ? rate : undefined,
 ) => ({
-    [getFiatRateKey(symbol, currency, contract)]: { rate },
+    [getFiatRateKey(symbol, currency, contract)]: { rate, usdRate },
 });
 
 type MockStateParams = {
     accounts: Account[];
     enabledNetworks?: Account['symbol'][];
-    rates?: Record<string, { rate: number }>;
+    rates?: Record<string, Partial<Rate>>;
     knownTokens?: TokenAddress[];
     hiddenTokens?: TokenAddress[];
     areSmallBalancesShown?: boolean;
@@ -583,44 +586,42 @@ describe('the small balances the switch hides', () => {
     });
 
     describe('in a currency other than the dollar', () => {
-        // A bitcoin is $100 and 2000 CZK, so a dollar is 20 CZK. The Ethereum token is worth 10 CZK.
-        const stateInCzk = (btcUsdRate?: number) =>
-            createState({
-                accounts: [
-                    mockAccount({
-                        symbol: ETH,
-                        balance: '0',
-                        tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }],
-                    }),
-                    mockAccount({ symbol: BTC, index: 1, balance: '1' }),
-                ],
-                rates: {
-                    ...mockRate(BTC, 2000, undefined, 'czk'),
-                    ...mockRate(ETH, 1, undefined, 'czk'),
-                    ...mockRate(ETH, 1, USDC_ON_ETH, 'czk'),
-                    ...(btcUsdRate === undefined ? {} : mockRate(BTC, btcUsdRate)),
-                },
-                localCurrency: 'czk',
-                areSmallBalancesShown: false,
-            });
-
-        it('draws the line at a dollar, not at one of the currency', () => {
-            const state = stateInCzk(100);
-
-            expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`]);
-            expect(selectSmallBalanceSummary(state)?.fiatValue.toFixed()).toBe('10');
+        // A dollar is 20 CZK. The Ethereum token is worth 10 CZK, which is 50c; Bitcoin is worth $100.
+        const stateInCzk = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    balance: '0',
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }],
+                }),
+                mockAccount({ symbol: BTC, index: 1, balance: '1' }),
+            ],
+            rates: {
+                ...mockRate(BTC, 2000, undefined, 'czk', 100),
+                ...mockRate(ETH, 1, undefined, 'czk', 0.05),
+                ...mockRate(ETH, 1, USDC_ON_ETH, 'czk', 0.05),
+            },
+            localCurrency: 'czk',
+            areSmallBalancesShown: false,
         });
 
-        it('hides nothing until the dollar can be converted', () => {
-            const state = stateInCzk();
+        it('draws the line at a dollar, not at one of the currency', () => {
+            expect(selectDisplayedWalletAssetKeys(stateInCzk)).toEqual([`${ALICE}/btc/`]);
+        });
 
-            expect(selectSmallBalanceSummary(state)).toBeUndefined();
-            expect(selectDisplayedWalletAssetKeys(state)).toHaveLength(3);
+        it('still says what they come to in the chosen currency', () => {
+            expect(selectSmallBalanceSummary(stateInCzk)?.fiatValue.toFixed()).toBe('10');
         });
     });
 
     describe('an asset nothing can price', () => {
-        // The shown token has no rate: it is not on CoinGecko, so it is taken for dust.
+        // The feeds answered for the shown token and could not price it: it is not on CoinGecko.
+        const unpricedRate = (contract: TokenAddress, isLoading = false) => ({
+            [getFiatRateKey(ETH, 'usd', contract)]: {
+                isLoading,
+                error: 'Missing token definition',
+            },
+        });
         const stateWithAnUnpricedToken = (areSmallBalancesShown: boolean) =>
             createState({
                 accounts: [
@@ -631,7 +632,7 @@ describe('the small balances the switch hides', () => {
                     }),
                     mockAccount({ symbol: BTC, index: 1, balance: '2' }),
                 ],
-                rates: { ...mockRate(BTC, 1), ...mockRate(ETH, 1) },
+                rates: { ...mockRate(BTC, 1), ...mockRate(ETH, 1), ...unpricedRate(UNKNOWN_TOKEN) },
                 shownTokens: [UNKNOWN_TOKEN],
                 areSmallBalancesShown,
             });
@@ -649,6 +650,42 @@ describe('the small balances the switch hides', () => {
 
             expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`]);
             expect(selectSmallBalanceSummary(state)?.assetCount).toBe(2);
+        });
+
+        it('is not taken for dust while its answer is still on its way', () => {
+            const state = createState({
+                accounts: [
+                    mockAccount({
+                        symbol: ETH,
+                        balance: '2',
+                        tokens: [{ contract: UNKNOWN_TOKEN, balance: '999999' }],
+                    }),
+                ],
+                rates: { ...mockRate(ETH, 1), ...unpricedRate(UNKNOWN_TOKEN, true) },
+                shownTokens: [UNKNOWN_TOKEN],
+                areSmallBalancesShown: false,
+            });
+
+            expect(selectDisplayedWalletAssetKeys(state)).toHaveLength(2);
+            expect(selectSmallBalanceSummary(state)).toBeUndefined();
+        });
+
+        it('is not taken for dust while nothing has been asked about it, as with a testnet', () => {
+            const state = createState({
+                accounts: [
+                    mockAccount({ symbol: BTC, balance: '2' }),
+                    mockAccount({ symbol: TEST, index: 1, balance: '5' }),
+                ],
+                enabledNetworks: [BTC, TEST],
+                rates: mockRate(BTC, 1),
+                areSmallBalancesShown: false,
+            });
+
+            expect(selectDisplayedWalletAssetKeys(state)).toEqual([
+                `${ALICE}/btc/`,
+                `${ALICE}/test/`,
+            ]);
+            expect(selectSmallBalanceSummary(state)).toBeUndefined();
         });
     });
 

@@ -34,6 +34,8 @@ export type RateTypeWithoutHistoric = Exclude<RateType, 'historic'>;
 
 export type Rate = {
     rate?: number;
+    /** The same asset in dollars. On a current entry it is there exactly when `rate` is; a week-old entry never has it. */
+    usdRate?: number;
     lastTickerTimestamp: Timestamp;
     lastSuccessfulFetchTimestamp: Timestamp;
     isLoading: boolean;
@@ -43,6 +45,17 @@ export type Rate = {
 
 export type FiatRatesResult = {
     rate?: number;
+    lastTickerTimestamp: Timestamp;
+};
+
+/**
+ * A current rate always comes with the dollar rate, whatever the chosen currency: CoinGecko returns
+ * every currency it knows, dollars included, and Blockbook is asked for dollars next to the chosen
+ * one. A provider answer missing either number is no rate at all, so neither is ever undefined here.
+ */
+export type CurrentFiatRatesResult = {
+    rate: number;
+    usdRate: number;
     lastTickerTimestamp: Timestamp;
 };
 

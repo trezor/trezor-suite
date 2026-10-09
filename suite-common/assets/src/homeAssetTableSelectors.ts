@@ -3,12 +3,7 @@ import { shallowEqual } from 'react-redux';
 import { type DeviceRootState } from '@suite-common/device';
 import { type NetworksRootState, selectNetworkNamesMap } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import {
-    type NetworkSymbol,
-    asNetworkSymbol,
-    getAssetName,
-    getDisplaySymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, getAssetName, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AssetAccount,
     type AssetAccountsRootState,
@@ -118,24 +113,30 @@ const selectHiddenWalletAssets = createMemoizedSelector(
     ({ hidden }) => groupWalletAssets(hidden),
 );
 
-const priceAssets = (
-    assets: ReadonlyMap<WalletAssetKey, WalletAsset>,
-    rates: RatesByKey | undefined,
-    baseCurrencyCode: BaseCurrencyCode,
-): ReadonlyMap<WalletAssetKey, BigNumber> => {
-    const priced = new Map<WalletAssetKey, BigNumber>();
+type RateField = 'rate' | 'usdRate';
 
-    assets.forEach(({ assetKey, symbol, contractAddress, amount }) => {
-        const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, contractAddress);
-        const fiatValue = toFiatCurrency({ amount, rate: rates?.[fiatRateKey]?.rate });
+const priceAssetsBy =
+    (rateField: RateField) =>
+    (
+        assets: ReadonlyMap<WalletAssetKey, WalletAsset>,
+        rates: RatesByKey | undefined,
+        baseCurrencyCode: BaseCurrencyCode,
+    ): ReadonlyMap<WalletAssetKey, BigNumber> => {
+        const priced = new Map<WalletAssetKey, BigNumber>();
 
-        if (fiatValue !== null) {
-            priced.set(assetKey, fiatValue);
-        }
-    });
+        assets.forEach(({ assetKey, symbol, contractAddress, amount }) => {
+            const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, contractAddress);
+            const fiatValue = toFiatCurrency({ amount, rate: rates?.[fiatRateKey]?.[rateField] });
 
-    return priced;
-};
+            if (fiatValue !== null) {
+                priced.set(assetKey, fiatValue);
+            }
+        });
+
+        return priced;
+    };
+
+const priceAssets = priceAssetsBy('rate');
 
 const haveSameFiatValues = (
     left: ReadonlyMap<WalletAssetKey, BigNumber>,
@@ -149,6 +150,16 @@ const pricedOnce = { memoizeOptions: { resultEqualityCheck: haveSameFiatValues }
 const selectWalletAssetValues = createMemoizedSelector(
     [selectWalletAssets, selectCurrentFiatRates, selectBaseCurrency],
     priceAssets,
+    pricedOnce,
+);
+
+/**
+ * What each asset is worth in dollars. Every current rate carries the dollar rate alongside the chosen
+ * currency's (see `CurrentFiatRatesResult`), so a small balance is judged in dollars whatever is chosen.
+ */
+const selectWalletAssetUsdValues = createMemoizedSelector(
+    [selectWalletAssets, selectCurrentFiatRates, selectBaseCurrency],
+    priceAssetsBy('usdRate'),
     pricedOnce,
 );
 
@@ -192,59 +203,49 @@ export const selectShownWalletAssetKeys = createMemoizedSelector(
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
-const SMALL_BALANCE_USD_VALUE = new BigNumber(1);
-const BTC = asNetworkSymbol('btc');
-
-// Rates are fetched and stored in the chosen currency only (`eth-czk`, never `eth-usd`), so no asset
-// can be priced in dollars directly. Bitcoin serves as the cross rate instead: it is what it is worth
-// in dollars and in the chosen currency that turns the dollar into the chosen currency, the same way
-// `usePreferredCurrencyUsdThreshold` does for trading. Bitcoin is used because nothing else is as
-// likely to have both rates at hand; the asset being judged does not have to be bitcoin at all.
-// Each input reads a single number, so a write to any other rate — and the fiat state is written on
-// every fetch, a pending flag included — leaves the threshold and everything after it untouched.
-const selectBtcUsdRate = (state: HomeAssetTableState) =>
-    selectCurrentFiatRates(state)?.[getFiatRateKey(BTC, 'usd')]?.rate;
-
-const selectBtcBaseCurrencyRate = (state: HomeAssetTableState) =>
-    selectCurrentFiatRates(state)?.[getFiatRateKey(BTC, selectBaseCurrency(state))]?.rate;
+const haveSameKeys = (left: ReadonlySet<WalletAssetKey>, right: ReadonlySet<WalletAssetKey>) =>
+    left.size === right.size && [...left].every(assetKey => right.has(assetKey));
 
 /**
- * A dollar in the chosen currency: what a small balance is under. Undefined while either bitcoin
- * rate is missing — nothing is fetched just for this — so until then only the unpriced count as small.
+ * The assets the price feeds have answered for and could not price in dollars: a token not even
+ * CoinGecko knows. Nothing is said about an asset that has not been asked about — a testnet coin is
+ * never asked about — or whose answer is still on its way, so none of those are taken for dust.
  */
-const selectSmallBalanceFiatThreshold = createMemoizedSelector(
-    [selectBaseCurrency, selectBtcUsdRate, selectBtcBaseCurrencyRate],
-    (baseCurrency, btcUsdRate, btcBaseCurrencyRate): BigNumber | undefined => {
-        if (baseCurrency === 'usd') {
-            return SMALL_BALANCE_USD_VALUE;
-        }
+const selectUnpricedWalletAssetKeySet = createMemoizedSelector(
+    [selectWalletAssets, selectCurrentFiatRates, selectBaseCurrency],
+    (assets, rates, baseCurrencyCode): ReadonlySet<WalletAssetKey> => {
+        const unpriced = new Set<WalletAssetKey>();
 
-        if (!btcUsdRate || !btcBaseCurrencyRate) {
-            return undefined;
-        }
+        assets.forEach(({ assetKey, symbol, contractAddress }) => {
+            const rate = rates?.[getFiatRateKey(symbol, baseCurrencyCode, contractAddress)];
 
-        // $1 × (CZK per BTC) / (USD per BTC) = CZK per $1.
-        return SMALL_BALANCE_USD_VALUE.times(btcBaseCurrencyRate).div(btcUsdRate);
+            // A current rate carries its dollar rate or is not there at all, so this reads "answered, and
+            // no rate came".
+            if (rate !== undefined && !rate.isLoading && !rate.usdRate) {
+                unpriced.add(assetKey);
+            }
+        });
+
+        return unpriced;
     },
+    // Rebuilt on every rate write, so a rebuild that lands on the same set is thrown away.
+    { memoizeOptions: { resultEqualityCheck: haveSameKeys } },
 );
 
+const SMALL_BALANCE_USD_VALUE = new BigNumber(1);
+
 const selectSmallBalanceAssetKeySet = createMemoizedSelector(
-    [selectShownWalletAssetKeys, selectWalletAssetValues, selectSmallBalanceFiatThreshold],
-    (assetKeys, values, threshold): ReadonlySet<WalletAssetKey> => {
+    [selectShownWalletAssetKeys, selectWalletAssetUsdValues, selectUnpricedWalletAssetKeySet],
+    (assetKeys, usdValues, unpriced): ReadonlySet<WalletAssetKey> => {
         const small = new Set<WalletAssetKey>();
 
         assetKeys.forEach(assetKey => {
-            const fiatValue = values.get(assetKey);
-
-            // Without a rate the asset is unknown to the price feeds (it is not even on CoinGecko),
-            // so it is taken for dust rather than left to crowd out what the wallet is worth.
-            if (fiatValue === undefined) {
-                small.add(assetKey);
-
-                return;
-            }
-
-            if (threshold !== undefined && fiatValue.abs().lt(threshold)) {
+            // What the feeds cannot price is taken for dust rather than left to crowd out what the
+            // wallet is worth.
+            if (
+                unpriced.has(assetKey) ||
+                usdValues.get(assetKey)?.abs().lt(SMALL_BALANCE_USD_VALUE)
+            ) {
                 small.add(assetKey);
             }
         });

@@ -13,6 +13,7 @@ import { type BackendType, getNetworkFeatures } from '@suite-common/wallet-confi
 import {
     type Account,
     type AccountKey,
+    type CurrentFiatRatesResult,
     type FiatRatesResult,
     type RateTypeWithoutHistoric,
     type TickerId,
@@ -59,7 +60,7 @@ const fetchErc4626FiatRate = async ({
     baseCurrencyCode,
     backendType,
     skipCache,
-}: FetchErc4626FiatRateProps): Promise<FiatRatesResult> => {
+}: FetchErc4626FiatRateProps): Promise<FiatRatesResult | CurrentFiatRatesResult> => {
     if (!ticker.tokenAddress) {
         throw new Error('Token address is missing from ERC4626 token');
     }
@@ -68,29 +69,54 @@ const fetchErc4626FiatRate = async ({
         coin: ticker.symbol,
         contract: ticker.tokenAddress,
     });
-
-    const fetchFiatRatesFn =
-        rateType === 'current' ? fetchCurrentFiatRates : fetchLastWeekFiatRates;
-
-    const underlyingAssetRate = await fetchFiatRatesFn({
-        ticker: { symbol: ticker.symbol, tokenAddress: underlyingAsset.contract },
-        localCurrency: baseCurrencyCode,
-        backendType,
-        skipCache,
-    });
-
-    if (!underlyingAssetRate?.rate) {
-        throw new Error(
+    const underlyingTicker = { symbol: ticker.symbol, tokenAddress: underlyingAsset.contract };
+    const failed = () =>
+        new Error(
             `Failed to fetch underlying asset fiat rate for ERC4626 token ${underlyingAsset.contract}`,
         );
-    }
-
     // calculate vault fiat rate
-    const vaultRate = new BigNumber(underlyingAssetRate.rate)
-        .multipliedBy(underlyingAsset.exchangeRate)
-        .toNumber();
+    const toVaultRate = (rate: number) =>
+        new BigNumber(rate).multipliedBy(underlyingAsset.exchangeRate).toNumber();
 
-    return { rate: vaultRate, lastTickerTimestamp: underlyingAssetRate.lastTickerTimestamp };
+    switch (rateType) {
+        case 'current': {
+            // The dollar rate is converted the same way, so the vault's current rate carries it too.
+            const underlyingRate = await fetchCurrentFiatRates({
+                ticker: underlyingTicker,
+                localCurrency: baseCurrencyCode,
+                backendType,
+                skipCache,
+            });
+
+            if (!underlyingRate) {
+                throw failed();
+            }
+
+            return {
+                rate: toVaultRate(underlyingRate.rate),
+                usdRate: toVaultRate(underlyingRate.usdRate),
+                lastTickerTimestamp: underlyingRate.lastTickerTimestamp,
+            };
+        }
+        case 'lastWeek': {
+            const underlyingRate = await fetchLastWeekFiatRates({
+                ticker: underlyingTicker,
+                localCurrency: baseCurrencyCode,
+                backendType,
+            });
+
+            if (!underlyingRate?.rate) {
+                throw failed();
+            }
+
+            return {
+                rate: toVaultRate(underlyingRate.rate),
+                lastTickerTimestamp: underlyingRate.lastTickerTimestamp,
+            };
+        }
+        default:
+            return exhaustive(rateType);
+    }
 };
 
 type UpdateTxsFiatRatesThunkPayload = {
