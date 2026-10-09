@@ -1,4 +1,3 @@
-
 import { type WithServices } from '@trezor/redux-utils';
 
 import { createTestCompositionRoot } from './createTestCompositionRoot';

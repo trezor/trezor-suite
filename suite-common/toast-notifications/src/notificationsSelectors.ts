@@ -1,4 +1,3 @@
-
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { isTransactionNotification } from './notificationsUtils';
