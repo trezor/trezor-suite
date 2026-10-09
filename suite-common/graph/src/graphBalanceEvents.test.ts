@@ -1,9 +1,11 @@
+import { type Dispatch } from '@suite-common/redux-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type AccountBalanceHistory } from '@trezor/blockchain-link';
 
 import {
     formatBalanceMovementEventsAmounts,
+    getAccountMovementEvents,
     groupBalanceMovementEvents,
     mergeGroups,
 } from './graphBalanceEvents';
@@ -271,5 +273,26 @@ describe('mergeGroups', () => {
             accountKey: 'accountKey' as AccountKey, // Todo: create properly via `createAccountKey()`
         });
         expect(result).toEqual(expectedMergedGroups);
+    });
+});
+
+describe(getAccountMovementEvents.name, () => {
+    it('yields no events for an account on a direct-RPC backend without asking anything', async () => {
+        const dispatch = jest.fn() as unknown as Dispatch;
+
+        const events = await getAccountMovementEvents({
+            account: {
+                symbol: asNetworkSymbol('arc'),
+                backendType: 'evm-rpc',
+                descriptor: '0xarc',
+                accountKey: 'arc-key' as AccountKey,
+            },
+            startOfTimeFrameDate: null,
+            endOfTimeFrameDate: new Date('2026-10-08T00:00:00Z'),
+            dispatch,
+        });
+
+        expect(events).toEqual([]);
+        expect(dispatch).not.toHaveBeenCalled();
     });
 });

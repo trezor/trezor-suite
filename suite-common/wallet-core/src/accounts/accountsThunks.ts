@@ -24,6 +24,7 @@ import {
     formatNetworkAmount,
     getAccountTransactions,
     isAccountOutdated,
+    isDirectRpcBackendType,
     isPending,
     isTrezorConnectBackendType,
     subunitsToUnits,
@@ -69,7 +70,7 @@ import {
 // only thing that gives an incoming token transfer away.
 const getRefreshDetails = (account: Account): GetAccountInfoParams['details'] => {
     if (account.networkType === 'solana') return 'txids';
-    if (account.backendType === 'evm-rpc') return 'tokens';
+    if (isDirectRpcBackendType(account.backendType)) return 'tokens';
 
     return 'basic';
 };

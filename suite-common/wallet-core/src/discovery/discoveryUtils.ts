@@ -1,3 +1,5 @@
+import { isDirectRpcBackendType } from '@suite-common/wallet-utils';
+
 import { type CreateAccountActionProps } from '../accounts/accountsActions';
 
 /**
@@ -5,4 +7,4 @@ import { type CreateAccountActionProps } from '../accounts/accountsActions';
  * up still has to be asked what it holds. Blockbook-backed accounts arrive with their tokens.
  */
 export const shouldFetchAssetsAfterDiscovery = (account: CreateAccountActionProps) =>
-    !account.failed && !account.accountInfo.empty && account.backendType === 'evm-rpc';
+    !account.failed && !account.accountInfo.empty && isDirectRpcBackendType(account.backendType);

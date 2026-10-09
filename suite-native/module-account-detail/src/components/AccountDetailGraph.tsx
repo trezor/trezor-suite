@@ -53,6 +53,7 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
         eventsAccount: accountItem,
         timeframeHours: accountGraphTimeframe,
         backendSymbol: accountItem?.symbol ?? asNetworkSymbol('btc'),
+        isEnabled: isHistoryEnabledAccount,
     });
 
     const graphPoints = useAtomValue(accountDetailGraphAtoms.graphPointsAtom);

@@ -14,6 +14,8 @@ import type {
 } from '@suite-common/wallet-types';
 import { parseElectrumUrl } from '@trezor/utils';
 
+export const isDirectRpcBackendType = (backendType?: BackendType) => backendType === 'evm-rpc';
+
 export const getDefaultBackendType = (symbol: NetworkSymbol) => {
     if (symbol === 'ada') {
         return 'blockfrost';
