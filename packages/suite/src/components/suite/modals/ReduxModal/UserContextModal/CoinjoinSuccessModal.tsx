@@ -68,7 +68,7 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
             width={600}
             icon={ArrowsInIcon}
         >
-            <Column gap={4}>
+            <Column gap={8}>
                 <H3>
                     <Translation id="TR_COINJOIN_COMPLETED" />
                 </H3>

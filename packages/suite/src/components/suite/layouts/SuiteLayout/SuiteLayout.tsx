@@ -13,7 +13,7 @@ import { AnchorHighlightHandler } from './AnchorHighlightHandler';
 import { AppScrollArea } from './AppScrollArea';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 import { LayoutPayloadProvider } from './LayoutPayloadProvider';
-import { AboveTabletOnly, BelowTabletOnly } from './LayoutSizeOnly';
+import { AboveTabletOnly } from './LayoutSizeOnly';
 import { LayoutMetadata } from './LayoutSlots';
 import { PowerMonitorManager } from './PowerMonitor/PowerMonitor';
 import { ScrollProvider } from './ScrollProvider';
@@ -104,19 +104,13 @@ export const SuiteLayout = memo(({ children, 'data-testid': dataTest }: SuiteLay
 
                             <PowerMonitorManager />
 
-                            <BelowTabletOnly>
-                                <CoinjoinBars />
-                            </BelowTabletOnly>
-
                             <DiscoveryProgress />
 
                             <Body data-testid="@suite-layout/body">
                                 <Columns>
                                     <Sidebar />
                                     <MainContent>
-                                        <AboveTabletOnly>
-                                            <CoinjoinBars />
-                                        </AboveTabletOnly>
+                                        <CoinjoinBars />
                                         <SuiteBanners />
                                         <AppScrollArea
                                             scrollRef={scrollRef}
