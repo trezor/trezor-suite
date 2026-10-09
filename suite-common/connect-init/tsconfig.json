@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../analytics" },
-        { "path": "../dependency-injection" },
         { "path": "../device" },
         { "path": "../firmware" },
         { "path": "../message-system" },
@@ -15,6 +14,9 @@
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/logger" },
         {

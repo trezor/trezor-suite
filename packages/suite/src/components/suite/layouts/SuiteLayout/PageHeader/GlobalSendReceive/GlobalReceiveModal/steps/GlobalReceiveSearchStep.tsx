@@ -7,13 +7,13 @@ import {
     type ReceiveEntryInteractionAction,
     events as sharedEvents,
 } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradeableAssetBalances, type TradingAssetOption } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Link, SubTabs } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 import { AssetsModal } from 'src/components/suite/asset-picker/components';

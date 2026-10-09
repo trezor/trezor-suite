@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
@@ -22,6 +21,7 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAmountUnitSync } from 'src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';

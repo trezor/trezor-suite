@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type FeesRootState,
@@ -27,6 +26,7 @@ import {
     selectFeeLevels,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 
 import {

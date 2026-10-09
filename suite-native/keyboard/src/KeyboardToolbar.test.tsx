@@ -1,8 +1,8 @@
 import { Text } from 'react-native';
 import { useKeyboardState } from 'react-native-keyboard-controller';
 
-import { mock } from '@suite-common/dependency-injection';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { mock } from '@trezor/dependency-injection';
 
 import { KeyboardToolbar } from './KeyboardToolbar';
 import { KeyboardToolbarPortal } from './KeyboardToolbarPortal';

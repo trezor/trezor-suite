@@ -6,10 +6,10 @@ import {
 } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceLocked } from '@suite/locks';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Badge, Column, Modal, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { PreBackupCheckboxes } from 'src/components/backup';
 import { useSelector } from 'src/hooks/suite';

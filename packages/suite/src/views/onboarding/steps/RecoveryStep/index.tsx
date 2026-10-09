@@ -11,11 +11,11 @@ import {
     selectRecoveryStatus,
     selectWordsCount,
 } from '@suite/recovery';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
 import { Badge, Banner, Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 

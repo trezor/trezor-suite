@@ -3,7 +3,6 @@ import { View } from 'react-native';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     getPassphraseMaxLength,
     selectHasDevicePassphraseEntryCapability,
@@ -16,6 +15,7 @@ import { AnimatedView, Button, Card, TextDivider, VStack } from '@suite-native/a
 import { selectPassphraseRequestId } from '@suite-native/device-authorization';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import {

@@ -3,10 +3,10 @@ import { UNECONOMICAL_COINJOIN_THRESHOLD } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { convertAmountSubunitsToUnits, getAccountDecimals } from '@suite-common/wallet-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ArrowsInIcon } from '@trezor/icons';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';

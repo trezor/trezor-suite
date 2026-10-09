@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Explorer, type Network } from '@suite-common/wallet-config';
 import {
@@ -12,6 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { useForm, yup } from '@suite-native/forms';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 import { isUrl } from '@trezor/utils';
 
 type PathInputField = {

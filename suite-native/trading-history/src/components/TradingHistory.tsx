@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootStateWithDeviceAndAccounts,
@@ -15,6 +14,7 @@ import {
 import { Box, EdgeFades } from '@suite-native/atoms';
 import { Footer } from '@suite-native/trading-provider-utils';
 import { selectTradeToBeOpened, tradingActions } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeHistoryListItem } from './TradeHistoryListItem/TradeHistoryListItem';

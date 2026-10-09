@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/bip329" },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/earn-stablecoin"
@@ -68,6 +65,9 @@
         { "path": "../suite-sync" },
         { "path": "../tokens" },
         { "path": "../transactions" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },

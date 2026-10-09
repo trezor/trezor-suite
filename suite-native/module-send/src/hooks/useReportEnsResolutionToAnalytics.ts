@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type ResolveState, getSettledResolveDirection } from '@suite-common/wallet-core';
 import {
@@ -8,6 +7,7 @@ import {
     events,
     injectNativeAnalytics,
 } from '@suite-native/analytics';
+import { useServices } from '@trezor/dependency-injection';
 
 type UseReportEnsResolutionToAnalyticsParams = ResolveState & {
     symbol: NetworkSymbol | null | undefined;

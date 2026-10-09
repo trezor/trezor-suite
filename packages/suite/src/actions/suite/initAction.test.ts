@@ -33,7 +33,6 @@ import {
     mockGetThpSettings,
 } from '@suite-common/connect-init/mocks';
 import { connectPopupInitialState } from '@suite-common/connect-popup';
-import { asGetter, mock } from '@suite-common/dependency-injection';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import {
@@ -76,6 +75,7 @@ import {
     walletConnectInitialState,
 } from '@suite-common/walletconnect';
 import TrezorConnect from '@trezor/connect';
+import { asGetter, mock } from '@trezor/dependency-injection';
 import { noopCreateLogger } from '@trezor/logger';
 
 import { SUITE } from 'src/actions/suite/constants';

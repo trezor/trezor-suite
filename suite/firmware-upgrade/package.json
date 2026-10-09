@@ -12,7 +12,6 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
@@ -21,6 +20,7 @@
         "@suite/router": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/theme": "workspace:*",

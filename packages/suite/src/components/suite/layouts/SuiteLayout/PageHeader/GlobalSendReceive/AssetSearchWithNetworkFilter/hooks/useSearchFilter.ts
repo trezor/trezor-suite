@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDebounce } from 'react-use';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import {
     globalSendReceiveFiltersActions,

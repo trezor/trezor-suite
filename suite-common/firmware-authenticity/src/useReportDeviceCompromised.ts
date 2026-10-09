@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useGetter, useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState, getIsDeviceIdValid } from '@suite-common/device';
 import { type FirmwareRootState, selectIsProductionFirmwareChannel } from '@suite-common/firmware';
 import {
@@ -13,6 +12,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice, injectGetAllowPrerelease } from '@suite-common/suite-types';
 import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
+import { useGetter, useServices } from '@trezor/dependency-injection';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isArrayMember } from '@trezor/utils';
 

@@ -10,11 +10,11 @@ import {
     selectIsNewContentIndicatorVisible,
 } from '@suite/flags';
 import { type Route, selectRouteName } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     AppWindowIcon,
     BellIcon,

@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
@@ -15,6 +14,7 @@ import {
     walletConnectActions,
 } from '@suite-common/walletconnect';
 import { Column, Modal, type Option, Select } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 

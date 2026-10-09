@@ -6,7 +6,7 @@ import {
     events,
     injectDesktopAnalytics,
 } from '@suite/analytics';
-import { useServices } from '@suite-common/dependency-injection';
+import { useServices } from '@trezor/dependency-injection';
 
 export const useGlobalSendReceiveAnalytics = () => {
     const { analytics } = useServices(injectDesktopAnalytics);

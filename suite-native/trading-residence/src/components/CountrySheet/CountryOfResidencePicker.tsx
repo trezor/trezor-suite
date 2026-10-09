@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { getCountryFlag } from '@suite-common/flags';
 import {
     type AnalyticsNativeEvents,
@@ -13,6 +12,7 @@ import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { OverviewRow } from '@suite-native/trading-atoms';
 import { type Analytics } from '@trezor/analytics-uploader';
+import { useServices } from '@trezor/dependency-injection';
 
 import { CountrySheet } from './CountrySheet';
 import { type TradingLocationFormValues } from '../../types/tradingLocationForm';

@@ -1,7 +1,6 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -10,6 +9,7 @@ import {
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { Button, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 

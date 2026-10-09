@@ -3,10 +3,10 @@
 import { useCallback } from 'react';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 import { SystemUnpairingAlertIosInstructions } from '../components/SystemUnpairingAlertIosInstructions';
 

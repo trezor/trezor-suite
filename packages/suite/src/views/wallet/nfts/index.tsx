@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { Route } from 'src/components/suite/Route';
 import { WalletLayout } from 'src/components/wallet';

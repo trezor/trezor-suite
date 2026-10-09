@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceThpLocked } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectThpAutoconnectStep, selectThpStep } from '@suite-common/thp';
@@ -19,6 +18,7 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { useThpAutoconnectAlert } from '@suite-native/thp';
+import { useServices } from '@trezor/dependency-injection';
 
 type NavigationProp = StackNavigationProps<
     FirmwareUpdateStackParamList,

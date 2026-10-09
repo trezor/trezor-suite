@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
 import { selectHasSeenDisconnectTooltip } from '@suite/flags';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 import {

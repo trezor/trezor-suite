@@ -1,8 +1,8 @@
-import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import type { AddressTable } from '@suite-common/suite-sync-storage';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
+import { createMockDeps, mock } from '@trezor/dependency-injection';
 import { ok } from '@trezor/type-utils';
 
 import { type WriteAddressLabelDeps, createWriteAddressLabel } from './createWriteAddressLabel';

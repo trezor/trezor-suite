@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/dependency-injection"
-        },
-        {
             "path": "../../suite-common/message-system"
         },
         {
@@ -27,6 +24,9 @@
         { "path": "../sentry" },
         { "path": "../settings" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/device-utils" },
         {
             "path": "../../packages/styles-native"

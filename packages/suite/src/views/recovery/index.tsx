@@ -13,12 +13,12 @@ import {
     recoveryActions,
     selectRecovery,
 } from '@suite/recovery';
-import { useServices } from '@suite-common/dependency-injection';
 import { usePin } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI_REQUESTS } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { CheckIcon, WarningIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill } from '@trezor/product-components';

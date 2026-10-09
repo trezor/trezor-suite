@@ -3,13 +3,13 @@ import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { selectSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectAddressValidator } from '@suite-common/networks';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Input, Modal } from '@trezor/components';
 import TrezorConnect, { type TokenInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { useServices } from '@trezor/dependency-injection';
 
 import { addToken } from 'src/actions/wallet/tokenActions';
 import { useSelector } from 'src/hooks/suite';

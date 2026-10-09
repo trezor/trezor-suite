@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
 import { type TradingExchangeIssue, events, injectDesktopAnalytics } from '@suite/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type ExchangeIssue } from '@suite-common/trading';
+import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 
 type UseExchangeIssueAnalyticsParams = {

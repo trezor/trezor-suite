@@ -2,9 +2,9 @@ import { type RefObject, useEffect } from 'react';
 
 import { type ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type AbortablePromise } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
 import { type useDebounce } from '@trezor/react-utils';
 
 export type UseQuotesInvalidatorProps = {

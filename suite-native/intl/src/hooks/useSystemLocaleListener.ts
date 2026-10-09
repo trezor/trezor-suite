@@ -3,8 +3,8 @@ import { AppState, type AppStateStatus } from 'react-native';
 
 import { getLocales } from 'expo-localization';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import { DEFAULT_LOCALE, type LocaleCode } from '../languages';
 import { setSystemLocaleCode } from '../localeSlice';

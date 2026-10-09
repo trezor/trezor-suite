@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -25,6 +24,7 @@ import {
     useRefetchFees,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { selectIsFeeRefetchBlockedByModal } from 'src/components/wallet/Fees/feeSelectors';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';

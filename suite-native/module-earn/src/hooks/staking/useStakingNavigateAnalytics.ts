@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type Account } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { useServices } from '@trezor/dependency-injection';
 
 import { getStakingAnalyticsNavigateFrom } from '../../utils/staking/getStakingAnalyticsNavigateFrom';
 

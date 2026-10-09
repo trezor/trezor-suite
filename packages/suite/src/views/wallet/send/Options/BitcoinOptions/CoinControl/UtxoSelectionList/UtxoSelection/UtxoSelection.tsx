@@ -8,7 +8,6 @@ import {
     selectLabelingDataForSelectedAccount,
 } from '@suite/metadata';
 import { openModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
@@ -27,6 +26,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { type AccountUtxo } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { ChangeIcon, ClockIcon, TagFilledIcon, TagIcon, XCircleIcon } from '@trezor/icons';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';

@@ -12,7 +12,6 @@
     },
     "dependencies": {
         "@hookform/resolvers": "^5.4.0",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/receive": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
@@ -26,6 +25,7 @@
         "@suite/forms": "workspace:*",
         "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
         "react": "19.2.3",

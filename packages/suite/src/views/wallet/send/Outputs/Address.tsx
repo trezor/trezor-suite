@@ -16,7 +16,6 @@ import {
     isEvmAddress,
     toChecksumAddress,
 } from '@suite-common/address';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     injectAddressValidator,
     injectGetNamedAddressSupport,
@@ -41,6 +40,7 @@ import {
 import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { useServices } from '@trezor/dependency-injection';
 import { CheckIcon, InfoIcon, QrCodeIcon, WarningCircleIcon, XIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 import { type TimerId } from '@trezor/type-utils';

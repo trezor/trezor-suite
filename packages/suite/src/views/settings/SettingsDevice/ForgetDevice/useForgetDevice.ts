@@ -1,7 +1,7 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { useServices } from '@trezor/dependency-injection';
 
 import { suiteForgetDeviceThunk } from 'src/actions/suite/suiteForgetDeviceThunk';
 

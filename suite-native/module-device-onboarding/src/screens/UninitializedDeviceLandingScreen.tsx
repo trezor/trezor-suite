@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     selectHasDeviceFirmwareInstalled,
     selectSelectedDevice,
@@ -22,6 +21,7 @@ import {
     type RootStackParamList,
     type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceModelImage } from '../components/DeviceModelImage';

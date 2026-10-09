@@ -3,7 +3,6 @@ import { useEffect, useRef } from 'react';
 import { type RouteProp, useIsFocused, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
@@ -12,6 +11,7 @@ import {
     type YieldStackRoutes,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { EarnNoBalanceCard } from '../../components/earn/EarnNoBalanceCard';
 import { EarnNoBalanceFooter } from '../../components/earn/EarnNoBalanceFooter';

@@ -25,7 +25,9 @@
         },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
-        { "path": "../dependency-injection" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils" },
+        {
+            "path": "../../packages/dependency-injection"
+        }
     ]
 }

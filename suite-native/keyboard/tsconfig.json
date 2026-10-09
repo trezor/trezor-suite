@@ -6,9 +6,9 @@
         {
             "path": "../../packages/styles-native"
         },
+        { "path": "../test-utils" },
         {
-            "path": "../../suite-common/dependency-injection"
-        },
-        { "path": "../test-utils" }
+            "path": "../../packages/dependency-injection"
+        }
     ]
 }

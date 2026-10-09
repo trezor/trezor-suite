@@ -5,9 +5,6 @@
         {
             "path": "../../suite-common/analytics"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/feedback" },
         {
@@ -54,6 +51,9 @@
         { "path": "../settings" },
         { "path": "../suite-sync" },
         { "path": "../toasts" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/device-utils" },
         {
             "path": "../../packages/styles-native"

@@ -2,13 +2,13 @@ import { type ReactNode } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Column, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectProtocolSendFormScheme } from 'src/selectors/suite/protocolSelectors';

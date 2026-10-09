@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState, type TokenAddress } from '@suite-common/wallet-types';
 import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
+import { useServices } from '@trezor/dependency-injection';
 
 import { calculateFeeLevelsMaxAmountThunk } from '../thunks';
 

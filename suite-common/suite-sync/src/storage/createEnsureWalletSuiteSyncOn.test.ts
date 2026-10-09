@@ -1,10 +1,10 @@
-import { createMockDeps } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
 import { deviceReducerInitialState } from '@suite-common/device';
 import { type OnStorageEnsured } from '@suite-common/suite-sync-types';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
+import { createMockDeps } from '@trezor/dependency-injection';
 import { err, ok } from '@trezor/type-utils';
 
 import { SuiteSyncUnavailableOnDeviceError } from '../createEnsureSuiteSyncKeys';

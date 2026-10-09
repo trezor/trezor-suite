@@ -5,7 +5,6 @@ import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { type Route, gotoThunk } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     messageSystemActions,
     resolveMessageContent,
@@ -15,6 +14,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { injectReloadApp } from '@suite-common/suite-types';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 
 const APP_RESTART_DELAY_MILLISECONDS = 100;
 

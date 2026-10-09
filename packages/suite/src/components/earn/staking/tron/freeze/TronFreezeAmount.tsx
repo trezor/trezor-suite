@@ -3,7 +3,6 @@ import { useFormState } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -15,6 +14,7 @@ import {
 } from '@suite-common/wallet-core';
 import { asAmountSubunit, subunitsToUnits, toFiatCurrency } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 

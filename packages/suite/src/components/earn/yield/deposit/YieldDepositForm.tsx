@@ -1,7 +1,6 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -12,6 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';

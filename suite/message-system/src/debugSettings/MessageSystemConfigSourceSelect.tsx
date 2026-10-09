@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type MessageSystemConfigSource,
     initMessageSystemThunk,
@@ -10,6 +9,7 @@ import {
 } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { SelectBar } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 type ConfigSourceOption = {

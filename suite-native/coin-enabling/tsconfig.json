@@ -5,9 +5,6 @@
         {
             "path": "../../suite-common/analytics"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/networks" },
         {
@@ -29,6 +26,9 @@
         { "path": "../navigation" },
         { "path": "../search" },
         { "path": "../toasts" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/styles-native" }
     ]
 }

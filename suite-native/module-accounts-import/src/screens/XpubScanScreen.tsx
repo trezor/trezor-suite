@@ -5,7 +5,6 @@ import { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectAddressValidator } from '@suite-common/networks';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
@@ -29,6 +28,7 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { ScanQRBottomSheet } from '@suite-native/qr-code';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountImportScreenHeader } from '../components/AccountImportScreenHeader';

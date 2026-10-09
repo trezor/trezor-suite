@@ -4,7 +4,6 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouter } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
@@ -18,6 +17,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';

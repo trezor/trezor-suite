@@ -13,11 +13,11 @@
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.9",
         "@react-navigation/native": "7.1.31",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@testing-library/react-native": "14.0.1",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.2.3",

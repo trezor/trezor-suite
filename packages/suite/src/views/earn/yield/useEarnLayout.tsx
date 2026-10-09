@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 
 import { type TranslationKey } from '@suite/intl';
 import { type EarnParams, gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2, useGetVaultByAddress } from '@suite-common/earn-stablecoin-api';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -16,6 +15,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import { YieldPageHeader } from 'src/components/earn';
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';

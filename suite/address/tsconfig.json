@@ -2,9 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
@@ -40,6 +37,9 @@
         { "path": "../modal" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/dom-utils" },
         { "path": "../../packages/icons" },

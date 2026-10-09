@@ -1,6 +1,6 @@
 import { SettingsAnchor, gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import { resetProtocol } from 'src/actions/suite/protocolActions';
 import type { NotificationRendererProps } from 'src/components/suite';

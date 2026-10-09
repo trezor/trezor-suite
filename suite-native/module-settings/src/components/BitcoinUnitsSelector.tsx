@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { selectBitcoinAmountUnit, setBitcoinAmountUnits } from '@suite-common/wallet-core';
@@ -8,6 +7,7 @@ import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Select } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { PROTO } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 
 import { PreferencesSettingsCard } from './PreferencesSettingsCard';
 

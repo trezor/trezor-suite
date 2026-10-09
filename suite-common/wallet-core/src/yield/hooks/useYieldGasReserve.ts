@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import {
     type FeesRootState,

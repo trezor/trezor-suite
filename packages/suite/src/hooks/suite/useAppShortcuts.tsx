@@ -6,12 +6,12 @@ import { injectDesktopApi } from '@suite/desktop-app-api';
 import { openModal } from '@suite/modal';
 import { SettingsAnchor, closeModalAppThunk, gotoThunk } from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';

@@ -5,7 +5,6 @@ import { injectDesktopApi } from '@suite/desktop-app-api';
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectHasExperimentalFeature } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -22,6 +21,7 @@ import {
     sellThunks,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
+import { useServices } from '@trezor/dependency-injection';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { requestSellTradeThunk } from 'src/actions/wallet/trading/sell/requestSellTradeThunk';

@@ -5,7 +5,6 @@ import { StackActions, useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -28,6 +27,7 @@ import type {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 import { selectIsTransactionAlreadySigned } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useYieldApprovalReviewNavigation } from './useYieldApprovalReviewNavigation';
 import { useYieldApprovalReviewTransaction } from './useYieldApprovalReviewTransaction';

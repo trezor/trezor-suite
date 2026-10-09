@@ -1,8 +1,8 @@
 import { rescanCoinjoinAccountThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 
 import type { Account } from 'src/types/wallet';

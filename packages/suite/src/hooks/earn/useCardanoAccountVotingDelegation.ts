@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     DEFAULT_VOTING_OPTION,
@@ -10,6 +9,7 @@ import {
     stakeActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 

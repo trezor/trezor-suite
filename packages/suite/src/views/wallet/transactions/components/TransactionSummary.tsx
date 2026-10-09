@@ -2,11 +2,11 @@ import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { Button, Card, Column, Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { RepeatIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';

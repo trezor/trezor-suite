@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceAuthenticityCheckSupported } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { TouchableSwitchRow } from '@suite-native/atoms';
@@ -11,6 +10,7 @@ import {
     selectIsDeviceAuthenticityCheckEnabled,
     setDeviceAuthenticityCheckEnabled,
 } from '@suite-native/settings';
+import { useServices } from '@trezor/dependency-injection';
 import { HELP_CENTER_DEVICE_AUTHENTICATION_MOBILE } from '@trezor/urls';
 
 import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';

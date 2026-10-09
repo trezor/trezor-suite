@@ -2,11 +2,11 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type TronFlow } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Column, IconCircle, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CheckIcon } from '@trezor/icons';
 
 import { EarnFlowFeedbackCard } from 'src/components/earn/common/EarnFlowFeedbackCard';

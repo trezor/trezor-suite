@@ -1,11 +1,11 @@
 import { Translation } from '@suite/intl';
 import { closeModal as closeModalAction } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 

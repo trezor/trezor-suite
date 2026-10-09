@@ -3,8 +3,8 @@ import { type ReactNode } from 'react';
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 import {
     PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS,
     PendingTransactionInfo,

@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingTransaction, type TradingType } from '@suite-common/trading';
+import { useServices } from '@trezor/dependency-injection';
 
 import { getTradingFormRoute } from 'src/views/wallet/trading/common/TradingLayout/tradingPageHeaderUtils';
 

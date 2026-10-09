@@ -11,7 +11,6 @@ import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -56,6 +55,7 @@ import {
     Link,
     Row,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     ArrowDownIcon,
     ArrowUUpLeftIcon,

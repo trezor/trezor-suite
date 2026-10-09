@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { isPhishingTransaction } from '@suite-common/token-definitions';
@@ -13,6 +12,7 @@ import {
     selectIsLoadingAccountTransactions,
     selectPhishingTransactionsContext,
 } from '@suite-common/wallet-core';
+import { useServices } from '@trezor/dependency-injection';
 import { getSynchronize } from '@trezor/utils';
 
 import { useDiscovery, useSelector } from 'src/hooks/suite';

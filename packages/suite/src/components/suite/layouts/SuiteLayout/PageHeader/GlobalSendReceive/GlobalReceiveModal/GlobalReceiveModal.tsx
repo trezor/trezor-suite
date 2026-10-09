@@ -6,13 +6,13 @@ import { type CryptoId } from 'invity-api';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { selectAccounts, selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';

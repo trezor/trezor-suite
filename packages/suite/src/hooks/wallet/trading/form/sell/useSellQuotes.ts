@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_AMOUNT_INPUT_SOURCE,
@@ -21,6 +20,7 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
+import { useServices } from '@trezor/dependency-injection';
 import { useDidUpdate } from '@trezor/react-utils';
 
 import {

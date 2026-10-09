@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { injectNativeAnalytics } from '@suite-native/analytics';
+import { useServices } from '@trezor/dependency-injection';
 
 import { type EarnListRootState, selectYieldPromoListItems } from '../../earnScreenSelectors';
 

@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { CommonActions, StackActions, useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
@@ -18,6 +17,7 @@ import {
     selectIsTransactionReviewInProgress,
     useShowReviewCancellationAlert,
 } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
 
 import { type EarnFormDraftPrefix } from '../../types';
 import { resolveStakingHomeRoute } from '../../utils/staking/resolveStakingHomeRoute';

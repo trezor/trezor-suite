@@ -2,10 +2,10 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Modal, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 type FirmwareUpgradeNeededModalProps = {
     onClose: () => void;

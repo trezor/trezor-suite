@@ -1,12 +1,12 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { AddressFormatter } from '@suite-common/formatters';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type { TradingProviderInfo, TradingTradeType } from '@suite-common/trading';
 import { Button, Column, InfoItem, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { CopyIcon } from '@trezor/icons';
 

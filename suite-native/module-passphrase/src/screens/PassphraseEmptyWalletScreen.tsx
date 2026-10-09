@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -21,6 +20,7 @@ import {
 import { EmptyWalletSvg } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { EmptyWalletInfoSheet, PassphraseContentScreenWrapper } from '@suite-native/passphrase';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const cardStyle = prepareNativeStyle(utils => ({

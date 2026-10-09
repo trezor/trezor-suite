@@ -2,9 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
@@ -49,6 +46,9 @@
         { "path": "../transaction-management" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         {
             "path": "../../packages/styles-native"
         },

@@ -4,7 +4,6 @@ import { type TradeExchangeAction, events, injectDesktopAnalytics } from '@suite
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     Feature,
     type MessageSystemRootState,
@@ -27,6 +26,7 @@ import {
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column, H2 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { getSupportsAdjustableFees } from 'src/components/wallet/Fees/feeUtils';

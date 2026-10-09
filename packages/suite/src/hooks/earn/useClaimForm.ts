@@ -1,7 +1,6 @@
 import { createContext, useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -12,6 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import { signTransactionThunk } from 'src/actions/wallet/stakeActions';
 import { useSelector } from 'src/hooks/suite';

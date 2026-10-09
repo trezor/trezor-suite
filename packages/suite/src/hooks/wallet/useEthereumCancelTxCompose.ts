@@ -1,6 +1,5 @@
 import { isRejected } from '@reduxjs/toolkit';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -11,6 +10,7 @@ import {
     type Account,
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 

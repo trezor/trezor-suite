@@ -2,9 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/discreet-mode"
@@ -43,6 +40,9 @@
         { "path": "../storage" },
         { "path": "../theme" },
         { "path": "../tokens" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         {
             "path": "../../packages/styles-native"
         },

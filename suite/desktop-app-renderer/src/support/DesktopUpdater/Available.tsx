@@ -4,9 +4,9 @@ import { type UpdateInfo, injectDesktopApi } from '@suite/desktop-app-api';
 import { downloadThunk } from '@suite/desktop-update';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { MarkdownWithComponents } from 'src/components/suite';
 

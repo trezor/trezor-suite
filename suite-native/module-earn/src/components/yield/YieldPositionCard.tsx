@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
@@ -15,6 +14,7 @@ import {
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { useYieldDetailNavigation } from '../../hooks/yield/useYieldDetailNavigation';

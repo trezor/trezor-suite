@@ -16,7 +16,6 @@
     "dependencies": {
         "@react-navigation/native": "7.1.31",
         "@shopify/flash-list": "2.3.0",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/feedback": "workspace:*",
         "@suite-common/formatters": "workspace:*",
@@ -43,6 +42,7 @@
         "@suite-native/trading-provider-utils": "workspace:*",
         "@suite-native/trading-quote-utils": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",

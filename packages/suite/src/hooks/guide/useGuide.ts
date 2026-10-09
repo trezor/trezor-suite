@@ -1,6 +1,6 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import { close, open } from 'src/actions/suite/guideActions';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';

@@ -1,5 +1,5 @@
-import { createMockDeps } from '@suite-common/dependency-injection';
 import { type AddressValidatorDep, asNetworkSymbol } from '@suite-common/networks';
+import { createMockDeps } from '@trezor/dependency-injection';
 
 import { autocorrectAddress } from './autocorrectAddress';
 

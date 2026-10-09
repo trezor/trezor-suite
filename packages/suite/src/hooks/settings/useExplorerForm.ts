@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectNetworkExplorers, setNetworkExplorerThunk } from '@suite-common/wallet-core';
+import { useServices } from '@trezor/dependency-injection';
 import { deepEqual, isUrl } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

@@ -15,7 +15,6 @@ import {
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { SuiteSyncServers, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -26,6 +25,7 @@ import {
 } from '@suite-common/suite-sync';
 import { injectTurnOffSuiteSync, injectTurnOnSuiteSync } from '@suite-common/suite-sync-types';
 import { Box, Column, LoadingContent, SelectOption, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     ActionColumn,
     ActionSelect,

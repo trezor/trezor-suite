@@ -1,9 +1,9 @@
-import { useServices } from '@suite-common/dependency-injection';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Card, Text, VStack } from '@suite-native/atoms';
 import { injectMMKVStorage } from '@suite-native/services';
 import { clearStorage } from '@suite-native/storage';
+import { useServices } from '@trezor/dependency-injection';
 
 export const DangerZoneCard = () => {
     const { getMMKVStorage, dispatch } = useServices(injectMMKVStorage, injectDispatch);

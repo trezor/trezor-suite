@@ -1,7 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { events as commonAnalyticsEvents } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
@@ -11,6 +10,7 @@ import {
     EarnStackRoutes,
     type TabNavigationProp,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { setIsEthVaultPromoBannerClosed } from '../bannerFlagsSlice';
 import { ETH_VAULT_PROMO_BANNER_IMAGE } from '../imageSources';

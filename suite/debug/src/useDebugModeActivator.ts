@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import { selectIsDebugModeActive } from './debugSelectors';
 import { debugActions } from './debugSlice';

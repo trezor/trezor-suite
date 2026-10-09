@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
     type BluetoothDevice,
@@ -20,6 +19,7 @@ import {
     Screen,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { BluetoothDeviceScreenHeader } from '../../components/connect/BluetoothDeviceScreenHeader';
 

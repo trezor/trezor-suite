@@ -3,9 +3,9 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectRouterParams } from '@suite/router';
 import { selectIsNftSectionEnabled } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import { type NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';

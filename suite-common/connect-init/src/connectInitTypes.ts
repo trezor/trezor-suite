@@ -1,4 +1,3 @@
-import { type Getter } from '@suite-common/dependency-injection';
 import {
     type ConnectInitSettings,
     type ConnectInitSettingsDep,
@@ -7,6 +6,7 @@ import {
     type TransportsDep,
 } from '@suite-common/suite-types';
 import { type DefinitionsChannel } from '@trezor/connect-common';
+import { type Getter } from '@trezor/dependency-injection';
 import type { CreateLogger } from '@trezor/logger';
 import { type Transport } from '@trezor/transport-common';
 

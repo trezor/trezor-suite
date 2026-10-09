@@ -5,9 +5,6 @@
         {
             "path": "../../suite-common/delegated-identity-key-types"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/message-system"
@@ -35,6 +32,9 @@
         { "path": "../navigation" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/type-utils" }
     ]
 }

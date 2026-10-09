@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { selectSelectedAccount } from '@suite/account';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
@@ -11,6 +10,7 @@ import {
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';

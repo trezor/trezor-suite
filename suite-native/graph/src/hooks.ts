@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { type PrimitiveAtom, useSetAtom } from 'jotai';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { type AccountItem, type FiatGraphPoint } from '@suite-common/graph';
 import { injectDispatch, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
@@ -13,6 +12,7 @@ import {
     selectBaseCurrency,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
+import { useServices } from '@trezor/dependency-injection';
 
 import { type RefetchGraphThunkParams } from './graphThunkTypes';
 import { refetchGraphThunk } from './graphThunks';

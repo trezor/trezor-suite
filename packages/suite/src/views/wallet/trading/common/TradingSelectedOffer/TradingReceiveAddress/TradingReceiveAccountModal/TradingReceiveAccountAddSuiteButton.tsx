@@ -1,12 +1,12 @@
 import { setConnectionModal, setConnectionMode } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';

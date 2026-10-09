@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { usePrevious } from 'react-use';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type TradingTransactionStatus, type TradingType } from '@suite-common/trading';
+import { useServices } from '@trezor/dependency-injection';
 
 import { type TradingDetailStatusStep } from 'src/types/trading/tradingDetail';
 

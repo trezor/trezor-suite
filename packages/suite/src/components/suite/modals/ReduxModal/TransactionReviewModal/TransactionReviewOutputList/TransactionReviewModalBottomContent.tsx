@@ -5,7 +5,6 @@ import {
 } from '@suite/analytics';
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -22,6 +21,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { type StakeType } from '@trezor/blockchain-link-types';
 import { Modal } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { type Deferred } from '@trezor/utils';
 

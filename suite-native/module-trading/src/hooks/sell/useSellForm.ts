@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import type { SellFiatTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingAmountLimitProps,
@@ -25,6 +24,7 @@ import {
     sellActions,
 } from '@suite-native/trading-state';
 import { type SellFormType, type SellFormValues } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { sellFormValidationSchema } from '../../utils/sell/sellFormValidationSchema';
 import { type TradingFormWithMetadata } from '../general/form/tradingFormTypes';

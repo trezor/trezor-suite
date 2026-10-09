@@ -3,9 +3,9 @@ import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectIsExperimentalEnabled } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Column, Icon } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { AtomIcon, CheckIcon, DotOutlineFilledIcon, StarFourIcon } from '@trezor/icons';
 import { QuickActionButton, TooltipRow } from '@trezor/product-components';
 

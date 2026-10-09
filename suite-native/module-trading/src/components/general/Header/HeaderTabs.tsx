@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { EdgeFades, type SubTabItem, SubTabs } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 import { useNativeStyles } from '@trezor/styles-native';
 
 import { useTradingTabs } from '../../../hooks/general/useTradingTabs';

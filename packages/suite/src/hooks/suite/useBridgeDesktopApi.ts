@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { type BridgeSettings, injectDesktopApi } from '@suite/desktop-app-api';
-import { useServices } from '@suite-common/dependency-injection';
+import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 
 interface Process {

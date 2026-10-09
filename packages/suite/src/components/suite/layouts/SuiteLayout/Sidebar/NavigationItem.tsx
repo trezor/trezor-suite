@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components';
 
 import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Badge,
@@ -20,6 +19,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { commonFocusStyles } from '@trezor/components/src/utils/utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';

@@ -1,4 +1,3 @@
-import { useServices } from '@suite-common/dependency-injection';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -8,6 +7,7 @@ import {
     PassphraseEnterOnTrezorScreenContent,
 } from '@suite-native/passphrase';
 import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useHandleNavigateToInitialScreenOnIdle } from '../../hooks/useHandleNavigateToInitialScreenOnIdle';
 

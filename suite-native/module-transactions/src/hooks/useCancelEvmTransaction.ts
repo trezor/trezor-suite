@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { useMutation } from '@suite-common/react-query';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -40,6 +39,7 @@ import {
     signAndPushEvmCancelTransactionThunk,
 } from '@suite-native/send';
 import { useToast } from '@suite-native/toasts';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useDeviceGuardedSign } from './useDeviceGuardedSign';
 

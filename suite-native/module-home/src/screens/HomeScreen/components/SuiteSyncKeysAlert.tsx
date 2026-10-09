@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/device';
 import { injectEnsureWalletSuiteSyncOn } from '@suite-common/suite-sync-types';
 import { AnimatedBannerFull } from '@suite-native/atoms';
@@ -16,6 +15,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
+import { useServices } from '@trezor/dependency-injection';
 
 import { selectShouldDisplaySuiteSyncAlert } from '../homescreenSelectors';
 

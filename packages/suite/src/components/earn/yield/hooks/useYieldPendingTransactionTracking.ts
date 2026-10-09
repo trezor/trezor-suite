@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { type EventInstance, events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -17,6 +16,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { type Analytics } from '@trezor/analytics-uploader';
+import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef } from '@trezor/react-utils';
 

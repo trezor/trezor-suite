@@ -3,8 +3,8 @@ import { useCallback, useState } from 'react';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { Card, Column, H3, Modal, Paragraph, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { StarFourIcon } from '@trezor/icons';
 
 import { CheckItem } from 'src/components/suite';

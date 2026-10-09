@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
 import { type FirmwareUpdateResult, useFirmwareInstallation } from '@suite-common/firmware';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 import { setPriorityMode } from '@trezor/react-native-usb';
 
 import { nativeFirmwareActions } from '../nativeFirmwareSlice';

@@ -6,9 +6,6 @@
             "path": "../../suite-common/analytics"
         },
         {
-            "path": "../../suite-common/dependency-injection"
-        },
-        {
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../analytics" },
@@ -24,6 +21,9 @@
         { "path": "../trading-state" },
         {
             "path": "../../packages/analytics-uploader"
+        },
+        {
+            "path": "../../packages/dependency-injection"
         },
         {
             "path": "../../packages/styles-native"

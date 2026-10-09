@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import * as graphActions from 'src/actions/wallet/graphActions';
 import { useSelector } from 'src/hooks/suite';

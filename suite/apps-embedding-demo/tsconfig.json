@@ -6,15 +6,15 @@
             "path": "../../suite-common/apps-embedding"
         },
         {
-            "path": "../../suite-common/dependency-injection"
-        },
-        {
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../apps-embedding-web" },
         { "path": "../debug" },
         { "path": "../settings" },
         { "path": "../../packages/components" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/env-utils" },
         {
             "path": "../../packages/product-components"

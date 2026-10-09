@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { type TrxStats } from '@suite-common/earn-staking-api';
 import { injectAddressValidator } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -18,6 +17,7 @@ import {
     Row,
     Table,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon, TrashIcon } from '@trezor/icons';
 
 import { TronRepresentativeApr } from './TronRepresentativeApr';

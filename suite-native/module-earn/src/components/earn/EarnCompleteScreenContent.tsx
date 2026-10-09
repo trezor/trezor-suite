@@ -1,7 +1,6 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     type FeedbackCategory,
@@ -26,6 +25,7 @@ import {
 import { FeedbackCard } from '@suite-native/feedback-form';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type EarnFormDraftPrefix } from '../../types';

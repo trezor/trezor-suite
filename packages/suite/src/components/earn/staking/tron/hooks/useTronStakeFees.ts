@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TronStakeStepId,
@@ -13,6 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type FeeInfo, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';

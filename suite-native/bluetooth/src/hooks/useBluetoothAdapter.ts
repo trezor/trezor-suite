@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
 import { bluetoothActions, parseManufacturerData } from '@suite-common/bluetooth';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { asBluetoothDeviceId } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import {
     type BluetoothDevice as TransportBluetoothDevice,
     bluetoothManager,

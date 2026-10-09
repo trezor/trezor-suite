@@ -1,11 +1,11 @@
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useSelector } from 'src/hooks/suite';

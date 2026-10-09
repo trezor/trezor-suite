@@ -13,12 +13,12 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/feedback": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite/experimental": "workspace:*",
         "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",

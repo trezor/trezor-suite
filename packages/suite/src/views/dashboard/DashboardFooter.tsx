@@ -3,12 +3,12 @@ import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/device';
 import { Box, Button, Column, Divider, Row, SvgImage, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { isWeb } from '@trezor/env-utils';
 import { UsersFilledIcon } from '@trezor/icons';
 import { QrCode } from '@trezor/product-components';

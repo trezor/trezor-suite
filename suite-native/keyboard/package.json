@@ -25,7 +25,7 @@
         "react-native-teleport": "^1.2.1"
     },
     "devDependencies": {
-        "@suite-common/dependency-injection": "workspace:*",
-        "@suite-native/test-utils": "workspace:*"
+        "@suite-native/test-utils": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*"
     }
 }

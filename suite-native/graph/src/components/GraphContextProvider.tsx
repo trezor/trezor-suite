@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 
-import { ServicesProvider } from '@suite-common/dependency-injection';
 import { type NativeAnalyticsDep, analytics } from '@suite-native/analytics';
 import { useActiveColorScheme } from '@suite-native/theme';
+import { ServicesProvider } from '@trezor/dependency-injection';
 import { StylesProvider, createRenderer } from '@trezor/styles-native';
 import { prepareNativeTheme } from '@trezor/theme';
 

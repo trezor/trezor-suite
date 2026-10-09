@@ -4,8 +4,8 @@ import { act, renderHook } from '@testing-library/react';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { ServicesProvider } from '@suite-common/dependency-injection';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { ServicesProvider } from '@trezor/dependency-injection';
 
 import { useReportEnsResolutionToAnalytics } from './useReportEnsResolutionToAnalytics';
 

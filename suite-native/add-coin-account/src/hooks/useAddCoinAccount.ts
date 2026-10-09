@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { A, pipe } from '@mobily/ts-belt';
 import { CommonActions, useNavigation, useRoute } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type DeviceRootState,
     selectIsDeviceInViewOnlyMode,
@@ -55,6 +54,7 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 import { resolveAfter } from '@trezor/utils';
 

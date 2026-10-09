@@ -106,13 +106,13 @@ Import and initialization depend on the platform:
 
 ```ts
 // Desktop
-import { useServices } from '@suite-common/dependency-injection';
+import { useServices } from '@trezor/dependency-injection';
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 
 const { analytics } = useServices<DesktopAnalyticsDep>();
 
 // Mobile
-import { useServices } from '@suite-common/dependency-injection';
+import { useServices } from '@trezor/dependency-injection';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 
 const { analytics } = useServices<NativeAnalyticsDep>();
@@ -141,14 +141,14 @@ Anywhere in the project (after initialization):
 ```ts
 // Desktop
 import { events } from '@suite/analytics';
-import { useServices } from '@suite-common/dependency-injection';
+import { useServices } from '@trezor/dependency-injection';
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 
 const { analytics } = useServices<DesktopAnalyticsDep>();
 
 // Mobile
 import { events } from '@suite-native/analytics';
-import { useServices } from '@suite-common/dependency-injection';
+import { useServices } from '@trezor/dependency-injection';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 
 const { analytics } = useServices<NativeAnalyticsDep>();

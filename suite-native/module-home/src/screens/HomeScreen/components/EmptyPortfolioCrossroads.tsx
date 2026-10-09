@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     Feature,
     type MessageSystemRootState,
@@ -36,6 +35,7 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';

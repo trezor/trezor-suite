@@ -19,10 +19,10 @@ import {
     connectPopupCallInnerThunk,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { isDiscoveryInProgress, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 

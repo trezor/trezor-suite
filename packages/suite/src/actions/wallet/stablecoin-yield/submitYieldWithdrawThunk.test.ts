@@ -1,6 +1,5 @@
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
-import { asGetter } from '@suite-common/dependency-injection';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -13,6 +12,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
+import { asGetter } from '@trezor/dependency-injection';
 
 import { type SendYieldTransactionDeps, type SendYieldTransactionState } from './signingHelpers';
 import { submitYieldWithdrawThunk } from './submitYieldWithdrawThunk';

@@ -5,9 +5,9 @@ import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsTorEnabled, selectIsTorEnabling, selectIsTorLoading } from '@suite/tor';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_TOR_URL } from '@trezor/urls';
 

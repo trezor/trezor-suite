@@ -14,7 +14,6 @@ import {
     selectConnectPopupCall,
     selectIsConnectAppSilentModeByOrigin,
 } from '@suite-common/connect-popup';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import TrezorConnect, {
@@ -25,6 +24,7 @@ import TrezorConnect, {
     UI_REQUESTS,
 } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
+import { useServices } from '@trezor/dependency-injection';
 import { isMacOs } from '@trezor/env-utils';
 import { exhaustive } from '@trezor/type-utils';
 

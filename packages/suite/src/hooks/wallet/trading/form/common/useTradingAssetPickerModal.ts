@@ -2,9 +2,9 @@ import { useCallback } from 'react';
 
 import { setConnectionModal, useDevice } from '@suite/device';
 import { openModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useModal } from 'src/components/suite/asset-picker/hooks';
 import { useSelector } from 'src/hooks/suite';

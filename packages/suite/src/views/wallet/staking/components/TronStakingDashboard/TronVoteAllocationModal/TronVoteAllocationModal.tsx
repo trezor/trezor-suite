@@ -1,7 +1,6 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -22,6 +21,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
 import { TronStakeInfoRow } from 'src/components/earn/staking/tron/TronStakeInfoRow';

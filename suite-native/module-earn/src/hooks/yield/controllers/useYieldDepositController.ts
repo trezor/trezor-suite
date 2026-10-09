@@ -3,7 +3,6 @@ import { useCallback, useEffect } from 'react';
 import { type RouteProp, StackActions, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { getYieldNativeFeeStatus, yieldActions } from '@suite-common/wallet-core';
@@ -14,6 +13,7 @@ import {
     YieldStackRoutes,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
 import { isYieldApprovalAllowanceUnlimited } from '../../../utils/yield/yieldApprovalUtils';

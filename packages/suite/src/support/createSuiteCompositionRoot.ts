@@ -26,7 +26,6 @@ import {
     type TransportsDep,
 } from '@suite-common/connect-init';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
-import { toGetter } from '@suite-common/dependency-injection';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
@@ -44,6 +43,7 @@ import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
 import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
+import { toGetter } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import type { CreateLoggerDep } from '@trezor/logger';
 

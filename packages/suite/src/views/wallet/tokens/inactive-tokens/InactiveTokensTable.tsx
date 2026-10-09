@@ -3,13 +3,13 @@ import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type SelectedAccountLoaded, type StellarTokenInfo } from '@suite-common/wallet-types';
 import { getStellarInactiveTokens } from '@suite-common/wallet-utils';
 import { Button, Card, Row, Table, Text, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { TokenIcon } from '@trezor/product-components';
 
 import { Loading } from 'src/components/suite';

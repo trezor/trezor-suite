@@ -1,7 +1,6 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     selectTradingSellActiveTrade,
     selectTradingSellInfo,
@@ -10,6 +9,7 @@ import {
 } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Column, Divider, Spinner, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';

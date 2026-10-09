@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -22,6 +21,7 @@ import {
 } from '@suite-native/navigation';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
 import {
     type TradingTransactionSignAndSendProps,

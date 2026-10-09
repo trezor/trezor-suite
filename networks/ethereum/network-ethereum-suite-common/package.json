@@ -23,6 +23,6 @@
         "viem": "^2.54.1"
     },
     "devDependencies": {
-        "@suite-common/dependency-injection": "workspace:*"
+        "@trezor/dependency-injection": "workspace:*"
     }
 }

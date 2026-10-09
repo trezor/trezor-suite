@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { clamp } from '@trezor/utils';
 
 import { TRADE_API_RELOAD_QUOTES_AFTER_SECONDS } from '../constants';

@@ -11,10 +11,10 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Row } from '@trezor/components';
 import { type BluetoothDeviceId } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 

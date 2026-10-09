@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     messageSystemActions,
     selectAllManuallyAddedMessageIds,
@@ -11,6 +10,7 @@ import {
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Divider, Text, VStack } from '@suite-native/atoms';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { MessageSystemAddMessageForm } from '../components/MessageSystemAddMessageForm';
 import {

@@ -1,7 +1,7 @@
 import { LegacyLabelingMigration as MetadataMigrationLegacyLabelingMigration } from '@suite/metadata-migration';
 import { suiteSyncErrorHandler } from '@suite/suite-sync';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 export const LegacyLabelingMigration = () => {
     const { dispatch } = useServices(injectDispatch);

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type DeviceRootState,
     selectDeviceButtonRequestsCodes,
@@ -41,6 +40,7 @@ import {
     selectFeeLevels,
     useFeesManagement,
 } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
 import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 

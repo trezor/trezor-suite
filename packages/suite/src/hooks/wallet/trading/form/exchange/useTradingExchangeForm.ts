@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM,
@@ -25,6 +24,7 @@ import {
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';

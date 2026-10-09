@@ -6,10 +6,10 @@ import { Translation } from '@suite/intl';
 import { CreateNfcBackup, NoNfcTags } from '@suite/nfc';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceBackupRequired, selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Badge, Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CheckIcon, TrezorBackupIcon, WalletIcon, WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 

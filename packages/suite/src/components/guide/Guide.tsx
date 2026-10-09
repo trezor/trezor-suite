@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Column, IconCircle, useMediaQuery } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CommandIcon, LifebuoyIcon } from '@trezor/icons';
 
 import { setView } from 'src/actions/suite/guideActions';

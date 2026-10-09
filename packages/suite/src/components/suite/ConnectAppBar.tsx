@@ -7,10 +7,10 @@ import {
     connectPopupActions,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Icon, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CaretCircleDownIcon, PlugsIcon, WalletConnectIcon } from '@trezor/icons';
 
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';

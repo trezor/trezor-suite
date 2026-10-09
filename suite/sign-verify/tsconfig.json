@@ -2,9 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/networks" },
         { "path": "../../suite-common/receive" },
         {
@@ -30,6 +27,9 @@
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../../packages/components" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/dom-utils" },
         { "path": "../../packages/icons" }
     ]

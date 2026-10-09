@@ -2,7 +2,6 @@ import { useCallback, useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { switchToDuplicatedWalletThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
@@ -17,6 +16,7 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,

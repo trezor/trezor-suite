@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
 import { useDevice } from '@suite/device';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type YieldFlowType, yieldActions } from '@suite-common/wallet-core';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ensureDeviceSession } from './ensureDeviceSession';
 

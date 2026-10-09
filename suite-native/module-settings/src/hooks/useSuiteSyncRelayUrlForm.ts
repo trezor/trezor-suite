@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type ChangeServerModalFields,
     SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP,
@@ -14,6 +13,7 @@ import { type SelectItemType } from '@suite-native/atoms';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
+import { useServices } from '@trezor/dependency-injection';
 
 export const useSuiteSyncRelayUrlForm = () => {
     const { translate } = useTranslate();

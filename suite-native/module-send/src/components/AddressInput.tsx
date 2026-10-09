@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { type AddressCorrection, autocorrectAddress } from '@suite-common/address';
-import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
 import {
     injectAddressValidator,
@@ -35,6 +34,7 @@ import {
     SendStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM, HELP_CENTER_SOLANA_HELP_URL } from '@trezor/urls';
 
 import { AddressInfoMessage } from './AddressInfoMessage';

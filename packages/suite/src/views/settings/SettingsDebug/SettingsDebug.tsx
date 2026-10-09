@@ -6,12 +6,12 @@ import {
     MessageSystemDebug,
 } from '@suite/message-system';
 import { SuiteSyncSettings, suiteSyncErrorHandler } from '@suite/suite-sync';
-import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { type StaticSessionId } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import { SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';

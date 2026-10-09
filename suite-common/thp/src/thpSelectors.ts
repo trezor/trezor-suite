@@ -1,6 +1,6 @@
-import { type Getter } from '@suite-common/dependency-injection';
 import { type ThpHostNameDep } from '@suite-common/suite-types';
 import { type ThpSettings } from '@trezor/connect';
+import { type Getter } from '@trezor/dependency-injection';
 
 import { type ThpState } from './thpReducer';
 

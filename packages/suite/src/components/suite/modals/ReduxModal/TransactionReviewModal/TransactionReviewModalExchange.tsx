@@ -1,7 +1,7 @@
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
 

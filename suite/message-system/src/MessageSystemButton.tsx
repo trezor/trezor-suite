@@ -4,11 +4,11 @@ import { getTorUrlIfAvailable } from '@suite/external-links';
 import { type Route, gotoThunk } from '@suite/router';
 import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
 import { selectIsTorEnabled } from '@suite/tor';
-import { useServices } from '@suite-common/dependency-injection';
 import { resolveMessageContent } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Message } from '@suite-common/suite-types';
 import { Banner, type ButtonProps } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 type MessageSystemButtonProps = {
     cta?: Message['cta'];

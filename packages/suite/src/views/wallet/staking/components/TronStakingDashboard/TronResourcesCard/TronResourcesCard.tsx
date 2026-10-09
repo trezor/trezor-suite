@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { getTronResources } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Icon, Row, Text, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { LightningIcon } from '@trezor/icons';
 
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';

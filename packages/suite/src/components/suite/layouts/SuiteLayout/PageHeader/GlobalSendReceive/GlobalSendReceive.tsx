@@ -2,10 +2,10 @@ import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useDevice } from '@suite/device';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { resetProtocol } from 'src/actions/suite/protocolActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';

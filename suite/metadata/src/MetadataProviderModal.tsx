@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 import type { Deferred } from '@trezor/utils';
 
 import { MetadataProviderSelectionModal } from './MetadataProviderSelectionModal';

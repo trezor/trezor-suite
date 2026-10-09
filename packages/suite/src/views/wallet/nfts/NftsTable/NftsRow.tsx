@@ -5,7 +5,6 @@ import { RedactNumericalValue } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
@@ -35,6 +34,7 @@ import {
     Table,
     Text,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     ArrowUpRightIcon,
     EyeIcon,

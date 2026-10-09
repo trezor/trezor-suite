@@ -4,8 +4,8 @@ import {
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
 } from '@suite/suite-sync';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
 import { usePreferredModal, useSelector } from 'src/hooks/suite';

@@ -2,8 +2,8 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type WrapTransactionAsset } from '@suite-common/toast-notifications';
+import { useServices } from '@trezor/dependency-injection';
 import { ExchangeInfoNotification } from '@trezor/product-components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';

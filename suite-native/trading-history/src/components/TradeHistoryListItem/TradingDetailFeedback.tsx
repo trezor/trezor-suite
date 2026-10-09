@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type Rating, buildUserFeedbackData, sendFeedbackThunk } from '@suite-common/feedback';
 import { selectCountryCode } from '@suite-common/geolocation';
@@ -13,6 +12,7 @@ import { type TradingType } from '@suite-common/trading';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { FeedbackCard } from '@suite-native/feedback-form';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 type TradingDetailFeedbackProps = {
     type: TradingType;

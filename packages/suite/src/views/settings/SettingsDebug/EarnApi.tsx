@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 
 import { selectEarnYieldWorkerBaseUrl, suiteSettingsActions } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type EarnYieldWorkerBaseUrl,
     earnYieldWorkerBaseUrl,
     earnYieldWorkerBaseUrls,
 } from '@suite-common/earn-stablecoin-api';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';

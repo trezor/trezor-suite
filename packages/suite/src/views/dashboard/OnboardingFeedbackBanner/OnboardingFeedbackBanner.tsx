@@ -8,7 +8,6 @@ import { useExternalLink } from '@suite/external-links';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Box,
@@ -20,6 +19,7 @@ import {
     Row,
     intermediaryTheme,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';
 import { DASHBOARD_ONBOARDING_FEEDBACK_URL } from '@trezor/urls';
 

@@ -1,10 +1,10 @@
 import { type Store, createAction } from '@reduxjs/toolkit';
 
-import { mock } from '@suite-common/dependency-injection';
 import { TRADE_API_RELOAD_QUOTES_AFTER_SECONDS, tradingActions } from '@suite-common/trading';
 import { act, waitFor } from '@suite-native/test-utils-store';
 import { type TradingRootState } from '@suite-native/trading-state';
 import { type AbortablePromise } from '@suite-native/trading-types';
+import { mock } from '@trezor/dependency-injection';
 
 import {
     type UseQuotesRequestParams,

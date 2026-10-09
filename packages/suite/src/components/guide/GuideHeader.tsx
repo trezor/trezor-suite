@@ -4,9 +4,9 @@ import styled, { css } from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { H3, IconButton, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ArrowLeftIcon, XIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 

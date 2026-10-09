@@ -1,7 +1,6 @@
 import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     phishingActions,
@@ -12,6 +11,7 @@ import { Button, Card, HStack, PressableOpacity, Switch, Text, VStack } from '@s
 import { Form, TextInputField } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useDustPhishingForm } from '../hooks/useDustPhishingForm';
 

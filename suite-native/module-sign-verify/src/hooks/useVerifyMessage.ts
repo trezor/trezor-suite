@@ -1,6 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type VerifyMessageResult, verifyThunk } from '@suite-common/sign-verify';
 import type { Account } from '@suite-common/wallet-types';
@@ -10,6 +9,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 

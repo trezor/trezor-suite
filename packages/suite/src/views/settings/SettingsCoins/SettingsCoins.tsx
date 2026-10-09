@@ -10,7 +10,6 @@ import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { openModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
@@ -22,6 +21,7 @@ import {
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { Box, Button, Column, Switch, Text, Tooltip, motionEasing } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { CoinIcon } from '@trezor/icons';
 import { SettingsSection } from '@trezor/product-components';

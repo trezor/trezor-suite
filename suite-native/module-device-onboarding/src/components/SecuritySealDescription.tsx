@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceModel } from '@suite-common/device';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
@@ -14,6 +13,7 @@ import {
 import { type SetupSupportingDeviceModel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { Link, useOpenLink } from '@suite-native/link';
+import { useServices } from '@trezor/dependency-injection';
 import {
     HELP_CENTER_PACKAGING_T2T1_URL,
     HELP_CENTER_PACKAGING_T3B1_URL,

@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/backup" },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
@@ -24,6 +21,9 @@
         { "path": "../settings" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         {
             "path": "../../packages/product-components"
         },

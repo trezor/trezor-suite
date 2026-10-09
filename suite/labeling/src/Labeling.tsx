@@ -17,7 +17,6 @@ import {
     selectDesktopSuiteSyncInteraction,
     suiteSyncErrorHandler,
 } from '@suite/suite-sync';
-import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -25,6 +24,7 @@ import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { injectEnsureWalletSuiteSyncOn } from '@suite-common/suite-sync-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type StaticSessionId } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { EditableText, type EditableTextProps } from '@trezor/product-components';
 import { type Without } from '@trezor/type-utils';
 

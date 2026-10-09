@@ -7,10 +7,10 @@ import {
     selectShowTranslationKeys,
     suiteSettingsActions,
 } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import { KEYBOARD_CODE } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { selectIsDebugModeActive } from './debugSelectors';
 

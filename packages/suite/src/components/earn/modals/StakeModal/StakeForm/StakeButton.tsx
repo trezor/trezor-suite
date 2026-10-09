@@ -1,7 +1,6 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import {
@@ -11,6 +10,7 @@ import {
     validateCardanoDrep,
 } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';

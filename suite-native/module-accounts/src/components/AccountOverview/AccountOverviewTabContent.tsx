@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -17,6 +16,7 @@ import {
     SendStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 
 import { ActiveTokensTab } from './ActiveTokensTab';

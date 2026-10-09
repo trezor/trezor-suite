@@ -2,10 +2,10 @@ import { useDevice } from '@suite/device';
 import { getSuiteFirmwareTypeString } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { firmwareActions } from '@suite-common/firmware';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     getFirmwareVersion,
     hasBitcoinOnlyFirmware,

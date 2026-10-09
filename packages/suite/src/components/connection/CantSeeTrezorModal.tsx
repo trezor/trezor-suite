@@ -2,8 +2,8 @@ import { useEffect, useMemo } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeviceAnimation } from '@trezor/product-components';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';

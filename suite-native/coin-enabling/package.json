@@ -13,7 +13,6 @@
     "dependencies": {
         "@react-navigation/native": "7.1.31",
         "@suite-common/analytics": "workspace:*",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
@@ -29,6 +28,7 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/search": "workspace:*",
         "@suite-native/toasts": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "react": "19.2.3",
         "react-native": "0.86.3",

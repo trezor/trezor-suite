@@ -12,7 +12,6 @@ import {
     mockGetDebugSettings,
     mockGetThpSettings,
 } from '@suite-common/connect-init/mocks';
-import { mock } from '@suite-common/dependency-injection';
 import { deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -21,6 +20,7 @@ import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/su
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
+import { mock } from '@trezor/dependency-injection';
 import { noopCreateLogger } from '@trezor/logger';
 
 const getInitialState = (): ConnectInitThunkState => ({

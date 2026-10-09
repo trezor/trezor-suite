@@ -1,6 +1,6 @@
-import { createMockDeps, mock, mockNotExpected } from '@suite-common/dependency-injection';
 import { mockSuiteSyncStorage } from '@suite-common/suite-sync-storage/mocks';
 import { type StaticSessionId } from '@trezor/connect';
+import { createMockDeps, mock, mockNotExpected } from '@trezor/dependency-injection';
 
 import {
     type DisconnectAllRelaysDeps,

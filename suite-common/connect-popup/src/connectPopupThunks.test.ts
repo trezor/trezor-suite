@@ -1,6 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { mock } from '@suite-common/dependency-injection';
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { type WithServices } from '@suite-common/redux-utils';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
@@ -9,6 +8,7 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { accountsInitialState } from '@suite-common/wallet-core';
 import * as walletUtils from '@suite-common/wallet-utils';
+import { mock } from '@trezor/dependency-injection';
 
 import { connectPopupActions } from './connectPopupActions';
 import { prepareConnectPopupReducer, selectConnectPopupCallWithState } from './connectPopupReducer';

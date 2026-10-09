@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api/src/staking';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -18,6 +17,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Column, Flex, Grid } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';

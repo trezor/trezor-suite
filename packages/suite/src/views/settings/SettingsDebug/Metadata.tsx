@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
 import { exportMetadataToLocalFileThunk } from '@suite/metadata';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 export const Metadata = () => {

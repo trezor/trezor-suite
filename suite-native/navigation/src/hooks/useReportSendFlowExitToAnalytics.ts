@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type AnalyticsSendFlowStep, events, injectNativeAnalytics } from '@suite-native/analytics';
+import { useServices } from '@trezor/dependency-injection';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
 import { SendStackRoutes, TransactionDetailStackRoutes } from '../routes';

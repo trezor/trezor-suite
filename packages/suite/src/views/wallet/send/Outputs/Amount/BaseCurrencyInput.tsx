@@ -3,7 +3,6 @@ import { Controller } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { AMOUNT_MAX_LENGTH, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
@@ -28,6 +27,7 @@ import {
     valuablesBaseCurrencies,
 } from '@trezor/blockchain-link-types';
 import { Select } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 

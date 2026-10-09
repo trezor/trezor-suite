@@ -5,8 +5,8 @@ import { useMMKVDevTools } from '@rozenite/mmkv-plugin';
 import { useNetworkActivityDevTools } from '@rozenite/network-activity-plugin';
 import { usePerformanceMonitorDevTools } from '@rozenite/performance-monitor-plugin';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectMMKVStorage } from '@suite-native/services';
+import { useServices } from '@trezor/dependency-injection';
 
 type InitRozeniteMMKVPluginInternalProps = {
     mmkvStorage: MMKV;

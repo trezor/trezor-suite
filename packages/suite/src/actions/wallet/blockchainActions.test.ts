@@ -1,6 +1,5 @@
 import { type TranslationKey } from '@suite/intl';
 import { type AnalyticsSharedEvents } from '@suite-common/analytics';
-import { asGetter } from '@suite-common/dependency-injection';
 import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
 import { type NetworksRootState } from '@suite-common/networks';
 import { mockGetAccountSyncInterval, mockNetworksState } from '@suite-common/networks/mocks';
@@ -48,6 +47,7 @@ import {
 import { type FeesState } from '@suite-common/wallet-types';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { PROTO } from '@trezor/connect';
+import { asGetter } from '@trezor/dependency-injection';
 import { DEFAULT_ACCOUNT_SYNC_INTERVAL } from '@trezor/network-module-suite-common-types';
 import { typedObjectKeys } from '@trezor/utils';
 

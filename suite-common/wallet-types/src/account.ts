@@ -1,4 +1,3 @@
-import { type Getter } from '@suite-common/dependency-injection';
 import type { AccountEntityKeys } from '@suite-common/metadata-types';
 import type { AccountType, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import type {
@@ -10,6 +9,7 @@ import type {
 } from '@trezor/blockchain-link-types';
 import type { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
+import { type Getter } from '@trezor/dependency-injection';
 import type { StaticSessionId } from '@trezor/device-utils';
 import { type Branded } from '@trezor/type-utils';
 

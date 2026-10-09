@@ -1,7 +1,6 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import {
     EarnFlow,
@@ -14,6 +13,7 @@ import { type YieldFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent, isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';

@@ -2,11 +2,11 @@ import { type MouseEventHandler } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { EjectIcon } from '@trezor/icons';
 
 type EjectConfirmationProps = {

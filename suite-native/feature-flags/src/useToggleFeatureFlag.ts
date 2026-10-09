@@ -1,5 +1,5 @@
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import { type FeatureFlag, toggleFeatureFlag } from './featureFlagsSlice';
 

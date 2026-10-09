@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { openSystemSettingsThunk } from '@suite/bluetooth';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Column, Modal } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { LaptopIcon, TrezorSafe7Icon } from '@trezor/icons';
 import { StepCard } from '@trezor/product-components';
 

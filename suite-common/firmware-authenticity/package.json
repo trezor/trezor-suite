@@ -11,7 +11,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/persistent-device-data": "workspace:*",
@@ -19,6 +18,7 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",

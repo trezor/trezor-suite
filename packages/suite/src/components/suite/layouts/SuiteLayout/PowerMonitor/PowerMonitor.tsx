@@ -8,8 +8,8 @@ import {
 } from '@suite/bluetooth';
 import { injectDesktopApi } from '@suite/desktop-app-api';
 import { selectKnownDevices } from '@suite-common/bluetooth';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { isMacOs } from '@trezor/env-utils';
 
 import { useSelector } from 'src/hooks/suite';

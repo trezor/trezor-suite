@@ -12,7 +12,6 @@
     },
     "dependencies": {
         "@suite-common/analytics-redux": "workspace:*",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -24,6 +23,7 @@
         "@suite/tor": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/product-components": "workspace:*",

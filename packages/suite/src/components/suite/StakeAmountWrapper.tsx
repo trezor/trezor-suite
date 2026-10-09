@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { mediaQueries } from '@trezor/styles';
 
 const Container = styled.div`

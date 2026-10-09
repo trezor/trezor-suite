@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, Icon, Row, SubTabs } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { TrezorLogoIcon, WalletConnectIcon } from '@trezor/icons';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';

@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectDeviceStaticSessionId,
@@ -30,6 +29,7 @@ import {
     type TabNavigationProp,
     checkIsRouteAnyOf,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 

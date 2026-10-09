@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 import { useDevice } from '@suite/device';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Grid } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     DeviceModelInternal,
     getFirmwareVersionArray,

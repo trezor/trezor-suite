@@ -2,9 +2,9 @@ import styled from 'styled-components';
 
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getBip43Type } from '@suite-common/wallet-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';

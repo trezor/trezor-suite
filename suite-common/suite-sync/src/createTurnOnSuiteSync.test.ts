@@ -1,6 +1,6 @@
-import { createMockDeps } from '@suite-common/dependency-injection';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
+import { createMockDeps } from '@trezor/dependency-injection';
 import { err, ok } from '@trezor/type-utils';
 
 import { SuiteSyncUnavailableOnDeviceError } from './createEnsureSuiteSyncKeys';

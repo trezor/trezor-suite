@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type ChangeServerModalFields,
     SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP,
@@ -15,6 +14,7 @@ import {
 } from '@suite-common/suite-sync';
 import { injectChangeRelayUrl } from '@suite-common/suite-sync-types';
 import { Card, Column, Input, Modal, Select } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 type SelectSuiteSyncServerProps = {
     onCancel: () => void;

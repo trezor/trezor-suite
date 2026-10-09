@@ -11,7 +11,6 @@ import {
     selectRouterLoaded,
 } from '@suite/router';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     useReportDeviceCompromised,
     useRetryFwAuthenticityChecks,
@@ -19,6 +18,7 @@ import {
 import { selectActiveKillswitchMessage } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Card } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { initThunk } from 'src/actions/suite/initAction';

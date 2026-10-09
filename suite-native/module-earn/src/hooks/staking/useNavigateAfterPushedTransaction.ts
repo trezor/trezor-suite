@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { CommonActions, useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
@@ -27,6 +26,7 @@ import {
     type StackNavigationProps,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { type EarnFormDraftPrefix } from '../../types';
 

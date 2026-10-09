@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type DiscoveryRootState, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { useServices } from '@trezor/dependency-injection';
 import { SidebarBanner } from '@trezor/product-components';
 
 import { type DesktopUpdateRootState } from '../desktopUpdateReducer';

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import {
@@ -10,6 +9,7 @@ import {
 } from '@suite-common/suite-sync-types';
 import { Button } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { type TimerId, exhaustive } from '@trezor/type-utils';

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
@@ -20,6 +19,7 @@ import {
     type StellarManageTokenStackParamList,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 import stellar from '@trezor/network-stellar/runtime';
 
 import { composeStellarTrustlineFeesThunk } from '../thunks';

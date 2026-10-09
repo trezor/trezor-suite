@@ -11,7 +11,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
@@ -22,6 +21,7 @@
         "@suite-native/labeling": "workspace:*",
         "@suite-native/suite-sync": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0"
     }

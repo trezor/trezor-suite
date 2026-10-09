@@ -5,7 +5,6 @@ import { type CryptoId } from 'invity-api';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { selectIsDebugModeActive } from '@suite/debug';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectAddressValidator, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -24,6 +23,7 @@ import {
 import { selectAccountByKey, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useSelector } from 'src/hooks/suite';

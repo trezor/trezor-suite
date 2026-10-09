@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
@@ -23,6 +22,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceUpdateFirmwareVersion } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -11,6 +10,7 @@ import {
     injectNativeAnalytics,
 } from '@suite-native/analytics';
 import { type FirmwareType } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import {
     DeviceModelInternal,
     getBootloaderVersion,

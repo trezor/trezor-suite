@@ -3,7 +3,6 @@ import React from 'react';
 import { type Store } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { tradingExchangeActions } from '@suite-common/trading';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
@@ -20,6 +19,7 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useExchangeForm } from './useExchangeForm';
 import { useExchangeSelectQuote } from './useExchangeSelectQuote';

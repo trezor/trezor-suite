@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import { type TradingType, tradingThunks } from '@suite-common/trading';
+import { useServices } from '@trezor/dependency-injection';
 
 import type { BrowserAuthRet } from './useBrowserAuthTypes';
 import { useBrowserStateChangeCallbacks } from './useBrowserStateChangeCallbacks';

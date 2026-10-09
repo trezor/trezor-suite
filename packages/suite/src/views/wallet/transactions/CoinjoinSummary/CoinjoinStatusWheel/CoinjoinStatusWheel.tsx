@@ -1,9 +1,9 @@
 import { selectCurrentCoinjoinWheelStates, stopCoinjoinSessionThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { StopIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';

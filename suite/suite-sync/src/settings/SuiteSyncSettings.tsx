@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsTorEnabled } from '@suite/tor';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type WithSuiteSyncState,
     getSuiteSyncDefaultRelayUrl,
@@ -12,6 +11,7 @@ import {
 } from '@suite-common/suite-sync';
 import { injectChangeRelayUrl } from '@suite-common/suite-sync-types';
 import { Button, ButtonGroup, Code, Column, Input, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
 import { type BreakpointFlags } from '@trezor/theme';
 

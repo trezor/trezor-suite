@@ -8,9 +8,9 @@ import {
     selectLabelingDataForWallet,
     selectSelectedProviderForLabels,
 } from '@suite/metadata';
-import { toGetter } from '@suite-common/dependency-injection';
 import { type OnStorageEnsured, type WriteLabelsDep } from '@suite-common/suite-sync-types';
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { toGetter } from '@trezor/dependency-injection';
 
 import { createMigrateLabelsIfAvailable } from './createMigrateLabelsIfAvailable';
 import { createMigrateAccountLabels } from './entities/createMigrateAccountLabels';

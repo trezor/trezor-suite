@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { CardList } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { setView } from 'src/actions/suite/guideActions';
 import {

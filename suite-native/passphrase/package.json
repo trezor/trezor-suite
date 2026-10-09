@@ -13,7 +13,6 @@
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.9",
         "@react-navigation/native": "7.1.31",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -27,6 +26,7 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "react": "19.2.3",
         "react-native": "0.86.3",

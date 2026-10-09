@@ -3,10 +3,10 @@ import { type MouseEventHandler } from 'react';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { CpuIcon } from '@trezor/icons';
 

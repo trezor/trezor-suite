@@ -3,15 +3,15 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/dependency-injection"
-        },
-        {
             "path": "../../suite-common/formatters"
         },
         {
             "path": "../../suite-common/react-query"
         },
         { "path": "../intl" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         {
             "path": "../../packages/styles-native"
         },

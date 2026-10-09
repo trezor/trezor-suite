@@ -3,10 +3,10 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 

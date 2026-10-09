@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type UnsignedClaimTransaction,
     buildClaimCalldata,
@@ -31,6 +30,7 @@ import {
     selectFeeLevels,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
 import { useDebounce, useFreshRef } from '@trezor/react-utils';
 
 import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';

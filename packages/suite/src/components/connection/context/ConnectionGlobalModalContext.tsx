@@ -8,8 +8,8 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 
 import { useSelector } from 'src/hooks/suite';

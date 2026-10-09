@@ -7,7 +7,6 @@ import { useNavigation } from '@react-navigation/native';
 import { useAtomValue } from 'jotai';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -59,6 +58,7 @@ import {
     selectAccountTokenInfo,
     selectIsUnrecognizedToken,
 } from '@suite-native/tokens';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useMessageSystemWrappedNative } from '../../hooks/earn/useMessageSystemWrappedNative';

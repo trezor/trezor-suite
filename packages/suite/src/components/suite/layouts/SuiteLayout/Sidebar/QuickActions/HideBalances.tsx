@@ -1,8 +1,8 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
 import { Row, ShortcutBadge } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { EyeIcon, EyeSlashIcon } from '@trezor/icons';
 import { QuickActionButton } from '@trezor/product-components';
 

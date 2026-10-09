@@ -1,7 +1,7 @@
-import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import { type OutputTable, type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
+import { createMockDeps, mock } from '@trezor/dependency-injection';
 import { ok } from '@trezor/type-utils';
 
 import { type WriteOutputLabelDeps, createWriteOutputLabel } from './createWriteOutputLabel';

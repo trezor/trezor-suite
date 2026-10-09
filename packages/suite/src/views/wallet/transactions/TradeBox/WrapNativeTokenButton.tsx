@@ -6,12 +6,12 @@ import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isWrappedNativeFlowSupported } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     getWrappedNativeAddress,
     getWrappedNativeSymbol,

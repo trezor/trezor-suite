@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';

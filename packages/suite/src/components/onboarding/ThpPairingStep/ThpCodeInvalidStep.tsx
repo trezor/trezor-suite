@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { ThpPairingFailedForFirmwareInstallation, startThpSessionThunk } from '@suite/thp';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { PlugsConnectedIcon } from '@trezor/icons';
 
 // reflection of suite/thp/src/firmware/ThpCodeInvalidStep.tsx

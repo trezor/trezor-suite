@@ -4,13 +4,13 @@ import { type CryptoId, type DexApprovalType } from 'invity-api';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Calldata } from '@suite-common/calldata';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
     tradeApi,
 } from '@suite-common/trading';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/ApproveModal';
 import { useSelector } from 'src/hooks/suite';

@@ -4,7 +4,6 @@ import { Address } from '@suite/address';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingExchangeType,
@@ -18,6 +17,7 @@ import {
 } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Banner, Button, Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 import { PendingTransactionInfo } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';

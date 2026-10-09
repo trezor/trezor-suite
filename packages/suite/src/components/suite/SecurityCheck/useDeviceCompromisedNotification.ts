@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 
 import { useDevice } from '@suite/device';
 import { type TranslationKey } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type RevisionCheckErrorWithNotification,
     getIsRevisionCheckErrorWithNotification,
@@ -10,6 +9,7 @@ import {
 import { injectDispatch } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { useServices } from '@trezor/dependency-injection';
 
 const revisionCheckNotifications: Record<RevisionCheckErrorWithNotification, TranslationKey> = {
     'other-error': 'TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR',

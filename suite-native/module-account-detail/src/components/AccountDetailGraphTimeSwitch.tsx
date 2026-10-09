@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
@@ -14,6 +13,7 @@ import {
     setAccountGraphTimeframe,
     timeSwitchItems,
 } from '@suite-native/graph';
+import { useServices } from '@trezor/dependency-injection';
 
 type AccountDetailGraphTimeSwitchProps = {
     accountKey: AccountKey;

@@ -5,9 +5,6 @@
         "outDir": "libDev"
     },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/networks" },
         {
@@ -33,6 +30,9 @@
         { "path": "../link" },
         { "path": "../module-earn" },
         { "path": "../navigation" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         {
             "path": "../../packages/styles-native"
         },

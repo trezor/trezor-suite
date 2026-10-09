@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { H3, Modal } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { PasswordIcon } from '@trezor/icons';
 
 import { changePinThunk } from 'src/actions/settings/deviceSettingsActions';

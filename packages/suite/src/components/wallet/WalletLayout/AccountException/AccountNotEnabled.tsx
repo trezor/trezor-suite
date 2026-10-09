@@ -1,9 +1,9 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
 import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
+import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon, WarningIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';

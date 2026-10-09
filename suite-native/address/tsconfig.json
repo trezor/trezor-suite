@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/dependency-injection"
-        },
-        {
             "path": "../../suite-common/redux-utils"
         },
         {
@@ -24,6 +21,9 @@
         { "path": "../feature-feedback" },
         { "path": "../labeling" },
         { "path": "../suite-sync" },
-        { "path": "../../packages/connect" }
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        }
     ]
 }

@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 
 import { useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { isMacOs } from '@trezor/env-utils';
 
 import {

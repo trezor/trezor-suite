@@ -4,11 +4,11 @@ import { useController, useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { yup } from '@suite/forms';
-import { useServices } from '@suite-common/dependency-injection';
 import { type AddressValidator, injectAddressValidator } from '@suite-common/networks';
 import { MAX_LENGTH_MESSAGE } from '@suite-common/sign-verify';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 
 export type SignVerifyFormFields = ReturnType<typeof useSignVerifyForm>;
 

@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import type { CryptoId } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     requiresTokenApproval,
@@ -13,6 +12,7 @@ import {
 } from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
 import { useSelector } from 'src/hooks/suite';

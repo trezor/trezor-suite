@@ -6,8 +6,8 @@ import {
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
 } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 

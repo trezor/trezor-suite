@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type YieldPositionFlowType, yieldActions } from '@suite-common/wallet-core';
 import { useBottomSheetModal } from '@suite-native/atoms';
+import { useServices } from '@trezor/dependency-injection';
 
 type YieldSimulationPreparedAction = {
     amount: string;

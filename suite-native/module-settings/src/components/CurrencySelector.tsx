@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
@@ -11,6 +10,7 @@ import {
     type BaseCurrencyCode,
     baseCurrencies,
 } from '@trezor/blockchain-link-types';
+import { useServices } from '@trezor/dependency-injection';
 import { typedObjectValues } from '@trezor/utils';
 
 import { PreferencesSettingsCard } from './PreferencesSettingsCard';

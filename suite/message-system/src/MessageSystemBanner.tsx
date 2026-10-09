@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { messageSystemActions, resolveMessageContent } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Message } from '@suite-common/suite-types';
 import { Banner, type BannerProps } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';
 
 import { MessageSystemButton } from './MessageSystemButton';

@@ -1,7 +1,7 @@
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { nativeFirmwareActions } from '@suite-native/firmware';
 import { ThpPairingSuccessScreenContent } from '@suite-native/thp';
+import { useServices } from '@trezor/dependency-injection';
 
 import { NonClosableDeviceOnboardingScreen } from '../components/NonClosableDeviceOnboardingScreen';
 import { useNavigateToNextScreenAfterFirmwareInstallation } from '../hooks/useNavigateToNextScreenAfterFirmwareInstallation';

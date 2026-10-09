@@ -1,7 +1,6 @@
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type ResolvedYieldFlowData,
     getYieldVaultContractAddress,
@@ -16,6 +15,7 @@ import {
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { HowEarnWorksBenefitsSection } from '../../components/earn/HowEarnWorks/HowEarnWorksBenefitsSection';
 import { HowEarnWorksHeaderSection } from '../../components/earn/HowEarnWorks/HowEarnWorksHeaderSection';

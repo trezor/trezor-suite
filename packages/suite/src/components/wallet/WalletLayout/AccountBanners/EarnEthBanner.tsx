@@ -3,10 +3,10 @@ import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';

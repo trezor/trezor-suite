@@ -1,10 +1,10 @@
 import { useEffect, useEffectEvent } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
 import { selectTradingFormResetRequestedFor, tradingActions } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
 type UseTradingFormResetRequestParams = {
     tradeType: TradingType;

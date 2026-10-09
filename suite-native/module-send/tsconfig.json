@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/address" },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
@@ -68,6 +65,9 @@
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/dependency-injection"
         },
         {
             "path": "../../networks/solana/network-solana"

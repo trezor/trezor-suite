@@ -5,11 +5,11 @@
         {
             "path": "../../suite-common/analytics"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../analytics" },
         { "path": "../toasts" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         {
             "path": "../../packages/styles-native"
         },

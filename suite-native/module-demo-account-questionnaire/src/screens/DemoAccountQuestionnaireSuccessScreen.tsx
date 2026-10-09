@@ -1,6 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type DemoAccountQuestionnaireLinkKey,
     events,
@@ -17,6 +16,7 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 import {
     ESHOP_WHAT_IS_A_HARDWARE_WALLET_URL,
     ESHOP_WHY_TREZOR_IS_SECURE_URL,

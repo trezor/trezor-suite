@@ -4,7 +4,6 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { type AssetFiatBalance } from '@suite-common/assets';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type Network } from '@suite-common/wallet-config';
@@ -13,6 +12,7 @@ import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { type AmountUnit, isTestnet } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { Column, Icon, IconButton, Row, Table, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 
 import {

@@ -3,7 +3,6 @@ import { useSelector, useStore } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState, selectIsDeviceInViewOnlyMode } from '@suite-common/device';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
@@ -18,6 +17,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useStakingNavigateAnalytics } from './useStakingNavigateAnalytics';

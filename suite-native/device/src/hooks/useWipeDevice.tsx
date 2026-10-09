@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
@@ -18,6 +17,7 @@ import {
     type StackNavigationProps,
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 type NavigationProps = StackNavigationProps<
     DeviceSettingsStackParamList,

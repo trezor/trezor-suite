@@ -4,9 +4,9 @@ import { openSystemSettingsThunk, selectIsUnpairingDevice } from '@suite/bluetoo
 import { toggleConnectionModal } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { bluetoothActions } from '@suite-common/bluetooth';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner, Column, H3, Modal, Paragraph, Spinner } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 

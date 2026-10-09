@@ -1,4 +1,3 @@
-import { createMockDeps } from '@suite-common/dependency-injection';
 import {
     type EntityListener,
     type SuiteSyncAccount,
@@ -13,6 +12,7 @@ import { type SuiteSyncListener } from '@suite-common/suite-sync-types';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
+import { createMockDeps } from '@trezor/dependency-injection';
 import { asWalletDescriptor } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 

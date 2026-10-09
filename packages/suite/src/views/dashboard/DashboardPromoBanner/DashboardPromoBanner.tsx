@@ -2,11 +2,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Feature as MessageFeature } from '@suite-common/suite-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';

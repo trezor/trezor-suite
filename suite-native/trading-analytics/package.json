@@ -14,10 +14,10 @@
         "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/trading-atoms": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0"
     },

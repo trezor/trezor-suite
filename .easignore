@@ -46,6 +46,7 @@
 !/packages/connect-data
 !/packages/connect-mobile
 !/packages/crypto-utils
+!/packages/dependency-injection
 !/packages/device-authenticity
 !/packages/device-utils
 !/packages/e2e-utils
@@ -87,7 +88,6 @@
 !/suite-common/connect-popup
 !/suite-common/delegated-identity-key
 !/suite-common/delegated-identity-key-types
-!/suite-common/dependency-injection
 !/suite-common/device
 !/suite-common/device-authenticity
 !/suite-common/discreet-mode

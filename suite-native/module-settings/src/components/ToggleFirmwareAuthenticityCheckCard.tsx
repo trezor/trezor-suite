@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -10,6 +9,7 @@ import {
     selectIsFirmwareAuthenticityCheckEnabled,
     setCheckFirmwareAuthenticityEnabled,
 } from '@suite-native/settings';
+import { useServices } from '@trezor/dependency-injection';
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK_MOBILE } from '@trezor/urls';
 
 import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';

@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useAtomValue, useSetAtom } from 'jotai';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -22,6 +21,7 @@ import {
     useGraphData,
     useGraphGestureHandlers,
 } from '@suite-native/graph';
+import { useServices } from '@trezor/dependency-injection';
 
 import { AccountDetailGraphTimeSwitch } from './AccountDetailGraphTimeSwitch';
 import { selectAccountItemForGraph } from '../selectors';

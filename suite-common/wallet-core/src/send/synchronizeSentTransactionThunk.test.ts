@@ -1,11 +1,11 @@
 import { type AnalyticsSharedEvents } from '@suite-common/analytics';
-import { asGetter } from '@suite-common/dependency-injection';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import TrezorConnect from '@trezor/connect';
+import { asGetter } from '@trezor/dependency-injection';
 
 import {
     type SynchronizeSentTransactionThunkDeps,

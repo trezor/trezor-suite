@@ -4,7 +4,7 @@ import { act, renderHook } from '@testing-library/react';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { events } from '@suite-common/analytics';
-import { ServicesProvider } from '@suite-common/dependency-injection';
+import { ServicesProvider } from '@trezor/dependency-injection';
 
 import { useWrappedNativeFlowAnalytics } from './useWrappedNativeFlowAnalytics';
 

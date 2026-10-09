@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { startThpSessionThunk } from '@suite/thp';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { PlugsConnectedIcon } from '@trezor/icons';
 
 // reflection of suite/thp/src/firmware/ThpPairingStartStep.tsx

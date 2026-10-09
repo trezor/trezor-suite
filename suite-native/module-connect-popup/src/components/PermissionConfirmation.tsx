@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Button,
@@ -19,6 +18,7 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 import { GroupedPermissionsList } from './GroupedPermissionsList';
 import { ConnectAppIcon } from '../components/ConnectAppIcon';

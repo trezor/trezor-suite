@@ -4,9 +4,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { selectIsAddAccountNetworksBannerClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { GraduationCapIcon } from '@trezor/icons';
 
 import { bannerAnimationConfig } from 'src/components/suite/modals/ReduxModal/UserContextModal/ActivateAssetsModal';

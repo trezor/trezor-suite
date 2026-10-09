@@ -6,9 +6,9 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { yup } from '@suite/forms';
 import { type TranslationFunction, useTranslation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { isAscii } from '@trezor/utils';
 
 import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
