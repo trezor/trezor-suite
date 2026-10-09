@@ -10,8 +10,8 @@ import { useSelector } from 'src/hooks/suite';
 
 const Row = styled.div`
     display: flex;
+    align-items: center;
     gap: 12px;
-    justify-content: space-between;
     margin-top: 16px;
 `;
 
@@ -33,12 +33,7 @@ export const SkipRoundsSetup = ({ accountKey, skipRounds }: SkipRoundsSetupProps
                 <Translation id="TR_SKIP_ROUNDS" />
             </H3>
             <Row>
-                <Switch
-                    isChecked={skipRounds}
-                    isDisabled={!!session}
-                    onChange={toggleSkipRounds}
-                    margin={{ top: 12 }}
-                />
+                <Switch isChecked={skipRounds} isDisabled={!!session} onChange={toggleSkipRounds} />
                 <div>
                     <Text as="div" typographyStyle="body-md" margin={{ bottom: 4 }}>
                         <Translation id="TR_SKIP_ROUNDS_HEADING" />
