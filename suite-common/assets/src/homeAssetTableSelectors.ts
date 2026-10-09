@@ -34,8 +34,7 @@ export type HomeAssetTableState = AssetAccountsRootState &
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
 
-const ZERO_FIAT_VALUE = new BigNumber(0);
-const ZERO_BALANCE = new BigNumber(0);
+const ZERO = new BigNumber(0);
 
 type WalletAsset = {
     assetKey: WalletAssetKey;
@@ -190,7 +189,7 @@ const selectHiddenWalletAssetValues = createMemoizedSelector(
 const byValue =
     (values: ReadonlyMap<WalletAssetKey, BigNumber>) =>
     (left: WalletAssetKey, right: WalletAssetKey) => {
-        const worth = (assetKey: WalletAssetKey) => values.get(assetKey) ?? ZERO_FIAT_VALUE;
+        const worth = (assetKey: WalletAssetKey) => values.get(assetKey) ?? ZERO;
 
         // `comparedTo` is typed to answer null for a NaN side, which `toFiatCurrency` rules out.
         return worth(right).comparedTo(worth(left)) ?? 0;
@@ -275,10 +274,7 @@ const selectNetworkFiatValues = createMemoizedSelector(
 
             worth.set(
                 symbol,
-                priced.reduce(
-                    (total, assetKey) => total.plus(values.get(assetKey) ?? ZERO_FIAT_VALUE),
-                    ZERO_FIAT_VALUE,
-                ),
+                priced.reduce((total, assetKey) => total.plus(values.get(assetKey) ?? ZERO), ZERO),
             );
         });
 
@@ -293,9 +289,7 @@ export const selectShownNetworkSymbols = createMemoizedSelector(
         returnStableArrayIfEmpty(
             [...byNetwork.keys()].sort(
                 (left, right) =>
-                    (worth.get(right) ?? ZERO_FIAT_VALUE).comparedTo(
-                        worth.get(left) ?? ZERO_FIAT_VALUE,
-                    ) ?? 0,
+                    (worth.get(right) ?? ZERO).comparedTo(worth.get(left) ?? ZERO) ?? 0,
             ),
         ),
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
@@ -354,8 +348,7 @@ export const selectWalletAssetTokenDecimals = (
 const byCryptoBalance =
     (assets: ReadonlyMap<WalletAssetKey, WalletAsset>) =>
     (left: WalletAssetKey, right: WalletAssetKey) => {
-        const balance = (assetKey: WalletAssetKey) =>
-            assets.get(assetKey)?.cryptoBalance ?? ZERO_BALANCE;
+        const balance = (assetKey: WalletAssetKey) => assets.get(assetKey)?.cryptoBalance ?? ZERO;
 
         return balance(right).comparedTo(balance(left)) ?? 0;
     };
@@ -445,11 +438,7 @@ export const selectHomeAssetTotals = createMemoizedSelector(
         const addUp = (
             priced: ReadonlyMap<WalletAssetKey, BigNumber>,
             keys: readonly WalletAssetKey[],
-        ) =>
-            keys.reduce(
-                (total, assetKey) => total.plus(priced.get(assetKey) ?? ZERO_FIAT_VALUE),
-                ZERO_FIAT_VALUE,
-            );
+        ) => keys.reduce((total, assetKey) => total.plus(priced.get(assetKey) ?? ZERO), ZERO);
 
         const priced = assetKeys.filter(assetKey => values.has(assetKey));
         const fiatValue = priced.length === 0 ? undefined : addUp(values, priced);
