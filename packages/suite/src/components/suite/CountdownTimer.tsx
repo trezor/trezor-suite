@@ -25,6 +25,8 @@ const units: Array<{ format: keyof Duration; unit: Unit }> = [
 interface CountdownTimerProps {
     deadline: number;
     pastDeadlineMessage?: TranslationKey;
+    /** Replaces only the {value} of `message` once the deadline passes. */
+    pastDeadlineValueMessage?: TranslationKey;
     message?: TranslationKey;
     minUnit?: Unit;
     minUnitValue?: number;
@@ -36,6 +38,7 @@ interface CountdownTimerProps {
 export const CountdownTimer = ({
     deadline,
     pastDeadlineMessage,
+    pastDeadlineValueMessage,
     message,
     minUnit = 'second',
     minUnitValue = 0,
@@ -76,19 +79,26 @@ export const CountdownTimer = ({
         </>
     );
 
+    const value =
+        isPastDeadline && pastDeadlineValueMessage ? (
+            <Translation id={pastDeadlineValueMessage} />
+        ) : (
+            getValue()
+        );
+
     return (
         <span className={className}>
             {messageId ? (
                 <Translation
                     id={messageId}
                     values={{
-                        value: getValue(),
+                        value,
                         strong: chunks => <strong>{chunks}</strong>,
                         firstValue,
                     }}
                 />
             ) : (
-                getValue()
+                value
             )}
         </span>
     );

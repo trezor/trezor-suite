@@ -6,7 +6,7 @@ import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { Card, Column, H3, Icon, LottieAnimation, ProgressBar } from '@trezor/components';
 import { StarFourIcon } from '@trezor/icons';
-import { typography } from '@trezor/theme';
+import { typography, typographyStylesBase } from '@trezor/theme';
 import { localizeNumber } from '@trezor/utils';
 
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
@@ -14,6 +14,7 @@ import { useSelector } from 'src/hooks/suite';
 
 import { RotatingFacts } from './RotatingFacts';
 
+// Reserves the message line so the layout doesn't jump when the first progress message arrives.
 const Subheader = styled.div`
     display: flex;
     align-items: center;
@@ -21,10 +22,7 @@ const Subheader = styled.div`
     ${typography['body-sm']}
     text-align: center;
     margin-top: 8px;
-
-    &:empty::before {
-        content: '\\200b'; /* zero-width space to preserve the height of empty div */
-    }
+    min-height: ${typographyStylesBase['body-sm'].lineHeight}px;
 `;
 
 const DiscoveryProgressWrapper = styled.div`
@@ -46,7 +44,7 @@ const LottieWrapper = styled.div`
 
     path {
         stroke: ${({ theme }) => theme.contentSecondary};
-        fill: ${({ theme }) => theme.contentPrimaryInverse};
+        fill: ${({ theme }) => theme.surfaceFillRaised};
     }
 `;
 
@@ -71,7 +69,7 @@ export const CoinjoinAccountDiscoveryProgress = () => {
                 <Subheader>
                     <LottieWrapper>
                         <LottieAnimation
-                            type={stage === 'block' ? 'BLOCK' : 'MEMPOOL'}
+                            type={stage === 'mempool' ? 'MEMPOOL' : 'BLOCK'}
                             size={64}
                             loop
                         />
