@@ -4,6 +4,7 @@ import {
     selectDeviceLabel,
     selectDeviceModel,
     selectDeviceName,
+    selectIsDeviceInBootloader,
     selectIsDeviceInitialized,
 } from '@suite-common/device';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
@@ -29,10 +30,20 @@ export const DeviceSettingsScreen = () => {
     const deviceName = useSelector(selectDeviceName);
     const deviceLabel = useSelector(selectDeviceLabel);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
+    const isDeviceInBootloader = useSelector(selectIsDeviceInBootloader);
 
     if (!deviceModel || !deviceName) {
         return null;
     }
+
+    // In bootloader mode PIN protection and the authenticity check cannot run, so they are hidden
+    // (mirroring desktop). Backup & passphrase stays available for its passphrase settings.
+    const isPinProtectionVisible = isDeviceInitialized && !isDeviceInBootloader;
+    const isBackupAndPassphraseVisible = isDeviceInitialized;
+    const isAuthenticityCheckVisible =
+        SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel] && !isDeviceInBootloader;
+    const isSecuritySectionVisible =
+        isPinProtectionVisible || isBackupAndPassphraseVisible || isAuthenticityCheckVisible;
 
     return (
         <Screen
@@ -46,13 +57,15 @@ export const DeviceSettingsScreen = () => {
                     <DeviceFirmwareCard />
                     <DeviceConnectionCard />
                 </TitledSection>
-                <TitledSection
-                    title={<Translation id="moduleDeviceSettings.sectionTitles.security" />}
-                >
-                    {isDeviceInitialized && <DevicePinProtectionCard />}
-                    {isDeviceInitialized && <BackupAndPassphraseCard />}
-                    {SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel] && <DeviceAuthenticityCard />}
-                </TitledSection>
+                {isSecuritySectionVisible && (
+                    <TitledSection
+                        title={<Translation id="moduleDeviceSettings.sectionTitles.security" />}
+                    >
+                        {isPinProtectionVisible && <DevicePinProtectionCard />}
+                        {isBackupAndPassphraseVisible && <BackupAndPassphraseCard />}
+                        {isAuthenticityCheckVisible && <DeviceAuthenticityCard />}
+                    </TitledSection>
+                )}
                 <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.dangerZone" />}
                 >
