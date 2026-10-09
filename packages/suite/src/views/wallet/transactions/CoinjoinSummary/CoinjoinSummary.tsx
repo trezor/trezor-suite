@@ -8,7 +8,6 @@ import { CoinjoinBalanceSection } from './CoinjoinBalanceSection';
 
 const Container = styled.div`
     width: 100%;
-    margin-bottom: 32px;
 `;
 
 interface CoinjoinSummaryProps {
