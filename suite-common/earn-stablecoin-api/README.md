@@ -8,7 +8,7 @@
 
 ## Yield opportunities
 
-`useGetYieldOpportunities`: Fetch all enabled Yield XYZ opportunities.
+`useAllYieldOpportunities`: Fetch all enabled Yield XYZ opportunities.
 
 ## Enter a yield opportunity
 
