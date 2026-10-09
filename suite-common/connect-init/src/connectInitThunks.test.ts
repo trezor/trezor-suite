@@ -1,4 +1,3 @@
-import { asGetter, mock } from '@suite-common/dependency-injection';
 import { deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -21,6 +20,7 @@ import TrezorConnect, {
     UI_REQUEST,
     UI_REQUESTS,
 } from '@trezor/connect';
+import { asGetter, mock } from '@trezor/dependency-injection';
 
 import {
     type ConnectInitThunkDeps,

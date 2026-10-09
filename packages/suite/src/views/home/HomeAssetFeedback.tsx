@@ -3,7 +3,6 @@ import { useDevice } from '@suite/device';
 import { selectIsHomeAssetTableFeedbackClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectShownWalletAssetKeys } from '@suite-common/assets';
-import { useServices } from '@suite-common/dependency-injection';
 import { type Rating, buildUserFeedbackData, sendFeedbackThunk } from '@suite-common/feedback';
 import {
     formatExperimentVariantsForAnalytics,
@@ -11,6 +10,7 @@ import {
 } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, GhostContainer, Icon } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';
 import { FeedbackCard } from '@trezor/product-components';
 

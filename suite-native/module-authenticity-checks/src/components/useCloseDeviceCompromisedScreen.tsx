@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     deviceActions,
     selectIsDeviceInitialized,
@@ -20,6 +19,7 @@ import {
     type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList,

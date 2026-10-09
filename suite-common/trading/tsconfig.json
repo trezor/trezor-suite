@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../address" },
-        { "path": "../dependency-injection" },
         { "path": "../device" },
         { "path": "../formatters" },
         { "path": "../geolocation" },
@@ -26,6 +25,9 @@
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/env-utils" },
         {

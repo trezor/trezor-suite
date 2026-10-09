@@ -1,11 +1,11 @@
 import { useCallback, useRef } from 'react';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { useAlert } from '@suite-native/alerts';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import { useServices } from '@trezor/dependency-injection';
 
 import {
     ContactSupportAlertAppendix,

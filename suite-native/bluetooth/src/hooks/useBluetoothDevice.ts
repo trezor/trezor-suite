@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { bluetoothManager } from '@trezor/transport-native-bluetooth';
 
 import { type BluetoothDevice } from '../types';

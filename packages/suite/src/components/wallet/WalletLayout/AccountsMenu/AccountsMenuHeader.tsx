@@ -4,11 +4,11 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectIsCoinsFilterVisible, suiteSettingsActions } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Column, Divider, Icon, Row, Skeleton, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { FunnelSimpleIcon } from '@trezor/icons';
 
 import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';

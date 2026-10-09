@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectShownNetworkSymbols, selectShownWalletAssetKeys } from '@suite-common/assets';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -11,6 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type HomeAssetsTableGrouping } from '@suite-common/wallet-types';
 import { Card, Table } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 

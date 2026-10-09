@@ -5,9 +5,9 @@ import styled from 'styled-components';
 
 import { coinjoinAccountUpdateAnonymity } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner, Icon, motionEasing } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { UserIcon, UsersFourIcon, UsersIcon, UsersThreeIcon } from '@trezor/icons';
 
 import { AnonymityStatus } from 'src/constants/suite/coinjoin';

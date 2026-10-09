@@ -2,13 +2,13 @@ import { useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Box, Divider } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';

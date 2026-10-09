@@ -13,7 +13,6 @@
     "dependencies": {
         "@react-navigation/native": "7.1.31",
         "@suite-common/connect-popup": "workspace:^",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/icons": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
@@ -36,6 +35,7 @@
         "@suite-native/tx-simulation": "workspace:*",
         "@trezor/connect": "workspace:^",
         "@trezor/connect-common": "workspace:^",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/styles-native": "workspace:^",
         "@trezor/urls": "workspace:*",
         "expo-clipboard": "~57.0.1",

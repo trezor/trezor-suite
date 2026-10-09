@@ -3,7 +3,6 @@ import { FadeInDown } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type DemoAccountQuestionnaireQuestion,
     type DemoAccountQuestionnaireQuestionOption,
@@ -27,6 +26,7 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { DemoAccountQuestionnaireAnswer } from './DemoAccountQuestionnaireAnswer';
 

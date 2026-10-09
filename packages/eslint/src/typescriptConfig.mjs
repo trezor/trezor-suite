@@ -27,10 +27,9 @@ const networksAppScopePattern = {
         '@suite/**',
         '@suite-common/**',
         '@suite-native/**',
-        // TODO(#32493): the last two app-scoped dependencies left under networks/. `calldata` is a
-        // `@trezor/*`-level library sitting in the wrong folder; the `mock` helper is test-only.
+        // TODO(#32493): the last app-scoped dependency left under networks/. `calldata` is a
+        // `@trezor/*`-level library sitting in the wrong folder.
         '!@suite-common/calldata',
-        '!@suite-common/dependency-injection',
     ],
     message:
         'Network packages may only depend on @trezor/* workspace packages. Take anything an app owns as an injected dependency instead.',

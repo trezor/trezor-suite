@@ -2,10 +2,10 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectTradingActiveSection } from '@suite-common/trading';
 import { Button, Column, H2, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { getBackRoute } from 'src/views/wallet/trading/common/TradingLayout/tradingPageHeaderUtils';
 

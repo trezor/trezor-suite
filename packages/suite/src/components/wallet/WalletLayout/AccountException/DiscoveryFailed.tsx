@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
+import { useServices } from '@trezor/dependency-injection';
 import { RepeatIcon, WarningIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';

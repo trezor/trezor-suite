@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Translation } from '@suite-native/intl';
 import { ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 import { TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_MOBILE_URL } from '@trezor/urls';
 
 import { DeviceCompromisedModalContent } from './DeviceCompromisedModalContent';

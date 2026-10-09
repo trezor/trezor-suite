@@ -3,7 +3,6 @@ import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
 import { injectGetNamedAddressSupport } from '@suite-common/networks';
 import { selectAccounts, selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
@@ -21,6 +20,7 @@ import {
     isEvmYieldTxByTextSignature,
 } from '@suite-common/wallet-utils';
 import { Column, H4 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';

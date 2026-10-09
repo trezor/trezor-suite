@@ -2,8 +2,8 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import { openNode, setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideMarkdown, GuideViewWrapper } from 'src/components/guide';

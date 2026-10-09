@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     notificationsActions,
@@ -11,6 +10,7 @@ import { NotificationDot } from '@suite-native/activity-center';
 import { Box, type SubTabItem, SubTabs, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ActivityCenterTabContent } from '../components/ActivityCenterTabContent';
 

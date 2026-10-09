@@ -1,4 +1,4 @@
-import { type Getter } from '@suite-common/dependency-injection';
+import { type Getter } from '@trezor/dependency-injection';
 
 export type LocaleInfo = {
     icon: string;

@@ -2,7 +2,6 @@ import { type ReactNode } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { BannerFull, Button, HStack, IconButton } from '@suite-native/atoms';
@@ -14,6 +13,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { setIsEarnBannerClosed } from '../bannerFlagsSlice';
 

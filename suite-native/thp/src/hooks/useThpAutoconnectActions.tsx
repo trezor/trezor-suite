@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
+import { useServices } from '@trezor/dependency-injection';
 
 export const useThpAutoconnectActions = () => {
     const { dispatch } = useServices(injectDispatch);

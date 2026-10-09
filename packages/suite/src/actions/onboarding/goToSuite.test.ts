@@ -3,7 +3,6 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { locksInitialState } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { type SuiteRouterHistoryDep, routerReducer } from '@suite/router';
-import { asGetter } from '@suite-common/dependency-injection';
 import { deviceInitialState } from '@suite-common/device';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
@@ -13,6 +12,7 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type StartDiscoveryThunkDeps } from '@suite-common/wallet-core';
+import { asGetter } from '@trezor/dependency-injection';
 
 import { type GoToSuiteThunkState, goToSuiteThunk } from 'src/actions/onboarding/onboardingActions';
 import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';

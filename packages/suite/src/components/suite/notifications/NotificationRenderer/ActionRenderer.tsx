@@ -1,7 +1,7 @@
-import { useServices } from '@suite-common/dependency-injection';
 import { acquireDeviceThunk, selectDeviceThunk } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { DEVICE } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';

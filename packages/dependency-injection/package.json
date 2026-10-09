@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/dependency-injection",
+    "name": "@trezor/dependency-injection",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",

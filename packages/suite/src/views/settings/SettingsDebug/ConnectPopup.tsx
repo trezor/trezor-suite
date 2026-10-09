@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 export const ConnectPopup = () => {

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { injectUpdateAccountLabel } from '@suite-common/suite-sync-types';
 import {
@@ -27,6 +26,7 @@ import {
     useSyncLabelForm,
 } from '@suite-native/labeling';
 import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
+import { useServices } from '@trezor/dependency-injection';
 
 type AccountRenameFormProps = {
     accountKey: AccountKey;

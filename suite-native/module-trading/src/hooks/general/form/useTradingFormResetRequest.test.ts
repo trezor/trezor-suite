@@ -1,8 +1,8 @@
 import { type Store } from '@reduxjs/toolkit';
 
-import { mock } from '@suite-common/dependency-injection';
 import { act } from '@suite-native/test-utils-store';
 import { type TradingRootState, tradingActions } from '@suite-native/trading-state';
+import { mock } from '@trezor/dependency-injection';
 
 import { useTradingFormResetRequest } from './useTradingFormResetRequest';
 import {

@@ -14,7 +14,6 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@shopify/flash-list": "2.3.0",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/discreet-mode": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
@@ -39,6 +38,7 @@
         "@suite-native/tokens": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/network-ethereum-suite-common": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
         "@trezor/styles-native": "workspace:*",

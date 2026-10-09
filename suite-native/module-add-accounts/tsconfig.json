@@ -5,9 +5,6 @@
         {
             "path": "../../suite-common/analytics"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
@@ -33,6 +30,9 @@
         { "path": "../navigation" },
         { "path": "../passphrase" },
         { "path": "../search" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         {
             "path": "../../packages/styles-native"
         },

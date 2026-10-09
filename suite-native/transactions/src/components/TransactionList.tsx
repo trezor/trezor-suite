@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 
 import { FlashList } from '@shopify/flash-list';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
@@ -33,6 +32,7 @@ import {
     selectAccountTransactionsWithTokenTransfers,
     selectAccountYieldTypeTransactionsWithTokenTransfers,
 } from '@suite-native/tokens';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { arrayPartition } from '@trezor/utils';
 

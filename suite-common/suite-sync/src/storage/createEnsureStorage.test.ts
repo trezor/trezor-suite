@@ -1,4 +1,3 @@
-import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import {
     type SuiteSyncOwner,
     asSuiteSyncOwnerId,
@@ -7,6 +6,7 @@ import {
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
+import { createMockDeps, mock } from '@trezor/dependency-injection';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../mocks/mockCreateSuiteSyncStorage';

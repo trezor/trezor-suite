@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import type { BuyTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
@@ -13,6 +12,7 @@ import {
     PaymentMethodDisplay,
 } from '@suite-native/trading-atoms';
 import { selectBuyBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';

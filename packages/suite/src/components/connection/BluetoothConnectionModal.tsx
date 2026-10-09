@@ -2,8 +2,8 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { selectConnectingDevices } from '@suite/bluetooth';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { Modal } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { BluetoothPairingPin } from 'src/components/suite/bluetooth/BluetoothPairingPin';
 import { BluetoothScanningList } from 'src/components/suite/bluetooth/BluetoothScanningList';

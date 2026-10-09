@@ -1,9 +1,9 @@
 import { selectSelectedAccount } from '@suite/account';
 import { stopCoinjoinSessionThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ArrowsInIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';

@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import type { SellFiatTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type TradingRootState as TradingRootStateCommon,
@@ -19,6 +18,7 @@ import {
     type TradingRootState,
     selectSellQuotesByPaymentMethod,
 } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';

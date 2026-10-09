@@ -1,4 +1,4 @@
-import { asGetter } from '@suite-common/dependency-injection';
+import { asGetter } from '@trezor/dependency-injection';
 
 import { type GetTradedAccountKeysDep } from '../src';
 

@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectNativeAnalytics } from '@suite-native/analytics';
+import { useServices } from '@trezor/dependency-injection';
 import { ESHOP_STORE_URL, withGetTrezorCtaUtm } from '@trezor/urls';
 
 import { useOpenLink } from './useOpenLink';

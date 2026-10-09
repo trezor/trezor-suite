@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { gotoThunk, selectRouteName } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { addStellarContractTokenThunk } from '@suite-common/wallet-core';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { Route } from 'src/components/suite/Route';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';

@@ -1,9 +1,9 @@
 import { useCallback, useRef } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountKey, type FeeLevelLabel, type TokenAddress } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { useServices } from '@trezor/dependency-injection';
 
 import { type UpdateSelectedFeeLevelThunkParams } from '../../types';
 

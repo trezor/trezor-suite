@@ -9,13 +9,13 @@ import {
     metadataLabelingActions,
     selectSelectedProviderForLabels,
 } from '@suite/metadata';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { injectEnsureWalletSuiteSyncOn } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type StaticSessionId } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { parseStaticSessionId } from '@trezor/device-utils';
 
 import { injectMetadataMigration } from './createMetadataMigrationCompositionRoot';

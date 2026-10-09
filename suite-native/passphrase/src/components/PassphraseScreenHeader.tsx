@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -26,6 +25,7 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 
 type NavigationProp = StackToTabCompositeProps<
     AuthorizeDeviceStackParamList,

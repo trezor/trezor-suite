@@ -2,7 +2,6 @@ import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
-import { useServices } from '@suite-common/dependency-injection';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
@@ -15,6 +14,7 @@ import {
 import { selectIsBiometricsEnabled, useBiometricsSettings } from '@suite-native/biometrics';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 import { useNativeStyles } from '@trezor/styles-native';
 
 const DiscreetTextExample = () => {

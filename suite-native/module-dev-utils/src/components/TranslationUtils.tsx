@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { VStack } from '@suite-native/atoms';
 import {
     selectAreDebugTranslationKeysDisplayed,
     setAreDebugTranslationKeysDisplayed,
 } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 import { DevCheckBoxListItem } from './DevCheckBoxListItem';
 

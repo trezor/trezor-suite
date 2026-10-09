@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
@@ -23,6 +22,7 @@ import {
     useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
 import { ExchangeRevokeDetails } from '../components/exchange/Approval/ExchangeRevokeDetails';

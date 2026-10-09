@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Card, CardDivider, HStack, ListItemSkeleton, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 import { YieldLoadErrorAlert } from './YieldLoadErrorAlert';
 import { YieldPromoListItem } from './YieldPromoListItem';

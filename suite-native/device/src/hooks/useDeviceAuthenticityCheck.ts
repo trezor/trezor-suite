@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceAuthenticityValid } from '@suite-common/device-authenticity';
 import {
@@ -25,6 +24,7 @@ import { useTranslate } from '@suite-native/intl';
 import { captureSentryException, withSentryScope } from '@suite-native/sentry';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect, { type AuthenticateDeviceResult, type Response } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { isArrayMember } from '@trezor/utils';
 
 type RawResult = Awaited<Response<AuthenticateDeviceResult>>;

@@ -4,10 +4,10 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type Rating } from '@suite-common/feedback';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
 
 import { EarnFlowFeedbackCard } from 'src/components/earn/common/EarnFlowFeedbackCard';

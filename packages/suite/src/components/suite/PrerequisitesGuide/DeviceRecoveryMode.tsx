@@ -3,9 +3,9 @@ import { type MouseEventHandler } from 'react';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { TrezorBodyIcon } from '@trezor/icons';
 
 import { rerunRecoveryThunk } from 'src/actions/onboarding/onboardingActions';

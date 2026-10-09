@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     messageSystemActions,
     resolveMessageContent,
@@ -13,6 +12,7 @@ import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const APP_RESTART_DELAY_MILLISECONDS = 100;

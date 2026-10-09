@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { filterAndCategorizeUtxos } from '@suite-common/transaction-search';
@@ -23,6 +22,7 @@ import {
     Switch,
     Text,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CaretUpIcon, InfoIcon, ShieldCheckIcon, ShieldWarningIcon } from '@trezor/icons';
 
 import { FormattedCryptoAmount } from 'src/components/suite';

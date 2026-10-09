@@ -2,7 +2,6 @@ import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
-import { toGetter } from '@suite-common/dependency-injection';
 import {
     selectAllDeviceStaticIds,
     selectDeviceByStaticSessionId,
@@ -29,6 +28,7 @@ import {
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Analytics } from '@trezor/analytics-uploader';
 import { type GetTrezorConnectDep } from '@trezor/connect-common';
+import { toGetter } from '@trezor/dependency-injection';
 
 import { createEnsureSuiteSyncKeys } from './createEnsureSuiteSyncKeys';
 import { createSuiteSyncInternalErrorHandler } from './createSuiteSyncInternalErrorHandler';

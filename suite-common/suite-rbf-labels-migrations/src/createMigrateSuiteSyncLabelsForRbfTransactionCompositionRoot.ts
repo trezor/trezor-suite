@@ -1,11 +1,11 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
-import { toGetter } from '@suite-common/dependency-injection';
 import {
     type SuiteSyncDataRootState,
     selectSuiteSyncOutputLabelsByAccount,
 } from '@suite-common/suite-sync';
 import { type UpdateOutputLabelDep } from '@suite-common/suite-sync-types';
+import { toGetter } from '@trezor/dependency-injection';
 
 import {
     createDeleteLabelsForSuiteSync,

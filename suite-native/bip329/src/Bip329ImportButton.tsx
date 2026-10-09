@@ -3,13 +3,13 @@ import { useState } from 'react';
 import { File } from 'expo-file-system';
 
 import { bip329LabelSchema, injectBip329 } from '@suite-common/bip329-types';
-import { useServices } from '@suite-common/dependency-injection';
 import { parseJsonl } from '@suite-common/jsonl';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 import { useToast } from '@suite-native/toasts';
+import { useServices } from '@trezor/dependency-injection';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 type Bip329ImportButtonProps = {

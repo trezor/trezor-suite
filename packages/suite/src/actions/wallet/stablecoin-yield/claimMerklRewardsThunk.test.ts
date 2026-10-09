@@ -1,5 +1,4 @@
 import { type DesktopAnalyticsDep } from '@suite/analytics';
-import { asGetter } from '@suite-common/dependency-injection';
 import { USER_CANCELLED_ERROR_CODES } from '@suite-common/earn-stablecoin';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -10,6 +9,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import TrezorConnect from '@trezor/connect';
+import { asGetter } from '@trezor/dependency-injection';
 
 import { claimMerklRewardsThunk } from './claimMerklRewardsThunk';
 import { type SendYieldTransactionDeps, type SendYieldTransactionState } from './signingHelpers';

@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 
 import { useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     CATEGORY_OPTIONS,
     messageSystemActions,
@@ -10,6 +9,7 @@ import {
 } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, Modal, Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { MessageSystemJsonEditor } from './MessageSystemJsonEditor';
 import { MessageSystemManagerToolbar } from '../MessageSystemManager/MessageSystemManagerToolbar';

@@ -12,12 +12,12 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/thp": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",

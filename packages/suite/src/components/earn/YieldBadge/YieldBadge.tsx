@@ -4,10 +4,10 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { EarnAnchor, gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { Badge, type BadgeProps, commonFocusStyles } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { TrendUpIcon } from '@trezor/icons';
 import { getBorderRadiusCssValue } from '@trezor/theme';
 

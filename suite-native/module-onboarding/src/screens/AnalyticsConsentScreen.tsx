@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { type AnalyticsSharedEvents } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type AnalyticsNativeEvents, events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     Box,
@@ -24,6 +23,7 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { type Analytics } from '@trezor/analytics-uploader';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { DATA_PRIVACY_URL } from '@trezor/urls';
 

@@ -5,7 +5,6 @@
         { "path": "../analytics" },
         { "path": "../bluetooth" },
         { "path": "../calldata" },
-        { "path": "../dependency-injection" },
         { "path": "../device" },
         { "path": "../earn-stablecoin-api" },
         { "path": "../earn-staking-api" },
@@ -47,6 +46,9 @@
         },
         { "path": "../../packages/connect-core" },
         { "path": "../../packages/crypto-utils" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/eslint" },

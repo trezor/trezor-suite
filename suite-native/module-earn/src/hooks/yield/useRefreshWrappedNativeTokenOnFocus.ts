@@ -2,10 +2,10 @@ import { useCallback } from 'react';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { trackWrappedNativeTokenThunk } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 
 type UseRefreshWrappedNativeTokenOnFocusParams = {
     accountKey: AccountKey | undefined;

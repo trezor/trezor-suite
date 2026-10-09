@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
@@ -23,6 +22,7 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 
 import { useShowSuiteSyncEnabledToast } from './useShowSuiteSyncEnabledToast';

@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { acquireDeviceThunk } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectThpLastCode, thpActions } from '@suite-common/thp';
 import { selectSelectedFirstThpDevice } from '@suite-common/wallet-core';
 import { Column, Modal, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ThpPairingCodeEntry } from './ThpPairingCodeEntry';
 

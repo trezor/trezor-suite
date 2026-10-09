@@ -4,8 +4,8 @@ import { createRoot } from 'react-dom/client';
 
 import { initBluetoothThunk } from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
-import { ServicesProvider } from '@suite-common/dependency-injection';
 import TrezorConnect from '@trezor/connect-electron';
+import { ServicesProvider } from '@trezor/dependency-injection';
 
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 import { desktopHandshake } from 'src/actions/suite/suiteActions';

@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 
 import { selectIsDeviceInteractionModalActive, selectModalRequestId } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -13,6 +12,7 @@ import {
     submitPassphraseThunk,
 } from '@suite-common/wallet-core';
 import { UI_EVENTS } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 

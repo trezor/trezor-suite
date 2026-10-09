@@ -7,7 +7,6 @@ import { connectPopupActions, selectConnectPopupCall } from '@suite-common/conne
 // TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { type ConnectPopupCall } from '@suite-common/connect-popup/src/connectPopupTypes';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     selectIsDeviceConnectedAndAuthorized,
     selectIsPortfolioTrackerDevice,
@@ -18,6 +17,7 @@ import { Box, Loader } from '@suite-native/atoms';
 import { DeviceManager } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { AddressConfirmation } from '../components/AddressConfirmation';
 import { ButtonRequestsOverlay } from '../components/ButtonRequestsOverlay';

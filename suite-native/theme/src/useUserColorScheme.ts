@@ -1,8 +1,8 @@
 import { useAtom } from 'jotai';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { atomWithUnecryptedStorage } from '@suite-native/storage';
+import { useServices } from '@trezor/dependency-injection';
 import { type ThemeColorVariant } from '@trezor/theme';
 
 export type AppColorScheme = ThemeColorVariant | 'system';

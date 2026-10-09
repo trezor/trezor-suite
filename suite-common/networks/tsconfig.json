@@ -33,6 +33,8 @@
             "path": "../../networks/tron/network-tron-suite-common"
         },
         { "path": "../../packages/utils" },
-        { "path": "../dependency-injection" }
+        {
+            "path": "../../packages/dependency-injection"
+        }
     ]
 }

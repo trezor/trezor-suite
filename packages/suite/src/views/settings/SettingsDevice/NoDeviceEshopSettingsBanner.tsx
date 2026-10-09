@@ -5,7 +5,6 @@ import { useExternalLink } from '@suite/external-links';
 import { type FlagsRootState, selectAreNoDeviceEshopBannersDisabled } from '@suite/flags';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState, selectPhysicalDeviceWallets } from '@suite-common/device';
 import {
     Button,
@@ -20,6 +19,7 @@ import {
     Row,
     Text,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     ArrowLineUpRightIcon,
     DevicesFilledIcon,

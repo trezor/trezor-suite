@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { H3, Modal } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CheckIcon } from '@trezor/icons';
 
 export const WipeDeviceSuccessModal = () => {

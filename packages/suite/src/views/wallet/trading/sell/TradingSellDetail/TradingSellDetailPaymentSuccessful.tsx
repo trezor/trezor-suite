@@ -2,10 +2,10 @@ import { type SellFiatTrade, type SellProviderInfo } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { tradingThunks } from '@suite-common/trading';
 import { Button, Illustration } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { type Account } from 'src/types/wallet';
 import { TradingDetailTerminalDetails } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalDetails';

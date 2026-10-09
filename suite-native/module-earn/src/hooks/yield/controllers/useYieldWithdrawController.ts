@@ -4,7 +4,6 @@ import { Keyboard } from 'react-native';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -26,6 +25,7 @@ import {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 import { useTransactionDetails } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
 import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';

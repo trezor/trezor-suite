@@ -2,7 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../dependency-injection" },
-        { "path": "../redux-utils" }
+        { "path": "../redux-utils" },
+        {
+            "path": "../../packages/dependency-injection"
+        }
     ]
 }

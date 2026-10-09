@@ -2,7 +2,6 @@ import { type UseFormSetValue } from 'react-hook-form';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { useGetCountryName } from '@suite/trading';
-import { useServices } from '@suite-common/dependency-injection';
 import { getCountryFlag } from '@suite-common/flags';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -13,6 +12,7 @@ import {
     useCountryFilteredData,
 } from '@suite-common/trading';
 import { Column, Flag, Icon, Input, Modal, Paragraph, Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 import { CardList } from '@trezor/product-components';
 

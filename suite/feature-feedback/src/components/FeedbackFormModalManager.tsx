@@ -7,7 +7,6 @@ import {
     translatedFeedbackFeatures,
 } from '@suite/experimental';
 import { Translation, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type FeatureFeedbackRootState,
     type Rating,
@@ -16,6 +15,7 @@ import {
     sendFeedbackThunk,
 } from '@suite-common/feedback';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { SmileyIcon } from '@trezor/icons';
 import { SidebarBanner } from '@trezor/product-components';
 

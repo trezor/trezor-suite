@@ -1,7 +1,6 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     EarnFlow,
@@ -17,6 +16,7 @@ import {
     stakeActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';

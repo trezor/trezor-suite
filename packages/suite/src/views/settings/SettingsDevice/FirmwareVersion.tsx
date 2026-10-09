@@ -1,10 +1,10 @@
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 

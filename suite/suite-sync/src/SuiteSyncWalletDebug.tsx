@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -14,6 +13,7 @@ import {
 } from '@suite-common/suite-sync';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { Code, Row, Text, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { parseStaticSessionId } from '@trezor/device-utils';
 
 type SuiteSyncWalletDebugProps = {

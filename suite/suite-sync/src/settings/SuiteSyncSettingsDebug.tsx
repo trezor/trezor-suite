@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectIsSuiteSyncDebugEnabled,
     updateSuiteSyncDebugEnabled,
 } from '@suite-common/suite-sync';
 import { Checkbox } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { SuiteSyncConnectionStatus } from './SuiteSyncConnectionStatus';

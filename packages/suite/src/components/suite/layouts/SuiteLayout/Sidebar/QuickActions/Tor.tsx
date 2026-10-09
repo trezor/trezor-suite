@@ -1,9 +1,9 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { TorStatus, selectIsTorDisabled, selectTorStatus } from '@suite/tor';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, Icon, type IconComponent, type UIIntent } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import {
     ArrowsClockwiseIcon,

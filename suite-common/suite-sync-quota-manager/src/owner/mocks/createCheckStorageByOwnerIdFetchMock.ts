@@ -1,4 +1,4 @@
-import { mock } from '@suite-common/dependency-injection';
+import { mock } from '@trezor/dependency-injection';
 
 import {
     type CheckStorageByOwnerIdFetch,

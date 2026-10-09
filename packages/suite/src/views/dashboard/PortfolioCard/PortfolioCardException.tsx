@@ -4,7 +4,6 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
@@ -19,6 +18,7 @@ import {
     Paragraph,
     Row,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon, RepeatIcon, WarningIcon } from '@trezor/icons';
 
 import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';

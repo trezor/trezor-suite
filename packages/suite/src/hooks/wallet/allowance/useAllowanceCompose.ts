@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useMutation } from '@tanstack/react-query';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
@@ -23,6 +22,7 @@ import {
     getConvertedOrDefaultFeeInfo,
 } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef, useDebounce } from '@trezor/react-utils';
 
 import { useSelector } from 'src/hooks/suite';

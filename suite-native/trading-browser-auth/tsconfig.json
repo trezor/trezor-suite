@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/dependency-injection"
-        },
-        {
             "path": "../../suite-common/suite-constants"
         },
         {
@@ -24,6 +21,9 @@
         { "path": "../trading-debug" },
         { "path": "../trading-state" },
         { "path": "../trading-types" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {

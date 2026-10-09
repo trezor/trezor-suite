@@ -2,7 +2,6 @@ import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Banner,
@@ -14,6 +13,7 @@ import {
     Radio,
     Text,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 

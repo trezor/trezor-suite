@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingType, getReceiveAccountPreselection } from '@suite-common/trading';
 import { type AccountsRootState } from '@suite-common/wallet-core';
@@ -17,6 +16,7 @@ import {
     type TradeableAsset,
     type TradingRootState,
 } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
 
 type ReceiveAccountSelector = (
     state: TradingRootState & AccountsRootState,

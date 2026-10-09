@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type AccountsRootState,
     selectAccountNetworkSymbol,
@@ -18,6 +17,7 @@ import {
     type SendStackRoutes,
     type StackProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { AmountErrorMessage } from './AmountErrorMessage';
 import { CryptoAmountInput } from './CryptoAmountInput';

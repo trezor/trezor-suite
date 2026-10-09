@@ -1,10 +1,10 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, Grid, H3, Modal } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { WithdrawalFormContext, useWithdrawalForm } from 'src/hooks/earn/useWithdrawalForm';
 import { useLayoutSize } from 'src/hooks/suite';

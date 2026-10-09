@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Network } from '@suite-common/wallet-config';
@@ -29,6 +28,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { copyToClipboard } from '@trezor/dom-utils';
 import {
     CalendarIcon,

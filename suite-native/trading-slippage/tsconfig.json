@@ -2,9 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/trading" },
         { "path": "../atoms" },
         { "path": "../forms" },
@@ -14,6 +11,9 @@
         { "path": "../link" },
         { "path": "../trading-atoms" },
         { "path": "../trading-state" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         {
             "path": "../../packages/styles-native"
         },

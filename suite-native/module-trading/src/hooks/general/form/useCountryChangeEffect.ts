@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingCountryOption,
@@ -8,6 +7,7 @@ import {
 } from '@suite-common/trading';
 import { type Control, type FieldValues, type Path, useWatch } from '@suite-native/forms';
 import { residenceActions } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
 export const useCountryChangeEffect = <TFieldValues extends FieldValues>(
     control: Control<TFieldValues>,

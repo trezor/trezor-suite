@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectHasRunningDiscovery, startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BannerFull } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 import { type NativeAccountsRootState, selectIsAccountDiscoveryFailed } from '../selectors';
 

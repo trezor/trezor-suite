@@ -7,7 +7,6 @@ import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { preserveModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -26,6 +25,7 @@ import {
 } from '@suite-common/wallet-core';
 import { getAvailableAccountTypes, prepareNewAccountPayload } from '@suite-common/wallet-utils';
 import { Box, Column, Icon, Modal, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { InfoIcon } from '@trezor/icons';
 

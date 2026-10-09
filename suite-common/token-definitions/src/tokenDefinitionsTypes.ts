@@ -1,6 +1,6 @@
-import { type Getter } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { type Getter } from '@trezor/dependency-injection';
 import type { PartialRecord } from '@trezor/type-utils';
 
 export type SimpleTokenStructure = string[];

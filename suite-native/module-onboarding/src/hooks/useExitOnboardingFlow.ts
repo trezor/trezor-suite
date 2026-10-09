@@ -1,10 +1,10 @@
 import { CommonActions, useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { postOnboardingInitThunk } from '@suite-native/app-init';
 import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { setIsOnboardingFinished } from '@suite-native/settings';
+import { useServices } from '@trezor/dependency-injection';
 
 export const useExitOnboardingFlow = () => {
     const { dispatch } = useServices(injectDispatch);

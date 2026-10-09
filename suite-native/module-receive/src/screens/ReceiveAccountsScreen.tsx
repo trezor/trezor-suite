@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
@@ -14,6 +13,7 @@ import {
     type StackNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ReceiveBlockedDeviceCompromisedScreen } from './ReceiveBlockedDeviceCompromisedScreen';
 

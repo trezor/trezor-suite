@@ -4,9 +4,9 @@ import { type UseFormReturn } from 'react-hook-form';
 import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { TRADING_FORM_AMOUNT_INPUT_SOURCE } from '@suite-common/trading';
 import { Row, TextButton } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { type TradingAllFormProps } from 'src/types/trading/tradingForm';

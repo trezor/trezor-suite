@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { asEncryptedHex, injectPlatformEncryption } from '@suite-common/platform-encryption';
 import { Banner, Button, ButtonGroup, Column, Textarea } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { SectionItem, SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 import { type Branded } from '@trezor/type-utils';

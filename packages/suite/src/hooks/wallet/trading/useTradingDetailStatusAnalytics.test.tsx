@@ -4,7 +4,7 @@ import { renderHook } from '@testing-library/react';
 
 import { events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { ServicesProvider } from '@suite-common/dependency-injection';
+import { ServicesProvider } from '@trezor/dependency-injection';
 
 import { useTradingDetailStatusAnalytics } from './useTradingDetailStatusAnalytics';
 

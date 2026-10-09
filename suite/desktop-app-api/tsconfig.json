@@ -12,7 +12,7 @@
         { "path": "../tor-types" },
         { "path": "../../packages/type-utils" },
         {
-            "path": "../../suite-common/dependency-injection"
+            "path": "../../packages/dependency-injection"
         }
     ]
 }

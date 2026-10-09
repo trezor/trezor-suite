@@ -6,12 +6,12 @@ import { AddressLabeling, copyAddressToClipboard } from '@suite/address';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { type SelectIsLabelActionEnabledState, selectIsLabelActionEnabled } from '@suite/labeling';
-import { useServices } from '@suite-common/dependency-injection';
 import { type ReceiveRootState, selectCurrentFreshAddress } from '@suite-common/receive';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { IconButton, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CopyIcon, ShareNetworkIcon, ShieldCheckIcon } from '@trezor/icons';
 import { belowBreakpoint, breakpoints } from '@trezor/theme';
 

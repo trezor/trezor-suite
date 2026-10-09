@@ -6,7 +6,6 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsManualPairingRequired, selectIsUnpairingDevice } from '@suite/bluetooth';
 import { Translation } from '@suite/intl';
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     Box,
     Button,
@@ -22,6 +21,7 @@ import {
     Text,
     motionEasing,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { BluetoothIcon, CableUsbCIcon, QuestionIcon } from '@trezor/icons';

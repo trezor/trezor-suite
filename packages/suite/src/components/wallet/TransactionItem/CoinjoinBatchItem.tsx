@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { IconCircle, Link } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ShuffleIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 

@@ -1,9 +1,9 @@
 import { memo } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Column, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';

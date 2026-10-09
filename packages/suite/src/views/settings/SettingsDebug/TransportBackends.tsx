@@ -1,6 +1,6 @@
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { useServices } from '@suite-common/dependency-injection';
 import { Checkbox } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';

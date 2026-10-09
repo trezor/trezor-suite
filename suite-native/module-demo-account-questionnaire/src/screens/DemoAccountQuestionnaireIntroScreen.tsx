@@ -1,6 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerInline, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -11,6 +10,7 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 export const DemoAccountQuestionnaireIntroScreen = () => {
     const { analytics } = useServices(injectNativeAnalytics);

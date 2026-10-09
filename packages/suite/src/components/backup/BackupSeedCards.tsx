@@ -1,8 +1,8 @@
 import { type ConfirmKey, backupActions, selectBackup } from '@suite/backup';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Checkbox, Column, Grid, Icon, Paragraph, Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { AnchorIcon, KeyIcon, PencilLineIcon } from '@trezor/icons';
 
 import { useLayoutSize, useSelector } from 'src/hooks/suite';

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     CATEGORY_OPTIONS,
     messageSystemActions,
@@ -10,6 +9,7 @@ import {
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Category, type Condition } from '@suite-common/suite-types';
 import { Button, Input, Select, Text, VStack } from '@suite-native/atoms';
+import { useServices } from '@trezor/dependency-injection';
 
 export const MessageSystemAddMessageForm = () => {
     const { dispatch } = useServices(injectDispatch);

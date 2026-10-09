@@ -1,12 +1,12 @@
 import { useCallback, useRef, useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Box, Divider } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { SearchAsset } from '@trezor/product-components';
 
 import {

@@ -1,7 +1,7 @@
 import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
-import { createMockDeps } from '@suite-common/dependency-injection';
 import { type TrezorDeviceWithState } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { createMockDeps } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 

@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     acquireDeviceThunk,
     deviceActions,
@@ -34,6 +33,7 @@ import {
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
 import { selectIsOnboardingFinished, selectShouldShowAutoEjectAlert } from '@suite-native/settings';
+import { useServices } from '@trezor/dependency-injection';
 import { SUITE_WEB_URL } from '@trezor/urls';
 
 import { IncompatibleFirmwareModalAppendix } from '../components/IncompatibleFirmwareModalAppendix';

@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
@@ -15,6 +14,7 @@ import { useFormState, useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { exchangeActions, selectExchangeQuotes } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
 import { noop } from '@trezor/utils';
 
 import { tradingExchangeFormToTradingExchangeFormProps } from '../../utils/exchange/quotesUtils';

@@ -8,7 +8,6 @@ import {
 } from 'invity-api';
 
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     parseCryptoId,
@@ -19,6 +18,7 @@ import {
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { type FeeLevel, type TokenInfo } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';

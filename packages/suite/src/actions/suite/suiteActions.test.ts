@@ -15,7 +15,6 @@ import {
     mockGetDebugSettings,
     mockGetThpSettings,
 } from '@suite-common/connect-init/mocks';
-import { mock } from '@suite-common/dependency-injection';
 import {
     type DeviceReducerState,
     acquireDeviceThunk,
@@ -49,6 +48,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
+import { mock } from '@trezor/dependency-injection';
 import { noopCreateLogger } from '@trezor/logger';
 
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';

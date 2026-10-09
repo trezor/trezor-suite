@@ -1,7 +1,7 @@
 import { useCallback, useContext } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type CountryChangeAction, events, injectNativeAnalytics } from '@suite-native/analytics';
+import { useServices } from '@trezor/dependency-injection';
 
 import { CountryChangeContextCheckContext } from '../components/CountryChangeContextCheckContext';
 

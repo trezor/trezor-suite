@@ -4,7 +4,6 @@ import { selectAccountIncludingChosenInTrading } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { closeModal, preserveModalOnTxTimeout } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useYieldVaultName } from '@suite-common/earn-stablecoin';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -17,6 +16,7 @@ import {
     getTxValidityTimeoutInMs,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { type Deferred } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

@@ -6,7 +6,6 @@ import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { AccountTransactionBaseAnchor, useAnchor } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountType, type Network } from '@suite-common/wallet-config';
 import {
@@ -26,6 +25,7 @@ import {
     isTxFeePaid,
 } from '@suite-common/wallet-utils';
 import { Button, Icon, Row, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { GaugeIcon, WarningIcon, XIcon } from '@trezor/icons';
 import { OutlineHighlight } from '@trezor/product-components';
 

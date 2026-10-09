@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import {
@@ -13,6 +12,7 @@ import {
 } from '@suite-common/wallet-types';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 
 import { composeTransaction } from 'src/actions/wallet/stakeActions';

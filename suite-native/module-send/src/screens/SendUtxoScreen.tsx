@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { useFilteredUtxos } from '@suite-common/transaction-search';
 import {
@@ -22,6 +21,7 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { type Utxo } from '@trezor/blockchain-link-types';
+import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
 import { SendUtxoScreenFooter } from '../components/CoinControl/SendUtxoScreenFooter';

@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
 
 import { Metadata } from 'src/components/suite';

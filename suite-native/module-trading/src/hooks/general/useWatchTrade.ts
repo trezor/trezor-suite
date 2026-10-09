@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTransaction,
@@ -17,6 +16,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { getTradeStatusStep } from '@suite-native/trading-quote-utils';
 import { type TradingRootState } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useReloadTimer } from './useReloadTimer';
 

@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/networks';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 import { StakingDesktopOnlyBottomSheet } from './StakingDesktopOnlyBottomSheet';
 import { StakingPromoListItem } from './StakingPromoListItem';

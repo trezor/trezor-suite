@@ -1,9 +1,9 @@
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Link, Modal, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 import { UNINSTALL_BRIDGE_URL } from '@trezor/urls';
 

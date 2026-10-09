@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -25,6 +24,7 @@ import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
+import { useServices } from '@trezor/dependency-injection';
 import { useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 

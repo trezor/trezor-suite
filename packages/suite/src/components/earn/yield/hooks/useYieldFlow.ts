@@ -6,7 +6,6 @@ import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device'
 import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -31,6 +30,7 @@ import {
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef, useFreshRef } from '@trezor/react-utils';
 

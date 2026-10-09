@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { getTronVotedApr, useTronStakingStats } from '@suite-common/earn-staking-api';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -23,6 +22,7 @@ import {
     TextButton,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 

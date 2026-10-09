@@ -6,7 +6,6 @@ import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { useDappScan } from '@suite-common/tx-simulation';
@@ -31,6 +30,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ShieldCheckFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { NetworkIcon } from '@trezor/product-components';
 

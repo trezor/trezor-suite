@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { fetchTransactionsPageThunk } from '@suite-common/wallet-core';
 import { getOlderHistoryFrom } from '@suite-common/wallet-utils';
 import { Button, Column, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { FormattedDate } from 'src/components/suite';
 import { type Account } from 'src/types/wallet';

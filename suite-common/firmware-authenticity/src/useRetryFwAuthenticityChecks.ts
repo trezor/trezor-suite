@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
-import { useGetter, useServices } from '@suite-common/dependency-injection';
 import {
     injectRerunFwAuthenticityChecksCall,
     injectShouldRetryFirmwareRevisionCheckError,
 } from '@suite-common/suite-types';
+import { useGetter, useServices } from '@trezor/dependency-injection';
 import { type TimerId } from '@trezor/type-utils';
 
 const REFRESH_INTERVAL = 5_000; // [ms]

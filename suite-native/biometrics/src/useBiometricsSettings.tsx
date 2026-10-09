@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 import { BiometricsToggleResult, toggleBiometricsSettingsThunk } from './biometricsThunks';
 

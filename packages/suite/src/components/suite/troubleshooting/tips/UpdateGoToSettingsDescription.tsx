@@ -1,8 +1,8 @@
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 export const UpdateGoToSettingsDescription = () => {
     const { dispatch } = useServices(injectDispatch);

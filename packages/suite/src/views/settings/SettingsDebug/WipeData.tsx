@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { injectReloadApp } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';

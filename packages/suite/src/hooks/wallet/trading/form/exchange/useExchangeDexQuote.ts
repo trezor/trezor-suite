@@ -3,7 +3,6 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { type ExchangeTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM_DEX,
@@ -18,6 +17,7 @@ import { isAccountBasedNetwork } from '@suite-common/wallet-config';
 import { ETHEREUM_ADJUST_GAS_LIMIT, updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { type TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';

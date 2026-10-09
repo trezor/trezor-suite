@@ -1,5 +1,4 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
-import { asGetter } from '@suite-common/dependency-injection';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
@@ -14,6 +13,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
+import { asGetter } from '@trezor/dependency-injection';
 
 import {
     PUSH_TRANSACTION_FAILED_CAUSE,

@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import { selectEnabledTradingTypes, tradingActions } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
 export const useActiveTradingTypeReaction = () => {
     const { dispatch } = useServices(injectDispatch);

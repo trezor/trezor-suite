@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { isFulfilled, miniSerializeError } from '@reduxjs/toolkit';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -44,6 +43,7 @@ import {
     usePrecomposedTransactionError,
 } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { noop } from '@trezor/utils';
 
 import { useComposeTradingTransaction } from './useComposeTradingTransaction';

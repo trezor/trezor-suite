@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { asGetter } from '@suite-common/dependency-injection';
+import { asGetter } from '@trezor/dependency-injection';
 
 const mockedConsoleAlreadyPrinted: string[] = [];
 

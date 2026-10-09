@@ -1,9 +1,9 @@
 import { type RefObject, useCallback, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { syncAllAccountsWithBlockchainThunk } from '@suite-native/blockchain';
+import { useServices } from '@trezor/dependency-injection';
 import { useNativeStyles } from '@trezor/styles-native';
 
 import { type PortfolioGraphRef } from './components/PortfolioGraph';

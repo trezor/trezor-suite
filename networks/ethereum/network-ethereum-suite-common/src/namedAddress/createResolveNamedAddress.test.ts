@@ -1,4 +1,4 @@
-import { mock } from '@suite-common/dependency-injection';
+import { mock } from '@trezor/dependency-injection';
 import { SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE } from '@trezor/utils';
 
 import { type ResolveNamedAddress } from './ResolveNamedAddress';

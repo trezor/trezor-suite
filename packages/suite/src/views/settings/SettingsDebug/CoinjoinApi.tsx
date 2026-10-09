@@ -12,12 +12,12 @@ import {
     type CoinjoinServerEnvironment,
     type CoinjoinSymbol,
 } from '@suite/coinjoin';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { injectReloadApp } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { typedObjectKeys } from '@trezor/utils';
 

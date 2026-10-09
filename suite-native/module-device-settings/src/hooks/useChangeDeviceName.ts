@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { useForm, useWatch } from '@suite-native/forms';
@@ -14,6 +13,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 
 import { deviceNameFormValidationSchema } from '../deviceNameFormSchema';
 

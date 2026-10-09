@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/address" },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/receive" },
         {
@@ -36,6 +33,9 @@
         { "path": "../modal" },
         { "path": "../../packages/components" },
         { "path": "../../packages/crypto-utils" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"

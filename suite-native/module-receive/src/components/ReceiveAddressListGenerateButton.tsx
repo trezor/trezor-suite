@@ -2,12 +2,12 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { getReceiveAddressToAdd } from '@suite-common/address';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectCurrentFreshAddress } from '@suite-common/receive';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { IconButton } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 import { addReceiveAddressThunk } from '../receiveThunks';
 import {

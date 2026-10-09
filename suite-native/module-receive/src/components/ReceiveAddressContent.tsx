@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { selectCurrentFreshAddress } from '@suite-common/receive';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -12,6 +11,7 @@ import { ErrorMessage, ScreenFooterGradient, VStack } from '@suite-native/atoms'
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { type CloseActionType, Screen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ReceiveAddressActions } from './ReceiveAddressActions';
 import { ReceiveAddressCard } from './ReceiveAddressCard';

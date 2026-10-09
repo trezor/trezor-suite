@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type ExperimentsItemType,
     buildExperimentGroupRanges,
@@ -9,6 +8,7 @@ import {
 } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Column, Icon, InfoItem, Range } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     ArrowCounterClockwiseIcon,
     CircleFilledIcon,

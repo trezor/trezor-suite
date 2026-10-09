@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { selectIsTorEnabled } from '@suite/tor';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     enforceQuotaManagerUpdated,
@@ -15,6 +14,7 @@ import {
     updateQuotaManagerBaseUrl,
 } from '@suite-common/suite-sync-quota-manager';
 import { Button, ButtonGroup, Checkbox, Code, Column, Input, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 

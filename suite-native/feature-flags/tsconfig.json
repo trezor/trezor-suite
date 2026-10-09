@@ -3,12 +3,12 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/dependency-injection"
-        },
-        {
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../config" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/env-utils" }
     ]
 }

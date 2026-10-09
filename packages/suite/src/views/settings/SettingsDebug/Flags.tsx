@@ -6,9 +6,9 @@ import {
     setFlag,
     setNewContentIndicatorSeen,
 } from '@suite/flags';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { typedObjectEntries, typedObjectValues } from '@trezor/utils';
 

@@ -7,7 +7,6 @@ import { selectIsMetadataEnabled } from '@suite/metadata';
 import { suiteSyncErrorHandler } from '@suite/suite-sync';
 import { shouldDisplayExportImportBip329Labels } from '@suite-common/bip329';
 import { type Bip329Label, bip329LabelSchema, injectBip329 } from '@suite-common/bip329-types';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -20,6 +19,7 @@ import {
     InfoItem,
     Paragraph,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     JsonlReader,
     type JsonlReaderError,

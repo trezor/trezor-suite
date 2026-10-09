@@ -12,9 +12,6 @@
         {
             "path": "../../suite-common/delegated-identity-key"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/discreet-mode"
@@ -99,6 +96,9 @@
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/env-utils" },
         {
             "path": "../../packages/transport-common"

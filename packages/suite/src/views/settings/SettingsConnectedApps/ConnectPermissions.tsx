@@ -12,7 +12,6 @@ import {
     permissionIcons,
     selectConnectAppPermissions,
 } from '@suite-common/connect-popup';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Box,
@@ -30,6 +29,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { type CoinSymbol, type MethodPermission, type PermissionRequest } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import {
     BellSlashIcon,
     BroadcastIcon,

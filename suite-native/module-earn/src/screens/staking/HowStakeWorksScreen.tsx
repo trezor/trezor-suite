@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -27,6 +26,7 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { EarnLoadingScreen } from '../../components/earn/EarnLoadingScreen';
 import { HowEarnWorksBenefitsSection } from '../../components/earn/HowEarnWorks/HowEarnWorksBenefitsSection';

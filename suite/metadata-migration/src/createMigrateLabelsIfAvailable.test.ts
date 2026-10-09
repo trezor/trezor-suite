@@ -1,13 +1,13 @@
 import type { Dispatch } from '@reduxjs/toolkit';
 
 import { metadataActions } from '@suite/metadata';
-import { createMockDeps } from '@suite-common/dependency-injection';
 import { isTrezorDeviceWithState } from '@suite-common/device';
 import { type MetadataProvider } from '@suite-common/metadata-types';
 import { createSuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { mockSuiteSyncStorage } from '@suite-common/suite-sync-storage/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
+import { createMockDeps } from '@trezor/dependency-injection';
 import { asWalletDescriptor } from '@trezor/device-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 import { createDeferred } from '@trezor/utils';

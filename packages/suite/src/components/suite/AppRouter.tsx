@@ -8,7 +8,7 @@ import {
     selectRouteName,
     suiteRoutes,
 } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 

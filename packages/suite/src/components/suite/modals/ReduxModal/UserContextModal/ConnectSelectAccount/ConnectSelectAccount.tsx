@@ -14,10 +14,10 @@ import {
     connectPopupVerifySelectAccountThunk,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountType } from '@suite-common/wallet-config';
 import { Column, H3, Icon, Modal, Paragraph, Row, SubTabs, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CheckCircleIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 

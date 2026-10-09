@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
     BannerInline,
@@ -15,6 +14,7 @@ import {
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 import { YieldClaimRewardsBottomSheet } from './YieldClaimRewardsBottomSheet';
 import {

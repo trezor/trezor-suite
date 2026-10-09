@@ -8,13 +8,13 @@ import {
 } from '@react-navigation/native';
 import { useReactNavigationDevTools } from '@rozenite/react-navigation-plugin';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     addSentryBreadcrumb,
     registerSentryNavigationContainer,
     setSentryTag,
 } from '@suite-native/sentry';
+import { useServices } from '@trezor/dependency-injection';
 import { useNativeStyles } from '@trezor/styles-native';
 
 import { useReportSendFlowExitToAnalytics } from '../hooks/useReportSendFlowExitToAnalytics';

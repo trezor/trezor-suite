@@ -4,8 +4,8 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
-import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';

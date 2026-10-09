@@ -11,9 +11,6 @@
     "include": ["."],
     "references": [
         {
-            "path": "../../suite-common/dependency-injection"
-        },
-        {
             "path": "../../suite-common/redux-utils"
         },
         {
@@ -26,6 +23,9 @@
         },
         { "path": "../router" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/logger" },
         { "path": "../../packages/suite" },

@@ -1,10 +1,10 @@
 import type { FiatCurrencyCode } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { HStack } from '@suite-native/atoms';
 import { sellActions } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
 import { SellFiatAmountInput } from './SellFiatAmountInput';
 import { SellFiatCurrencySheet } from './SellFiatCurrencySheet';

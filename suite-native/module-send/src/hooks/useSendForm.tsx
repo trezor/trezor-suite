@@ -7,7 +7,6 @@ import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceRemembered } from '@suite-common/device';
 import { injectAddressValidator, injectGetNamedAddressSupport } from '@suite-common/networks';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -63,6 +62,7 @@ import {
     transactionManagementActions,
     useSubscribeForSolanaBlockUpdates,
 } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 import { TRANSPORT_ERROR } from '@trezor/transport-common';
 

@@ -4,7 +4,6 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectRouteName } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -31,6 +30,7 @@ import {
     isRbfCancelTransaction,
 } from '@suite-common/wallet-utils';
 import { Modal, Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { type Deferred } from '@trezor/utils';
 
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';

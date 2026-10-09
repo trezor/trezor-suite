@@ -25,6 +25,6 @@
         "@trezor/type-utils": "workspace:*"
     },
     "devDependencies": {
-        "@suite-common/dependency-injection": "workspace:*"
+        "@trezor/dependency-injection": "workspace:*"
     }
 }

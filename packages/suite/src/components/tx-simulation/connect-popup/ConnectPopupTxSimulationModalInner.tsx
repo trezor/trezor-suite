@@ -11,7 +11,6 @@ import {
 import { EvmInsufficientGasWarning } from '@suite/tx-simulation/src/evm';
 import { connectPopupActions } from '@suite-common/connect-popup';
 import { type ConnectCallSource as ConnectCallSourceType } from '@suite-common/connect-popup';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TX_METHODS_WITH_FEES,
@@ -23,6 +22,7 @@ import {
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
 import { Card, Column, Modal } from '@trezor/components';
 import { ERRORS } from '@trezor/connect-common';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';

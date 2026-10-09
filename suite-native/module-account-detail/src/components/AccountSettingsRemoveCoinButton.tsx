@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
@@ -12,6 +11,7 @@ import { useAlert } from '@suite-native/alerts';
 import { Button, TrezorSuiteHeader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 type AccountSettingsRemoveCoinButtonProps = {
     accountKey: AccountKey;

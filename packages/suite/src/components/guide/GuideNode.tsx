@@ -4,11 +4,11 @@ import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectLanguage } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { CardList, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { type IconComponent } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { resolveStaticPath } from '@trezor/env-utils';
 import {
     ArrowsLeftRightFilledIcon,

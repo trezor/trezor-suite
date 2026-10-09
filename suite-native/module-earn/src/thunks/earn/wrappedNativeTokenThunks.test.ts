@@ -1,4 +1,3 @@
-import { asGetter } from '@suite-common/dependency-injection';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -11,6 +10,7 @@ import {
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
+import { asGetter } from '@trezor/dependency-injection';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import {

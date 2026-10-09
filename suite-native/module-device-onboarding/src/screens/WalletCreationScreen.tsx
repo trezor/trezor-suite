@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { getIsIgnoredEntropyCheckError } from '@suite-common/device';
 import {
     Feature,
@@ -23,6 +22,7 @@ import {
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import { type ERRORS } from '@trezor/connect-common/src/constants';
+import { useServices } from '@trezor/dependency-injection';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 

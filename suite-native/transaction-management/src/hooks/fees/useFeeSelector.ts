@@ -1,6 +1,5 @@
 import { useCallback, useRef } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountKey,
@@ -10,6 +9,7 @@ import {
 } from '@suite-common/wallet-types';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
+import { useServices } from '@trezor/dependency-injection';
 
 import { getFeeAvailability } from './feeAvailability';
 import { type CustomFeeParams } from './useFeeSelection';

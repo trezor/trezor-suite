@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { cancelDiscoveryThunk } from '@suite-common/wallet-core';
@@ -11,6 +10,7 @@ import {
     PassphraseContentScreenWrapper,
     PassphraseEnterOnTrezorScreenContent,
 } from '@suite-native/passphrase';
+import { useServices } from '@trezor/dependency-injection';
 
 export const PassphraseEnterOnTrezorScreen = () => {
     const { dispatch } = useServices(injectDispatch);

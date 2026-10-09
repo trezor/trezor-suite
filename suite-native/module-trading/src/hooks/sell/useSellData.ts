@@ -1,10 +1,10 @@
 import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectTradingSellLoadingTimestampAndStatus, tradingThunks } from '@suite-common/trading';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
 export const useSellData = () => {
     const { dispatch } = useServices(injectDispatch);

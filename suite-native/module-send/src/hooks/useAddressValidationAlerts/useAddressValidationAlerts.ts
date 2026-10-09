@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { checkAddressChecksum } from '@suite-common/address';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectAddressValidator } from '@suite-common/networks';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { useFormContext, useWatch } from '@suite-native/forms';
 import { type SendStackParamList, type SendStackRoutes } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useAddressChecksum } from './useAddressChecksum';
 import { useContractAddressCheck } from './useContractAddressCheck';

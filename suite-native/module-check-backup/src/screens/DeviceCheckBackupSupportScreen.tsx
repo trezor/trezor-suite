@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import { useServices } from '@trezor/dependency-injection';
 import { TREZOR_SUPPORT_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
 import { CheckBackupScreenWithExitButton } from '../components/CheckBackupScreenWithExitButton';

@@ -3,7 +3,6 @@ import { type FieldError } from 'react-hook-form';
 
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getHasSelectableSignatureFormat,
@@ -14,6 +13,7 @@ import {
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { FormatSwitch } from './FormatSwitch';
 import { SignVerifyAddressField } from './SignVerifyAddressField';

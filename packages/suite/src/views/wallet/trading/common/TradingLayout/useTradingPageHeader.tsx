@@ -1,9 +1,9 @@
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { type Route, gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectTradingActiveSection } from '@suite-common/trading';
 import { Box, Button, IconButton, Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon } from '@trezor/icons';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';

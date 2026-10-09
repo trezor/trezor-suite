@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
 import { openDeferredModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
@@ -20,6 +19,7 @@ import {
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
+import { useServices } from '@trezor/dependency-injection';
 import { unique } from '@trezor/utils';
 
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';

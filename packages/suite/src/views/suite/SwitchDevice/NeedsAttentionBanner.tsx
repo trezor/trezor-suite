@@ -1,7 +1,6 @@
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { acquireDeviceThunk, selectDeviceThunk } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -9,6 +8,7 @@ import {
     type getStatus,
 } from '@suite-common/suite-utils';
 import { Banner, type BannerIntent } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';

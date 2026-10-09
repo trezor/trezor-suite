@@ -2,13 +2,13 @@ import { useCallback } from 'react';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { EarnPortfolioTrackerGuard } from '../../components/earn/EarnPortfolioTrackerGuard';
 import { EarnPromoList } from '../../components/earn/EarnPromoList';

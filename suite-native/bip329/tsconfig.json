@@ -6,9 +6,6 @@
         {
             "path": "../../suite-common/bip329-types"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/jsonl" },
         {
             "path": "../../suite-common/suite-sync"
@@ -25,6 +22,9 @@
         { "path": "../labeling" },
         { "path": "../suite-sync" },
         { "path": "../toasts" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

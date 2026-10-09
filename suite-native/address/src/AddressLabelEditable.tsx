@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite-common/suite-sync';
 import { injectUpdateAddressLabel } from '@suite-common/suite-sync-types';
@@ -14,6 +13,7 @@ import {
 } from '@suite-native/labeling';
 import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 import type { StaticSessionId } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 
 type AddressLabelEditableProps = {
     address: string;

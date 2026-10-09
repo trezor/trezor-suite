@@ -7,8 +7,8 @@ import {
     removeNonResponsiveNearbyDevicesThunk,
 } from '@suite/bluetooth';
 import { bluetoothActions } from '@suite-common/bluetooth';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { type TimerId } from '@trezor/type-utils';
 
 type UseBluetoothScanningProps = {

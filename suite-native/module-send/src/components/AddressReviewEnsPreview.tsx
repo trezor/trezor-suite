@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectGetNamedAddressSupport } from '@suite-common/networks';
 import {
     type AccountsRootState,
@@ -11,6 +10,7 @@ import {
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 type AddressReviewEnsPreviewProps = {
     accountKey: AccountKey;

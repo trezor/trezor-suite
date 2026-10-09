@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectNetworkConfigs } from '@suite-common/networks';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
@@ -19,6 +18,7 @@ import { useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { buyActions, selectValidTradingBuyQuotesNative } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { tradingBuyFormToTradingBuyFormProps } from '../../utils/buy/quotesUtils';
 import { getReceiveAccountAddressText } from '../../utils/general/receiveAccountUtils';

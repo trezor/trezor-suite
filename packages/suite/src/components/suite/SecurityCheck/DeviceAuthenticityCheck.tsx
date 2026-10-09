@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import {
@@ -13,6 +12,7 @@ import {
 } from '@suite-common/persistent-device-data';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, Grid, Icon, type IconComponent, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
 
 import { useLayoutSize } from 'src/hooks/suite';

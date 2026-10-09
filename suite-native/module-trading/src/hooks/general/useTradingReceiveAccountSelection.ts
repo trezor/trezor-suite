@@ -1,8 +1,8 @@
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
 import { tradingActions } from '@suite-native/trading-state';
 import { type ReceiveAccount } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
 
 export const useTradingReceiveAccountSelection = (tradingType: Exclude<TradingType, 'sell'>) => {
     const { dispatch } = useServices(injectDispatch);

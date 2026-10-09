@@ -4,12 +4,12 @@ import { selectRoundsDurationInHours, selectSessionProgressByAccountKey } from '
 import { type CoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouterParams } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
 import { ProgressPie } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { typography } from '@trezor/theme';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';

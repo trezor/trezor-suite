@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type SpinnerLoadingState } from '@suite-native/atoms';
@@ -14,6 +13,7 @@ import {
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 import { type AccountInfo } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { resolveAfter } from '@trezor/utils';
 
 import { getAccountInfoThunk } from '../accountsImportThunks';

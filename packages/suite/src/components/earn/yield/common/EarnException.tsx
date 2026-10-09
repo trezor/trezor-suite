@@ -2,9 +2,9 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type IconCircleIntent, type IconComponent } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';

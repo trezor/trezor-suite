@@ -4,11 +4,11 @@ import {
     connectPopupCallInnerThunk,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { UI_EVENTS } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';

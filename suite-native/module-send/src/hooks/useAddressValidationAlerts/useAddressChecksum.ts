@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { checkAddressChecksum, toChecksumAddress } from '@suite-common/address';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectAddressValidator } from '@suite-common/networks';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
@@ -12,6 +11,7 @@ import { useFormContext, useWatch } from '@suite-native/forms';
 import { type SendStackParamList, type SendStackRoutes } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { useServices } from '@trezor/dependency-injection';
 
 import { createChecksumAlert } from './alertBuilders';
 

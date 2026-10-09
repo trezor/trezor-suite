@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectAddressValidator } from '@suite-common/networks';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -23,6 +22,7 @@ import {
 } from '@suite-common/trading';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 import { useDidUpdate } from '@trezor/react-utils';
 
 import { useSelector } from 'src/hooks/suite';

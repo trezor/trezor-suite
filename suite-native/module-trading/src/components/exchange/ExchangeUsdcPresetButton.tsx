@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { cryptoIdToNetworkSymbol, tradingExchangeActions } from '@suite-common/trading';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
@@ -8,6 +7,7 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { Button, Text } from '@suite-native/atoms';
 import { exchangeActions } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';

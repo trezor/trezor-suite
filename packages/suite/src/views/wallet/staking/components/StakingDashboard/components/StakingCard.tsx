@@ -1,7 +1,6 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
@@ -30,6 +29,7 @@ import {
     Skeleton,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CheckIcon, InfoIcon, LockIcon, PlusCircleIcon, SpinnerGapIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 

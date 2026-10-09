@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     EXPERIMENT_MAP,
     getDefaultExperiment,
@@ -14,6 +13,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { type Experiments } from '@suite-common/suite-types';
 import { Button, HStack, Select, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm, yup } from '@suite-native/forms';
+import { useServices } from '@trezor/dependency-injection';
 
 type ExperimentFormValues = {
     experimentJson: string;

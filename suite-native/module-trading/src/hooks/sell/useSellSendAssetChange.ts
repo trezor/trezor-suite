@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { tradingSellActions } from '@suite-common/trading';
 import { useWatch } from '@suite-native/forms';
 import { sellActions } from '@suite-native/trading-state';
 import { type SellFormType, type TradeableAsset } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useTradeableAssetChange } from '../general/form/useTradeableAssetChange';
 

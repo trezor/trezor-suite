@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
@@ -18,6 +17,7 @@ import {
     tradingActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
+import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { type TradingFormInputBuyAssetProps } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';

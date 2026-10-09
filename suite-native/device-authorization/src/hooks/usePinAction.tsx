@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useAlert } from '@suite-native/alerts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
@@ -12,6 +11,7 @@ import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type PinActionType } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useDeviceConnectionGuard } from './useDeviceConnectionGuard';
 

@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../dependency-injection" },
         { "path": "../legacy-network-config" },
         { "path": "../react-query" },
         { "path": "../redux-utils" },
@@ -10,6 +9,9 @@
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/utils" }
     ]

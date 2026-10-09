@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
@@ -21,6 +20,7 @@ import {
     isNftToken,
 } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CaretDownIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 

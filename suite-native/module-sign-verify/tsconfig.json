@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/dependency-injection"
-        },
-        {
             "path": "../../suite-common/formatters"
         },
         {
@@ -30,6 +27,9 @@
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../navigation" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         {
             "path": "../../packages/styles-native"
         },

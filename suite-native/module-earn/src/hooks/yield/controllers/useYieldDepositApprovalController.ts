@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -18,6 +17,7 @@ import {
     YieldStackRoutes,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { getYieldApprovalAnalyticsType } from '../../../utils/yield/yieldAnalyticsUtils';
 import { isYieldApprovalAllowanceUnlimited } from '../../../utils/yield/yieldApprovalUtils';

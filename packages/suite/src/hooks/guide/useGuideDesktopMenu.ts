@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 
 import { open, setView } from 'src/actions/suite/guideActions';
 

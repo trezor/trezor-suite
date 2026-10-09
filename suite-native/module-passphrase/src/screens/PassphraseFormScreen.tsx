@@ -4,7 +4,6 @@ import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reani
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AnimatedView, Box, Button, HStack, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -22,6 +21,7 @@ import {
     PassphraseScreenHeader,
     useHandleUiRequestPassphraseOnDevice,
 } from '@suite-native/passphrase';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 

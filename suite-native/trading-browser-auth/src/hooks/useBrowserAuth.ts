@@ -8,12 +8,12 @@ import {
     openBrowserAsync,
 } from 'expo-web-browser';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import { type TradingType, tradingThunks } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
 import { captureSentryException } from '@suite-native/sentry';
+import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 import { noop } from '@trezor/utils';
 

@@ -4,7 +4,6 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { selectSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -22,6 +21,7 @@ import {
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { SpinnerIcon, WarningIcon } from '@trezor/icons';
 import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';

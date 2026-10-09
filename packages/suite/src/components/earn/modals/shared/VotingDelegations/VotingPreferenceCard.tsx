@@ -2,7 +2,6 @@ import React, { type ReactNode } from 'react';
 
 import { TrezorLink } from '@suite/external-links';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type VotingDelegationOption,
@@ -24,6 +23,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { QuestionIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';

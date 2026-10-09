@@ -3,7 +3,6 @@ import { type ReactNode } from 'react';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectHasActiveModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -26,6 +25,7 @@ import {
     TextButton,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { FunnelSimpleIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 

@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -10,6 +9,7 @@ import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { type ExportFileType } from '@suite-common/wallet-types';
 import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { Dropdown, Note } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ChecksIcon, FileArrowDownIcon, InfoIcon } from '@trezor/icons';
 
 import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';

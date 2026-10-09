@@ -28,8 +28,8 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
-        "@suite-common/wallet-config": "workspace:*"
+        "@suite-common/wallet-config": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*"
     }
 }

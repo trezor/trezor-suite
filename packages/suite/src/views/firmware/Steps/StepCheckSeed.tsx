@@ -2,7 +2,6 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     selectIsDeviceBackedUp,
     selectSelectedDevice,
@@ -10,6 +9,7 @@ import {
 } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 
 import { PrerequisitesGuide } from 'src/components/suite';

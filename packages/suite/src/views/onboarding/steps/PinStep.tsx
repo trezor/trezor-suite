@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { selectModal, selectModalRequestId } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Column } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { LockKeyIcon } from '@trezor/icons';
 
 import { changePinThunk } from 'src/actions/settings/deviceSettingsActions';

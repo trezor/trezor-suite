@@ -3,10 +3,10 @@ import { useMemo } from 'react';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSupportedDeviceLanguages } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { changeLanguageThunk } from 'src/actions/settings/deviceSettingsActions';

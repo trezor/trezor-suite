@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { type DexApprovalType } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingComposedTransactionInfo,
@@ -19,6 +18,7 @@ import {
 import { type FormState } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
 import { composeEvmApprovalFeeLevelsThunk } from '../../../thunks';
 

@@ -38,9 +38,6 @@
         {
             "path": "../../suite-common/delegated-identity-key"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/device-authenticity"
@@ -241,6 +238,9 @@
         { "path": "../connect" },
         { "path": "../connect-common" },
         { "path": "../crypto-utils" },
+        {
+            "path": "../dependency-injection"
+        },
         { "path": "../device-utils" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },

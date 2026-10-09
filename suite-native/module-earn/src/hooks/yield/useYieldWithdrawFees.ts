@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useStore } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import { createThunk, injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -33,6 +32,7 @@ import {
     selectFeeLevels,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 
 import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';

@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { type TradingRootState } from '../reducers/tradingCommonReducer';
 import { selectTradingExchangeSelectedQuote } from '../selectors/tradingSelectors';

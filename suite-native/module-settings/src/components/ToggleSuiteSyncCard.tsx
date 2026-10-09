@@ -2,7 +2,6 @@ import { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { injectTurnOffSuiteSync, injectTurnOnSuiteSync } from '@suite-common/suite-sync-types';
@@ -12,6 +11,7 @@ import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { StorageContext } from '@suite-native/storage';
 import { useShowSuiteSyncEnabledToast, useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
+import { useServices } from '@trezor/dependency-injection';
 
 export const ToggleSuiteSyncCard = () => {
     const { analytics } = useServices(injectNativeAnalytics);

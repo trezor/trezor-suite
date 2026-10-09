@@ -11,7 +11,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/legacy-network-config": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
@@ -19,6 +18,7 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/network-solana-types": "workspace:*",
         "@trezor/network-stellar-types": "workspace:*",

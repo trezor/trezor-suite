@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type EarnYieldWorkerBaseUrl,
     defaultEarnYieldWorkerBaseUrl,
@@ -11,6 +10,7 @@ import {
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Select, type SelectItemType } from '@suite-native/atoms';
 import { selectEarnYieldWorkerBaseUrl, setEarnWorkerEnvironment } from '@suite-native/settings';
+import { useServices } from '@trezor/dependency-injection';
 
 const earnWorkerBaseUrlItems: SelectItemType<EarnYieldWorkerBaseUrl>[] =
     earnYieldWorkerBaseUrls.map(baseUrl => ({

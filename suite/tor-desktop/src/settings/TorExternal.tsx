@@ -5,7 +5,7 @@ import { type TorSettings, injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsTorEnabled } from '@suite/tor';
-import { useServices } from '@suite-common/dependency-injection';
+import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 const options = [

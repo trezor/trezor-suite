@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingRootState,
     cryptoIdToNetwork,
@@ -18,6 +17,7 @@ import {
     injectNativeAnalytics,
 } from '@suite-native/analytics';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
+import { useServices } from '@trezor/dependency-injection';
 
 export type TradingExchangeAnalyticReportCallback = (
     step: TradingExchangeStep,

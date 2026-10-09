@@ -9,7 +9,6 @@ import {
     queuePopupCall,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     CORE_CALL,
@@ -19,6 +18,7 @@ import {
     type PermissionRequest,
     RESPONSE_EVENT,
 } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';

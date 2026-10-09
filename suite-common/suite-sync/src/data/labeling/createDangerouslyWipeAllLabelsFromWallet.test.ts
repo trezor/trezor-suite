@@ -1,4 +1,3 @@
-import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import {
     type SuiteSyncUpdateError,
     createSuiteSyncAddressId,
@@ -13,6 +12,7 @@ import {
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { createMockDeps, mock } from '@trezor/dependency-injection';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 

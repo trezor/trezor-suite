@@ -6,7 +6,6 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectRouter } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type FeedbackCategory,
     type FeedbackType,
@@ -16,6 +15,7 @@ import {
 } from '@suite-common/feedback';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { EmojiRatingSelector } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 

@@ -3,7 +3,6 @@ import { type ReactNode, useEffect, useState } from 'react';
 import { selectHasSeenDisconnectTooltip, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
@@ -18,6 +17,7 @@ import {
     Row,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { EjectIcon } from '@trezor/icons';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 

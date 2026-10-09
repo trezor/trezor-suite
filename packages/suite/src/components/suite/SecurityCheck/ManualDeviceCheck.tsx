@@ -13,7 +13,6 @@ import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -28,6 +27,7 @@ import {
     TextButton,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal, models } from '@trezor/device-utils';
 import { ClockIcon, GradientIcon, InfoIcon, PackageIcon, SealCheckIcon } from '@trezor/icons';
 import { breakpoints } from '@trezor/theme';

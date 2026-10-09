@@ -1,6 +1,5 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { openModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     EarnFlow,
@@ -14,6 +13,7 @@ import {
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useSelector } from 'src/hooks/suite';
