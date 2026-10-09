@@ -13,6 +13,7 @@
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../suite-types" }
     ]
 }

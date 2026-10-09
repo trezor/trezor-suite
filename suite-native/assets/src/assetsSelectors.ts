@@ -16,7 +16,11 @@ import {
     selectVisibleDeviceAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { type AccountKey, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type TokenAddress,
+    asBaseCurrencyAmount,
+} from '@suite-common/wallet-types';
 import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -95,12 +99,35 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
     },
 );
 
-export const selectAssetCryptoValue = (state: AssetsRootState, symbol: NetworkSymbol) => {
-    const assets = selectDeviceAssetsWithBalances(state);
-    const asset = assets.find(a => a.symbol === symbol);
+export const selectAssetCryptoValue = createMemoizedSelector(
+    [
+        selectVisibleDeviceAccountsByNetworkSymbol,
+        (_state: AssetsRootState, _networkSymbol: NetworkSymbol, tokenContract?: TokenAddress) =>
+            tokenContract,
+    ],
+    (accounts, tokenContract) => {
+        if (!tokenContract) {
+            return accounts
+                .reduce(
+                    (balance, account) => balance.plus(getAccountCryptoBalanceWithStaking(account)),
+                    new BigNumber(0),
+                )
+                .toFixed(8);
+        }
 
-    return asset?.assetBalance ?? '0';
-};
+        const normalizedTokenContract = tokenContract.toLowerCase();
+
+        return accounts
+            .reduce((balance, account) => {
+                const token = account.tokens?.find(
+                    accountToken => accountToken.contract.toLowerCase() === normalizedTokenContract,
+                );
+
+                return balance.plus(token?.balance ?? 0);
+            }, new BigNumber(0))
+            .toFixed();
+    },
+);
 
 export const selectHasMultipleDeviceAccountsForNetworkSymbol = (
     state: AssetsRootState,

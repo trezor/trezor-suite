@@ -1,24 +1,17 @@
 import { useSelector } from 'react-redux';
 
-import { type AssetsRootState, selectAssetName } from '@suite-common/assets';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type AssetsRootState, selectAssetTicker } from '@suite-common/assets';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 
 import { AssetDetailPrice } from './AssetDetailPrice';
+import { useAssetDetailRouteParams } from '../hooks/useAssetDetailRouteParams';
 
-type AssetDetailPriceSectionProps = {
-    networkSymbol: NetworkSymbol;
-    tokenContract?: TokenAddress;
-};
+export const AssetDetailPriceSection = () => {
+    const { networkSymbol, tokenContract } = useAssetDetailRouteParams();
 
-export const AssetDetailPriceSection = ({
-    networkSymbol,
-    tokenContract,
-}: AssetDetailPriceSectionProps) => {
-    const assetName = useSelector((state: AssetsRootState) =>
-        selectAssetName(state, networkSymbol, tokenContract),
+    const assetTicker = useSelector((state: AssetsRootState) =>
+        selectAssetTicker(state, networkSymbol, tokenContract),
     );
 
     return (
@@ -27,14 +20,14 @@ export const AssetDetailPriceSection = ({
                 <TokenIcon
                     networkSymbol={networkSymbol}
                     contractAddress={tokenContract}
-                    tokenSymbol={assetName}
+                    tokenSymbol={assetTicker}
                     showNetworkIcon
                     size="extraSmall"
                 />
-                <Text variant="body-md-strong">{assetName}</Text>
+                <Text variant="body-md-strong">{assetTicker}</Text>
             </HStack>
 
-            <AssetDetailPrice networkSymbol={networkSymbol} tokenContract={tokenContract} />
+            <AssetDetailPrice />
         </VStack>
     );
 };
