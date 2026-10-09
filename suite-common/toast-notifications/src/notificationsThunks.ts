@@ -1,4 +1,3 @@
-
 import { createThunk } from '@trezor/redux-utils';
 
 import { ACTION_PREFIX, notificationsActions } from './notificationsActions';

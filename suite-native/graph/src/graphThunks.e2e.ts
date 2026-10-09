@@ -1,4 +1,3 @@
-
 /**
  * Disables graph data fetching for E2E tests to mitigate flakiness.
  */

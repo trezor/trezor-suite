@@ -2,7 +2,6 @@ import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { type ActionTypesDep, createSliceWithExtraDeps } from '@trezor/redux-utils';
 
-
 export interface DebugState {
     showDebugMenu: boolean;
 }

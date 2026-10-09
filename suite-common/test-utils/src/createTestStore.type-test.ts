@@ -1,4 +1,3 @@
-
 import { type WithServices } from '@trezor/redux-utils';
 
 import { createTestStore } from './createTestStore';

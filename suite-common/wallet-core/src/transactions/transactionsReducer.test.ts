@@ -1,4 +1,3 @@
-
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import * as fixtures from './__fixtures__/transactionsReducer';
