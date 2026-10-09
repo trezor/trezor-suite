@@ -232,18 +232,41 @@ describe('TrezorConnect Actions', () => {
         expect(actions.at(-1)).toEqual({ type: BLOCKCHAIN_EVENT });
     });
 
-    it('Wrapped method', async () => {
+    it('locks the device optimistically on a call and releases it on DEVICE_UNLOCK', async () => {
         const { actions, dispatch, getState, extra } = createThunkDeps();
         await connectInitThunk()(dispatch, getState, extra);
         actions.length = 0;
+        const { emitTestEvent } = testMocks.getTrezorConnectMock();
+        const callId = '00000000-0000-4000-8000-000000000000';
 
-        await testMocks.getTrezorConnectMock().getFeatures();
+        const call = TrezorConnect.call({ method: 'getFeatures', callId });
+        // locked synchronously when the call is issued, before it is awaited or crosses any boundary
+        expect(extra.services.lockDevice).toHaveBeenCalledTimes(1);
+        expect(extra.services.lockDevice).toHaveBeenLastCalledWith(true);
+        expect(actions).toEqual([]);
 
-        expect(extra.services.lockDevice).toHaveBeenNthCalledWith(1, true);
-        expect(extra.services.lockDevice).toHaveBeenNthCalledWith(2, false);
+        emitTestEvent(UI_EVENT, {
+            type: UI_EVENTS.DEVICE_UNLOCK,
+            payload: { callId, device: { state: { staticSessionId: 'session' } } },
+        });
+        expect(extra.services.lockDevice).toHaveBeenCalledTimes(2);
+        expect(extra.services.lockDevice).toHaveBeenLastCalledWith(false);
         expect(actions).toEqual([
             expect.objectContaining({ type: '@suite/device/removeButtonRequests' }),
         ]);
+
+        await call;
+    });
+
+    it('releases the optimistic lock when a call settles without a DEVICE_UNLOCK', async () => {
+        const { dispatch, getState, extra } = createThunkDeps();
+        await connectInitThunk()(dispatch, getState, extra);
+
+        // The mocked Connect does not emit DEVICE_UNLOCK, so the wrapper's finally is the only release.
+        await TrezorConnect.call({ method: 'getFeatures', callId: '11111111-1111-4111-8111-111111111111' });
+
+        expect(extra.services.lockDevice).toHaveBeenNthCalledWith(1, true);
+        expect(extra.services.lockDevice).toHaveBeenLastCalledWith(false);
     });
 
     it('only scoped callId-bearing UI events are swallowed by the global listener', async () => {

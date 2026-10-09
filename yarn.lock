@@ -11405,7 +11405,6 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/logger": "workspace:*"
     "@trezor/transport-common": "workspace:*"
-    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

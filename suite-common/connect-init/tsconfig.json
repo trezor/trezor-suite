@@ -19,7 +19,6 @@
         { "path": "../../packages/logger" },
         {
             "path": "../../packages/transport-common"
-        },
-        { "path": "../../packages/utils" }
+        }
     ]
 }

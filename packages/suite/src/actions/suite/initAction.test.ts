@@ -190,6 +190,10 @@ const fixtures: Fixture[] = [
             preloadFeeInfoThunk.pending.type,
             feesActions.updateMultipleFees.type,
             preloadFeeInfoThunk.fulfilled.type,
+            // the TrezorConnect.call wrapper optimistically locks the device for blockchainSetCustomBackend
+            // and releases it when the call settles (the mocked connect emits no DEVICE_UNLOCK)
+            lockDevice.type,
+            lockDevice.type,
             initBlockchainThunk.fulfilled.type,
             periodicCheckTokenDefinitionsThunk.pending.type,
             initTokenDefinitionsThunk.pending.type,
@@ -239,6 +243,10 @@ const fixtures: Fixture[] = [
             preloadFeeInfoThunk.pending.type,
             feesActions.updateMultipleFees.type,
             preloadFeeInfoThunk.fulfilled.type,
+            // the TrezorConnect.call wrapper optimistically locks the device for blockchainSetCustomBackend
+            // and releases it when the call settles (the mocked connect emits no DEVICE_UNLOCK)
+            lockDevice.type,
+            lockDevice.type,
             initBlockchainThunk.fulfilled.type,
             periodicCheckTokenDefinitionsThunk.pending.type,
             initTokenDefinitionsThunk.pending.type,
@@ -290,6 +298,10 @@ const fixtures: Fixture[] = [
             preloadFeeInfoThunk.pending.type,
             feesActions.updateMultipleFees.type,
             preloadFeeInfoThunk.fulfilled.type,
+            // the TrezorConnect.call wrapper optimistically locks the device for blockchainSetCustomBackend
+            // and releases it when the call settles (the mocked connect emits no DEVICE_UNLOCK)
+            lockDevice.type,
+            lockDevice.type,
             initBlockchainThunk.fulfilled.type,
             periodicCheckTokenDefinitionsThunk.pending.type,
             initTokenDefinitionsThunk.pending.type,
