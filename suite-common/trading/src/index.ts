@@ -66,5 +66,6 @@ export * from './utils/signature/signatureUtils';
 export * from './utils/countryUtils';
 export * from './utils/typeGuards';
 export * from './utils/slippageFormValidationSchema';
+export * from './utils/formatSlippagePercent';
 export { getOtcProvidersByCountry, useFetchOtc } from './queries';
 export * from './utils/currencyUtils';

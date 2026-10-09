@@ -1,6 +1,6 @@
 import { decodeFunctionData, formatUnits, isHex, parseAbi, slice, toFunctionSelector } from 'viem';
 
-import { getCryptoId } from '@suite-common/trading';
+import { formatSlippagePercent, getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { fromGwei } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
@@ -133,7 +133,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
                     await tradingResponses.swap.trade();
                 receiveAmount = localizeNumber(receiveStringAmount);
                 formattedReceiveAmount = `${receiveAmount} USDC`;
-                slippagePercent = `${swapSlippage}%`;
+                slippagePercent = formatSlippagePercent({ slippage: swapSlippage, locale: 'en' });
                 const guaranteedShare = new BigNumber(100).minus(swapSlippage).div(100);
                 minimumReceived = new BigNumber(receiveStringAmount).times(guaranteedShare);
                 formattedMinimumReceived = `${localizeNumber(minimumReceived.toFixed(4))} USDC`;
