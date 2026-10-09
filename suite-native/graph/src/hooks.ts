@@ -13,6 +13,7 @@ import {
     selectBaseCurrency,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
+import { selectIsBlockchainInitialized } from '@suite-native/app-init';
 
 import { type RefetchGraphThunkParams } from './graphThunkTypes';
 import { refetchGraphThunk } from './graphThunks';
@@ -44,6 +45,7 @@ export const useGraphData = ({
     isEnabled = true,
 }: UseGraphDataParams) => {
     const { dispatch } = useServices(injectDispatch);
+    const isBlockchainInitialized = useSelector(selectIsBlockchainInitialized);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
@@ -52,8 +54,10 @@ export const useGraphData = ({
     const graphAccounts = accounts ?? returnStableArrayIfEmpty<AccountItem>();
 
     const refetchGraph = useCallback(
-        ({ forceRefetch }: RefetchGraphParams = {}) =>
-            dispatch(
+        ({ forceRefetch }: RefetchGraphParams = {}) => {
+            if (!isBlockchainInitialized) return;
+
+            return dispatch(
                 refetchGraphThunk({
                     instanceId,
                     accounts: graphAccounts,
@@ -64,9 +68,11 @@ export const useGraphData = ({
                     isElectrumBackend,
                     forceRefetch,
                 }),
-            ),
+            );
+        },
         [
             baseCurrencyCode,
+            isBlockchainInitialized,
             dispatch,
             eventsAccount,
             graphAccounts,
@@ -78,10 +84,10 @@ export const useGraphData = ({
     );
 
     useEffect(() => {
-        if (!isEnabled || !isDeviceAuthorized) return;
+        if (!isBlockchainInitialized || !isEnabled || !isDeviceAuthorized) return;
 
         refetchGraph();
-    }, [isEnabled, isDeviceAuthorized, refetchGraph]);
+    }, [isBlockchainInitialized, isEnabled, isDeviceAuthorized, refetchGraph]);
 
     return { refetchGraph };
 };

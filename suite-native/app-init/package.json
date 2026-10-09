@@ -8,9 +8,11 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest:native",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/earn-stablecoin-api": "workspace:*",
         "@suite-common/message-system": "workspace:*",
@@ -19,7 +21,6 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/walletconnect": "workspace:*",
         "@suite-native/analytics-redux": "workspace:*",
-        "@suite-native/settings": "workspace:*",
-        "@suite-native/state": "workspace:*"
+        "@suite-native/settings": "workspace:*"
     }
 }

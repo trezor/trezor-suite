@@ -76,6 +76,7 @@
             "path": "../../suite-common/walletconnect"
         },
         { "path": "../analytics" },
+        { "path": "../app-init" },
         { "path": "../banners" },
         { "path": "../biometrics" },
         { "path": "../blockchain" },

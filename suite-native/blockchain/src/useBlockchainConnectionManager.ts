@@ -10,6 +10,7 @@ import {
     reconnectBlockchainThunk,
     selectBlockchainBackendType,
 } from '@suite-common/wallet-core';
+import { selectIsBlockchainInitialized } from '@suite-native/app-init';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
@@ -18,13 +19,14 @@ const symbol: NetworkSymbol = asNetworkSymbol('btc');
 
 export const useBlockchainConnectionManager = () => {
     const { dispatch } = useServices(injectDispatch);
+    const isBlockchainInitialized = useSelector(selectIsBlockchainInitialized);
 
     const blockchainBackendType = useSelector((state: BlockchainRootState) =>
         selectBlockchainBackendType(state, symbol),
     );
 
     useEffect(() => {
-        if (blockchainBackendType === 'electrum') {
+        if (isBlockchainInitialized && blockchainBackendType === 'electrum') {
             // ElectrumClient tries to keep its server connection alive, which causes issues when
             // the mobile app is moved to the background. Since the app is eventually suspended and
             // the connection closed, the app later crashes when it tries to use an already closed
@@ -41,5 +43,5 @@ export const useBlockchainConnectionManager = () => {
                 subscription.remove();
             };
         }
-    }, [blockchainBackendType, dispatch]);
+    }, [blockchainBackendType, isBlockchainInitialized, dispatch]);
 };

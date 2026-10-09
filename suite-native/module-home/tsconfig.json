@@ -34,6 +34,7 @@
         { "path": "../accounts" },
         { "path": "../alerts" },
         { "path": "../analytics" },
+        { "path": "../app-init" },
         { "path": "../assets" },
         { "path": "../atoms" },
         { "path": "../banners" },
