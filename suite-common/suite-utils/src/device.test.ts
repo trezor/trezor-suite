@@ -1,6 +1,6 @@
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import fixtures from './__fixtures__/device';

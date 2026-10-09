@@ -9,6 +9,7 @@ import {
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '@trezor/components';
+import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { palette } from '@trezor/theme';
 
@@ -67,7 +68,7 @@ const Ghost = ({ rotate, x, y }: { rotate: number; x: string; y: string }) => (
 );
 
 export const DeviceWithScene = ({
-    deviceModel,
+    deviceModel = DEFAULT_FLAGSHIP_MODEL,
     scene,
     unitColor,
     objectFit,
