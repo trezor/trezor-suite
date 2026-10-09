@@ -1,5 +1,4 @@
 import { type RequestOptions, coordinatorRequest } from './coordinatorRequest';
-import { AFFILIATION_ID } from '../constants';
 import {
     type CoinjoinStatus,
     type ConfirmationData,
@@ -115,22 +114,8 @@ export const outputRegistration = (
         options,
     );
 
-export const readyToSign = (
-    RoundId: string,
-    AliceId: string,
-    affiliationFlag: boolean,
-    options: RequestOptions,
-) =>
-    request(
-        'ready-to-sign',
-        {
-            RoundId,
-            AliceId,
-            // NOTE: if affiliationFlag is not set behave as WalletWasabi clients
-            AffiliationId: affiliationFlag ? AFFILIATION_ID.trezor : AFFILIATION_ID.wasabi,
-        },
-        options,
-    );
+export const readyToSign = (RoundId: string, AliceId: string, options: RequestOptions) =>
+    request('ready-to-sign', { RoundId, AliceId }, options);
 
 export const transactionSignature = (
     RoundId: string,

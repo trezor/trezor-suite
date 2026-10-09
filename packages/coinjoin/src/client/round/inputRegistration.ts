@@ -127,9 +127,8 @@ const registerInput = async (
     const amount = input.amount - coordinatorFee - miningFee;
     const vsize = roundParameters.MaxVsizeAllocationPerAlice - input.inputSize;
 
-    // store RegistrationData and affiliateFlag
-    input.setRegistrationData(registrationData, coordinatorFee > 0);
-    // and put input to prison
+    input.setRegistrationData(registrationData);
+    // Put input to prison.
     round.prison.detain(input, {
         roundId: round.id,
         errorCode: WabiSabiProtocolErrorCode.AliceAlreadyRegistered,

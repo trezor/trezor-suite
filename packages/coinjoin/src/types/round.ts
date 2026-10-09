@@ -3,12 +3,7 @@ import type { Network } from '@trezor/utxo-lib';
 
 import type { AccountAddress } from './account';
 import type { AliceShape, SerializedAlice } from './alice';
-import type {
-    AffiliationId,
-    CoinjoinAffiliateRequest,
-    CoinjoinRoundParameters,
-    Round,
-} from './coordinator';
+import type { CoinjoinRequest, CoinjoinRoundParameters, Round } from './coordinator';
 import type { RawLiquidityClue } from './middleware';
 import type { CoinjoinPrisonShape } from './prison';
 import type { EndRoundState, RoundPhase, SessionPhase } from '../enums';
@@ -25,7 +20,6 @@ export interface CoinjoinRoundOptions {
     coordinatorUrl: string;
     middlewareUrl: string;
     logger: Logger;
-    affiliationId?: AffiliationId;
     setSessionPhase: (event: SessionPhaseEvent) => void;
 }
 
@@ -40,7 +34,6 @@ export interface CoinjoinRoundShape {
     inputRegistrationEnd: string;
     amountCredentialIssuerParameters: Round['AmountCredentialIssuerParameters'];
     vsizeCredentialIssuerParameters: Round['VsizeCredentialIssuerParameters'];
-    affiliateRequest: Round['AffiliateRequest'];
 
     roundParameters: CoinjoinRoundParameters;
     inputs: AliceShape[]; // list of registered inputs
@@ -50,7 +43,6 @@ export interface CoinjoinRoundShape {
     roundDeadline: number; // deadline is inaccurate,round may end earlier
     commitmentData: string; // commitment data used for ownership proof and witness requests
     addresses: (AccountAddress & { accountKey: string })[]; // list of addresses (outputs) used in this round in outputRegistration phase
-    transactionSignTries: number[]; // timestamps for processing transactionSigning phase
     transactionData?: CoinjoinTransactionData; // transaction to sign
     broadcastedTxDetails?: BroadcastedTransactionDetails; // transaction broadcasted
     liquidityClues?: CoinjoinTransactionLiquidityClue[]; // updated liquidity clues
@@ -104,7 +96,7 @@ export interface CoinjoinTxOutputs {
 export interface CoinjoinTransactionData {
     inputs: CoinjoinTxInputs[];
     outputs: CoinjoinTxOutputs[];
-    affiliateRequest: CoinjoinAffiliateRequest;
+    coinjoinRequest: CoinjoinRequest;
 }
 
 export interface BroadcastedTransactionDetails extends CoinjoinTransactionData {
