@@ -1,3 +1,5 @@
+import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
+
 import { type NetworkIconSymbol, legacyIconSymbols, networkSymbols } from './iconSymbols';
 import { type NetworkIconName } from './networkIcons';
 
@@ -76,3 +78,10 @@ export const isTestnetNetworkIconSymbol = (
 /** Symbol has a bundled coin disc SVG (listed in the network icon map and present in cryptoIcons). */
 export const isCryptoIconSymbol = (symbol: string): symbol is NetworkIconSymbol =>
     cryptoIconSymbolSet.has(symbol);
+
+/**
+ * The coin disc for a network's native asset. A layer 2 shows the coin of the network it settles
+ * on; keying by display symbol instead would miss a network whose native asset is a stablecoin.
+ */
+export const getNativeAssetIconSymbol = (networkSymbol: NetworkSymbol): NetworkSymbol =>
+    getNetworkOptional(networkSymbol)?.settlementLayer ?? networkSymbol;
