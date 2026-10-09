@@ -45,7 +45,7 @@ export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logg
             // Lazy-require so only the SELECTED native usb addon is ever loaded - never both at
             // once, which would make libusb (2.x) and nusb (3.x) contend for the same device.
             const { WebUSB, usb } = require('usb-legacy');
-            if (logger?.enabled) {
+            if (logger?.isEnabled()) {
                 // https://libusb.sourceforge.io/api-1.0/group__libusb__lib.html#ga2d6144203f0fc6d373677f6e2e89d2d2
                 usb.setDebugLevel(1);
             }
