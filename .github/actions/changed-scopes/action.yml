@@ -27,8 +27,7 @@ runs:
             - 'docs/**'
             - '.github/ISSUE_TEMPLATE/**'
           rust:
-            - 'packages/transport-bluetooth/**/*.rs'
-            - 'packages/transport-bluetooth/Cargo.{toml,lock}'
+            - '**/{*.rs,Cargo.toml,Cargo.lock}'
             - 'packages/transport-bluetooth/scripts/{Dockerfile,build.sh}'
           javascript:
             - '**'
@@ -37,8 +36,7 @@ runs:
             - '!docs/**'
             - '!.github/ISSUE_TEMPLATE/**'
             # rust excludes
-            - '!packages/transport-bluetooth/**/*.rs'
-            - '!packages/transport-bluetooth/Cargo.{toml,lock}'
+            - '!**/{*.rs,Cargo.toml,Cargo.lock}'
             - '!packages/transport-bluetooth/scripts/{Dockerfile,build.sh}'
             # dev - not used by any CI job.
             - '!**/*.nix'

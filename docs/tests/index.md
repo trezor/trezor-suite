@@ -19,8 +19,10 @@ The [changed-scopes action](../../.github/actions/changed-scopes/action.yml) is 
 [PR web/desktop E2E](../../.github/workflows/test-suite-web-desktop-e2e-pr.yml).
 It sorts changed files into three scopes:
 
-- `rust`: Bluetooth server sources in `packages/transport-bluetooth`.
-  Runs **Rust checks**: `cargo fmt`, `cargo clippy` and `cargo test`.
+- `rust`: Rust sources (`*.rs`) and Cargo manifests/lockfiles anywhere in the repository,
+  plus the Bluetooth server's Dockerfile and build script.
+  Runs **Rust checks**: `cargo fmt`, `cargo clippy` and `cargo test` in `packages/transport-bluetooth`.
+  Adding another Rust project requires extending these checks.
 - `docs`: Markdown files, `docs/**` and `.github/ISSUE_TEMPLATE/**`.
   Runs **Docs checks**: Prettier (`format:verify`) and the Markdown link check.
 - `javascript`: everything else, except local development files
