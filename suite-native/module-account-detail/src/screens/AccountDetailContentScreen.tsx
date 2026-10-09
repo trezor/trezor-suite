@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
@@ -44,8 +44,14 @@ export const AccountDetailContentScreen = ({
         [account.key, tokenContract],
     );
 
-    const listEmptyComponent = useMemo(
-        () => <AccountDetailEmptyState accountKey={account.key} tokenContract={tokenContract} />,
+    const renderListEmptyComponent = useCallback(
+        ({ isRecentWindowEmpty }: { isRecentWindowEmpty: boolean }) => (
+            <AccountDetailEmptyState
+                accountKey={account.key}
+                tokenContract={tokenContract}
+                isRecentWindowEmpty={isRecentWindowEmpty}
+            />
+        ),
         [account.key, tokenContract],
     );
 
@@ -62,7 +68,7 @@ export const AccountDetailContentScreen = ({
                 account={account}
                 tokenContract={tokenContract}
                 listHeaderComponent={listHeaderComponent}
-                listEmptyComponent={listEmptyComponent}
+                renderListEmptyComponent={renderListEmptyComponent}
             />
         </Screen>
     );
