@@ -32,4 +32,5 @@ export interface WalletSettings {
     isAutoEjectEnabled: boolean;
     addressDisplayType: AddressDisplayOptions;
     homeAssetsTableGrouping: HomeAssetsTableGrouping;
+    areHomeAssetSmallBalancesShown: boolean;
 }

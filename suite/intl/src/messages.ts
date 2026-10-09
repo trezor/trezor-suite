@@ -1814,6 +1814,14 @@ export const messages = defineMessages({
         defaultMessage: 'How do you like the new asset table?',
         id: 'TR_HOME_ASSET_FEEDBACK_TITLE',
     },
+    TR_HOME_ASSET_SMALL_BALANCES: {
+        defaultMessage: 'Show small balances',
+        id: 'TR_HOME_ASSET_SMALL_BALANCES',
+    },
+    TR_HOME_ASSET_SMALL_BALANCES_SUMMARY: {
+        defaultMessage: '{count, plural, one {# asset} other {# assets}}',
+        id: 'TR_HOME_ASSET_SMALL_BALANCES_SUMMARY',
+    },
     TR_HOME_ASSET_UNHIDE: {
         defaultMessage: 'Unhide',
         id: 'TR_HOME_ASSET_UNHIDE',

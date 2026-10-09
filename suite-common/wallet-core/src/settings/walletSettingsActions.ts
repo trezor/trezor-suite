@@ -59,6 +59,11 @@ export const setHomeAssetsTableGrouping = createAction(
     (value: HomeAssetsTableGrouping) => ({ payload: value }),
 );
 
+export const showHomeAssetSmallBalances = createAction(
+    WALLET_SETTINGS.SHOW_HOME_ASSET_SMALL_BALANCES,
+    (areShown: boolean) => ({ payload: areShown }),
+);
+
 export const changeCoinVisibilityEvent = createAction(
     WALLET_SETTINGS.CHANGE_COIN_VISIBILITY,
     (payload: { symbol: NetworkSymbol; shouldBeVisible: boolean }) => ({ payload }),

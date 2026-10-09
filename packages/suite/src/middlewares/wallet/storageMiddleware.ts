@@ -74,6 +74,7 @@ import {
     setMevProtection,
     setNetworkReserve,
     setSuspiciousTransactionsFilter,
+    showHomeAssetSmallBalances,
     stellarContractTokensActions,
     transactionsActions,
     updateTxsFiatRatesThunk,
@@ -566,6 +567,7 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             setAutoEjectEnabled,
             setAddressDisplayType,
             setHomeAssetsTableGrouping,
+            showHomeAssetSmallBalances,
             setSuspiciousTransactionsFilter,
         )(action)
     ) {

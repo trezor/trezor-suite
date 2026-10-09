@@ -8,6 +8,7 @@ const SET_NETWORK_RESERVE = '@wallet-settings/set-network-reserve';
 const SET_AUTO_EJECT = '@wallet-settings/set-auto-eject';
 const SET_ADDRESS_DISPLAY_TYPE = '@wallet-settings/set-address-display-type';
 const SET_HOME_ASSETS_TABLE_GROUPING = '@wallet-settings/set-home-assets-table-grouping';
+const SHOW_HOME_ASSET_SMALL_BALANCES = '@wallet-settings/show-home-asset-small-balances';
 
 export const WALLET_SETTINGS = {
     SET_BASE_CURRENCY,
@@ -20,4 +21,5 @@ export const WALLET_SETTINGS = {
     SET_AUTO_EJECT,
     SET_ADDRESS_DISPLAY_TYPE,
     SET_HOME_ASSETS_TABLE_GROUPING,
+    SHOW_HOME_ASSET_SMALL_BALANCES,
 } as const;
