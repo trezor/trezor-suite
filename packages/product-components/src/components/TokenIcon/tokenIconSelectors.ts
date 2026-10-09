@@ -15,10 +15,13 @@ export const selectCoingeckoIdAndContractAddressIncludesNativeTokens: (
 ) => { coingeckoId: string; contractAddresses: readonly string[] } = createSelector(
     [
         (state: NetworkConfigState, coingeckoId: string) => {
-            const mainNetworkSymbol = selectNetworkConfigByCoingeckoId(
-                state,
-                coingeckoId,
-            )?.displaySymbol?.toLowerCase();
+            const network = selectNetworkConfigByCoingeckoId(state, coingeckoId);
+
+            if (network?.nativeAssetCryptoId) {
+                return network.nativeAssetCryptoId;
+            }
+
+            const mainNetworkSymbol = network?.displaySymbol?.toLowerCase();
 
             return mainNetworkSymbol
                 ? selectNetworkConfig(state, mainNetworkSymbol)?.tradeCryptoId

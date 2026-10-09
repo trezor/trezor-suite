@@ -10,11 +10,20 @@ const ethereumConfig = {
     coingeckoId: 'ethereum',
     tradeCryptoId: 'ethereum-native',
 };
-const state: NetworkConfigState = { networks: { [ethereum]: ethereumConfig } };
+const arc = asNetworkSymbol('arc');
+const arcConfig = {
+    name: 'Arc',
+    displaySymbol: 'ARC',
+    coingeckoId: 'arc',
+    tradeCryptoId: 'arc-native',
+    nativeAssetCryptoId: 'usd-coin',
+};
+const state: NetworkConfigState = { networks: { [ethereum]: ethereumConfig, [arc]: arcConfig } };
 
 type TokenIconTestCase = {
     description: string;
     state: NetworkConfigState;
+    coingeckoId?: string;
     contractAddresses: readonly string[] | undefined;
     expected: ReturnType<typeof selectCoingeckoIdAndContractAddressIncludesNativeTokens>;
 };
@@ -59,17 +68,34 @@ const cases: TokenIconTestCase[] = [
         contractAddresses: undefined,
         expected: { coingeckoId: 'ethereum', contractAddresses: [ZERO_ADDRESS] },
     },
+    {
+        description: 'uses the native asset ID of a network whose native asset is a foreign coin',
+        state,
+        coingeckoId: 'arc',
+        contractAddresses: [ZERO_ADDRESS],
+        expected: { coingeckoId: 'usd-coin', contractAddresses: [ZERO_ADDRESS] },
+    },
+    {
+        description: 'keeps the platform ID for token contracts on such a network',
+        state,
+        coingeckoId: 'arc',
+        contractAddresses: ['contract'],
+        expected: { coingeckoId: 'arc', contractAddresses: ['contract'] },
+    },
 ];
 
-it.each(cases)('$description', ({ state: configuredState, contractAddresses, expected }) => {
-    expect(
-        selectCoingeckoIdAndContractAddressIncludesNativeTokens(
-            configuredState,
-            'ethereum',
-            contractAddresses,
-        ),
-    ).toEqual(expected);
-});
+it.each(cases)(
+    '$description',
+    ({ state: configuredState, coingeckoId = 'ethereum', contractAddresses, expected }) => {
+        expect(
+            selectCoingeckoIdAndContractAddressIncludesNativeTokens(
+                configuredState,
+                coingeckoId,
+                contractAddresses,
+            ),
+        ).toEqual(expected);
+    },
+);
 
 it('keeps the selected result stable across unrelated state changes and updates native metadata', () => {
     const selected = selectCoingeckoIdAndContractAddressIncludesNativeTokens(

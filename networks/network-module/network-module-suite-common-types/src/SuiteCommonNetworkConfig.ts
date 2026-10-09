@@ -96,6 +96,7 @@ export type SuiteCommonNetworkConfig = {
      * Ethereum L2s set this to `eth` so native-asset metadata and icons resolve to Ethereum.
      */
     readonly settlementLayer?: NetworkSymbol;
+    readonly nativeAssetCryptoId?: string;
     readonly displaySymbol: string;
     readonly displaySymbolName?: string;
     readonly name: string;
