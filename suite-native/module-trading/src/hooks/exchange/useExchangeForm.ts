@@ -28,7 +28,7 @@ import {
 import type { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useBitcoinSwapMaxSpendableAmount } from './useBitcoinSwapMaxSpendableAmount';
+import { useBitcoinExchangeMaxSpendableAmount } from './useBitcoinExchangeMaxSpendableAmount';
 import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
 import { setExchangeSendCryptoAmount } from '../../utils/exchange/exchangeSendAmountUtils';
 import { type TradingFormWithMetadata } from '../general/form/tradingFormTypes';
@@ -231,7 +231,7 @@ export const useExchangeForm = (): TradingFormWithMetadata<ExchangeFormType> => 
         setContractAddress,
         setAccountKey,
     } = useContextForTradingForm(limits);
-    const maxSpendableAmount = useBitcoinSwapMaxSpendableAmount(
+    const maxSpendableAmount = useBitcoinExchangeMaxSpendableAmount(
         tradingFormContext.maxSpendableAmount,
     );
     const context = { ...tradingFormContext, maxSpendableAmount };

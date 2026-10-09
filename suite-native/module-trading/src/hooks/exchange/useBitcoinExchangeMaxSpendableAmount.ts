@@ -7,9 +7,9 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { BigNumber } from '@trezor/utils';
 
-import { getBitcoinSwapMaxAmount } from '../../utils/exchange/bitcoinSwapUtils';
+import { getBitcoinExchangeMaxAmount } from '../../utils/exchange/bitcoinExchangeUtils';
 
-type BitcoinSwapMaxAmount = {
+type BitcoinExchangeMaxAmount = {
     accountKey: AccountKey;
     amount: string | undefined;
 };
@@ -18,13 +18,14 @@ type BitcoinSwapMaxAmount = {
  * Lowers the max spendable amount of a bitcoin send account so that the swap transaction can also
  * carry the extra outputs of the compose template.
  */
-export const useBitcoinSwapMaxSpendableAmount = (maxSpendableAmount: string | undefined) => {
+export const useBitcoinExchangeMaxSpendableAmount = (maxSpendableAmount: string | undefined) => {
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const btcSwapComposeTemplate = useSelector(selectTradingBtcSwapComposeTemplate);
     const feeInfo = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeInfo(state, sendAccount?.symbol),
     );
-    const [bitcoinSwapMaxAmount, setBitcoinSwapMaxAmount] = useState<BitcoinSwapMaxAmount>();
+    const [bitcoinExchangeMaxAmount, setBitcoinExchangeMaxAmount] =
+        useState<BitcoinExchangeMaxAmount>();
 
     useEffect(() => {
         if (!sendAccount) {
@@ -33,10 +34,10 @@ export const useBitcoinSwapMaxSpendableAmount = (maxSpendableAmount: string | un
 
         let isMounted = true;
 
-        getBitcoinSwapMaxAmount({ account: sendAccount, btcSwapComposeTemplate, feeInfo }).then(
+        getBitcoinExchangeMaxAmount({ account: sendAccount, btcSwapComposeTemplate, feeInfo }).then(
             amount => {
                 if (isMounted) {
-                    setBitcoinSwapMaxAmount({ accountKey: sendAccount.key, amount });
+                    setBitcoinExchangeMaxAmount({ accountKey: sendAccount.key, amount });
                 }
             },
         );
@@ -46,14 +47,14 @@ export const useBitcoinSwapMaxSpendableAmount = (maxSpendableAmount: string | un
         };
     }, [sendAccount, btcSwapComposeTemplate, feeInfo]);
 
-    const swapMaxAmount =
-        bitcoinSwapMaxAmount?.accountKey === sendAccount?.key
-            ? bitcoinSwapMaxAmount?.amount
+    const exchangeMaxAmount =
+        bitcoinExchangeMaxAmount?.accountKey === sendAccount?.key
+            ? bitcoinExchangeMaxAmount?.amount
             : undefined;
 
-    if (!maxSpendableAmount || !swapMaxAmount) {
+    if (!maxSpendableAmount || !exchangeMaxAmount) {
         return maxSpendableAmount;
     }
 
-    return BigNumber.min(maxSpendableAmount, swapMaxAmount).toFixed();
+    return BigNumber.min(maxSpendableAmount, exchangeMaxAmount).toFixed();
 };

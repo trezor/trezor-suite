@@ -6,7 +6,7 @@ import { type Account, type FeeInfo } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-type BitcoinSwapComposeParams = {
+type BitcoinExchangeComposeParams = {
     account: Account;
     btcSwapComposeTemplate: BtcSwapComposeTemplate | undefined;
     feeInfo: FeeInfo | null;
@@ -17,7 +17,7 @@ type BitcoinSwapComposeParams = {
 const getNormalFeePerUnit = (feeInfo: FeeInfo | null) =>
     feeInfo?.levels.find(level => level.label === 'normal')?.feePerUnit;
 
-type GetBitcoinSwapFromAddressParams = BitcoinSwapComposeParams & {
+type GetBitcoinExchangeFromAddressParams = BitcoinExchangeComposeParams & {
     sendCryptoAmount: string;
     shouldSendInSats: boolean;
 };
@@ -26,13 +26,13 @@ type GetBitcoinSwapFromAddressParams = BitcoinSwapComposeParams & {
  * Returns the input addresses of a simulated bitcoin swap transaction, joined by `;` as the quote
  * request `fromAddress` expects. DEX providers build the PSBT from the UTXOs of these addresses.
  */
-export const getBitcoinSwapFromAddress = async ({
+export const getBitcoinExchangeFromAddress = async ({
     account,
     btcSwapComposeTemplate,
     feeInfo,
     sendCryptoAmount,
     shouldSendInSats,
-}: GetBitcoinSwapFromAddressParams): Promise<string | undefined> => {
+}: GetBitcoinExchangeFromAddressParams): Promise<string | undefined> => {
     if (account.networkType !== 'bitcoin') {
         return undefined;
     }
@@ -55,11 +55,11 @@ export const getBitcoinSwapFromAddress = async ({
  * Returns the maximum amount (in network units) of a bitcoin swap, which is lower than the max of
  * a regular send because the swap transaction carries the extra outputs of the compose template.
  */
-export const getBitcoinSwapMaxAmount = async ({
+export const getBitcoinExchangeMaxAmount = async ({
     account,
     btcSwapComposeTemplate,
     feeInfo,
-}: BitcoinSwapComposeParams): Promise<string | undefined> => {
+}: BitcoinExchangeComposeParams): Promise<string | undefined> => {
     if (account.networkType !== 'bitcoin') {
         return undefined;
     }

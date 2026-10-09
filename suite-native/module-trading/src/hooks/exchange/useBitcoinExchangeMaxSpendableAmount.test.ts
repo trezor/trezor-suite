@@ -9,7 +9,7 @@ import {
     getInitializedTradingState,
 } from '@suite-native/trading-fixtures';
 
-import { useBitcoinSwapMaxSpendableAmount } from './useBitcoinSwapMaxSpendableAmount';
+import { useBitcoinExchangeMaxSpendableAmount } from './useBitcoinExchangeMaxSpendableAmount';
 import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 jest.mock('@suite-common/trading', () => ({
@@ -23,15 +23,15 @@ const BTC_SWAP_COMPOSE_TEMPLATE: BtcSwapComposeTemplate = {
     extraOutputs: [{ type: 'opreturn', dataHex: 'aa' }],
 };
 
-describe(useBitcoinSwapMaxSpendableAmount.name, () => {
-    const renderUseBitcoinSwapMaxSpendableAmount = async (
+describe(useBitcoinExchangeMaxSpendableAmount.name, () => {
+    const renderUseBitcoinExchangeMaxSpendableAmount = async (
         maxSpendableAmount: string | undefined,
         tradingAccountKey: AccountKey,
     ) => {
         const tradingState = getInitializedTradingState('exchange');
 
         return await renderHookWithTradingProvider(
-            () => useBitcoinSwapMaxSpendableAmount(maxSpendableAmount),
+            () => useBitcoinExchangeMaxSpendableAmount(maxSpendableAmount),
             {
                 tradeType: 'exchange',
                 overrides: {
@@ -61,7 +61,7 @@ describe(useBitcoinSwapMaxSpendableAmount.name, () => {
             amount: '800000',
         });
 
-        const { result } = await renderUseBitcoinSwapMaxSpendableAmount(
+        const { result } = await renderUseBitcoinExchangeMaxSpendableAmount(
             '0.009',
             btc1NormalAccount.key,
         );
@@ -82,7 +82,7 @@ describe(useBitcoinSwapMaxSpendableAmount.name, () => {
             amount: '950000',
         });
 
-        const { result } = await renderUseBitcoinSwapMaxSpendableAmount(
+        const { result } = await renderUseBitcoinExchangeMaxSpendableAmount(
             '0.009',
             btc1NormalAccount.key,
         );
@@ -94,7 +94,7 @@ describe(useBitcoinSwapMaxSpendableAmount.name, () => {
     it('should keep the max amount when the bitcoin swap max cannot be derived', async () => {
         mockDeriveBitcoinSwapFromAddresses.mockResolvedValue(undefined);
 
-        const { result } = await renderUseBitcoinSwapMaxSpendableAmount(
+        const { result } = await renderUseBitcoinExchangeMaxSpendableAmount(
             '0.009',
             btc1NormalAccount.key,
         );
@@ -104,7 +104,7 @@ describe(useBitcoinSwapMaxSpendableAmount.name, () => {
     });
 
     it('should keep the max amount of a non-bitcoin account', async () => {
-        const { result } = await renderUseBitcoinSwapMaxSpendableAmount(
+        const { result } = await renderUseBitcoinExchangeMaxSpendableAmount(
             '1.5',
             eth1NormalAccount.key,
         );

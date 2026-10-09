@@ -25,7 +25,7 @@ import { type AbortablePromise, type ExchangeFormType } from '@suite-native/trad
 import { useServices } from '@trezor/dependency-injection';
 import { noop } from '@trezor/utils';
 
-import { getBitcoinSwapFromAddress } from '../../utils/exchange/bitcoinSwapUtils';
+import { getBitcoinExchangeFromAddress } from '../../utils/exchange/bitcoinExchangeUtils';
 import { tradingExchangeFormToTradingExchangeFormProps } from '../../utils/exchange/quotesUtils';
 import { getReceiveAccountAddressText } from '../../utils/general/receiveAccountUtils';
 import { getQuotesRequestKey, useQuotesRequest } from '../general/useQuotesRequest';
@@ -84,8 +84,8 @@ export const useExchangeQuotes = ({ getValues, control }: ExchangeFormType) => {
         const state = store.getState();
 
         const request = (async () => {
-            const bitcoinSwapFromAddress = selectedSendAccount
-                ? await getBitcoinSwapFromAddress({
+            const bitcoinExchangeFromAddress = selectedSendAccount
+                ? await getBitcoinExchangeFromAddress({
                       account: selectedSendAccount,
                       btcSwapComposeTemplate: selectTradingBtcSwapComposeTemplate(state),
                       feeInfo: selectConvertedNetworkFeeInfo(state, selectedSendAccount.symbol),
@@ -101,8 +101,8 @@ export const useExchangeQuotes = ({ getValues, control }: ExchangeFormType) => {
             }
 
             const payload: HandleExchangeRequestThunkProps = {
-                formValues: bitcoinSwapFromAddress
-                    ? { ...formValues, fromAddress: bitcoinSwapFromAddress }
+                formValues: bitcoinExchangeFromAddress
+                    ? { ...formValues, fromAddress: bitcoinExchangeFromAddress }
                     : formValues,
                 network,
                 shouldSendInSats,
