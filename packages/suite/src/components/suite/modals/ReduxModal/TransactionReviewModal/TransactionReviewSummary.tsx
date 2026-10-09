@@ -19,7 +19,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
-import { useLocales, useSelector } from 'src/hooks/suite';
+import { useConnectedDateFnsLocale, useSelector } from 'src/hooks/suite';
 import { type AppState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 
@@ -64,7 +64,7 @@ export const TransactionReviewSummary = ({
     const drafts = useSelector(selectSendFormDrafts);
     const currentAccountKey = useSelector(selectCurrentAccountKey) as string;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
-    const locale = useLocales();
+    const locale = useConnectedDateFnsLocale();
     const { symbol, networkType } = account;
     const network = getNetwork(symbol);
     const fee = getFee(account.networkType, tx);
