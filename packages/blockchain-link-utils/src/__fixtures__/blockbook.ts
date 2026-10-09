@@ -681,6 +681,88 @@ export const transformTransaction: {
         },
     },
     {
+        description: 'BTC: sent to one address with two change outputs',
+        descriptor: 'xpub',
+        addresses: {
+            used: [{ address: 'A' }],
+            unused: [],
+            change: [{ address: 'A-change' }, { address: 'A-change-2' }],
+        },
+        tx: {
+            vin: [
+                {
+                    addresses: ['A'],
+                    value: '100',
+                },
+            ],
+            vout: [
+                {
+                    value: '30',
+                    addresses: ['A-change'],
+                },
+                {
+                    addresses: ['B'],
+                    value: '40',
+                },
+                {
+                    value: '20',
+                    addresses: ['A-change-2'],
+                },
+            ],
+            ...FEES,
+        },
+        parsed: {
+            type: 'sent',
+            amount: '40',
+            targets: [
+                {
+                    addresses: ['B'],
+                },
+            ],
+        },
+    },
+    {
+        description: 'BTC: sent to myself with two change outputs and one own receive output',
+        descriptor: 'xpub',
+        addresses: {
+            used: [{ address: 'A' }],
+            unused: [{ address: 'A2' }],
+            change: [{ address: 'A-change' }, { address: 'A-change-2' }],
+        },
+        tx: {
+            vin: [
+                {
+                    addresses: ['A'],
+                    value: '100',
+                },
+            ],
+            vout: [
+                {
+                    value: '30',
+                    addresses: ['A-change'],
+                },
+                {
+                    addresses: ['A2'],
+                    value: '40',
+                },
+                {
+                    value: '20',
+                    addresses: ['A-change-2'],
+                },
+            ],
+            ...FEES,
+        },
+        parsed: {
+            type: 'self',
+            amount: '10', // only fee
+            targets: [
+                {
+                    addresses: ['A2'],
+                },
+            ],
+        },
+    },
+    {
         description: 'BTC: sent to myself (1 input, 1 change output)',
         descriptor: 'xpub',
         addresses: {
