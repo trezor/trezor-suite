@@ -15,8 +15,7 @@ type BitcoinExchangeMaxAmount = {
 };
 
 /**
- * Lowers the max spendable amount of a bitcoin send account so that the swap transaction can also
- * carry the extra outputs of the compose template.
+ * Returns the lower of the given max spendable amount and the max amount of a bitcoin swap.
  */
 export const useBitcoinExchangeMaxSpendableAmount = (maxSpendableAmount: string | undefined) => {
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
