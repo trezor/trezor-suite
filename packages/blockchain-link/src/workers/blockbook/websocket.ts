@@ -21,6 +21,12 @@ type GetCurrentFiatRates = MessageTypes.GetCurrentFiatRates;
 type GetFiatRatesForTimestamps = MessageTypes.GetFiatRatesForTimestamps;
 type GetFiatRatesTickersList = MessageTypes.GetFiatRatesTickersList;
 
+// A push rejected by our own deadline reports "send failed" while blockbook may still broadcast
+// the transaction, and the retry then pays the recipient twice. Answering definitively costs
+// blockbook up to 4x its 25s rpc_timeout (the relay fall-through on ETH, the synchronous mempool
+// add on disableMempoolSync coins), so our deadline has to outlast that.
+export const PUSH_TRANSACTION_TIMEOUT = 110 * 1000;
+
 interface BlockbookEvents {
     block: BlockNotification;
     mempool: MempoolTransactionNotification;
@@ -60,6 +66,12 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
     }
 
     send: Send = (method, params = {}) => this.sendMessage({ method, params });
+
+    // `send` has no room for a per-request timeout, and hand-writing the response type here would
+    // drop the method-to-response mapping `Send` already carries.
+    private sendWithTimeout(timeout: number): Send {
+        return (method, params = {}) => this.sendMessage({ method, params }, { timeout });
+    }
 
     getServerInfo() {
         return this.send('getInfo');
@@ -118,7 +130,10 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
     }
 
     pushTransaction(hex: string, disableAlternativeRPC?: boolean) {
-        return this.send('sendTransaction', { hex, disableAlternativeRPC });
+        return this.sendWithTimeout(PUSH_TRANSACTION_TIMEOUT)('sendTransaction', {
+            hex,
+            disableAlternativeRPC,
+        });
     }
 
     estimateFee(payload: EstimateFeeParams) {
