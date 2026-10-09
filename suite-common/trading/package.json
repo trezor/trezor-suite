@@ -44,7 +44,8 @@
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0",
-        "yup": "1.7.1"
+        "yup": "1.7.1",
+        "zod": "4.6.5"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",

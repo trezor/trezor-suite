@@ -1,5 +1,6 @@
 import { type SerializedError } from '@reduxjs/toolkit';
 import type {
+    BtcSwapComposeTemplate,
     BuyCryptoPaymentMethod,
     BuyProviderInfo,
     BuyTrade,
@@ -9,6 +10,7 @@ import type {
     ExchangeTrade,
     ExchangeTradeStatus,
     FiatCurrencyCode,
+    InfoResponse,
     SellCryptoPaymentMethod,
     SellFiatTrade,
     SellProviderInfo,
@@ -37,6 +39,14 @@ import type * as constants from './constants';
 
 export type TradeServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
 export type TradeServers = Record<TradeServerEnvironment, string>;
+
+export type TradingInfoConfig = {
+    btcSwapComposeTemplate?: BtcSwapComposeTemplate;
+};
+
+export type TradingInfoResponse = Omit<InfoResponse, 'config'> & {
+    config: TradingInfoConfig;
+};
 
 export type TradingBuyType = 'buy';
 export type TradingSellType = 'sell';
