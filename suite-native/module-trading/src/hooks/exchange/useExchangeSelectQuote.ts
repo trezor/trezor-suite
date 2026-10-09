@@ -41,9 +41,10 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-// Selecting a quote clears the form amount, which invalidates the quotes request before the trade
-// is confirmed. DEX trades need the request `fromAddress` (e.g. the bitcoin swap input
-// addresses), so it is kept on the selected quote.
+/**
+ * Copies the quotes request `fromAddress` to a DEX quote, because the request is cleared before
+ * the trade is confirmed.
+ */
 const getQuoteWithRequestFromAddress = (
     quote: ExchangeTrade,
     requestFromAddress: string | undefined,
