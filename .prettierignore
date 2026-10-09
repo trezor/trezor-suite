@@ -137,7 +137,7 @@ suite-native/storybook/.rnstorybook/storybook.requires.ts
 # @suite/app-assets
 suite/app-assets/files/browser-detection
 suite/app-assets/files/guide
-suite/app-assets/files/translations/master.json
+suite/intl/translations/master.json
 
 # lottie animations
 suite/app-assets/files/videos/lottie/*.json

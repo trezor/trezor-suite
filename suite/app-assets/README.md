@@ -4,7 +4,7 @@ Collection of static assets and scripts for `@trezor/suite-*` packages.
 
 ## files
 
-Static assets such as images, translations etc.
+Static assets such as images, the guide content etc.
 
 ## src
 
@@ -15,7 +15,3 @@ Used by `suite-web`. On initial screen load, determine whether the browser is su
 ### guide
 
 Updates guide content as described in [Documentation](../../docs/features/guide.md).
-
-### translations
-
-Scripts to update translations, mostly used by CI jobs. More info in [Documentation](../../docs/features/localization.md).
