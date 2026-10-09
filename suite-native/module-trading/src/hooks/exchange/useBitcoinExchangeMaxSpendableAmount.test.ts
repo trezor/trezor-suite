@@ -23,7 +23,7 @@ const BTC_SWAP_COMPOSE_TEMPLATE: BtcSwapComposeTemplate = {
     extraOutputs: [{ type: 'opreturn', dataHex: 'aa' }],
 };
 
-describe(useBitcoinExchangeMaxSpendableAmount.name, () => {
+describe('useBitcoinExchangeMaxSpendableAmount', () => {
     const renderUseBitcoinExchangeMaxSpendableAmount = async (
         maxSpendableAmount: string | undefined,
         tradingAccountKey: AccountKey,

@@ -34,7 +34,7 @@ describe('bitcoinExchangeUtils', () => {
         jest.clearAllMocks();
     });
 
-    describe(getBitcoinExchangeFromAddress.name, () => {
+    describe('getBitcoinExchangeFromAddress', () => {
         const getParams = () => ({
             account: btc1NormalAccount,
             btcSwapComposeTemplate,
@@ -84,7 +84,7 @@ describe('bitcoinExchangeUtils', () => {
         });
     });
 
-    describe(getBitcoinExchangeMaxAmount.name, () => {
+    describe('getBitcoinExchangeMaxAmount', () => {
         it('should return the derived send-max amount in network units', async () => {
             mockDeriveBitcoinSwapFromAddresses.mockResolvedValue({
                 addresses: ['address-1'],
