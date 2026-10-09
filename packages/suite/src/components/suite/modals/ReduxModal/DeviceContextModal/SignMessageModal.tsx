@@ -17,7 +17,7 @@ import {
 import { findAccountsByAddress } from '@suite-common/wallet-utils';
 import { Card, Column, DotIndicator, H4, Modal, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { ConfirmOnDevicePill, TokenIcon } from '@trezor/product-components';
+import { TokenIcon, ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';

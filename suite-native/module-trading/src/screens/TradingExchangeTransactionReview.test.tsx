@@ -1,6 +1,11 @@
 import { type RouteProp } from '@react-navigation/native';
 import { type Store } from '@reduxjs/toolkit';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import type {
@@ -10,9 +15,16 @@ import type {
     StackProps,
 } from '@suite-native/navigation';
 import { type TradingRootState } from '@suite-native/trading-state';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TradingExchangeTransactionReviewScreen } from './TradingExchangeTransactionReviewScreen';
 import { createTradingTestStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 type State = TradingRootState;
 
@@ -124,7 +136,13 @@ describe('TradingExchangeTransactionReviewScreenTest', () => {
                     route={route}
                     navigation={mockNavigation}
                 />,
-                { services: { analytics: mockNativeAnalytics(), store } },
+                {
+                    services: {
+                        analytics: mockNativeAnalytics(),
+                        store,
+                        networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+                    },
+                },
             );
 
             ({ unmount } = result);

@@ -1,5 +1,5 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkModuleRepository, mockNetworkIcon } from '@suite-common/networks/mocks';
 import { type TradingTransaction } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
@@ -23,7 +23,10 @@ describe('TradingHistoryDetail', () => {
                         },
                     },
                 },
-                services,
+                services: {
+                    ...services,
+                    networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+                },
             },
         );
 

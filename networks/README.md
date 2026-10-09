@@ -36,6 +36,12 @@ networks/
     └── network-<network>-suite-native/
 ```
 
+Asset packages (`@trezor/network-<network>-assets`) and generic asset contracts
+(`@trezor/network-assets-types`) expose their public API through the package index.
+Family Suite Common modules keep their asset dependencies private and expose the typed `NetworkIcon`
+service. Shared services access icons through that module API; Connect Explorer composes the complete
+asset catalogs independently.
+
 ## Custom package structure
 
 Ideally, all 3rd party dependencies related to a network should be in the general network package, and either reexported or used inside exported functions.

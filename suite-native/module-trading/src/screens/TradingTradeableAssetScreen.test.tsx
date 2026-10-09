@@ -1,6 +1,11 @@
 import { type RouteProp } from '@react-navigation/native';
 
 import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
+import {
     AppTabsRoutes,
     type RootStackParamList,
     RootStackRoutes,
@@ -12,12 +17,19 @@ import {
     selectBuyTradeableAssets,
     selectExchangeBuyTradeableAssets,
 } from '@suite-native/trading-state';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import {
     TradingTradeableAssetScreen,
     type TradingTradeableAssetScreenProps,
 } from './TradingTradeableAssetScreen';
 import { renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 const mockBuyFilteredData = {
     filteredData: [btcAsset],
@@ -77,6 +89,11 @@ describe('TradingTradeableAssetScreen', () => {
                     navigation={navigation}
                     route={createRoute(tradingType)}
                 />,
+                {
+                    services: {
+                        networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+                    },
+                },
             );
 
             const assetElement =

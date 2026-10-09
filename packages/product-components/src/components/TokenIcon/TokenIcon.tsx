@@ -1,11 +1,17 @@
-import { isCryptoIconSymbol, isNetworkIconSymbol } from '@suite-common/icons';
-import { getCoingeckoId, getNetworkOptional, isNetworkSymbol } from '@suite-common/wallet-config';
-import { isWrappedNativeToken } from '@trezor/network-ethereum/constants';
-import { isSupportedEthereumNetwork } from '@trezor/network-ethereum-types';
+import { useSelector } from 'react-redux';
+
+import { useServices } from '@trezor/dependency-injection';
+import type { NetworkConfigState } from '@trezor/network-module-types';
 
 import { NativeTokenIcon } from './NativeTokenIcon';
 import { NonNativeTokenIcon } from './NonNativeTokenIcon';
 import { type TokenIconProps } from './tokenIconTypes';
+import { selectNetworkConfig } from '../../network-display/networkDisplaySelectors';
+import {
+    injectHasCryptoIcon,
+    injectHasNetworkIcon,
+    injectIsWrappedNativeToken,
+} from '../../services/networkServices';
 import { NetworkIconBadge } from '../NetworkIcon/NetworkIconBadge';
 
 export const TokenIcon = ({
@@ -22,17 +28,18 @@ export const TokenIcon = ({
     wrappedTokenIcon = 'token',
     'data-testid': dataTestId,
 }: TokenIconProps) => {
-    if (
-        wrappedTokenIcon === 'network' &&
-        isSupportedEthereumNetwork(symbol) &&
-        isWrappedNativeToken(symbol, contractAddress)
-    ) {
+    const network = useSelector((state: NetworkConfigState) => selectNetworkConfig(state, symbol));
+    const { hasCryptoIcon, hasNetworkIcon, isWrappedNativeToken } = useServices(
+        injectHasCryptoIcon,
+        injectHasNetworkIcon,
+        injectIsWrappedNativeToken,
+    );
+    if (wrappedTokenIcon === 'network' && isWrappedNativeToken(symbol, contractAddress)) {
         contractAddress = null;
     }
 
     if (!contractAddress) {
         if (showNetworkIcon) {
-            const network = getNetworkOptional(symbol);
             const networkSymbol = network?.settlementLayer ?? symbol;
             const displaySymbol = networkSymbol !== symbol ? networkSymbol : symbol;
             const tokenIcon = (
@@ -41,7 +48,7 @@ export const TokenIcon = ({
 
             if (
                 (networkSymbol !== symbol || wrappedTokenIcon === 'network') &&
-                isNetworkIconSymbol(symbol)
+                hasNetworkIcon(symbol)
             ) {
                 return (
                     <NetworkIconBadge
@@ -60,10 +67,10 @@ export const TokenIcon = ({
         return <NativeTokenIcon symbol={symbol} size={size} data-testid={dataTestId} />;
     }
 
-    const coingeckoId = isNetworkSymbol(symbol) ? getCoingeckoId(symbol) : undefined;
+    const coingeckoId = network?.coingeckoId;
 
     if (!coingeckoId) {
-        if (isCryptoIconSymbol(symbol)) {
+        if (hasCryptoIcon(symbol)) {
             return <NativeTokenIcon symbol={symbol} size={size} data-testid={dataTestId} />;
         }
 

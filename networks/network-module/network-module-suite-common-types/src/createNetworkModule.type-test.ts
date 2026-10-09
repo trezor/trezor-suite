@@ -1,3 +1,4 @@
+import type { NetworkIcon } from '@trezor/network-assets-types';
 import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
 
 import type { AddressValidator } from './AddressValidator';
@@ -12,6 +13,7 @@ const supportedTestNetworks = ['aaa', 'taaa'] as const;
 type TestNetworkSymbol = (typeof supportedTestNetworks)[number];
 type ForeignNetworkSymbol = 'zzz';
 
+declare const icon: NetworkIcon;
 declare const networkConfig: SuiteCommonNetworkConfig;
 declare const addressValidator: AddressValidator<TestNetworkSymbol>;
 declare const namedAddressResolver: NamedAddressResolver<TestNetworkSymbol>;
@@ -21,6 +23,7 @@ declare const getNetworkConfig: (symbol: TestNetworkSymbol) => SuiteCommonNetwor
 
 // The module a shared layer sees speaks the open symbol, whatever the closed one was.
 const _module: SuiteCommonNetworkModule = createNetworkModule(supportedTestNetworks, {
+    icon,
     addressValidator,
     namedAddressResolver,
     getNetworkConfig,
@@ -31,6 +34,7 @@ const _module: SuiteCommonNetworkModule = createNetworkModule(supportedTestNetwo
 const _withoutNamedAddresses: SuiteCommonNetworkModule = createNetworkModule(
     supportedTestNetworks,
     {
+        icon,
         addressValidator,
         getNetworkConfig,
         getAccountSyncInterval,
@@ -43,6 +47,7 @@ const _closedSymbolConfig: SuiteCommonNetworkConfig = getNetworkConfig('aaa');
 // --- the definition is bound to the symbols the list declares ---
 
 const _foreignValidator = createNetworkModule(supportedTestNetworks, {
+    icon,
     // @ts-expect-error a validator for another network cannot serve this module
     addressValidator: foreignAddressValidator,
     getNetworkConfig,
@@ -53,6 +58,7 @@ const _foreignList = createNetworkModule(
     // @ts-expect-error the capabilities do not cover the networks this list declares
     ['zzz'] as const,
     {
+        icon,
         addressValidator,
         getNetworkConfig,
         getAccountSyncInterval,
@@ -61,6 +67,7 @@ const _foreignList = createNetworkModule(
 
 // A config lookup narrower than the supported network list is rejected.
 const _narrowNetworkConfig = createNetworkModule(supportedTestNetworks, {
+    icon,
     addressValidator,
     // @ts-expect-error the config lookup must accept every symbol the list declares
     getNetworkConfig: (_symbol: 'aaa') => networkConfig,

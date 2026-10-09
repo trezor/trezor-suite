@@ -20,7 +20,7 @@ import {
     Text,
 } from '@trezor/components';
 import { ArrowRightIcon, CaretDownIcon, WarningIcon } from '@trezor/icons';
-import { NetworkIcon, TokenIcon } from '@trezor/product-components';
+import { TokenIcon, NetworkIcon } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';

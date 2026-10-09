@@ -1,9 +1,21 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { type TradingTransaction } from '@suite-common/trading';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TradeHistoryListItem } from './TradeHistoryListItem';
 import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 jest.mock('@suite-native/trading-atoms', () => {
     const actualImplementation = jest.requireActual('@suite-native/trading-atoms');
@@ -21,6 +33,7 @@ describe('TradeHistoryListItem', () => {
     const renderTradeHistoryListItem = async (transaction: TradingTransaction) =>
         await renderWithTradingHistoryProvider(
             <TradeHistoryListItem transaction={transaction} onPress={jest.fn()} />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
     it('should render a buy trade with fiat and crypto icons', async () => {
@@ -68,6 +81,7 @@ describe('TradeHistoryListItem', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
         const { getByText } = await renderWithTradingHistoryProvider(
             <TradeHistoryListItem transaction={buyTrade} onPress={onPress} />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
         await fireEvent.press(getByText('$1,234.00'));

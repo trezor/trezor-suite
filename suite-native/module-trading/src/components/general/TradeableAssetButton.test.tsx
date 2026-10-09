@@ -1,8 +1,20 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 import { adaAsset, btcAsset, ethOnBaseAsset, usdcAsset } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TradeableAssetButton, type TradeableAssetButtonProps } from './TradeableAssetButton';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 describe('TradeableAssetButton', () => {
     const renderButton = async (initialProps: Partial<TradeableAssetButtonProps> = {}) => {
@@ -12,6 +24,7 @@ describe('TradeableAssetButton', () => {
                 selectedAsset={undefined}
                 {...initialProps}
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
         await act(() => Promise.resolve());
 

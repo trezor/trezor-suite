@@ -1,9 +1,21 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils';
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { ExchangeApprovalLimitSheet } from './ExchangeApprovalLimitSheet';
 import { renderWithTradingProvider } from '../../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 const mockOnDismiss = jest.fn();
 const mockOnApprovalTypeSelect = jest.fn();
@@ -28,6 +40,7 @@ const renderSheet = async (
             overrides: {
                 wallet: { trading: { exchange: { selectedQuote: testQuote } } },
             },
+            services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
         },
     );
     await act(async () => {

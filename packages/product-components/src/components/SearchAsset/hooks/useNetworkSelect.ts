@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
-import type { NetworkSymbol } from '@trezor/network-module-types';
+import { useServices } from '@trezor/dependency-injection';
+import { type NetworkConfigState, type NetworkSymbol } from '@trezor/network-module-types';
 
-import { useNetworkDisplaySelector } from '../../../network-display/NetworkDisplayProvider';
 import { selectNetworkOptions } from '../../../network-display/networkDisplaySelectors';
+import { injectHasNetworkIcon } from '../../../services/networkServices';
 import { getNetworkIcons } from '../../../utils/getNetworkIcons';
 
 export type SearchAssetSelectConfig = {
@@ -16,17 +18,21 @@ export type SearchAssetSelectConfig = {
 };
 
 export const useNetworkSelect = (config: SearchAssetSelectConfig) => {
+    const { hasNetworkIcon } = useServices(injectHasNetworkIcon);
     const { isToken, includeAllOption, allLabel, selectedNetwork } = config;
-    const networks = useNetworkDisplaySelector(state =>
+    const networks = useSelector((state: NetworkConfigState) =>
         selectNetworkOptions(state, config.networks),
     );
 
     const allOptions = useMemo(() => {
-        const networkOptions = getNetworkIcons({
-            networks,
-            iconSize: 20,
-            isToken,
-        }).map(({ symbol, name, icon }) => ({
+        const networkOptions = getNetworkIcons(
+            { hasNetworkIcon },
+            {
+                networks,
+                iconSize: 20,
+                isToken,
+            },
+        ).map(({ symbol, name, icon }) => ({
             label: name,
             value: symbol,
             icon,
@@ -38,7 +44,7 @@ export const useNetworkSelect = (config: SearchAssetSelectConfig) => {
                   ...networkOptions,
               ]
             : networkOptions;
-    }, [networks, isToken, includeAllOption, allLabel]);
+    }, [hasNetworkIcon, networks, isToken, includeAllOption, allLabel]);
 
     const selectedOption = useMemo(
         () => allOptions.find(option => option.value === selectedNetwork),

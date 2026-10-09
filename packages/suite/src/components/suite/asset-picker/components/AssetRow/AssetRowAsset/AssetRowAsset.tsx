@@ -1,6 +1,14 @@
+import { useSelector } from 'react-redux';
+
 import { type TradeableAssetBalance, type TradingAssetOption } from '@suite-common/trading';
 import { Row } from '@trezor/components';
-import { TokenIcon, shouldShowNetworkIcon } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import {
+    TokenIcon,
+    injectHasNetworkIcon,
+    selectNetworkConfigs,
+    shouldShowNetworkIcon,
+} from '@trezor/product-components';
 
 import { AssetDetails } from '../AssetDetails';
 import { AssetAmount } from '../AssetRowToken/AssetAmount';
@@ -21,6 +29,9 @@ export function AssetRowAsset({
     isDisabled,
     onClick,
 }: AssetRowAssetProps) {
+    const deps = useServices(injectHasNetworkIcon);
+    const networks = useSelector(selectNetworkConfigs);
+
     return (
         <ItemClickableContainer
             isDisabled={isDisabled}
@@ -38,6 +49,8 @@ export function AssetRowAsset({
                         contractAddress={asset.contractAddress}
                         placeholder={asset.displaySymbol}
                         showNetworkIcon={shouldShowNetworkIcon(
+                            deps,
+                            { networks },
                             asset.networkSymbol,
                             asset.contractAddress,
                         )}

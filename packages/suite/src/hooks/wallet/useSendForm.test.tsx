@@ -21,6 +21,7 @@ import {
     networksReducer,
 } from '@suite-common/networks';
 import {
+    mockNetworkIcon,
     mockNetworkMetadata,
     mockNetworkModule,
     mockNetworkModuleRepository,
@@ -63,6 +64,8 @@ import SendIndex from 'src/views/wallet/send';
 
 import * as fixtures from './__fixtures__/useSendForm';
 import { useSendForm, useSendFormContext } from './useSendForm';
+
+const networkIcon = mockNetworkIcon();
 
 const TEST_TIMEOUT = 35000;
 
@@ -356,7 +359,7 @@ describe('useSendForm hook', () => {
                 const services = createTestServices(f.store);
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
-                    services,
+                    { ...services, networks: { ...services.networks, networkIcon } },
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -397,7 +400,7 @@ describe('useSendForm hook', () => {
                 const services = createTestServices(f.store);
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
-                    services,
+                    { ...services, networks: { ...services.networks, networkIcon } },
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -437,7 +440,7 @@ describe('useSendForm hook', () => {
                 const services = createTestServices();
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
-                    services,
+                    { ...services, networks: { ...services.networks, networkIcon } },
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -466,7 +469,7 @@ describe('useSendForm hook', () => {
                 const { subscribe, getActions } = services.store;
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
-                    services,
+                    { ...services, networks: { ...services.networks, networkIcon } },
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -512,7 +515,7 @@ describe('useSendForm hook', () => {
                 const services = createTestServices(f.store as Args);
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
-                    services,
+                    { ...services, networks: { ...services.networks, networkIcon } },
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -543,7 +546,7 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
 
                 const { unmount } = renderWithProviders(
-                    services,
+                    { ...services, networks: { ...services.networks, networkIcon } },
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,

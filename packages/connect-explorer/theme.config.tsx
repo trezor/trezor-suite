@@ -1,8 +1,17 @@
 import { useRouter } from 'next/router';
 
 import type { DocsThemeConfig } from '@trezor/connect-explorer-theme';
+import type { NetworkSymbol } from '@trezor/network-module-types';
+import { typedObjectFromEntries } from '@trezor/utils';
+
+import { connectExplorerNetworkConfig } from './src/config/networks';
 
 const config: DocsThemeConfig = {
+    networkRoutes: typedObjectFromEntries(
+        connectExplorerNetworkConfig.flatMap(({ route, symbol }): [string, NetworkSymbol][] =>
+            route === null ? [] : [[route, symbol]],
+        ),
+    ),
     project: {
         link: 'https://github.com/trezor/trezor-suite',
     },

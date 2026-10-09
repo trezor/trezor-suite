@@ -1,0 +1,1 @@
+export { moneroAssets } from './moneroAssets';

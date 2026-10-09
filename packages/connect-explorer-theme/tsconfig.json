@@ -6,6 +6,7 @@
         "useUnknownInCatchVariables": false
     },
     "references": [
+        { "path": "../../networks/network-module/network-module-types" },
         { "path": "../components" },
         { "path": "../icons" },
         { "path": "../product-components" },

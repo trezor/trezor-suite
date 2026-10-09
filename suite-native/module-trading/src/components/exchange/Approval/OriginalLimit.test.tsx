@@ -1,10 +1,22 @@
 import type { ExchangeTrade } from 'invity-api';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { OriginalLimit } from './OriginalLimit';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 const mockSelectTradingExchangeSelectedQuote = jest.fn();
 
@@ -22,6 +34,7 @@ describe('OriginalLimit', () => {
                     tradeType: 'exchange',
                 }),
             },
+            services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
         });
 
     beforeEach(() => {

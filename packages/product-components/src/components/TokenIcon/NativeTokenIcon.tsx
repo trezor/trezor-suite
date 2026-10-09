@@ -2,9 +2,10 @@ import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
-import { cryptoIcons, isCryptoIconSymbol } from '@suite-common/icons';
+import { useServices } from '@trezor/dependency-injection';
 
 import { type TokenIconSize } from './tokenIconTypes';
+import { injectGetCryptoIcon } from '../../services/networkServices';
 
 const SvgContainer = styled.div<{ $size: TokenIconSize }>`
     display: flex;
@@ -42,9 +43,10 @@ export const NativeTokenIcon = ({
     size = 32,
     'data-testid': dataTestId,
 }: NativeTokenIconProps) => {
-    if (!isCryptoIconSymbol(symbol)) return null;
+    const { getCryptoIcon } = useServices(injectGetCryptoIcon);
+    const src = getCryptoIcon(symbol);
 
-    const src = cryptoIcons[symbol];
+    if (!src) return null;
 
     return (
         <SvgContainer $size={size} data-testid={dataTestId}>

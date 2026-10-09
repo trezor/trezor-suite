@@ -4,6 +4,7 @@ import { screen } from '@testing-library/react';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 
@@ -12,6 +13,8 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingLayout } from './TradingLayout';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
+
+const networkIcon = mockNetworkIcon();
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 
@@ -58,7 +61,7 @@ describe('TradingLayout', () => {
         );
 
         renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <TradingLayout>
                 <div data-testid="trading-content" />
             </TradingLayout>,

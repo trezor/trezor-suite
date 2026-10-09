@@ -1,5 +1,5 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkModuleRepository, mockNetworkIcon } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -56,7 +56,10 @@ describe('ExchangeCard', () => {
     const renderExchangeCard = async () =>
         await renderWithStoreProvider(<ExchangeCard isAmountInputActive={false} />, {
             preloadedState,
-            services,
+            services: {
+                ...services,
+                networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+            },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
@@ -136,7 +139,10 @@ describe('ExchangeCard', () => {
             <ExchangeCard isAmountInputActive={false} />,
             {
                 preloadedState: satsPreloadedState,
-                services,
+                services: {
+                    ...services,
+                    networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+                },
                 wrapper: ({ children }) => <Form form={form}>{children}</Form>,
             },
         );

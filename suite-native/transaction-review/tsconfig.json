@@ -27,6 +27,10 @@
         { "path": "../../packages/theme" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" },
-        { "path": "../test-utils-store" }
+        { "path": "../test-utils-store" },
+        { "path": "../../suite-common/networks" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        }
     ]
 }

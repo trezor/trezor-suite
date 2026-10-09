@@ -13,20 +13,20 @@ import {
     useSVG,
 } from '@shopify/react-native-skia';
 
-import { type CryptoIconName, cryptoIcons, isCryptoIconSymbol } from '@suite-common/icons';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor, palette } from '@trezor/theme';
 
 import { PizzaIcon, usePizzaAnimation } from './PizzaIcon';
+import { useNetworkAssets } from './useNetworkAssets';
 
 const CANVAS_SIZE = 48;
 const ICON_SIZE = 32;
 const RADIUS = 21;
 
 type CryptoIconProps = {
-    iconName: CryptoIconName | NetworkSymbol;
+    iconName: NetworkSymbol;
     percentageColor: CSSColor;
     percentage: number;
     percentageOffset: number;
@@ -38,8 +38,8 @@ export const CryptoIconWithPercentage = ({
     percentage,
     percentageOffset,
 }: CryptoIconProps) => {
-    const iconSymbol: string = iconName;
-    const iconSvg = useSVG(isCryptoIconSymbol(iconSymbol) ? cryptoIcons[iconSymbol] : null);
+    const icons = useNetworkAssets(iconName);
+    const iconSvg = useSVG(icons?.coin ?? null);
     const { utils } = useNativeStyles();
     const colorScheme = useActiveColorScheme();
 

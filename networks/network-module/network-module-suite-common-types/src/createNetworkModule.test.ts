@@ -1,9 +1,17 @@
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
+import { createNetworkIcon } from './createNetworkIcon';
 import { type NetworkModuleDefinition, createNetworkModule } from './createNetworkModule';
 
 const createTestResolver = () => {
     const definition: NetworkModuleDefinition<'aaa' | 'taaa'> = {
+        icon: createNetworkIcon({
+            supportedNetworks: ['aaa', 'taaa'],
+            assets: {
+                getIcons: () => ({ testnet: false, coin: 'coin.svg', network: 'network.svg' }),
+                getIconPaths: () => ({ coin: 'coin.svg', network: 'network.svg' }),
+            },
+        }),
         addressValidator: {
             isAddressValid: () => true,
             getAddressType: () => undefined,
@@ -64,6 +72,13 @@ describe('createNetworkModule account sync interval', () => {
         symbol === 'aaa' ? 40_000 : 60_000,
     );
     const networkModule = createNetworkModule(['aaa', 'taaa'], {
+        icon: createNetworkIcon({
+            supportedNetworks: ['aaa', 'taaa'],
+            assets: {
+                getIcons: () => ({ testnet: false, coin: 'coin.svg', network: 'network.svg' }),
+                getIconPaths: () => ({ coin: 'coin.svg', network: 'network.svg' }),
+            },
+        }),
         addressValidator: {
             isAddressValid: () => true,
             getAddressType: () => undefined,

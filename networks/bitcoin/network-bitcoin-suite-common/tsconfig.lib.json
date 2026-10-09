@@ -3,6 +3,10 @@
     "compilerOptions": { "outDir": "./lib" },
     "include": ["./src"],
     "references": [
+        {
+            "path": "../../network-module/network-assets-types"
+        },
+        { "path": "../network-bitcoin-assets" },
         { "path": "../network-bitcoin-types" },
         {
             "path": "../../network-module/network-module-suite-common-types"

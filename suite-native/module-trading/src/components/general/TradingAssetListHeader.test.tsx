@@ -1,7 +1,19 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { fireEvent } from '@suite-native/test-utils-store';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TradingAssetListHeader } from './TradingAssetListHeader';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 jest.mock('@suite-native/discovery', () => ({
     ...jest.requireActual('@suite-native/discovery'),
@@ -23,6 +35,7 @@ describe('TradingAssetListHeader', () => {
                 selectedNetworkFilter={undefined}
                 testID={testID}
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
         await fireEvent.changeText(getByTestId(`${testID}/search-input`), 'ether');

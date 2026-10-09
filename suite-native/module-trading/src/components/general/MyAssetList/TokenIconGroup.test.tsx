@@ -1,12 +1,25 @@
 import type { CryptoId } from 'invity-api';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type MyAsset } from '@suite-native/trading-types';
+
+import { type NetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
 import { TokenIconGroup } from './TokenIconGroup';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 const createAsset = (index: number): MyAsset => ({
     name: `Token ${index}`,
@@ -25,6 +38,7 @@ describe('TokenIconGroup', () => {
                 assets={[createAsset(1), createAsset(2), createAsset(3), createAsset(4)]}
                 testID={testID}
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
         expect(getByTestId(`${testID}/icon-0`)).toHaveStyle({ marginLeft: 0 });

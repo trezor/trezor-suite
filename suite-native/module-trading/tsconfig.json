@@ -116,6 +116,9 @@
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },
-        { "path": "../../packages/requirements" }
+        { "path": "../../packages/requirements" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        }
     ]
 }

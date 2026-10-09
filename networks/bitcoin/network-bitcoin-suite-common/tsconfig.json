@@ -2,6 +2,10 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../network-module/network-assets-types"
+        },
+        { "path": "../network-bitcoin-assets" },
         { "path": "../network-bitcoin-types" },
         {
             "path": "../../network-module/network-module-suite-common-types"

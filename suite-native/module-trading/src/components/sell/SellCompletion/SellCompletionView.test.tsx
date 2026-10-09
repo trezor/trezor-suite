@@ -1,3 +1,8 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { type TradingSellStepType } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -6,6 +11,7 @@ import {
     eth1NormalAccount,
     getSellTrade,
 } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { BANK_ACCOUNT_ITEM_TEST_ID } from './BankAccount/SellBankAccountItem';
 import { SellCompletionView, type SellCompletionViewProps } from './SellCompletionView';
@@ -14,6 +20,12 @@ import {
     type TradingTestPreloadedState,
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 describe('SellCompletionView', () => {
     const getSellTradeWithBankAccounts = () => ({
@@ -63,6 +75,7 @@ describe('SellCompletionView', () => {
             {
                 tradeType: 'sell',
                 overrides: getOverrides(formStep),
+                services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
             },
         );
 

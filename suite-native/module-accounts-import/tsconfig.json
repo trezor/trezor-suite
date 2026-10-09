@@ -54,7 +54,10 @@
         { "path": "../../packages/utils" },
         { "path": "../../packages/utxo-lib" },
         { "path": "../test-utils-store" },
-        { "path": "../../packages/requirements" }
+        { "path": "../../packages/requirements" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        }
     ],
     "include": [".", "**/*.json"]
 }

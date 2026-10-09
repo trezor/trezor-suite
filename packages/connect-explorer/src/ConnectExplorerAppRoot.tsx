@@ -8,10 +8,12 @@ import { ThemeProvider as NextThemeProvider, useTheme } from 'next-themes';
 import { ThemeProvider } from 'styled-components';
 
 import { intermediaryTheme } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { type ConnectExplorerReduxStore } from './store/createConnectExplorerReduxStore';
+import type { ConnectExplorerServices } from './support/createConnectExplorerApp';
 
-type ConnectExplorerAppRootProps = AppProps & { store: ConnectExplorerReduxStore };
+const injectStore = (services: ConnectExplorerServices) => ({ store: services.store });
 
 type ThemeComponentProps = {
     store: ConnectExplorerReduxStore;
@@ -41,7 +43,8 @@ const ThemeComponent = ({ store, children }: ThemeComponentProps) => {
         </ThemeProvider>
     );
 };
-export function ConnectExplorerAppRoot(props: ConnectExplorerAppRootProps) {
+export function ConnectExplorerAppRoot(props: AppProps) {
+    const { store } = useServices(injectStore);
     const router = useRouter();
 
     return (
@@ -49,7 +52,7 @@ export function ConnectExplorerAppRoot(props: ConnectExplorerAppRootProps) {
             <Head>
                 <link rel="icon" type="image/png" href={router.basePath + '/images/favicon.png'} />
             </Head>
-            <ThemeComponent store={props.store}>
+            <ThemeComponent store={store}>
                 <props.Component {...props.pageProps} />
             </ThemeComponent>
         </NextThemeProvider>

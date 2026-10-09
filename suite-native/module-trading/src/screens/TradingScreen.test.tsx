@@ -1,6 +1,6 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkModuleRepository, mockNetworkIcon } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -72,7 +72,13 @@ describe('TradingScreen', () => {
     const renderTradingScreen = async (
         overrides?: PreloadedStatePartial<TradingTestPreloadedState>,
     ) => {
-        const result = await renderWithTradingProvider(<TradingScreen />, { overrides, services });
+        const result = await renderWithTradingProvider(<TradingScreen />, {
+            overrides,
+            services: {
+                ...services,
+                networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+            },
+        });
 
         ({ unmount } = result);
 

@@ -6,6 +6,9 @@
         { "path": "../legacy-network-config" },
         { "path": "../redux-utils" },
         {
+            "path": "../../networks/network-module/network-assets-types"
+        },
+        {
             "path": "../../networks/bitcoin/network-bitcoin-suite-common"
         },
         {

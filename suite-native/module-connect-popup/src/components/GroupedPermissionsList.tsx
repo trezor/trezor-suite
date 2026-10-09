@@ -8,10 +8,8 @@ import {
     groupPermissionsByCoin,
     permissionIcons,
 } from '@suite-common/connect-popup';
-import { isNetworkIconSymbol } from '@suite-common/icons';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AccordionContent, AnimatedBox, Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { Icon, NetworkIcon } from '@suite-native/icons';
+import { Icon, NetworkIcon, useNetworkAssets } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type MethodPermission, type PermissionRequest } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -46,9 +44,10 @@ const fallbackBadgeStyle = prepareNativeStyle(utils => ({
 const GroupBadge = ({ coin }: { coin?: string }) => {
     const { applyStyle } = useNativeStyles();
     const symbol = coin?.toLowerCase();
+    const icons = useNetworkAssets(symbol ?? '');
 
-    if (symbol && isNetworkIconSymbol(symbol)) {
-        return <NetworkIcon symbol={symbol as NetworkSymbol} size={24} />;
+    if (symbol && icons) {
+        return <NetworkIcon symbol={symbol} size={24} />;
     }
 
     return (

@@ -1,3 +1,4 @@
+export { createEthereumIcon, type EthereumIconDeps } from './createEthereumIcon';
 export { createEthereumSuiteCommonNetworkModule } from './createEthereumSuiteCommonNetworkModule';
 
 // These exports are temporary migration aids. Once network modularization is complete,

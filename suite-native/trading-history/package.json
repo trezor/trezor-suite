@@ -63,6 +63,7 @@
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
         "@types/invity-api": "^1.1.22"
     }
 }

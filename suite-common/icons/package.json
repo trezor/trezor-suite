@@ -16,6 +16,8 @@
     },
     "devDependencies": {
         "@suite-common/wallet-config": "workspace:^",
+        "@trezor/network-ethereum": "workspace:*",
+        "@trezor/network-ethereum-assets": "workspace:*",
         "@trezor/network-ethereum-suite-common": "workspace:*",
         "chalk": "^6.0.0",
         "fantasticon": "4.1.0",

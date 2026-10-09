@@ -1,12 +1,25 @@
 import type { CryptoId } from 'invity-api';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenSymbol, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type MyAsset } from '@suite-native/trading-types';
+
+import { type NetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
 import { MyAssetListItem } from './MyAssetListItem';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 const createAsset = (overrides: Partial<MyAsset> = {}): MyAsset => ({
     name: 'Ethereum',
@@ -28,6 +41,7 @@ describe('MyAssetListItem', () => {
                 })}
                 onPress={jest.fn()}
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
         expect(getByText('0.05196 ETH')).toBeOnTheScreen();
@@ -41,6 +55,7 @@ describe('MyAssetListItem', () => {
                 })}
                 onPress={jest.fn()}
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
         expect(getByText('<0.00001 ETH')).toBeOnTheScreen();
@@ -58,6 +73,7 @@ describe('MyAssetListItem', () => {
                 })}
                 onPress={jest.fn()}
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
         expect(getByText('1.50 USDC')).toBeOnTheScreen();
@@ -75,6 +91,7 @@ describe('MyAssetListItem', () => {
                 })}
                 onPress={jest.fn()}
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
         expect(getByText('23.91 USDC')).toBeOnTheScreen();

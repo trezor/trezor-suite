@@ -1,12 +1,25 @@
 import type { CryptoId } from 'invity-api';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type MyAsset } from '@suite-native/trading-types';
+
+import { type NetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
 import { MyAssetGroup } from './MyAssetGroup';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 const createAsset = (index: number, isEnabled = true): MyAsset => ({
     name: `Token ${index}`,
@@ -29,6 +42,7 @@ describe('MyAssetGroup', () => {
                 testID={testID}
                 title="Low balance"
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
         expect(getByText('+1')).toBeOnTheScreen();
@@ -49,6 +63,7 @@ describe('MyAssetGroup', () => {
                 testID={testID}
                 title="Low balance"
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
         await fireEvent.press(getByTestId(`${testID}/toggle`));
@@ -70,6 +85,7 @@ describe('MyAssetGroup', () => {
                 testID="@trading/my-asset-group"
                 title="Non-tradeable"
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
         await fireEvent.press(getByText('Non-tradeable'));

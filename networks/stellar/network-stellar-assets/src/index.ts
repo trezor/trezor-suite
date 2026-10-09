@@ -1,0 +1,1 @@
+export { stellarAssets } from './stellarAssets';

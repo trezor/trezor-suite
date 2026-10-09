@@ -76,6 +76,10 @@
         },
         { "path": "../../packages/utils" },
         { "path": "../test-utils-store" },
-        { "path": "../../packages/requirements" }
+        { "path": "../../packages/requirements" },
+        { "path": "../../suite-common/networks" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        }
     ]
 }

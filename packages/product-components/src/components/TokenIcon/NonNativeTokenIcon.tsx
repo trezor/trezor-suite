@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import styled, { css } from 'styled-components';
 
-import { isNetworkIconSymbol } from '@suite-common/icons';
-import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils/src/tokenUtils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import {
     type AllowedFrameProps,
@@ -11,6 +10,7 @@ import {
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { useAsyncMemo } from '@trezor/react-utils';
 
 import { TokenInitials } from './TokenInitials';
@@ -24,6 +24,11 @@ import {
     makeCacheKey,
     resolvedLogoCache,
 } from './tokenIconUtils';
+import { selectNetworkConfigs } from '../../network-display/networkDisplaySelectors';
+import {
+    injectGetTokenLogoIdentifiers,
+    injectHasNetworkIcon,
+} from '../../services/networkServices';
 import { NetworkIconBadge } from '../NetworkIcon/NetworkIconBadge';
 
 const Container = styled.div<TransientProps<AllowedFrameProps> & { $size: number }>`
@@ -76,17 +81,26 @@ export const NonNativeTokenIcon = ({
     'data-testid': dataTestId,
     ...rest
 }: NonNativeTokenIconProps) => {
-    // resolves synchronously for everything except the first XLM token after a cold start
-    // so most icons render in the first frame without a placeholder flash
+    const networks = useSelector(selectNetworkConfigs);
+    const { hasNetworkIcon, getTokenLogoIdentifiers } = useServices(
+        injectHasNetworkIcon,
+        injectGetTokenLogoIdentifiers,
+    );
+    // Resolves synchronously except for the first XLM token after a cold start,
+    // so most icons render in the first frame without a placeholder flash.
     const contractAddressArray = useAsyncMemo(
-        () => getAssetLogoContractAddresses(symbol, contractAddress),
-        [symbol, contractAddress],
+        () => getTokenLogoIdentifiers(symbol, contractAddress),
+        [symbol, contractAddress, getTokenLogoIdentifiers],
     );
 
     const normalizedAddresses = useMemo(
         () =>
-            getCoingeckoIdAndContractAddressIncludesNativeTokens(coingeckoId, contractAddressArray),
-        [coingeckoId, contractAddressArray],
+            getCoingeckoIdAndContractAddressIncludesNativeTokens(
+                { networks },
+                coingeckoId,
+                contractAddressArray,
+            ),
+        [networks, coingeckoId, contractAddressArray],
     );
     const { coingeckoId: coingeckoIdLogo, contractAddresses } = normalizedAddresses;
 
@@ -250,7 +264,7 @@ export const NonNativeTokenIcon = ({
 
     return (
         <Container $size={size} {...frameProps}>
-            {showNetworkIcon && symbol && isNetworkIconSymbol(symbol) ? (
+            {showNetworkIcon && symbol && hasNetworkIcon(symbol) ? (
                 <NetworkIconBadge networkSymbol={symbol} parentSize={size}>
                     {logo}
                 </NetworkIconBadge>

@@ -4,6 +4,11 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
@@ -13,8 +18,15 @@ import {
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { NetworkAndAccountCard, type NetworkAndAccountCardProps } from './NetworkAndAccountCard';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 describe('NetworkAndAccountCard', () => {
     const reducer = {
@@ -42,6 +54,7 @@ describe('NetworkAndAccountCard', () => {
                             },
                         },
                     }),
+                    networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
                 },
             },
         );

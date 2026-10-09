@@ -1,12 +1,24 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import {
     ExchangeFromAccountTradePreviewCard,
     type ExchangeFromAccountTradePreviewCardProps,
 } from './ExchangeFromAccountTradePreviewCard';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 describe('ExchangeFromAccountTradePreviewCard', () => {
     const renderExchangeFromAccountTradePreviewCard = async (
@@ -30,6 +42,7 @@ describe('ExchangeFromAccountTradePreviewCard', () => {
                     },
                 },
             },
+            services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
         });
 
     it('should render nothing when there is no quote', async () => {

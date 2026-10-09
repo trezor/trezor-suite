@@ -1,8 +1,20 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { type Network, asNetworkSymbol } from '@suite-common/wallet-config';
 import { fireEvent, screen } from '@suite-native/test-utils-store';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { NetworkPicker } from './NetworkPicker';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 const mockNetworks: Network[] = [
     {
@@ -40,6 +52,7 @@ describe('NetworkPicker', () => {
                 onSelectNetwork={onSelectNetwork}
                 testID={testID}
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
     afterEach(async () => {

@@ -1,5 +1,10 @@
 import { type SellFiatTrade } from 'invity-api';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import {
     banxaBankTransferSellQuote,
@@ -7,9 +12,16 @@ import {
     eth1NormalAccount,
     getSellTrade,
 } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { SellPreviewView } from './SellPreviewView';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 describe('SellPreviewView', () => {
     const renderSellPreviewView = async (quote: SellFiatTrade = banxaBankTransferSellQuote) =>
@@ -45,6 +57,7 @@ describe('SellPreviewView', () => {
                     },
                 },
             },
+            services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
         });
 
     it('renders the sell summary', async () => {

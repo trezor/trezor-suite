@@ -1,18 +1,30 @@
 import { type Store } from '@reduxjs/toolkit';
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import { mockTransaction } from '@suite-native/tokens';
 import { exchangeQuotes } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import {
     ExchangeConfirmationInfo,
     type ExchangeConfirmationInfoCardProps,
 } from './ExchangeConfirmationInfo';
 import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 type State = TradingRootState;
 
@@ -23,7 +35,10 @@ describe('ExchangeConfirmationInfo', () => {
 
     const renderInfo = async (props: ExchangeConfirmationInfoCardProps) =>
         await renderWithStoreProvider(<ExchangeConfirmationInfo {...props} />, {
-            services: { store },
+            services: {
+                store,
+                networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+            },
         });
 
     beforeEach(() => {

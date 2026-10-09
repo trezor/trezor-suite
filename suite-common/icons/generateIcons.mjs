@@ -11,8 +11,6 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const iconsFilePath = './src/icons.ts';
-const cryptoIconsPath = './src/cryptoIcons.ts';
-const networkIconsPath = './src/networkIcons.ts';
 const paymentMethodLogosPath = './src/paymentMethodLogos.ts';
 
 const assetTypesConfig = [
@@ -23,14 +21,6 @@ const assetTypesConfig = [
     },
 ];
 
-const cryptoAssetsTypesConfig = [
-    {
-        name: 'cryptoIcons',
-        dirname: 'cryptoAssets/cryptoIcons',
-        typeName: 'CryptoIconName',
-    },
-];
-
 const paymentMethodLogosAssetsTypesConfig = [
     {
         name: 'paymentMethodLogos',
@@ -38,10 +28,6 @@ const paymentMethodLogosAssetsTypesConfig = [
         typeName: 'PaymentMethodLogoName',
         raster: true,
     },
-];
-
-const networkAssetsTypesConfig = [
-    { name: 'networkIcons', dirname: 'cryptoAssets/networkIcons', typeName: 'NetworkIconName' },
 ];
 
 // https://github.com/svg/svgo#built-in-plugins
@@ -166,12 +152,6 @@ const generateFileForAssetTypes = async (assetTypesArray, outputFilePath) => {
     console.log('Generating icons TS file...');
     await generateFileForAssetTypes(assetTypesConfig, iconsFilePath);
     console.log(chalk.green('Icons TS file generated successfully'));
-    console.log('Generating crypto icons TS file...');
-    await generateFileForAssetTypes(cryptoAssetsTypesConfig, cryptoIconsPath);
-    console.log(chalk.green('Crypto icons TS file generated successfully'));
-    console.log('Generating network icons TS file...');
-    await generateFileForAssetTypes(networkAssetsTypesConfig, networkIconsPath);
-    console.log(chalk.green('Network icons TS file generated successfully'));
     console.log('Generating payment method logos TS file...');
     await generateFileForAssetTypes(paymentMethodLogosAssetsTypesConfig, paymentMethodLogosPath);
     console.log(chalk.green('Payment method logos TS file generated successfully'));

@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import type { ReactElement } from 'react';
-import { createContext, memo, useContext, useEffect, useRef, useState } from 'react';
+import {
+    type ReactElement,
+    createContext,
+    memo,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 
 import cn from 'clsx';
 import { useRouter } from 'next/router';
@@ -13,7 +20,7 @@ import styled from 'styled-components';
 import { Select } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
-import { arrayPartition } from '@trezor/utils';
+import { arrayPartition, typedObjectKeys } from '@trezor/utils';
 
 import { Anchor } from './anchor';
 import { Collapse } from './collapse';
@@ -110,19 +117,8 @@ export function Menu({
     const route = useFSRoute();
     const prevRoute = useRef(route);
 
-    const coinSymbols = {
-        bitcoin: 'btc',
-        cardano: 'ada',
-        ethereum: 'eth',
-        litecoin: 'ltc',
-        monero: 'xmr',
-        ripple: 'xrp',
-        solana: 'sol',
-        stellar: 'xlm',
-        tezos: 'xtz',
-        tron: 'trx',
-    };
-    const coinNames = Object.keys(coinSymbols);
+    const { networkRoutes } = useConfig();
+    const coinNames = typedObjectKeys(networkRoutes);
     const routeCoinSegment = route.split('/')[2] ?? '';
     const defaultActiveCoin = coinNames.includes(routeCoinSegment) ? routeCoinSegment : 'bitcoin';
     const [activeCoin, setActiveCoin] = useState(defaultActiveCoin);
@@ -144,6 +140,7 @@ export function Menu({
     const methodsOptions = coinMethods.map(item => ({
         label: item.title,
         value: item.name,
+        symbol: networkRoutes[item.name],
     }));
     const activeCoinItems = methodsItems.find(item => item.name === activeCoin)?.children;
     const [commonMethods, otherMethods] = arrayPartition(
@@ -179,9 +176,7 @@ export function Menu({
                     options={methodsOptions}
                     formatOptionLabel={option => (
                         <Option>
-                            {coinSymbols[option.value] && (
-                                <TokenIcon size={20} symbol={coinSymbols[option.value]} />
-                            )}
+                            {option.symbol && <TokenIcon size={20} symbol={option.symbol} />}
                             <Label>{option.label}</Label>
                         </Option>
                     )}

@@ -5,6 +5,7 @@ import type { NextSeoProps } from 'next-seo';
 import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import { z } from 'zod';
 
+import type { NetworkSymbol } from '@trezor/network-module-types';
 import type { DeepPartial } from '@trezor/type-utils';
 
 import type { TOCProps } from './types';
@@ -96,6 +97,10 @@ export const themeSchema = z.strictObject({
             next: z.boolean(),
             prev: z.boolean(),
         }),
+    ),
+    networkRoutes: z.record(
+        z.string(),
+        z.custom<NetworkSymbol>(value => typeof value === 'string'),
     ),
     nextThemes: z.strictObject({
         defaultTheme: z.string(),

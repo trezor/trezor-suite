@@ -117,6 +117,7 @@ export const DEFAULT_THEME: DocsThemeConfig = {
         component: Navbar,
     },
     navigation: true,
+    networkRoutes: {},
     nextThemes: {
         defaultTheme: 'system',
         storageKey: 'theme',

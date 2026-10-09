@@ -1,3 +1,8 @@
+import {
+    createNetworkIcon,
+    createNetworkModuleRepository,
+    createNetworkModulesCompositionRoot,
+} from '@suite-common/networks';
 import { act, renderWithBasicProvider } from '@suite-native/test-utils';
 import {
     btcAsset,
@@ -5,15 +10,22 @@ import {
     rethOnBaseAsset,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
+import { mock } from '@trezor/dependency-injection';
 
 import { IconByCryptoId, type IconByCryptoIdProps } from './IconByCryptoId';
+
+const networkModules = createNetworkModulesCompositionRoot({ getTrezorConnect: mock() });
+const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+const networkIcon = createNetworkIcon({ networkModuleRepository });
 
 const tokenIconHint = 'Token Icon';
 const networkIconHint = 'Network Icon';
 
 describe('IconByCryptoId', () => {
     const renderIcon = async (props: IconByCryptoIdProps) => {
-        const result = await renderWithBasicProvider(<IconByCryptoId {...props} />);
+        const result = await renderWithBasicProvider(<IconByCryptoId {...props} />, {
+            services: { networks: { networkModuleRepository, networkIcon } },
+        });
         await act(async () => {});
 
         return result;

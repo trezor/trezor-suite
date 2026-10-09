@@ -4,8 +4,10 @@ import type { GetAccountSyncIntervalDep } from './createGetAccountSyncInterval';
 import type { GetNamedAddressSupportDep } from './createGetNamedAddressSupport';
 import type { GetNetworkConfigDep } from './createGetNetworkConfig';
 import type { LoadNetworkModulesDep } from './createLoadNetworkModules';
+import type { NetworkIconDep } from './createNetworkIcon';
 
-export type NetworksServices = NetworkModuleRepositoryDep &
+export type NetworksServices = NetworkIconDep &
+    NetworkModuleRepositoryDep &
     AddressValidatorDep &
     GetAccountSyncIntervalDep &
     GetNamedAddressSupportDep &

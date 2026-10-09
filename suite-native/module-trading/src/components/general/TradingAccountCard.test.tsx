@@ -1,11 +1,23 @@
 import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
+import {
     btc1NormalAccount,
     eth1NormalAccount,
     mercuryoFixedWorstQuote,
 } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TradingAccountCard } from './TradingAccountCard';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 describe('TradingAccountCard', () => {
     const renderCard = async (
@@ -20,7 +32,10 @@ describe('TradingAccountCard', () => {
                 amount={undefined}
                 {...overrides}
             />,
-            { tradeType: 'exchange' },
+            {
+                tradeType: 'exchange',
+                services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
+            },
         );
 
     it('renders title', async () => {
