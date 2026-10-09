@@ -17,6 +17,12 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { HomeAssetTable } from './HomeAssetTable';
 import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
+global.ResizeObserver = class MockedResizeObserver {
+    observe = jest.fn();
+    unobserve = jest.fn();
+    disconnect = jest.fn();
+};
+
 const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
 
 const BTC = asNetworkSymbol('btc');
