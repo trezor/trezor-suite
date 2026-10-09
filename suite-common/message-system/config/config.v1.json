@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-10-08T12:00:00+00:00",
-    "sequence": 159,
+    "timestamp": "2026-10-09T12:00:00+00:00",
+    "sequence": 160,
     "actions": [
         {
             "conditions": [
@@ -1997,6 +1997,82 @@
                 "context": {
                     "domain": ["accounts.sol.normal", "accounts.sol.ledger", "accounts.sol.root"]
                 }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "!",
+                        "mobile": "*",
+                        "web": "!"
+                    },
+                    "os": {
+                        "macos": "!",
+                        "linux": "!",
+                        "windows": "!",
+                        "android": "!",
+                        "ios": "*",
+                        "chromeos": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "094db7ac-2f35-4468-9931-61a2908e86d2",
+                "priority": 1,
+                "dismissible": false,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en": "Placeholder",
+                    "cs": "Placeholder",
+                    "es": "Placeholder",
+                    "de": "Placeholder",
+                    "fr": "Placeholder",
+                    "pt": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "trading.restrictions.residence",
+                        "flag": true,
+                        "payload": {
+                            "countries": [
+                                "AU",
+                                "BE",
+                                "BG",
+                                "BS",
+                                "CA",
+                                "CR",
+                                "CY",
+                                "CZ",
+                                "DE",
+                                "DK",
+                                "EE",
+                                "ES",
+                                "FI",
+                                "FR",
+                                "GR",
+                                "HR",
+                                "HU",
+                                "IE",
+                                "IT",
+                                "LI",
+                                "LT",
+                                "LU",
+                                "LV",
+                                "MT",
+                                "NL",
+                                "PL",
+                                "PT",
+                                "RO",
+                                "SE",
+                                "SI",
+                                "SK",
+                                "US"
+                            ]
+                        }
+                    }
+                ]
             }
         }
     ],
