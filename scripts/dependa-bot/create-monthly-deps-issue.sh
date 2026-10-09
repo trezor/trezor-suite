@@ -3,7 +3,7 @@
 # Creates a monthly dependency maintenance GitHub issue for a given team,
 # adds it to the Suite project board, and sets Team and Release fields.
 #
-# Usage: TEAM=Suite-Growth ./create-monthly-deps-issue.sh
+# Usage: TEAM=Suite-Growth ./scripts/dependa-bot/create-monthly-deps-issue.sh
 #
 # Environment variables:
 #   TEAM     (required) - e.g. Suite-Growth, Suite-Wallet, Suite-Trade, Suite-Earn, Suite-Networks
@@ -14,11 +14,17 @@ set -euo pipefail
 : "${TEAM:?TEAM environment variable is required}"
 
 REPO="trezor/trezor-suite"
-ISSUE_TEMPLATE=".github/ISSUE_TEMPLATE/07_deps_maintenance_task.md"
+ISSUE_TEMPLATE_DIR="scripts/dependa-bot"
+TEAM_TEMPLATE="$ISSUE_TEMPLATE_DIR/${TEAM%% *}.md"
 ISSUE_BODY_FILE="/tmp/issue_body.md"
 
-# Prepare issue body (strip YAML frontmatter delimited by ---)
-awk '/^---$/{f=!f; next} !f' "$ISSUE_TEMPLATE" > "$ISSUE_BODY_FILE"
+# Compose the common checklist, optional team checklist, and shared footer.
+cat "$ISSUE_TEMPLATE_DIR/common.md" > "$ISSUE_BODY_FILE"
+if [ -f "$TEAM_TEMPLATE" ]; then
+    cat "$TEAM_TEMPLATE" >> "$ISSUE_BODY_FILE"
+fi
+printf '\n' >> "$ISSUE_BODY_FILE"
+cat "$ISSUE_TEMPLATE_DIR/footer.md" >> "$ISSUE_BODY_FILE"
 
 # Calculate previous month/year
 CURRENT_MONTH=$(( 10#$(date +%m) ))

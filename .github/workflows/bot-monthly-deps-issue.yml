@@ -40,4 +40,4 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
           TEAM: ${{ matrix.team }}
-        run: bash scripts/create-monthly-deps-issue.sh
+        run: bash scripts/dependa-bot/create-monthly-deps-issue.sh
