@@ -1,4 +1,11 @@
-import type { Transaction, TransactionReceipt } from 'viem';
+import {
+    type Transaction,
+    type TransactionReceipt,
+    encodeAbiParameters,
+    parseAbiItem,
+    parseAbiParameters,
+    toEventSelector,
+} from 'viem';
 
 import { mapTransaction } from './transaction';
 import { TRANSFER_TOPIC } from '../history/constants';
@@ -10,8 +17,9 @@ const OTHER = '0x1111111111111111111111111111111111111111';
 const CONTRACT = '0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a';
 const SENTINEL = '0xfffffffffffffffffffffffffffffffffffffffe';
 const NATIVE_VIEW = '0x3600000000000000000000000000000000000000';
-// Swap(address,address,int256,int256,uint160,uint128,int24)
-const UNISWAP_V3_SWAP_TOPIC = '0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67';
+const UNISWAP_V3_SWAP = parseAbiItem(
+    'event Swap(address indexed sender, address indexed recipient, int256 amount0, int256 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick)',
+);
 
 const NATIVE_SOURCES: readonly NativeLogSource[] = [
     { address: SENTINEL, decimals: 18 },
@@ -177,9 +185,12 @@ describe(mapTransaction.name, () => {
         const POOL = '0x4444444444444444444444444444444444444444';
         const swapLog = {
             address: POOL,
-            // Swap(address indexed sender, address indexed recipient, int256 amount0, ...)
-            topics: [UNISWAP_V3_SWAP_TOPIC, topic(ROUTER), topic(ME)],
-            data: `${word(2n ** 256n - 12n)}${word(10_000n).slice(2)}`,
+            topics: [toEventSelector(UNISWAP_V3_SWAP), topic(ROUTER), topic(ME)],
+            // The pool paying out 12 units: a negative int256, so 2^256 - 12 read as a uint256.
+            data: encodeAbiParameters(
+                parseAbiParameters('int256, int256, uint160, uint128, int24'),
+                [-12n, 10_000n, 2n ** 96n, 1n, 0],
+            ),
         } as unknown as TransactionReceipt['logs'][number];
 
         const result = map(

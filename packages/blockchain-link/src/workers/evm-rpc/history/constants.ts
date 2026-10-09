@@ -1,7 +1,12 @@
+import { erc20Abi, getAbiItem, toEventSelector } from 'viem';
+
 import { RPC_BATCH_SIZE } from '../constants';
 
-export const TRANSFER_TOPIC =
-    '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef' as const;
+export const TRANSFER_EVENT = getAbiItem({ abi: erc20Abi, name: 'Transfer' });
+
+// Taken from the same ABI item the logs are decoded with, so the eth_getLogs filter cannot drift
+// from what the parser accepts.
+export const TRANSFER_TOPIC = toEventSelector(TRANSFER_EVENT);
 
 // Arc's free plan rejects anything over 10000 blocks per eth_getLogs, even though the endpoint
 // served 20000 when probed - the cap depends on the plan behind the URL. The scanner learns a
