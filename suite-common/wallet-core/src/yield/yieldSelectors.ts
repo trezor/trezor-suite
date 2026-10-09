@@ -1,6 +1,6 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type FeesRootState, selectConvertedNetworkFeeInfo } from '../fees/feesReducer';
 import { isWrappedNativeFlowSupported } from './utils/yieldDeviceUtils';

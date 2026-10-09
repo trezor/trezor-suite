@@ -1,7 +1,7 @@
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { BLUETOOTH_PREFIX, bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import {

@@ -1,7 +1,6 @@
 import { deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { type MockDispatch, createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { type LockDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import {
@@ -21,6 +20,7 @@ import TrezorConnect, {
     UI_REQUESTS,
 } from '@trezor/connect';
 import { asGetter, mock } from '@trezor/dependency-injection';
+import { type MockDispatch, createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import {
     type ConnectInitThunkDeps,

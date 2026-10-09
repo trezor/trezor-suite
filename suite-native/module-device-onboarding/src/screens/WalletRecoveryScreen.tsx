@@ -1,6 +1,5 @@
 import { useCallback, useEffect } from 'react';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { ContinueOnTrezorScreenContent, recoverWalletThunk } from '@suite-native/device';
 import {
     type DeviceOnboardingStackParamList,
@@ -9,6 +8,7 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 

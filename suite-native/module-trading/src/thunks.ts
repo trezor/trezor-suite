@@ -6,7 +6,6 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
-import { createThunk } from '@suite-common/redux-utils';
 import {
     type TradingExchangeType,
     type TradingSellType,
@@ -64,6 +63,7 @@ import {
     transactionManagementActions,
 } from '@suite-native/transaction-management';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { createThunk } from '@trezor/redux-utils';
 import { type Ok } from '@trezor/type-utils';
 
 import { createFormStateForSendForm } from './utils';

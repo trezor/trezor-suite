@@ -20,7 +20,6 @@ import {
     selectFeatureConfig,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import { type Dispatch } from '@suite-common/redux-utils';
 import { addToast } from '@suite-common/toast-notifications';
 import {
     type AccountsRootState,
@@ -33,6 +32,7 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
 import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
+import { type Dispatch } from '@trezor/redux-utils';
 import { arrayDistinct, typedObjectKeys } from '@trezor/utils';
 
 import * as coinjoinAccountActions from './coinjoinAccountActions';

@@ -2,13 +2,13 @@ import { useCallback } from 'react';
 
 import { type UnknownAction } from '@reduxjs/toolkit';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingType, cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { type FieldValues, type Path, type UseFormReturn } from '@suite-native/forms';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type TradingParameter = 'cryptoFrom' | 'cryptoTo';
 

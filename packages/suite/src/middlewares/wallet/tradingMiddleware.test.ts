@@ -10,7 +10,6 @@ import {
     routerLocationChange,
     routerReducer,
 } from '@suite/router';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type TradingState,
@@ -24,6 +23,7 @@ import { type AccountsState, prepareAccountsReducer } from '@suite-common/wallet
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import { type AccountKey, type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { ACCOUNT } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
 import { tradingMiddleware } from 'src/middlewares/wallet/tradingMiddleware';

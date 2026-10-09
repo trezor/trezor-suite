@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
 import { type FirmwareUpdateResult, useFirmwareInstallation } from '@suite-common/firmware';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { setPriorityMode } from '@trezor/react-native-usb';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { nativeFirmwareActions } from '../nativeFirmwareSlice';
 import { useFirmwareAnalytics } from './useFirmwareAnalytics';

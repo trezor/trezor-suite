@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account, type EvmTransactionPurpose } from '@suite-common/wallet-types';
 import {
     type EvmPendingTxStatus,
@@ -10,6 +9,7 @@ import {
     getPollIntervalMs,
 } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { fetchAndUpdateAccountThunk } from '../../accounts/accountsThunks';
 import { type FeesRootState, selectConvertedNetworkFeeInfo } from '../../fees/feesReducer';

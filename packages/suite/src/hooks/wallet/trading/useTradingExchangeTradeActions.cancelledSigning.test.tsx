@@ -1,12 +1,12 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exchangeInitialState, initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { createThunk } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/reducers/store';
 

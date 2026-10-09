@@ -1,11 +1,11 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
+import { DEVICE } from '@trezor/connect';
 import {
     type ActionTypesDep,
     type ReducersDep,
     createSliceWithExtraDeps,
-} from '@suite-common/redux-utils';
-import { DEVICE } from '@trezor/connect';
+} from '@trezor/redux-utils';
 import { typedObjectFromEntries } from '@trezor/utils';
 
 import { NewContentIndicatorId } from './flagsConstants';

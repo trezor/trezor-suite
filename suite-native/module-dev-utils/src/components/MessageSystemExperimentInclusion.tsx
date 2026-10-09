@@ -5,10 +5,10 @@ import {
     buildExperimentGroupRanges,
     messageSystemActions,
 } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type ExperimentsItem } from '@suite-common/suite-types';
 import { Button, Input, SegmentedControl, Text, VStack } from '@suite-native/atoms';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 const MIN_INCLUSION = 0;
 const MAX_INCLUSION = 99;

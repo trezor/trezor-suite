@@ -3,7 +3,7 @@ import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type DeviceRootState } from '@suite-common/device';
 import { type FirmwareRootState } from '@suite-common/firmware';
-import { type WithServices } from '@suite-common/redux-utils';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 

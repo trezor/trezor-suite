@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Select, type SelectItemType } from '@suite-native/atoms';
 import {
     type AppLocaleOption,
@@ -10,6 +9,7 @@ import {
     setAppLocaleCode,
 } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { PreferencesSettingsCard } from './PreferencesSettingsCard';
 

@@ -6,7 +6,6 @@
         { "path": "../device" },
         { "path": "../firmware" },
         { "path": "../message-system" },
-        { "path": "../redux-utils" },
         { "path": "../suite-types" },
         { "path": "../test-utils" },
         { "path": "../thp" },
@@ -19,6 +18,7 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/logger" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/transport-common"
         },

@@ -2,7 +2,6 @@ import { type CryptoId, type ExchangeTrade, type ExchangeTradeQuoteRequest } fro
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { type GotoThunkDeps } from '@suite/router';
-import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -10,6 +9,7 @@ import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import type { StaticSessionId } from '@trezor/connect';
+import { type WithServices } from '@trezor/redux-utils';
 
 import {
     type SelectExchangeQuoteThunkState,

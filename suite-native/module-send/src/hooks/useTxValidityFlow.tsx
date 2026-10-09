@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type SendRootState,
@@ -26,6 +25,7 @@ import {
 } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useHandleCommonSignRejection } from './useHandleCommonSignRejection';
 

@@ -4,8 +4,8 @@ import {
     type UnknownAction,
 } from '@reduxjs/toolkit';
 
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type UserContextPayload } from '@suite-common/suite-types';
+import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import { walletConnectActions } from './walletConnectActions';
 import * as walletConnectThunks from './walletConnectThunks';

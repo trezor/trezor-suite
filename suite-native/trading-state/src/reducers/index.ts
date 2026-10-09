@@ -1,8 +1,8 @@
 import { type NetworksRootState } from '@suite-common/networks';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type TradingRootState } from '@suite-native/trading-types';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 export type { TradingState, TradingRootState } from '@suite-native/trading-types';
 export { tradingInitialState } from '@suite-native/trading-consts';

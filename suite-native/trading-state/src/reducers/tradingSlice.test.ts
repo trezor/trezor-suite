@@ -1,7 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { CryptoId } from 'invity-api';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import {
     tradingBuyActions,
     tradingExchangeActions,
@@ -17,6 +16,7 @@ import {
     sellQuotes,
 } from '@suite-native/trading-fixtures';
 import { type ProviderConfirmationStatus, type TradingState } from '@suite-native/trading-types';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { buyActions } from './buySlice';
 import { exchangeActions } from './exchangeSlice';

@@ -2,8 +2,8 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
-import { type ReduxStoreWithThunk, createReduxExtra } from '@suite-common/redux-utils';
 import { type TokenDefinitionsMiddlewareDeps } from '@suite-common/token-definitions';
+import { type ReduxStoreWithThunk, createReduxExtra } from '@trezor/redux-utils';
 
 import { type SuiteServices } from 'src/support/createSuiteCompositionRoot';
 import { type ExtraDependenciesSuite } from 'src/support/extraDependencies';

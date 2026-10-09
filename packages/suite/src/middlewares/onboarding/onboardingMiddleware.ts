@@ -6,9 +6,9 @@ import { routerAppChanged } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { firmwareActions, selectFirmware } from '@suite-common/firmware';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { type Dispatch } from '@suite-common/redux-utils';
 import { forgetDisconnectedDevicesThunk } from '@suite-common/wallet-core';
 import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
+import { type Dispatch } from '@trezor/redux-utils';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { selectOnboarding } from 'src/selectors/onboarding/onboardingSelectors';

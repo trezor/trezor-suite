@@ -4,7 +4,6 @@ import { useFormState } from 'react-hook-form';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     AMOUNT_MAX_LENGTH,
@@ -16,6 +15,7 @@ import { asAmountSubunit, subunitsToUnits, toFiatCurrency } from '@suite-common/
 import { Banner, Button, Column, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { NumberInput } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';

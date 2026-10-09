@@ -1,7 +1,6 @@
 import { type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
-import { createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
@@ -10,6 +9,7 @@ import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { type StaticSessionId, asDeviceUniquePath } from '@trezor/connect';
+import { createMockDispatch } from '@trezor/redux-utils/mocks';
 import { createDeferred } from '@trezor/utils';
 
 import {
@@ -32,7 +32,7 @@ const mockCancelDiscovery = jest.fn<void, [TrezorDevice]>();
 
 jest.mock('../settings/walletSettingsThunks', () => {
     const actualModule = jest.requireActual('../settings/walletSettingsThunks');
-    const { createThunk } = jest.requireActual('@suite-common/redux-utils');
+    const { createThunk } = jest.requireActual('@trezor/redux-utils');
 
     return {
         ...actualModule,
@@ -45,7 +45,7 @@ jest.mock('../settings/walletSettingsThunks', () => {
 
 jest.mock('./discoveryThunks', () => {
     const actualModule = jest.requireActual('./discoveryThunks');
-    const { createThunk } = jest.requireActual('@suite-common/redux-utils');
+    const { createThunk } = jest.requireActual('@trezor/redux-utils');
 
     return {
         ...actualModule,

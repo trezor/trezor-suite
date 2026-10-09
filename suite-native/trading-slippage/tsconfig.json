@@ -14,14 +14,12 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         {
             "path": "../../suite-common/wallet-core"
         },

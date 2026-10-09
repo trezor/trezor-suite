@@ -1,9 +1,9 @@
 import { type ReactNode, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, Modal, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { startThpSessionThunk } from '../startThpSessionThunk';
 

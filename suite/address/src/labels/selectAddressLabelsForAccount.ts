@@ -4,7 +4,6 @@ import {
     selectLabelingDataForAccount,
 } from '@suite/metadata';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type SuiteSyncDataRootState,
     type WithSuiteSyncAndDeviceState,
@@ -14,6 +13,7 @@ import {
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 type SelectAddressLabelsForAccountParams = {
     addresses: string[];

@@ -1,8 +1,8 @@
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner, Column, H4 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { hideCoinjoinReceiveWarning } from 'src/actions/suite/suiteActions';
 import { useSelector } from 'src/hooks/suite';

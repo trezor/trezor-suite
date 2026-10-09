@@ -1,8 +1,8 @@
 import { getReceiveAddressForFlowEntry, getReceiveAddressToAdd } from '@suite-common/address';
 import { receiveActions, selectCurrentFreshAddress } from '@suite-common/receive';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import {
     type ReceiveAddressListRootState,

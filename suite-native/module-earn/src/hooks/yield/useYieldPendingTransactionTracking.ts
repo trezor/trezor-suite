@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 
 import { events } from '@suite-common/analytics';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowType,
@@ -16,6 +15,7 @@ import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { type NativeAnalyticsDep, injectNativeAnalytics } from '@suite-native/analytics';
 import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 type UseYieldPendingTransactionTrackingParams = {

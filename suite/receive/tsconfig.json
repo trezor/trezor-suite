@@ -6,9 +6,6 @@
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/receive" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/toast-notifications"
         },
         {
@@ -40,6 +37,7 @@
         {
             "path": "../../packages/product-components"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/theme" }
     ]
 }

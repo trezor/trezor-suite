@@ -1,7 +1,7 @@
 import { type RouterRootState, selectRouter } from '@suite/router';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TransportInfo } from '@trezor/connect';
+import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { type SuiteRootState, type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { type PrerequisiteType, type TrezorDevice } from 'src/types/suite';

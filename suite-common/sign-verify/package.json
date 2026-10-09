@@ -14,7 +14,6 @@
     "dependencies": {
         "@suite-common/analytics": "workspace:*",
         "@suite-common/device": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
@@ -25,6 +24,7 @@
         "@trezor/analytics-uploader": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "redux": "^5.0.1"
     }

@@ -39,9 +39,6 @@
         },
         { "path": "../../suite-common/receive" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-rbf-labels-migrations"
         },
         {
@@ -100,6 +97,7 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/transport-common"
         },

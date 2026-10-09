@@ -13,8 +13,8 @@ import {
     readyThunk,
     selectDesktopUpdate,
 } from '@suite/desktop-update';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { isArrayMember } from '@trezor/utils';
 
 import { Available } from './DesktopUpdater/Available';

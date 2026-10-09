@@ -15,7 +15,6 @@
         { "path": "../networks" },
         { "path": "../persistent-device-data" },
         { "path": "../react-query" },
-        { "path": "../redux-utils" },
         { "path": "../schemas" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
@@ -75,6 +74,7 @@
         },
         { "path": "../../packages/protobuf" },
         { "path": "../../packages/react-utils" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }

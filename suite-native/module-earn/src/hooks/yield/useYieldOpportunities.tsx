@@ -1,5 +1,5 @@
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
-import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 type UseYieldOpportunitiesData = Pick<
     ReturnType<typeof useAllYieldOpportunities>,

@@ -1,6 +1,6 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { type ThpRootState, selectThpConfirmationRequestId } from '@suite-common/thp';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 import { THP_PREFIX } from './thpActions';
 

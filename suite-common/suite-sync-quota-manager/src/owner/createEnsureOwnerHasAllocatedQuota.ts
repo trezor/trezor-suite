@@ -1,5 +1,4 @@
 import { type ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
-import { type Dispatch } from '@suite-common/redux-utils';
 import { type SuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
 import {
     type QuotaManagerCommunicationFailedErrType,
@@ -8,6 +7,7 @@ import {
 import { type DelegatedIdentityKey } from '@suite-common/suite-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
+import { type Dispatch } from '@trezor/redux-utils';
 import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 
 import { type AllocateOwnerQuotaDep } from './createAllocateOwnerQuota';

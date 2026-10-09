@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -27,6 +24,7 @@
         {
             "path": "../../suite-common/test-utils"
         },
-        { "path": "../analytics" }
+        { "path": "../analytics" },
+        { "path": "../../packages/redux-utils" }
     ]
 }

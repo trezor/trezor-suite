@@ -1,6 +1,5 @@
 import { type Store, combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { tradingBuyActions } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
@@ -10,6 +9,7 @@ import {
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { type TradingRootState, tradingSlice } from '@suite-native/trading-state';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { LastErrorMessage, type LastErrorMessageProps } from './LastErrorMessage';
 

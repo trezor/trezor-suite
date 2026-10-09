@@ -1,11 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import {
-    type ActionTypesDep,
-    type ReducersDep,
-    createReducerWithExtraDeps,
-} from '@suite-common/redux-utils';
-import {
     type AcquiredDevice,
     type ButtonRequest,
     type TrezorDevice,
@@ -14,6 +9,11 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { type Device, type DeviceState, type Features, type KnownDevice } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+} from '@trezor/redux-utils';
 import { type Err } from '@trezor/type-utils';
 
 import { type DeviceStateActionPayload, deviceActions } from './deviceActions';

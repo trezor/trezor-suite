@@ -1,7 +1,7 @@
 import { type CryptoId, type InfoResponse } from 'invity-api';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { accounts } from './account';
 import { buyThunks } from '../../thunks/buy';

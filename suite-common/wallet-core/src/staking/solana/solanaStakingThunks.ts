@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -15,6 +14,7 @@ import { getSuiteVersion } from '@trezor/env-utils';
 import solana from '@trezor/network-solana/runtime';
 import type { Fee, PrepareStakeSolTxResponse } from '@trezor/network-solana/types';
 import type { SolanaNetworkSymbol } from '@trezor/network-solana-types';
+import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { type AccountsRootState } from '../../accounts/accountsReducer';

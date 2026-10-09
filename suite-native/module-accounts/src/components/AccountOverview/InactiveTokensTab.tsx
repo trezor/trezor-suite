@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { FlashList } from '@shopify/flash-list';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountKey,
     type StellarTokenInfo,
@@ -26,6 +25,7 @@ import {
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type AccountAssetsTabListProps } from './types';

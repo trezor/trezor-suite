@@ -1,12 +1,12 @@
 import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import {
     tradingBuyActions,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
 import { captureSentryException } from '@suite-native/sentry';
+import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 class TradingError extends Error {
     constructor(message: string) {

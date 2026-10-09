@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 
 import { preserveModal, removePreserveModal } from '@suite/modal';
 import { prettifyLog, useCommonApplicationLogs } from '@suite-common/logger';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import {

@@ -12,7 +12,6 @@ import {
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncState,
     selectHasDeviceSuiteSyncError,
@@ -30,6 +29,7 @@ import {
 import { type NativeDeviceRootState, selectIsDeviceSetupSupported } from '@suite-native/device';
 import { selectIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { selectDeviceHistoryIgnoredNetworkSymbols } from '@suite-native/graph';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type HomeScreenState } from './homescreenTypes';
 

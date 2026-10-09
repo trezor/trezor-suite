@@ -2,7 +2,6 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { openDeferredModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
-import { createThunk } from '@suite-common/redux-utils';
 import {
     type ComposeYieldDepositTransactionThunkState,
     YIELD_PREFIX,
@@ -14,6 +13,7 @@ import {
     setYieldError,
     yieldActions,
 } from '@suite-common/wallet-core';
+import { createThunk } from '@trezor/redux-utils';
 
 import {
     type SendYieldTransactionDeps,

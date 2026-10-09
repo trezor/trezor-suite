@@ -30,7 +30,6 @@ import {
     persistentDeviceDataActions,
     preparePersistentDeviceDataReducer,
 } from '@suite-common/persistent-device-data';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type AcquiredDevice, type PersistentDeviceData } from '@suite-common/suite-types';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
@@ -41,6 +40,7 @@ import { discoveryInitialState, prepareDiscoveryReducer } from '@suite-common/wa
 import type { Discovery } from '@suite-common/wallet-types';
 import { asDeviceUniquePath } from '@trezor/connect-common';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { prepareDiscoveryMiddleware } from './discoveryMiddleware';
 

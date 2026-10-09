@@ -1,11 +1,11 @@
 import { DEVICE_MODULE_PREFIX, getIsIgnoredEntropyCheckError } from '@suite-common/device';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type AcquiredDevice, type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type TrezorConnect from '@trezor/connect';
 import type { SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 type FailEntropyCheckParams = {
     device: AcquiredDevice;

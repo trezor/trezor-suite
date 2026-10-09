@@ -8,12 +8,12 @@ import {
     deviceInvariabilityCheck,
     selectPersistentDeviceDataById,
 } from '@suite-common/persistent-device-data';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice, injectGetAllowPrerelease } from '@suite-common/suite-types';
 import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
 import { useGetter, useServices } from '@trezor/dependency-injection';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 import { isArrayMember } from '@trezor/utils';
 
 import { reportSecurityCheckThunk } from './reportSecurityCheckThunk';

@@ -1,8 +1,8 @@
 import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type TickerId, type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { isNative } from '@trezor/env-utils';
+import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import {
     fetchFiatRatesThunk,

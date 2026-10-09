@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 
 import { type TrxStats, useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type UseQueryResult } from '@suite-common/react-query';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TronFlow, tronStakeActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useTronAmountInput } from './useTronAmountInput';
 import { type TronStakeActions, useTronStakeActions } from './useTronStakeActions';

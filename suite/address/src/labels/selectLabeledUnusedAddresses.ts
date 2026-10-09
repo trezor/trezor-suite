@@ -5,7 +5,6 @@ import {
     selectLabelingDataForSelectedAccount,
 } from '@suite/metadata';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type SuiteSyncDataRootState,
     type WithSuiteSyncAndDeviceState,
@@ -13,6 +12,7 @@ import {
     selectSuiteSyncAddressLabels,
 } from '@suite-common/suite-sync';
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 type SelectLabeledUnusedAddressesParams = {
     account: Pick<Account, 'addresses' | 'path' | 'descriptor' | 'deviceState'>;

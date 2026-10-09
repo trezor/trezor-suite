@@ -1,13 +1,13 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
+import { accountsActions } from '@suite-common/wallet-core';
+import { type AccountKey, type ReceiveInfo } from '@suite-common/wallet-types';
 import {
     type ActionTypesDep,
     type ReducersDep,
     createSliceWithExtraDeps,
     createWeakMapSelector,
-} from '@suite-common/redux-utils';
-import { accountsActions } from '@suite-common/wallet-core';
-import { type AccountKey, type ReceiveInfo } from '@suite-common/wallet-types';
+} from '@trezor/redux-utils';
 
 export type CurrentFreshAddress = {
     path: string;

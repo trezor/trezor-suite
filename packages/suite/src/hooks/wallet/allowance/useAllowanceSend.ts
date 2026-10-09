@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type Account,
     type FormState,
@@ -9,6 +8,7 @@ import {
 } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 

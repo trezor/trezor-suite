@@ -1,5 +1,5 @@
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import {
     type FlagsRootState,

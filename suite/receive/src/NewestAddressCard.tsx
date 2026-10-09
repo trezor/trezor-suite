@@ -17,7 +17,6 @@ import {
     selectCurrentFreshAddress,
     selectTouchedAddresses,
 } from '@suite-common/receive';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -30,6 +29,7 @@ import { Box, Card, Divider, IconButton, Row, Text, Tooltip } from '@trezor/comp
 import { getAddressPathIndex } from '@trezor/crypto-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { AddressCardDetail } from './AddressCardDetail';
 import {

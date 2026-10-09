@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_AMOUNT_INPUT_SOURCE,
     TRADING_FORM_AMOUNT_IN_CRYPTO,
@@ -22,6 +21,7 @@ import {
 import { type Network } from '@suite-common/wallet-config';
 import { useServices } from '@trezor/dependency-injection';
 import { useDidUpdate } from '@trezor/react-utils';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
 import {
     getSellActiveAmount,

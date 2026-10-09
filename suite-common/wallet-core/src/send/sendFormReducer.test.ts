@@ -1,4 +1,3 @@
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -6,6 +5,7 @@ import {
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { sendFormActions } from './sendFormActions';
 import { type SendFormReducerDeps, initialState, prepareSendFormReducer } from './sendFormReducer';

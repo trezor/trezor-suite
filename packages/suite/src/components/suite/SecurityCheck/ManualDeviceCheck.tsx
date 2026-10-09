@@ -15,7 +15,6 @@ import { selectRecoveryStatus } from '@suite/recovery';
 import { gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Column,
     Divider,
@@ -30,6 +29,7 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal, models } from '@trezor/device-utils';
 import { ClockIcon, GradientIcon, InfoIcon, PackageIcon, SealCheckIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { breakpoints } from '@trezor/theme';
 import {
     TREZOR_RESELLERS_URL,

@@ -11,7 +11,6 @@ import {
     selectIsDeviceAuthorized,
     selectIsDeviceThpLocked,
 } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     AuthorizeDeviceStackRoutes,
     type HomeStackParamList,
@@ -21,6 +20,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     HomeStackParamList,

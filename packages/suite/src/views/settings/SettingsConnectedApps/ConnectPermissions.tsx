@@ -12,7 +12,6 @@ import {
     permissionIcons,
     selectConnectAppPermissions,
 } from '@suite-common/connect-popup';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     Card,
@@ -49,6 +48,7 @@ import {
     XCircleIcon,
 } from '@trezor/icons';
 import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';

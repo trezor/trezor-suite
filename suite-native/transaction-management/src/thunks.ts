@@ -1,7 +1,6 @@
 import { D, pipe } from '@mobily/ts-belt';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -22,6 +21,7 @@ import {
     type PrecomposedLevelsCardano,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
 
 import { transactionManagementActions } from './sendFormSlice';
 import { type FeeLevelsMaxAmount, type UpdateFeeLimitThunkParams } from './types/fees';

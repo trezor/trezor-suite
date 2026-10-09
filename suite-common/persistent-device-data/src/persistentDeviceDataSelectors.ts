@@ -1,7 +1,7 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { getIsFactoryResetDevice } from '@suite-common/suite-utils';
 import type { Device } from '@trezor/connect';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import {
     deviceInvariabilityCheck,

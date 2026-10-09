@@ -1,12 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type SellFiatTrade } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { createThunk } from '@trezor/redux-utils';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingSellState, sellInitialState } from '../../reducers/sellReducer';

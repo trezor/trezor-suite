@@ -1,13 +1,6 @@
 import { A } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import {
-    type ActionTypesDep,
-    type ReducersDep,
-    createReducerWithExtraDeps,
-    createWeakMapSelector,
-    returnStableArrayIfEmpty,
-} from '@suite-common/redux-utils';
 import { type NetworkSymbol, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     AddressDisplayOptions,
@@ -16,6 +9,13 @@ import {
 } from '@suite-common/wallet-types';
 import { isBaseCurrencyWithSats } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+    createWeakMapSelector,
+    returnStableArrayIfEmpty,
+} from '@trezor/redux-utils';
 
 import * as walletSettingsActions from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';

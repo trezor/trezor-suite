@@ -1,5 +1,5 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
 import { resolveAfter } from '@trezor/utils';
 
 import { TRON_STAKE_MODULE } from './constants';

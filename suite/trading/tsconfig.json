@@ -13,9 +13,6 @@
             "path": "../../suite-common/geolocation"
         },
         { "path": "../../suite-common/icons" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/wallet-types"
@@ -27,6 +24,7 @@
         {
             "path": "../../packages/product-components"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/theme" }
     ]
 }

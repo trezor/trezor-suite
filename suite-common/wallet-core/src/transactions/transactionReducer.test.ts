@@ -1,4 +1,5 @@
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { accounts, transactions } from './__fixtures__/transactionConstants';
 import { transactionsActions } from './transactionsActions';

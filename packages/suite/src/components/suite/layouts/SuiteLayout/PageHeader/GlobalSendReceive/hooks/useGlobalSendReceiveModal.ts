@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { yup } from '@suite/forms';
 import { gotoThunk, selectRouterParams } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account, type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { type Route } from 'src/types/suite';
 

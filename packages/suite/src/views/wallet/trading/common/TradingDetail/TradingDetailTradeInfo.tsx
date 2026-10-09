@@ -2,13 +2,13 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { AddressFormatter } from '@suite-common/formatters';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type { TradingProviderInfo, TradingTradeType } from '@suite-common/trading';
 import { Button, Column, InfoItem, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { CopyIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { FormattedDate } from 'src/components/suite';
 import { TradingProviderInfo as TradingProviderInfoRow } from 'src/views/wallet/trading/common/TradingProviderInfo';

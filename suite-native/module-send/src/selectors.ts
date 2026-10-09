@@ -1,4 +1,3 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     selectAccountByKey,
@@ -16,6 +15,7 @@ import {
     isCardanoTokenSendAdaInsufficient,
 } from '@suite-common/wallet-utils';
 import { type NativeSendRootState, selectFeeLevels } from '@suite-native/transaction-management';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 // Create memoized selector for complex computations
 export const selectDestinationTagFromDraft = (

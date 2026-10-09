@@ -1,4 +1,3 @@
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TradingRootStateWithDeviceAndAccounts,
     type TradingTransaction,
@@ -7,6 +6,7 @@ import {
 } from '@suite-common/trading';
 import { selectDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 export type TradesToWatchByAccount = {
     account: Account;

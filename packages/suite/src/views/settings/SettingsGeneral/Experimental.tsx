@@ -6,11 +6,11 @@ import { feedbackRequested } from '@suite/feature-feedback';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectExperimentalFeatures, suiteSettingsActions } from '@suite/settings';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner, Checkbox, Column, Switch } from '@trezor/components';
 import { useImperativeServices, useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
 

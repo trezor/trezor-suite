@@ -1,4 +1,5 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type WithSuiteSyncState } from '../suiteSyncSlice';
 

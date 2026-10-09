@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { useDevice } from '@suite/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Grid } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import {
@@ -10,6 +9,7 @@ import {
     hasBitcoinOnlyFirmware,
 } from '@trezor/device-utils';
 import { resolveStaticPath } from '@trezor/env-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { versionUtils } from '@trezor/utils';
 

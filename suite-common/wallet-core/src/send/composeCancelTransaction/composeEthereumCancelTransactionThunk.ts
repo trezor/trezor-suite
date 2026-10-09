@@ -1,6 +1,5 @@
 import { isRejected } from '@reduxjs/toolkit';
 
-import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountWithNetworkType,
@@ -9,6 +8,7 @@ import {
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 import { type FeesRootState, selectConvertedNetworkFeeInfo } from '../../fees/feesReducer';
 import { SEND_MODULE_PREFIX } from '../sendFormConstants';
