@@ -1,7 +1,9 @@
 import { CoinjoinClient } from './CoinjoinClient';
 import { CoinjoinPrison } from './CoinjoinPrison';
+import { CoinjoinRound } from './CoinjoinRound';
 import { createServer } from '../../mocks/server';
 import { DEFAULT_ROUND, FEE_RATE_MEDIANS } from '../__fixtures__/round.fixture';
+import { type RegisterAccountParams } from '../types/account';
 
 describe(`CoinjoinClient`, () => {
     let server: Awaited<ReturnType<typeof createServer>>;
@@ -209,5 +211,37 @@ describe(`CoinjoinClient`, () => {
 
         // wait for prison event
         await prisonEventPromise;
+    });
+
+    it('registerAccount without coordinatorUrl does not create a round', async () => {
+        const createSpy = jest.spyOn(CoinjoinRound, 'create').mockResolvedValue(undefined);
+        const account: RegisterAccountParams = {
+            accountKey: 'account-A',
+            scriptType: 'Taproot',
+            utxos: [],
+            changeAddresses: [],
+            targetAnonymity: 10,
+            rawLiquidityClue: 0,
+            maxFeePerKvbyte: 1,
+            maxCoordinatorFeeRate: 1,
+            maxRounds: 10,
+        };
+        // registerAccount triggers round processing without awaiting it
+        const flush = () => new Promise(resolve => setTimeout(resolve, 0));
+
+        const cli = new CoinjoinClient({ ...server?.requestOptions, coordinatorUrl: undefined });
+        cli.registerAccount(account);
+        await flush();
+        expect(createSpy).toHaveBeenCalledTimes(0);
+        cli.disable();
+
+        // with a coordinator the very same call does try to create a round
+        const cliWithCoordinator = new CoinjoinClient(server?.requestOptions);
+        cliWithCoordinator.registerAccount(account);
+        await flush();
+        expect(createSpy).toHaveBeenCalledTimes(1);
+        cliWithCoordinator.disable();
+
+        createSpy.mockRestore();
     });
 });
