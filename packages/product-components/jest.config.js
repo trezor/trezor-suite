@@ -3,6 +3,7 @@ const baseConfig = require('../../jest.config.base.swc');
 module.exports = {
     ...baseConfig,
     setupFiles: ['jest-canvas-mock'],
+    setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
     testEnvironment: 'jsdom',
     moduleNameMapper: {
         ...baseConfig.moduleNameMapper,

@@ -6,6 +6,7 @@ import { isSupportedEthereumNetwork } from '@trezor/network-ethereum-types';
 import { NativeTokenIcon } from './NativeTokenIcon';
 import { NonNativeTokenIcon } from './NonNativeTokenIcon';
 import { type TokenIconProps } from './tokenIconTypes';
+import { ZERO_ADDRESS } from './tokenIconUtils';
 import { NetworkIconBadge } from '../NetworkIcon/NetworkIconBadge';
 
 export const TokenIcon = ({
@@ -30,9 +31,15 @@ export const TokenIcon = ({
         contractAddress = null;
     }
 
+    const network = getNetworkOptional(symbol);
+
+    if (!contractAddress && showNetworkIcon && network?.nativeAssetCryptoId) {
+        contractAddress = ZERO_ADDRESS;
+        placeholder = placeholder || network.displaySymbol;
+    }
+
     if (!contractAddress) {
         if (showNetworkIcon) {
-            const network = getNetworkOptional(symbol);
             const networkSymbol = network?.settlementLayer ?? symbol;
             const displaySymbol = networkSymbol !== symbol ? networkSymbol : symbol;
             const tokenIcon = (

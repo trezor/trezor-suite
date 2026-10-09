@@ -445,6 +445,7 @@ export const networkConfigBySymbol = {
         coingeckoId: 'arc',
         tradeCryptoId: 'arc--0x0000000000000000000000000000000000000000',
         fiatRateCryptoId: 'usd-coin',
+        nativeAssetCryptoId: 'usd-coin',
         caipId: 'eip155:5042',
         yieldXyzId: null,
     },
