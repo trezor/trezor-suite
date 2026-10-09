@@ -330,13 +330,6 @@ describe('coinjoinClientActions', () => {
         expect(store.getState().wallet.coinjoin.debug).toMatchObject({
             coinjoinServerEnvironment: { test: 'public', regtest: 'localhost' },
         });
-
-        store.dispatch(
-            setDebugSettings({ coinjoinServerEnvironment: { [testSymbol]: 'staging' } }),
-        );
-        expect(store.getState().wallet.coinjoin.debug).toMatchObject({
-            coinjoinServerEnvironment: { test: 'staging', regtest: 'localhost' },
-        });
     });
 
     it('clientEmitException', async () => {

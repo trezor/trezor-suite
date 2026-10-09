@@ -189,8 +189,11 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
             }),
         );
 
+        // a round cannot exist without a coordinator, Status.start refuses to run without one
+        const { coordinatorUrl } = this.settings;
+
         // there are no CoinjoinRounds to process? try to create new one
-        if (roundsToProcess.length === 0) {
+        if (roundsToProcess.length === 0 && coordinatorUrl) {
             const newRound = await CoinjoinRound.create({
                 accounts: this.accounts,
                 statusRounds: rounds,
@@ -200,7 +203,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
                     network: this.network,
                     signal: this.abortController.signal,
                     coordinatorName: this.settings.coordinatorName,
-                    coordinatorUrl: this.settings.coordinatorUrl,
+                    coordinatorUrl,
                     middlewareUrl: this.settings.middlewareUrl,
                     logger: this.logger,
                     setSessionPhase: sessionPhase => this.setSessionPhase(sessionPhase),

@@ -9,24 +9,23 @@ import {
 import type { PartialRecord } from '@trezor/type-utils';
 
 export type CoinjoinSymbol = NetworkSymbol & ('btc' | 'test' | 'regtest');
-export type CoinjoinServerEnvironment = 'public' | 'staging' | 'localhost';
+export type CoinjoinServerEnvironment = 'public' | 'localhost';
 export type CoinjoinNetworksConfig = CoinjoinBackendSettings &
     CoinjoinClientSettings & { blockbookUrls: string[] };
 
 type ServerEnvironment = PartialRecord<CoinjoinServerEnvironment, CoinjoinNetworksConfig>;
 
+// The btc and test networks have no coordinator because the public ones shut down. Testers set
+// one through debug.coinjoinConfigOverride, see docs/features/coinjoin.md.
 export const COINJOIN_NETWORKS: PartialRecord<'btc' | 'test' | 'regtest', ServerEnvironment> = {
     btc: {
         /* default, see getCoinjoinConfig */
         public: {
             network: 'btc',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
-            coordinatorUrl: 'https://wasabiwallet.io/wabisabi/',
-            wabisabiBackendUrl: 'https://api.wasabiwallet.io/',
             blockbookUrls: ['https://btc.trezor.io'],
             onionDomains: {
                 'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
-                'wasabiwallet.io': 'wasabiukrxmkdgve5kynjztuovbg43uxcbcxn6y2okcrsg7gb6jdmbad.onion',
             },
             /* 28.02.2023 */
             baseBlockHeight: 778666,
@@ -37,39 +36,15 @@ export const COINJOIN_NETWORKS: PartialRecord<'btc' | 'test' | 'regtest', Server
             middlewareUrl: 'http://127.0.0.1:8081/',
         },
     },
-    /*
-     * btc: https://wasabiwallet.io/ (tor http://wasabiukrxmkdgve5kynjztuovbg43uxcbcxn6y2okcrsg7gb6jdmbad.onion/)
-     * available only in @suite-desktop
-     * browser throws: Access to XMLHttpRequest at 'https://wasabiwallet.co/WabiSabi/status' from origin 'http://localhost:8000'
-     * has been blocked by CORS policy: Response to preflight request doesn't pass access control check:
-     * No 'Access-Control-Allow-Origin' header is present on the requested resource.
-     */
     test: {
         /* default, see getCoinjoinConfig */
         public: {
             network: 'test',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
-            /* clearnet addresses */
-            coordinatorUrl: 'https://wasabiwallet.co/wabisabi/',
-            // backend settings
-            wabisabiBackendUrl: 'https://wasabiwallet.co/',
             blockbookUrls: ['https://tbtc4.trezor.io'],
             onionDomains: {
                 'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
-                'wasabiwallet.co': 'testwnp3fugjln6vh5vpj7mvq3lkqqwjj3c2aafyu7laxz42kgwh2rad.onion',
             },
-            /* */
-            /* onion addresses *
-            coordinatorUrl:
-                'http://dev-coinjoin-testnet.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/WabiSabi/',
-            // backend settings
-            wabisabiBackendUrl:
-                'http://dev-coinjoin-testnet.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/',
-            blockbookUrls: [
-                'http://tbtc1.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/api/v2',
-                'http://tbtc2.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/api/v2',
-            ],
-            /* */
             /* wasabi production *
             baseBlockHeight: 828575,
             baseBlockHash: '00000000000f0d5edcaeba823db17f366be49a80d91d15b77747c2e017b8c20a',
@@ -90,19 +65,6 @@ export const COINJOIN_NETWORKS: PartialRecord<'btc' | 'test' | 'regtest', Server
             baseBlockHeight: 0,
             baseBlockHash: '00000000da84f2bafbbc53dee25a72ae507ff4914b867c565be350b0da8bf043',
             /* */
-            filtersBatchSize: 5000,
-            // client settings
-            middlewareUrl: 'http://127.0.0.1:8081/',
-        },
-        staging: {
-            network: 'test',
-            coordinatorName: 'CoinJoinCoordinatorIdentifier',
-            coordinatorUrl: 'https://dev-coinjoin-testnet.trezor.io/wabisabi/',
-            // backend settings
-            wabisabiBackendUrl: 'https://dev-coinjoin-testnet.trezor.io/',
-            blockbookUrls: ['https://tbtc4.trezor.io'],
-            baseBlockHeight: 0,
-            baseBlockHash: '00000000da84f2bafbbc53dee25a72ae507ff4914b867c565be350b0da8bf043',
             filtersBatchSize: 5000,
             // client settings
             middlewareUrl: 'http://127.0.0.1:8081/',
@@ -165,8 +127,10 @@ export const getCoinjoinConfig = (
     environment?: CoinjoinServerEnvironment,
 ): CoinjoinNetworksConfig => {
     const config = COINJOIN_NETWORKS[symbol as keyof typeof COINJOIN_NETWORKS];
+    // Debug settings may still store a removed environment (test 'staging'), use the default one.
     const settings = config
-        ? config[environment ?? (Object.keys(config)[0] as CoinjoinServerEnvironment)]
+        ? ((environment && config[environment]) ??
+          config[Object.keys(config)[0] as CoinjoinServerEnvironment])
         : undefined;
     if (!settings)
         throw new Error(`Missing settings for coinjoin network ${symbol} env ${environment}`);
