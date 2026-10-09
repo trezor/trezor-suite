@@ -106,8 +106,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
                 await expect(tradingPage.quotes.selectedProviderName).toHaveText(dexProvider);
                 await tradingPage.quotes.waitForSync();
 
-                await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
-                await tradingPage.swapBestOfferButton.click();
+                await tradingPage.clickSwapDexBestOfferWithRetry();
             });
 
             await test.step('Read the standard fee on the review step', async () => {
@@ -134,8 +133,10 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
                 receiveAmount = localizeNumber(receiveStringAmount);
                 formattedReceiveAmount = `${receiveAmount} USDC`;
                 slippagePercent = `${swapSlippage}%`;
-                const guaranteedShare = new BigNumber(100).minus(swapSlippage).div(100);
-                minimumReceived = new BigNumber(receiveStringAmount).times(guaranteedShare);
+                // Same operation order as the app: dividing last rounds to BigNumber's 20 decimal places.
+                minimumReceived = new BigNumber(receiveStringAmount)
+                    .times(new BigNumber(100).minus(swapSlippage))
+                    .div(100);
                 formattedMinimumReceived = `${localizeNumber(minimumReceived.toFixed(4))} USDC`;
                 promptMinimumReceived = `${minimumReceived.toFixed()} USDC`;
                 // The device shows LI.FI's minimum from the calldata; receive × slippage misses it by a unit.
