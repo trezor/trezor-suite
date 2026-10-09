@@ -1,12 +1,13 @@
 import { type PayloadActionCreator, type UnknownAction } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type TokenDefinitionsRootState,
+    getSupportedDefinitionTypes,
+    getTokenDefinitionThunk,
+    selectNetworkTokenDefinitions,
+} from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-
-import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
-import { getTokenDefinitionThunk } from './tokenDefinitionsThunks';
-import { type TokenDefinitionsRootState } from './tokenDefinitionsTypes';
-import { getSupportedDefinitionTypes } from './tokenDefinitionsUtils';
 
 type TokenDefinitionsMiddlewareState = TokenDefinitionsRootState;
 
