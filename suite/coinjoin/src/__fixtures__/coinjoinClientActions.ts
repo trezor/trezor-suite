@@ -81,6 +81,13 @@ export const DEVICE: TrezorDevice = mockSuiteDevice({
 
 const SESSION = { signedRounds: [] as string[], sessionPhaseQueue: [], maxRounds: 10 };
 
+/** Coordination fee parameters built from round parameters by @trezor/coinjoin. */
+const COINJOIN_REQUEST = {
+    fee_rate: 300000,
+    no_fee_threshold: 1000000,
+    min_registrable_amount: 5000,
+};
+
 export const onCoinjoinRoundChanged: OnCoinjoinRoundChangedFixture[] = [
     {
         description: 'Phase 0. No associated coinjoin accounts',
@@ -757,9 +764,7 @@ export const signCoinjoinTx: SignCoinjoinTxFixture[] = [
                     { address: 'B1', path: 'm/10025', amount: 500000 }, // account-B
                     { address: 'C2', path: 'm/10025', amount: 499500 }, // account-C
                 ],
-                affiliateRequest: {
-                    coinjoin_flags_array: [],
-                },
+                coinjoinRequest: COINJOIN_REQUEST,
             },
             liquidityClues: [{ accountKey: 'account-A', rawLiquidityClue: 1 }],
         },
@@ -781,6 +786,7 @@ export const signCoinjoinTx: SignCoinjoinTxFixture[] = [
                         { script_type: 'PAYTOADDRESS' },
                         { script_type: 'PAYTOADDRESS' },
                     ],
+                    coinjoinRequest: COINJOIN_REQUEST,
                 },
                 // account-B
                 {
@@ -797,6 +803,7 @@ export const signCoinjoinTx: SignCoinjoinTxFixture[] = [
                         { script_type: 'PAYTOTAPROOT' }, // account-B
                         { script_type: 'PAYTOADDRESS' },
                     ],
+                    coinjoinRequest: COINJOIN_REQUEST,
                 },
                 // account-C
                 {
@@ -813,6 +820,7 @@ export const signCoinjoinTx: SignCoinjoinTxFixture[] = [
                         { script_type: 'PAYTOADDRESS' },
                         { script_type: 'PAYTOTAPROOT' }, // account-C
                     ],
+                    coinjoinRequest: COINJOIN_REQUEST,
                 },
             ],
             // this will be sent back to @trezor/coinjoin
@@ -902,9 +910,7 @@ export const signCoinjoinTx: SignCoinjoinTxFixture[] = [
                     { address: 'A1', path: 'm/10025', amount: 500000 }, // account-A
                     { address: 'A2', path: 'm/10025', amount: 499500 }, // account-A
                 ],
-                affiliateRequest: {
-                    coinjoin_flags_array: [],
-                },
+                coinjoinRequest: COINJOIN_REQUEST,
             },
             liquidityClues: [],
         },
@@ -920,6 +926,7 @@ export const signCoinjoinTx: SignCoinjoinTxFixture[] = [
                         { script_type: 'PAYTOTAPROOT' }, // account-A
                         { script_type: 'PAYTOTAPROOT' }, // account-A
                     ],
+                    coinjoinRequest: COINJOIN_REQUEST,
                 },
             ],
             // this will be sent back to @trezor/coinjoin
@@ -1053,9 +1060,7 @@ export const signCoinjoinTx: SignCoinjoinTxFixture[] = [
                 outputs: [
                     { address: 'A1', path: 'm/10025', amount: 500000 }, // account-A
                 ],
-                affiliateRequest: {
-                    coinjoin_flags_array: [],
-                },
+                coinjoinRequest: COINJOIN_REQUEST,
             },
             liquidityClues: [],
         },
@@ -1073,6 +1078,7 @@ export const signCoinjoinTx: SignCoinjoinTxFixture[] = [
                     outputs: [
                         { script_type: 'PAYTOADDRESS' }, // account-A
                     ],
+                    coinjoinRequest: COINJOIN_REQUEST,
                 },
             ],
             // this will be sent back to @trezor/coinjoin

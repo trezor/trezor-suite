@@ -62,11 +62,3 @@ export const COORDINATOR_FEE_RATE_FALLBACK = 0.003;
 export const MIN_ALLOWED_AMOUNT_FALLBACK = 5000;
 export const MAX_ALLOWED_AMOUNT_FALLBACK = 134375000000;
 export const MINING_FEE_RATE_FALLBACK = 2000;
-
-// affiliation flag:
-// - sent coordinator/ready-to-sign request **only** when Alice pays coordination fee
-// - check if Trezor affiliate server is running in status.affiliateInformation.runningAffiliateServers
-export const AFFILIATION_ID = {
-    trezor: 'trezor',
-    wasabi: 'WalletWasabi',
-};

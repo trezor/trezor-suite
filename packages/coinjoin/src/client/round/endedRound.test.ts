@@ -84,48 +84,6 @@ describe('ended', () => {
         expect(round.prison.inmates.length).toEqual(1);
     });
 
-    it('NotAllAlicesSign by this instance (missing affiliate request)', () => {
-        const round = createCoinjoinRound(
-            [
-                createInput('account-A', 'A1', {
-                    ownershipProof: '01A1',
-                    registrationData: {
-                        AliceId: '01A1-01a1',
-                    },
-                    realAmountCredentials: {},
-                    realVsizeCredentials: {},
-                    confirmationData: {},
-                    confirmedAmountCredentials: {},
-                    confirmedVsizeCredentials: {},
-                }),
-            ],
-            {
-                ...options,
-                logger,
-                round: {
-                    phase: RoundPhase.Ended,
-                    endRoundState: EndRoundState.NotAllAlicesSign,
-                    addresses: [
-                        {
-                            address:
-                                'bc1pkeah0fx2ex3jc337twlqcm9lh2eusm94j5vw2eshvczku6n7sjwqrfyfj2',
-                            path: '',
-                            scriptPubKey: '',
-                        },
-                    ],
-                },
-            },
-        );
-
-        ended(round, options);
-
-        expect(logger.error).toHaveBeenCalledTimes(1);
-        expect(logger.error).toHaveBeenCalledWith(
-            expect.stringMatching(/Missing affiliate request/),
-        );
-        expect(round.prison.inmates.length).toEqual(2); // input + output are detained
-    });
-
     it('NotAllAlicesSign by this instance (missing witnesses)', () => {
         // create CoinjoinRound in phase 1 (ConnectionConfirmation)
         const round = createCoinjoinRound(
@@ -155,7 +113,6 @@ describe('ended', () => {
                             scriptPubKey: '',
                         },
                     ],
-                    affiliateRequest: Buffer.from('0'.repeat(97 * 2 + 4), 'hex').toString('base64'),
                 },
             },
         );
@@ -196,7 +153,6 @@ describe('ended', () => {
                             scriptPubKey: '',
                         },
                     ],
-                    affiliateRequest: Buffer.from('0'.repeat(97 * 2 + 4), 'hex').toString('base64'),
                 },
             },
         );
@@ -240,7 +196,6 @@ describe('ended', () => {
                             scriptPubKey: '',
                         },
                     ],
-                    affiliateRequest: Buffer.from('0'.repeat(97 * 2 + 4), 'hex').toString('base64'),
                 },
             },
         );
@@ -281,7 +236,6 @@ describe('ended', () => {
                             scriptPubKey: '',
                         },
                     ],
-                    affiliateRequest: Buffer.from('0'.repeat(97 * 2 + 4), 'hex').toString('base64'),
                 },
             },
         );

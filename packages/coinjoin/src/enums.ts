@@ -8,7 +8,6 @@ export const SessionPhase = {
     AccountMissingUtxos: 151,
     SkippingRound: 152,
     RetryingRoundPairing: 153,
-    AffiliateServerOffline: 154,
     CriticalError: 155,
     BlockedUtxos: 156,
 

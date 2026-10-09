@@ -254,11 +254,13 @@ export const prepareCoinjoinTransaction = (
 
     // TODO: early validation of inputs/outputs before it's sent to Trezor to not waste signing count
 
-    const { affiliateRequest } = transaction;
-
     const tx = {
-        inputs: transaction.inputs.map((input, index) => {
-            const flags = affiliateRequest.coinjoin_flags_array?.[index];
+        // Inputs no longer carry coinjoin_flags, the Trezor affiliate server that signed them is
+        // gone. Firmware reads the missing field as 0, so the NO_FEE bit is never set and every
+        // internal input above no_fee_threshold counts towards coordination_fee_base. The only
+        // remaining device-side limit on the coordination fee is maxCoordinatorFeeRate passed to
+        // authorizeCoinjoin.
+        inputs: transaction.inputs.map(input => {
             if (isInternalInput(input)) {
                 return {
                     script_type: inputScriptType,
@@ -266,7 +268,6 @@ export const prepareCoinjoinTransaction = (
                     prev_hash: input.hash,
                     prev_index: input.index,
                     amount: input.amount,
-                    coinjoin_flags: flags,
                 } as const;
             }
 
@@ -279,7 +280,6 @@ export const prepareCoinjoinTransaction = (
                 script_pubkey: input.scriptPubKey,
                 ownership_proof: input.ownershipProof,
                 commitment_data: input.commitmentData,
-                coinjoin_flags: flags,
             } as const;
         }),
         outputs: transaction.outputs.map(output => {
@@ -301,13 +301,7 @@ export const prepareCoinjoinTransaction = (
 
     return {
         ...tx,
-        coinjoinRequest: {
-            fee_rate: affiliateRequest.fee_rate,
-            no_fee_threshold: affiliateRequest.no_fee_threshold,
-            min_registrable_amount: affiliateRequest.min_registrable_amount,
-            mask_public_key: affiliateRequest.mask_public_key,
-            signature: affiliateRequest.signature,
-        },
+        coinjoinRequest: transaction.coinjoinRequest,
     };
 };
 

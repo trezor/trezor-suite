@@ -30,7 +30,6 @@ export interface AliceShape {
     resolved: AlicePendingRequest[]; // resolved requests received from wallet (Suite)
     ownershipProof?: string; // data used in inputRegistration phase, received as response to RequestEvent, provided by wallet (Suite)
     registrationData?: RegistrationData; // data from inputRegistration phase
-    affiliationFlag?: boolean; // affiliation flag is used in /ready-to-sign request **only** when Alice pays coordination fee
     realAmountCredentials?: RealCredentials; // data from inputRegistration phase
     realVsizeCredentials?: RealCredentials; // data from inputRegistration phase
     confirmationInterval?: AliceConfirmationInterval;
@@ -47,7 +46,7 @@ export interface AliceShape {
     setError(error: Error): void;
     setConfirmationData(data: ConfirmationData): void;
     setConfirmedCredentials(amount: Credentials[], vsize: Credentials[]): void;
-    setRegistrationData(data: RegistrationData, flag?: boolean): void;
+    setRegistrationData(data: RegistrationData): void;
     setRealCredentials(amount: RealCredentials, vsize: RealCredentials): void;
     getResolvedRequest(type: AlicePendingRequest['type']): AlicePendingRequest | undefined;
 }

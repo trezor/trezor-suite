@@ -88,14 +88,8 @@ export const DEFAULT_ROUND = {
     ).toUTCString(),
 } as Round;
 
-export const AFFILIATE_INFO = {
-    RunningAffiliateServers: ['trezor' as const],
-    AffiliateData: {},
-};
-
 export const STATUS_EVENT = {
     RoundStates: [],
-    AffiliateInformation: AFFILIATE_INFO,
     CoinJoinFeeRateMedians: FEE_RATE_MEDIANS,
 };
 

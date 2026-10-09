@@ -1,12 +1,7 @@
 import { Status } from './Status';
 import { coordinatorRequest } from './coordinatorRequest';
 import { createServer } from '../../mocks/server';
-import {
-    AFFILIATE_INFO,
-    DEFAULT_ROUND,
-    STATUS_EVENT,
-    createCoinjoinRound,
-} from '../__fixtures__/round.fixture';
+import { DEFAULT_ROUND, STATUS_EVENT, createCoinjoinRound } from '../__fixtures__/round.fixture';
 import { STATUS_TIMEOUT } from '../constants';
 
 jest.mock('./coordinatorRequest', () => ({
@@ -296,59 +291,6 @@ describe('Status', () => {
                 status.stop();
                 resolve();
             });
-        });
-    });
-
-    it('Status onStatusChange with delayed affiliateRequest', async () => {
-        const round = {
-            ...DEFAULT_ROUND,
-            Phase: 3,
-        };
-
-        const affiliateDataBase64 = Buffer.from('{}', 'utf-8').toString('base64');
-
-        const coordinatorRequestSpy = jest.fn();
-        (coordinatorRequest as jest.Mock).mockImplementation(url => {
-            if (url === 'status') {
-                coordinatorRequestSpy();
-            }
-
-            return Promise.resolve({
-                ...STATUS_EVENT,
-                RoundStates: [{ ...round }], // NOTE: always return new reference for the Round from mock
-                AffiliateInformation: {
-                    ...AFFILIATE_INFO,
-                    AffiliateData:
-                        coordinatorRequestSpy.mock.calls.length > 3 // return affiliateData after 3rd iteration
-                            ? { [round.Id]: { trezor: affiliateDataBase64 } }
-                            : AFFILIATE_INFO.AffiliateData,
-                },
-            });
-        });
-
-        jest.useFakeTimers();
-
-        status = new Status(server?.requestOptions);
-
-        const onUpdateListener = jest.fn();
-        status.on('update', onUpdateListener);
-
-        status.setMode('enabled');
-        await status.start();
-
-        expect(coordinatorRequestSpy).toHaveBeenCalledTimes(1); // status fetched once, on start
-        expect(onUpdateListener).toHaveBeenCalledTimes(1); // status changed once, on start
-
-        // wait 3 iterations
-        await fastForward(STATUS_TIMEOUT.enabled);
-        await fastForward(STATUS_TIMEOUT.enabled);
-        await fastForward(STATUS_TIMEOUT.enabled);
-
-        expect(coordinatorRequestSpy).toHaveBeenCalledTimes(4); // status fetched 4 times
-        expect(onUpdateListener).toHaveBeenCalledTimes(4); // affiliateData added at 3rd iteration
-
-        expect(onUpdateListener.mock.calls[3][0]).toMatchObject({
-            changed: [{ AffiliateRequest: affiliateDataBase64 }],
         });
     });
 

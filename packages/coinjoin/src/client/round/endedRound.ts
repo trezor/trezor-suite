@@ -20,7 +20,6 @@ export const ended = (round: CoinjoinRoundShape, { logger, network }: CoinjoinRo
 
     // check if Round was not signed by this instance.
     // possible edge cases:
-    // - Round awaits for affiliateData from the Status but data are not provided before transactionSigningTimeout.
     // - Round in critical phase awaits for Status phase change but update is not provided because of network problems.
     // Round ends and this instance is to blame for it.
     // inputs will probably be banned even if there was no error while processing.
@@ -37,10 +36,6 @@ export const ended = (round: CoinjoinRoundShape, { logger, network }: CoinjoinRo
         } else if (addresses.length === 0) {
             // no registered outputs
             logger.error('Round not signed. Missing outputs.');
-        } else if (!round.affiliateRequest) {
-            // missing affiliateRequest
-            const times = round.transactionSignTries.join(',');
-            logger.error(`Round not signed. Missing affiliate request. Status fetched at ${times}`);
         } else if (inputs.some(i => !i.witness)) {
             // no signed inputs
             logger.error('Round not signed. Missing signed inputs.');

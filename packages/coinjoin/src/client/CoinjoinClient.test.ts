@@ -1,7 +1,7 @@
 import { CoinjoinClient } from './CoinjoinClient';
 import { CoinjoinPrison } from './CoinjoinPrison';
 import { createServer } from '../../mocks/server';
-import { AFFILIATE_INFO, DEFAULT_ROUND, FEE_RATE_MEDIANS } from '../__fixtures__/round.fixture';
+import { DEFAULT_ROUND, FEE_RATE_MEDIANS } from '../__fixtures__/round.fixture';
 
 describe(`CoinjoinClient`, () => {
     let server: Awaited<ReturnType<typeof createServer>>;
@@ -24,7 +24,6 @@ describe(`CoinjoinClient`, () => {
                 resolve({
                     RoundStates: [DEFAULT_ROUND],
                     CoinJoinFeeRateMedians: FEE_RATE_MEDIANS,
-                    AffiliateInformation: AFFILIATE_INFO,
                 });
             }
             resolve();
@@ -45,7 +44,6 @@ describe(`CoinjoinClient`, () => {
             if (url.endsWith('/status')) {
                 resolve({
                     CoinJoinFeeRateMedians: FEE_RATE_MEDIANS,
-                    AffiliateInformation: AFFILIATE_INFO,
                     RoundStates: [
                         DEFAULT_ROUND,
                         {

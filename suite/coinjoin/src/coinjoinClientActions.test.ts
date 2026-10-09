@@ -193,6 +193,13 @@ describe('coinjoinClientActions', () => {
                 expect(TrezorConnect.signTransaction.mock.calls[index]?.[0]).toMatchObject(params);
             });
 
+            // toMatchObject ignores extra keys, assert the removed affiliate data explicitly
+            TrezorConnect.signTransaction.mock.calls.forEach(([params]) => {
+                params.inputs.forEach(input => expect(input).not.toHaveProperty('coinjoin_flags'));
+                expect(params.coinjoinRequest).not.toHaveProperty('mask_public_key');
+                expect(params.coinjoinRequest).not.toHaveProperty('signature');
+            });
+
             expect(response).toMatchObject(f.result.response);
         });
     });
