@@ -9,7 +9,7 @@ import {
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, isDirectRpcBackendType } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 import { BigNumber, arrayToDictionary } from '@trezor/utils';
@@ -73,7 +73,7 @@ export function isNetworkWithGraphFeature(symbol: NetworkSymbol, backendType?: B
         return false;
     }
 
-    return backendType !== 'evm-rpc';
+    return !isDirectRpcBackendType(backendType);
 }
 
 export const enhanceBlockchainAccountHistory = (
