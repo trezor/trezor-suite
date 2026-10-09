@@ -48,7 +48,6 @@ type WalletAsset = {
     tokenDecimals: number | undefined;
 };
 
-/** Every asset the wallet holds, hidden ones included: the hidden tokens page lists what the table leaves out. */
 const selectAllWalletAssets = createMemoizedSelector(
     [selectDeviceAssetAccounts],
     (assetAccounts): ReadonlyMap<WalletAssetKey, WalletAsset> => {
@@ -91,7 +90,6 @@ const selectAllWalletAssets = createMemoizedSelector(
     },
 );
 
-/** A token is hidden for all the accounts that hold it, so hiding reads the same per asset. */
 const selectHiddenWalletAssetKeySet = createMemoizedSelector(
     [selectDeviceAssetAccounts, selectHiddenAssetAccountKeySet],
     (assetAccounts, hiddenAccounts): ReadonlySet<WalletAssetKey> => {
@@ -179,7 +177,6 @@ const selectWalletAssetWeekAgoValues = createMemoizedSelector(
     pricedOnce,
 );
 
-/** The hidden tokens page sorts by worth too, and the shown values leave the hidden ones out. */
 const selectHiddenWalletAssetValues = createMemoizedSelector(
     [selectHiddenWalletAssets, selectCurrentFiatRates, selectBaseCurrency],
     priceAssets,
@@ -353,7 +350,6 @@ const byCryptoBalance =
         return balance(right).comparedTo(balance(left)) ?? 0;
     };
 
-/** What it is worth, and where nothing can price it — a hidden token often cannot be priced — what is held. */
 const byFiatThenCryptoBalance = (
     assets: ReadonlyMap<WalletAssetKey, WalletAsset>,
     values: ReadonlyMap<WalletAssetKey, BigNumber>,
@@ -385,7 +381,6 @@ const selectHiddenWalletAssetKeysByReason = createMemoizedSelector(
         hiddenKeys.forEach(assetKey => {
             const asset = assets.get(assetKey);
 
-            // Only a token can be hidden, so a hidden key always has a contract: the guard is for the type.
             if (asset?.contractAddress === undefined || !enabledNetworks.includes(asset.symbol)) {
                 return;
             }
