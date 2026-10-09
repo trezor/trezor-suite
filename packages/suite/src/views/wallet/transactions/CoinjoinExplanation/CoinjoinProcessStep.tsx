@@ -14,12 +14,9 @@ import {
 import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
 const Image = styled.div`
-    margin: -8px;
-
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         grid-column: 1;
-        grid-row: 1/3;
-        margin: 0;
+        grid-row: 1/4;
     }
 `;
 
@@ -32,16 +29,15 @@ const StepNumberSlot = styled.div`
 
 const StepTitleSlot = styled.div`
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        align-self: center;
         grid-column: 2;
-        grid-row: 1;
+        grid-row: 2;
     }
 `;
 
 const StepDescriptionSlot = styled.div`
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         grid-column: 2;
-        grid-row: 2;
+        grid-row: 3;
     }
 `;
 
@@ -105,14 +101,14 @@ export const CoinjoinProcessStep = ({
     return (
         <Container>
             <Image>
-                <IconCircle icon={iconName} size={96} />
+                <IconCircle icon={iconName} size={isBelowLaptop ? 48 : 96} />
             </Image>
             <StepNumberSlot>
                 <Paragraph
                     typographyStyle="body-sm"
                     intent="neutral"
                     priority="secondary"
-                    margin={{ top: 24, bottom: 6 }}
+                    margin={{ top: isBelowLaptop ? 0 : 16, bottom: isBelowLaptop ? 2 : 6 }}
                 >
                     <Translation id="TR_STEP" values={{ number }} />
                 </Paragraph>
@@ -120,7 +116,7 @@ export const CoinjoinProcessStep = ({
             <StepTitleSlot>
                 <H3
                     typographyStyle={isBelowLaptop ? 'body-md-strong' : 'headline-sm'}
-                    margin={{ bottom: 20 }}
+                    margin={{ bottom: isBelowLaptop ? 4 : 20 }}
                 >
                     {title}
                 </H3>

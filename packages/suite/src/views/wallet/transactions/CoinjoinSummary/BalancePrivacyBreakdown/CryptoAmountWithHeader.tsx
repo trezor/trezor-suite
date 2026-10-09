@@ -19,7 +19,6 @@ const Container = styled.div`
 const Header = styled.div`
     display: flex;
     align-items: center;
-    height: 15px;
     ${typography['body-md-strong']}
 
     > :first-child {
