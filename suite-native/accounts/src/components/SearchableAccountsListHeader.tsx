@@ -34,8 +34,9 @@ const HEADER_ANIMATION_DURATION = 100;
 
 const searchFormContainerStyle = prepareNativeStyle<{ noPaddingTop: boolean }>(
     ({ spacings }, { noPaddingTop }) => ({
-        marginBottom: spacings.sp8,
-        paddingTop: noPaddingTop ? 0 : spacings.sp16,
+        marginHorizontal: spacings.sp16,
+        marginBottom: spacings.sp16,
+        paddingTop: noPaddingTop ? 0 : spacings.sp8,
     }),
 );
 
