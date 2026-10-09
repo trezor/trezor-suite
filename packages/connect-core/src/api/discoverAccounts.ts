@@ -153,8 +153,6 @@ export default class DiscoverAccounts extends AbstractMethod<
         const params = { coins, entropyCheckResult };
 
         super(message, params);
-        this.useDevice = true;
-        this.useDeviceState = true;
     }
     get requiredPermissions(): PermissionRequest[] {
         return this.coinPerms(
