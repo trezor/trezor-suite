@@ -10,6 +10,7 @@ import { type AccountItemType } from 'src/types/wallet';
 import { AccountItemBottomLine } from './AccountItemBottomLine';
 import { AccountItemLabel } from './AccountItemLabel';
 import { AccountItemRightSide } from './AccountItemRightSide';
+import { FiatBalancePlaceholder } from './BalancePlaceholder';
 
 type AccountItemContentProps = {
     customFiatValue?: BaseCurrencyAmount;
@@ -73,15 +74,19 @@ export const AccountItemContent = ({
                     />
                 </Text>
 
-                <AccountItemRightSide
-                    account={account}
-                    isCardanoStakingRow={isCardanoStakingRow}
-                    isTronStakingRowWithActiveVotes={isTronStakingRowWithActiveVotes}
-                    isFailed={isFailed}
-                    formattedBalance={formattedBalance}
-                    customFiatValue={customFiatValue}
-                    isFiatLoading={isFiatLoading}
-                />
+                {shouldShowBalancePlaceholder ? (
+                    <FiatBalancePlaceholder networkSymbol={account.symbol} />
+                ) : (
+                    <AccountItemRightSide
+                        account={account}
+                        isCardanoStakingRow={isCardanoStakingRow}
+                        isTronStakingRowWithActiveVotes={isTronStakingRowWithActiveVotes}
+                        isFailed={isFailed}
+                        formattedBalance={formattedBalance}
+                        customFiatValue={customFiatValue}
+                        isFiatLoading={isFiatLoading}
+                    />
+                )}
             </Row>
 
             <AccountItemBottomLine
