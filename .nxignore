@@ -144,7 +144,7 @@ _.hprof
 
 suite/app-assets/files/browser-detection
 suite/app-assets/files/guide
-suite/app-assets/files/translations/master.json
+suite/intl/translations/master.json
 
 # @trezor/connect-explorer
 

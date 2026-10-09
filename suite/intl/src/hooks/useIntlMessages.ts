@@ -1,6 +1,7 @@
-import enMessages from '@suite/app-assets/files/translations/en-US.json';
 import { desktopQueryKeys, keepPreviousData, useQuery } from '@suite-common/react-query';
 import type { Locale } from '@suite-common/suite-types';
+
+import enMessages from '../../translations/en-US.json';
 
 export type IntlMessages = Record<string, string>;
 
@@ -18,7 +19,7 @@ export const loadIntlMessages = async (locale: Locale): Promise<IntlMessages> =>
     }
 
     const localizedMessages: IntlMessages = await import(
-        /* webpackChunkName: "translations/[request]" */ `@suite/app-assets/files/translations/${locale}.json`
+        /* webpackChunkName: "translations/[request]" */ `../../translations/${locale}.json`
     )
         .then(res => res.default)
         .catch(() => ({}));

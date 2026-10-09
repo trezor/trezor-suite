@@ -2,13 +2,13 @@
 
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import csMessages from '@suite/app-assets/files/translations/cs-CZ.json';
-import deMessages from '@suite/app-assets/files/translations/de-DE.json';
-import enMessages from '@suite/app-assets/files/translations/en-US.json';
 import { QueryClient, QueryClientProvider } from '@suite-common/react-query';
 import type { Locale } from '@suite-common/suite-types';
 
 import { type IntlMessages, useIntlMessages } from './useIntlMessages';
+import csMessages from '../../translations/cs-CZ.json';
+import deMessages from '../../translations/de-DE.json';
+import enMessages from '../../translations/en-US.json';
 
 describe(useIntlMessages.name, () => {
     type Props = { locale: Locale };

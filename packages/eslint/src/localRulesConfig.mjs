@@ -80,9 +80,9 @@ export const localRulesConfig = [
                         /^@(?:suite-native|suite|suite-common|trezor)\/[^/]+\/(?:mocks|react|react-native)$/,
                         // Suite test setup imports global polyfills through this side-effect-only entry point.
                         /^@suite-common\/test-utils\/globalOverrides$/,
-                        // `@suite/app-assets` has no entry point; it ships files that are imported
-                        // by path, such as the translation catalogs.
-                        /^@suite\/app-assets\/files\/translations\/[\w-]+\.json$/,
+                        // `@suite/intl` ships the translation catalogs as files next to its sources;
+                        // e2e tests import a catalog by path to assert translated text.
+                        /^@suite\/intl\/translations\/[\w-]+\.json$/,
                         // The applications import the Webpack pieces they share from this
                         // build-only entry point; it is never part of an application bundle.
                         /^@trezor\/suite\/webpack\/[\w/-]+$/,
