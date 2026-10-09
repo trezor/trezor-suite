@@ -11,7 +11,7 @@ import { Grid, Row, Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite';
 import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
-import { useLocales, useSelector } from 'src/hooks/suite';
+import { useConnectedDateFnsLocale, useSelector } from 'src/hooks/suite';
 
 import { FeeCard, type FeeCardAppearance } from './FeeCard';
 import { FeeCardsWrapper } from './StandardFee.styles';
@@ -35,7 +35,7 @@ export const EthereumFeeCards = ({ feeOptions, feeCardAppearance }: EthereumFeeC
         composedLevels,
         isComposing,
     } = useFeesContext();
-    const locale = useLocales();
+    const locale = useConnectedDateFnsLocale();
     const isDebug = useSelector(selectIsDebugModeActive);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, symbol));
 

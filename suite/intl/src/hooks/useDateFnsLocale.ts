@@ -1,10 +1,7 @@
 import type { Locale as DateFnsLocale } from 'date-fns';
 
-import { selectLanguage } from '@suite/settings';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
 import { type Locale as SuiteLocale } from '@suite-common/suite-types';
-
-import { useSelector } from 'src/hooks/suite';
 
 type DateFnsLocaleLoader = () => Promise<DateFnsLocale>;
 
@@ -34,29 +31,27 @@ const DATE_FNS_LOCALE_LOADERS: Record<SuiteLocale, DateFnsLocaleLoader> = {
  * Loads the date-fns locale matching a Suite language, falling back to English when its chunk
  * cannot be fetched.
  */
-export const loadDateFnsLocale = async (language: SuiteLocale): Promise<DateFnsLocale> => {
+export const loadDateFnsLocale = async (locale: SuiteLocale): Promise<DateFnsLocale> => {
     try {
-        return await DATE_FNS_LOCALE_LOADERS[language]();
+        return await DATE_FNS_LOCALE_LOADERS[locale]();
     } catch {
         // A locale chunk can fail to load when the user is offline or when a deploy invalidated
         // it, so fall back to English instead of leaving dates unformatted.
-        console.warn(`date-fns locale ${language} could not be loaded. Using en-US.`);
+        console.warn(`date-fns locale ${locale} could not be loaded. Using en-US.`);
 
         return DATE_FNS_LOCALE_LOADERS['en-US']();
     }
 };
 
-export const useLocales = () => {
-    const language = useSelector(selectLanguage);
-
+export const useDateFnsLocale = (locale: SuiteLocale) => {
     // A locale module never changes once its chunk is loaded, so it is cached forever rather than
     // refetched on focus/reconnect the way the provider defaults would.
-    const { data: locale } = useQuery({
-        queryKey: desktopQueryKeys.dateFnsLocale(language),
-        queryFn: () => loadDateFnsLocale(language),
+    const { data: dateFnsLocale } = useQuery({
+        queryKey: desktopQueryKeys.dateFnsLocale(locale),
+        queryFn: () => loadDateFnsLocale(locale),
         staleTime: Infinity,
         gcTime: Infinity,
     });
 
-    return locale;
+    return dateFnsLocale;
 };
