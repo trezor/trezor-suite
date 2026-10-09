@@ -140,9 +140,9 @@ const selectAssetAccountsByToken = createMemoizedSelector(
     },
 );
 
-type HiddenTokenReason = 'hiddenByUser' | 'unrecognized';
+export type HiddenTokenReason = 'hiddenByUser' | 'unrecognized';
 
-const selectHiddenTokenReasons = createMemoizedSelector(
+export const selectHiddenTokenReasons = createMemoizedSelector(
     [selectAssetAccountsByToken, selectTokenDefinitions],
     (
         byNetwork,

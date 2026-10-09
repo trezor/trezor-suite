@@ -18,7 +18,7 @@ import { HomeAssetNetworkSection } from './HomeAssetNetworkSection';
 import { HomeAssetNewBanner } from './HomeAssetNewBanner';
 import { HomeAssetRow } from './HomeAssetRow';
 import { HomeAssetTableFilterHeader } from './HomeAssetTableFilter';
-import { HOME_ASSET_CELL_PADDING } from './homeAssetTableLayout';
+import { HOME_ASSET_CELL_PADDING, HOME_ASSET_COL_WIDTHS } from './homeAssetTableLayout';
 
 const NO_NETWORKS: readonly NetworkSymbol[] = [];
 
@@ -45,7 +45,7 @@ export const HomeAssetTable = () => {
     return (
         <Card paddingType="none" data-testid="@dashboard/home-asset-table">
             <HomeAssetNewBanner />
-            <Table isRowHighlightedOnHover colWidths={[{ minWidth: '200px' }, {}, {}]}>
+            <Table isRowHighlightedOnHover colWidths={HOME_ASSET_COL_WIDTHS}>
                 <Table.Header>
                     <Table.Row>
                         <Table.Cell padding={HOME_ASSET_CELL_PADDING.first}>
