@@ -64,7 +64,6 @@ const HomeAssetTableFilter = ({
                         },
                         {
                             label: <HomeAssetSmallBalancesLabel />,
-                            // The switch has to be seen changing, so this row leaves the menu open.
                             rightContent: (
                                 <Row pointerEvents="none">
                                     <Switch
