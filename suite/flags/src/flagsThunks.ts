@@ -1,4 +1,3 @@
-
 import { createThunk } from '@trezor/redux-utils';
 
 import { FLAGS_MODULE_PREFIX } from './flagsConstants';

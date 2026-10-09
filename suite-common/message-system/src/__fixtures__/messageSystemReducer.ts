@@ -1,4 +1,3 @@
-
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { messageSystemActions } from '../messageSystemActions';
