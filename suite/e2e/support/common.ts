@@ -7,7 +7,6 @@ import path from 'node:path';
 
 import { formatCompactCryptoAmount, isMoneyLikeToken } from '@suite-common/formatters';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
-import { type TradingCountryCode, regional } from '@suite-common/trading';
 import { getAccountDecimals } from '@suite-common/wallet-utils';
 import { BigNumber, localizeNumber, splitStringEveryNCharacters } from '@trezor/utils';
 
@@ -102,15 +101,6 @@ export const getVideoPath = (videoFolder: string): string | false => {
     }
 
     return path.join(videoFolder, videoFilenames[0] ?? '');
-};
-
-export const getCountryLabel = (country: TradingCountryCode) => {
-    const countryOption = regional.countriesOptionsMap.get(country);
-    if (!countryOption) {
-        throw new Error(`Country ${country} not found in the countries map`);
-    }
-
-    return countryOption.label.substring(countryOption.label.indexOf(' ') + 1);
 };
 
 type CompactAmountOptions = {
@@ -253,18 +243,6 @@ export const analyzeObject = (obj: any): any => {
 
     return obj;
 };
-
-export const sanitizeAndStringifyLogFields = (fields: Record<string, unknown>) =>
-    JSON.stringify(
-        Object.fromEntries(
-            Object.entries(fields).map(([key, value]) => [
-                key,
-                typeof value === 'undefined' ? 'warning: undefined' : value,
-            ]),
-        ),
-        null,
-        2,
-    );
 
 export const toADA = (lovelace: number, options?: { maxDecimals?: number }) => {
     const maxDecimals = options?.maxDecimals ?? 6;

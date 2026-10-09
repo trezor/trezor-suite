@@ -97,11 +97,6 @@ test.describe('General settings', { tag: ['@T3W1', '@T3T1'] }, () => {
                 >(events.settingsAnalyticsEvent.name);
                 expect(settingsAnalyticsEvent.value).toBe('false');
             });
-
-            // TODO: enable this after https://github.com/trezor/trezor-suite/issues/13262 is fixed
-            // //reset app button - wipes db, reloads app, shows onboarding again
-            // await page.getByTestId('@settings/reset-app-button').click({ force: true });
-            // await expect(page.getByTestId('@onboarding/welcome')).toBeVisible({ timeout: 20000 });
         },
     );
 });

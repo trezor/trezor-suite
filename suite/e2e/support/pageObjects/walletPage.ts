@@ -31,7 +31,6 @@ type SelectSendTokenParams = {
 export class WalletPage {
     readonly transactionSearch: Locator;
     readonly accountSearch: Locator;
-    readonly stakeAddress: Locator;
     readonly walletExtraDropDown: Locator;
     readonly openTradingGlobalButton: Locator;
     readonly openSellGlobalButton: Locator;
@@ -117,7 +116,6 @@ export class WalletPage {
     constructor(private readonly page: Page) {
         this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
         this.accountSearch = this.page.getByTestId('@account-menu/search-input');
-        this.stakeAddress = this.page.getByTestId('@cardano/staking/address');
         this.walletExtraDropDown = this.page.getByTestId('@wallet/menu/extra-dropdown');
         this.openTradingGlobalButton = this.page.getByTestId('@wallet/menu/wallet-trading-buy');
         this.openSellGlobalButton = this.page.getByTestId('@wallet/menu/wallet-trading-sell');
@@ -248,20 +246,6 @@ export class WalletPage {
     async filterTransactions(transaction: string) {
         await this.transactionSearch.click();
         await this.transactionSearch.fill(transaction, { force: true });
-    }
-
-    @step()
-    async checkStakesOfCardanoAccounts() {
-        const cardanoAccounts = [
-            { symbol: 'ada' },
-            { symbol: 'ada', type: 'legacy' },
-            { symbol: 'ada', type: 'ledger' },
-        ] as WalletParams[];
-        for (const account of cardanoAccounts) {
-            await this.openAccount(account);
-            await this.stakingButton.click();
-            await expect(this.stakeAddress).toBeVisible();
-        }
     }
 
     @step()

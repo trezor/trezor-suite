@@ -2,6 +2,7 @@ import type { SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { messages } from '@suite/intl';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 
@@ -193,15 +194,27 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
                     });
                 }
 
-                //TODO: Bug in production
-                // await test.step('Max of Solana balance', async () => {
-                //     await page.getByRole('button', { name: 'Max' }).click();
-                //     const resultingFee = await tradingPage.fees.getSolanaFee();
-                //     const maxValue = (parseFloat(solanaBalance!) - resultingFee).toString();
-                //     await expect
-                //         .soft(tradingPage.inputs.cryptoAmount)
-                //         .toHaveValue(localizeNumber(maxValue, 'en-US', 0, 9));
-                // });
+                await test.step('Max of Solana balance', async () => {
+                    await page.getByRole('button', { name: 'Max' }).click();
+                    const networkReserve = await tradingPage.fees.getNetworkReserveAmount();
+                    await expect
+                        .soft(async () => {
+                            const composedFee = await page.getReduxObject(
+                                'wallet.trading.composedTransactionInfo.composed.fee',
+                            );
+                            const resultingFee = subunitsToUnits({
+                                value: asAmountSubunit(new BigNumber(composedFee)),
+                                symbol: solSymbol,
+                            });
+                            const maxValue = new BigNumber(solanaBalance)
+                                .minus(resultingFee)
+                                .minus(networkReserve);
+                            await expect(tradingPage.inputs.cryptoAmount).toHaveValue(
+                                localizeNumber(maxValue, 'en-US', 0, 9),
+                            );
+                        })
+                        .toPass({ timeout: 15_000 });
+                });
             });
         },
     );

@@ -31,7 +31,6 @@ test.describe('Backup success', { tag: ['@T2T1'] }, () => {
             await devicePrompt.confirmOnDevicePromptIsShown();
 
             //await device.readAndConfirmMnemonic(); should be used here, but it is flaky
-            // TODO: https://github.com/trezor/trezor-suite/issues/17148
             await device.pressYes();
             await device.pressYes();
             await device.pressContinue();

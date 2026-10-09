@@ -111,8 +111,6 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                         unstaking: 'hidden',
                     },
                 });
-                // TODO: Highly unstable. Disappears after first sync of data. Needs investigation.
-                // await stakingSection.expectProgressIndicatorsToMatchPhase('receivingRewards');
             });
 
             await test.step('Open and fill staking form', async () => {
