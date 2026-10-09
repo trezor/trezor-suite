@@ -26,7 +26,6 @@ export class Alice implements AliceShape {
     resolved: AlicePendingRequest[] = []; // resolved requests received from wallet (Suite)
     ownershipProof?: string; // data used in inputRegistration phase, received as response to RequestEvent, provided by wallet (Suite)
     registrationData?: RegistrationData; // data from inputRegistration phase
-    affiliationFlag?: boolean; // affiliation flag is used in /ready-to-sign request **only** when Alice pays coordination fee
     realAmountCredentials?: RealCredentials; // data from inputRegistration phase
     realVsizeCredentials?: RealCredentials; // data from inputRegistration phase
     confirmationInterval?: AliceConfirmationInterval;
@@ -82,9 +81,8 @@ export class Alice implements AliceShape {
         this.ownershipProof = proof;
     }
 
-    setRegistrationData(data: RegistrationData, flag?: boolean) {
+    setRegistrationData(data: RegistrationData) {
         this.registrationData = data;
-        this.affiliationFlag = flag;
     }
 
     setRealCredentials(amount: RealCredentials, vsize: RealCredentials) {

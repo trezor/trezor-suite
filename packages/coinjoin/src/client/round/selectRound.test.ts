@@ -494,7 +494,6 @@ describe('selectRound', () => {
             coinjoinRounds: [],
             prison,
             options: server?.requestOptions,
-            runningAffiliateServer: true,
         });
 
         expect(spy).toHaveBeenCalledTimes(9);
@@ -555,7 +554,6 @@ describe('selectRound', () => {
             coinjoinRounds: [],
             prison,
             options: server?.requestOptions,
-            runningAffiliateServer: true,
         });
 
         expect(spy).toHaveBeenCalledTimes(0); // middleware was not called, detained inputs were used
@@ -602,7 +600,6 @@ describe('selectRound', () => {
             coinjoinRounds: [],
             prison,
             options: { ...server?.requestOptions, setSessionPhase: setSessionPhaseMock },
-            runningAffiliateServer: true,
         });
         expect(result).toBeUndefined();
         expect(setSessionPhaseMock).toHaveBeenLastCalledWith({
@@ -630,7 +627,6 @@ describe('selectRound', () => {
             coinjoinRounds: [],
             prison,
             options: { ...server?.requestOptions, setSessionPhase: setSessionPhaseMock },
-            runningAffiliateServer: true,
         });
         expect(result2).toBeUndefined();
         expect(setSessionPhaseMock).toHaveBeenLastCalledWith({
@@ -650,7 +646,6 @@ describe('selectRound', () => {
             coinjoinRounds: [],
             prison,
             options: server?.requestOptions,
-            runningAffiliateServer: true,
         });
         expect(result).toBeUndefined();
 
@@ -663,7 +658,6 @@ describe('selectRound', () => {
             coinjoinRounds: [],
             prison,
             options: server?.requestOptions,
-            runningAffiliateServer: true,
         });
         expect(result2).toBeUndefined();
 
@@ -676,7 +670,6 @@ describe('selectRound', () => {
             coinjoinRounds: [],
             prison,
             options: server?.requestOptions,
-            runningAffiliateServer: true,
         });
         expect(result3).toBeUndefined();
 
@@ -694,7 +687,6 @@ describe('selectRound', () => {
             coinjoinRounds: [],
             prison,
             options: server?.requestOptions,
-            runningAffiliateServer: true,
         });
         expect(result4).toBeUndefined();
     });

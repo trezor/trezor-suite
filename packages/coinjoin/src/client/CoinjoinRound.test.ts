@@ -50,52 +50,6 @@ describe(`CoinjoinRound`, () => {
         server?.close();
     });
 
-    it('catch not signed Round (missing affiliate request)', async () => {
-        // create CoinjoinRound in phase 3 (TransactionSigning)
-        const round = createCoinjoinRound(
-            [
-                createInput('account-A', 'A1', {
-                    ownershipProof: '01A1',
-                    registrationData: {
-                        AliceId: '01A1-01a1',
-                    },
-                    realAmountCredentials: {},
-                    realVsizeCredentials: {},
-                    confirmationData: {},
-                    confirmedAmountCredentials: {},
-                    confirmedVsizeCredentials: {},
-                }),
-            ],
-            {
-                ...server?.requestOptions,
-                logger,
-                round: {
-                    phase: 3,
-                    addresses: [
-                        {
-                            accountKey: 'account-A',
-                            address: 'doesnt matter',
-                            path: '',
-                            scriptPubKey: '',
-                        },
-                    ],
-                },
-            },
-        );
-        // tx not signed, waiting for affiliate request
-        await round.process([]);
-
-        // change phase to Ended
-        await round.onPhaseChange({ ...DEFAULT_ROUND, Phase: 4, EndRoundState: 5 });
-
-        await round.process([]);
-
-        expect(logger.error).toHaveBeenCalledTimes(1);
-        expect(logger.error).toHaveBeenCalledWith(
-            expect.stringMatching(/Missing affiliate request/),
-        );
-    });
-
     it('onPhaseChange records phaseStartLowerBound and only updates it on an actual phase change', async () => {
         const round = createCoinjoinRound([], { ...server?.requestOptions, logger });
 
@@ -131,7 +85,6 @@ describe(`CoinjoinRound`, () => {
                 logger,
                 round: {
                     phase: 2,
-                    affiliateRequest: Buffer.from('0'.repeat(97 * 2 + 4), 'hex').toString('base64'),
                 },
             },
         );

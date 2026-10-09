@@ -20,13 +20,7 @@ export const patchResponse = (obj: any) => {
             if (key !== newKey) {
                 delete obj[key];
             }
-            // skip whole AffiliateData object because:
-            // - keys are Round.Id hash and should not be PascalCased
-            // - values contains affiliate flag "trezor" which is not in PascalCased
-            // AffiliateData: { abcd0123: { trezor: 'base64=' } };
-            if (newKey !== 'AffiliateData') {
-                patchResponse(obj[newKey]);
-            }
+            patchResponse(obj[newKey]);
         });
     }
 
