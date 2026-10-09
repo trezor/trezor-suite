@@ -5,7 +5,7 @@ import { getFeeUnits } from '@suite-common/wallet-utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
-import { useLocales, useSelector } from 'src/hooks/suite';
+import { useConnectedDateFnsLocale, useSelector } from 'src/hooks/suite';
 
 import { FeeCard, type FeeCardAppearance } from './FeeCard';
 import { FeeCardsWrapper } from './StandardFee.styles';
@@ -29,7 +29,7 @@ export const BitcoinFeeCards = ({ feeOptions, feeCardAppearance }: BitcoinFeeCar
         selectedFeeLevel,
         isComposing,
     } = useFeesContext();
-    const locale = useLocales();
+    const locale = useConnectedDateFnsLocale();
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, networkSymbol));
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(networkSymbol);
     const transactionInfo = selectedFeeLevel ? composedLevels?.[selectedFeeLevel.label] : null;

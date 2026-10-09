@@ -10,7 +10,7 @@ import { formatDurationStrict } from '@suite-common/suite-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
-import { useLocales } from 'src/hooks/suite';
+import { useConnectedDateFnsLocale } from 'src/hooks/suite';
 
 // auto lock times in seconds; allowed lock times by device: <1 minute, 6 days>
 const AUTO_LOCK_TIMES = {
@@ -32,7 +32,7 @@ interface AutoLockProps {
 
 export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
     const { device } = useDevice();
-    const locale = useLocales();
+    const locale = useConnectedDateFnsLocale();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const autoLockDelay = device?.features?.auto_lock_delay_ms;
 

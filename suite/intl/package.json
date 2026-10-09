@@ -27,6 +27,7 @@
         "@suite/app-assets": "workspace:*",
         "@trezor/type-utils": "workspace:^",
         "@trezor/utils": "workspace:^",
+        "date-fns": "^4.1.0",
         "react": "19.2.3",
         "react-intl": "^8.1.3"
     },
