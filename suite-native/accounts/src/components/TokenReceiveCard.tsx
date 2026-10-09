@@ -11,7 +11,7 @@ import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { Badge, Box, ErrorMessage, HStack, Text, VStack } from '@suite-native/atoms';
 import {
-    CompactTokenAmountFormatter,
+    ExactTokenAmountFormatter,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
@@ -108,10 +108,10 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                         contract={contract}
                         symbol={symbol}
                     />
-                    <CompactTokenAmountFormatter
+                    <ExactTokenAmountFormatter
                         value={asDecimalTokenAmount(token.balance ?? '0')}
                         tokenSymbol={token.symbol}
-                        tokenDecimals={token.decimals}
+                        maxDisplayedDecimals={token.decimals}
                     />
                 </Box>
             </Box>
