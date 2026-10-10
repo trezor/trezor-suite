@@ -79,6 +79,25 @@ describe('GetAccountInfo path and coin', () => {
         ).not.toThrow();
     });
 
+    // The device has to be acquired for the path-only batch whatever its position in the bundle;
+    // without `useDevice` that batch resolves to `null` with a "Device not found" error.
+    it('uses the device for a bundle that mixes a path with a descriptor', () => {
+        const method = createMethodWith({
+            bundle: [
+                { coin: 'btc', path: "m/84'/0'/0'" },
+                {
+                    coin: 'btc',
+                    descriptor:
+                        'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy',
+                },
+            ],
+        });
+
+        // `useUi` is derived from `useDevice`, so it follows.
+        expect(method.useDevice).toBe(true);
+        expect(method.useDeviceState).toBe(true);
+    });
+
     it('rejects a bundle in which one path is of another coin', () => {
         expect(() =>
             createMethodWith({
