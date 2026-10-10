@@ -4,38 +4,26 @@ import {
     scanEthereumAddressRange,
     scanEthereumPathFamilies,
 } from './discoverEthereumAddresses';
-import { discoverEthereumWallet } from './discoverEthereumWallet';
 import { buildEthereumScanReport } from './ethereumScanReport';
 import { mockAccountInfo } from '../../mocks/mockAccountInfo';
 import { mockBackend, mockFundedEthereumAddress } from '../../mocks/mockBackend';
-import { type MockDeviceParams, mockDevice } from '../../mocks/mockDevice';
+import { mockDevice } from '../../mocks/mockDevice';
 import { mockWallet } from '../../mocks/mockWallet';
 import { createDeviceSession } from '../device/deviceSession';
-import { validatePassphraseEntry } from '../device/passphrase';
-import type { EthereumChain } from '../ethereum/ethereumChain';
 
-const setup = (deviceParams: Partial<MockDeviceParams> = {}) => {
+const setup = () => {
     const wallet = mockWallet();
     const chain = mockBackend();
-    const device = mockDevice({ wallets: { '': wallet }, ...deviceParams });
-    let activePassphrase: string | undefined;
+    const device = mockDevice({ wallets: { '': wallet } });
     const session = createDeviceSession({
         transportCall: device.transportCall,
         getDeviceLostReason: () => undefined,
         requestPin: () => Promise.resolve(undefined),
-        requestPassphrase: () => Promise.resolve(activePassphrase),
+        requestPassphrase: () => Promise.resolve(''),
         onButtonRequest: () => undefined,
     });
 
-    return {
-        wallet,
-        chain,
-        device,
-        session,
-        setActivePassphrase: (passphrase: string) => {
-            activePassphrase = passphrase;
-        },
-    };
+    return { wallet, chain, device, session };
 };
 
 const describeScanned = (
@@ -209,74 +197,6 @@ describe('scanEthereumAddressRange', () => {
             [60, 6, true],
             [60, 7, true],
         ]);
-    });
-});
-
-describe('discoverEthereumWallet', () => {
-    const discover = (
-        context: ReturnType<typeof setup>,
-        chain: EthereumChain,
-        passphraseCandidates?: ReturnType<typeof validatePassphraseEntry> extends infer R
-            ? R extends { success: true; payload: infer P }
-                ? P
-                : never
-            : never,
-    ) =>
-        discoverEthereumWallet({
-            call: context.session.call,
-            backend: context.chain.backend.ethereum[chain],
-            chain,
-            passphraseCandidates,
-            setActivePassphrase: context.setActivePassphrase,
-        });
-
-    it('scans the standard wallet without touching the passphrase', async () => {
-        const context = setup();
-        mockFundedEthereumAddress({
-            chain: context.chain,
-            wallet: context.wallet,
-            ethereumChain: 'ethereum',
-            balance: '1000',
-        });
-
-        const discovered = await discover(context, 'ethereum');
-
-        expect(discovered.success && discovered.payload.walletKind).toBe('standard');
-        expect(discovered.success && discovered.payload.addresses).toHaveLength(2);
-        expect(context.device.countCalls('Initialize')).toBe(0);
-    });
-
-    it('falls back to the passphrase as typed when the normalized wallet is empty', async () => {
-        const typed = 'příliš';
-        const candidates = validatePassphraseEntry({ first: typed, second: typed });
-        if (!candidates.success) throw new Error('test passphrase must be valid');
-
-        const rawWallet = mockWallet('bb'.repeat(16));
-        const context = setup({
-            hasPassphraseProtection: true,
-            wallets: {
-                [candidates.payload.normalized]: mockWallet('aa'.repeat(16)),
-                [typed]: rawWallet,
-            },
-        });
-        const { account } = mockFundedEthereumAddress({
-            chain: context.chain,
-            wallet: rawWallet,
-            ethereumChain: 'ethereum',
-            balance: '1000',
-        });
-
-        const discovered = await discover(context, 'ethereum', candidates.payload);
-
-        expect(discovered).toMatchObject({
-            success: true,
-            payload: { walletKind: 'passphrase-raw', addresses: [{ account }, { isEmpty: true }] },
-        });
-        expect(
-            context.device.calls
-                .filter(({ name }) => name === 'PassphraseAck')
-                .map(({ data }) => data),
-        ).toEqual([{ passphrase: candidates.payload.normalized }, { passphrase: typed }]);
     });
 });
 

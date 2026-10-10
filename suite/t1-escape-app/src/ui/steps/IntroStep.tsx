@@ -18,9 +18,9 @@ export const IntroStep = ({ onStart }: IntroStepProps) => (
                 <H2>What this tool does</H2>
                 <Paragraph>
                     It is for owners of an old Trezor One who no longer have their recovery seed and
-                    therefore cannot safely update the firmware. It finds the bitcoin on the device
-                    and sends all of it to one address that you provide, for example a receive
-                    address of a new Trezor.
+                    therefore cannot safely update the firmware. It finds the bitcoin, ether and
+                    ether classic on the device and sends all of it to addresses that you provide,
+                    one per coin, for example receive addresses of a new Trezor.
                 </Paragraph>
                 <BulletList>
                     <BulletList.Item>
@@ -31,7 +31,9 @@ export const IntroStep = ({ onStart }: IntroStepProps) => (
                         You need Windows or macOS, and Chrome, Edge, Brave or Firefox.
                     </BulletList.Item>
                     <BulletList.Item>
-                        Only bitcoin is moved. Other coins are not touched.
+                        Bitcoin, Ethereum and Ethereum Classic are moved, all in one go. Ethereum
+                        needs firmware 1.4.2 or newer. ERC-20 tokens, NFTs and other coins are not
+                        touched.
                     </BulletList.Item>
                     <BulletList.Item>
                         Nothing is stored in your browser. If you reload the page, you start again.

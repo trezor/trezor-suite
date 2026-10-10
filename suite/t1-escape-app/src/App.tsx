@@ -1,26 +1,21 @@
 import { Banner, Column } from '@trezor/components';
 
-import { isEthereumChain } from './app/migrationState';
+import { getCoinsToMove, mapEthereumChains } from './app/migrationState';
 import { useMigration } from './app/useMigration';
-import { buildEthereumScanReport } from './discovery/ethereumScanReport';
-import { buildScanReport } from './discovery/scanReport';
-import { ETHEREUM_CHAIN_DEFINITIONS } from './ethereum/ethereumChain';
+import { buildWalletScanReport } from './discovery/walletScanReport';
+import { ETHEREUM_CHAINS } from './ethereum/ethereumChain';
 import {
     getDiscoverableAccountTypes,
+    isEthereumSupported,
     wipesAfterWrongPinAttempts,
 } from './firmware/firmwareSupport';
 import { DeviceLostBanner } from './ui/DeviceLostBanner';
 import { DiagnosticLogPanel } from './ui/DiagnosticLogPanel';
 import { PageLayout } from './ui/PageLayout';
 import { PinMatrix } from './ui/PinMatrix';
-import { CoinStep } from './ui/steps/CoinStep';
 import { DestinationStep } from './ui/steps/DestinationStep';
 import { DeviceStep } from './ui/steps/DeviceStep';
 import { DiscoveryStep } from './ui/steps/DiscoveryStep';
-import { EthereumDestinationStep } from './ui/steps/EthereumDestinationStep';
-import { EthereumDiscoveryStep } from './ui/steps/EthereumDiscoveryStep';
-import { EthereumSummaryStep } from './ui/steps/EthereumSummaryStep';
-import { EthereumTransfersStep } from './ui/steps/EthereumTransfersStep';
 import { IntroStep } from './ui/steps/IntroStep';
 import { PassphraseStep } from './ui/steps/PassphraseStep';
 import { PreflightStep } from './ui/steps/PreflightStep';
@@ -29,45 +24,28 @@ import { TransfersStep } from './ui/steps/TransfersStep';
 
 export const App = () => {
     const { state, controller } = useMigration();
-    const { step, device, deviceLostReason, coin } = state;
+    const { step, device, deviceLostReason } = state;
 
     const isBusy = state.activity !== undefined;
     const isDeviceUsable = deviceLostReason === undefined && !state.isDeviceReleased;
-    const ethereumChain = isEthereumChain(coin) ? coin : undefined;
+    const ethereumChains =
+        device && isEthereumSupported(device.firmwareVersion) ? ETHEREUM_CHAINS : [];
     const report =
-        device && state.walletKind && coin === 'bitcoin'
-            ? buildScanReport({
-                  accounts: state.accounts,
+        device && state.walletKind
+            ? buildWalletScanReport({
+                  walletKind: state.walletKind,
+                  accounts: state.bitcoin.accounts,
                   scannedAccountTypes: getDiscoverableAccountTypes(device.firmwareVersion),
-                  walletKind: state.walletKind,
+                  isBitcoinInterrupted: state.bitcoin.discoveryError !== undefined,
+                  ethereum: ethereumChains.map(chain => ({
+                      chain,
+                      addresses: state.ethereum[chain].addresses,
+                      isInterrupted: state.ethereum[chain].discoveryError !== undefined,
+                  })),
               })
             : undefined;
-    const ethereumReport =
-        ethereumChain && state.walletKind
-            ? buildEthereumScanReport({
-                  chain: ethereumChain,
-                  addresses: state.ethereum.addresses,
-                  walletKind: state.walletKind,
-              })
-            : undefined;
-    // The coin is chosen right after the device is accepted. Until then, the passphrase and
-    // discovery steps show the choice.
-    const isCoinChoice =
-        device !== undefined &&
-        coin === undefined &&
-        (step === 'passphrase' || step === 'discovery');
 
     const renderStep = () => {
-        if (isCoinChoice && device) {
-            return (
-                <CoinStep
-                    firmwareVersion={device.firmwareVersion}
-                    isBusy={isBusy}
-                    onChoose={controller.chooseCoin}
-                />
-            );
-        }
-
         switch (step) {
             case 'intro':
                 return <IntroStep onStart={controller.runPreflight} />;
@@ -98,13 +76,17 @@ export const App = () => {
             case 'discovery':
                 return (
                     <DiscoveryStep
-                        accounts={state.accounts}
-                        report={report}
+                        accounts={state.bitcoin.accounts}
+                        bitcoinError={state.bitcoin.discoveryError}
+                        ethereumChains={ethereumChains}
+                        ethereum={state.ethereum}
                         error={state.discoveryError}
+                        report={report}
                         isBusy={isBusy}
                         isDeviceUsable={isDeviceUsable}
                         onStart={controller.startDiscovery}
-                        onScanMore={controller.scanMoreAccounts}
+                        onScanMoreAccounts={controller.scanMoreAccounts}
+                        onScanMoreAddresses={controller.scanMoreAddresses}
                         onContinue={controller.confirmDiscovery}
                     />
                 );
@@ -112,16 +94,20 @@ export const App = () => {
                 return device ? (
                     <DestinationStep
                         firmwareVersion={device.firmwareVersion}
-                        error={state.destinationError}
+                        coins={getCoinsToMove(state)}
+                        bitcoinError={state.bitcoin.destinationError}
+                        ethereumErrors={mapEthereumChains(
+                            chain => state.ethereum[chain].destinationError,
+                        )}
                         isBusy={isBusy}
-                        onSubmit={controller.submitDestination}
+                        onSubmit={controller.submitDestinations}
                     />
                 ) : null;
             case 'transfers':
-                return device && state.destination ? (
+                return device ? (
                     <TransfersStep
-                        transfers={state.transfers}
-                        destination={state.destination}
+                        bitcoin={state.bitcoin}
+                        ethereum={state.ethereum}
                         firmwareVersion={device.firmwareVersion}
                         isBusy={isBusy}
                         isDeviceUsable={isDeviceUsable}
@@ -130,67 +116,16 @@ export const App = () => {
                         onBroadcast={controller.broadcastTransfer}
                         onRetry={controller.retryTransfer}
                         onRefresh={controller.refreshTransfers}
-                        onEditDestination={controller.editDestination}
-                        onFinish={controller.finish}
-                    />
-                ) : null;
-            case 'ethereum-discovery':
-                return ethereumChain ? (
-                    <EthereumDiscoveryStep
-                        chain={ethereumChain}
-                        addresses={state.ethereum.addresses}
-                        report={ethereumReport}
-                        error={state.ethereum.discoveryError}
-                        isBusy={isBusy}
-                        isDeviceUsable={isDeviceUsable}
-                        onStart={controller.ethereum.startDiscovery}
-                        onScanMore={controller.ethereum.scanMoreAddresses}
-                        onContinue={controller.ethereum.confirmDiscovery}
-                        onChangeCoin={controller.changeCoin}
-                    />
-                ) : null;
-            case 'ethereum-destination':
-                return device && ethereumChain ? (
-                    <EthereumDestinationStep
-                        chain={ethereumChain}
-                        firmwareVersion={device.firmwareVersion}
-                        error={state.ethereum.destinationError}
-                        isBusy={isBusy}
-                        onSubmit={controller.ethereum.submitDestination}
-                    />
-                ) : null;
-            case 'ethereum-transfers':
-                return device && ethereumChain && state.ethereum.destination ? (
-                    <EthereumTransfersStep
-                        chain={ethereumChain}
-                        transfers={state.ethereum.transfers}
-                        destination={state.ethereum.destination}
-                        firmwareVersion={device.firmwareVersion}
-                        isBusy={isBusy}
-                        isDeviceUsable={isDeviceUsable}
-                        isDeviceReleased={state.isDeviceReleased}
-                        onSign={controller.ethereum.signTransfer}
-                        onBroadcast={controller.ethereum.broadcastTransfer}
-                        onRetry={controller.ethereum.retryTransfer}
-                        onRefresh={controller.refreshTransfers}
-                        onEditDestination={controller.ethereum.editDestination}
+                        onEditDestinations={controller.editDestinations}
                         onFinish={controller.finish}
                     />
                 ) : null;
             case 'summary':
-                return ethereumChain ? (
-                    <EthereumSummaryStep
-                        isDeviceLocked={state.isDeviceLocked}
-                        symbol={ETHEREUM_CHAIN_DEFINITIONS[ethereumChain].symbol}
-                        transfers={state.ethereum.transfers}
-                        addresses={state.ethereum.addresses}
-                        report={ethereumReport}
-                        onRefresh={controller.refreshTransfers}
-                    />
-                ) : (
+                return (
                     <SummaryStep
                         isDeviceLocked={state.isDeviceLocked}
-                        transfers={state.transfers}
+                        bitcoinTransfers={state.bitcoin.transfers}
+                        ethereum={state.ethereum}
                         report={report}
                         onRefresh={controller.refreshTransfers}
                     />

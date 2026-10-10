@@ -1,30 +1,9 @@
 import { exhaustive } from '@trezor/type-utils';
 
-import { describeDeviceCallError, describeWalletKind } from './messages';
+import { describeDeviceCallError } from './messages';
 import type { EthereumTransferError } from '../app/migrationState';
-import type { EthereumDiscoveryError } from '../discovery/discoverEthereumAddresses';
 import type { EthereumDestinationError } from '../ethereum/ethereumDestination';
 import type { EthereumSweepStatus } from '../migration/ethereumSweepStatus';
-
-export { describeWalletKind };
-
-export const describeEthereumDiscoveryError = (error: EthereumDiscoveryError): string => {
-    switch (error.type) {
-        case 'address-invalid':
-            return 'The Trezor returned something that is not an address. Nothing was done.';
-        case 'backend':
-            return `The blockchain server could not be reached (${error.message}).`;
-        case 'device-lost':
-        case 'transport':
-        case 'failure':
-        case 'cancelled':
-        case 'unexpected-response':
-        case 'busy':
-            return describeDeviceCallError(error);
-        default:
-            return exhaustive(error);
-    }
-};
 
 export const describeEthereumDestinationError = (error: EthereumDestinationError): string => {
     switch (error.type) {
