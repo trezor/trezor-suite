@@ -41,6 +41,7 @@ export interface UtxoSelectionContext {
     isCoinControlEnabled: boolean;
     lowAnonymityUtxos: AccountUtxo[];
     selectedUtxos: AccountUtxo[];
+    selectedUtxoOutpoints: ReadonlySet<string>;
     spendableUtxos: AccountUtxo[];
     coinjoinRegisteredUtxos: AccountUtxo[];
     isLowAnonymityUtxoSelected: boolean;
