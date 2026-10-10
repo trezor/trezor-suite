@@ -22,6 +22,7 @@ on:
       - ".github/workflows/build-desktop*"
       - ".github/workflows/release*"
       - ".github/actions/release*/**"
+      - ".github/workflows/test-suite-web-desktop-e2e-release.yml"
       - "**.md"
 
 concurrency:
