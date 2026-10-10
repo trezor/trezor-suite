@@ -171,5 +171,5 @@ export const getCoinjoinConfig = (
     if (!settings)
         throw new Error(`Missing settings for coinjoin network ${symbol} env ${environment}`);
 
-    return settings;
+    return { ...settings };
 };
