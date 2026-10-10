@@ -1,7 +1,5 @@
-import { createIntl, createIntlCache } from 'react-intl';
-
 import test, { Locator, Page, TestInfo, expect } from '@playwright/test';
-import { isEqual, omit } from 'lodash';
+import { IntlMessageFormat } from 'intl-messageformat';
 import { readdirSync } from 'node:fs';
 import path from 'node:path';
 
@@ -50,9 +48,6 @@ export function step(stepName?: string) {
     };
     /* eslint-enable @typescript-eslint/no-unsafe-function-type */
 }
-
-export const isEqualWithOmit = (param: { object1: any; object2: any; mask: string[] }) =>
-    isEqual(omit(param.object1, param.mask), omit(param.object2, param.mask));
 
 export const formatAddress = (address: string) => splitStringEveryNCharacters(address, 4).join(' ');
 
@@ -280,8 +275,4 @@ export const toADA = (lovelace: number, options?: { maxDecimals?: number }) => {
 export const replaceTemplatesInTranslation = (
     template: string,
     values: Record<string, string | number>,
-) => {
-    const intlEn = createIntl({ locale: 'en', messages: {} }, createIntlCache());
-
-    return intlEn.formatMessage({ id: template, defaultMessage: template }, values);
-};
+) => String(new IntlMessageFormat(template, 'en').format(values));
