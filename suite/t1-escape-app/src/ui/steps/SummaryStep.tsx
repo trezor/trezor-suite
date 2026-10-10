@@ -42,8 +42,16 @@ const HEADLINES: Record<MigrationOutcome, string> = {
 const getAccountLabel = ({ account }: Transfer) =>
     `${ACCOUNT_TYPE_DEFINITIONS[account.accountType].label} account #${account.accountIndex + 1}`;
 
-const describeEthereumNotSent = ({ plan, isInFlight }: EthereumTransfer) => {
-    if (plan) return 'transfer was not sent';
+const describeNotSent = ({ stage, plan }: Transfer) => {
+    if (stage === 'signed') return 'signed, not yet seen on the network';
+    if (plan) return 'transfer was not signed';
+
+    return 'could not be checked, its coins were not moved';
+};
+
+const describeEthereumNotSent = ({ stage, plan, isInFlight }: EthereumTransfer) => {
+    if (stage === 'signed') return 'signed, not yet seen on the network';
+    if (plan) return 'transfer was not signed';
     if (isInFlight) return 'a transaction was still pending, its coins were not moved';
 
     return 'could not be checked, its coins were not moved';
@@ -80,10 +88,7 @@ const BitcoinSummary = ({ summary }: BitcoinSummaryProps) => {
                     <BulletList>
                         {notSent.map(transfer => (
                             <BulletList.Item key={transfer.key}>
-                                {getAccountLabel(transfer)}:{' '}
-                                {transfer.plan
-                                    ? 'transfer was not sent'
-                                    : 'could not be checked, its coins were not moved'}
+                                {getAccountLabel(transfer)}: {describeNotSent(transfer)}
                             </BulletList.Item>
                         ))}
                         {leftoverAmounts.length > 0 && (
@@ -180,6 +185,12 @@ export const SummaryStep = ({
             .map(({ summary }) => summary),
     ]);
     const hasPending = outcome === 'pending';
+    // The hex of a signed transaction is shown on the transfers screen only, and this screen
+    // cannot be left back to it.
+    const hasUnsentTransaction = [
+        ...bitcoinSummary.notSent,
+        ...ethereumSummaries.flatMap(({ summary }) => summary.notSent),
+    ].some(({ stage }) => stage === 'signed');
 
     return (
         <Column gap={16}>
@@ -200,6 +211,14 @@ export const SummaryStep = ({
                         />
                     )}
 
+                    {hasUnsentTransaction && (
+                        <Banner
+                            intent="warning"
+                            title="A signed transaction was never seen on the network"
+                            description="Its hex is not shown any more. The coins it would have moved are still on the old Trezor, which stays the only device that can move them: either broadcast that transaction, or move the coins in a new run of this page."
+                        />
+                    )}
+
                     {bitcoinTransfers.length > 0 && <BitcoinSummary summary={bitcoinSummary} />}
 
                     {ethereumSummaries
@@ -213,7 +232,7 @@ export const SummaryStep = ({
 
                     {hasPending && (
                         <Button priority="secondary" onClick={onRefresh}>
-                            Check confirmations now
+                            Check the network now
                         </Button>
                     )}
                 </Column>

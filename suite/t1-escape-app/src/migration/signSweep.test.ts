@@ -2,7 +2,7 @@ import { loadAccountSnapshot } from './accountSnapshot';
 import { prepareSweep } from './prepareSweep';
 import { signSweep } from './signSweep';
 import { createSweepLedger } from './sweepLedger';
-import { broadcastSweep, evaluateSweepStatus } from './sweepStatus';
+import { evaluateSweepStatus } from './sweepStatus';
 import { mockHistoryTransaction } from '../../mocks/mockAccountInfo';
 import { mockBackend, mockFundedAccount } from '../../mocks/mockBackend';
 import { type MockDeviceParams, mockDevice } from '../../mocks/mockDevice';
@@ -383,21 +383,19 @@ describe('signSweep', () => {
     });
 
     describe('after signing', () => {
-        it('does not sign again when the broadcast fails, it re-sends the stored bytes', async () => {
-            const { chain, device, prepare, preparePlan, sign } = setup();
+        it('does not sign again while the signed transaction is not on the network', async () => {
+            const { chain, account, device, prepare, preparePlan, sign } = setup();
             const plan = await preparePlan();
             const signed = await sign(plan);
             if (!signed.success) throw new Error('signing must succeed');
 
-            chain.backend.pushTransaction.mockResolvedValueOnce({
-                success: false,
-                error: { type: 'backend', message: 'rejected' },
-            });
-            const firstBroadcast = await broadcastSweep({
-                backend: chain.backend,
-                record: signed.payload,
-            });
-            expect(firstBroadcast.success).toBe(false);
+            // The user has not broadcast it: the backend still lists the inputs as unspent and
+            // shows no spending transaction.
+            const snapshot = await loadAccountSnapshot({ backend: chain.backend, account });
+            if (!snapshot.success) throw new Error('snapshot must load');
+            expect(
+                evaluateSweepStatus({ snapshot: snapshot.payload, record: signed.payload }),
+            ).toBe('not-in-mempool');
 
             // Neither the old plan nor a fresh composition can reach the device again.
             expect(await sign(plan)).toEqual({
@@ -407,38 +405,6 @@ describe('signSweep', () => {
             const recomposed = await prepare();
             expect(recomposed.success && recomposed.payload.plan).toBeUndefined();
             expect(device.countCalls('SignTx')).toBe(1);
-
-            const secondBroadcast = await broadcastSweep({
-                backend: chain.backend,
-                record: signed.payload,
-            });
-            expect(secondBroadcast.success).toBe(true);
-            expect(chain.backend.pushTransaction.mock.calls).toEqual([
-                [signed.payload.hex],
-                [signed.payload.hex],
-            ]);
-        });
-
-        it('does not sign again when the transfer drops out of the mempool', async () => {
-            const { chain, account, device, prepare, preparePlan, sign } = setup();
-            const signed = await sign(await preparePlan());
-            if (!signed.success) throw new Error('signing must succeed');
-            await broadcastSweep({ backend: chain.backend, record: signed.payload });
-
-            // The backend still lists the inputs as unspent and shows no spending transaction:
-            // the transfer was evicted, or never propagated.
-            const snapshot = await loadAccountSnapshot({ backend: chain.backend, account });
-            if (!snapshot.success) throw new Error('snapshot must load');
-            expect(
-                evaluateSweepStatus({ snapshot: snapshot.payload, record: signed.payload }),
-            ).toBe('not-in-mempool');
-
-            const recomposed = await prepare();
-            expect(recomposed.success && recomposed.payload.plan).toBeUndefined();
-            expect(device.countCalls('SignTx')).toBe(1);
-
-            await broadcastSweep({ backend: chain.backend, record: signed.payload });
-            expect(chain.pushedTransactions).toEqual([signed.payload.hex, signed.payload.hex]);
         });
 
         it('lets a new page session compose the still unspent inputs again', async () => {
