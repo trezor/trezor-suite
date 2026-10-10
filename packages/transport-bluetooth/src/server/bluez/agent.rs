@@ -60,25 +60,32 @@ fn run_agent(
 
     let manager = Arc::new(ctx.manager);
     let device_id = Arc::new(ctx.params.id);
+    let expected_device_path = Arc::new(format!("/org/bluez/{device_id}"));
 
     let mut cr = Crossroads::new();
     let agent_iface = cr.register(AGENT_INTERFACE, |b: &mut IfaceBuilder<()>| {
         let manager = manager.clone();
         let device_id = device_id.clone();
+        let expected_device_path = expected_device_path.clone();
         let handle = tokio_handle.clone();
 
         b.method(
             "RequestConfirmation",
             ("device", "passkey"),
             (),
-            move |_, _, (_, passkey): (dbus::Path, u32)| {
+            move |_, _, (device, passkey): (dbus::Path, u32)| {
+                if *device != **expected_device_path {
+                    info!("Agent rejected request for unexpected device {device}");
+                    return Err(dbus::MethodErr::failed("Rejected"));
+                }
+
                 let (tx, rx) = mpsc::channel();
                 let manager = manager.clone();
                 let device_id = device_id.to_string();
-                let pin = format!("{:06}", passkey);
+                let pin = format!("{passkey:06}");
 
                 handle.spawn({
-                    info!("Agent PIN {:?}", pin);
+                    info!("Agent PIN {pin:?}");
 
                     async move {
                         let accepted = match manager.get_device_or_die(device_id).await {
@@ -143,8 +150,8 @@ pub fn create_agent(ctx: ConnectDeviceContext) -> (oneshot::Receiver<()>, mpsc::
     let (abort_tx, abort_rx) = mpsc::channel::<()>();
 
     std::thread::spawn(move || {
-        if let Err(e) = run_agent(ctx, tokio_handle, ready_tx, abort_rx) {
-            info!("Agent listener failed: {:?}", e);
+        if let Err(err) = run_agent(ctx, tokio_handle, ready_tx, abort_rx) {
+            info!("Agent listener failed: {err:?}");
         }
     });
 

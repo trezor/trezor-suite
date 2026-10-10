@@ -1,0 +1,47 @@
+name: "Determine required checks"
+description: "Keep JavaScript checks enabled unless only docs, dev-environment or Bluetooth server (Rust) files changed."
+outputs:
+  javascript:
+    description: "Whether any changed file requires JavaScript checks"
+    value: ${{ steps.changes.outputs.javascript }}
+  rust:
+    description: "Whether Bluetooth server (Rust) files changed"
+    value: ${{ steps.changes.outputs.rust }}
+  docs:
+    description: "Whether Markdown, docs or GitHub template files changed"
+    value: ${{ steps.changes.outputs.docs }}
+runs:
+  using: "composite"
+  steps:
+    - name: Classify changed files
+      id: changes
+      uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4
+      with:
+        # PRs use their base branch; pushes compare against the previous commit on the same branch.
+        base: ${{ github.ref }}
+        predicate-quantifier: some-with-excludes
+        # Keep the javascript excludes in sync with the other lists.
+        filters: |
+          rust:
+            - 'packages/transport-bluetooth/**/*.rs'
+            - 'packages/transport-bluetooth/Cargo.{toml,lock}'
+            - 'packages/transport-bluetooth/scripts/{Dockerfile,build.sh}'
+          docs:
+            - '**/*.md'
+            - 'docs/**'
+            - '.github/ISSUE_TEMPLATE/**'
+          javascript:
+            - '**'
+            - '!packages/transport-bluetooth/**/*.rs'
+            - '!packages/transport-bluetooth/Cargo.{toml,lock}'
+            - '!packages/transport-bluetooth/scripts/{Dockerfile,build.sh}'
+            - '!**/*.md'
+            - '!docs/**'
+            - '!.github/ISSUE_TEMPLATE/**'
+            # Local development only, not used by any CI job.
+            - '!**/*.nix'
+            - '!.nix/**'
+            - '!nixos-fix-binaries.sh'
+            - '!.husky/**'
+            - '!.vscode/**'
+            - '!CODEOWNERS'
