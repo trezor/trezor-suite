@@ -1,4 +1,3 @@
-import { mock } from '@suite-common/dependency-injection';
 import type {
     AccountInfo,
     Transaction as HistoryTransaction,
@@ -6,6 +5,7 @@ import type {
     Utxo,
 } from '@trezor/blockchain-link-types';
 import { convertXpub } from '@trezor/connect-core/src/utils/hdnodeUtils';
+import { mock } from '@trezor/dependency-injection';
 import { err, ok } from '@trezor/type-utils';
 import { bufferUtils } from '@trezor/utils';
 import { Transaction, address as addressUtils } from '@trezor/utxo-lib';

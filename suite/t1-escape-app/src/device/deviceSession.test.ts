@@ -1,4 +1,4 @@
-import { createMockDeps } from '@suite-common/dependency-injection';
+import { createMockDeps } from '@trezor/dependency-injection';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { err, ok } from '@trezor/type-utils';
 

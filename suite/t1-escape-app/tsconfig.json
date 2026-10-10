@@ -36,7 +36,7 @@
         { "path": "../../packages/utils" },
         { "path": "../../packages/utxo-lib" },
         {
-            "path": "../../suite-common/dependency-injection"
+            "path": "../../packages/dependency-injection"
         }
     ]
 }

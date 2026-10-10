@@ -1,6 +1,6 @@
 import { getAddress } from 'viem';
 
-import { mock } from '@suite-common/dependency-injection';
+import { mock } from '@trezor/dependency-injection';
 import { PathPublic } from '@trezor/transport-common';
 import { ok } from '@trezor/type-utils';
 

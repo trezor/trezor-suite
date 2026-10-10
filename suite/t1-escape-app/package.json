@@ -31,13 +31,13 @@
         "@vitejs/plugin-react": "^6.0.1",
         "react": "19.2.3",
         "react-dom": "19.2.3",
-        "styled-components": "^6.3.9",
+        "styled-components": "^6.5.3",
         "viem": "^2.54.1",
         "vite": "^8.0.7",
         "vite-plugin-node-polyfills": "^0.26.0"
     },
     "devDependencies": {
-        "@suite-common/dependency-injection": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@types/jest": "30.0.0",
         "@types/node": "22.13.10",
         "@types/react-dom": "19.2.3"
