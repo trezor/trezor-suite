@@ -340,6 +340,7 @@ export type HandleExchangeRequestThunkProps = {
     network: Network;
     shouldSendInSats: boolean | undefined;
     composeRequestCallback: () => void;
+    resolveFromAddress?: () => Promise<string | undefined>;
 };
 
 export type HandleSellRequestThunkProps = {
