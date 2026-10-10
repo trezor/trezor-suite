@@ -7,7 +7,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const solSymbol = asNetworkSymbol('sol');
 
-const sendAmount = '9';
+const sendAmount = '28';
 const accountLabel = 'Stellar #1';
 
 test.describe(

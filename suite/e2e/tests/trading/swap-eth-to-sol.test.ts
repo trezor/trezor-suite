@@ -12,7 +12,7 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 const ethSymbol = asNetworkSymbol('eth');
 const solSymbol = asNetworkSymbol('sol');
 
-const sendAmount = '0.01';
+const sendAmount = '0.08';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 const sendAccountLabel = 'Ethereum #3';
 const receiveAccountLabel = 'Solana #4';
