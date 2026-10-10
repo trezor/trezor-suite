@@ -113,7 +113,6 @@ export const App = () => {
                         isDeviceUsable={isDeviceUsable}
                         isDeviceReleased={state.isDeviceReleased}
                         onSign={controller.signTransfer}
-                        onBroadcast={controller.broadcastTransfer}
                         onRetry={controller.retryTransfer}
                         onRefresh={controller.refreshTransfers}
                         onEditDestinations={controller.editDestinations}

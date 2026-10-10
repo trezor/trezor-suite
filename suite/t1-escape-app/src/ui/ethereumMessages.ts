@@ -22,8 +22,6 @@ export const describeEthereumDestinationError = (error: EthereumDestinationError
 
 export const describeEthereumTransferError = (error: EthereumTransferError): string => {
     switch (error.type) {
-        case 'broadcast-failed':
-            return `The transaction was not accepted for broadcast (${error.message}). It is signed and stored on this page: try again, or export it. It will not be signed a second time.`;
         case 'invalid-backend-data':
             return `The blockchain server returned an unusable ${error.field}. Nothing was signed. Wait a few minutes and try again.`;
         case 'gas-price-too-high':
@@ -31,7 +29,7 @@ export const describeEthereumTransferError = (error: EthereumTransferError): str
         case 'plan-already-attempted':
             return 'This transfer was already sent to the Trezor once. A new one was prepared.';
         case 'nonce-already-signed':
-            return 'A signed transaction for this address already exists. It can only be broadcast again.';
+            return 'A signed transaction for this address already exists. Broadcast that one; nothing is signed again.';
         case 'account-changed':
             return 'The address changed on the network since the transfer was prepared. Nothing was signed. A new transfer was prepared.';
         case 'address-mismatch':

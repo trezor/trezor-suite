@@ -8,7 +8,7 @@ import { createBlockbookBackend } from '../backend/createBlockbookBackend';
 import { createBridgeConnection } from '../device/createBridgeConnection';
 import { queryLocalNetworkAccess } from '../preflight/localNetworkAccess';
 
-/** How often the confirmation status of broadcast transfers is looked up. */
+/** How often the network is asked about the signed and the pending transfers. */
 const TRANSFER_REFRESH_INTERVAL_MS = 30_000;
 
 const createController = (): MigrationController =>

@@ -1,19 +1,17 @@
-import {
-    Banner,
-    Button,
-    Card,
-    Column,
-    H3,
-    Paragraph,
-    Row,
-    Text,
-    Textarea,
-} from '@trezor/components';
+import { Banner, Button, Card, Column, H3, Paragraph, Row, Text } from '@trezor/components';
 
+import { SignedTransactionPanel } from './SignedTransactionPanel';
 import { describeEthereumSweepStatus, describeEthereumTransferError } from './ethereumMessages';
 import { formatEthereumAmount, formatGasPrice } from './formatEthereumAmount';
 import type { EthereumTransfer } from '../app/migrationState';
 import { formatPath } from '../bitcoin/accountType';
+import {
+    ETHEREUM_CHAIN_DEFINITIONS,
+    ETHEREUM_TRANSACTION_DECODER_URL,
+    type EthereumChain,
+    getEthereumSendTransactionUrl,
+    getEthereumTransactionUrl,
+} from '../ethereum/ethereumChain';
 import type { EthereumSweepStatus } from '../migration/ethereumSweepStatus';
 
 type EthereumTransferCardProps = {
@@ -22,7 +20,6 @@ type EthereumTransferCardProps = {
     isBusy: boolean;
     isDeviceUsable: boolean;
     onSign: (key: string) => void;
-    onBroadcast: (key: string) => void;
     onRetry: (key: string) => void;
 };
 
@@ -41,8 +38,17 @@ const getStatusIntent = (status: EthereumSweepStatus) => {
     }
 };
 
-const copyToClipboard = (text: string) => {
-    void navigator.clipboard.writeText(text);
+type GetDecoderComparisonParams = {
+    chain: EthereumChain;
+    fromAddress: string;
+};
+
+// The decoder recovers the sender and reads the chain id from the signature, so both can be
+// checked besides what the Trezor showed.
+const getDecoderComparison = ({ chain, fromAddress }: GetDecoderComparisonParams) => {
+    const { chainId, label } = ETHEREUM_CHAIN_DEFINITIONS[chain];
+
+    return `Compare the destination address and the amount with the ones shown above, and check that the "from" address is ${fromAddress} (your old address) and that the chain id is ${chainId} (${label}).`;
 };
 
 export const EthereumTransferCard = ({
@@ -51,12 +57,9 @@ export const EthereumTransferCard = ({
     isBusy,
     isDeviceUsable,
     onSign,
-    onBroadcast,
     onRetry,
 }: EthereumTransferCardProps) => {
     const { key, account, plan, leftover, record, stage, status, error, isInFlight } = transfer;
-    const isSigned = record !== undefined;
-    const canBroadcastAgain = stage === 'broadcast' && status === 'not-in-mempool';
     const canRetry =
         !plan &&
         !isInFlight &&
@@ -106,31 +109,24 @@ export const EthereumTransferCard = ({
                     <Banner intent="critical" description={describeEthereumTransferError(error)} />
                 )}
 
-                {isSigned && (
-                    <Column gap={8} width="100%">
-                        <Paragraph>
-                            Signed transaction. Keep a copy: it is lost when this page is closed,
-                            and this tool will not sign this address a second time.
-                        </Paragraph>
-                        <Textarea
-                            label="Signed transaction (hex)"
-                            value={record.hex}
-                            readOnly
-                            rows={4}
-                        />
-                        <Row>
-                            <Button
-                                size="small"
-                                priority="secondary"
-                                onClick={() => copyToClipboard(record.hex)}
-                            >
-                                Copy
-                            </Button>
-                        </Row>
-                    </Column>
+                {record && (
+                    <SignedTransactionPanel
+                        hex={record.hex}
+                        txid={record.txid}
+                        isOnNetwork={stage === 'on-network'}
+                        links={{
+                            decoder: ETHEREUM_TRANSACTION_DECODER_URL,
+                            sendTransaction: getEthereumSendTransactionUrl(account.chain),
+                            transaction: getEthereumTransactionUrl(account.chain, record.txid),
+                        }}
+                        decoderComparison={getDecoderComparison({
+                            chain: account.chain,
+                            fromAddress: account.address,
+                        })}
+                    />
                 )}
 
-                {stage === 'broadcast' && status && (
+                {stage === 'on-network' && status && (
                     <Banner
                         intent={getStatusIntent(status)}
                         description={describeEthereumSweepStatus(status)}
@@ -144,19 +140,6 @@ export const EthereumTransferCard = ({
                         </Button>
                     )}
                     {stage === 'signing' && <Button isLoading>Signing</Button>}
-                    {(stage === 'signed' || stage === 'broadcasting') && (
-                        <Button
-                            isLoading={stage === 'broadcasting'}
-                            onClick={() => onBroadcast(key)}
-                        >
-                            Send transaction
-                        </Button>
-                    )}
-                    {canBroadcastAgain && (
-                        <Button isDisabled={isBusy} onClick={() => onBroadcast(key)}>
-                            Send the same transaction again
-                        </Button>
-                    )}
                     {canRetry && (
                         <Button
                             priority="secondary"

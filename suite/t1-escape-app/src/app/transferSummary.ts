@@ -11,9 +11,12 @@ const INVOLUNTARY_LEFTOVER_REASONS: readonly LeftoverReason[] = [
 ];
 
 export type TransferSummary = {
-    /** Transfers handed to the network. */
+    /** Transfers the page saw on the network. */
     sent: Transfer[];
-    /** Accounts with coins that were found but not sent, including ones that failed to prepare. */
+    /**
+     * Accounts with coins that were found but not seen moving: not signed, signed but not seen on
+     * the network, or failed to prepare.
+     */
     notSent: Transfer[];
     /** Amounts of the coins deliberately left behind: too small, unconfirmed or immature. */
     leftoverAmounts: string[];
@@ -28,12 +31,12 @@ export type TransferSummary = {
  * choose.
  */
 export const summarizeTransfers = (transfers: readonly Transfer[]): TransferSummary => {
-    const sent = transfers.filter(({ stage }) => stage === 'broadcast');
+    const sent = transfers.filter(({ stage }) => stage === 'on-network');
     // A transfer without a plan counts only when preparing it failed. Without an error the
     // account simply holds nothing that can be moved.
     const notSent = transfers.filter(
         ({ stage, plan, error }) =>
-            stage !== 'broadcast' && (plan !== undefined || error !== undefined),
+            stage !== 'on-network' && (plan !== undefined || error !== undefined),
     );
     const leftoverAmounts = transfers.flatMap(({ leftovers }) =>
         leftovers.map(({ utxo }) => utxo.amount),

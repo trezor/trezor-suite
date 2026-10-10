@@ -67,18 +67,23 @@ export type DeviceIssue =
     | DeviceRejection
     | DeviceCallError;
 
+/**
+ * Life of a transfer on this page. The page never broadcasts: after signing it shows the hex,
+ * the user broadcasts it elsewhere, and the page watches the network for it.
+ */
 export type TransferStage =
     /** Composed and waiting for the user to start signing. */
     | 'ready'
     | 'signing'
-    /** Signed. The transaction can be exported and broadcast, never signed again. */
+    /**
+     * Signed. The hex exists on this page and the network has not shown the transaction yet. It
+     * is never signed again; the page keeps asking the network until the transaction appears.
+     */
     | 'signed'
-    | 'broadcasting'
-    /** Handed to the network. Its fate is tracked through `status`. */
-    | 'broadcast';
+    /** The page saw the transaction on the network. Its fate is tracked through `status`. */
+    | 'on-network';
 
-export type TransferError =
-    PrepareSweepError | SignSweepError | { type: 'broadcast-failed'; message: string };
+export type TransferError = PrepareSweepError | SignSweepError;
 
 export type Transfer = {
     key: string;
@@ -96,10 +101,7 @@ export type Transfer = {
     error?: TransferError;
 };
 
-export type EthereumTransferError =
-    | PrepareEthereumSweepError
-    | SignEthereumSweepError
-    | { type: 'broadcast-failed'; message: string };
+export type EthereumTransferError = PrepareEthereumSweepError | SignEthereumSweepError;
 
 /** The sweep of one Ethereum address. Mirrors `Transfer`, with the Ethereum types. */
 export type EthereumTransfer = {
@@ -174,12 +176,19 @@ export const mapEthereumChains = <T>(
 const isFinalSweepStatus = (status: SweepStatus | undefined) =>
     status === 'confirmed' || status === 'spent-by-another-transaction';
 
-/** True while the fate of some transfer of the old wallet is still open on the network. */
+/**
+ * True while the fate of some transfer of the old wallet is still open on the network. A signed
+ * transfer counts: the network is watched for it until the user's broadcast shows up.
+ */
 export const isTransferUnsettled = ({ stage, status, inFlightTransactions }: Transfer) =>
-    (stage === 'broadcast' && !isFinalSweepStatus(status)) || inFlightTransactions > 0;
+    stage === 'signed' ||
+    (stage === 'on-network' && !isFinalSweepStatus(status)) ||
+    inFlightTransactions > 0;
 
 export const isEthereumTransferUnsettled = ({ stage, status, isInFlight }: EthereumTransfer) =>
-    (stage === 'broadcast' && !isFinalEthereumSweepStatus(status)) || isInFlight;
+    stage === 'signed' ||
+    (stage === 'on-network' && !isFinalEthereumSweepStatus(status)) ||
+    isInFlight;
 
 /** The transfers of every Ethereum chain, in chain order. */
 export const getEthereumTransfers = ({ ethereum }: MigrationState) =>
@@ -199,7 +208,7 @@ const getTransferStages = (state: MigrationState) => [
 export const isAnythingSigned = (state: MigrationState) =>
     getTransferStages(state).some(stage => stage !== 'ready');
 
-/** A signed transaction that was not sent yet exists only on the transfers screen. */
+/** A signed transaction the network has not shown yet exists only on the transfers screen. */
 export const hasUnsentTransaction = (state: MigrationState) =>
     getTransferStages(state).some(stage => stage === 'signed');
 

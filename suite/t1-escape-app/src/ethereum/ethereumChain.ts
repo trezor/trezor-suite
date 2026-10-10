@@ -40,6 +40,22 @@ export const ETHEREUM_BLOCKBOOK_URLS = ETHEREUM_CHAINS.map(
     chain => ETHEREUM_CHAIN_DEFINITIONS[chain].blockbookUrl,
 );
 
+/**
+ * Independent decoder the user checks a signed transaction in before broadcasting it, for both
+ * chains. deth tools decodes a signed raw transaction with `@ethereumjs/tx`
+ * `TransactionFactory.fromSerializedData` and recovers the sender (MIT,
+ * github.com/dethcrypto/dethtools).
+ */
+export const ETHEREUM_TRANSACTION_DECODER_URL = 'https://tools.deth.net/tx-decoder';
+
+/** Blockbook's "Send Raw Transaction" form of the chain, where the user broadcasts the hex. */
+export const getEthereumSendTransactionUrl = (chain: EthereumChain) =>
+    `${ETHEREUM_CHAIN_DEFINITIONS[chain].blockbookUrl}/sendtx`;
+
+/** The explorer page of a transaction. It works once the transaction is broadcast. */
+export const getEthereumTransactionUrl = (chain: EthereumChain, txid: string) =>
+    `${ETHEREUM_CHAIN_DEFINITIONS[chain].blockbookUrl}/tx/${txid}`;
+
 const HARDENED = 0x80000000;
 
 const BIP44_PURPOSE = 44;

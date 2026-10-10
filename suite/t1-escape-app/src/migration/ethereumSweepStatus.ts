@@ -75,15 +75,3 @@ export const loadEthereumSweepStatus = async ({
         }),
     );
 };
-
-export type BroadcastEthereumSweepParams = {
-    backend: EthereumBackend;
-    record: SignedEthereumSweepRecord;
-};
-
-/**
- * Broadcasts the stored signed transaction. Calling it again after a failure re-sends the very
- * same bytes; a failed broadcast is never a reason to sign anew.
- */
-export const broadcastEthereumSweep = ({ backend, record }: BroadcastEthereumSweepParams) =>
-    backend.pushTransaction(record.hex);

@@ -23,23 +23,20 @@ export type EthereumBackend = {
     getAccountInfo: (address: string) => Promise<Result<AccountInfo, BackendError>>;
     /** Gas price the backend recommends for the next block, in wei per gas. */
     estimateGasPrice: () => Promise<Result<string, BackendError>>;
-    /** Broadcasts a signed transaction and resolves to the id the backend assigned to it. */
-    pushTransaction: (hex: string) => Promise<Result<string, BackendError>>;
     /** Fails when the backend does not know the transaction. */
     getTransaction: (txid: string) => Promise<Result<Transaction, BackendError>>;
 };
 
 /**
- * The blockchain backends as the migration sees them. Everything they return is untrusted input:
- * balances and UTXOs are verified against previous transactions before anything is signed.
+ * The blockchain backends as the migration sees them. They are read only: the page never
+ * broadcasts, the user does that elsewhere. Everything they return is untrusted input: balances
+ * and UTXOs are verified against previous transactions before anything is signed.
  */
 export type Backend = {
     getAccountInfo: (params: AccountInfoParams) => Promise<Result<AccountInfo, BackendError>>;
     /** Unspent outputs of an extended public key or of a single address. */
     getAccountUtxo: (descriptor: string) => Promise<Result<Utxo[], BackendError>>;
     getTransactionHex: (txid: string) => Promise<Result<string, BackendError>>;
-    /** Broadcasts a signed transaction and resolves to the id the backend assigned to it. */
-    pushTransaction: (hex: string) => Promise<Result<string, BackendError>>;
     /** The Ethereum-like chains, each served by its own blockbook. */
     ethereum: Record<EthereumChain, EthereumBackend>;
 };
