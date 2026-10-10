@@ -91,6 +91,8 @@ Skip any item whose API you do not use.
 
 - [ ] **`getAccountInfo` called without `path` or `descriptor` now throws** `Method_InvalidParameter`. Pass `path` (derive on device, then query backend) or `descriptor` (backend only). For the old discovery behaviour use `discoverAccounts`, or [`selectAccount`](#the-new-way-to-ask-for-an-account-selectaccount) for user-facing selection.
 
+- [ ] **`getAccountInfo` now rejects a `path` outside the SLIP-44 coin type of `coin`** with `Method_InvalidParameter` (`Parameters "path" and "coin" do not match.`), matching `getAddress` and `getPublicKey`. It applies to Bitcoin and Ethereum networks, whose keys the device derives at another coin's path; Ethereum networks additionally accept coin type `1`, which their legacy testnet accounts use. A call that passes `descriptor` derives nothing on the device, so its `path` is only a label and is left alone.
+
 - [ ] **The event and UI-plumbing methods are gone:** `on`, `off`, `removeAllListeners`, `uiResponse` and `updateConnectSettings`. They are absent from the object you import, so a call throws `TypeError: TrezorConnect.on is not a function`.
 
     In v9 these existed because your app hosted the popup: you subscribed to `DEVICE_EVENT` and `UI_EVENT`, answered a UI request with `uiResponse`, and could change settings mid-session. In v10 the device connection and every prompt belong to Suite, so there are no events to observe and no UI request to answer. Delete the listeners and any state you derived from them — each method call resolves to its own `{ success, payload }`, which is the only result your app needs.
