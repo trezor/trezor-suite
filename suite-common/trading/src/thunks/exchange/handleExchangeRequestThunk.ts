@@ -90,16 +90,16 @@ export const handleExchangeRequestThunk = createThunk<
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/handleRequest`,
     async (
-        { formValues, network, shouldSendInSats, composeRequestCallback },
+        { formValues, network, shouldSendInSats, composeRequestCallback, resolveFromAddress },
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal, extra },
     ) => {
-        const requestData = getQuoteRequestData({
+        const formRequestData = getQuoteRequestData({
             formValues,
             network,
             shouldSendInSats,
         });
 
-        if (!requestData) {
+        if (!formRequestData) {
             dispatch(tradingActions.stopRefetchQuotes());
 
             return rejectWithValue('Invalid request data');
@@ -113,8 +113,8 @@ export const handleExchangeRequestThunk = createThunk<
         if (
             !isReceiveAddressCoherent({
                 addressValidator: injectAddressValidator(extra.services).addressValidator,
-                receiveAddress: requestData.receiveAddress,
-                receiveCryptoId: requestData.receive,
+                receiveAddress: formRequestData.receiveAddress,
+                receiveCryptoId: formRequestData.receive,
                 receiveAccountKey,
                 receiveAccountSymbol: receiveAccount?.symbol,
             })
@@ -123,6 +123,18 @@ export const handleExchangeRequestThunk = createThunk<
 
             return rejectWithValue('Invalid request data');
         }
+
+        const resolvedFromAddress = await resolveFromAddress?.();
+
+        if (signal.aborted) {
+            dispatch(tradingActions.stopRefetchQuotes());
+
+            return rejectWithValue('Request was aborted');
+        }
+
+        const requestData: ExchangeTradeQuoteRequest = resolvedFromAddress
+            ? { ...formRequestData, fromAddress: resolvedFromAddress }
+            : formRequestData;
 
         const currentQuotesRequest = selectTradingExchangeQuotesRequest(getState());
         if (currentQuotesRequest && requestData.receive !== currentQuotesRequest.receive) {
