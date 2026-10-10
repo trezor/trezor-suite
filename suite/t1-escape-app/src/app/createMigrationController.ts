@@ -43,7 +43,7 @@ import { type InFlightTransfer, evaluateAccountState } from '../migration/accoun
 import { prepareSweep } from '../migration/prepareSweep';
 import { signSweep } from '../migration/signSweep';
 import { type SweepLedger, createSweepLedger } from '../migration/sweepLedger';
-import { type SweepStatus, broadcastSweep, evaluateSweepStatus } from '../migration/sweepStatus';
+import { type SweepStatus, evaluateSweepStatus } from '../migration/sweepStatus';
 import { type EnvironmentInfo, getEnvironmentIssue } from '../preflight/environment';
 import type { LocalNetworkAccessState } from '../preflight/localNetworkAccess';
 
@@ -73,8 +73,10 @@ export type MigrationController = {
     /** Composes a transfer of any coin again after its preparation failed. */
     retryTransfer: (key: string) => Promise<void>;
     signTransfer: (key: string) => Promise<void>;
-    broadcastTransfer: (key: string) => Promise<void>;
-    /** Follows the open transfers of every coin on the network. */
+    /**
+     * Follows the open transfers of every coin on the network, including the signed ones whose
+     * broadcast by the user has not shown up yet. The page itself never broadcasts.
+     */
     refreshTransfers: () => Promise<void>;
     finish: () => Promise<void>;
     submitPin: (pin: string) => void;
@@ -95,6 +97,11 @@ const toChainState = ({ addresses, error }: EthereumChainScan) => ({
     addresses,
     discoveryError: error,
 });
+
+// Statuses that prove the network has, or had, the transaction. The others leave a signed
+// transfer waiting for the user's broadcast: the backend may simply not have seen it yet.
+const isSeenOnNetwork = (status: SweepStatus) =>
+    status === 'pending' || status === 'confirmed' || status === 'spent-by-another-transaction';
 
 /**
  * Runs the migration from the first screen to the last. It owns everything that lives only
@@ -677,7 +684,7 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         });
 
         if (signed.success) {
-            diagnosticLog.info('transfer', 'signed', {
+            diagnosticLog.info('transfer', 'signed, waiting for the user to broadcast it', {
                 key,
                 bytes: signed.payload.hex.length / 2,
             });
@@ -697,52 +704,13 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         await replaceWithFreshPlan(transfer, signed.error);
     };
 
-    const broadcastBitcoinTransfer = async (key: string) => {
-        const transfer = findBitcoinTransfer(key);
-        const { record } = transfer ?? {};
-        if (!transfer || !record) return;
+    // The user broadcast the signed transaction elsewhere and the network now shows it. An
+    // account that needs more transactions gets its next one composed from what is left.
+    const markSeenOnNetwork = async (transfer: Transfer, status: SweepStatus) => {
+        diagnosticLog.info('transfer', 'seen on the network', { key: transfer.key, status });
+        updateTransfer(transfer.key, { stage: 'on-network', status });
 
-        const isFirstBroadcast = transfer.stage === 'signed';
-        diagnosticLog.info('transfer', 'broadcast', { key, isFirstBroadcast });
-        updateTransfer(key, { stage: 'broadcasting', error: undefined });
-
-        // The stored bytes are sent, on the first attempt and on every later one.
-        const pushed = await broadcastSweep({ backend: deps.backend, record });
-        let status: SweepStatus = 'pending';
-
-        if (!pushed.success) {
-            // A failed request does not prove the network lacks the transaction: an answer
-            // can get lost, and the retry is then refused as a duplicate. What spends the
-            // inputs decides.
-            const snapshot = await loadAccountSnapshot({
-                backend: deps.backend,
-                account: transfer.account,
-            });
-            const networkStatus = snapshot.success
-                ? evaluateSweepStatus({ snapshot: snapshot.payload, record })
-                : undefined;
-
-            diagnosticLog.warn('transfer', 'broadcast failed', {
-                key,
-                message: pushed.error.message,
-                networkStatus,
-            });
-            if (networkStatus !== 'pending' && networkStatus !== 'confirmed') {
-                updateTransfer(key, {
-                    stage: isFirstBroadcast ? 'signed' : 'broadcast',
-                    error: { type: 'broadcast-failed', message: pushed.error.message },
-                });
-
-                return;
-            }
-
-            status = networkStatus;
-        }
-
-        diagnosticLog.info('transfer', 'on the network', { key, status });
-        updateTransfer(key, { stage: 'broadcast', status });
-
-        if (isFirstBroadcast && transfer.followingTransactions > 0) {
+        if (transfer.followingTransactions > 0) {
             const next = await prepareTransfer(transfer.account);
             if (next) setBitcoinState({ transfers: [...state.bitcoin.transfers, next] });
         }
@@ -786,12 +754,6 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         ethereum.signTransfer,
     );
 
-    const broadcastTransfer = dispatchByKey(
-        'Sending the transaction',
-        broadcastBitcoinTransfer,
-        ethereum.broadcastTransfer,
-    );
-
     const refreshBitcoinTransfers = async () => {
         // One snapshot per account serves all of its transfers.
         const accounts = new Map(
@@ -807,31 +769,41 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             const inFlightTransactions = countInFlightFromElsewhere(
                 evaluateAccountState(snapshot.payload).inFlight,
             );
-            const ofAccount = state.bitcoin.transfers.filter(
-                transfer => getAccountKey(transfer.account) === accountKey,
-            );
+            // Transfers from before a page reload have no record. They are followed through
+            // the pending transactions of the account instead.
+            const evaluated = state.bitcoin.transfers
+                .filter(transfer => getAccountKey(transfer.account) === accountKey)
+                .map(transfer => ({
+                    transfer,
+                    status:
+                        transfer.record &&
+                        (transfer.stage === 'signed' || transfer.stage === 'on-network')
+                            ? evaluateSweepStatus({
+                                  snapshot: snapshot.payload,
+                                  record: transfer.record,
+                              })
+                            : undefined,
+                }));
             diagnosticLog.info('transfer', 'refreshed', {
                 account: accountKey,
                 inFlightTransactions,
-                statuses: ofAccount.map(({ key, record, stage }) => ({
+                statuses: evaluated.map(({ transfer: { key, stage }, status }) => ({
                     key,
-                    status:
-                        record && stage === 'broadcast'
-                            ? evaluateSweepStatus({ snapshot: snapshot.payload, record })
-                            : stage,
+                    stage,
+                    ...(status ? { status } : {}),
                 })),
             });
 
-            ofAccount.forEach(({ key, record, stage }) =>
-                updateTransfer(key, {
-                    // Transfers from before a page reload have no record. They are followed
-                    // through the pending transactions of the account instead.
-                    inFlightTransactions,
-                    ...(record && stage === 'broadcast'
-                        ? { status: evaluateSweepStatus({ snapshot: snapshot.payload, record }) }
-                        : {}),
-                }),
-            );
+            for (const { transfer, status } of evaluated) {
+                updateTransfer(transfer.key, { inFlightTransactions });
+                if (status === undefined) continue;
+
+                if (transfer.stage === 'on-network') {
+                    updateTransfer(transfer.key, { status });
+                } else if (isSeenOnNetwork(status)) {
+                    await markSeenOnNetwork(transfer, status);
+                }
+            }
         }
     };
 
@@ -918,7 +890,6 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         editDestinations,
         retryTransfer,
         signTransfer,
-        broadcastTransfer,
         refreshTransfers,
         finish,
         submitPin: pin => answerPin(pin),

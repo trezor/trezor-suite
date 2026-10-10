@@ -18,7 +18,22 @@ export const BITCOIN_NATIVE_SEGWIT_NETWORK: Network = {
 
 export const BITCOIN_DUST_LIMIT = 546;
 
-export const BLOCKBOOK_URLS = ['https://btc.trezor.io'];
+/** Trezor's Bitcoin blockbook. The page reads from it and links the user to its explorer pages. */
+export const BITCOIN_BLOCKBOOK_URL = 'https://btc.trezor.io';
+
+export const BLOCKBOOK_URLS = [BITCOIN_BLOCKBOOK_URL];
+
+/**
+ * Independent decoder the user checks a signed transaction in before broadcasting it. BlockCypher's
+ * decode API was checked against a real transaction: outputs and addresses come back right.
+ */
+export const BITCOIN_TRANSACTION_DECODER_URL = 'https://live.blockcypher.com/btc/decodetx/';
+
+/** Blockbook's "Send Raw Transaction" form, where the user broadcasts the hex. */
+export const BITCOIN_SEND_TRANSACTION_URL = `${BITCOIN_BLOCKBOOK_URL}/sendtx`;
+
+/** The explorer page of a transaction. It works once the transaction is broadcast. */
+export const getBitcoinTransactionUrl = (txid: string) => `${BITCOIN_BLOCKBOOK_URL}/tx/${txid}`;
 
 /**
  * Coin description required by the signing helper of @trezor/connect-core. The helper reads only

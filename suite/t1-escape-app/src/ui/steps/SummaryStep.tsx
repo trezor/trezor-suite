@@ -42,8 +42,16 @@ const HEADLINES: Record<MigrationOutcome, string> = {
 const getAccountLabel = ({ account }: Transfer) =>
     `${ACCOUNT_TYPE_DEFINITIONS[account.accountType].label} account #${account.accountIndex + 1}`;
 
-const describeEthereumNotSent = ({ plan, isInFlight }: EthereumTransfer) => {
-    if (plan) return 'transfer was not sent';
+const describeNotSent = ({ stage, plan }: Transfer) => {
+    if (stage === 'signed') return 'signed, not yet seen on the network';
+    if (plan) return 'transfer was not signed';
+
+    return 'could not be checked, its coins were not moved';
+};
+
+const describeEthereumNotSent = ({ stage, plan, isInFlight }: EthereumTransfer) => {
+    if (stage === 'signed') return 'signed, not yet seen on the network';
+    if (plan) return 'transfer was not signed';
     if (isInFlight) return 'a transaction was still pending, its coins were not moved';
 
     return 'could not be checked, its coins were not moved';
@@ -80,10 +88,7 @@ const BitcoinSummary = ({ summary }: BitcoinSummaryProps) => {
                     <BulletList>
                         {notSent.map(transfer => (
                             <BulletList.Item key={transfer.key}>
-                                {getAccountLabel(transfer)}:{' '}
-                                {transfer.plan
-                                    ? 'transfer was not sent'
-                                    : 'could not be checked, its coins were not moved'}
+                                {getAccountLabel(transfer)}: {describeNotSent(transfer)}
                             </BulletList.Item>
                         ))}
                         {leftoverAmounts.length > 0 && (
@@ -213,7 +218,7 @@ export const SummaryStep = ({
 
                     {hasPending && (
                         <Button priority="secondary" onClick={onRefresh}>
-                            Check confirmations now
+                            Check the network now
                         </Button>
                     )}
                 </Column>

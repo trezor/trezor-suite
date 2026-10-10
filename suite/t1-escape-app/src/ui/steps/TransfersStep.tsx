@@ -22,7 +22,6 @@ import { TransferCard } from '../TransferCard';
 
 type TransferCallbacks = {
     onSign: (key: string) => void;
-    onBroadcast: (key: string) => void;
     onRetry: (key: string) => void;
 };
 
@@ -75,7 +74,6 @@ export const TransfersStep = ({
     isDeviceUsable,
     isDeviceReleased,
     onSign,
-    onBroadcast,
     onRetry,
     onRefresh,
     onEditDestinations,
@@ -91,25 +89,25 @@ export const TransfersStep = ({
     const stages = [...bitcoin.transfers, ...ethereumTransfers].map(({ stage }) => stage);
 
     const isAnythingSigned = stages.some(stage => stage !== 'ready');
-    // A transfer that is signed but not sent yet can still be followed by further ones, which
-    // are composed only after it is sent. Locking the Trezor before that would strand them.
+    // A transfer that is signed but not seen on the network yet can still be followed by further
+    // ones, which are composed only once it is seen. Locking the Trezor before that would strand
+    // them.
     const hasTransfersToSign =
         bitcoin.transfers.some(
             ({ stage, plan, followingTransactions }) =>
                 (stage === 'ready' && plan !== undefined) ||
-                (stage !== 'broadcast' && followingTransactions > 0),
+                (stage !== 'on-network' && followingTransactions > 0),
         ) ||
         ethereumTransfers.some(
             ({ stage, plan, isInFlight }) =>
                 (stage === 'ready' && plan !== undefined) || isInFlight,
         );
-    const hasUnsentTransactions = stages.some(
-        stage => stage === 'signed' || stage === 'broadcasting',
-    );
+    const hasUnsentTransactions = stages.some(stage => stage === 'signed');
+    // Signed transfers count: the network is watched for them until the user's broadcast shows.
     const hasPendingTransfers =
         bitcoin.transfers.some(isTransferUnsettled) ||
         ethereumTransfers.some(isEthereumTransferUnsettled);
-    const cardProps = { isBusy, isDeviceUsable, onSign, onBroadcast, onRetry };
+    const cardProps = { isBusy, isDeviceUsable, onSign, onRetry };
 
     return (
         <Column gap={16}>
@@ -120,6 +118,13 @@ export const TransfersStep = ({
                         Each Bitcoin account type and each Ethereum address needs its own
                         transaction. The Trezor shows the destination and the amount of each one:
                         confirm only if both match this page and your new wallet.
+                    </Paragraph>
+                    <Paragraph>
+                        This page never sends anything to the network. For each transaction you sign
+                        on the Trezor, it shows the signed transaction as hex. You check the hex in
+                        an independent decoder, broadcast it on the Trezor explorer, come back here
+                        and wait for the confirmation. Links and steps appear under each transaction
+                        once it is signed.
                     </Paragraph>
                     {!isAnythingSigned && (
                         <Button
@@ -217,7 +222,7 @@ export const TransfersStep = ({
                     {hasUnsentTransactions && (
                         <Banner
                             intent="warning"
-                            description="A signed transaction has not been sent yet. Send it or copy it before you leave this page."
+                            description="A signed transaction has not been seen on the network yet. Keep a copy of the hex before you leave this page."
                         />
                     )}
                     <Row gap={8}>
@@ -230,7 +235,7 @@ export const TransfersStep = ({
                         </Button>
                         {hasPendingTransfers && (
                             <Button priority="secondary" onClick={onRefresh}>
-                                Check confirmations now
+                                Check the network now
                             </Button>
                         )}
                     </Row>

@@ -1,20 +1,16 @@
-import {
-    Banner,
-    Button,
-    Card,
-    Column,
-    H3,
-    Paragraph,
-    Row,
-    Text,
-    Textarea,
-} from '@trezor/components';
+import { Banner, Button, Card, Column, H3, Paragraph, Row, Text } from '@trezor/components';
 
 import { BulletList } from './BulletList';
+import { SignedTransactionPanel } from './SignedTransactionPanel';
 import { formatBitcoin, sumSatoshi } from './formatAmount';
 import { describeLeftover, describeSweepStatus, describeTransferError } from './messages';
 import type { Transfer } from '../app/migrationState';
 import { ACCOUNT_TYPE_DEFINITIONS, formatPath } from '../bitcoin/accountType';
+import {
+    BITCOIN_SEND_TRANSACTION_URL,
+    BITCOIN_TRANSACTION_DECODER_URL,
+    getBitcoinTransactionUrl,
+} from '../bitcoin/bitcoinNetwork';
 import type { LeftoverReason } from '../bitcoin/composeSweep';
 import type { SweepStatus } from '../migration/sweepStatus';
 
@@ -23,7 +19,6 @@ type TransferCardProps = {
     isBusy: boolean;
     isDeviceUsable: boolean;
     onSign: (key: string) => void;
-    onBroadcast: (key: string) => void;
     onRetry: (key: string) => void;
 };
 
@@ -33,6 +28,9 @@ const LEFTOVER_REASONS: LeftoverReason[] = [
     'uneconomic',
     'insufficient-for-fee',
 ];
+
+const DECODER_COMPARISON =
+    'Compare the destination address and the amount with the ones shown above.';
 
 const getStatusIntent = (status: SweepStatus) => {
     switch (status) {
@@ -48,21 +46,14 @@ const getStatusIntent = (status: SweepStatus) => {
     }
 };
 
-const copyToClipboard = (text: string) => {
-    void navigator.clipboard.writeText(text);
-};
-
 export const TransferCard = ({
     transfer,
     isBusy,
     isDeviceUsable,
     onSign,
-    onBroadcast,
     onRetry,
 }: TransferCardProps) => {
     const { key, account, plan, record, stage, status, error, leftovers } = transfer;
-    const isSigned = record !== undefined;
-    const canBroadcastAgain = stage === 'broadcast' && status === 'not-in-mempool';
 
     return (
         <Card>
@@ -105,7 +96,7 @@ export const TransferCard = ({
                         {transfer.followingTransactions === 1
                             ? 'transfer follows'
                             : 'transfers follow'}{' '}
-                        after this one is sent.
+                        once this one is seen on the network.
                     </Paragraph>
                 )}
 
@@ -135,31 +126,21 @@ export const TransferCard = ({
 
                 {error && <Banner intent="critical" description={describeTransferError(error)} />}
 
-                {isSigned && (
-                    <Column gap={8} width="100%">
-                        <Paragraph>
-                            Signed transaction. Keep a copy: it is lost when this page is closed,
-                            and this tool will not sign these coins a second time.
-                        </Paragraph>
-                        <Textarea
-                            label="Signed transaction (hex)"
-                            value={record.hex}
-                            readOnly
-                            rows={4}
-                        />
-                        <Row>
-                            <Button
-                                size="small"
-                                priority="secondary"
-                                onClick={() => copyToClipboard(record.hex)}
-                            >
-                                Copy
-                            </Button>
-                        </Row>
-                    </Column>
+                {record && (
+                    <SignedTransactionPanel
+                        hex={record.hex}
+                        txid={record.txid}
+                        isOnNetwork={stage === 'on-network'}
+                        links={{
+                            decoder: BITCOIN_TRANSACTION_DECODER_URL,
+                            sendTransaction: BITCOIN_SEND_TRANSACTION_URL,
+                            transaction: getBitcoinTransactionUrl(record.txid),
+                        }}
+                        decoderComparison={DECODER_COMPARISON}
+                    />
                 )}
 
-                {stage === 'broadcast' && status && (
+                {stage === 'on-network' && status && (
                     <Banner
                         intent={getStatusIntent(status)}
                         description={describeSweepStatus(status)}
@@ -173,19 +154,6 @@ export const TransferCard = ({
                         </Button>
                     )}
                     {stage === 'signing' && <Button isLoading>Signing</Button>}
-                    {(stage === 'signed' || stage === 'broadcasting') && (
-                        <Button
-                            isLoading={stage === 'broadcasting'}
-                            onClick={() => onBroadcast(key)}
-                        >
-                            Send transaction
-                        </Button>
-                    )}
-                    {canBroadcastAgain && (
-                        <Button isDisabled={isBusy} onClick={() => onBroadcast(key)}>
-                            Send the same transaction again
-                        </Button>
-                    )}
                     {!plan && error && stage === 'ready' && (
                         <Button
                             priority="secondary"

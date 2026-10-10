@@ -1,5 +1,3 @@
-import { type Hex, keccak256 } from 'viem';
-
 import { mock } from '@suite-common/dependency-injection';
 import type {
     AccountInfo,
@@ -9,9 +7,10 @@ import type {
 } from '@trezor/blockchain-link-types';
 import { convertXpub } from '@trezor/connect-core/src/utils/hdnodeUtils';
 import { err, ok } from '@trezor/type-utils';
-import { Transaction } from '@trezor/utxo-lib';
+import { bufferUtils } from '@trezor/utils';
+import { Transaction, address as addressUtils } from '@trezor/utxo-lib';
 
-import { mockAccountInfo } from './mockAccountInfo';
+import { mockAccountInfo, mockHistoryTransaction } from './mockAccountInfo';
 import { mockPreviousTransaction } from './mockPreviousTransaction';
 import type { MockWallet } from './mockWallet';
 import type { Backend, EthereumBackend } from '../src/backend/backend';
@@ -21,6 +20,7 @@ import {
     getAccountPath,
 } from '../src/bitcoin/accountType';
 import { BITCOIN_NETWORK } from '../src/bitcoin/bitcoinNetwork';
+import { getOutpointKey } from '../src/bitcoin/outpoint';
 import type { DiscoveredAccount } from '../src/device/accountPublicKey';
 import type { EthereumAccount } from '../src/ethereum/ethereumAccount';
 import {
@@ -28,6 +28,7 @@ import {
     type EthereumChain,
     getEthereumAddressPath,
 } from '../src/ethereum/ethereumChain';
+import { isPendingTransaction } from '../src/migration/accountState';
 
 /** Gas prices the fake Ethereum blockbooks recommend, in wei per gas. */
 export const MOCK_GAS_PRICES: Record<EthereumChain, string> = {
@@ -38,6 +39,13 @@ export const MOCK_GAS_PRICES: Record<EthereumChain, string> = {
 const getEthereumInfoKey = (chain: EthereumChain, address: string) =>
     `${chain}:${address.toLowerCase()}`;
 
+const getInputTxid = (hash: Buffer) => bufferUtils.reverseBuffer(hash).toString('hex');
+
+export type MockSeenTransactionParams = {
+    /** Height of the block that mined the transaction. Left out, it sits in the mempool. */
+    blockHeight?: number;
+};
+
 /**
  * An in-memory blockbook. The maps are exposed so that a test can change what the backend
  * answers, which is how a lying backend is simulated.
@@ -46,14 +54,12 @@ export const mockBackend = () => {
     const accountInfos = new Map<string, AccountInfo>();
     const utxos = new Map<string, Utxo[]>();
     const transactionHexes = new Map<string, string>();
-    const pushedTransactions: string[] = [];
 
     /** Ethereum address infos by chain and lowercase address. */
     const ethereumAccountInfos = new Map<string, AccountInfo>();
     const gasPrices = { ...MOCK_GAS_PRICES };
     /** Ethereum transactions the backends know, by id. */
     const ethereumTransactions = new Map<string, HistoryTransaction>();
-    const pushedEthereumTransactions: Hex[] = [];
 
     const createEthereumBackend = (chain: EthereumChain) => ({
         getAccountInfo: mock<EthereumBackend['getAccountInfo']>(address =>
@@ -67,11 +73,6 @@ export const mockBackend = () => {
         estimateGasPrice: mock<EthereumBackend['estimateGasPrice']>(() =>
             Promise.resolve(ok(gasPrices[chain])),
         ),
-        pushTransaction: mock<EthereumBackend['pushTransaction']>(hex => {
-            pushedEthereumTransactions.push(hex as Hex);
-
-            return Promise.resolve(ok(keccak256(hex as Hex)));
-        }),
         getTransaction: mock<EthereumBackend['getTransaction']>(txid => {
             const transaction = ethereumTransactions.get(txid);
 
@@ -97,16 +98,97 @@ export const mockBackend = () => {
                 hex === undefined ? err({ type: 'backend', message: 'not found' }) : ok(hex),
             );
         }),
-        pushTransaction: mock<Backend['pushTransaction']>(hex => {
-            pushedTransactions.push(hex);
-
-            return Promise.resolve(
-                ok(Transaction.fromHex(hex, { network: BITCOIN_NETWORK }).getId()),
-            );
-        }),
         ethereum: Object.fromEntries(
             ETHEREUM_CHAINS.map(chain => [chain, createEthereumBackend(chain)]),
         ) as Record<EthereumChain, ReturnType<typeof createEthereumBackend>>,
+    };
+
+    /**
+     * Makes the Bitcoin blockbook show a signed transaction the way it does once somebody has
+     * broadcast it: the outputs it spends leave the unspent list of their account and it enters
+     * the account history, pending or mined. Seeing the same transaction again only updates it,
+     * so a test can let it confirm.
+     */
+    const seeTransaction = (hex: string, { blockHeight = -1 }: MockSeenTransactionParams = {}) => {
+        const transaction = Transaction.fromHex(hex, { network: BITCOIN_NETWORK });
+        const txid = transaction.getId();
+        const spentOutpoints = new Set(
+            transaction.ins.map(input =>
+                getOutpointKey({ txid: getInputTxid(input.hash), vout: input.index }),
+            ),
+        );
+        const isSpent = (utxo: Utxo) => spentOutpoints.has(getOutpointKey(utxo));
+        const historyTransaction = mockHistoryTransaction({
+            txid,
+            blockHeight,
+            details: {
+                vin: transaction.ins.map((input, n) => ({
+                    txid: getInputTxid(input.hash),
+                    // Blockbook leaves the index out when it is zero.
+                    vout: input.index === 0 ? undefined : input.index,
+                    n,
+                    isAddress: true,
+                    isAccountOwned: true,
+                })),
+                vout: transaction.outs.map((output, n) => ({
+                    n,
+                    isAddress: true,
+                    addresses: [addressUtils.fromOutputScript(output.script, BITCOIN_NETWORK)],
+                    value: output.value,
+                })),
+                size: hex.length / 2,
+                totalInput: '0',
+                totalOutput: '0',
+            },
+        });
+
+        // The account is found by what the transaction spends, or by the transaction itself once
+        // an earlier sighting already took the spent outputs away.
+        const descriptors = new Set([
+            ...[...utxos]
+                .filter(([, owned]) => owned.some(isSpent))
+                .map(([descriptor]) => descriptor),
+            ...[...accountInfos]
+                .filter(([, info]) => info.history.transactions?.some(known => known.txid === txid))
+                .map(([descriptor]) => descriptor),
+        ]);
+
+        for (const descriptor of descriptors) {
+            const remaining = (utxos.get(descriptor) ?? []).filter(utxo => !isSpent(utxo));
+            utxos.set(descriptor, remaining);
+
+            const info = accountInfos.get(descriptor) ?? mockAccountInfo({ descriptor });
+            const otherTransactions = (info.history.transactions ?? []).filter(
+                known => known.txid !== txid,
+            );
+            const transactions = [historyTransaction, ...otherTransactions];
+            const sumRemaining = (address: string) =>
+                remaining
+                    .filter(utxo => utxo.address === address)
+                    .reduce((sum, utxo) => sum + BigInt(utxo.amount), 0n)
+                    .toString();
+
+            accountInfos.set(descriptor, {
+                ...info,
+                history: {
+                    ...info.history,
+                    total: info.history.total + (transactions.length - otherTransactions.length),
+                    unconfirmed: transactions.filter(isPendingTransaction).length,
+                    transactions,
+                },
+                ...(info.addresses
+                    ? {
+                          addresses: {
+                              ...info.addresses,
+                              used: info.addresses.used.map(used => ({
+                                  ...used,
+                                  balance: sumRemaining(used.address),
+                              })),
+                          },
+                      }
+                    : {}),
+            });
+        }
     };
 
     const setEthereumAccountInfo = (
@@ -124,12 +206,11 @@ export const mockBackend = () => {
         accountInfos,
         utxos,
         transactionHexes,
-        pushedTransactions,
+        seeTransaction,
         ethereumAccountInfos,
         setEthereumAccountInfo,
         gasPrices,
         ethereumTransactions,
-        pushedEthereumTransactions,
     };
 };
 

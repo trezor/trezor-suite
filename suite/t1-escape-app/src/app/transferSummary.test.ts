@@ -50,7 +50,7 @@ describe(summarizeTransfers.name, () => {
         const { mockTransfer } = setup();
 
         expect(
-            summarizeTransfers([mockTransfer({ stage: 'broadcast', status: 'confirmed' })]),
+            summarizeTransfers([mockTransfer({ stage: 'on-network', status: 'confirmed' })]),
         ).toMatchObject({ isEverythingConfirmed: true, hasPending: false, notSent: [] });
     });
 
@@ -59,8 +59,8 @@ describe(summarizeTransfers.name, () => {
 
         expect(
             summarizeTransfers([
-                mockTransfer({ stage: 'broadcast', status: 'confirmed' }),
-                mockTransfer({ key: 'second', stage: 'broadcast', status: 'pending' }),
+                mockTransfer({ stage: 'on-network', status: 'confirmed' }),
+                mockTransfer({ key: 'second', stage: 'on-network', status: 'pending' }),
             ]),
         ).toMatchObject({ isEverythingConfirmed: false, hasPending: true });
     });
@@ -74,7 +74,10 @@ describe(summarizeTransfers.name, () => {
         });
 
         expect(
-            summarizeTransfers([mockTransfer({ stage: 'broadcast', status: 'confirmed' }), failed]),
+            summarizeTransfers([
+                mockTransfer({ stage: 'on-network', status: 'confirmed' }),
+                failed,
+            ]),
         ).toMatchObject({ isEverythingConfirmed: false, hasPending: false, notSent: [failed] });
     });
 
@@ -83,7 +86,7 @@ describe(summarizeTransfers.name, () => {
 
         expect(
             summarizeTransfers([
-                mockTransfer({ stage: 'broadcast', status: 'confirmed' }),
+                mockTransfer({ stage: 'on-network', status: 'confirmed' }),
                 mockTransfer({ key: 'empty', plan: undefined }),
             ]),
         ).toMatchObject({ isEverythingConfirmed: true, notSent: [] });
@@ -107,7 +110,7 @@ describe(summarizeTransfers.name, () => {
 
         expect(
             summarizeTransfers([
-                mockTransfer({ stage: 'broadcast', status: 'spent-by-another-transaction' }),
+                mockTransfer({ stage: 'on-network', status: 'spent-by-another-transaction' }),
             ]),
         ).toMatchObject({ isEverythingConfirmed: false, hasPending: false });
     });
@@ -116,7 +119,7 @@ describe(summarizeTransfers.name, () => {
         const { mockTransfer } = setup();
 
         expect(
-            summarizeTransfers([mockTransfer({ stage: 'broadcast', status: 'not-in-mempool' })]),
+            summarizeTransfers([mockTransfer({ stage: 'on-network', status: 'not-in-mempool' })]),
         ).toMatchObject({ isEverythingConfirmed: false, hasPending: true });
     });
 
@@ -126,7 +129,7 @@ describe(summarizeTransfers.name, () => {
 
         expect(
             summarizeTransfers([
-                mockTransfer({ stage: 'broadcast', status: 'confirmed', leftovers }),
+                mockTransfer({ stage: 'on-network', status: 'confirmed', leftovers }),
             ]),
         ).toMatchObject({ isEverythingConfirmed: true, leftoverAmounts: ['100000', '200000'] });
     });

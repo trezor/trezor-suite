@@ -252,8 +252,6 @@ const describeComposeError = (error: ComposeSweepError): string => {
 
 export const describeTransferError = (error: TransferError): string => {
     switch (error.type) {
-        case 'broadcast-failed':
-            return `The transaction was not accepted for broadcast (${error.message}). It is signed and stored on this page: try again, or export it. It will not be signed a second time.`;
         case 'ambiguous-state':
             return `The state of this account is unclear: ${error.reasons.map(describeAmbiguity).join('; ')}. Nothing will be signed until it clears up. Wait a few minutes and try again.`;
         case 'inputs-changed':
@@ -267,7 +265,7 @@ export const describeTransferError = (error: TransferError): string => {
         case 'plan-already-attempted':
             return 'This transfer was already sent to the Trezor once. A new one was prepared with a different amount.';
         case 'inputs-already-signed':
-            return 'A signed transaction for these coins already exists. It can only be broadcast again.';
+            return 'A signed transaction for these coins already exists. Broadcast that one; nothing is signed again.';
         case 'signing-failed':
             return `Signing did not finish (${error.reason}).`;
         case 'signed-transaction-invalid':

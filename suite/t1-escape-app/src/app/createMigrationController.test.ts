@@ -21,7 +21,6 @@ import type { BridgeConnection } from '../device/createBridgeConnection';
 import type { DeviceLostReason } from '../device/deviceSession';
 import { validatePassphraseEntry } from '../device/passphrase';
 import type { SignedEthereumSweepRecord } from '../migration/ethereumSweepLedger';
-import type { SignedSweepRecord } from '../migration/sweepLedger';
 
 const DESTINATION = '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy';
 
@@ -105,44 +104,8 @@ const setup = ({
         lostReason = undefined;
     };
 
-    // Makes the backend show the signed transfer as a transaction spending its inputs.
-    const showOnNetwork = ({ plan }: SignedSweepRecord, blockHeight: number) => {
-        const { descriptor } = funded.account;
-        chain.utxos.set(descriptor, []);
-        chain.accountInfos.set(descriptor, {
-            ...chain.accountInfos.get(descriptor)!,
-            history: {
-                total: 3,
-                unconfirmed: blockHeight > 0 ? 0 : 1,
-                transactions: [
-                    mockHistoryTransaction({
-                        blockHeight,
-                        details: {
-                            vin: plan.utxos.map((utxo, n) => ({
-                                txid: utxo.txid,
-                                n,
-                                isAddress: true,
-                                isAccountOwned: true,
-                            })),
-                            vout: [
-                                {
-                                    n: 0,
-                                    isAddress: true,
-                                    addresses: [DESTINATION],
-                                    value: plan.amount,
-                                },
-                            ],
-                            size: 0,
-                            totalInput: '0',
-                            totalOutput: '0',
-                        },
-                    }),
-                ],
-            },
-        });
-    };
-
-    // Makes the Ethereum backend show the signed transfer as a transaction it knows.
+    // Makes the Ethereum backend show the signed transfer as a transaction it knows, the way it
+    // does once the user has broadcast it.
     const showEthereumOnNetwork = (
         { txid, plan }: SignedEthereumSweepRecord,
         blockHeight: number,
@@ -197,7 +160,6 @@ const setup = ({
         fundedAddresses,
         loseDevice,
         recoverDevice,
-        showOnNetwork,
         showEthereumOnNetwork,
         reachDiscovery,
         reachTransfers,
@@ -555,7 +517,7 @@ describe('migration controller', () => {
     });
 
     it('moves the funds from discovery to a confirmed transfer and locks the device', async () => {
-        const { controller, chain, device, release, funded, reachTransfers } = setup();
+        const { controller, chain, device, release, reachTransfers } = setup();
 
         await reachTransfers();
         const [transfer] = controller.getState().bitcoin.transfers;
@@ -566,50 +528,14 @@ describe('migration controller', () => {
         const signed = controller.getState().bitcoin.transfers[0]!;
         expect(signed).toMatchObject({ stage: 'signed', record: { hex: expect.any(String) } });
 
-        await controller.broadcastTransfer(signed.key);
-        expect(chain.pushedTransactions).toEqual([signed.record?.hex]);
-        expect(controller.getState().bitcoin.transfers[0]).toMatchObject({
-            stage: 'broadcast',
-            status: 'pending',
-        });
-
-        // The backend now shows the transfer mined: the inputs are spent by a confirmed
-        // transaction that pays the destination the composed amount.
-        const { descriptor } = funded.account;
-        chain.utxos.set(descriptor, []);
-        chain.accountInfos.set(descriptor, {
-            ...chain.accountInfos.get(descriptor)!,
-            history: {
-                total: 3,
-                unconfirmed: 0,
-                transactions: [
-                    mockHistoryTransaction({
-                        blockHeight: 800010,
-                        details: {
-                            vin: signed.plan!.utxos.map((utxo, n) => ({
-                                txid: utxo.txid,
-                                n,
-                                isAddress: true,
-                                isAccountOwned: true,
-                            })),
-                            vout: [
-                                {
-                                    n: 0,
-                                    isAddress: true,
-                                    addresses: [DESTINATION],
-                                    value: signed.plan!.amount,
-                                },
-                            ],
-                            size: 0,
-                            totalInput: '0',
-                            totalOutput: '0',
-                        },
-                    }),
-                ],
-            },
-        });
+        // The user broadcast the hex elsewhere and the backend shows it mined: the inputs are
+        // spent by a confirmed transaction that pays the destination the composed amount.
+        chain.seeTransaction(signed.record!.hex, { blockHeight: 800010 });
         await controller.refreshTransfers();
-        expect(controller.getState().bitcoin.transfers[0]?.status).toBe('confirmed');
+        expect(controller.getState().bitcoin.transfers[0]).toMatchObject({
+            stage: 'on-network',
+            status: 'confirmed',
+        });
 
         await controller.finish();
         expect(device.calls.slice(-2)).toEqual([
@@ -757,80 +683,76 @@ describe('migration controller', () => {
         expect(device.countCalls('SignTx')).toBe(1);
     });
 
-    it('keeps a signed transfer for another broadcast when the first one fails', async () => {
-        const { controller, chain, device, reachTransfers } = setup();
+    it('shows the hex after signing and reports the transaction once it appears on the network', async () => {
+        const { controller, chain, device, reachTransfers, getBitcoinTransfers } = setup();
         await reachTransfers();
-        await controller.signTransfer(controller.getState().bitcoin.transfers[0]!.key);
-        const signed = controller.getState().bitcoin.transfers[0]!;
-
-        chain.backend.pushTransaction.mockResolvedValueOnce({
-            success: false,
-            error: { type: 'backend', message: 'rejected' },
-        });
-        await controller.broadcastTransfer(signed.key);
-        expect(controller.getState().bitcoin.transfers[0]).toMatchObject({
+        await controller.signTransfer(getBitcoinTransfers()[0]!.key);
+        const signed = getBitcoinTransfers()[0]!;
+        expect(signed).toMatchObject({
             stage: 'signed',
-            error: { type: 'broadcast-failed', message: 'rejected' },
+            record: { hex: expect.any(String), txid: expect.stringMatching(/^[0-9a-f]{64}$/) },
         });
 
-        await controller.broadcastTransfer(signed.key);
+        // Nothing was broadcast yet: the network does not show the transaction and the page
+        // keeps the hex on display.
+        await controller.refreshTransfers();
+        expect(getBitcoinTransfers()[0]).toMatchObject({ stage: 'signed' });
+        expect(getBitcoinTransfers()[0]?.status).toBeUndefined();
 
-        expect(controller.getState().bitcoin.transfers[0]).toMatchObject({ stage: 'broadcast' });
-        expect(chain.backend.pushTransaction.mock.calls).toEqual([
-            [signed.record?.hex],
-            [signed.record?.hex],
-        ]);
+        // The user broadcast the hex elsewhere.
+        chain.seeTransaction(signed.record!.hex);
+        await controller.refreshTransfers();
+        expect(getBitcoinTransfers()[0]).toMatchObject({ stage: 'on-network', status: 'pending' });
+
+        chain.seeTransaction(signed.record!.hex, { blockHeight: 800010 });
+        await controller.refreshTransfers();
+        expect(getBitcoinTransfers()[0]).toMatchObject({
+            stage: 'on-network',
+            status: 'confirmed',
+        });
         expect(device.countCalls('SignTx')).toBe(1);
     });
 
-    it('counts a failed broadcast as sent when the network already has the transaction', async () => {
-        const { controller, chain, showOnNetwork, reachTransfers } = setup();
-        await reachTransfers();
-        await controller.signTransfer(controller.getState().bitcoin.transfers[0]!.key);
-        const signed = controller.getState().bitcoin.transfers[0]!;
-
-        // The first answer got lost on the way; the server refuses the retry as a duplicate.
-        showOnNetwork(signed.record!, -1);
-        chain.backend.pushTransaction.mockResolvedValueOnce({
-            success: false,
-            error: { type: 'backend', message: 'transaction already in mempool' },
-        });
-        await controller.broadcastTransfer(signed.key);
-
-        const [transfer] = controller.getState().bitcoin.transfers;
-        expect(transfer).toMatchObject({ stage: 'broadcast', status: 'pending' });
-        expect(transfer?.error).toBeUndefined();
-    });
-
     it('does not report its own pending transfer as one from elsewhere', async () => {
-        const { controller, showOnNetwork, reachTransfers } = setup();
+        const { controller, chain, reachTransfers, getBitcoinTransfers } = setup();
         await reachTransfers();
-        await controller.signTransfer(controller.getState().bitcoin.transfers[0]!.key);
-        const signed = controller.getState().bitcoin.transfers[0]!;
-        await controller.broadcastTransfer(signed.key);
+        await controller.signTransfer(getBitcoinTransfers()[0]!.key);
 
-        showOnNetwork(signed.record!, -1);
+        chain.seeTransaction(getBitcoinTransfers()[0]!.record!.hex);
         await controller.refreshTransfers();
 
-        expect(controller.getState().bitcoin.transfers[0]).toMatchObject({
+        expect(getBitcoinTransfers()[0]).toMatchObject({
+            stage: 'on-network',
             status: 'pending',
             inFlightTransactions: 0,
         });
     });
 
-    it('prepares the next transfer of an account that needs more than one', async () => {
+    it('prepares the next transfer of an account once the first one is seen on the network', async () => {
         const amounts = Array.from({ length: 60 }, (_, index) => (200000 + index).toString());
-        const { controller, reachTransfers } = setup({ amounts });
+        const { controller, chain, reachTransfers, getBitcoinTransfers } = setup({ amounts });
         await reachTransfers();
-        const [first] = controller.getState().bitcoin.transfers;
+        const [first] = getBitcoinTransfers();
         expect(first).toMatchObject({ followingTransactions: 1, plan: { inputs: { length: 50 } } });
 
+        // While the signed transaction waits for the user's broadcast, nothing more is composed.
         await controller.signTransfer(first!.key);
-        await controller.broadcastTransfer(first!.key);
+        await controller.refreshTransfers();
+        expect(getBitcoinTransfers()).toHaveLength(1);
 
-        const [, second] = controller.getState().bitcoin.transfers;
+        const { hex } = getBitcoinTransfers()[0]!.record!;
+        chain.seeTransaction(hex);
+        await controller.refreshTransfers();
+
+        const [, second] = getBitcoinTransfers();
         expect(second).toMatchObject({ stage: 'ready', plan: { inputs: { length: 10 } } });
         expect(second?.plan?.amount).not.toBe(first?.plan?.amount);
+
+        // Seeing the first one again, confirmed this time, composes nothing more.
+        chain.seeTransaction(hex, { blockHeight: 800010 });
+        await controller.refreshTransfers();
+        expect(getBitcoinTransfers()).toHaveLength(2);
+        expect(getBitcoinTransfers()[0]?.status).toBe('confirmed');
     });
 
     describe('when the device is lost', () => {
@@ -945,10 +867,10 @@ describe('migration controller', () => {
         });
     });
 
-    it('locks the device but stays on the transfers while a signed one is unsent', async () => {
-        const { controller, device, release, reachTransfers } = setup();
+    it('locks the device but stays on the transfers while a signed one is not on the network yet', async () => {
+        const { controller, chain, device, release, reachTransfers, getBitcoinTransfers } = setup();
         await reachTransfers();
-        await controller.signTransfer(controller.getState().bitcoin.transfers[0]!.key);
+        await controller.signTransfer(getBitcoinTransfers()[0]!.key);
 
         await controller.finish();
 
@@ -960,8 +882,10 @@ describe('migration controller', () => {
             isDeviceLocked: true,
         });
 
-        // Once it is sent, the summary opens, without talking to the released device again.
-        await controller.broadcastTransfer(controller.getState().bitcoin.transfers[0]!.key);
+        // Once the network shows it, the summary opens, without talking to the released device
+        // again.
+        chain.seeTransaction(getBitcoinTransfers()[0]!.record!.hex);
+        await controller.refreshTransfers();
         await controller.finish();
 
         expect(controller.getState()).toMatchObject({ step: 'summary', isDeviceLocked: true });
@@ -987,7 +911,6 @@ describe('migration controller', () => {
                 device,
                 release,
                 fundedAddresses,
-                showOnNetwork,
                 showEthereumOnNetwork,
                 reachDiscovery,
                 getBitcoinTransfers,
@@ -1039,16 +962,18 @@ describe('migration controller', () => {
                 record: { hex: expect.stringMatching(/^0x/) },
             });
 
-            await controller.broadcastTransfer(signedBitcoin.key);
-            await controller.broadcastTransfer(signedEthereum.key);
-            expect(chain.pushedTransactions).toEqual([signedBitcoin.record?.hex]);
-            expect(chain.pushedEthereumTransactions).toEqual([signedEthereum.record?.hex]);
-
-            showOnNetwork(signedBitcoin.record!, 800010);
+            // The user broadcast both elsewhere; the backends show them mined.
+            chain.seeTransaction(signedBitcoin.record!.hex, { blockHeight: 800010 });
             showEthereumOnNetwork(signedEthereum.record!, 20_000_000);
             await controller.refreshTransfers();
-            expect(getBitcoinTransfers()[0]?.status).toBe('confirmed');
-            expect(getEthereumTransfers()[0]?.status).toBe('confirmed');
+            expect(getBitcoinTransfers()[0]).toMatchObject({
+                stage: 'on-network',
+                status: 'confirmed',
+            });
+            expect(getEthereumTransfers()[0]).toMatchObject({
+                stage: 'on-network',
+                status: 'confirmed',
+            });
 
             await controller.finish();
             expect(device.calls.slice(-2)).toEqual([
@@ -1150,60 +1075,56 @@ describe('migration controller', () => {
             expect(device.countCalls('EthereumSignTx')).toBe(1);
         });
 
-        it('keeps a signed transfer for another broadcast when the first one fails', async () => {
-            const { controller, chain, device, getEthereumTransfers, reachEthereumTransfers } =
-                setup({
-                    amounts: [],
-                    fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
-                });
+        it('shows the hex after signing and reports the transaction once it appears on the network', async () => {
+            const {
+                controller,
+                chain,
+                device,
+                fundedAddresses,
+                showEthereumOnNetwork,
+                getEthereumTransfers,
+                reachEthereumTransfers,
+            } = setup({
+                amounts: [],
+                fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
+            });
             await reachEthereumTransfers();
             await controller.signTransfer(getEthereumTransfers()[0]!.key);
             const signed = getEthereumTransfers()[0]!;
-
-            chain.backend.ethereum.ethereum.pushTransaction.mockResolvedValueOnce({
-                success: false,
-                error: { type: 'backend', message: 'rejected' },
-            });
-            await controller.broadcastTransfer(signed.key);
-            expect(getEthereumTransfers()[0]).toMatchObject({
+            expect(signed).toMatchObject({
                 stage: 'signed',
-                error: { type: 'broadcast-failed', message: 'rejected' },
+                record: {
+                    hex: expect.stringMatching(/^0x/),
+                    txid: expect.stringMatching(/^0x[0-9a-f]{64}$/),
+                },
             });
 
-            await controller.broadcastTransfer(signed.key);
+            // The backend does not know the transaction and the nonce is unused: the page waits.
+            await controller.refreshTransfers();
+            expect(getEthereumTransfers()[0]).toMatchObject({ stage: 'signed' });
+            expect(getEthereumTransfers()[0]?.status).toBeUndefined();
 
+            // The nonce moved on without the transaction showing up: still not proof of anything.
+            chain.setEthereumAccountInfo('ethereum', fundedAddresses[0]!.address, {
+                misc: { nonce: '1' },
+            });
+            await controller.refreshTransfers();
+            expect(getEthereumTransfers()[0]).toMatchObject({ stage: 'signed' });
+
+            // The user broadcast the hex elsewhere.
+            showEthereumOnNetwork(signed.record!, -1);
+            await controller.refreshTransfers();
             expect(getEthereumTransfers()[0]).toMatchObject({
-                stage: 'broadcast',
+                stage: 'on-network',
                 status: 'pending',
             });
-            expect(chain.backend.ethereum.ethereum.pushTransaction.mock.calls).toEqual([
-                [signed.record?.hex],
-                [signed.record?.hex],
-            ]);
-            expect(device.countCalls('EthereumSignTx')).toBe(1);
-        });
 
-        it('re-sends the stored bytes when the transaction fell out of the mempool', async () => {
-            const { controller, chain, device, getEthereumTransfers, reachEthereumTransfers } =
-                setup({
-                    amounts: [],
-                    fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
-                });
-            await reachEthereumTransfers();
-            await controller.signTransfer(getEthereumTransfers()[0]!.key);
-            const signed = getEthereumTransfers()[0]!;
-            await controller.broadcastTransfer(signed.key);
-
-            // The backend never saw it: the nonce is still unused and nothing is pending.
+            showEthereumOnNetwork(signed.record!, 20_000_000);
             await controller.refreshTransfers();
-            expect(getEthereumTransfers()[0]?.status).toBe('not-in-mempool');
-
-            await controller.broadcastTransfer(signed.key);
-
-            expect(chain.pushedEthereumTransactions).toEqual([
-                signed.record?.hex,
-                signed.record?.hex,
-            ]);
+            expect(getEthereumTransfers()[0]).toMatchObject({
+                stage: 'on-network',
+                status: 'confirmed',
+            });
             expect(device.countCalls('EthereumSignTx')).toBe(1);
         });
 
@@ -1257,8 +1178,14 @@ describe('migration controller', () => {
             expect(getEthereumTransfers()[0]?.error).toBeUndefined();
         });
 
-        it('stays on the transfers while a signed transaction is unsent, then shows the summary', async () => {
-            const { controller, device, getEthereumTransfers, reachEthereumTransfers } = setup({
+        it('stays on the transfers while a signed transaction is not on the network yet, then shows the summary', async () => {
+            const {
+                controller,
+                device,
+                showEthereumOnNetwork,
+                getEthereumTransfers,
+                reachEthereumTransfers,
+            } = setup({
                 amounts: [],
                 fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
             });
@@ -1271,7 +1198,8 @@ describe('migration controller', () => {
                 isDeviceLocked: true,
             });
 
-            await controller.broadcastTransfer(getEthereumTransfers()[0]!.key);
+            showEthereumOnNetwork(getEthereumTransfers()[0]!.record!, -1);
+            await controller.refreshTransfers();
             await controller.finish();
 
             expect(controller.getState()).toMatchObject({ step: 'summary' });
