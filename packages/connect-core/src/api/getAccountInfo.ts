@@ -73,8 +73,10 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             if (batch.path) {
                 // Length 2 to allow root paths of single-account types.
                 address_n = validatePath(batch.path, 2);
-                // since there is no descriptor device will be used
-                willUseDevice = typeof batch.descriptor !== 'string';
+                // since there is no descriptor the device will derive this batch
+                const batchUsesDevice = typeof batch.descriptor !== 'string';
+                // any such batch in the bundle makes the whole call use the device
+                willUseDevice = willUseDevice || batchUsesDevice;
                 // `validatePath(path, 2)` above guarantees the coin type element.
                 // @ts-expect-error: indexing with noUncheckedIndexedAccess
                 const coinTypePathElement: number = address_n[1];
@@ -86,7 +88,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 // mainnet funds. Other networks' firmware apps check their own paths. With a
                 // descriptor nothing is derived, so the path is only a label and is left alone.
                 if (
-                    willUseDevice &&
+                    batchUsesDevice &&
                     (coinInfo.type === 'bitcoin' ||
                         (coinInfo.type === 'ethereum' &&
                             fromHardenedPathPart(coinTypePathElement) !== 1))
