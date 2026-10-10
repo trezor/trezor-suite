@@ -28,7 +28,10 @@ import getAccountInfo from '../../../data/methods/common/getAccountInfo';
 
 export const UsingPathSchema = Type.Object({
     path: Type.Union([Type.String(), Type.Array(Type.Number())], {
-        description: 'minimum length is `3`. [read more](/details/path)',
+        description:
+            'minimum length is `3`, and the coin type must be the SLIP-44 coin type of `coin` ' +
+            '(Ethereum networks also accept coin type `1`), otherwise the call throws ' +
+            '`Method_InvalidParameter`. [read more](/details/path)',
     }),
     coin: Type.String({
         description:
