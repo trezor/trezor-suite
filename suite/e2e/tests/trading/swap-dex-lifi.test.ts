@@ -12,7 +12,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const ethSymbol = asNetworkSymbol('eth');
 
-const sendAmount = '0.02';
+const sendAmount = '0.08';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 const accountLabel = 'Ethereum #3';
 const usdcCryptoId = getCryptoId(ethSymbol, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');

@@ -12,7 +12,7 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 const ethSymbol = asNetworkSymbol('eth');
 const solSymbol = asNetworkSymbol('sol');
 
-const sendAmount = '30';
+const sendAmount = '60';
 const sourceTokenSymbol = 'USDC';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ${sourceTokenSymbol}`;
 const sendAccountLabel = 'Ethereum #3';

@@ -9,7 +9,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 const ethSymbol = asNetworkSymbol('eth');
 const btcSymbol = asNetworkSymbol('btc');
 
-const sendAmount = '0.03';
+const sendAmount = '0.08';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 const gasLimit = '26000';
 const maxFeePerGas = '2.67674454';
