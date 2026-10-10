@@ -37,6 +37,13 @@ const postMessageToExtension = (message: ConnectPopupOutgoingMessage, extensionI
     chrome.runtime.sendMessage(extensionId, message);
 };
 
+// The webextension popup is always served at `<base>/connect-popup`. Webpack
+// emits one index.html per route pattern, so this hook is mounted on every Suite
+// Web route and has to recognise the popup itself. The path is matched directly
+// rather than through the redux router, whose app is only resolved late in the
+// suite init sequence — later than the channel handshake retries would outlast.
+const isConnectPopupPath = () => /\/connect-popup\/?$/.test(window.location.pathname);
+
 /**
  * Decide what to do with a hash write, given the extension id pinned for the
  * current page load and the `extension-id` the write carries (`null` when it
@@ -180,6 +187,14 @@ export const useConnectPopupWebextension = () => {
 
     // Monitor URL hash changes for incoming webextension messages.
     useEffect(() => {
+        // Only a popup session opened by an extension can legitimately receive
+        // hash writes. On any other Suite Web page there is no legitimate first
+        // writer, so an extension writing the hash would pin itself and own the
+        // response route — such pages must not listen at all.
+        if (!isConnectPopupPath()) {
+            return;
+        }
+
         readUrl();
 
         window.addEventListener('popstate', readUrl);
