@@ -10,7 +10,7 @@ import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
-import { cloneObject, mergeDeepObject } from '@trezor/utils';
+import { cloneObject, createDeferred, mergeDeepObject } from '@trezor/utils';
 
 import { type HandleExchangeRequestThunkState } from './handleExchangeRequestThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
@@ -364,6 +364,78 @@ describe('handleExchangeRequestThunk', () => {
         expect(state.exchange.quotes.length).toEqual(0);
         expect(state.exchange.quotesRequest).toBeUndefined();
         expect(state.isLoading).toBe(false);
+    });
+
+    it('should request and save quotes with the resolved fromAddress', async () => {
+        const { input, store } = getMocks();
+        const getExchangeQuotes = jest.fn(() => Promise.resolve(cloneExchangeQuotes()));
+        tradeApi.getExchangeQuotes = getExchangeQuotes;
+
+        await store
+            .dispatch(
+                exchangeThunks.handleRequestThunk({
+                    ...input,
+                    formValues: { ...input.formValues, fromAddress: 'descriptor123' },
+                    resolveFromAddress: () => Promise.resolve('input-address-1;input-address-2'),
+                }),
+            )
+            .unwrap();
+
+        expect(getExchangeQuotes).toHaveBeenCalledWith(
+            expect.objectContaining({ fromAddress: 'input-address-1;input-address-2' }),
+            expect.anything(),
+        );
+        expect(store.getState().wallet.trading.exchange.quotesRequest).toEqual(
+            expect.objectContaining({ fromAddress: 'input-address-1;input-address-2' }),
+        );
+    });
+
+    it('should keep the form fromAddress when the resolved fromAddress is undefined', async () => {
+        const { input, store } = getMocks();
+        const getExchangeQuotes = jest.fn(() => Promise.resolve(cloneExchangeQuotes()));
+        tradeApi.getExchangeQuotes = getExchangeQuotes;
+
+        await store
+            .dispatch(
+                exchangeThunks.handleRequestThunk({
+                    ...input,
+                    formValues: { ...input.formValues, fromAddress: 'descriptor123' },
+                    resolveFromAddress: () => Promise.resolve(undefined),
+                }),
+            )
+            .unwrap();
+
+        expect(getExchangeQuotes).toHaveBeenCalledWith(
+            expect.objectContaining({ fromAddress: 'descriptor123' }),
+            expect.anything(),
+        );
+    });
+
+    it('should not request quotes, when request is aborted while resolving fromAddress', async () => {
+        const { input, store } = getMocks();
+        const fromAddress = createDeferred<string | undefined>();
+        const getExchangeQuotes = jest.fn(() => Promise.resolve(cloneExchangeQuotes()));
+        tradeApi.getExchangeQuotes = getExchangeQuotes;
+
+        const promise = store.dispatch(
+            exchangeThunks.handleRequestThunk({
+                ...input,
+                resolveFromAddress: () => fromAddress.promise,
+            }),
+        );
+
+        expect(store.getState().wallet.trading.exchange.isLoading).toBe(true);
+
+        promise.abort();
+        fromAddress.resolve('input-address-1');
+        await promise;
+
+        const state = store.getState().wallet.trading;
+
+        expect(getExchangeQuotes).not.toHaveBeenCalled();
+        expect(state.exchange.quotes.length).toEqual(0);
+        expect(state.exchange.quotesRequest).toBeUndefined();
+        expect(state.exchange.isLoading).toBe(false);
     });
 
     it('should accept a receiveAddress whose receiveAccountKey resolves to a matching-symbol account (#28143)', async () => {
