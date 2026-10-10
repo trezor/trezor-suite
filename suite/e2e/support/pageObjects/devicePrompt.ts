@@ -10,8 +10,6 @@ export class DevicePrompt {
     readonly connectDevicePrompt: Locator;
     readonly modal: Locator;
     readonly modalCloseButton: Locator;
-    private readonly paginatedText: Locator;
-    private readonly paginatedTextSeparator: Locator;
     readonly chunkedText: Locator;
     readonly outputValue: Locator;
     readonly outputValueOf = (
@@ -52,8 +50,6 @@ export class DevicePrompt {
         this.connectDevicePrompt = page.getByTestId('@connect-device-prompt');
         this.modalCloseButton = page.modalCloseButton;
         this.modal = page.modal;
-        this.paginatedText = page.locator("[data-testid-alt='@device-display/paginated-text']");
-        this.paginatedTextSeparator = page.getByTestId('@device-display/paginated-text/separator');
         this.chunkedText = page.getByTestId('@device-display/chunked-text');
         this.outputValue = page.getByTestId('@modal/output-value');
         this.assetsSendCryptoAmount = page.getByTestId('@modal/assets/send/crypto');
@@ -145,28 +141,6 @@ export class DevicePrompt {
         const addressFromSuite = await this.outputValueOf('address').innerText();
         const addressFromDevice = await this.getAddressFromDisplay();
         expect(addressFromSuite.replace(/\s/g, '')).toBe(addressFromDevice.replace(/\s/g, ''));
-    }
-
-    @step()
-    private async getPaginatedTextSeparator(): Promise<string | false> {
-        const isSeparatorVisible = await this.paginatedTextSeparator.isVisible();
-        if (!isSeparatorVisible) {
-            return false;
-        }
-
-        return await this.paginatedTextSeparator.innerText();
-    }
-
-    @step()
-    async combinedPaginatedText() {
-        let textsArray = await this.paginatedText.allInnerTexts();
-        const separatorText = await this.getPaginatedTextSeparator();
-        if (separatorText) {
-            textsArray = textsArray.map(text => text.replace(separatorText, ''));
-        }
-        const removeWhitespaces = (text: string) => text.replace(/\s+/g, '');
-
-        return textsArray.map(removeWhitespaces).join('');
     }
 
     @step()

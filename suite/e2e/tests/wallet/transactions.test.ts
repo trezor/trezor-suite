@@ -47,9 +47,6 @@ test.describe('Account transactions overview', { tag: ['@T3W1', '@T3T1'] }, () =
                 await walletPage.transactionSearch.fill(latestTransactionAddress);
                 await expect(walletPage.transactionItem.first()).toBeVisible();
             });
-
-            // go to a certain accounts page and verify you are on that page
-            // await walletPage.openAccount({ symbol: 'btc', type: 'legacy' });
         },
     );
 });

@@ -19,10 +19,6 @@ export class AssetsSection {
         this.page
             .getByTestId(`@dashboard/asset-item/${symbol}`)
             .getByTestId('@dashboard/asset/name');
-    readonly assetCard = (symbol: NetworkSymbol) =>
-        this.page.getByTestId(`@dashboard/asset-card/${symbol}`);
-    readonly assetRow = (symbol: NetworkSymbol) =>
-        this.page.getByTestId(`@dashboard/asset-row/${symbol}`);
     readonly assetFiatAmount = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@dashboard/asset/${symbol}/fiat-amount`);
     readonly bottomInfo: Locator;
