@@ -217,13 +217,19 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const updateFormState = useCallback(async () => {
         const formValues = getValues();
         // Unlike other networks, Cardano composes outputs without an amount, and the validation
-        // triggered below would flag the fields the user has not filled in yet.
+        // triggered below would flag the fields the user has not filled in yet. Token sends still
+        // compose such an output to show the minimum ADA it requires.
         const isIncompleteCardanoOutput =
             network?.networkType === 'cardano' &&
             formValues.setMaxOutputId === undefined &&
             !formValues.outputs.some(output => !!output.amount);
 
-        if (account && network && networkFeeInfo?.levels.length && !isIncompleteCardanoOutput) {
+        if (
+            account &&
+            network &&
+            networkFeeInfo?.levels.length &&
+            (!isIncompleteCardanoOutput || tokenContract)
+        ) {
             const response = await dispatch(
                 composeSendFormTransactionFeeLevelsThunk({
                     formState: constructFormDraft({
@@ -240,7 +246,11 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                 }),
             );
 
-            if (isFulfilled(response)) {
+            if (isFulfilled(response) && isIncompleteCardanoOutput) {
+                dispatch(
+                    transactionManagementActions.storeFeeLevels({ feeLevels: response.payload }),
+                );
+            } else if (isFulfilled(response)) {
                 const isReserveError = pipe(
                     response.payload,
                     D.filter(

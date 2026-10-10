@@ -2615,6 +2615,14 @@ export const messages = {
                     missingTrustline:
                         'The recipient has not added {symbol}. The receiving account must add this asset before it can receive it.',
                 },
+                cardano: {
+                    tokenSendMinAdaAmount: {
+                        title: 'Minimum {networkDisplaySymbol}',
+                        description:
+                            'Transactions with tokens need a minimum of {networkDisplaySymbol}, based on how many token types they include.',
+                        notEnough: 'Not enough {networkDisplaySymbol} for this transaction.',
+                    },
+                },
             },
         },
         tron: {
