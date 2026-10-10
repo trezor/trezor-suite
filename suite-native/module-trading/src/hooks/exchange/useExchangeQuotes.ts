@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import { useSelector, useStore } from 'react-redux';
 
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -21,7 +20,7 @@ import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useFormState, useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { exchangeActions, selectExchangeQuotes } from '@suite-native/trading-state';
-import { type AbortablePromise, type ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { noop } from '@trezor/utils';
 
@@ -59,21 +58,7 @@ export const useExchangeQuotes = ({ getValues, control }: ExchangeFormType) => {
         receiveAccountAddress: getReceiveAccountAddressText(receiveAccount),
     });
 
-    const latestFetchIdRef = useRef(0);
-
-    useEffect(
-        () => () => {
-            latestFetchIdRef.current += 1;
-        },
-        [requestKey],
-    );
-
-    const fetchQuotes = (): AbortablePromise => {
-        latestFetchIdRef.current += 1;
-        const fetchId = latestFetchIdRef.current;
-        let isAborted = false;
-        let quotesPromise: AbortablePromise | undefined;
-
+    const fetchQuotes = () => {
         const selectedAsset = getValues('sendAsset');
         invariant(selectedAsset, 'Asset is not defined');
         const network = cryptoIdToNetwork(selectedAsset.cryptoId);
@@ -83,45 +68,28 @@ export const useExchangeQuotes = ({ getValues, control }: ExchangeFormType) => {
         const selectedSendAccount = getValues('sendAccount');
         const state = store.getState();
 
-        const request = (async () => {
-            const bitcoinExchangeFromAddress = selectedSendAccount
-                ? await getBitcoinExchangeFromAddress({
-                      account: selectedSendAccount,
-                      btcSwapComposeTemplate: selectTradingBtcSwapComposeTemplate(state),
-                      feeInfo: selectConvertedNetworkFeeInfo(state, selectedSendAccount.symbol),
-                      sendCryptoAmount: formValues.outputs[0]?.amount ?? '',
-                      shouldSendInSats,
-                  })
-                : undefined;
+        const payload: HandleExchangeRequestThunkProps = {
+            formValues,
+            network,
+            shouldSendInSats,
+            composeRequestCallback: noop,
+            resolveFromAddress:
+                selectedSendAccount?.networkType === 'bitcoin'
+                    ? () =>
+                          getBitcoinExchangeFromAddress({
+                              account: selectedSendAccount,
+                              btcSwapComposeTemplate: selectTradingBtcSwapComposeTemplate(state),
+                              feeInfo: selectConvertedNetworkFeeInfo(
+                                  state,
+                                  selectedSendAccount.symbol,
+                              ),
+                              sendCryptoAmount: formValues.outputs[0]?.amount ?? '',
+                              shouldSendInSats,
+                          })
+                    : undefined,
+        };
 
-            // The request was aborted, the form changed or unmounted, or a newer request started while
-            // the swap inputs were being composed.
-            if (isAborted || fetchId !== latestFetchIdRef.current) {
-                return undefined;
-            }
-
-            const payload: HandleExchangeRequestThunkProps = {
-                formValues: bitcoinExchangeFromAddress
-                    ? { ...formValues, fromAddress: bitcoinExchangeFromAddress }
-                    : formValues,
-                network,
-                shouldSendInSats,
-                composeRequestCallback: noop,
-            };
-
-            quotesPromise = dispatch(exchangeThunks.handleRequestThunk(payload));
-
-            return quotesPromise;
-        })();
-
-        return Object.assign(request, {
-            abort: (message?: string) => {
-                isAborted = true;
-                if (quotesPromise?.abort) {
-                    quotesPromise.abort(message);
-                }
-            },
-        });
+        return dispatch(exchangeThunks.handleRequestThunk(payload));
     };
 
     const reportQuotesReceived = () =>

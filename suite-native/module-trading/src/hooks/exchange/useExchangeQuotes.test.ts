@@ -2,6 +2,7 @@ import { type Store } from '@reduxjs/toolkit';
 import { type BtcSwapComposeTemplate, type CryptoId } from 'invity-api';
 
 import {
+    type HandleExchangeRequestThunkProps,
     type MinimalExchangeFormProps,
     TRADE_API_RELOAD_QUOTES_AFTER_SECONDS,
     deriveBitcoinSwapFromAddresses,
@@ -24,7 +25,6 @@ import {
 import { type TradingRootState } from '@suite-native/trading-state';
 import { type ExchangeFormValues, type ReceiveAccount } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
-import { createDeferred } from '@trezor/utils';
 
 import { useExchangeForm } from './useExchangeForm';
 import { useExchangeQuotes } from './useExchangeQuotes';
@@ -447,7 +447,7 @@ describe('useExchangeQuotes', () => {
         });
     });
 
-    it('should request quotes with the input addresses of a bitcoin swap', async () => {
+    it('should resolve the quotes request fromAddress from the input addresses of a bitcoin swap', async () => {
         mockDeriveBitcoinSwapFromAddresses.mockResolvedValue({
             addresses: ['input-address-1', 'input-address-2'],
             amount: '100000',
@@ -465,16 +465,13 @@ describe('useExchangeQuotes', () => {
             await Promise.resolve();
         });
 
-        await waitFor(() =>
-            expect(dispatchSpy).toHaveBeenCalledWith({
-                type: 'handleRequestThunkMock',
-                payload: expect.objectContaining({
-                    formValues: expect.objectContaining({
-                        fromAddress: 'input-address-1;input-address-2',
-                    }),
-                }),
-            }),
-        );
+        const quoteRequestPayloads = dispatchSpy.mock.calls
+            .map(([action]) => action as { type?: string; payload?: unknown })
+            .filter(action => action.type === 'handleRequestThunkMock')
+            .map(action => action.payload as HandleExchangeRequestThunkProps);
+        const resolveFromAddress = quoteRequestPayloads.at(-1)?.resolveFromAddress;
+
+        await expect(resolveFromAddress?.()).resolves.toBe('input-address-1;input-address-2');
         expect(mockDeriveBitcoinSwapFromAddresses).toHaveBeenCalledWith(
             expect.objectContaining({
                 account: btc1NormalAccount,
@@ -482,109 +479,6 @@ describe('useExchangeQuotes', () => {
                 btcSwapComposeTemplate: BTC_SWAP_COMPOSE_TEMPLATE,
             }),
         );
-    });
-
-    it('should not request quotes for an amount replaced while composing the bitcoin swap', async () => {
-        const firstDerivation =
-            createDeferred<Awaited<ReturnType<typeof deriveBitcoinSwapFromAddresses>>>();
-        mockDeriveBitcoinSwapFromAddresses.mockImplementation(({ sendStringAmount }) =>
-            sendStringAmount === '0.001'
-                ? firstDerivation.promise
-                : Promise.resolve({ addresses: ['input-address-2'], amount: '200000' }),
-        );
-        const store = getInitializedStore(PROTO.AmountUnit.BITCOIN, BTC_SWAP_COMPOSE_TEMPLATE);
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseExchangeQuotes(store);
-        const { form } = result.current;
-
-        await act(async () => {
-            form.setValue('sendAsset', btcAsset);
-            form.setValue('receiveAsset', ethAsset);
-            form.setValue('sendAccount', btc1NormalAccount);
-            form.setValue('sendCryptoAmount', '0.001');
-            await Promise.resolve();
-        });
-        await act(async () => {
-            form.setValue('sendCryptoAmount', '0.002');
-            await Promise.resolve();
-        });
-        await act(async () => {
-            firstDerivation.resolve({ addresses: ['input-address-1'], amount: '100000' });
-            await firstDerivation.promise;
-        });
-
-        const quoteRequests = dispatchSpy.mock.calls.filter(
-            ([action]) => (action as { type?: string }).type === 'handleRequestThunkMock',
-        );
-        expect(quoteRequests).toEqual([
-            [
-                {
-                    type: 'handleRequestThunkMock',
-                    payload: expect.objectContaining({
-                        formValues: expect.objectContaining({
-                            outputs: [{ amount: '0.002' }],
-                            fromAddress: 'input-address-2',
-                        }),
-                    }),
-                },
-            ],
-        ]);
-    });
-
-    describe('when the bitcoin swap inputs are still being composed', () => {
-        const renderWithPendingDerivation = async () => {
-            const derivation =
-                createDeferred<Awaited<ReturnType<typeof deriveBitcoinSwapFromAddresses>>>();
-            mockDeriveBitcoinSwapFromAddresses.mockReturnValue(derivation.promise);
-            const store = getInitializedStore(PROTO.AmountUnit.BITCOIN, BTC_SWAP_COMPOSE_TEMPLATE);
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const rendered = await renderUseExchangeQuotes(store);
-
-            await act(async () => {
-                const { form } = rendered.result.current;
-                form.setValue('sendAsset', btcAsset);
-                form.setValue('receiveAsset', ethAsset);
-                form.setValue('sendAccount', btc1NormalAccount);
-                form.setValue('sendCryptoAmount', '0.001');
-                await Promise.resolve();
-            });
-
-            const resolveDerivation = async () => {
-                await act(async () => {
-                    derivation.resolve({ addresses: ['input-address-1'], amount: '100000' });
-                    await derivation.promise;
-                });
-            };
-            const getQuoteRequests = () =>
-                dispatchSpy.mock.calls.filter(
-                    ([action]) => (action as { type?: string }).type === 'handleRequestThunkMock',
-                );
-
-            return { ...rendered, resolveDerivation, getQuoteRequests };
-        };
-
-        it('should not request quotes when the amount is cleared', async () => {
-            const { result, resolveDerivation, getQuoteRequests } =
-                await renderWithPendingDerivation();
-
-            await act(async () => {
-                result.current.form.setValue('sendCryptoAmount', '');
-                await Promise.resolve();
-            });
-            await resolveDerivation();
-
-            expect(getQuoteRequests()).toEqual([]);
-        });
-
-        it('should not request quotes after unmount', async () => {
-            const { unmount, resolveDerivation, getQuoteRequests } =
-                await renderWithPendingDerivation();
-
-            await unmount();
-            await resolveDerivation();
-
-            expect(getQuoteRequests()).toEqual([]);
-        });
     });
 
     describe('analytics', () => {
