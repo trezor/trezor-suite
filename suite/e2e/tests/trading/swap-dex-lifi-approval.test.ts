@@ -9,9 +9,9 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const ethSymbol = asNetworkSymbol('eth');
 
-const approvalAmount = '10';
+const approvalAmount = '60';
 // The toast shows the approved amount compactly, and a stablecoin reads money-like.
-const compactApprovalAmount = '10.00';
+const compactApprovalAmount = '60.00';
 const accountLabel = 'Ethereum #3';
 const providerName = 'LiFI Diamond';
 const positiveEthereumAmountPattern = /^(?!0+(?:\.0+)?\s*ETH$)\d+(?:\.\d+)?\s*ETH$/;

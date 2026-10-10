@@ -57,9 +57,9 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1', '@optional'] }, 
                 await walletPage.openBuyTradingOfToken({
                     symbol: ethSymbol,
                     atIndex: 2,
-                    tokenName: 'TUSD',
+                    tokenName: 'USDT',
                 });
-                await tradingPage.verifyBuyFormOpened(/TUSD/);
+                await tradingPage.verifyBuyFormOpened(/USDT/);
             });
 
             // SELL

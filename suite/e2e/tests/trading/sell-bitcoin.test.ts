@@ -10,7 +10,7 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const btcSymbol = asNetworkSymbol('btc');
 
-const sendAmount = '0.0015';
+const sendAmount = '0.002';
 const formattedSendAmount = `${localizeNumber(sendAmount)} BTC`;
 const accountLabel = 'Bitcoin #2';
 

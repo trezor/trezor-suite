@@ -10,7 +10,7 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const solSymbol = asNetworkSymbol('sol');
 
-const sendAmount = '0.5';
+const sendAmount = '1.6';
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const accountLabel = 'Solana #4';
 

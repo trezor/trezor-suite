@@ -9,7 +9,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
 
-const sendAmount = '0.0015';
+const sendAmount = '0.002';
 const customFee = '10';
 
 test.describe('Trading - Swap fees Bitcoin', { tag: ['@T3T1', '@T3W1'] }, () => {

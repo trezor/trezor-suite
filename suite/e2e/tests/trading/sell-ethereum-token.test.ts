@@ -10,7 +10,7 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const ethSymbol = asNetworkSymbol('eth');
 
-const sendAmount = '50';
+const sendAmount = '60';
 const tokenSymbol = 'USDC';
 const tokenDecimals = 6;
 const tokenId = 'eth-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';

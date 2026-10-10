@@ -12,7 +12,7 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
 
-const sendAmount = '0.001';
+const sendAmount = '0.002';
 const formattedSendAmount = `${localizeNumber(sendAmount)} BTC`;
 const sendAccountLabel = 'Bitcoin #2';
 const receiveAccountLabel = 'Ethereum #3';

@@ -10,7 +10,7 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const ethSymbol = asNetworkSymbol('eth');
 
-const sendAmount = '0.02';
+const sendAmount = '0.08';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 const accountLabel = 'Ethereum #3';
 
