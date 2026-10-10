@@ -1,6 +1,6 @@
 # @suite/t1-escape-app (old Trezor One migration)
 
-A standalone web page for owners of an old Trezor One (HID, firmware 1.3.6 to 1.6.3) who no longer have their recovery seed and therefore cannot safely update the firmware. It finds the bitcoin, ether or ether classic on the device and sweeps all of it to one destination address the user provides. One coin per page load.
+A standalone web page for owners of an old Trezor One (HID, firmware 1.3.6 to 1.6.3) who no longer have their recovery seed and therefore cannot safely update the firmware. In one run it finds the bitcoin, ether and ether classic on the device and sweeps all of it to destination addresses the user provides, one per coin.
 
 The page reaches the device only through the bridge inside Trezor Suite desktop (`http://127.0.0.1:21328`, bridge version 3.3.0 or newer). It does not use `@trezor/connect`, WebUSB or WebHID. Blockchain data comes from Trezor's Bitcoin, Ethereum and Ethereum Classic blockbooks over WebSocket. Nothing is stored in the browser, and there is no analytics, error reporting or third-party script.
 
@@ -13,7 +13,7 @@ It is a separate bundle. Nothing in the repository imports it and it is not part
 - `src/ethereum` — pure, fund-critical Ethereum logic: chain definitions, destination validation, sweep composition, verification of the signature against the plan.
 - `src/device` — protobuf loading (including the legacy Ethereum message layout built at runtime), the device session loop, public keys and addresses, PIN and passphrase helpers, the bridge connection.
 - `src/backend`, `src/discovery`, `src/migration` — blockbook access, account and address discovery, state reconstruction, signing orchestration, broadcast tracking, for both coins.
-- `src/app`, `src/ui` — the flow controller (`createMigrationController` with the Ethereum half in `createEthereumFlow`) and thin React screens.
+- `src/app`, `src/ui` — the flow controller (`createMigrationController`, with the Ethereum transfers in `ethereumTransfers`) and thin React screens, each showing every coin.
 - `mocks` — test fixtures, including a fake firmware and in-memory blockbooks.
 
 ## Development
@@ -68,22 +68,29 @@ Cross-Origin-Opener-Policy: same-origin
 
 Outside the repository: the blockbook servers must accept the `Origin` of the production host, and the production bridge allows HID access for exactly `https://old-trezors.trezor.io`.
 
-## Ethereum and Ethereum Classic
+## What is scanned and moved
 
-After the device is accepted the page asks what to move: Bitcoin, Ethereum or Ethereum Classic. The Ethereum chains are offered on firmware 1.4.2 to 1.6.3 only: 1.4.0 added Ethereum signing, but the EIP-155 replay protection (`chain_id`) that today's nodes require came with 1.4.2. The device shows the amount with the ETC suffix for chain id 61 on all of these versions. Firmware 1.4.2 and 1.5.0 show the destination as lowercase hex without the `0x` prefix, 1.5.1 and newer show it EIP-55 checksummed; the page says so before signing.
+One run of the page goes through every coin the firmware can sign for, on one device session, and then moves all of it: intro, preflight, device, passphrase, discovery, destination, transfers, summary. The discovery screen shows the result per coin, the destination screen asks for one address per coin that holds something, the transfers screen lists the transactions of every coin, and the summary judges all coins together.
 
-- Discovery is by address, one account being one address. Ethereum scans `m/44'/60'/0'/0/i`; Ethereum Classic scans `m/44'/61'/0'/0/i` and also `m/44'/60'/0'/0/i`, because wallets from 2016 to 2018 kept ETC on the Ethereum keys after the fork. Each path family is followed from `i = 0` to the first address with no transactions and no balance, at most 20; "Scan more addresses" looks at 5 more per family. `EthereumGetAddress` is sent without `show_display`, so the device confirms nothing during discovery.
-- Only the coin itself is moved. ERC-20 tokens and NFTs stay on the old device; the token balances blockbook reports are listed on the last screen.
+- **Bitcoin**, on every firmware in scope. Accounts are discovered by type: Legacy (`m/44'`) on every version, Legacy SegWit (`m/49'`) from 1.5.1 and SegWit (`m/84'`) from 1.6.0, each from account 0 to the first account without history, at most 20; "Scan more accounts" looks at 5 more per type. The address gap is 100.
+- **Ethereum and Ethereum Classic**, on firmware 1.4.2 to 1.6.3 only: 1.4.0 added Ethereum signing, but the EIP-155 replay protection (`chain_id`) that today's nodes require came with 1.4.2. On older firmware the two chains are not scanned and the scan report says why. Discovery is by address, one account being one address. Ethereum scans `m/44'/60'/0'/0/i`; Ethereum Classic scans `m/44'/61'/0'/0/i` and also `m/44'/60'/0'/0/i`, because wallets from 2016 to 2018 kept ETC on the Ethereum keys after the fork. Each path family is followed from `i = 0` to the first address with no transactions and no balance, at most 20; "Scan more addresses" looks at 5 more per family. `EthereumGetAddress` is sent without `show_display`, so the device confirms nothing during discovery.
+- A blockbook that cannot be reached ends the scan of its coin only: the error is shown for that coin, the other coins stay usable, and the scan report names the coin whose scan was cut short. A device error (wrong PIN, disconnect) stops the whole discovery. With a passphrase, the NFKD-normalized form is tried first and the form exactly as typed only when the normalized wallet is empty for every coin; a coin whose server failed is not known to be empty, so the fallback is never taken on partial information.
+- Not moved: ERC-20 tokens and NFTs (the balances blockbook reports are listed on the last screen), other EVM chains, Bitcoin forks, Taproot, custom derivation paths and multisig.
+
+### Ethereum details
+
+- The device shows the amount with the ETC suffix for chain id 61 on all of these versions. Firmware 1.4.2 and 1.5.0 show the destination as lowercase hex without the `0x` prefix, 1.5.1 and newer show it EIP-55 checksummed; the transfers screen says so before signing.
+- The Ethereum and Ethereum Classic destinations may be the same address; each is refused only if it belongs to the scanned addresses of either chain, since the `m/44'/60'` keys are shared.
 - One transaction per address: a plain value transfer with gas limit 21000, the gas price being blockbook's estimate for the next block plus 20 %, rounded up to a whole wei and refused above 500 gwei (`MAX_GAS_PRICE_WEI` in `src/ethereum/composeEthereumSweep.ts`). The amount is the balance minus the fee; an address whose balance does not cover the fee is listed as left behind. While an address has a transaction in the mempool nothing is composed for it; the page keeps refreshing until it settles.
 - The Ethereum messages are not taken from `@trezor/protobuf`. Firmware this old reads the destination as 20 bytes in field 5 of `EthereumSignTx` and answers `EthereumAddress` with 20 raw bytes; the shared schema differs in both places, and a transaction sent through it would be signed as a contract creation. `src/device/legacyEthereumMessages.ts` builds the old layout at runtime and a golden-bytes test pins it.
 - Right before signing the address is requested from the device again and compared with the scanned one, and the backend must still report the nonce and the balance the plan was composed from. The signature the device returns must produce exactly the planned transaction and recover to the address being emptied; otherwise it is discarded. A plan that reached the device is never sent again: a retry composes a new one with a fresh nonce and gas price. A signed transaction is never signed again; a failed broadcast re-sends the stored bytes.
-- Transfers are tracked by transaction id, which on these chains nobody can alter, together with the nonce and the pending count of the address: pending, confirmed, failed (mined but reverted), not in the mempool (unknown to the backend with the nonce still unused, so the bytes can be re-sent) or unknown.
+- Transfers are tracked by transaction id, which on these chains nobody can alter, together with the nonce and the pending count of the address: pending, confirmed, failed (mined but reverted), not in the mempool (unknown to the backend with the nonce still unused, so the bytes can be re-sent) or unknown. One ledger covers both chains; every plan in it carries its chain id.
 - The warning about CVE-2020-14199 and the random fee padding are Bitcoin-only. Everything else, including the PIN, the passphrase, the device lock at the end and the diagnostic log, is shared.
 
 ## Fund-safety rules implemented here
 
 - Only a Trezor One with firmware 1.3.6 to 1.6.3, initialized and not in bootloader mode, is accepted.
-- The destination address is typed by the user, checked against what the firmware can pay to, and refused if it belongs to the scanned accounts.
+- The destination addresses are typed by the user, one per coin, checked against what the firmware can pay to, and refused if they belong to the scanned accounts or addresses. Nothing is composed until every address is accepted.
 - Each transaction spends coins of one account only, has a single output and no change, and takes at most 50 inputs. The fee rate is fixed (`SWEEP_FEE_RATE` in `src/bitcoin/composeSweep.ts`), plus a few random satoshi so that no two composed amounts are equal.
 - Before signing, every input is proven against its previous transaction (hash, script, amount) and the account public key is requested from the device again.
 - After signing, the transaction must be exactly the composed one. A signed transaction is never signed again; a failed broadcast re-sends the stored bytes.

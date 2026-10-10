@@ -57,6 +57,14 @@ export type ComposeEthereumSweepParams = {
     /** Backend fee estimate in wei per gas. */
     gasPriceEstimate: string;
     destination: EthereumDestination;
+    /**
+     * How many plans of the address were already sent to the device in this page session. Added
+     * to the gas price in wei: nothing else in the plan varies between two attempts, so without
+     * it a transfer rejected on the device would be recomposed into the very transaction the
+     * device already saw, which is never sent again. One wei per attempt is enough to tell them
+     * apart and too little to matter for the fee.
+     */
+    attempt?: number;
 };
 
 const INTEGER_PATTERN = /^\d+$/;
@@ -74,7 +82,8 @@ export const getGasPriceWithMargin = (estimate: bigint) => {
 
 /**
  * Composes the transaction that moves the whole balance of one address to the destination: a
- * plain value transfer with a fixed gas limit, paying the backend's gas price plus a margin.
+ * plain value transfer with a fixed gas limit, paying the backend's gas price plus a margin and
+ * one wei per attempt already burned on the device.
  * Nothing is composed while a transaction of the address is still in flight, because the nonce
  * and the balance the backend reports may change when it settles.
  */
@@ -85,6 +94,7 @@ export const composeEthereumSweep = ({
     unconfirmedTransactions,
     gasPriceEstimate,
     destination,
+    attempt = 0,
 }: ComposeEthereumSweepParams): Result<EthereumSweepPlan, ComposeEthereumSweepError> => {
     const balanceWei = parseInteger(balance);
     if (balanceWei === undefined) return err({ type: 'invalid-backend-data', field: 'balance' });
@@ -102,7 +112,7 @@ export const composeEthereumSweep = ({
         return err({ type: 'invalid-backend-data', field: 'gasPrice' });
     }
 
-    const gasPrice = getGasPriceWithMargin(estimateWei);
+    const gasPrice = getGasPriceWithMargin(estimateWei) + BigInt(attempt);
     if (gasPrice > MAX_GAS_PRICE_WEI) {
         return err({ type: 'gas-price-too-high', gasPrice: gasPrice.toString() });
     }

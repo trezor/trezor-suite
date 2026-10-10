@@ -1,5 +1,6 @@
 import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 
+import type { EthereumSweepLedger } from './ethereumSweepLedger';
 import type { BackendError, EthereumBackend } from '../backend/backend';
 import {
     type ComposeEthereumSweepError,
@@ -8,6 +9,7 @@ import {
 } from '../ethereum/composeEthereumSweep';
 import type { EthereumAccount } from '../ethereum/ethereumAccount';
 import { type EthereumAddressInfo, toEthereumAddressInfo } from '../ethereum/ethereumAccountInfo';
+import { ETHEREUM_CHAIN_DEFINITIONS } from '../ethereum/ethereumChain';
 import type { EthereumDestination } from '../ethereum/ethereumDestination';
 
 export type EthereumLeftover = {
@@ -32,16 +34,21 @@ export type PrepareEthereumSweepError =
 
 export type PrepareEthereumSweepParams = {
     backend: EthereumBackend;
+    /** Consulted for the attempts already burned on the device, never written to. */
+    ledger: EthereumSweepLedger;
     account: EthereumAccount;
     destination: EthereumDestination;
 };
 
 /**
  * Composes the sweep of one address from a fresh backend snapshot and the current gas price, so
- * that every attempt carries the nonce and the fee of the moment it is made.
+ * that every attempt carries the nonce and the fee of the moment it is made. The attempts the
+ * ledger has already recorded raise the gas price, so that the result differs from every plan
+ * the device has seen even when the backend reports the same numbers as before.
  */
 export const prepareEthereumSweep = async ({
     backend,
+    ledger,
     account,
     destination,
 }: PrepareEthereumSweepParams): Promise<
@@ -62,6 +69,10 @@ export const prepareEthereumSweep = async ({
         unconfirmedTransactions: info.unconfirmedTransactions,
         gasPriceEstimate: gasPriceEstimate.payload,
         destination,
+        attempt: ledger.countAttempts(
+            ETHEREUM_CHAIN_DEFINITIONS[account.chain].chainId,
+            account.address,
+        ),
     });
     if (composed.success) return ok({ plan: composed.payload, isInFlight: false, info });
 
