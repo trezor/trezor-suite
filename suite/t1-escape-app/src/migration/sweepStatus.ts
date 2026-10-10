@@ -3,7 +3,6 @@ import type { Transaction } from '@trezor/blockchain-link-types';
 import type { AccountSnapshot } from './accountSnapshot';
 import { isPendingTransaction } from './accountState';
 import type { SignedSweepRecord } from './sweepLedger';
-import type { Backend } from '../backend/backend';
 import { getOutpointKey } from '../bitcoin/outpoint';
 
 export type SweepStatus =
@@ -69,15 +68,3 @@ export const evaluateSweepStatus = ({
 
     return sweeps.some(transaction => !isPendingTransaction(transaction)) ? 'confirmed' : 'pending';
 };
-
-export type BroadcastSweepParams = {
-    backend: Backend;
-    record: SignedSweepRecord;
-};
-
-/**
- * Broadcasts the stored signed transaction. Calling it again after a failure re-sends the very
- * same bytes; a failed broadcast is never a reason to sign anew.
- */
-export const broadcastSweep = ({ backend, record }: BroadcastSweepParams) =>
-    backend.pushTransaction(record.hex);

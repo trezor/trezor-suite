@@ -106,13 +106,6 @@ const createEthereumBlockbookBackend = (chain: EthereumChain): DisposableEthereu
                 target: 'next block',
                 summarize: feePerUnit => ({ feePerUnit }),
             }),
-        pushTransaction: hex =>
-            settle({
-                request: link.pushTransaction({ hex }),
-                method: `${symbol} pushTransaction`,
-                target: `${(hex.length - 2) / 2} bytes`,
-                summarize: () => ({}),
-            }),
         getTransaction: txid =>
             settle({
                 request: link.getTransaction({ txid }),
@@ -178,13 +171,6 @@ export const createBlockbookBackend = (): BlockbookBackend => {
                 method: 'getTransactionHex',
                 target: 'transaction',
                 summarize: hex => ({ bytes: hex.length / 2 }),
-            }),
-        pushTransaction: hex =>
-            settle({
-                request: link.pushTransaction({ hex }),
-                method: 'pushTransaction',
-                target: `${hex.length / 2} bytes`,
-                summarize: () => ({}),
             }),
         ethereum,
         dispose: () => {

@@ -2,7 +2,7 @@ import type { Transaction } from '@trezor/blockchain-link-types';
 
 import type { AccountSnapshot } from './accountSnapshot';
 import type { SignedSweepRecord } from './sweepLedger';
-import { broadcastSweep, evaluateSweepStatus } from './sweepStatus';
+import { evaluateSweepStatus } from './sweepStatus';
 import { mockAccountInfo, mockHistoryTransaction } from '../../mocks/mockAccountInfo';
 import { mockBackend, mockFundedAccount } from '../../mocks/mockBackend';
 import { mockWallet } from '../../mocks/mockWallet';
@@ -13,9 +13,8 @@ import { getOutpointKey } from '../bitcoin/outpoint';
 const DESTINATION = 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4';
 
 const setup = () => {
-    const chain = mockBackend();
     const { account, utxos } = mockFundedAccount({
-        chain,
+        chain: mockBackend(),
         wallet: mockWallet(),
         accountType: 'p2pkh',
         amounts: ['100000', '200000'],
@@ -45,7 +44,7 @@ const setup = () => {
         outpoints: plan.payload.utxos.map(getOutpointKey),
     };
 
-    return { chain, account, utxos, record };
+    return { account, utxos, record };
 };
 
 type SpendingTransactionParams = {
@@ -165,18 +164,5 @@ describe('evaluateSweepStatus', () => {
         expect(evaluateSweepStatus({ snapshot: snapshotWith([unrelated], utxos), record })).toBe(
             'not-in-mempool',
         );
-    });
-});
-
-describe('broadcastSweep', () => {
-    it('sends the stored hex, and the same hex again when asked to retry', async () => {
-        const { chain, record } = setup();
-        chain.backend.pushTransaction
-            .mockResolvedValueOnce({ success: false, error: { type: 'backend', message: 'down' } })
-            .mockResolvedValueOnce({ success: true, payload: record.txid });
-
-        expect((await broadcastSweep({ backend: chain.backend, record })).success).toBe(false);
-        expect((await broadcastSweep({ backend: chain.backend, record })).success).toBe(true);
-        expect(chain.backend.pushTransaction.mock.calls).toEqual([['signed-hex'], ['signed-hex']]);
     });
 });

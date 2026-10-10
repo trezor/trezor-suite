@@ -18,7 +18,6 @@ import { ETHEREUM_CHAIN_DEFINITIONS, type EthereumChain } from '../ethereum/ethe
 import { createEthereumSweepLedger } from '../migration/ethereumSweepLedger';
 import {
     type EthereumSweepStatus,
-    broadcastEthereumSweep,
     loadEthereumSweepStatus,
 } from '../migration/ethereumSweepStatus';
 import { prepareEthereumSweep } from '../migration/prepareEthereumSweep';
@@ -47,16 +46,19 @@ export type EthereumTransfers = {
     /** Composes a transfer again after its preparation failed or was rejected on the device. */
     retryTransfer: (key: string) => Promise<void>;
     signTransfer: (key: string) => Promise<void>;
-    broadcastTransfer: (key: string) => Promise<void>;
-    /** Refreshes every transfer that is still open. Only reads from the backend. */
+    /**
+     * Refreshes every transfer that is still open, including the signed ones waiting for the
+     * user's broadcast to show up. Only reads from the backend.
+     */
     refreshTransfers: () => Promise<void>;
 };
 
 const getTransferKey = (account: EthereumAccount, sequence: number) =>
     `${account.chain}-${account.slip44}-${account.index}-${sequence}`;
 
-/** Statuses that prove the network has the transaction, whatever the broadcast answered. */
-const isOnNetwork = (status: EthereumSweepStatus) =>
+// Statuses that prove the network has, or had, the transaction. The others leave a signed
+// transfer waiting for the user's broadcast: the backend may simply not have seen it yet.
+const isSeenOnNetwork = (status: EthereumSweepStatus) =>
     status === 'pending' || status === 'confirmed' || status === 'failed';
 
 /**
@@ -234,7 +236,7 @@ export const createEthereumTransfers = (context: EthereumTransfersContext): Ethe
         });
 
         if (signed.success) {
-            diagnosticLog.info('transfer', 'signed', {
+            diagnosticLog.info('transfer', 'signed, waiting for the user to broadcast it', {
                 key,
                 bytes: (signed.payload.hex.length - 2) / 2,
             });
@@ -254,48 +256,6 @@ export const createEthereumTransfers = (context: EthereumTransfersContext): Ethe
         await replaceWithFreshPlan(transfer, signed.error);
     };
 
-    const broadcastTransfer: EthereumTransfers['broadcastTransfer'] = async key => {
-        const transfer = findTransfer(key);
-        const { record } = transfer ?? {};
-        if (!transfer || !record) return;
-
-        const backend = getChainBackend(transfer.account.chain);
-        const isFirstBroadcast = transfer.stage === 'signed';
-        diagnosticLog.info('transfer', 'broadcast', { key, isFirstBroadcast });
-        updateTransfer(transfer, { stage: 'broadcasting', error: undefined });
-
-        // The stored bytes are sent, on the first attempt and on every later one.
-        const pushed = await broadcastEthereumSweep({ backend, record });
-        let status: EthereumSweepStatus = 'pending';
-
-        if (!pushed.success) {
-            // A failed request does not prove the network lacks the transaction: an answer can
-            // get lost, and the retry is then refused as a duplicate. The backend's own view of
-            // the transaction decides.
-            const loaded = await loadEthereumSweepStatus({ backend, record });
-            const networkStatus = loaded.success ? loaded.payload : undefined;
-
-            diagnosticLog.warn('transfer', 'broadcast failed', {
-                key,
-                message: pushed.error.message,
-                networkStatus,
-            });
-            if (!networkStatus || !isOnNetwork(networkStatus)) {
-                updateTransfer(transfer, {
-                    stage: isFirstBroadcast ? 'signed' : 'broadcast',
-                    error: { type: 'broadcast-failed', message: pushed.error.message },
-                });
-
-                return;
-            }
-
-            status = networkStatus;
-        }
-
-        diagnosticLog.info('transfer', 'on the network', { key, status });
-        updateTransfer(transfer, { stage: 'broadcast', status });
-    };
-
     const refreshTransfers: EthereumTransfers['refreshTransfers'] = async () => {
         const unsettled = getEthereumTransfers(getMigrationState()).filter(
             isEthereumTransferUnsettled,
@@ -304,15 +264,23 @@ export const createEthereumTransfers = (context: EthereumTransfersContext): Ethe
         for (const transfer of unsettled) {
             const { key, record, stage, account } = transfer;
 
-            if (record && stage === 'broadcast') {
+            if (record && (stage === 'signed' || stage === 'on-network')) {
                 const loaded = await loadEthereumSweepStatus({
                     backend: getChainBackend(account.chain),
                     record,
                 });
                 if (!loaded.success) continue;
 
-                diagnosticLog.info('transfer', 'refreshed', { key, status: loaded.payload });
-                updateTransfer(transfer, { status: loaded.payload });
+                const status = loaded.payload;
+                diagnosticLog.info('transfer', 'refreshed', { key, stage, status });
+                if (stage === 'on-network') {
+                    updateTransfer(transfer, { status });
+                } else if (isSeenOnNetwork(status)) {
+                    // The user broadcast the signed transaction elsewhere. From now on only its
+                    // fate on the network matters.
+                    diagnosticLog.info('transfer', 'seen on the network', { key, status });
+                    updateTransfer(transfer, { stage: 'on-network', status });
+                }
             } else if (transfer.isInFlight) {
                 // Once the pending transaction settles, the address can be composed. The key
                 // stays, so that the screen keeps showing the same card.
@@ -330,7 +298,6 @@ export const createEthereumTransfers = (context: EthereumTransfersContext): Ethe
         prepareTransfers,
         retryTransfer,
         signTransfer,
-        broadcastTransfer,
         refreshTransfers,
     };
 };
