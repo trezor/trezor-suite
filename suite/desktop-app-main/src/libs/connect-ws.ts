@@ -388,6 +388,14 @@ export const exposeConnectWs = ({
     });
 
     httpReceiver.server.on('upgrade', (request, socket, head) => {
+        // Node removes its own socket error handler before emitting `upgrade`, so until
+        // `handleUpgrade` attaches one, any socket error here would reach `uncaughtException`.
+        // `handleUpgrade` adds its own listener rather than replacing this one, so the accepted
+        // path keeps working and socket errors stay logged.
+        socket.on('error', error => {
+            logger.error(LOG_PREFIX, `upgrade socket error: ${error.message}`);
+        });
+
         if (!request?.url) {
             socket.destroy();
 
