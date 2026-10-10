@@ -15,6 +15,12 @@ export type SignedEthereumSweepRecord = SignedEthereumSweep & {
 export type EthereumSweepLedger = {
     /** Tells whether the plan was already sent to the device once. */
     hasAttempted: (plan: EthereumSweepPlan) => boolean;
+    /**
+     * How many plans of the address on the chain were already sent to the device. Nothing in an
+     * Ethereum plan varies between two attempts on its own, so composition uses the count to
+     * keep a recomposed plan apart from the one the device has already seen.
+     */
+    countAttempts: (chainId: number, address: string) => number;
     markAttempted: (plan: EthereumSweepPlan) => void;
     recordSigned: (record: SignedEthereumSweepRecord) => void;
     getSignedSweeps: () => readonly SignedEthereumSweepRecord[];
@@ -30,8 +36,10 @@ export type EthereumSweepLedger = {
     ) => SignedEthereumSweepRecord | undefined;
 };
 
+const getAddressKey = (chainId: number, address: string) => `${chainId}|${address.toLowerCase()}`;
+
 const getNonceKey = (chainId: number, address: string, nonce: number) =>
-    `${chainId}|${address.toLowerCase()}|${nonce}`;
+    `${getAddressKey(chainId, address)}|${nonce}`;
 
 /** Identity of a transaction skeleton: signer, nonce, destination, amount and gas price. */
 export const getEthereumSkeletonId = ({
@@ -53,13 +61,18 @@ export const getEthereumSkeletonId = ({
 
 export const createEthereumSweepLedger = (): EthereumSweepLedger => {
     const attemptedSkeletons = new Set<string>();
+    const attemptCounts = new Map<string, number>();
     const signedSweeps: SignedEthereumSweepRecord[] = [];
     const signedByNonce = new Map<string, SignedEthereumSweepRecord>();
 
     return {
         hasAttempted: plan => attemptedSkeletons.has(getEthereumSkeletonId(plan)),
+        countAttempts: (chainId, address) =>
+            attemptCounts.get(getAddressKey(chainId, address)) ?? 0,
         markAttempted: plan => {
             attemptedSkeletons.add(getEthereumSkeletonId(plan));
+            const addressKey = getAddressKey(plan.chainId, plan.account.address);
+            attemptCounts.set(addressKey, (attemptCounts.get(addressKey) ?? 0) + 1);
         },
         recordSigned: record => {
             signedSweeps.push(record);
