@@ -42,3 +42,26 @@ export const summarizeTransfers = (transfers: readonly Transfer[]): TransferSumm
             !hasPending,
     };
 };
+
+export type MigrationOutcome =
+    /** Every coin that had something to move has all of it sent and confirmed. */
+    | 'confirmed'
+    /** Some transfer is still being followed on the network. */
+    | 'pending'
+    /** Something that was found is still on the old device, or nothing could be moved. */
+    | 'incomplete';
+
+type CoinOutcome = Pick<TransferSummary, 'hasPending' | 'isEverythingConfirmed'>;
+
+/**
+ * What the headline of the last screen may claim, judged over the coins that had something
+ * to move. One coin left unsent or pending keeps the whole page from claiming success.
+ */
+export const getMigrationOutcome = (coins: readonly CoinOutcome[]): MigrationOutcome => {
+    if (coins.some(({ hasPending }) => hasPending)) return 'pending';
+
+    const isEveryCoinConfirmed =
+        coins.length > 0 && coins.every(({ isEverythingConfirmed }) => isEverythingConfirmed);
+
+    return isEveryCoinConfirmed ? 'confirmed' : 'incomplete';
+};

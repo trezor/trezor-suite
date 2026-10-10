@@ -1,13 +1,20 @@
-import { type EthereumFlow, createEthereumFlow } from './createEthereumFlow';
 import { describeError, diagnosticLog } from './diagnosticLog';
+import { createEthereumTransfers } from './ethereumTransfers';
 import {
+    type BitcoinState,
     type Coin,
-    INITIAL_ETHEREUM_MIGRATION_STATE,
+    type DestinationInputs,
+    type EthereumTransfer,
+    INITIAL_BITCOIN_STATE,
+    INITIAL_ETHEREUM_CHAIN_STATE,
     INITIAL_MIGRATION_STATE,
     type MigrationState,
     type Transfer,
-    isEthereumChain,
+    getCoinsToMove,
+    hasUnsentTransaction,
+    isAnythingSigned,
     isTransferUnsettled,
+    mapEthereumChains,
 } from './migrationState';
 import type { Backend } from '../backend/backend';
 import { getOutputScripts, validateDestination } from '../bitcoin/destinationAddress';
@@ -27,8 +34,9 @@ import {
     type ScannedAccount,
     scanAccountRange,
 } from '../discovery/discoverAccounts';
-import { discoverWallet } from '../discovery/discoverWallet';
-import { ETHEREUM_CHAIN_DEFINITIONS } from '../ethereum/ethereumChain';
+import { type EthereumChainScan, discoverWallet } from '../discovery/discoverWallet';
+import { ETHEREUM_CHAINS, type EthereumChain } from '../ethereum/ethereumChain';
+import { validateEthereumDestination } from '../ethereum/ethereumDestination';
 import { getDiscoverableAccountTypes, isEthereumSupported } from '../firmware/firmwareSupport';
 import { getAccountAddresses, loadAccountSnapshot } from '../migration/accountSnapshot';
 import { type InFlightTransfer, evaluateAccountState } from '../migration/accountState';
@@ -52,36 +60,22 @@ export type MigrationController = {
     subscribe: (listener: () => void) => () => void;
     runPreflight: () => Promise<void>;
     connectDevice: () => Promise<void>;
-    /** Chooses what to move. Ethereum chains are accepted only on firmware that signs them. */
-    chooseCoin: (coin: Coin) => void;
-    /** Returns to the coin choice. Possible only while no transfer has been prepared. */
-    changeCoin: () => void;
     submitPassphrase: (first: string, second: string) => Promise<void>;
-    /** Runs the Bitcoin discovery. Calling it chooses Bitcoin. */
+    /** Scans every coin the firmware can sign for, on one device session. */
     startDiscovery: () => Promise<void>;
     scanMoreAccounts: () => Promise<void>;
+    scanMoreAddresses: (chain: EthereumChain) => Promise<void>;
     confirmDiscovery: () => void;
-    submitDestination: (input: string) => Promise<void>;
+    /** Checks every address first; nothing is composed until all of them are accepted. */
+    submitDestinations: (inputs: DestinationInputs) => Promise<void>;
     /** Returns to the address entry. Possible only while nothing has been signed. */
-    editDestination: () => void;
-    /** Composes a transfer again after its preparation failed. */
+    editDestinations: () => void;
+    /** Composes a transfer of any coin again after its preparation failed. */
     retryTransfer: (key: string) => Promise<void>;
     signTransfer: (key: string) => Promise<void>;
     broadcastTransfer: (key: string) => Promise<void>;
-    /** Follows the open transfers of either coin on the network. */
+    /** Follows the open transfers of every coin on the network. */
     refreshTransfers: () => Promise<void>;
-    /** The Ethereum and Ethereum Classic flow, active once such a coin is chosen. */
-    ethereum: Pick<
-        EthereumFlow,
-        | 'startDiscovery'
-        | 'scanMoreAddresses'
-        | 'confirmDiscovery'
-        | 'submitDestination'
-        | 'editDestination'
-        | 'retryTransfer'
-        | 'signTransfer'
-        | 'broadcastTransfer'
-    >;
     finish: () => Promise<void>;
     submitPin: (pin: string) => void;
     cancelPin: () => void;
@@ -96,9 +90,15 @@ const isDeviceLostError = (error: {
     type: string;
 }): error is Extract<DeviceCallError, { type: 'device-lost' }> => error.type === 'device-lost';
 
+const toChainState = ({ addresses, error }: EthereumChainScan) => ({
+    ...INITIAL_ETHEREUM_CHAIN_STATE,
+    addresses,
+    discoveryError: error,
+});
+
 /**
  * Runs the migration from the first screen to the last. It owns everything that lives only
- * in memory for the duration of the page: the device session, the passphrase, the ledger of
+ * in memory for the duration of the page: the device session, the passphrase, the ledgers of
  * composed and signed transfers, and the state the screens render.
  */
 export const createMigrationController = (deps: MigrationControllerDeps): MigrationController => {
@@ -124,6 +124,9 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         listeners.forEach(listener => listener());
     };
 
+    const setBitcoinState = (patch: Partial<BitcoinState>) =>
+        setState({ bitcoin: { ...state.bitcoin, ...patch } });
+
     // Transfers are logged by their position, never by address or amount.
     const describeTransfer = ({
         key,
@@ -146,13 +149,16 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
     });
 
     const updateTransfer = (key: string, patch: Partial<Transfer>) =>
-        setState({
-            transfers: state.transfers.map(transfer =>
+        setBitcoinState({
+            transfers: state.bitcoin.transfers.map(transfer =>
                 transfer.key === key ? { ...transfer, ...patch } : transfer,
             ),
         });
 
-    // Only one action runs at a time. The device and the ledger are not built for more.
+    const findBitcoinTransfer = (key: string) =>
+        state.bitcoin.transfers.find(transfer => transfer.key === key);
+
+    // Only one action runs at a time. The device and the ledgers are not built for more.
     const runExclusive = async (activity: string, action: () => Promise<void>) => {
         if (state.activity !== undefined) return;
 
@@ -187,26 +193,18 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         if (isDeviceLostError(error) && !state.deviceLostReason) handleDeviceLost(error.reason);
     };
 
-    const ethereum = createEthereumFlow({
+    const ethereum = createEthereumTransfers({
         backend: deps.backend,
         getMigrationState: () => state,
         setState,
-        runExclusive,
         getSession: () => session,
-        getPassphraseCandidates: () => passphraseCandidates,
-        setActivePassphrase: passphrase => {
-            activePassphrase = passphrase;
-        },
         reportIfDeviceLost,
+        nextTransferSequence: () => {
+            transferSequence += 1;
+
+            return transferSequence;
+        },
     });
-
-    const describeSearch = () => {
-        const { coin } = state;
-
-        return isEthereumChain(coin)
-            ? `Searching for your ${ETHEREUM_CHAIN_DEFINITIONS[coin].symbol}`
-            : 'Searching for your bitcoin';
-    };
 
     const runPreflight: MigrationController['runPreflight'] = () =>
         runExclusive('Checking your computer', async () => {
@@ -324,7 +322,10 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
                 return;
             }
 
-            diagnosticLog.info('flow', 'device accepted', evaluated.payload);
+            diagnosticLog.info('flow', 'device accepted', {
+                ...evaluated.payload,
+                ethereumSupported: isEthereumSupported(evaluated.payload.firmwareVersion),
+            });
 
             acquiredDevice = device;
             session = newSession;
@@ -334,76 +335,74 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             });
         });
 
-    const chooseCoin: MigrationController['chooseCoin'] = coin => {
-        const { device, step } = state;
-        if (state.activity !== undefined || !device) return;
-        if (step !== 'passphrase' && step !== 'discovery') return;
-        if (isEthereumChain(coin) && !isEthereumSupported(device.firmwareVersion)) return;
-
-        diagnosticLog.info('flow', 'coin chosen', { coin });
-        setState({
-            coin,
-            // With passphrase protection the passphrase comes next, whatever the coin.
-            step: step === 'discovery' && isEthereumChain(coin) ? 'ethereum-discovery' : step,
-        });
-    };
-
-    const changeCoin: MigrationController['changeCoin'] = () => {
-        const hasTransfers = state.transfers.length > 0 || state.ethereum.transfers.length > 0;
-        if (state.activity !== undefined || hasTransfers || state.isDeviceReleased) return;
-
-        diagnosticLog.info('flow', 'back to the coin choice');
-        setState({
-            step: 'discovery',
-            coin: undefined,
-            accounts: [],
-            walletKind: undefined,
-            discoveryError: undefined,
-            ethereum: { ...INITIAL_ETHEREUM_MIGRATION_STATE },
-        });
-    };
-
     const discover = async () => {
         const { device } = state;
         if (!session || !device) return;
 
-        setState({ step: 'discovery', coin: 'bitcoin', discoveryError: undefined, accounts: [] });
+        setState({
+            step: 'discovery',
+            discoveryError: undefined,
+            walletKind: undefined,
+            bitcoin: INITIAL_BITCOIN_STATE,
+            ethereum: mapEthereumChains(() => INITIAL_ETHEREUM_CHAIN_STATE),
+        });
 
         const discovered = await discoverWallet({
             call: session.call,
             backend: deps.backend,
             accountTypes: getDiscoverableAccountTypes(device.firmwareVersion),
+            ethereumChains: isEthereumSupported(device.firmwareVersion) ? ETHEREUM_CHAINS : [],
             passphraseCandidates,
             setActivePassphrase: passphrase => {
                 activePassphrase = passphrase;
             },
-            onAccountScanned: account => setState({ accounts: [...state.accounts, account] }),
+            onAccountScanned: account =>
+                setBitcoinState({ accounts: [...state.bitcoin.accounts, account] }),
+            onAddressScanned: address => {
+                const { chain } = address.account;
+
+                setState({
+                    ethereum: {
+                        ...state.ethereum,
+                        [chain]: {
+                            ...state.ethereum[chain],
+                            addresses: [...state.ethereum[chain].addresses, address],
+                        },
+                    },
+                });
+            },
         });
 
         if (!discovered.success) {
-            diagnosticLog.error('discovery', 'failed', discovered.error);
+            diagnosticLog.error('discovery', 'stopped', discovered.error);
             reportIfDeviceLost(discovered.error);
             setState({ discoveryError: discovered.error });
 
             return;
         }
 
+        const { walletKind, accounts, bitcoinError, ethereum: chains } = discovered.payload;
         diagnosticLog.info('discovery', 'done', {
-            walletKind: discovered.payload.walletKind,
-            accounts: discovered.payload.accounts.length,
-            usedAccounts: discovered.payload.accounts.filter(({ isEmpty }) => !isEmpty).length,
+            walletKind,
+            accounts: accounts.length,
+            addresses: ETHEREUM_CHAINS.map(chain => chains[chain].addresses.length),
+            failedCoins: [
+                ...(bitcoinError ? ['bitcoin'] : []),
+                ...ETHEREUM_CHAINS.filter(chain => chains[chain].error),
+            ],
         });
         setState({
-            accounts: discovered.payload.accounts,
-            walletKind: discovered.payload.walletKind,
+            walletKind,
+            bitcoin: { ...INITIAL_BITCOIN_STATE, accounts, discoveryError: bitcoinError },
+            ethereum: mapEthereumChains(chain => toChainState(chains[chain])),
         });
     };
 
     const startDiscovery: MigrationController['startDiscovery'] = () =>
-        runExclusive('Searching for your bitcoin', discover);
+        runExclusive('Searching for your coins', discover);
 
     const submitPassphrase: MigrationController['submitPassphrase'] = (first, second) =>
-        runExclusive(describeSearch(), async () => {
+        runExclusive('Searching for your coins', async () => {
             const candidates = validatePassphraseEntry({ first, second });
             if (!candidates.success) {
                 setState({ passphraseError: candidates.error });
@@ -414,11 +413,7 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             passphraseCandidates = candidates.payload;
             setState({ passphraseError: undefined });
 
-            if (isEthereumChain(state.coin)) {
-                await ethereum.discover();
-            } else {
-                await discover();
-            }
+            await discover();
         });
 
     const scanMoreAccounts: MigrationController['scanMoreAccounts'] = () =>
@@ -426,10 +421,10 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             const { device } = state;
             if (!session || !device) return;
 
-            setState({ discoveryError: undefined });
+            setBitcoinState({ discoveryError: undefined });
 
             for (const accountType of getDiscoverableAccountTypes(device.firmwareVersion)) {
-                const scannedIndexes = state.accounts
+                const scannedIndexes = state.bitcoin.accounts
                     .filter(({ account }) => account.accountType === accountType)
                     .map(({ account }) => account.accountIndex);
 
@@ -441,22 +436,34 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
                     count: SCAN_MORE_ACCOUNTS_STEP,
                     stopAtFirstEmpty: false,
                     onAccountScanned: account =>
-                        setState({ accounts: [...state.accounts, account] }),
+                        setBitcoinState({ accounts: [...state.bitcoin.accounts, account] }),
                 });
 
                 if (!scanned.success) {
                     reportIfDeviceLost(scanned.error);
-                    setState({ discoveryError: scanned.error });
+                    setBitcoinState({ discoveryError: scanned.error });
 
                     return;
                 }
             }
         });
 
+    const scanMoreAddresses: MigrationController['scanMoreAddresses'] = chain =>
+        runExclusive('Scanning more addresses', () => ethereum.scanMoreAddresses(chain));
+
     const confirmDiscovery: MigrationController['confirmDiscovery'] = () => {
-        if (state.activity === undefined && state.accounts.length > 0) {
-            setState({ step: 'destination', destinationError: undefined });
-        }
+        const isDiscovered = state.walletKind !== undefined && !state.discoveryError;
+        if (state.activity !== undefined || !isDiscovered) return;
+        if (getCoinsToMove(state).length === 0) return;
+
+        setState({
+            step: 'destination',
+            bitcoin: { ...state.bitcoin, destinationError: undefined },
+            ethereum: mapEthereumChains(chain => ({
+                ...state.ethereum[chain],
+                destinationError: undefined,
+            })),
+        });
     };
 
     // Pending transactions signed in this page session are tracked as transfers of their own.
@@ -468,12 +475,13 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         ).length;
 
     const prepareTransfer = async (account: DiscoveredAccount): Promise<Transfer | undefined> => {
-        const { device, destination } = state;
+        const { device } = state;
+        const { destination } = state.bitcoin;
         if (!device || !destination) return undefined;
 
         transferSequence += 1;
         const base = {
-            key: `${getAccountKey(account)}-${transferSequence}`,
+            key: `bitcoin-${getAccountKey(account)}-${transferSequence}`,
             account,
             stage: 'ready' as const,
             leftovers: [],
@@ -518,6 +526,18 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         return transfer;
     };
 
+    const prepareBitcoinTransfers = async () => {
+        const transfers: Transfer[] = [];
+        for (const { account, isEmpty } of state.bitcoin.accounts) {
+            if (isEmpty) continue;
+
+            const transfer = await prepareTransfer(account);
+            if (transfer) transfers.push(transfer);
+        }
+
+        return transfers;
+    };
+
     const getOwnScripts = (accounts: readonly ScannedAccount[]) =>
         getOutputScripts(
             accounts.flatMap(({ snapshot }) =>
@@ -525,39 +545,105 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             ),
         );
 
-    const submitDestination: MigrationController['submitDestination'] = input =>
+    // The `m/44'/60'` keys are shared by both chains, so an address scanned for one of them
+    // belongs to the old wallet on the other one as well.
+    const getOwnEthereumAddresses = () =>
+        new Set(
+            ETHEREUM_CHAINS.flatMap(chain =>
+                state.ethereum[chain].addresses.map(({ account }) => account.address.toLowerCase()),
+            ),
+        );
+
+    const submitDestinations: MigrationController['submitDestinations'] = inputs =>
         runExclusive('Preparing the transfers', async () => {
-            const { device, accounts } = state;
+            const { device } = state;
             if (!device) return;
 
-            // The format is checked before anything is composed or sent to the device.
-            const destination = validateDestination({
-                input,
-                firmwareVersion: device.firmwareVersion,
-                ownScripts: getOwnScripts(accounts),
-            });
-            if (!destination.success) {
-                diagnosticLog.warn('flow', 'destination refused', destination.error);
-                setState({ destinationError: destination.error });
+            // Every address is checked before anything is composed or sent to the device, so
+            // that all mistakes show at once and no coin is prepared on a half-filled form.
+            const coins = getCoinsToMove(state);
+            const bitcoin = coins.includes('bitcoin')
+                ? validateDestination({
+                      input: inputs.bitcoin ?? '',
+                      firmwareVersion: device.firmwareVersion,
+                      ownScripts: getOwnScripts(state.bitcoin.accounts),
+                  })
+                : undefined;
+            const ownAddresses = getOwnEthereumAddresses();
+            const chains = mapEthereumChains(chain =>
+                coins.includes(chain)
+                    ? validateEthereumDestination({ input: inputs[chain] ?? '', ownAddresses })
+                    : undefined,
+            );
+
+            const refusedCoins: Coin[] = [
+                ...(bitcoin && !bitcoin.success ? (['bitcoin'] as const) : []),
+                ...ETHEREUM_CHAINS.filter(chain => chains[chain]?.success === false),
+            ];
+            if (refusedCoins.length > 0) {
+                diagnosticLog.warn('flow', 'destinations refused', {
+                    coins: refusedCoins,
+                    ...(bitcoin && !bitcoin.success ? { bitcoin: bitcoin.error } : {}),
+                });
+                setState({
+                    bitcoin: {
+                        ...state.bitcoin,
+                        destinationError: bitcoin && !bitcoin.success ? bitcoin.error : undefined,
+                    },
+                    ethereum: mapEthereumChains(chain => {
+                        const validated = chains[chain];
+
+                        return {
+                            ...state.ethereum[chain],
+                            destinationError:
+                                validated && !validated.success ? validated.error : undefined,
+                        };
+                    }),
+                });
 
                 return;
             }
 
-            // The address itself stays out of the log.
-            diagnosticLog.info('flow', 'destination accepted', {
-                format: destination.payload.format,
+            // The addresses themselves stay out of the log.
+            diagnosticLog.info('flow', 'destinations accepted', {
+                coins,
+                ...(bitcoin?.success ? { bitcoinFormat: bitcoin.payload.format } : {}),
             });
-            setState({ destination: destination.payload, destinationError: undefined });
+            setState({
+                bitcoin: {
+                    ...state.bitcoin,
+                    destination: bitcoin?.success ? bitcoin.payload : undefined,
+                    destinationError: undefined,
+                },
+                ethereum: mapEthereumChains(chain => {
+                    const validated = chains[chain];
 
-            const transfers: Transfer[] = [];
-            for (const { account, isEmpty } of accounts) {
-                if (isEmpty) continue;
+                    return {
+                        ...state.ethereum[chain],
+                        destination: validated?.success ? validated.payload : undefined,
+                        destinationError: undefined,
+                    };
+                }),
+            });
 
-                const transfer = await prepareTransfer(account);
-                if (transfer) transfers.push(transfer);
+            const bitcoinTransfers = state.bitcoin.destination
+                ? await prepareBitcoinTransfers()
+                : [];
+            const ethereumTransfers = mapEthereumChains<EthereumTransfer[]>(() => []);
+            for (const chain of ETHEREUM_CHAINS) {
+                if (state.ethereum[chain].destination) {
+                    ethereumTransfers[chain] = await ethereum.prepareTransfers(chain);
+                }
             }
 
-            setState({ step: 'transfers', transfers });
+            setState({
+                step: 'transfers',
+                bitcoin: { ...state.bitcoin, transfers: bitcoinTransfers },
+                ethereum: mapEthereumChains(chain => ({
+                    ...state.ethereum[chain],
+                    transfers: ethereumTransfers[chain],
+                })),
+            });
         });
 
     const replaceWithFreshPlan = async (transfer: Transfer, error: Transfer['error']) => {
@@ -568,101 +654,186 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             ? { ...fresh, error: fresh.error ?? error }
             : { ...transfer, stage: 'ready', error };
 
-        setState({
-            transfers: state.transfers.map(current =>
+        setBitcoinState({
+            transfers: state.bitcoin.transfers.map(current =>
                 current.key === transfer.key ? replacement : current,
             ),
         });
     };
 
-    const signTransfer: MigrationController['signTransfer'] = key =>
-        runExclusive('Signing on your Trezor', async () => {
-            const transfer = state.transfers.find(current => current.key === key);
-            if (!session || !transfer?.plan || transfer.stage !== 'ready') return;
-            if (state.deviceLostReason || state.isDeviceReleased) return;
+    const signBitcoinTransfer = async (key: string) => {
+        const transfer = findBitcoinTransfer(key);
+        if (!session || !transfer?.plan || transfer.stage !== 'ready') return;
+        if (state.deviceLostReason || state.isDeviceReleased) return;
 
-            updateTransfer(key, { stage: 'signing', error: undefined });
+        updateTransfer(key, { stage: 'signing', error: undefined });
 
-            const signed = await signSweep({
-                session,
+        const signed = await signSweep({
+            session,
+            backend: deps.backend,
+            ledger,
+            account: transfer.account,
+            plan: transfer.plan,
+        });
+
+        if (signed.success) {
+            diagnosticLog.info('transfer', 'signed', {
+                key,
+                bytes: signed.payload.hex.length / 2,
+            });
+            updateTransfer(key, { stage: 'signed', record: signed.payload });
+
+            return;
+        }
+
+        diagnosticLog.error('transfer', 'signing failed', { key, error: signed.error });
+        reportIfDeviceLost(signed.error);
+        if (state.deviceLostReason) {
+            updateTransfer(key, { stage: 'ready', error: signed.error });
+
+            return;
+        }
+
+        await replaceWithFreshPlan(transfer, signed.error);
+    };
+
+    const broadcastBitcoinTransfer = async (key: string) => {
+        const transfer = findBitcoinTransfer(key);
+        const { record } = transfer ?? {};
+        if (!transfer || !record) return;
+
+        const isFirstBroadcast = transfer.stage === 'signed';
+        diagnosticLog.info('transfer', 'broadcast', { key, isFirstBroadcast });
+        updateTransfer(key, { stage: 'broadcasting', error: undefined });
+
+        // The stored bytes are sent, on the first attempt and on every later one.
+        const pushed = await broadcastSweep({ backend: deps.backend, record });
+        let status: SweepStatus = 'pending';
+
+        if (!pushed.success) {
+            // A failed request does not prove the network lacks the transaction: an answer
+            // can get lost, and the retry is then refused as a duplicate. What spends the
+            // inputs decides.
+            const snapshot = await loadAccountSnapshot({
                 backend: deps.backend,
-                ledger,
                 account: transfer.account,
-                plan: transfer.plan,
+            });
+            const networkStatus = snapshot.success
+                ? evaluateSweepStatus({ snapshot: snapshot.payload, record })
+                : undefined;
+
+            diagnosticLog.warn('transfer', 'broadcast failed', {
+                key,
+                message: pushed.error.message,
+                networkStatus,
+            });
+            if (networkStatus !== 'pending' && networkStatus !== 'confirmed') {
+                updateTransfer(key, {
+                    stage: isFirstBroadcast ? 'signed' : 'broadcast',
+                    error: { type: 'broadcast-failed', message: pushed.error.message },
+                });
+
+                return;
+            }
+
+            status = networkStatus;
+        }
+
+        diagnosticLog.info('transfer', 'on the network', { key, status });
+        updateTransfer(key, { stage: 'broadcast', status });
+
+        if (isFirstBroadcast && transfer.followingTransactions > 0) {
+            const next = await prepareTransfer(transfer.account);
+            if (next) setBitcoinState({ transfers: [...state.bitcoin.transfers, next] });
+        }
+    };
+
+    const retryBitcoinTransfer = async (key: string) => {
+        const transfer = findBitcoinTransfer(key);
+        if (transfer?.stage !== 'ready') return;
+
+        const fresh = await prepareTransfer(transfer.account);
+        if (!fresh) return;
+
+        setBitcoinState({
+            transfers: state.bitcoin.transfers.map(current =>
+                current.key === key ? fresh : current,
+            ),
+        });
+    };
+
+    // A key names a transfer of exactly one coin. Whichever list holds it handles the action.
+    const dispatchByKey =
+        (
+            activity: string,
+            onBitcoin: (key: string) => Promise<void>,
+            onEthereum: (key: string) => Promise<void>,
+        ): ((key: string) => Promise<void>) =>
+        key =>
+            runExclusive(activity, () =>
+                findBitcoinTransfer(key) ? onBitcoin(key) : onEthereum(key),
+            );
+
+    const retryTransfer = dispatchByKey(
+        'Preparing the transfer',
+        retryBitcoinTransfer,
+        ethereum.retryTransfer,
+    );
+
+    const signTransfer = dispatchByKey(
+        'Signing on your Trezor',
+        signBitcoinTransfer,
+        ethereum.signTransfer,
+    );
+
+    const broadcastTransfer = dispatchByKey(
+        'Sending the transaction',
+        broadcastBitcoinTransfer,
+        ethereum.broadcastTransfer,
+    );
+
+    const refreshBitcoinTransfers = async () => {
+        // One snapshot per account serves all of its transfers.
+        const accounts = new Map(
+            state.bitcoin.transfers
+                .filter(isTransferUnsettled)
+                .map(({ account }) => [getAccountKey(account), account]),
+        );
+
+        for (const [accountKey, account] of accounts) {
+            const snapshot = await loadAccountSnapshot({ backend: deps.backend, account });
+            if (!snapshot.success) continue;
+
+            const inFlightTransactions = countInFlightFromElsewhere(
+                evaluateAccountState(snapshot.payload).inFlight,
+            );
+            const ofAccount = state.bitcoin.transfers.filter(
+                transfer => getAccountKey(transfer.account) === accountKey,
+            );
+            diagnosticLog.info('transfer', 'refreshed', {
+                account: accountKey,
+                inFlightTransactions,
+                statuses: ofAccount.map(({ key, record, stage }) => ({
+                    key,
+                    status:
+                        record && stage === 'broadcast'
+                            ? evaluateSweepStatus({ snapshot: snapshot.payload, record })
+                            : stage,
+                })),
             });
 
-            if (signed.success) {
-                diagnosticLog.info('transfer', 'signed', {
-                    key,
-                    bytes: signed.payload.hex.length / 2,
-                });
-                updateTransfer(key, { stage: 'signed', record: signed.payload });
-
-                return;
-            }
-
-            diagnosticLog.error('transfer', 'signing failed', { key, error: signed.error });
-            reportIfDeviceLost(signed.error);
-            if (state.deviceLostReason) {
-                updateTransfer(key, { stage: 'ready', error: signed.error });
-
-                return;
-            }
-
-            await replaceWithFreshPlan(transfer, signed.error);
-        });
-
-    const broadcastTransfer: MigrationController['broadcastTransfer'] = key =>
-        runExclusive('Sending the transaction', async () => {
-            const transfer = state.transfers.find(current => current.key === key);
-            const { record } = transfer ?? {};
-            if (!transfer || !record) return;
-
-            const isFirstBroadcast = transfer.stage === 'signed';
-            diagnosticLog.info('transfer', 'broadcast', { key, isFirstBroadcast });
-            updateTransfer(key, { stage: 'broadcasting', error: undefined });
-
-            // The stored bytes are sent, on the first attempt and on every later one.
-            const pushed = await broadcastSweep({ backend: deps.backend, record });
-            let status: SweepStatus = 'pending';
-
-            if (!pushed.success) {
-                // A failed request does not prove the network lacks the transaction: an answer
-                // can get lost, and the retry is then refused as a duplicate. What spends the
-                // inputs decides.
-                const snapshot = await loadAccountSnapshot({
-                    backend: deps.backend,
-                    account: transfer.account,
-                });
-                const networkStatus = snapshot.success
-                    ? evaluateSweepStatus({ snapshot: snapshot.payload, record })
-                    : undefined;
-
-                diagnosticLog.warn('transfer', 'broadcast failed', {
-                    key,
-                    message: pushed.error.message,
-                    networkStatus,
-                });
-                if (networkStatus !== 'pending' && networkStatus !== 'confirmed') {
-                    updateTransfer(key, {
-                        stage: isFirstBroadcast ? 'signed' : 'broadcast',
-                        error: { type: 'broadcast-failed', message: pushed.error.message },
-                    });
-
-                    return;
-                }
-
-                status = networkStatus;
-            }
-
-            diagnosticLog.info('transfer', 'on the network', { key, status });
-            updateTransfer(key, { stage: 'broadcast', status });
-
-            if (isFirstBroadcast && transfer.followingTransactions > 0) {
-                const next = await prepareTransfer(transfer.account);
-                if (next) setState({ transfers: [...state.transfers, next] });
-            }
-        });
+            ofAccount.forEach(({ key, record, stage }) =>
+                updateTransfer(key, {
+                    // Transfers from before a page reload have no record. They are followed
+                    // through the pending transactions of the account instead.
+                    inFlightTransactions,
+                    ...(record && stage === 'broadcast'
+                        ? { status: evaluateSweepStatus({ snapshot: snapshot.payload, record }) }
+                        : {}),
+                }),
+            );
+        }
+    };
 
     // Tracking only reads from the backend, so it runs alongside whatever else is going on.
     const refreshTransfers: MigrationController['refreshTransfers'] = async () => {
@@ -670,78 +841,26 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
 
         isRefreshingTransfers = true;
         try {
-            // One snapshot per account serves all of its transfers.
-            const accounts = new Map(
-                state.transfers
-                    .filter(isTransferUnsettled)
-                    .map(({ account }) => [getAccountKey(account), account]),
-            );
-
-            for (const [accountKey, account] of accounts) {
-                const snapshot = await loadAccountSnapshot({ backend: deps.backend, account });
-                if (!snapshot.success) continue;
-
-                const inFlightTransactions = countInFlightFromElsewhere(
-                    evaluateAccountState(snapshot.payload).inFlight,
-                );
-                diagnosticLog.info('transfer', 'refreshed', {
-                    account: accountKey,
-                    inFlightTransactions,
-                    statuses: state.transfers
-                        .filter(transfer => getAccountKey(transfer.account) === accountKey)
-                        .map(({ key, record, stage }) => ({
-                            key,
-                            status:
-                                record && stage === 'broadcast'
-                                    ? evaluateSweepStatus({ snapshot: snapshot.payload, record })
-                                    : stage,
-                        })),
-                });
-
-                state.transfers
-                    .filter(transfer => getAccountKey(transfer.account) === accountKey)
-                    .forEach(({ key, record, stage }) =>
-                        updateTransfer(key, {
-                            // Transfers from before a page reload have no record. They are
-                            // followed through the pending transactions of the account instead.
-                            inFlightTransactions,
-                            ...(record && stage === 'broadcast'
-                                ? {
-                                      status: evaluateSweepStatus({
-                                          snapshot: snapshot.payload,
-                                          record,
-                                      }),
-                                  }
-                                : {}),
-                        }),
-                    );
-            }
-
+            await refreshBitcoinTransfers();
             await ethereum.refreshTransfers();
         } finally {
             isRefreshingTransfers = false;
         }
     };
 
-    const editDestination: MigrationController['editDestination'] = () => {
-        const isAnythingSigned = state.transfers.some(({ stage }) => stage !== 'ready');
-        if (state.activity !== undefined || isAnythingSigned) return;
+    const editDestinations: MigrationController['editDestinations'] = () => {
+        if (state.activity !== undefined || isAnythingSigned(state)) return;
 
-        setState({ step: 'destination', transfers: [], destination: undefined });
-    };
-
-    const retryTransfer: MigrationController['retryTransfer'] = key =>
-        runExclusive('Preparing the transfer', async () => {
-            const transfer = state.transfers.find(current => current.key === key);
-            if (transfer?.stage !== 'ready') return;
-
-            const fresh = await prepareTransfer(transfer.account);
-            if (!fresh) return;
-
-            setState({
-                transfers: state.transfers.map(current => (current.key === key ? fresh : current)),
-            });
+        setState({
+            step: 'destination',
+            bitcoin: { ...state.bitcoin, transfers: [], destination: undefined },
+            ethereum: mapEthereumChains(chain => ({
+                ...state.ethereum[chain],
+                transfers: [],
+                destination: undefined,
+            })),
         });
+    };
 
     const finish: MigrationController['finish'] = () =>
         runExclusive('Locking your Trezor', async () => {
@@ -764,13 +883,10 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             session = undefined;
             acquiredDevice = undefined;
 
-            // A signed transaction that was not sent yet exists only on the transfers screen.
-            // Locking the device is always possible, leaving that screen is not.
-            const hasUnsentTransaction =
-                state.transfers.some(({ stage }) => stage === 'signed') ||
-                ethereum.hasUnsentTransaction();
+            // Locking the device is always possible, leaving the transfers screen is not while
+            // a signed transaction of any coin exists only there.
             setState({
-                step: hasUnsentTransaction ? state.step : 'summary',
+                step: hasUnsentTransaction(state) ? state.step : 'summary',
                 isDeviceReleased: true,
                 isDeviceLocked: state.isDeviceLocked || isDeviceLocked,
             });
@@ -793,28 +909,17 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         },
         runPreflight,
         connectDevice,
-        chooseCoin,
-        changeCoin,
         submitPassphrase,
         startDiscovery,
         scanMoreAccounts,
+        scanMoreAddresses,
         confirmDiscovery,
-        submitDestination,
-        editDestination,
+        submitDestinations,
+        editDestinations,
         retryTransfer,
         signTransfer,
         broadcastTransfer,
         refreshTransfers,
-        ethereum: {
-            startDiscovery: ethereum.startDiscovery,
-            scanMoreAddresses: ethereum.scanMoreAddresses,
-            confirmDiscovery: ethereum.confirmDiscovery,
-            submitDestination: ethereum.submitDestination,
-            editDestination: ethereum.editDestination,
-            retryTransfer: ethereum.retryTransfer,
-            signTransfer: ethereum.signTransfer,
-            broadcastTransfer: ethereum.broadcastTransfer,
-        },
         finish,
         submitPin: pin => answerPin(pin),
         cancelPin: () => answerPin(undefined),

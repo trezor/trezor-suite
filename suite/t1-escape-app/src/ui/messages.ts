@@ -7,6 +7,7 @@ import type { PreviousTransactionError } from '../bitcoin/verifyPreviousTransact
 import type { DeviceCallError, DeviceLostReason } from '../device/deviceSession';
 import type { PassphraseEntryError } from '../device/passphrase';
 import type { DiscoveryError } from '../discovery/discoverAccounts';
+import type { EthereumDiscoveryError } from '../discovery/discoverEthereumAddresses';
 import type { WalletKind } from '../discovery/scanReport';
 import {
     type FirmwareVersion,
@@ -135,10 +136,12 @@ export const describePassphraseError = (error: PassphraseEntryError): string => 
     }
 };
 
-export const describeDiscoveryError = (error: DiscoveryError): string => {
+export const describeDiscoveryError = (error: DiscoveryError | EthereumDiscoveryError): string => {
     switch (error.type) {
         case 'public-key-invalid':
             return 'The Trezor returned a public key that does not check out. Nothing was done.';
+        case 'address-invalid':
+            return 'The Trezor returned something that is not an address. Nothing was done.';
         case 'backend':
             return `The blockchain server could not be reached (${error.message}).`;
         case 'device-lost':

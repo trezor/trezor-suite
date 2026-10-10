@@ -7,7 +7,7 @@ import type { PassphraseCandidates } from '../device/passphrase';
 
 export type DiscoveredWalletCandidate<T> = {
     walletKind: WalletKind;
-    scanned: T[];
+    scanned: T;
 };
 
 export type DiscoverWalletCandidatesParams<T, E> = {
@@ -17,8 +17,9 @@ export type DiscoverWalletCandidatesParams<T, E> = {
     /** Chooses the passphrase the session answers with when the device asks for one. */
     setActivePassphrase: (passphrase: string) => void;
     /** Scans the wallet the device currently unlocks. */
-    scan: () => Promise<Result<T[], E>>;
-    isWalletEmpty: (scanned: readonly T[]) => boolean;
+    scan: () => Promise<Result<T, E>>;
+    /** Decides the raw-passphrase fallback. Must answer false when the scan is incomplete. */
+    isWalletEmpty: (scanned: T) => boolean;
 };
 
 /**

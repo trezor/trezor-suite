@@ -1,11 +1,15 @@
 import { isWalletEmpty, scanAccount, scanAccountRange } from './discoverAccounts';
 import { discoverWallet } from './discoverWallet';
 import { buildScanReport } from './scanReport';
-import { mockBackend, mockFundedAccount } from '../../mocks/mockBackend';
+import { buildWalletScanReport } from './walletScanReport';
+import { mockBackend, mockFundedAccount, mockFundedEthereumAddress } from '../../mocks/mockBackend';
 import { type MockDeviceParams, mockDevice } from '../../mocks/mockDevice';
 import { mockWallet } from '../../mocks/mockWallet';
 import { createDeviceSession } from '../device/deviceSession';
 import { validatePassphraseEntry } from '../device/passphrase';
+import { ETHEREUM_CHAINS } from '../ethereum/ethereumChain';
+
+const BACKEND_OFFLINE = { success: false, error: { type: 'backend', message: 'offline' } } as const;
 
 const setup = (deviceParams: Partial<MockDeviceParams> = {}) => {
     const wallet = mockWallet();
@@ -192,6 +196,7 @@ describe('discoverWallet', () => {
             call: session.call,
             backend: chain.backend,
             accountTypes: ['p2pkh', 'p2sh', 'p2wpkh'],
+            ethereumChains: [],
             setActivePassphrase,
         });
 
@@ -231,6 +236,7 @@ describe('discoverWallet', () => {
             call: session.call,
             backend: chain.backend,
             accountTypes: ['p2pkh'],
+            ethereumChains: [],
             passphraseCandidates: candidates.payload,
             setActivePassphrase,
         });
@@ -265,6 +271,7 @@ describe('discoverWallet', () => {
             call: session.call,
             backend: chain.backend,
             accountTypes: ['p2pkh'],
+            ethereumChains: [],
             passphraseCandidates: candidates.payload,
             setActivePassphrase,
         });
@@ -296,6 +303,7 @@ describe('discoverWallet', () => {
             call: session.call,
             backend: chain.backend,
             accountTypes: ['p2pkh'],
+            ethereumChains: [],
             passphraseCandidates: candidates.payload,
             setActivePassphrase: passphrase => {
                 activePassphrases.push(passphrase);
@@ -325,11 +333,107 @@ describe('discoverWallet', () => {
             call: session.call,
             backend: chain.backend,
             accountTypes: ['p2pkh'],
+            ethereumChains: [],
             passphraseCandidates: candidates.payload,
             setActivePassphrase,
         });
 
         expect(discovered.success && isWalletEmpty(discovered.payload.accounts)).toBe(true);
+        expect(device.countCalls('PassphraseAck')).toBe(1);
+    });
+
+    it('scans the Ethereum chains after the Bitcoin accounts, on the same session', async () => {
+        const { wallet, chain, session, device, setActivePassphrase } = setup();
+        mockFundedAccount({ chain, wallet, accountType: 'p2pkh', amounts: ['100000'] });
+        mockFundedEthereumAddress({ chain, wallet, ethereumChain: 'ethereum', balance: '1000' });
+
+        const discovered = await discoverWallet({
+            call: session.call,
+            backend: chain.backend,
+            accountTypes: ['p2pkh'],
+            ethereumChains: ETHEREUM_CHAINS,
+            setActivePassphrase,
+        });
+
+        expect(discovered).toMatchObject({
+            success: true,
+            payload: {
+                walletKind: 'standard',
+                accounts: [{ isEmpty: false }, { isEmpty: true }],
+                ethereum: {
+                    ethereum: { addresses: [{ isEmpty: false }, { isEmpty: true }] },
+                    'ethereum-classic': {
+                        addresses: [
+                            { account: { slip44: 61 }, isEmpty: true },
+                            { account: { slip44: 60 }, isEmpty: true },
+                        ],
+                    },
+                },
+            },
+        });
+        expect(device.calls.map(({ name }) => name)).toEqual([
+            ...Array<string>(4).fill('GetPublicKey'),
+            ...Array<string>(4).fill('EthereumGetAddress'),
+        ]);
+    });
+
+    it('keeps the other coins when the server of one of them fails', async () => {
+        const { wallet, chain, session, setActivePassphrase } = setup();
+        mockFundedAccount({ chain, wallet, accountType: 'p2pkh', amounts: ['100000'] });
+        chain.backend.ethereum.ethereum.getAccountInfo.mockResolvedValue(BACKEND_OFFLINE);
+
+        const discovered = await discoverWallet({
+            call: session.call,
+            backend: chain.backend,
+            accountTypes: ['p2pkh'],
+            ethereumChains: ETHEREUM_CHAINS,
+            setActivePassphrase,
+        });
+
+        expect(discovered).toMatchObject({
+            success: true,
+            payload: {
+                accounts: [{ isEmpty: false }, { isEmpty: true }],
+                bitcoinError: undefined,
+                ethereum: {
+                    ethereum: { addresses: [], error: BACKEND_OFFLINE.error },
+                    'ethereum-classic': { addresses: [{}, {}], error: undefined },
+                },
+            },
+        });
+    });
+
+    it('does not try the raw passphrase while a server failure leaves a coin unknown', async () => {
+        const typed = 'příliš';
+        const candidates = validatePassphraseEntry({ first: typed, second: typed });
+        if (!candidates.success) throw new Error('test passphrase must be valid');
+
+        const { chain, session, device, setActivePassphrase } = setup({
+            hasPassphraseProtection: true,
+            wallets: {
+                [candidates.payload.normalized]: mockWallet('aa'.repeat(16)),
+                [typed]: mockWallet('bb'.repeat(16)),
+            },
+        });
+        chain.backend.getAccountInfo.mockResolvedValue(BACKEND_OFFLINE);
+
+        const discovered = await discoverWallet({
+            call: session.call,
+            backend: chain.backend,
+            accountTypes: ['p2pkh'],
+            ethereumChains: ETHEREUM_CHAINS,
+            passphraseCandidates: candidates.payload,
+            setActivePassphrase,
+        });
+
+        expect(discovered).toMatchObject({
+            success: true,
+            payload: {
+                walletKind: 'passphrase-normalized',
+                accounts: [],
+                bitcoinError: BACKEND_OFFLINE.error,
+            },
+        });
         expect(device.countCalls('PassphraseAck')).toBe(1);
     });
 
@@ -345,6 +449,7 @@ describe('discoverWallet', () => {
             call: session.call,
             backend: chain.backend,
             accountTypes: ['p2pkh'],
+            ethereumChains: [],
             passphraseCandidates: candidates.payload,
             setActivePassphrase,
         });
@@ -365,6 +470,7 @@ describe('buildScanReport', () => {
             call: session.call,
             backend: chain.backend,
             accountTypes: ['p2pkh', 'p2sh'],
+            ethereumChains: [],
             setActivePassphrase,
         });
         if (!discovered.success) throw new Error('discovery must succeed');
@@ -399,5 +505,65 @@ describe('buildScanReport', () => {
             ],
             skippedAccountTypes: ['SegWit', 'Taproot'],
         });
+    });
+});
+
+describe('buildWalletScanReport', () => {
+    it('lists every coin that was scanned and names the ones whose scan was cut short', async () => {
+        const { wallet, chain: backend, session, setActivePassphrase } = setup();
+        mockFundedAccount({ chain: backend, wallet, accountType: 'p2pkh', amounts: ['100000'] });
+        mockFundedEthereumAddress({
+            chain: backend,
+            wallet,
+            ethereumChain: 'ethereum',
+            balance: '1000',
+        });
+        const discovered = await discoverWallet({
+            call: session.call,
+            backend: backend.backend,
+            accountTypes: ['p2pkh'],
+            ethereumChains: ETHEREUM_CHAINS,
+            setActivePassphrase,
+        });
+        if (!discovered.success) throw new Error('discovery must succeed');
+
+        const { walletKind, accounts, ethereum } = discovered.payload;
+        const report = buildWalletScanReport({
+            walletKind,
+            accounts,
+            scannedAccountTypes: ['p2pkh'],
+            isBitcoinInterrupted: false,
+            ethereum: ETHEREUM_CHAINS.map(chain => ({
+                chain,
+                addresses: ethereum[chain].addresses,
+                isInterrupted: chain === 'ethereum-classic',
+            })),
+        });
+
+        expect(report).toMatchObject({
+            walletKind: 'standard',
+            bitcoin: {
+                accountTypes: [{ accountType: 'p2pkh', scannedAccounts: 2, usedAccounts: 1 }],
+            },
+            interruptedCoins: ['Ethereum Classic'],
+        });
+        expect(
+            report.ethereum.map(({ chain, pathFamilies }) => [chain, pathFamilies.length]),
+        ).toEqual([
+            ['ethereum', 1],
+            ['ethereum-classic', 2],
+        ]);
+    });
+
+    it('lists no Ethereum chain when the firmware cannot sign for them', () => {
+        const report = buildWalletScanReport({
+            walletKind: 'standard',
+            accounts: [],
+            scannedAccountTypes: ['p2pkh'],
+            isBitcoinInterrupted: false,
+            ethereum: [],
+        });
+
+        expect(report).toMatchObject({ ethereum: [], interruptedCoins: [] });
     });
 });

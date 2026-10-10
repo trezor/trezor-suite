@@ -10,10 +10,11 @@ import type {
     EthereumDiscoveryError,
     EthereumScannedAddress,
 } from '../discovery/discoverEthereumAddresses';
+import type { DiscoveryAbortError } from '../discovery/discoverWallet';
 import type { WalletKind } from '../discovery/scanReport';
 import type { EthereumSweepPlan } from '../ethereum/composeEthereumSweep';
 import type { EthereumAccount } from '../ethereum/ethereumAccount';
-import type { EthereumChain } from '../ethereum/ethereumChain';
+import { ETHEREUM_CHAINS, type EthereumChain } from '../ethereum/ethereumChain';
 import type {
     EthereumDestination,
     EthereumDestinationError,
@@ -43,19 +44,15 @@ export type MigrationStep =
     | 'discovery'
     | 'destination'
     | 'transfers'
-    | 'ethereum-discovery'
-    | 'ethereum-destination'
-    | 'ethereum-transfers'
     | 'summary';
 
-/**
- * What the user chose to move. The choice is made right after the device is accepted; until it
- * is made, the passphrase and discovery steps show the choice itself.
- */
+/** The coins the page moves. Each one that was found gets its own destination address. */
 export type Coin = 'bitcoin' | EthereumChain;
 
-export const isEthereumChain = (coin: Coin | undefined): coin is EthereumChain =>
-    coin === 'ethereum' || coin === 'ethereum-classic';
+export const isEthereumChain = (coin: Coin): coin is EthereumChain => coin !== 'bitcoin';
+
+/** The addresses typed by the user, one per coin that has something to move. */
+export type DestinationInputs = Partial<Record<Coin, string>>;
 
 export type PreflightIssue =
     | { type: EnvironmentIssue }
@@ -119,9 +116,20 @@ export type EthereumTransfer = {
     error?: EthereumTransferError;
 };
 
-/** Everything the Ethereum flow keeps in the state, apart from the chosen `coin`. */
-export type EthereumMigrationState = {
+/** The Bitcoin side of the migration: what was found, where it goes and what moves it. */
+export type BitcoinState = {
+    accounts: ScannedAccount[];
+    /** A scan of the accounts failed. The accounts are the ones reached before. */
+    discoveryError?: DiscoveryError;
+    destination?: Destination;
+    destinationError?: DestinationError;
+    transfers: Transfer[];
+};
+
+/** The same for one Ethereum chain, which is found and moved address by address. */
+export type EthereumChainState = {
     addresses: EthereumScannedAddress[];
+    /** A scan of the addresses failed. The addresses are the ones reached before. */
     discoveryError?: EthereumDiscoveryError;
     destination?: EthereumDestination;
     destinationError?: EthereumDestinationError;
@@ -130,7 +138,6 @@ export type EthereumMigrationState = {
 
 export type MigrationState = {
     step: MigrationStep;
-    coin?: Coin;
     /** Short description of the operation in progress, or undefined when idle. */
     activity?: string;
     /** Message of an error nobody anticipated. The flow stops; nothing is retried. */
@@ -147,14 +154,21 @@ export type MigrationState = {
     /** The device shows something the user has to confirm with its buttons. */
     isConfirmationOnDeviceRequested: boolean;
     passphraseError?: PassphraseEntryError;
-    discoveryError?: DiscoveryError;
+    /** The device could not be read, so the discovery stopped before it could finish. */
+    discoveryError?: DiscoveryAbortError;
+    /** Set once the discovery finished, with or without a server error of a single coin. */
     walletKind?: WalletKind;
-    accounts: ScannedAccount[];
-    destination?: Destination;
-    destinationError?: DestinationError;
-    transfers: Transfer[];
-    ethereum: EthereumMigrationState;
+    bitcoin: BitcoinState;
+    ethereum: Record<EthereumChain, EthereumChainState>;
 };
+
+/** One value per Ethereum chain. A new chain fails to compile here until it is listed. */
+export const mapEthereumChains = <T>(
+    getValue: (chain: EthereumChain) => T,
+): Record<EthereumChain, T> => ({
+    ethereum: getValue('ethereum'),
+    'ethereum-classic': getValue('ethereum-classic'),
+});
 
 // Nothing more happens to a transfer that is confirmed, or whose coins another transaction took.
 const isFinalSweepStatus = (status: SweepStatus | undefined) =>
@@ -167,11 +181,51 @@ export const isTransferUnsettled = ({ stage, status, inFlightTransactions }: Tra
 export const isEthereumTransferUnsettled = ({ stage, status, isInFlight }: EthereumTransfer) =>
     (stage === 'broadcast' && !isFinalEthereumSweepStatus(status)) || isInFlight;
 
-/** True while a transfer of either coin still has to be followed on the network. */
-export const hasUnsettledTransfers = ({ transfers, ethereum }: MigrationState) =>
-    transfers.some(isTransferUnsettled) || ethereum.transfers.some(isEthereumTransferUnsettled);
+/** The transfers of every Ethereum chain, in chain order. */
+export const getEthereumTransfers = ({ ethereum }: MigrationState) =>
+    ETHEREUM_CHAINS.flatMap(chain => ethereum[chain].transfers);
 
-export const INITIAL_ETHEREUM_MIGRATION_STATE: EthereumMigrationState = {
+/** True while a transfer of any coin still has to be followed on the network. */
+export const hasUnsettledTransfers = (state: MigrationState) =>
+    state.bitcoin.transfers.some(isTransferUnsettled) ||
+    getEthereumTransfers(state).some(isEthereumTransferUnsettled);
+
+const getTransferStages = (state: MigrationState) => [
+    ...state.bitcoin.transfers.map(({ stage }) => stage),
+    ...getEthereumTransfers(state).map(({ stage }) => stage),
+];
+
+/** True once a transfer of any coin reached the device. */
+export const isAnythingSigned = (state: MigrationState) =>
+    getTransferStages(state).some(stage => stage !== 'ready');
+
+/** A signed transaction that was not sent yet exists only on the transfers screen. */
+export const hasUnsentTransaction = (state: MigrationState) =>
+    getTransferStages(state).some(stage => stage === 'signed');
+
+/** Accounts hold something worth a transfer when they have unspent outputs. */
+export const hasBitcoinToMove = (accounts: readonly ScannedAccount[]) =>
+    accounts.some(({ snapshot }) => snapshot.utxos.length > 0);
+
+/** An address worth a transfer: a balance to move, or a pending transaction that may bring one. */
+export const holdsEthereum = ({ info }: EthereumScannedAddress) =>
+    info.balance !== '0' || info.unconfirmedTransactions > 0;
+
+export const hasEthereumToMove = (addresses: readonly EthereumScannedAddress[]) =>
+    addresses.some(holdsEthereum);
+
+/** The coins that have something to move, in screen order. Each needs a destination. */
+export const getCoinsToMove = ({ bitcoin, ethereum }: MigrationState): Coin[] => [
+    ...(hasBitcoinToMove(bitcoin.accounts) ? (['bitcoin'] as const) : []),
+    ...ETHEREUM_CHAINS.filter(chain => hasEthereumToMove(ethereum[chain].addresses)),
+];
+
+export const INITIAL_BITCOIN_STATE: BitcoinState = {
+    accounts: [],
+    transfers: [],
+};
+
+export const INITIAL_ETHEREUM_CHAIN_STATE: EthereumChainState = {
     addresses: [],
     transfers: [],
 };
@@ -182,7 +236,6 @@ export const INITIAL_MIGRATION_STATE: MigrationState = {
     isDeviceLocked: false,
     isPinRequested: false,
     isConfirmationOnDeviceRequested: false,
-    accounts: [],
-    transfers: [],
-    ethereum: INITIAL_ETHEREUM_MIGRATION_STATE,
+    bitcoin: INITIAL_BITCOIN_STATE,
+    ethereum: mapEthereumChains(() => INITIAL_ETHEREUM_CHAIN_STATE),
 };

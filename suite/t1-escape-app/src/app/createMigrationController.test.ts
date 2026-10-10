@@ -1,3 +1,5 @@
+import { getAddress } from 'viem';
+
 import { mock } from '@suite-common/dependency-injection';
 import { PathPublic } from '@trezor/transport-common';
 import { ok } from '@trezor/type-utils';
@@ -7,32 +9,52 @@ import {
     createMigrationController,
 } from './createMigrationController';
 import { mockHistoryTransaction } from '../../mocks/mockAccountInfo';
-import { mockBackend, mockFundedAccount } from '../../mocks/mockBackend';
+import {
+    type MockFundedEthereumAddressParams,
+    mockBackend,
+    mockFundedAccount,
+    mockFundedEthereumAddress,
+} from '../../mocks/mockBackend';
 import { type MockDeviceParams, mockDevice } from '../../mocks/mockDevice';
 import { mockWallet } from '../../mocks/mockWallet';
 import type { BridgeConnection } from '../device/createBridgeConnection';
 import type { DeviceLostReason } from '../device/deviceSession';
+import { validatePassphraseEntry } from '../device/passphrase';
+import type { SignedEthereumSweepRecord } from '../migration/ethereumSweepLedger';
 import type { SignedSweepRecord } from '../migration/sweepLedger';
 
 const DESTINATION = '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy';
 
+const ETHEREUM_DESTINATION = getAddress('0x70997970c51812dc3a010c7d01b50e0d17dc79c8');
+
+const ONE_ETHER = '1000000000000000000';
+
 const CHROME_ON_WINDOWS =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36';
+
+const BACKEND_OFFLINE = { success: false, error: { type: 'backend', message: 'offline' } } as const;
 
 type SetupParams = {
     deviceParams?: Partial<MockDeviceParams>;
     deps?: Partial<MigrationControllerDeps>;
+    /** Confirmed outputs of the Legacy account. An empty list leaves the wallet without bitcoin. */
     amounts?: string[];
+    /** Ethereum addresses funded before the flow starts. None by default. */
+    fundedEthereum?: Omit<MockFundedEthereumAddressParams, 'chain' | 'wallet'>[];
 };
 
 const setup = ({
     deviceParams = {},
     deps = {},
     amounts = ['100000', '250000'],
+    fundedEthereum = [],
 }: SetupParams = {}) => {
     const wallet = mockWallet();
     const chain = mockBackend();
     const funded = mockFundedAccount({ chain, wallet, accountType: 'p2pkh', amounts });
+    const fundedAddresses = fundedEthereum.map(params =>
+        mockFundedEthereumAddress({ chain, wallet, ...params }),
+    );
     const device = mockDevice({ wallets: { '': wallet }, ...deviceParams });
 
     let lostReason: DeviceLostReason | undefined;
@@ -120,25 +142,68 @@ const setup = ({
         });
     };
 
-    const reachTransfers = async () => {
+    // Makes the Ethereum backend show the signed transfer as a transaction it knows.
+    const showEthereumOnNetwork = (
+        { txid, plan }: SignedEthereumSweepRecord,
+        blockHeight: number,
+    ) => {
+        chain.ethereumTransactions.set(
+            txid,
+            mockHistoryTransaction({
+                txid,
+                blockHeight,
+                ethereumSpecific: { status: 1, nonce: plan.nonce, gasLimit: 21000 },
+            }),
+        );
+        chain.setEthereumAccountInfo(plan.account.chain, plan.account.address, {
+            balance: '0',
+            misc: { nonce: String(plan.nonce + 1) },
+            history: { total: 2, unconfirmed: blockHeight > 0 ? 0 : 1, transactions: [] },
+        });
+    };
+
+    const reachDiscovery = async () => {
         await controller.runPreflight();
         await controller.connectDevice();
         await controller.startDiscovery();
-        controller.confirmDiscovery();
-        await controller.submitDestination(DESTINATION);
     };
+
+    const reachTransfers = async () => {
+        await reachDiscovery();
+        controller.confirmDiscovery();
+        await controller.submitDestinations({ bitcoin: DESTINATION });
+    };
+
+    const reachEthereumTransfers = async () => {
+        await reachDiscovery();
+        controller.confirmDiscovery();
+        await controller.submitDestinations({
+            ethereum: ETHEREUM_DESTINATION,
+            'ethereum-classic': ETHEREUM_DESTINATION,
+        });
+    };
+
+    const getBitcoinTransfers = () => controller.getState().bitcoin.transfers;
+    const getEthereumTransfers = () => controller.getState().ethereum.ethereum.transfers;
 
     return {
         controller,
         chain,
         device,
+        wallet,
         bridge,
         release,
         funded,
+        fundedAddresses,
         loseDevice,
         recoverDevice,
         showOnNetwork,
+        showEthereumOnNetwork,
+        reachDiscovery,
         reachTransfers,
+        reachEthereumTransfers,
+        getBitcoinTransfers,
+        getEthereumTransfers,
     };
 };
 
@@ -270,21 +335,240 @@ describe('migration controller', () => {
         expect(controller.getState().deviceLostReason).toBeUndefined();
     });
 
+    describe('discovery', () => {
+        it('scans the Bitcoin accounts and then both Ethereum chains on one session', async () => {
+            const { controller, device, reachDiscovery } = setup({
+                fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
+            });
+
+            await reachDiscovery();
+
+            const { bitcoin, ethereum, walletKind } = controller.getState();
+            expect(walletKind).toBe('standard');
+            expect(
+                bitcoin.accounts.map(({ account, isEmpty }) => [account.accountType, isEmpty]),
+            ).toEqual([
+                ['p2pkh', false],
+                ['p2pkh', true],
+                ['p2sh', true],
+                ['p2wpkh', true],
+            ]);
+            expect(ethereum.ethereum.addresses.map(({ isEmpty }) => isEmpty)).toEqual([
+                false,
+                true,
+            ]);
+            expect(
+                ethereum['ethereum-classic'].addresses.map(({ account, isEmpty }) => [
+                    account.slip44,
+                    isEmpty,
+                ]),
+            ).toEqual([
+                [61, true],
+                [60, true],
+            ]);
+
+            // The device answers for Bitcoin first, then for the Ethereum chains.
+            const names = device.calls.map(({ name }) => name);
+            expect(names.lastIndexOf('GetPublicKey')).toBeLessThan(
+                names.indexOf('EthereumGetAddress'),
+            );
+            expect(device.countCalls('EthereumGetAddress')).toBe(4);
+        });
+
+        it('scans bitcoin only on firmware without Ethereum replay protection', async () => {
+            const { controller, device, reachDiscovery } = setup({
+                deviceParams: { features: { minor_version: 4, patch_version: 1 } },
+                fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
+            });
+
+            await reachDiscovery();
+
+            expect(device.countCalls('EthereumGetAddress')).toBe(0);
+            expect(controller.getState()).toMatchObject({
+                walletKind: 'standard',
+                ethereum: {
+                    ethereum: { addresses: [] },
+                    'ethereum-classic': { addresses: [] },
+                },
+            });
+            expect(controller.getState().bitcoin.accounts.length).toBeGreaterThan(0);
+        });
+
+        it('keeps the other coins when one blockbook fails', async () => {
+            const { controller, chain, reachDiscovery } = setup({
+                fundedEthereum: [
+                    { ethereumChain: 'ethereum-classic', slip44: 61, balance: ONE_ETHER },
+                ],
+            });
+            chain.backend.ethereum.ethereum.getAccountInfo.mockResolvedValue(BACKEND_OFFLINE);
+
+            await reachDiscovery();
+
+            const state = controller.getState();
+            expect(state.discoveryError).toBeUndefined();
+            expect(state.walletKind).toBe('standard');
+            expect(state.ethereum.ethereum).toMatchObject({
+                addresses: [],
+                discoveryError: BACKEND_OFFLINE.error,
+            });
+            expect(state.bitcoin.accounts.length).toBeGreaterThan(0);
+            expect(state.ethereum['ethereum-classic'].addresses.length).toBe(3);
+
+            // The coins that were found can still be moved.
+            controller.confirmDiscovery();
+            await controller.submitDestinations({
+                bitcoin: DESTINATION,
+                'ethereum-classic': ETHEREUM_DESTINATION,
+            });
+
+            expect(controller.getState().step).toBe('transfers');
+            expect(controller.getState().bitcoin.transfers).toHaveLength(1);
+            expect(controller.getState().ethereum['ethereum-classic'].transfers).toHaveLength(1);
+            expect(controller.getState().ethereum.ethereum.transfers).toEqual([]);
+        });
+
+        it('does not fall back to the raw passphrase while a blockbook failure leaves a coin unknown', async () => {
+            const typed = 'příliš';
+            const candidates = validatePassphraseEntry({ first: typed, second: typed });
+            if (!candidates.success) throw new Error('test passphrase must be valid');
+
+            const normalizedWallet = mockWallet('aa'.repeat(16));
+            const rawWallet = mockWallet('bb'.repeat(16));
+            const { controller, chain, device } = setup({
+                deviceParams: {
+                    hasPassphraseProtection: true,
+                    wallets: {
+                        [candidates.payload.normalized]: normalizedWallet,
+                        [typed]: rawWallet,
+                    },
+                },
+                amounts: [],
+            });
+            // Only the raw wallet has coins the page could see, but the Ethereum blockbook is
+            // down, so the normalized wallet is not known to be empty.
+            mockFundedEthereumAddress({
+                chain,
+                wallet: rawWallet,
+                ethereumChain: 'ethereum',
+                balance: ONE_ETHER,
+            });
+            chain.backend.ethereum.ethereum.getAccountInfo.mockResolvedValue(BACKEND_OFFLINE);
+
+            await controller.runPreflight();
+            await controller.connectDevice();
+            await controller.submitPassphrase(typed, typed);
+
+            expect(controller.getState()).toMatchObject({
+                step: 'discovery',
+                walletKind: 'passphrase-normalized',
+                ethereum: { ethereum: { addresses: [], discoveryError: BACKEND_OFFLINE.error } },
+            });
+            expect(
+                device.calls.filter(({ name }) => name === 'PassphraseAck').map(({ data }) => data),
+            ).toEqual([{ passphrase: candidates.payload.normalized }]);
+        });
+
+        it('asks for the PIN through the app and continues once it is entered', async () => {
+            const { controller, device } = setup({ deviceParams: { pin: '12' } });
+            await controller.runPreflight();
+            await controller.connectDevice();
+
+            const discovery = controller.startDiscovery();
+            await waitUntil(() => controller.getState().isPinRequested);
+            controller.submitPin('12');
+            await discovery;
+
+            expect(controller.getState()).toMatchObject({
+                isPinRequested: false,
+                walletKind: 'standard',
+            });
+            expect(controller.getState().bitcoin.accounts.length).toBeGreaterThan(0);
+            expect(device.countCalls('PinMatrixAck')).toBe(1);
+        });
+
+        it('stops the whole discovery at a wrong PIN and sends it again only when asked', async () => {
+            const { controller, device } = setup({ deviceParams: { pin: '12' } });
+            await controller.runPreflight();
+            await controller.connectDevice();
+
+            const discovery = controller.startDiscovery();
+            await waitUntil(() => controller.getState().isPinRequested);
+            controller.submitPin('99');
+            await discovery;
+
+            expect(controller.getState()).toMatchObject({
+                isPinRequested: false,
+                discoveryError: { type: 'failure', code: 'Failure_PinInvalid' },
+            });
+            expect(controller.getState().walletKind).toBeUndefined();
+            expect(device.countCalls('PinMatrixAck')).toBe(1);
+            expect(device.countCalls('EthereumGetAddress')).toBe(0);
+        });
+
+        it('keeps the passphrase out of the state the screens render', async () => {
+            const hidden = mockWallet('aa'.repeat(16));
+            const { controller, chain, device } = setup({
+                deviceParams: { hasPassphraseProtection: true, wallets: { 'my secret': hidden } },
+            });
+            mockFundedAccount({ chain, wallet: hidden, accountType: 'p2pkh', amounts: ['70000'] });
+
+            await controller.runPreflight();
+            await controller.connectDevice();
+            expect(controller.getState().step).toBe('passphrase');
+
+            await controller.submitPassphrase('my secret', 'my secret');
+
+            expect(controller.getState()).toMatchObject({
+                step: 'discovery',
+                walletKind: 'passphrase-normalized',
+            });
+            expect(JSON.stringify(controller.getState())).not.toContain('my secret');
+            expect(
+                device.calls.filter(({ name }) => name === 'PassphraseAck').map(({ data }) => data),
+            ).toEqual([{ passphrase: 'my secret' }]);
+        });
+
+        it('does not start discovery when the two passphrase entries differ', async () => {
+            const { controller, device } = setup({
+                deviceParams: { hasPassphraseProtection: true },
+            });
+            await controller.runPreflight();
+            await controller.connectDevice();
+
+            await controller.submitPassphrase('secret', 'secrte');
+
+            expect(controller.getState()).toMatchObject({
+                step: 'passphrase',
+                passphraseError: 'mismatch',
+            });
+            expect(device.countCalls('GetPublicKey')).toBe(0);
+        });
+
+        it('does not continue while nothing was found to move', async () => {
+            const { controller, reachDiscovery } = setup({ amounts: [] });
+            await reachDiscovery();
+
+            controller.confirmDiscovery();
+
+            expect(controller.getState().step).toBe('discovery');
+        });
+    });
+
     it('moves the funds from discovery to a confirmed transfer and locks the device', async () => {
         const { controller, chain, device, release, funded, reachTransfers } = setup();
 
         await reachTransfers();
-        const [transfer] = controller.getState().transfers;
+        const [transfer] = controller.getState().bitcoin.transfers;
         expect(controller.getState().step).toBe('transfers');
         expect(transfer).toMatchObject({ stage: 'ready', plan: { inputs: { length: 2 } } });
 
         await controller.signTransfer(transfer!.key);
-        const signed = controller.getState().transfers[0]!;
+        const signed = controller.getState().bitcoin.transfers[0]!;
         expect(signed).toMatchObject({ stage: 'signed', record: { hex: expect.any(String) } });
 
         await controller.broadcastTransfer(signed.key);
         expect(chain.pushedTransactions).toEqual([signed.record?.hex]);
-        expect(controller.getState().transfers[0]).toMatchObject({
+        expect(controller.getState().bitcoin.transfers[0]).toMatchObject({
             stage: 'broadcast',
             status: 'pending',
         });
@@ -325,7 +609,7 @@ describe('migration controller', () => {
             },
         });
         await controller.refreshTransfers();
-        expect(controller.getState().transfers[0]?.status).toBe('confirmed');
+        expect(controller.getState().bitcoin.transfers[0]?.status).toBe('confirmed');
 
         await controller.finish();
         expect(device.calls.slice(-2)).toEqual([
@@ -340,81 +624,7 @@ describe('migration controller', () => {
         });
     });
 
-    it('asks for the PIN through the app and continues once it is entered', async () => {
-        const { controller, device } = setup({ deviceParams: { pin: '12' } });
-        await controller.runPreflight();
-        await controller.connectDevice();
-
-        const discovery = controller.startDiscovery();
-        await waitUntil(() => controller.getState().isPinRequested);
-        controller.submitPin('12');
-        await discovery;
-
-        expect(controller.getState()).toMatchObject({
-            isPinRequested: false,
-            walletKind: 'standard',
-        });
-        expect(controller.getState().accounts.length).toBeGreaterThan(0);
-        expect(device.countCalls('PinMatrixAck')).toBe(1);
-    });
-
-    it('stops at a wrong PIN and sends it again only when the user asks', async () => {
-        const { controller, device } = setup({ deviceParams: { pin: '12' } });
-        await controller.runPreflight();
-        await controller.connectDevice();
-
-        const discovery = controller.startDiscovery();
-        await waitUntil(() => controller.getState().isPinRequested);
-        controller.submitPin('99');
-        await discovery;
-
-        expect(controller.getState()).toMatchObject({
-            isPinRequested: false,
-            discoveryError: { type: 'failure', code: 'Failure_PinInvalid' },
-        });
-        expect(device.countCalls('PinMatrixAck')).toBe(1);
-    });
-
-    it('keeps the passphrase out of the state the screens render', async () => {
-        const hidden = mockWallet('aa'.repeat(16));
-        const { controller, chain, device } = setup({
-            deviceParams: { hasPassphraseProtection: true, wallets: { 'my secret': hidden } },
-        });
-        mockFundedAccount({ chain, wallet: hidden, accountType: 'p2pkh', amounts: ['70000'] });
-
-        await controller.runPreflight();
-        await controller.connectDevice();
-        expect(controller.getState().step).toBe('passphrase');
-
-        await controller.submitPassphrase('my secret', 'my secret');
-
-        expect(controller.getState()).toMatchObject({
-            step: 'discovery',
-            walletKind: 'passphrase-normalized',
-        });
-        expect(JSON.stringify(controller.getState())).not.toContain('my secret');
-        expect(
-            device.calls.filter(({ name }) => name === 'PassphraseAck').map(({ data }) => data),
-        ).toEqual([{ passphrase: 'my secret' }]);
-    });
-
-    it('does not start discovery when the two passphrase entries differ', async () => {
-        const { controller, device } = setup({
-            deviceParams: { hasPassphraseProtection: true },
-        });
-        await controller.runPreflight();
-        await controller.connectDevice();
-
-        await controller.submitPassphrase('secret', 'secrte');
-
-        expect(controller.getState()).toMatchObject({
-            step: 'passphrase',
-            passphraseError: 'mismatch',
-        });
-        expect(device.countCalls('GetPublicKey')).toBe(0);
-    });
-
-    describe('destination', () => {
+    describe('destinations', () => {
         it.each([
             ['an address of the scanned wallet', undefined, { type: 'own-address' }],
             [
@@ -424,47 +634,105 @@ describe('migration controller', () => {
             ],
             ['something that is not an address', 'hello', { type: 'invalid' }],
         ])('refuses %s without composing anything', async (_description, address, error) => {
-            const { controller, device, funded } = setup();
-            await controller.runPreflight();
-            await controller.connectDevice();
-            await controller.startDiscovery();
+            const { controller, device, funded, reachDiscovery } = setup();
+            await reachDiscovery();
             controller.confirmDiscovery();
             const callsBefore = device.calls.length;
 
-            await controller.submitDestination(address ?? funded.utxos[0]!.address);
+            await controller.submitDestinations({ bitcoin: address ?? funded.utxos[0]!.address });
 
             expect(controller.getState()).toMatchObject({
                 step: 'destination',
-                destinationError: error,
-                transfers: [],
+                bitcoin: { destinationError: error, transfers: [] },
             });
             expect(device.calls).toHaveLength(callsBefore);
         });
 
         it('refuses a bech32 address on firmware that cannot pay to it', async () => {
-            const { controller } = setup({
+            const { controller, reachDiscovery } = setup({
                 deviceParams: { features: { minor_version: 5, patch_version: 2 } },
             });
-            await controller.runPreflight();
-            await controller.connectDevice();
-            await controller.startDiscovery();
+            await reachDiscovery();
             controller.confirmDiscovery();
 
-            await controller.submitDestination('bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4');
+            await controller.submitDestinations({
+                bitcoin: 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4',
+            });
 
-            expect(controller.getState().destinationError).toEqual({
+            expect(controller.getState().bitcoin.destinationError).toEqual({
                 type: 'unsupported-format',
                 format: 'bech32',
             });
         });
 
-        it('lets the address be changed only while nothing is signed', async () => {
-            const { controller, reachTransfers } = setup();
-            await reachTransfers();
-            const [transfer] = controller.getState().transfers;
+        it('shows the mistakes of every coin at once and prepares nothing until all are accepted', async () => {
+            const { controller, chain, device, fundedAddresses, reachDiscovery } = setup({
+                fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
+            });
+            await reachDiscovery();
+            controller.confirmDiscovery();
+            const callsBefore = device.calls.length;
+            const utxoRequestsBefore = chain.backend.getAccountUtxo.mock.calls.length;
 
-            await controller.signTransfer(transfer!.key);
-            controller.editDestination();
+            await controller.submitDestinations({
+                bitcoin: 'hello',
+                ethereum: fundedAddresses[0]!.address.toLowerCase(),
+            });
+            expect(controller.getState()).toMatchObject({
+                step: 'destination',
+                bitcoin: { destinationError: { type: 'invalid' } },
+                ethereum: { ethereum: { destinationError: { type: 'own-address' } } },
+            });
+
+            // One accepted address does not get its coin prepared while another is refused.
+            await controller.submitDestinations({
+                bitcoin: DESTINATION,
+                ethereum: ETHEREUM_DESTINATION.replace('C5', 'c5'),
+            });
+            expect(controller.getState()).toMatchObject({
+                step: 'destination',
+                bitcoin: { destinationError: undefined, transfers: [] },
+                ethereum: { ethereum: { destinationError: { type: 'bad-checksum' } } },
+            });
+            expect(controller.getState().bitcoin.destination).toBeUndefined();
+            expect(chain.backend.getAccountUtxo.mock.calls).toHaveLength(utxoRequestsBefore);
+            expect(chain.backend.ethereum.ethereum.estimateGasPrice).not.toHaveBeenCalled();
+            expect(device.calls).toHaveLength(callsBefore);
+
+            await controller.submitDestinations({
+                bitcoin: DESTINATION,
+                ethereum: ETHEREUM_DESTINATION,
+            });
+
+            expect(controller.getState().step).toBe('transfers');
+            expect(controller.getState().bitcoin.transfers).toHaveLength(1);
+            expect(controller.getState().ethereum.ethereum.transfers).toHaveLength(1);
+        });
+
+        it('lets the addresses be changed only while nothing of any coin is signed', async () => {
+            const { controller, reachDiscovery, getEthereumTransfers } = setup({
+                fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
+            });
+            await reachDiscovery();
+            controller.confirmDiscovery();
+            await controller.submitDestinations({
+                bitcoin: DESTINATION,
+                ethereum: ETHEREUM_DESTINATION,
+            });
+
+            controller.editDestinations();
+            expect(controller.getState()).toMatchObject({
+                step: 'destination',
+                bitcoin: { destination: undefined, transfers: [] },
+                ethereum: { ethereum: { destination: undefined, transfers: [] } },
+            });
+
+            await controller.submitDestinations({
+                bitcoin: DESTINATION,
+                ethereum: ETHEREUM_DESTINATION,
+            });
+            await controller.signTransfer(getEthereumTransfers()[0]!.key);
+            controller.editDestinations();
 
             expect(controller.getState().step).toBe('transfers');
         });
@@ -475,11 +743,11 @@ describe('migration controller', () => {
             deviceParams: { isOutputRejected: true },
         });
         await reachTransfers();
-        const [first] = controller.getState().transfers;
+        const [first] = controller.getState().bitcoin.transfers;
 
         await controller.signTransfer(first!.key);
 
-        const [second] = controller.getState().transfers;
+        const [second] = controller.getState().bitcoin.transfers;
         expect(second).toMatchObject({
             stage: 'ready',
             error: { type: 'failure', code: 'Failure_ActionCancelled' },
@@ -492,22 +760,22 @@ describe('migration controller', () => {
     it('keeps a signed transfer for another broadcast when the first one fails', async () => {
         const { controller, chain, device, reachTransfers } = setup();
         await reachTransfers();
-        await controller.signTransfer(controller.getState().transfers[0]!.key);
-        const signed = controller.getState().transfers[0]!;
+        await controller.signTransfer(controller.getState().bitcoin.transfers[0]!.key);
+        const signed = controller.getState().bitcoin.transfers[0]!;
 
         chain.backend.pushTransaction.mockResolvedValueOnce({
             success: false,
             error: { type: 'backend', message: 'rejected' },
         });
         await controller.broadcastTransfer(signed.key);
-        expect(controller.getState().transfers[0]).toMatchObject({
+        expect(controller.getState().bitcoin.transfers[0]).toMatchObject({
             stage: 'signed',
             error: { type: 'broadcast-failed', message: 'rejected' },
         });
 
         await controller.broadcastTransfer(signed.key);
 
-        expect(controller.getState().transfers[0]).toMatchObject({ stage: 'broadcast' });
+        expect(controller.getState().bitcoin.transfers[0]).toMatchObject({ stage: 'broadcast' });
         expect(chain.backend.pushTransaction.mock.calls).toEqual([
             [signed.record?.hex],
             [signed.record?.hex],
@@ -518,8 +786,8 @@ describe('migration controller', () => {
     it('counts a failed broadcast as sent when the network already has the transaction', async () => {
         const { controller, chain, showOnNetwork, reachTransfers } = setup();
         await reachTransfers();
-        await controller.signTransfer(controller.getState().transfers[0]!.key);
-        const signed = controller.getState().transfers[0]!;
+        await controller.signTransfer(controller.getState().bitcoin.transfers[0]!.key);
+        const signed = controller.getState().bitcoin.transfers[0]!;
 
         // The first answer got lost on the way; the server refuses the retry as a duplicate.
         showOnNetwork(signed.record!, -1);
@@ -529,7 +797,7 @@ describe('migration controller', () => {
         });
         await controller.broadcastTransfer(signed.key);
 
-        const [transfer] = controller.getState().transfers;
+        const [transfer] = controller.getState().bitcoin.transfers;
         expect(transfer).toMatchObject({ stage: 'broadcast', status: 'pending' });
         expect(transfer?.error).toBeUndefined();
     });
@@ -537,14 +805,14 @@ describe('migration controller', () => {
     it('does not report its own pending transfer as one from elsewhere', async () => {
         const { controller, showOnNetwork, reachTransfers } = setup();
         await reachTransfers();
-        await controller.signTransfer(controller.getState().transfers[0]!.key);
-        const signed = controller.getState().transfers[0]!;
+        await controller.signTransfer(controller.getState().bitcoin.transfers[0]!.key);
+        const signed = controller.getState().bitcoin.transfers[0]!;
         await controller.broadcastTransfer(signed.key);
 
         showOnNetwork(signed.record!, -1);
         await controller.refreshTransfers();
 
-        expect(controller.getState().transfers[0]).toMatchObject({
+        expect(controller.getState().bitcoin.transfers[0]).toMatchObject({
             status: 'pending',
             inFlightTransactions: 0,
         });
@@ -554,13 +822,13 @@ describe('migration controller', () => {
         const amounts = Array.from({ length: 60 }, (_, index) => (200000 + index).toString());
         const { controller, reachTransfers } = setup({ amounts });
         await reachTransfers();
-        const [first] = controller.getState().transfers;
+        const [first] = controller.getState().bitcoin.transfers;
         expect(first).toMatchObject({ followingTransactions: 1, plan: { inputs: { length: 50 } } });
 
         await controller.signTransfer(first!.key);
         await controller.broadcastTransfer(first!.key);
 
-        const [, second] = controller.getState().transfers;
+        const [, second] = controller.getState().bitcoin.transfers;
         expect(second).toMatchObject({ stage: 'ready', plan: { inputs: { length: 10 } } });
         expect(second?.plan?.amount).not.toBe(first?.plan?.amount);
     });
@@ -572,10 +840,10 @@ describe('migration controller', () => {
             const callsBefore = device.calls.length;
 
             loseDevice('session-taken');
-            await controller.signTransfer(controller.getState().transfers[0]!.key);
+            await controller.signTransfer(controller.getState().bitcoin.transfers[0]!.key);
 
             expect(controller.getState().deviceLostReason).toBe('session-taken');
-            expect(controller.getState().transfers[0]?.stage).toBe('ready');
+            expect(controller.getState().bitcoin.transfers[0]?.stage).toBe('ready');
             expect(device.calls).toHaveLength(callsBefore);
         });
 
@@ -645,7 +913,7 @@ describe('migration controller', () => {
 
         await reachTransfers();
 
-        const [transfer] = controller.getState().transfers;
+        const [transfer] = controller.getState().bitcoin.transfers;
         expect(transfer).toMatchObject({
             inFlightTransactions: 1,
             plan: { inputs: { length: 2 } },
@@ -659,7 +927,7 @@ describe('migration controller', () => {
         });
         await controller.refreshTransfers();
 
-        expect(controller.getState().transfers[0]?.inFlightTransactions).toBe(0);
+        expect(controller.getState().bitcoin.transfers[0]?.inFlightTransactions).toBe(0);
     });
 
     it('stops and reports an error nobody anticipated instead of leaving the flow hanging', async () => {
@@ -673,14 +941,14 @@ describe('migration controller', () => {
         expect(controller.getState()).toMatchObject({
             unexpectedError: 'backend exploded',
             activity: undefined,
-            accounts: [],
+            bitcoin: { accounts: [] },
         });
     });
 
     it('locks the device but stays on the transfers while a signed one is unsent', async () => {
         const { controller, device, release, reachTransfers } = setup();
         await reachTransfers();
-        await controller.signTransfer(controller.getState().transfers[0]!.key);
+        await controller.signTransfer(controller.getState().bitcoin.transfers[0]!.key);
 
         await controller.finish();
 
@@ -693,7 +961,7 @@ describe('migration controller', () => {
         });
 
         // Once it is sent, the summary opens, without talking to the released device again.
-        await controller.broadcastTransfer(controller.getState().transfers[0]!.key);
+        await controller.broadcastTransfer(controller.getState().bitcoin.transfers[0]!.key);
         await controller.finish();
 
         expect(controller.getState()).toMatchObject({ step: 'summary', isDeviceLocked: true });
@@ -704,10 +972,310 @@ describe('migration controller', () => {
     it('runs one action at a time', async () => {
         const { controller, device, reachTransfers } = setup();
         await reachTransfers();
-        const { key } = controller.getState().transfers[0]!;
+        const { key } = controller.getState().bitcoin.transfers[0]!;
 
         await Promise.all([controller.signTransfer(key), controller.signTransfer(key)]);
 
         expect(device.countCalls('SignTx')).toBe(1);
+    });
+
+    describe('Ethereum', () => {
+        it('moves bitcoin and ether in one run through to confirmed transfers and a locked device', async () => {
+            const {
+                controller,
+                chain,
+                device,
+                release,
+                fundedAddresses,
+                showOnNetwork,
+                showEthereumOnNetwork,
+                reachDiscovery,
+                getBitcoinTransfers,
+                getEthereumTransfers,
+            } = setup({ fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }] });
+
+            await reachDiscovery();
+            controller.confirmDiscovery();
+            expect(controller.getState().step).toBe('destination');
+
+            await controller.submitDestinations({
+                bitcoin: DESTINATION,
+                ethereum: ETHEREUM_DESTINATION,
+            });
+            expect(controller.getState().step).toBe('transfers');
+            expect(controller.getState().ethereum['ethereum-classic']).toMatchObject({
+                destination: undefined,
+                transfers: [],
+            });
+            const [bitcoinTransfer] = getBitcoinTransfers();
+            const [ethereumTransfer] = getEthereumTransfers();
+            expect(bitcoinTransfer).toMatchObject({
+                stage: 'ready',
+                plan: { inputs: { length: 2 } },
+            });
+            expect(ethereumTransfer).toMatchObject({
+                stage: 'ready',
+                isInFlight: false,
+                account: fundedAddresses[0]!.account,
+                plan: {
+                    nonce: 0,
+                    gasPrice: '24000000000',
+                    fee: '504000000000000',
+                    amount: '999496000000000000',
+                    destination: { address: ETHEREUM_DESTINATION },
+                },
+            });
+            expect(bitcoinTransfer?.key).not.toBe(ethereumTransfer?.key);
+
+            await controller.signTransfer(bitcoinTransfer!.key);
+            await controller.signTransfer(ethereumTransfer!.key);
+            expect(device.countCalls('SignTx')).toBe(1);
+            expect(device.countCalls('EthereumSignTx')).toBe(1);
+            const signedBitcoin = getBitcoinTransfers()[0]!;
+            const signedEthereum = getEthereumTransfers()[0]!;
+            expect(signedBitcoin.stage).toBe('signed');
+            expect(signedEthereum).toMatchObject({
+                stage: 'signed',
+                record: { hex: expect.stringMatching(/^0x/) },
+            });
+
+            await controller.broadcastTransfer(signedBitcoin.key);
+            await controller.broadcastTransfer(signedEthereum.key);
+            expect(chain.pushedTransactions).toEqual([signedBitcoin.record?.hex]);
+            expect(chain.pushedEthereumTransactions).toEqual([signedEthereum.record?.hex]);
+
+            showOnNetwork(signedBitcoin.record!, 800010);
+            showEthereumOnNetwork(signedEthereum.record!, 20_000_000);
+            await controller.refreshTransfers();
+            expect(getBitcoinTransfers()[0]?.status).toBe('confirmed');
+            expect(getEthereumTransfers()[0]?.status).toBe('confirmed');
+
+            await controller.finish();
+            expect(device.calls.slice(-2)).toEqual([
+                { name: 'Initialize', data: {} },
+                { name: 'LockDevice', data: {} },
+            ]);
+            expect(release).toHaveBeenCalledTimes(1);
+            expect(controller.getState()).toMatchObject({
+                step: 'summary',
+                isDeviceReleased: true,
+                isDeviceLocked: true,
+            });
+        });
+
+        it('moves ether from a wallet without bitcoin', async () => {
+            const {
+                controller,
+                reachEthereumTransfers,
+                getBitcoinTransfers,
+                getEthereumTransfers,
+            } = setup({
+                amounts: [],
+                fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
+            });
+
+            await reachEthereumTransfers();
+
+            expect(controller.getState()).toMatchObject({
+                step: 'transfers',
+                bitcoin: { destination: undefined },
+            });
+            expect(getBitcoinTransfers()).toEqual([]);
+            expect(getEthereumTransfers()).toHaveLength(1);
+        });
+
+        it('finds Ethereum Classic on both path families and prepares one transfer per address', async () => {
+            const { controller, reachEthereumTransfers } = setup({
+                amounts: [],
+                fundedEthereum: [
+                    { ethereumChain: 'ethereum-classic', slip44: 61, balance: ONE_ETHER },
+                    { ethereumChain: 'ethereum-classic', slip44: 60, index: 0, balance: ONE_ETHER },
+                    { ethereumChain: 'ethereum-classic', slip44: 60, index: 1, balance: '1' },
+                ],
+            });
+
+            await reachEthereumTransfers();
+
+            const classic = controller.getState().ethereum['ethereum-classic'];
+            expect(
+                classic.addresses.map(({ account, isEmpty }) => [
+                    account.slip44,
+                    account.index,
+                    isEmpty,
+                ]),
+            ).toEqual([
+                [61, 0, false],
+                [61, 1, true],
+                [60, 0, false],
+                [60, 1, false],
+                [60, 2, true],
+            ]);
+            expect(
+                classic.transfers.map(({ account, plan, leftover }) => [
+                    account.slip44,
+                    account.index,
+                    plan?.chainId,
+                    leftover?.reason,
+                ]),
+            ).toEqual([
+                [61, 0, 61, undefined],
+                [60, 0, 61, undefined],
+                [60, 1, undefined, 'insufficient-for-fee'],
+            ]);
+            expect(controller.getState().ethereum.ethereum.transfers).toEqual([]);
+        });
+
+        it('replaces a transfer rejected on the device with one composed afresh', async () => {
+            const { controller, chain, device, getEthereumTransfers, reachEthereumTransfers } =
+                setup({
+                    deviceParams: { isOutputRejected: true },
+                    amounts: [],
+                    fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
+                });
+            await reachEthereumTransfers();
+            const [first] = getEthereumTransfers();
+
+            // The gas price moved while the first attempt was on the device.
+            chain.gasPrices.ethereum = '30000000000';
+            await controller.signTransfer(first!.key);
+
+            const [second] = getEthereumTransfers();
+            expect(second).toMatchObject({
+                stage: 'ready',
+                error: { type: 'failure', code: 'Failure_ActionCancelled' },
+                plan: { gasPrice: '36000000000' },
+            });
+            expect(second?.key).not.toBe(first?.key);
+            expect(second?.plan?.amount).not.toBe(first?.plan?.amount);
+            expect(device.countCalls('EthereumSignTx')).toBe(1);
+        });
+
+        it('keeps a signed transfer for another broadcast when the first one fails', async () => {
+            const { controller, chain, device, getEthereumTransfers, reachEthereumTransfers } =
+                setup({
+                    amounts: [],
+                    fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
+                });
+            await reachEthereumTransfers();
+            await controller.signTransfer(getEthereumTransfers()[0]!.key);
+            const signed = getEthereumTransfers()[0]!;
+
+            chain.backend.ethereum.ethereum.pushTransaction.mockResolvedValueOnce({
+                success: false,
+                error: { type: 'backend', message: 'rejected' },
+            });
+            await controller.broadcastTransfer(signed.key);
+            expect(getEthereumTransfers()[0]).toMatchObject({
+                stage: 'signed',
+                error: { type: 'broadcast-failed', message: 'rejected' },
+            });
+
+            await controller.broadcastTransfer(signed.key);
+
+            expect(getEthereumTransfers()[0]).toMatchObject({
+                stage: 'broadcast',
+                status: 'pending',
+            });
+            expect(chain.backend.ethereum.ethereum.pushTransaction.mock.calls).toEqual([
+                [signed.record?.hex],
+                [signed.record?.hex],
+            ]);
+            expect(device.countCalls('EthereumSignTx')).toBe(1);
+        });
+
+        it('re-sends the stored bytes when the transaction fell out of the mempool', async () => {
+            const { controller, chain, device, getEthereumTransfers, reachEthereumTransfers } =
+                setup({
+                    amounts: [],
+                    fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
+                });
+            await reachEthereumTransfers();
+            await controller.signTransfer(getEthereumTransfers()[0]!.key);
+            const signed = getEthereumTransfers()[0]!;
+            await controller.broadcastTransfer(signed.key);
+
+            // The backend never saw it: the nonce is still unused and nothing is pending.
+            await controller.refreshTransfers();
+            expect(getEthereumTransfers()[0]?.status).toBe('not-in-mempool');
+
+            await controller.broadcastTransfer(signed.key);
+
+            expect(chain.pushedEthereumTransactions).toEqual([
+                signed.record?.hex,
+                signed.record?.hex,
+            ]);
+            expect(device.countCalls('EthereumSignTx')).toBe(1);
+        });
+
+        it('waits for a transaction in flight before composing', async () => {
+            const {
+                controller,
+                chain,
+                fundedAddresses,
+                getEthereumTransfers,
+                reachEthereumTransfers,
+            } = setup({
+                amounts: [],
+                fundedEthereum: [
+                    { ethereumChain: 'ethereum', balance: ONE_ETHER, unconfirmedTransactions: 1 },
+                ],
+            });
+            await reachEthereumTransfers();
+
+            expect(getEthereumTransfers()[0]).toMatchObject({ isInFlight: true, stage: 'ready' });
+            expect(getEthereumTransfers()[0]?.plan).toBeUndefined();
+
+            chain.setEthereumAccountInfo('ethereum', fundedAddresses[0]!.address, {
+                history: { total: 2, unconfirmed: 0, transactions: [] },
+                misc: { nonce: '1' },
+            });
+            await controller.refreshTransfers();
+
+            expect(getEthereumTransfers()[0]).toMatchObject({
+                isInFlight: false,
+                plan: { nonce: 1 },
+            });
+        });
+
+        it('refuses to compose above the gas price cap until it is retried at a lower one', async () => {
+            const { controller, chain, getEthereumTransfers, reachEthereumTransfers } = setup({
+                amounts: [],
+                fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
+            });
+            chain.gasPrices.ethereum = '500000000000';
+            await reachEthereumTransfers();
+
+            expect(getEthereumTransfers()[0]).toMatchObject({
+                stage: 'ready',
+                error: { type: 'gas-price-too-high', gasPrice: '600000000000' },
+            });
+
+            chain.gasPrices.ethereum = '20000000000';
+            await controller.retryTransfer(getEthereumTransfers()[0]!.key);
+
+            expect(getEthereumTransfers()[0]).toMatchObject({ plan: { gasPrice: '24000000000' } });
+            expect(getEthereumTransfers()[0]?.error).toBeUndefined();
+        });
+
+        it('stays on the transfers while a signed transaction is unsent, then shows the summary', async () => {
+            const { controller, device, getEthereumTransfers, reachEthereumTransfers } = setup({
+                amounts: [],
+                fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
+            });
+            await reachEthereumTransfers();
+            await controller.signTransfer(getEthereumTransfers()[0]!.key);
+
+            await controller.finish();
+            expect(controller.getState()).toMatchObject({
+                step: 'transfers',
+                isDeviceLocked: true,
+            });
+
+            await controller.broadcastTransfer(getEthereumTransfers()[0]!.key);
+            await controller.finish();
+
+            expect(controller.getState()).toMatchObject({ step: 'summary' });
+            expect(device.countCalls('LockDevice')).toBe(1);
+        });
     });
 });

@@ -1,5 +1,5 @@
 import type { Transfer } from './migrationState';
-import { summarizeTransfers } from './transferSummary';
+import { getMigrationOutcome, summarizeTransfers } from './transferSummary';
 import { mockBackend, mockFundedAccount } from '../../mocks/mockBackend';
 import { mockWallet } from '../../mocks/mockWallet';
 import { composeSweep } from '../bitcoin/composeSweep';
@@ -129,5 +129,24 @@ describe(summarizeTransfers.name, () => {
                 mockTransfer({ stage: 'broadcast', status: 'confirmed', leftovers }),
             ]),
         ).toMatchObject({ isEverythingConfirmed: true, leftoverAmounts: ['100000', '200000'] });
+    });
+});
+
+describe(getMigrationOutcome.name, () => {
+    const confirmed = { hasPending: false, isEverythingConfirmed: true };
+    const pending = { hasPending: true, isEverythingConfirmed: false };
+    const incomplete = { hasPending: false, isEverythingConfirmed: false };
+
+    it('claims success only when every coin that had something to move is confirmed', () => {
+        expect(getMigrationOutcome([confirmed, confirmed])).toBe('confirmed');
+        expect(getMigrationOutcome([confirmed, incomplete])).toBe('incomplete');
+    });
+
+    it('reports pending while any coin is still being followed', () => {
+        expect(getMigrationOutcome([confirmed, pending])).toBe('pending');
+    });
+
+    it('does not claim success when nothing was moved', () => {
+        expect(getMigrationOutcome([])).toBe('incomplete');
     });
 });
