@@ -1,4 +1,8 @@
-import { convertTaprootXpub, toCanonicalDescriptor } from './convertTaprootXpub';
+import {
+    convertTaprootXpub,
+    toCanonicalDescriptor,
+    toFirmwareDescriptor,
+} from './convertTaprootXpub';
 
 describe('convertTaprootXpub', () => {
     // Same descriptor, once with `h` and once with `'` for the hardened path parts.
@@ -63,5 +67,26 @@ describe('toCanonicalDescriptor', () => {
         expect(toCanonicalDescriptor(address)).toEqual(address);
         expect(toCanonicalDescriptor('tpubDCpt6oCoUgcQEPBU')).toEqual('tpubDCpt6oCoUgcQEPBU');
         expect(toCanonicalDescriptor('')).toEqual('');
+    });
+});
+
+describe('toFirmwareDescriptor', () => {
+    const canonical =
+        "[5c9e228d/86'/0'/0']tpubDCpt6oCoUgcQEPBUnZS4pijgjNySRDaJH8FyztXHnjxCH3z8jjHKGpX3zwtNs1U8ThRDb8ZbnAnZWc1KNLQx8fasQnk3f9Vaqu3JJXcYCF";
+    const withH =
+        '[5c9e228d/86h/0h/0h]tpubDCpt6oCoUgcQEPBUnZS4pijgjNySRDaJH8FyztXHnjxCH3z8jjHKGpX3zwtNs1U8ThRDb8ZbnAnZWc1KNLQx8fasQnk3f9Vaqu3JJXcYCF';
+
+    it('converts the canonical apostrophe form to the firmware `h` form', () => {
+        expect(toFirmwareDescriptor(canonical)).toEqual(withH);
+    });
+
+    it('round-trips with toCanonicalDescriptor', () => {
+        expect(toCanonicalDescriptor(toFirmwareDescriptor(canonical))).toEqual(canonical);
+    });
+
+    it('passes non-taproot descriptors through unchanged', () => {
+        const address = '0x1234567890abcdef1234567890abcdef12345678';
+        expect(toFirmwareDescriptor(address)).toEqual(address);
+        expect(toFirmwareDescriptor('')).toEqual('');
     });
 });
