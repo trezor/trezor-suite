@@ -8,8 +8,8 @@ import { onHome } from '../pageObjects/homeActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { exchangePreviewActions } from '../pageObjects/trading/exchangePreviewActions';
-import { exchangeOutputsReviewActions } from '../pageObjects/trading/outputsReviewActions';
 import { tradingExchangeActions } from '../pageObjects/trading/tradingExchangeActions';
+import { exchangeTransactionReviewActions } from '../pageObjects/trading/transactionReviewActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 import { waitForVisible } from '../support/utils';
 
@@ -68,8 +68,8 @@ describe('Trade Exchange [@androidOnly]', () => {
 
             await tradingExchangeActions.confirmTradingForm();
 
-            await exchangeOutputsReviewActions.expectConnectTrezorInfo();
-            await exchangeOutputsReviewActions.cancelConnectTrezorInfo();
+            await exchangeTransactionReviewActions.expectConnectTrezorInfo();
+            await exchangeTransactionReviewActions.cancelConnectTrezorInfo();
 
             await tradingExchangeActions.waitForTradeDataToLoad();
         });
@@ -111,12 +111,12 @@ describe('Trade Exchange [@androidOnly]', () => {
             await exchangePreviewActions.scrollScreenToBottom();
             await exchangePreviewActions.goToTransactionSigning();
 
-            await exchangeOutputsReviewActions.expectOutputsReviewScreenToBeVisible();
-            await exchangeOutputsReviewActions.expectAndConfirmRecipientAddress();
-            await exchangeOutputsReviewActions.expectAndConfirmTotalFee();
-            await exchangeOutputsReviewActions.signTransaction();
-            await exchangeOutputsReviewActions.expectSendTransactionButton();
-            await exchangeOutputsReviewActions.cancelTransaction();
+            await exchangeTransactionReviewActions.expectTrtansactionReviewScreenToBeVisible();
+            await exchangeTransactionReviewActions.expectAndConfirmRecipientAddress();
+            await exchangeTransactionReviewActions.expectAndConfirmTotalFee();
+            await exchangeTransactionReviewActions.signTransaction();
+            await exchangeTransactionReviewActions.expectSendTransactionButton();
+            await exchangeTransactionReviewActions.cancelTransaction();
 
             await tradingExchangeActions.waitForTradeDataToLoad();
         });

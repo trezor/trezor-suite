@@ -7,8 +7,8 @@ import {
     exchangeApprovalActions,
     exchangeRevokeActions,
 } from '../pageObjects/trading/exchangeApprovalActions';
-import { exchangeOutputsReviewActions } from '../pageObjects/trading/outputsReviewActions';
 import { tradingExchangeActions } from '../pageObjects/trading/tradingExchangeActions';
+import { exchangeTransactionReviewActions } from '../pageObjects/trading/transactionReviewActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 import { waitForVisible } from '../support/utils';
 
@@ -29,21 +29,21 @@ const prepareDexExchangeForm = async () => {
 };
 
 const signApprovalTransactionWithoutSending = async () => {
-    await exchangeOutputsReviewActions.expectOutputsReviewScreenToBeVisible();
-    await exchangeOutputsReviewActions.expectAndConfirmTokenApproval();
-    await exchangeOutputsReviewActions.expectAndConfirmApprovalTotalFee();
-    await exchangeOutputsReviewActions.signTransaction();
-    await exchangeOutputsReviewActions.expectSendTransactionButton();
-    await exchangeOutputsReviewActions.cancelTransaction();
+    await exchangeTransactionReviewActions.expectTrtansactionReviewScreenToBeVisible();
+    await exchangeTransactionReviewActions.expectAndConfirmTokenApproval();
+    await exchangeTransactionReviewActions.expectAndConfirmApprovalTotalFee();
+    await exchangeTransactionReviewActions.signTransaction();
+    await exchangeTransactionReviewActions.expectSendTransactionButton();
+    await exchangeTransactionReviewActions.cancelTransaction();
 };
 
 const signRevokeTransactionWithoutSending = async () => {
-    await exchangeOutputsReviewActions.expectOutputsReviewScreenToBeVisible();
-    await exchangeOutputsReviewActions.expectAndConfirmTokenRevocation();
-    await exchangeOutputsReviewActions.expectAndConfirmApprovalTotalFee();
-    await exchangeOutputsReviewActions.signTransaction();
-    await exchangeOutputsReviewActions.expectSendTransactionButton();
-    await exchangeOutputsReviewActions.cancelTransaction();
+    await exchangeTransactionReviewActions.expectTrtansactionReviewScreenToBeVisible();
+    await exchangeTransactionReviewActions.expectAndConfirmTokenRevocation();
+    await exchangeTransactionReviewActions.expectAndConfirmApprovalTotalFee();
+    await exchangeTransactionReviewActions.signTransaction();
+    await exchangeTransactionReviewActions.expectSendTransactionButton();
+    await exchangeTransactionReviewActions.cancelTransaction();
 };
 
 describe('Trade Exchange DEX [@androidOnly @T3T1]', () => {
