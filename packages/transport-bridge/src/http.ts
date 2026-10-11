@@ -65,11 +65,28 @@ const validateSessionParams: ParamsValidatorHandler<{
     }
 };
 
+/**
+ * RFC 9745 structured field Date: 2026-10-01T00:00:00Z, the date this deprecation was
+ * introduced. A past date is valid and reads as "deprecated since". No `Sunset` header
+ * accompanies it: RFC 8594 would require an HTTP-date and no removal date is being
+ * committed to.
+ */
+const DEPRECATION_DATE = '@1790812800';
+const DEPRECATION_LINK =
+    '<https://github.com/trezor/trezor-suite/issues/23794>; rel="deprecation"; type="text/html"';
+
 const validateProtocolMessageBody =
     (withData: boolean): RequestHandler<string, ReturnType<typeof validateProtocolMessage>> =>
     (request, response, next) => {
         try {
             const body = validateProtocolMessage(request.body, withData);
+
+            if (body.protocol === 'bridge') {
+                // Accepted but deprecated: migrate by prepending the v1 magic `3f2323` to the
+                // payload and sending `protocol: 'v1'`. Behaviour is otherwise unchanged.
+                response.appendHeader('Deprecation', DEPRECATION_DATE);
+                response.appendHeader('Link', DEPRECATION_LINK);
+            }
 
             return next({ ...request, body }, response);
         } catch (error) {
@@ -304,6 +321,9 @@ export class TrezordNode {
             (req, res, next) => {
                 if (req.headers.origin) {
                     res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+                    // neither header is CORS-safelisted, without this a browser-origin client
+                    // receives them on the wire but reads null from res.headers.get()
+                    res.setHeader('Access-Control-Expose-Headers', 'Deprecation, Link');
                 }
 
                 next(req, res);
