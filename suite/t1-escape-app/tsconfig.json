@@ -1,0 +1,42 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "include": [
+        "src/**/*",
+        "mocks/**/*",
+        "package.json",
+        "styled.d.ts",
+        "securityHeaders.ts",
+        "vite.config.ts"
+    ],
+    "exclude": [],
+    "compilerOptions": {
+        "outDir": "libDev",
+        "types": ["vite/client", "jest", "node"]
+    },
+    "references": [
+        {
+            "path": "../../packages/blockchain-link"
+        },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../packages/connect-common"
+        },
+        { "path": "../../packages/connect-core" },
+        { "path": "../../packages/eslint" },
+        { "path": "../../packages/protobuf" },
+        { "path": "../../packages/protocol" },
+        { "path": "../../packages/theme" },
+        {
+            "path": "../../packages/transport-common"
+        },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/utxo-lib" },
+        {
+            "path": "../../packages/dependency-injection"
+        }
+    ]
+}
