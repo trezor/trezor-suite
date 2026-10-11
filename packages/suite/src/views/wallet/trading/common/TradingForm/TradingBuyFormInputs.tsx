@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_COUNTRY_SELECT,
@@ -22,6 +21,7 @@ import { Column, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { useCurrentRef } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

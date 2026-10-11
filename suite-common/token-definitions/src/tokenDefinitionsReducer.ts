@@ -2,7 +2,7 @@ import {
     type ActionTypesDep,
     type ReducersDep,
     createReducerWithExtraDeps,
-} from '@suite-common/redux-utils';
+} from '@trezor/redux-utils';
 
 import { tokenDefinitionsActions } from './tokenDefinitionsActions';
 import { getTokenDefinitionThunk } from './tokenDefinitionsThunks';

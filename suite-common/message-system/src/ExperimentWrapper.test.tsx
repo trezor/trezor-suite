@@ -2,8 +2,8 @@ import { Provider } from 'react-redux';
 
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot, render, screen } from '@suite-common/test-utils';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { ExperimentWrapper } from './ExperimentWrapper';
 import { createMessageSystemState } from './__fixtures__/createMessageSystemState';

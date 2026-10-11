@@ -1,5 +1,4 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type GetBinFilesBaseUrlDep,
     type GetLanguageDep,
@@ -8,6 +7,7 @@ import {
 } from '@suite-common/suite-types';
 import TrezorConnect, { FirmwareType } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
 import { type FirmwareRootState, selectFirmware } from './firmwareReducer';

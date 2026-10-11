@@ -1,7 +1,7 @@
 /**
  * Disables graph data fetching for E2E tests to mitigate flakiness.
  */
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 import { type RefetchGraphThunkParams, type RefetchGraphThunkResult } from './graphThunkTypes';
 

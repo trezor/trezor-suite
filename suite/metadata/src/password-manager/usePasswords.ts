@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { type PasswordEntry } from '@suite-common/metadata-types';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
 import * as metadataPasswordsActions from '../metadataPasswordsActions';

@@ -8,10 +8,10 @@ import {
     type MessageSystemRootState,
     selectFeaturesConfig,
 } from '@suite-common/message-system';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { selectIsTradingEnabled } from '@suite-native/trading-state';
 import { type TradingRootState } from '@suite-native/trading-types';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import {
     type BannerFlagsSliceRootState,

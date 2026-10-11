@@ -1,6 +1,5 @@
 import { type PayloadAction, type UnknownAction } from '@reduxjs/toolkit';
 
-import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { type ThpSuiteCredentials } from '@suite-common/suite-types';
 import {
     DEVICE,
@@ -11,6 +10,7 @@ import {
     isUiEventOfType,
 } from '@trezor/connect';
 import type { ThpCredentials } from '@trezor/protocol';
+import { type ActionTypesDep, createReducerWithExtraDeps } from '@trezor/redux-utils';
 
 import { thpActions } from './thpActions';
 import { CONNECTION_COUNTER_LIMIT, type THP_BUTTON_REQUESTS_NAMES } from './thpConstants';

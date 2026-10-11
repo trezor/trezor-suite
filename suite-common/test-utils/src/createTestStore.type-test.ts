@@ -1,4 +1,4 @@
-import { type WithServices } from '@suite-common/redux-utils';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { createTestStore } from './createTestStore';
 

@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     AddressDisplayOptions,
@@ -16,6 +15,7 @@ import {
     transformUserOutputs,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { PROTO, type PrecomposedTransactionFinalCardano } from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {

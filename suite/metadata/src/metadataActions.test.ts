@@ -5,13 +5,13 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type SuiteSettingsState, suiteSettingsInitialState } from '@suite/settings';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { type MetadataState } from '@suite-common/metadata-types';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialWalletSettingsState, prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import TrezorConnect from '@trezor/connect';
 import { createMockDeps } from '@trezor/dependency-injection';
 import { asWalletDescriptor } from '@trezor/device-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import * as fixtures from './__fixtures__/metadataActions';
 import * as metadataActions from './metadataActions';

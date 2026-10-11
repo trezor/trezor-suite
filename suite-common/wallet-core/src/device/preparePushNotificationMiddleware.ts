@@ -1,8 +1,8 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { TrezorPushNotificationType } from '@trezor/connect';
+import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import { deviceWipedFromDeviceThunk, forgetDeviceThunk } from './deviceThunks';
 

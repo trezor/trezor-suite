@@ -3,7 +3,6 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-device-data';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { prepareThpReducer } from '@suite-common/thp';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -21,6 +20,7 @@ import type { RootStackParamList } from '@suite-native/navigation';
 import { type AppSettingsState, appSettingsReducer } from '@suite-native/settings';
 import { FirmwareType, UI_EVENTS } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 const INIT_ACTION = { type: 'foo' };
 

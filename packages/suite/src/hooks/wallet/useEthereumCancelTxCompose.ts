@@ -1,7 +1,6 @@
 import { isRejected } from '@reduxjs/toolkit';
 
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     composeEthereumCancelTransactionThunk,
     selectConvertedNetworkFeeInfo,
@@ -11,6 +10,7 @@ import {
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

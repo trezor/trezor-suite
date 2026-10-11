@@ -3,9 +3,9 @@ import { injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectAutodetectTheme, selectThemeSettings, suiteSettingsActions } from '@suite/settings';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { type ThemeColorVariant } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';

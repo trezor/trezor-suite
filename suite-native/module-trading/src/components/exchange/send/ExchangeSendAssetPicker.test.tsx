@@ -5,7 +5,6 @@ import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkModuleRepository, mockNetworksState } from '@suite-common/networks/mocks';
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -41,6 +40,7 @@ import {
     tradingSlice,
 } from '@suite-native/trading-state';
 import { type ExchangeFormType, type MyAsset } from '@suite-native/trading-types';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 import { BigNumber } from '@trezor/utils';
 
 import { ExchangeSendAssetPicker } from './ExchangeSendAssetPicker';

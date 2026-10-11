@@ -1,7 +1,7 @@
 import { type PayloadActionCreator, type UnknownAction } from '@reduxjs/toolkit';
 
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
 import { getTokenDefinitionThunk } from './tokenDefinitionsThunks';

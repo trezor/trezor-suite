@@ -1,9 +1,9 @@
 import { type AccountLabels, type AccountOutputLabels } from '@suite-common/metadata-types';
-import { type Dispatch, createThunk } from '@suite-common/redux-utils';
 import { type RbfLabelsToBeUpdated } from '@suite-common/suite-rbf-labels-migrations-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { type Dispatch, createThunk } from '@trezor/redux-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
 import * as METADATA from './metadataConstants';

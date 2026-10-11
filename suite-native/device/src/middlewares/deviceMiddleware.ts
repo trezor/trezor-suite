@@ -1,7 +1,6 @@
 import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
-import { type WithServices, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import {
@@ -23,6 +22,7 @@ import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import { setShouldShowAutoEjectAlert } from '@suite-native/settings';
 import { DEVICE, isDeviceEventOfType } from '@trezor/connect';
+import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import { reportDeviceConnectionAnalytics } from '../utils';
 

@@ -1,6 +1,5 @@
 import { A, G, pipe } from '@mobily/ts-belt';
 
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     getSimpleCoinDefinitionsByNetwork,
@@ -30,6 +29,7 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type AddressesType, type VinVoutAddress } from './types';
 import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from './utils';

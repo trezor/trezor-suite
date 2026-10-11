@@ -2,8 +2,8 @@ import { type ReactNode } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { reportToSentryThunk } from 'src/utils/suite/sentry';
 

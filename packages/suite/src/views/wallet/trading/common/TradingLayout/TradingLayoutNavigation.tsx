@@ -1,11 +1,11 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type Route, gotoThunk } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingType, tradingThunks } from '@suite-common/trading';
 import { Box, type IconComponent, SubTabs } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { MinusIcon, PlusIcon, RepeatIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type TradingLayoutNavigationProps = {
     route?: Route['name'];

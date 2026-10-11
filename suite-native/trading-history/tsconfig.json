@@ -14,9 +14,6 @@
             "path": "../../suite-common/message-system"
         },
         { "path": "../../suite-common/mev" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/wallet-config"
@@ -45,6 +42,7 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

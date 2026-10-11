@@ -1,14 +1,14 @@
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import {
-    type ActionTypesDep,
-    type ReducersDep,
-    createReducerWithExtraDeps,
-} from '@suite-common/redux-utils';
-import {
     type Explorer,
     getParsedExplorerUrls,
     networksCollection,
 } from '@suite-common/wallet-config';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+} from '@trezor/redux-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { explorerActions } from './explorerActions';

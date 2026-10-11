@@ -1,5 +1,5 @@
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import {
     TRADE_API_RELOAD_DATA_AFTER_MS,

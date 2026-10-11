@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 
 import { firmwareActions } from '@suite-common/firmware';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { AnimatedView, Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -21,6 +20,7 @@ import {
 import { reportSecurityCheck } from '@suite-native/sentry';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { setTemporaryRememberedDeviceThunk } from '../firmwareThunks';

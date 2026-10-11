@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getNetwork,
     getNetworkDisplaySymbol,
@@ -11,6 +10,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { Banner, Column, H2, Icon, Row, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { AddressHistory } from './AddressHistory';
 import { NewestAddressCard } from './NewestAddressCard';

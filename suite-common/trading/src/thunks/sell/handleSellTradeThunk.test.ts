@@ -1,9 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type SellFiatTrade, type SellFiatTradeResponse } from 'invity-api';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { type HandleSellTradeThunkState } from './handleSellTradeThunk';
 import { handleSellTradeThunk } from './handleSellTradeThunk';

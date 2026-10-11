@@ -1,9 +1,9 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { toggleConnectionModal } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const DeviceConnect = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);

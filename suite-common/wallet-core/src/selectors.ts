@@ -1,7 +1,6 @@
 import { type DeviceRootState, selectHasOnlyPortfolioDevice } from '@suite-common/device';
 import { type NetworksRootState } from '@suite-common/networks';
 import { type PersistentDeviceDataRootState } from '@suite-common/persistent-device-data';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type Network,
@@ -23,6 +22,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { type ContractInfoProtocol } from '@trezor/blockchain-link-types/src/blockbook';
 import { type StaticSessionId, type TrezorConnectCallable } from '@trezor/connect';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { arrayToDictionary } from '@trezor/utils';
 
 import { type AccountsRootState } from './accounts/accountsReducer';

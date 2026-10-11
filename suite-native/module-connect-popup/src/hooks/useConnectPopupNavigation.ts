@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 
 import { connectPopupDeeplinkThunk, selectConnectPopupCall } from '@suite-common/connect-popup';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectPendingProposal, walletConnectPairThunk } from '@suite-common/walletconnect';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import {
@@ -14,6 +13,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList,

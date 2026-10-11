@@ -22,7 +22,6 @@ import {
     selectHasBitcoinOnlyFirmware,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { type WithServices } from '@suite-common/redux-utils';
 import { type BackupType } from '@suite-common/suite-types';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -34,6 +33,7 @@ import {
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { stepCategories } from 'src/config/onboarding/steps';

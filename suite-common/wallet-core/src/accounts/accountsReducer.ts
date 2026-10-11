@@ -1,14 +1,14 @@
 import { type ActionCreatorWithPreparedPayload, current, isAnyOf } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
+import { getNetwork } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
+import { accountEqualTo, compareAccountsByCoin, enhanceHistory } from '@suite-common/wallet-utils';
 import {
     type ActionTypesDep,
     type ReducersDep,
     createReducerWithExtraDeps,
-} from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
-import { accountEqualTo, compareAccountsByCoin, enhanceHistory } from '@suite-common/wallet-utils';
+} from '@trezor/redux-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { accountsActions } from './accountsActions';

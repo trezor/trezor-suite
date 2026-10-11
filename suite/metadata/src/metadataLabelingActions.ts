@@ -13,12 +13,12 @@ import {
     ProviderErrorAction,
     type WalletLabels,
 } from '@suite-common/metadata-types';
-import { type Dispatch, type WithServices } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
+import { type Dispatch, type WithServices } from '@trezor/redux-utils';
 import { cloneObject, throwError } from '@trezor/utils';
 
 import * as metadataActions from './metadataActions';

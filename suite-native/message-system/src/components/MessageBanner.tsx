@@ -1,7 +1,6 @@
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { messageSystemActions } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Message, type Variant } from '@suite-common/suite-types';
 import { AnimatedView } from '@suite-native/atoms';
 import {
@@ -15,6 +14,7 @@ import {
 } from '@suite-native/atoms';
 import { Icon, type IconName } from '@suite-native/icons';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 

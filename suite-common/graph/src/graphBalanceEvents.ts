@@ -1,13 +1,13 @@
 import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
-import { type Dispatch, unwrapWithError } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestampThunk } from '@suite-common/wallet-core';
 import type { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { type Dispatch, unwrapWithError } from '@trezor/redux-utils';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
 import { isIgnoredBalanceHistoryCoin, isLocalBalanceHistoryCoin } from './constants';

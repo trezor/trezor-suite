@@ -8,7 +8,6 @@ import {
     type MessageSystemRootState,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { createTestCompositionRoot, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -23,6 +22,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import { promiseAllSequence } from '@trezor/utils';
 
 import * as fixtures from './__fixtures__/coinjoinClientActions';

@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetworksWithMevProtection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled, setMevProtection } from '@suite-common/wallet-core';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const ToggleMevProtectionCard = () => {
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);

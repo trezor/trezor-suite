@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { createFeeLevels } from './__fixtures__/feeLevels';
 import { prepareSendFormReducer, transactionManagementActions } from './sendFormSlice';

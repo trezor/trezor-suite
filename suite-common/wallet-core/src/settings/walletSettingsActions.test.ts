@@ -2,10 +2,10 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { type NetworksState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot, wireEnabledNetworksMock } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { walletSettingsFixtures } from './__fixtures__/walletSettingsActions.fixtures';
 import { type WalletSettingsState, prepareWalletSettingsReducer } from './walletSettingsReducer';

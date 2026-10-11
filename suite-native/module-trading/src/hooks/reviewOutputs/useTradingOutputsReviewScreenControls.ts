@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingType, isSilentSendRejection } from '@suite-common/trading';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -21,6 +20,7 @@ import {
 } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
 import { useTradingTxValidityTimer } from './useTradingTxValidityTimer';

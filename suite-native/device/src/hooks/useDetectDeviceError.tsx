@@ -15,7 +15,6 @@ import {
     selectIsUnacquiredDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
@@ -34,6 +33,7 @@ import {
 import { captureSentryException } from '@suite-native/sentry';
 import { selectIsOnboardingFinished, selectShouldShowAutoEjectAlert } from '@suite-native/settings';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { SUITE_WEB_URL } from '@trezor/urls';
 
 import { IncompatibleFirmwareModalAppendix } from '../components/IncompatibleFirmwareModalAppendix';

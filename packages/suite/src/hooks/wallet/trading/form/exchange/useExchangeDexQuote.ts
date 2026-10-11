@@ -3,7 +3,6 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { type ExchangeTrade } from 'invity-api';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_FORM_OUTPUT_ADDRESS,
@@ -19,6 +18,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { type TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';
 import { type SendContextValues } from 'src/types/wallet/sendForm';

@@ -1,10 +1,10 @@
 import { captureException, withScope } from '@sentry/core';
 
-import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 
 import { type VoteThunkArguments, composeTronVoteFeeLevelsThunk } from './composeVote';
 import { buildVoteContract, buildVoteReviewForm } from './voteContract';

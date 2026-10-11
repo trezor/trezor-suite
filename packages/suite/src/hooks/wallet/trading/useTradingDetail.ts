@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect } from 'react';
 
 import { setConnectionModal, useDevice } from '@suite/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingType,
     type TradingUseDetailOutputProps,
@@ -9,6 +8,7 @@ import {
     useTradingDetail as useTradingDetailCommon,
 } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { throwError } from '@trezor/utils';
 
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';

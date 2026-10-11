@@ -1,8 +1,8 @@
 import { createContext, useContext, useMemo } from 'react';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import {

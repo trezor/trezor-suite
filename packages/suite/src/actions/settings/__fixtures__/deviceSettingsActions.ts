@@ -10,8 +10,6 @@ import {
     prepareDeviceReducer,
 } from '@suite-common/device';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { type WithServices } from '@suite-common/redux-utils';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import {
     type OpenModalDep,
     type ReportSecurityCheckDep,
@@ -24,6 +22,8 @@ import {
     wipeDeviceThunk,
 } from '@suite-common/wallet-core';
 import { type Response } from '@trezor/connect';
+import { type WithServices } from '@trezor/redux-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import * as deviceSettingsActions from '../deviceSettingsActions';
 import { type ResetDeviceThunkState } from '../deviceSettingsActions';

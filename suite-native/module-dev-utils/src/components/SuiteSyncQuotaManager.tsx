@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     enforceQuotaManagerUpdated,
     eraseFetchedData,
@@ -14,6 +13,7 @@ import { Box, Button, Card, HStack, Switch, Text, VStack } from '@suite-native/a
 import { Form, TextInputField, useForm, yup } from '@suite-native/forms';
 import { useToast } from '@suite-native/toasts';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const SuiteSyncQuotaManager = () => {
     const { dispatch } = useServices(injectDispatch);

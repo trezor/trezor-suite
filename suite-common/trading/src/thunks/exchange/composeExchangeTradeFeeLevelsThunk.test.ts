@@ -2,8 +2,6 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import { type ExchangeTrade } from 'invity-api';
 
 import { prepareDeviceReducer } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
@@ -12,6 +10,8 @@ import {
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
 import { type Account, type FeesState } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { type ComposeExchangeTradeFeeLevelsThunkState } from './composeExchangeTradeFeeLevelsThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';

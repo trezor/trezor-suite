@@ -10,7 +10,6 @@ import { type DeviceReducerState } from '@suite-common/device';
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
 import { type PersistentDeviceDataState } from '@suite-common/persistent-device-data';
 import { type ReceiveState } from '@suite-common/receive';
-import { type WithServices } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsMiddlewareDeps,
     type TokenDefinitionsState,
@@ -32,6 +31,7 @@ import {
 import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
 import { buildHistoricRatesFromStorage, sortByCoin } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { type StorageLoadAction } from 'src/actions/suite/storageLifecycleActions';
 

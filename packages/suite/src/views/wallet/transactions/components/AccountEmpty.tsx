@@ -1,7 +1,6 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import {
     getNetwork,
@@ -10,6 +9,7 @@ import {
 } from '@suite-common/wallet-config';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowDownIcon, ArrowsLeftRightIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { type Account } from 'src/types/wallet';

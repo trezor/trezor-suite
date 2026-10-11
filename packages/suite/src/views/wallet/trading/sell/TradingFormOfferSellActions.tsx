@@ -1,4 +1,3 @@
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectIsTradingNetworkFeeMissing,
     selectTradingSellProviders,
@@ -7,6 +6,7 @@ import {
 } from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { selectSellQuoteThunk } from 'src/actions/wallet/trading/sell/selectSellQuoteThunk';
 import { useSelector } from 'src/hooks/suite';

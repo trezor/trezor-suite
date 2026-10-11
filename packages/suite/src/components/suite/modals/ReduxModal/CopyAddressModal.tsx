@@ -2,13 +2,13 @@ import { useState } from 'react';
 
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type AddressType } from '@suite-common/wallet-types';
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { WarningIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 const getAddressTypeText = (addressType: AddressType) => {
     switch (addressType) {

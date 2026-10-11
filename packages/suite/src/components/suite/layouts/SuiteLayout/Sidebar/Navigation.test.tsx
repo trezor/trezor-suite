@@ -20,10 +20,10 @@ import {
     routerReducer,
 } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
-import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TransactionNotification } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/reducers/store';
 import { extraDependencies } from 'src/support/extraDependencies';

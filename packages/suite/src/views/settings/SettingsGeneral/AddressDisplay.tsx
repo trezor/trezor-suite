@@ -1,12 +1,12 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAddressDisplayType, setAddressDisplayType } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

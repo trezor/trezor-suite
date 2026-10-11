@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { tradingThunks } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
 import { useFreshRef } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { selectDeviceTradesToWatchByAccount } from 'src/selectors/wallet/tradesToWatchSelectors';
 

@@ -3,7 +3,6 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { Calldata } from '@suite-common/calldata';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { type ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
 import { type OnModalCancelDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
@@ -44,6 +43,7 @@ import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type PROTO } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { getSolanaTokenDefinition } from '@trezor/connect-core/src/api/solana/solanaDefinitions';
+import { type ActionsFromAsyncThunk, createThunk } from '@trezor/redux-utils';
 import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
 

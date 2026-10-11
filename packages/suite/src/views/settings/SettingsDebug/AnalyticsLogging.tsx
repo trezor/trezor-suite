@@ -7,11 +7,11 @@ import {
     selectIsAnalyticsEnabled,
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Badge, Button, Column, Input, Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

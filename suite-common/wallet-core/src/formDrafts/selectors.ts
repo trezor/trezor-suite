@@ -1,6 +1,6 @@
 import type { FieldValues } from 'react-hook-form';
 
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type FormDraftRootState } from './formDraftSlice';
 

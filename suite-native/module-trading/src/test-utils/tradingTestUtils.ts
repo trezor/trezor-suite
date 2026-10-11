@@ -11,8 +11,6 @@ import {
 } from '@suite-common/message-system';
 import { type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
-import { type ReduxStoreWithThunk } from '@suite-common/redux-utils';
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import {
     type SuiteSyncDataRootState,
     type WithSuiteSyncState,
@@ -69,6 +67,8 @@ import {
     type NativeSendRootState,
     sendFormInitialState,
 } from '@suite-native/transaction-management';
+import { type ReduxStoreWithThunk } from '@trezor/redux-utils';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 export type { PreloadedStatePartial } from '@suite-native/test-utils-store';
 

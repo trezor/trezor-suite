@@ -1,4 +1,4 @@
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 import { ACTION_PREFIX, notificationsActions } from './notificationsActions';
 import { selectNotifications } from './notificationsSelectors';

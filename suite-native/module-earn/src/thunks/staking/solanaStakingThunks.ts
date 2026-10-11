@@ -1,5 +1,4 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
 import {
     type ResolveSolanaStakingContextState,
     WALLET_SDK_SOURCE_MOBILE,
@@ -17,6 +16,7 @@ import {
 } from '@suite-common/wallet-types';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 import { EARN_MODULE_PREFIX } from '../../constants';
 import { type SignStakeTransactionRejectValue } from '../../types';

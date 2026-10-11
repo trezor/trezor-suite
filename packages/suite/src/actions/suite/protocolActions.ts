@@ -15,13 +15,13 @@ import {
     type HandleCoinProtocolUriThunkState,
     handleCoinProtocolUriThunk,
 } from '@suite/transfer-uri';
-import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type WalletConnectInitThunkDeps,
     type WalletConnectInitThunkState,
 } from '@suite-common/walletconnect';
 import * as walletConnectActions from '@suite-common/walletconnect';
+import { type WithServices } from '@trezor/redux-utils';
 import {
     SUITE_ANCHOR_DEEPLINK_PREFIX,
     SUITE_BRIDGE_DEEPLINK,

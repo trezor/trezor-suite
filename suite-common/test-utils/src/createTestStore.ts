@@ -10,7 +10,7 @@ import {
 } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
-import { createMiddleware, createReduxExtra } from '@suite-common/redux-utils';
+import { createMiddleware, createReduxExtra } from '@trezor/redux-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
 /*

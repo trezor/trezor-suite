@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type AlertResolveValue = { wasReviewCanceled: boolean };
 

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type BackendType,
     type Network,
@@ -23,6 +22,7 @@ import { useForm, useWatch, yup } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import TrezorConnect, { BLOCKCHAIN, type BlockchainError } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type FormValues = {
     serverType: ServerType;

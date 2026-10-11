@@ -1,5 +1,5 @@
 import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 export const bluetoothStartScanningThunk = createThunk<void, void, void>(

@@ -1,7 +1,6 @@
 import { openDeferredModal } from '@suite/modal';
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
-import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -11,6 +10,7 @@ import {
     composeYieldUnwrapTransactionThunk,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
 
 import {
     type SendYieldTransactionDeps,

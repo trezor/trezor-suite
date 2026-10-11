@@ -3,7 +3,7 @@ import { type Transform, persistReducer } from 'redux-persist';
 import autoMergeLevel1 from 'redux-persist/lib/stateReconciler/autoMergeLevel1';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
-import { type ReducerState } from '@suite-common/redux-utils';
+import { type ReducerState } from '@trezor/redux-utils';
 
 import { createAsyncMigrate } from './createAsyncMigrate';
 import { type MigrationsManifest } from './migrationTypes';

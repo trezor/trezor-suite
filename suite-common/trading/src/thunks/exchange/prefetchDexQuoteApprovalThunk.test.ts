@@ -1,10 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import type { Account } from '@suite-common/wallet-types';
 import { type AccountAddresses } from '@trezor/connect';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { type PrefetchDexQuoteApprovalThunkState } from './prefetchDexQuoteApprovalThunk';
 import { prefetchDexQuoteApprovalThunk } from './prefetchDexQuoteApprovalThunk';

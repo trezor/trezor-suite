@@ -1,6 +1,5 @@
 import { type Store, combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { tradingExchangeActions } from '@suite-common/trading';
 import { type AccountsRootState, initialWalletSettingsState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
@@ -17,6 +16,7 @@ import {
     selectExchangeSelectedReceiveAccount,
     tradingSlice,
 } from '@suite-native/trading-state';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { useReceiveAccountChangeEffect } from './useReceiveAccountChangeEffect';
 

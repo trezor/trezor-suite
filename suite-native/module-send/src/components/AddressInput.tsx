@@ -10,7 +10,6 @@ import {
     injectGetNamedAddressSupport,
     selectNetworkSymbolForProtocol,
 } from '@suite-common/networks';
-import { injectGetState } from '@suite-common/redux-utils';
 import { parseTransferUri } from '@suite-common/transfer-uri';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -35,6 +34,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectGetState } from '@trezor/redux-utils';
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM, HELP_CENTER_SOLANA_HELP_URL } from '@trezor/urls';
 
 import { AddressInfoMessage } from './AddressInfoMessage';

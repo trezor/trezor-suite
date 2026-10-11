@@ -4,7 +4,6 @@
     "references": [
         { "path": "../earn-stablecoin-defs" },
         { "path": "../legacy-network-config" },
-        { "path": "../redux-utils" },
         {
             "path": "../../networks/bitcoin/network-bitcoin-suite-common"
         },
@@ -32,6 +31,7 @@
         {
             "path": "../../networks/tron/network-tron-suite-common"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/utils" },
         {
             "path": "../../packages/dependency-injection"

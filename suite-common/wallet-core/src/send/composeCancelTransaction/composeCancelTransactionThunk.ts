@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import type {
     Account,
     ChainedTransactions,
@@ -10,6 +9,7 @@ import TrezorConnect, {
     type PrecomposeResultFinal,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 
 import { SEND_MODULE_PREFIX } from '../sendFormConstants';
 import { calculateBaseFee, getRelayFee } from './calculateNewFee';

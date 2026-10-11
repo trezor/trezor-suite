@@ -1,9 +1,9 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
     type FetchAndUpdateAccountThunkState,
     selectDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<FetchAndUpdateAccountThunkState>();
 

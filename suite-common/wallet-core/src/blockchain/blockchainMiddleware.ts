@@ -1,8 +1,8 @@
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type BlockchainEvent,
     BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,
 } from '@trezor/connect';
+import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import {
     onBlockMinedThunk,

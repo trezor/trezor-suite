@@ -1,7 +1,6 @@
 import { A, D, pipe } from '@mobily/ts-belt';
 
 import { type DeviceRootState } from '@suite-common/device';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type NotificationsRootState,
     type TransactionNotification,
@@ -37,6 +36,7 @@ import {
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { isNotNullOrUndefined, typedObjectKeys, typedObjectValues } from '@trezor/utils';
 
 import type { TransactionsByAccount, TransactionsRootState } from './transactionsReducerTypes';

@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { WETH_DEPOSIT_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { enhanceTokens } from '@suite-common/wallet-utils';
@@ -8,6 +7,7 @@ import {
     getWrappedNativeToken,
     isWrappedNativeToken,
 } from '@trezor/network-ethereum-suite-common';
+import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {

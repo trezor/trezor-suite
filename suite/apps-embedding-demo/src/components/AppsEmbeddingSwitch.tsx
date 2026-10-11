@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsAppsEmbeddingEnabled, suiteSettingsActions } from '@suite/settings';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const AppsEmbeddingSwitch = () => {
     const isAppsEmbeddingEnabled = useSelector(selectIsAppsEmbeddingEnabled);

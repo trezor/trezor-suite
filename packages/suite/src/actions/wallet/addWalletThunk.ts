@@ -1,6 +1,6 @@
 import { type GotoThunkDeps, type GotoThunkState, findRoute, gotoThunk } from '@suite/router';
 import { DEVICE_MODULE_PREFIX } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 type RedirectAfterWalletSelectedThunkState = GotoThunkState;
 

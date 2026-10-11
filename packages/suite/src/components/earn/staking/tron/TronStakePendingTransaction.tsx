@@ -3,12 +3,12 @@ import { type ReactNode } from 'react';
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
 import {
     PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS,
     PendingTransactionInfo,
 } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useTronStakeContext } from './TronStakeContext';
 

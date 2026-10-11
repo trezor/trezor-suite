@@ -1,4 +1,4 @@
-# @suite-common/redux-utils
+# @trezor/redux-utils
 
 Shared Redux and Redux Toolkit utilities such as `createThunk`, reducer helpers, middleware helpers,
 and selector utilities.

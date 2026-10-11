@@ -1,9 +1,9 @@
 import { deviceActions } from '@suite-common/device';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import type { DelegatedIdentityKey } from '@suite-common/suite-types';
 import { mockConnectDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { persistentDeviceDataActions } from './persistentDeviceDataActions';
 import {

@@ -1,7 +1,7 @@
-import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { useServices } from '@trezor/dependency-injection';
 import { copyToClipboard } from '@trezor/dom-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const useSignVerifyCopyValue = () => {
     const { dispatch } = useServices(injectDispatch);

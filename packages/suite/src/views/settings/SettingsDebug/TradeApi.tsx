@@ -1,8 +1,8 @@
 import { selectTradeServerEnvironment, suiteSettingsActions } from '@suite/settings';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradeServerEnvironment, tradeApi, tradingActions } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

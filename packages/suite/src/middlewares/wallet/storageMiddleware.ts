@@ -33,13 +33,6 @@ import { messageSystemActions } from '@suite-common/message-system';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { receiveActions } from '@suite-common/receive';
 import {
-    type ActionFromMatcher,
-    type Dispatch,
-    type TypeGuard,
-    type WithServices,
-    createMiddlewareWithExtraDeps,
-} from '@suite-common/redux-utils';
-import {
     setSuiteSyncOwner,
     setSuiteSyncRelayUrl,
     updateSuiteSyncDebugEnabled,
@@ -82,6 +75,13 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { findAccountDevice, isAccountSuccessful } from '@suite-common/wallet-utils';
 import { walletConnectActions } from '@suite-common/walletconnect';
 import { DEVICE, isDeviceEventOfType } from '@trezor/connect';
+import {
+    type ActionFromMatcher,
+    type Dispatch,
+    type TypeGuard,
+    type WithServices,
+    createMiddlewareWithExtraDeps,
+} from '@trezor/redux-utils';
 
 import * as storageActions from 'src/actions/suite/storageActions';
 import {

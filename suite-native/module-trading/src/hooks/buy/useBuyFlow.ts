@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type TradingRootState,
@@ -24,6 +23,7 @@ import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-a
 import { tradingActions } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
 import {

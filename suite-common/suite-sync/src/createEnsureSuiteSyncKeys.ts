@@ -1,12 +1,12 @@
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { isTrezorDeviceWithState } from '@suite-common/device';
-import { type Dispatch } from '@suite-common/redux-utils';
 import {
     type EnsureSuiteSyncKeys,
     type EnsureSuiteSyncOwnerDep,
     type SuiteSyncUnavailableOnDeviceErrorType,
 } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { type Dispatch } from '@trezor/redux-utils';
 import { err, exhaustive, ok } from '@trezor/type-utils';
 
 import { type GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSessionId';

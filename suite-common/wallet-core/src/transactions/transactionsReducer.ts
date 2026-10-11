@@ -1,12 +1,12 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
+import type { AccountKey } from '@suite-common/wallet-types';
+import { findTransaction } from '@suite-common/wallet-utils';
 import {
     type ActionTypesDep,
     type ReducersDep,
     createReducerWithExtraDeps,
-} from '@suite-common/redux-utils';
-import type { AccountKey } from '@suite-common/wallet-types';
-import { findTransaction } from '@suite-common/wallet-utils';
+} from '@trezor/redux-utils';
 
 import { transactionsActions } from './transactionsActions';
 import type { TransactionsState } from './transactionsReducerTypes';

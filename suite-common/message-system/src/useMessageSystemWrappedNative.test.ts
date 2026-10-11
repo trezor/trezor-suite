@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
 import { type MessageSystemRootState, type MessageSystemState } from './messageSystemTypes';

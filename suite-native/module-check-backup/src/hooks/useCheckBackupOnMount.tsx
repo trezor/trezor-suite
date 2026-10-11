@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     type DeviceCheckBackupStackParamList,
@@ -11,6 +10,7 @@ import {
 } from '@suite-native/navigation';
 import { type ERRORS } from '@trezor/connect-common/src/constants';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { checkBackupThunk } from '../checkBackupThunks';
 

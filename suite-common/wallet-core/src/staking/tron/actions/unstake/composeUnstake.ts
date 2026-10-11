@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -12,6 +11,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { buildUnstakeContract } from './unstakeContract';

@@ -1,9 +1,9 @@
 import { type DeviceRootState, selectDeviceStaticSessionId } from '@suite-common/device';
-import { createWeakMapSelector, weakMapMemoize } from '@suite-common/redux-utils';
 import { type SuiteSyncAccount } from '@suite-common/suite-sync-storage';
 import { type AccountsRootState, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
+import { createWeakMapSelector, weakMapMemoize } from '@trezor/redux-utils';
 
 import { type SuiteSyncDataRootState } from '../suiteSyncDataReducer';
 import { findSuiteSyncAccountLabel } from './findSuiteSyncAccountLabel';

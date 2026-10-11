@@ -4,7 +4,6 @@ import { type ThunkDispatch } from 'redux-thunk';
 import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -39,6 +38,7 @@ import {
     getAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
+import { type WithServices } from '@trezor/redux-utils';
 
 const calculateStakingTransaction = (
     availableBalance: string,

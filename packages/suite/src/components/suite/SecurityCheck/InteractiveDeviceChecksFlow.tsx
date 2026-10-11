@@ -6,11 +6,11 @@ import {
     selectIsUnlockedBootloaderAllowed,
 } from '@suite/settings';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { Box, Card } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 

@@ -4,7 +4,6 @@
     "references": [
         { "path": "../legacy-network-config" },
         { "path": "../react-query" },
-        { "path": "../redux-utils" },
         { "path": "../suite-types" },
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
@@ -13,6 +12,7 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/device-utils" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/utils" }
     ]
 }

@@ -17,7 +17,6 @@ import {
     selectIsDiscreteModeActive,
 } from '@suite-common/discreet-mode';
 import { type NetworksRootState } from '@suite-common/networks';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type BlockchainRootState,
     type WalletSettingsRootState,
@@ -32,6 +31,7 @@ import {
     getFirmwareRevision,
     getFirmwareVersion,
 } from '@trezor/device-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { type LogsSliceRootState } from './logsSlice';
 import { REDACTED_REPLACEMENT, redactAction } from './utils';

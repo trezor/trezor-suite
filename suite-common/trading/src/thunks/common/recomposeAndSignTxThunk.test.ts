@@ -1,8 +1,6 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { type DeviceReducerState, prepareDeviceReducer } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -14,6 +12,8 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type FeesState } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { type RecomposeAndSignTxThunkState } from './recomposeAndSignTxThunk';
 import { accountBtc } from '../../__fixtures__/utils';

@@ -1,12 +1,12 @@
 import { useRef, useState } from 'react';
 
 import { useDevice } from '@suite/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import { Checkbox, Input } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const PingDevice = () => {
     const { device, isLocked } = useDevice();

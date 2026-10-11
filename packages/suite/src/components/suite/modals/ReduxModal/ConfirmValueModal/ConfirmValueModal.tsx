@@ -10,7 +10,6 @@ import { selectIsMetadataEnabled } from '@suite/metadata';
 import { MODAL_CONTEXT_USER, selectModalContext } from '@suite/modal';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -45,6 +44,7 @@ import {
     WarningIcon,
 } from '@trezor/icons';
 import { ConfirmOnDevicePill, QrCode, TokenIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useSelector } from 'src/hooks/suite';

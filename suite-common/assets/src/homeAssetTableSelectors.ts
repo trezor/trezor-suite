@@ -2,7 +2,6 @@ import { shallowEqual } from 'react-redux';
 
 import { type DeviceRootState } from '@suite-common/device';
 import { type NetworksRootState, selectNetworkNamesMap } from '@suite-common/networks';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getAssetName, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AssetAccount,
@@ -20,6 +19,7 @@ import {
 import { type RatesByKey, type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { sumAssetAccounts } from './homeAssetTableUtils';

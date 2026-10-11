@@ -1,10 +1,10 @@
 import { type PaymentRequestOutput } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
 import type { Network } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import solana from '@trezor/network-solana/runtime';
+import { createThunk } from '@trezor/redux-utils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { type TradingSendRejectedProps } from '../../types';

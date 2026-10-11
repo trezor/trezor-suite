@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 
 import { type OnboardingAnalytics } from '@suite/analytics';
 import { selectModal } from '@suite/modal';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type BackupType } from '@suite-common/suite-types';
 import { UI_REQUESTS } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { type GoToSuiteOptions } from 'src/actions/onboarding/onboardingActions';

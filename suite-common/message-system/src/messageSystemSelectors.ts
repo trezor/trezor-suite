@@ -1,6 +1,6 @@
 import { type AnalyticsRootState, selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type Category, type Message } from '@suite-common/suite-types';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { getActiveExperimentGroup } from './experimentUtils';
 import { isYieldFeatureApplicableForVault } from './featureFlagUtils';

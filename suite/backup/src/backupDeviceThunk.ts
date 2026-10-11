@@ -1,8 +1,8 @@
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { actionPrefix, backupActions } from './backupReducer';
 import type { BackupDeviceParams } from './types';

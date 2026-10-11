@@ -4,13 +4,13 @@ import styled, { type RuleSet, css } from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { AddressFormatter, clearAddressPrefix } from '@suite-common/formatters';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import { IconButton, Row, Text, type TextProps, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { CopyIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { type TypographyStyle } from '@trezor/theme';
 
 import { copyAddressToClipboard } from './copyAddressActions';

@@ -8,7 +8,6 @@ import { Translation } from '@suite/intl';
 import { preserveModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Network,
@@ -28,6 +27,7 @@ import { Box, Column, Icon, Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { InfoIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { NetworkSettingsSearchInput } from 'src/components/suite/NetworkList/NetworkSettingsSearchInput';
 import { AddAccountBannerAboutNetworks } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountBannerAboutNetworks';

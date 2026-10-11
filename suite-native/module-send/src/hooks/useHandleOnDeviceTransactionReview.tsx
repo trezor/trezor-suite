@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { sendFormActions } from '@suite-common/wallet-core';
 import {
     type AccountKey,
@@ -28,6 +27,7 @@ import {
     useShowReviewCancellationAlert,
 } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useHandleCommonSignRejection } from './useHandleCommonSignRejection';
 

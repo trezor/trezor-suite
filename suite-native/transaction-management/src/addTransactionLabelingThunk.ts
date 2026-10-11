@@ -1,5 +1,4 @@
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     selectIsSuiteSyncEnabled,
@@ -14,6 +13,7 @@ import {
 import { type Account, type TxTargetId } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';
 import { featureUsed } from '@suite-native/feature-feedback';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 const TRANSACTION_MANAGEMENT_PREFIX = '@suite-native/transaction-management';
 

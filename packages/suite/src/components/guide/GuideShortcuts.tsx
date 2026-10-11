@@ -1,7 +1,6 @@
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceProtectedByPassphrase } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     CardList,
@@ -13,6 +12,7 @@ import {
 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';

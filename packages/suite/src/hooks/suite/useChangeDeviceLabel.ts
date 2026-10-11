@@ -7,8 +7,8 @@ import { yup } from '@suite/forms';
 import { type TranslationFunction, useTranslation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { isAscii } from '@trezor/utils';
 
 import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';

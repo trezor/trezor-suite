@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type PrecomposedLevels } from '@suite-common/wallet-types';
@@ -14,6 +13,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import * as tronUtils from '@trezor/network-tron/utils';
+import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from '../sendFormConstants';

@@ -8,9 +8,9 @@ import { gotoThunk } from '@suite/router';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { hasSlip39Backup, isBackupComplete } from '@suite-common/backup';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
 const DisabledWrapper = styled.div<{ $isDisabled: boolean }>`

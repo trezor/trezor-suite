@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import * as fixtures from './__fixtures__/messageSystemActions';
 

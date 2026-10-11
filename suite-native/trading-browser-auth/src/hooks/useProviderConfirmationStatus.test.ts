@@ -1,6 +1,5 @@
 import { type Store, combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import {
     type SendRootState,
     initialWalletSettingsState,
@@ -20,6 +19,7 @@ import {
     tradingSlice,
 } from '@suite-native/trading-state';
 import { prepareSendFormReducer } from '@suite-native/transaction-management';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { useProviderConfirmationStatus } from './useProviderConfirmationStatus';
 

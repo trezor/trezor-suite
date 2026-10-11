@@ -6,7 +6,7 @@ import {
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
 import { type DeviceRootState, selectDeviceId } from '@suite-common/device';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { type NativeBluetoothRootState } from './bluetoothSlice';
 import { type BluetoothDevice } from './types';

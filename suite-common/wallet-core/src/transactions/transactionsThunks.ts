@@ -1,4 +1,3 @@
-import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     type Account,
@@ -39,6 +38,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { LOVELACE_UNIT } from '@trezor/network-cardano/constants';
+import { createSingleInstanceThunk, createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';

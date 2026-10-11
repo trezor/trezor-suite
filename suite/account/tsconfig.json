@@ -9,9 +9,6 @@
             "path": "../../suite-common/message-system"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-sync"
         },
         { "path": "../../suite-common/trading" },
@@ -33,6 +30,7 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/crypto-utils" },
         { "path": "../../packages/device-utils" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/theme" }
     ]
 }

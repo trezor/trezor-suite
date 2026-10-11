@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     fetchAllTransactionsForAccountThunk,
@@ -13,6 +12,7 @@ import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-na
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { TransactionList } from '@suite-native/transactions';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { YieldVaultDetailScreenContent } from './YieldVaultDetailScreenContent';
 import { EarnPortfolioTrackerGuard } from '../../components/earn/EarnPortfolioTrackerGuard';

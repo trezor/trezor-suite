@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TronFlow,
     confirmTronPendingTransactionThunk,
@@ -13,6 +12,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

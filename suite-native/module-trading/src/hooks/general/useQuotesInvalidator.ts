@@ -2,10 +2,10 @@ import { type RefObject, useEffect } from 'react';
 
 import { type ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type AbortablePromise } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { type useDebounce } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export type UseQuotesInvalidatorProps = {
     isFormValid: boolean;

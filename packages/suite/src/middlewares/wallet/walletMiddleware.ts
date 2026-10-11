@@ -4,7 +4,6 @@ import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 import { selectSelectedAccountKey } from '@suite/account';
 import { routerLocationChange, selectRouteName } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
-import { type Dispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
 import {
@@ -20,6 +19,7 @@ import {
     syncAccountsWithBlockchainThunk,
     transactionsActions,
 } from '@suite-common/wallet-core';
+import { type Dispatch } from '@trezor/redux-utils';
 
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';

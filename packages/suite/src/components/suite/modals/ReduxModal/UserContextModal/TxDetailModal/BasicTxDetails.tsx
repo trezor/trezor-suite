@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Network } from '@suite-common/wallet-config';
 import {
@@ -41,6 +40,7 @@ import {
     WarningIcon,
 } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';

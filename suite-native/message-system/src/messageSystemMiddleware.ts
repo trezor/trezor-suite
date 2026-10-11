@@ -9,9 +9,9 @@ import {
     messageSystemActions,
     selectMessageSystemConfig,
 } from '@suite-common/message-system';
-import { createMiddleware } from '@suite-common/redux-utils';
 import { changeNetworks } from '@suite-common/wallet-core';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
+import { createMiddleware } from '@trezor/redux-utils';
 
 const isAnyOfMessageSystemAffectingActions = isAnyOf(
     messageSystemActions.fetchSuccessUpdate,

@@ -1,6 +1,6 @@
 import { asEvmAddress } from '@suite-common/calldata';
-import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
+import { createThunk } from '@trezor/redux-utils';
 
 import {
     type ComposeYieldEvmTransactionErrorReason,

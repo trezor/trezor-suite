@@ -1,8 +1,8 @@
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     quotaManagerInitialState,
     suiteSyncQuotaManagerReducer,
 } from '@suite-common/suite-sync-quota-manager';
+import { createSliceWithExtraDeps } from '@trezor/redux-utils';
 
 import { storageLoad } from '../suite/storageLifecycleActions';
 

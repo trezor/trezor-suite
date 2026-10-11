@@ -7,9 +7,9 @@ import { type RouterRootState, selectRouterUrl } from '@suite/router';
 import { type TorRootState, isOnionUrl, selectTorBootstrap, torActions } from '@suite/tor';
 import { TorStatus } from '@suite/tor-types';
 import { type NetworksRootState } from '@suite-common/networks';
-import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type BlockchainRootState, selectCustomBackends } from '@suite-common/wallet-core';
+import { type WithServices } from '@trezor/redux-utils';
 
 type ToggleTorThunkState = TorRootState &
     ModalRootState &

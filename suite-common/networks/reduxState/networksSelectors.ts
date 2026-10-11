@@ -1,5 +1,5 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import type { Protocol } from '@trezor/network-module-suite-common-types';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 import { typedObjectFromEntries, typedObjectValues } from '@trezor/utils';
 
 import type { NetworkMetadata } from './NetworkMetadata';

@@ -1,7 +1,7 @@
 import { type LocksRootState, selectIsDeviceLocked } from '@suite/locks';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 const DEVICE_MODULE_PREFIX = '@suite';
 

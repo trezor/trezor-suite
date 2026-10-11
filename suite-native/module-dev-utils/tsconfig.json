@@ -16,9 +16,6 @@
             "path": "../../suite-common/persistent-device-data"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-sync"
         },
         {
@@ -53,6 +50,7 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/requirements" }
     ]
 }

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { isZero } from '@suite-common/wallet-utils';
@@ -22,6 +21,7 @@ import {
 } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type StellarTokenActionsProps = {
     accountKey: AccountKey;

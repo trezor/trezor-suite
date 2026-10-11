@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import type { CryptoId } from 'invity-api';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
@@ -24,6 +23,7 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { TRADING_DEFAULT_CRYPTO_CURRENCY } from '../constants';
 import { type TradingRootState } from '../reducers/tradingCommonReducer';

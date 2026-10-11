@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { getReceiveAddressToAdd } from '@suite-common/address';
 import { selectCurrentFreshAddress } from '@suite-common/receive';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { IconButton } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { addReceiveAddressThunk } from '../receiveThunks';
 import {

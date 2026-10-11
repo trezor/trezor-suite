@@ -1,10 +1,10 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     type AccountKey,
     type BaseStakeType,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
 
 import {
     type SignEthereumStakingTransactionThunkState,

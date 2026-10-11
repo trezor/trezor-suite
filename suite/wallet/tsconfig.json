@@ -6,9 +6,6 @@
             "path": "../../suite-common/message-system"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-sync"
         },
         {
@@ -17,6 +14,7 @@
         { "path": "../intl" },
         { "path": "../metadata" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/device-utils" }
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/redux-utils" }
     ]
 }

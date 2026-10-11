@@ -15,11 +15,11 @@
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/persistent-device-data": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*"
     }
 }

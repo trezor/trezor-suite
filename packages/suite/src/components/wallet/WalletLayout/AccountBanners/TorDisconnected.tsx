@@ -2,9 +2,9 @@ import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { selectIsTorEnabled, selectIsTorLoading } from '@suite/tor';
 import { toggleTorThunk } from '@suite/tor-desktop';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

@@ -1,7 +1,7 @@
 import { type BluetoothService, bluetoothOnDeviceConnectedThunk } from '@suite/bluetooth';
-import { type Dispatch } from '@suite-common/redux-utils';
 import { type ConnectInitDeviceEventHooks } from '@suite-common/suite-types';
 import { DEVICE } from '@trezor/connect';
+import { type Dispatch } from '@trezor/redux-utils';
 
 import { markDeviceAsRecentlyConnectedThunk } from '../actions/wallet/markDeviceAsRecentlyConnectedThunk';
 

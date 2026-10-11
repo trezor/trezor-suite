@@ -9,9 +9,6 @@
             "path": "../../suite-common/bluetooth"
         },
         { "path": "../../suite-common/device" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../../suite-common/thp" },
         {
             "path": "../../suite-common/wallet-core"
@@ -39,6 +36,7 @@
         },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

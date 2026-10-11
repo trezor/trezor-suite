@@ -11,12 +11,12 @@ import {
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Modal } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 

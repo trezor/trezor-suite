@@ -7,7 +7,6 @@ import {
     selectLabelingDataForAccount,
     selectLabelingValueBeingEdited,
 } from '@suite/metadata';
-import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import {
@@ -28,6 +27,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { TagFilledIcon } from '@trezor/icons';
+import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';

@@ -1,11 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { type HandleSellRequestThunkState } from './handleSellRequestThunk';
 import {

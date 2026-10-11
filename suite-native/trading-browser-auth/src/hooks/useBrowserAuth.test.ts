@@ -1,7 +1,6 @@
 import { type StateFromReducersMapObject, type Store, combineReducers } from '@reduxjs/toolkit';
 import { WebBrowserResultType } from 'expo-web-browser';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type TradingType, selectTradingSellLastErrorMessage } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
@@ -21,6 +20,7 @@ import {
     tradingActions,
     tradingSlice,
 } from '@suite-native/trading-state';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { TRADING_URL_DEFAULT_BACK } from '../consts';
 import { useBrowserAuth } from './useBrowserAuth';

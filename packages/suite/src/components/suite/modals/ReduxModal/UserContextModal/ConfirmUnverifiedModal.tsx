@@ -7,10 +7,10 @@ import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ShieldWarningIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 import { type ShowXpubThunkState } from 'src/actions/wallet/publicKeyActions';

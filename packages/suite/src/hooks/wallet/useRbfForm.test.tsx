@@ -6,11 +6,11 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
-import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, initPreloadedState } from '@suite-common/test-utils';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { type ServerInfo } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
 import { ReplaceTxButton } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ReplaceTxButton';

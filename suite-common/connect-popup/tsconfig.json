@@ -5,7 +5,6 @@
         { "path": "../analytics" },
         { "path": "../device" },
         { "path": "../networks" },
-        { "path": "../redux-utils" },
         { "path": "../suite-types" },
         { "path": "../toast-notifications" },
         { "path": "../wallet-config" },
@@ -23,6 +22,7 @@
         {
             "path": "../../networks/stellar/network-stellar-types"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" },

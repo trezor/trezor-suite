@@ -1,6 +1,6 @@
 import { type BankAccount } from 'invity-api';
 
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 import {
     type HandleSellTradeThunkProps,

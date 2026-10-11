@@ -1,6 +1,6 @@
 import { type DeviceRootState, selectDeviceId } from '@suite-common/device';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type WalletDescriptor } from '@trezor/device-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type SuiteSyncQuotaManagerState } from './quotaManagerReducer';
 

@@ -7,10 +7,10 @@ import {
     messageSystemActions,
     selectMessageSystemConfigSource,
 } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { SelectBar } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type ConfigSourceOption = {
     label: string;

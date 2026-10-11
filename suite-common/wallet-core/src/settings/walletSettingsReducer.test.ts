@@ -1,9 +1,9 @@
 import { deviceInitialState } from '@suite-common/device';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type SuspiciousTransactionsFilter } from '@suite-common/wallet-types';
 import { FirmwareType } from '@trezor/device-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import * as walletSettingsActions from './walletSettingsActions';
 import {

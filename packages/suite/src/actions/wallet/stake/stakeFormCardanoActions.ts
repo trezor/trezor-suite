@@ -8,7 +8,6 @@ import {
 } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type AdaPools } from '@suite-common/earn-staking-api';
-import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     EVERSTAKE_POOL_NAMES,
@@ -65,6 +64,7 @@ import {
 import TrezorConnect, { type FeeLevel, PROTO } from '@trezor/connect';
 import { type ErrorCode } from '@trezor/connect-common/src/constants/errors';
 import type { EstimatedFee } from '@trezor/network-solana/types'; // TODO should be Cardano instead?
+import { type WithServices } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 /**

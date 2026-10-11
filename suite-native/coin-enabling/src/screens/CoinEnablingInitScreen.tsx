@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import { events as commonEvents } from '@suite-common/analytics';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AnimatedBox } from '@suite-native/atoms';
@@ -23,6 +22,7 @@ import {
 } from '@suite-native/navigation';
 import { useScreenHeaderSearch } from '@suite-native/search';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import {
     type CoinEnablingFormValues,

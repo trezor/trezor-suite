@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { isRejected } from '@reduxjs/toolkit';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type AccountsRootState,
@@ -21,6 +20,7 @@ import { useFormContext, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 import { type FeesFormValues } from '../../feesFormSchema';

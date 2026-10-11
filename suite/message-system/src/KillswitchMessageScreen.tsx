@@ -10,11 +10,11 @@ import {
     resolveMessageContent,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { injectReloadApp } from '@suite-common/suite-types';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 const APP_RESTART_DELAY_MILLISECONDS = 100;
 

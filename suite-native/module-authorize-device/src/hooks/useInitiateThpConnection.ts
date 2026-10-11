@@ -4,12 +4,12 @@ import { useNavigation } from '@react-navigation/native';
 import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { acquireDeviceThunk, selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProp = NativeStackNavigationProp<AuthorizeDeviceStackParamList>;
 

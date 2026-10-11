@@ -6,7 +6,6 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { events } from '@suite-common/analytics';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldFlowResolvedData,
     type YieldRootState,
@@ -28,6 +27,7 @@ import type {
 } from '@suite-native/navigation';
 import { selectIsTransactionAlreadySigned } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useYieldApprovalReviewNavigation } from './useYieldApprovalReviewNavigation';
 import { useYieldApprovalReviewTransaction } from './useYieldApprovalReviewTransaction';

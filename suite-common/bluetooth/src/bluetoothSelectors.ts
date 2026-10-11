@@ -1,4 +1,4 @@
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { type BluetoothState } from './bluetoothReducer';
 import { type BluetoothDeviceCommon } from './types';

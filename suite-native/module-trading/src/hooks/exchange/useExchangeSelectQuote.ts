@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type ApprovalStatus,
     type TradingRootState,
@@ -30,6 +29,7 @@ import {
 } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { isFullySelectedReceiveAccount } from '../../utils/general/receiveAccountUtils';

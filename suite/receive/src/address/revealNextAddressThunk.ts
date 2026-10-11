@@ -12,7 +12,6 @@ import {
     selectCurrentFreshAddress,
     selectTouchedAddresses,
 } from '@suite-common/receive';
-import { type WithServices } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -21,6 +20,7 @@ import {
     selectPendingAccountAddresses,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { type WithServices } from '@trezor/redux-utils';
 
 type RevealNextAddressThunkState = AccountsRootState &
     TransactionsRootState &

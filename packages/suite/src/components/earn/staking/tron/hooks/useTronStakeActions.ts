@@ -2,7 +2,6 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS,
     type TronFlow,
@@ -21,6 +20,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';

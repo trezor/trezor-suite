@@ -9,9 +9,6 @@
             "path": "../../suite-common/formatters"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-sync"
         },
         {
@@ -63,6 +60,7 @@
         {
             "path": "../../networks/stellar/network-stellar"
         },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

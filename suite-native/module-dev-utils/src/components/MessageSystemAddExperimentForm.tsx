@@ -9,11 +9,11 @@ import {
     selectMessageSystemConfig,
     validateExperimentForm,
 } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Experiments } from '@suite-common/suite-types';
 import { Button, HStack, Select, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm, yup } from '@suite-native/forms';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type ExperimentFormValues = {
     experimentJson: string;

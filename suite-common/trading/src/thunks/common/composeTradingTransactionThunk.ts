@@ -1,7 +1,6 @@
 import { isRejected } from '@reduxjs/toolkit';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeSendFormTransactionFeeLevelsThunkState,
@@ -15,6 +14,7 @@ import {
     type FormStateTrading,
     type GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { buildTradingComposeFormState } from './buildTradingComposeFormState';

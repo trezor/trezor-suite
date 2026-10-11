@@ -4,9 +4,6 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-types"
         },
         { "path": "../../suite-common/thp" },
@@ -20,6 +17,7 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/theme" }
     ]
 }

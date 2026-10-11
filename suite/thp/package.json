@@ -12,7 +12,6 @@
     },
     "dependencies": {
         "@suite-common/device": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/thp": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -21,6 +20,7 @@
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.2.3",
         "react-intl": "^8.1.3",

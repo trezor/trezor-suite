@@ -14,7 +14,7 @@
     "dependencies": {
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*"
+        "@trezor/redux-utils": "workspace:*"
     },
     "devDependencies": {
         "@suite-common/suite-types": "workspace:*",

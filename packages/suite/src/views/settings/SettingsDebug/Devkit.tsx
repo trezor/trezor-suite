@@ -1,8 +1,8 @@
 import { firmwareActions, selectUseDevkit } from '@suite-common/firmware';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

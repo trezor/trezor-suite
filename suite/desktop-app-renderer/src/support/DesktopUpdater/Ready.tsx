@@ -1,9 +1,9 @@
 import { installUpdateThunk } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { DownloadIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 interface ReadyProps {
     hideWindow: () => void;

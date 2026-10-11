@@ -1,6 +1,6 @@
 import { type PayloadAction, type UnknownAction } from '@reduxjs/toolkit';
 
-import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { type ActionTypesDep, createReducerWithExtraDeps } from '@trezor/redux-utils';
 
 import { messageSystemActions } from './messageSystemActions';
 import { type MessageState, type MessageSystemState } from './messageSystemTypes';

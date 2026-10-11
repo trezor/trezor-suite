@@ -7,7 +7,6 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
-import { createThunk } from '@suite-common/redux-utils';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import {
     type TransactionsRootState,
@@ -30,6 +29,7 @@ import TrezorConnect, {
     type EthereumSignTypedDataTypes,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 import { isAscii, isHex, throwError } from '@trezor/utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';

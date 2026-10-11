@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingExchangeSelectedQuote,
     tradingExchangeActions,
@@ -25,6 +24,7 @@ import {
     useTransactionDetails,
 } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConfirmationQuoteDebugView } from '../components/exchange/Confirmation/ConfirmationQuoteDebugView';
 import { ExchangeConfirmationHeader } from '../components/exchange/Confirmation/ExchangeConfirmationHeader';

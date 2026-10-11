@@ -14,10 +14,10 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/networks": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/transfer-uri": "workspace:*",
         "@suite/analytics": "workspace:*",
-        "@trezor/network-module-suite-common-types": "workspace:*"
+        "@trezor/network-module-suite-common-types": "workspace:*",
+        "@trezor/redux-utils": "workspace:*"
     }
 }

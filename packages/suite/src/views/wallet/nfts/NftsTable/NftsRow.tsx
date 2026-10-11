@@ -5,7 +5,6 @@ import { RedactNumericalValue } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
     type TokenInfo,
@@ -42,6 +41,7 @@ import {
     NewspaperIcon,
     PictureFrameIcon,
 } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { HiddenPlaceholder } from 'src/components/suite';

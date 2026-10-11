@@ -5,9 +5,9 @@ import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@su
 import { routerAppChanged } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { firmwareActions } from '@suite-common/firmware';
-import { type Dispatch } from '@suite-common/redux-utils';
 import { forgetDisconnectedDevicesThunk } from '@suite-common/wallet-core';
 import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
+import { type Dispatch } from '@trezor/redux-utils';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { type AppState } from 'src/types/suite';

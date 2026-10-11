@@ -3,7 +3,6 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { getTxAnchor, gotoThunk, selectRouteName, selectRouterApp } from '@suite/router';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectAccounts,
     selectNetworkBlockchainInfo,
@@ -24,6 +23,7 @@ import {
     TransactionNotification,
     type TransactionNotificationType,
 } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';

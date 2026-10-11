@@ -4,7 +4,6 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     selectHasDeviceSuiteSyncError,
@@ -15,6 +14,7 @@ import { Banner } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { suiteSyncErrorHandler } from './suiteSyncErrorHandler';

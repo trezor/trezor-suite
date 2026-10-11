@@ -1,6 +1,5 @@
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { earnOnboardingActions, getEarnOpportunityKey } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Text, VStack } from '@suite-native/atoms';
@@ -13,6 +12,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { EarnConsentsDelegatingCard } from '../../components/earn/EarnConsentsDelegatingCard';

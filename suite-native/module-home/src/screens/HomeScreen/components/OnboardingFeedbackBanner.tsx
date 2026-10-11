@@ -1,13 +1,13 @@
 import { ImageBackground, StyleSheet } from 'react-native';
 
 import { events } from '@suite-common/analytics';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import { setIsOnboardingFeedbackBannerEnabled } from '@suite-native/banners';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const ONBOARDING_FEEDBACK_SURVEY_URL = 'https://satoshilabs.typeform.com/to/fsiLqgmd';

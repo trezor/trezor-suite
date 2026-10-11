@@ -1,6 +1,5 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { type FirmwareStatus, type TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
@@ -14,6 +13,7 @@ import {
     type UiEventFirmwareReconnect,
     type UiRequestConfirmation,
 } from '@trezor/connect';
+import { type ActionTypesDep, createReducerWithExtraDeps } from '@trezor/redux-utils';
 
 import { firmwareActions } from './firmwareActions';
 

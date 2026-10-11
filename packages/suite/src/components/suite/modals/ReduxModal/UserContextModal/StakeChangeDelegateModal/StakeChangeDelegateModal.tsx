@@ -4,7 +4,6 @@ import { FormProvider } from 'react-hook-form';
 import { selectFullSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
@@ -19,6 +18,7 @@ import {
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { BASE_VOTING_PREFERENCE_OPTIONS, VotingPreferenceCard } from 'src/components/earn';
 import { Fees } from 'src/components/wallet/Fees/Fees';

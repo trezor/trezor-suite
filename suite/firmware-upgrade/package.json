@@ -14,7 +14,6 @@
     "dependencies": {
         "@suite-common/device": "workspace:*",
         "@suite-common/firmware": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/router": "workspace:*",
@@ -23,6 +22,7 @@
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0",

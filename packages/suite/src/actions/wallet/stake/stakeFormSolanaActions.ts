@@ -3,7 +3,6 @@ import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type BlockchainRootState,
@@ -23,6 +22,7 @@ import {
     type StakeFormState,
 } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
+import { type WithServices } from '@trezor/redux-utils';
 
 type ComposeTransactionThunkState = BlockchainRootState & SelectedAccountRootState;
 

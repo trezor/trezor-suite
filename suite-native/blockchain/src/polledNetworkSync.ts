@@ -1,6 +1,6 @@
-import { type Dispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FetchAndUpdateAccountThunkState } from '@suite-common/wallet-core';
+import { type Dispatch } from '@trezor/redux-utils';
 
 import { selectShouldPollNetwork } from './blockchainSelectors';
 import { syncAccountsWithBlockchainThunk } from './blockchainThunks';

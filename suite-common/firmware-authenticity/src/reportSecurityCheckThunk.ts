@@ -1,8 +1,8 @@
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type ReportSecurityCheckDep,
     type ReportSecurityCheckParams,
 } from '@suite-common/suite-types';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 const FIRMWARE_AUTHENTICITY_MODULE_PREFIX = '@common/firmware-authenticity';
 

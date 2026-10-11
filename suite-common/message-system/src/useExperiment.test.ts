@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 import { getIntegerInRangeFromString } from '@trezor/utils';
 
 jest.mock('@trezor/utils', () => ({

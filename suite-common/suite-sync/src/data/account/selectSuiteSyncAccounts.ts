@@ -1,7 +1,7 @@
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type SuiteSyncAccount } from '@suite-common/suite-sync-storage';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { typedObjectValues } from '@trezor/utils';
 
 import { type SuiteSyncDataRootState } from '../suiteSyncDataReducer';
