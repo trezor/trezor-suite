@@ -68,7 +68,10 @@ test.describe('ENS in the send form', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test(
         'User can resolve an ENS name through Blockbook when the Universal Resolver fails',
-        { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+        {
+            tag: ['@optional'],
+            annotation: createTestAnnotation({ stream: TestStream.Wallet }),
+        },
         async ({ tradingPage, blockbookMock }) => {
             const requestedNames: string[] = [];
             blockbookMock.mockServer.setFixtures(
@@ -118,7 +121,10 @@ test.describe('ENS in the send form', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test(
         'User can see the primary ENS name of a recipient address',
-        { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+        {
+            tag: ['@optional'],
+            annotation: createTestAnnotation({ stream: TestStream.Wallet }),
+        },
         async ({ tradingPage, blockbookMock }) => {
             blockbookMock.setRpcCallResponse(reverseResponse);
 

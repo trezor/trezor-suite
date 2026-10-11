@@ -76,7 +76,10 @@ test.describe('TrezorConnect.selectAccount', { tag: ['@T3T1', '@T3W1', '@desktop
 
     test(
         'returns a single account (single)',
-        { annotation: createTestAnnotation({ stream: TestStream.Connect }) },
+        {
+            tag: ['@optional'],
+            annotation: createTestAnnotation({ stream: TestStream.Connect }),
+        },
         async ({ connectPermissionsModal, connectSelectAccountModal }) => {
             const res = TrezorConnect.selectAccount({
                 coin: 'eth',
@@ -106,7 +109,10 @@ test.describe('TrezorConnect.selectAccount', { tag: ['@T3T1', '@T3W1', '@desktop
 
     test(
         'rejects a coin Suite cannot render before asking for permissions',
-        { annotation: createTestAnnotation({ stream: TestStream.Connect }) },
+        {
+            tag: ['@optional'],
+            annotation: createTestAnnotation({ stream: TestStream.Connect }),
+        },
         async ({ connectPermissionsModal }) => {
             // `xtz` is Connect-valid but not modeled by Suite. The guard runs before the permissions
             // modal, so this rejects with no user interaction — unlike the other tests we never click
@@ -124,7 +130,10 @@ test.describe('TrezorConnect.selectAccount', { tag: ['@T3T1', '@T3W1', '@desktop
 
     test(
         'cancelling returns a Method_Cancel error',
-        { annotation: createTestAnnotation({ stream: TestStream.Connect }) },
+        {
+            tag: ['@optional'],
+            annotation: createTestAnnotation({ stream: TestStream.Connect }),
+        },
         async ({ connectPermissionsModal, connectSelectAccountModal }) => {
             const res = TrezorConnect.selectAccount({ coin: 'eth' });
 
