@@ -13,13 +13,19 @@ import {
 import { type AccountType, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    type BlockchainRootState,
     type UpdateFiatRatesThunkState,
     accountsActions,
     selectAccountsByNetworkAndDeviceState,
+    selectNetworkBlockchainInfo,
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
-import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
+import {
+    getAccountIdentity,
+    getBackendFromSettings,
+    shouldUseIdentities,
+} from '@suite-common/wallet-utils';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type AccountInfo } from '@trezor/connect';
@@ -46,9 +52,23 @@ const getAccountTypeFromDescriptor = (descriptor: string, symbol: NetworkSymbol)
     return paymentTypeToAccountType[paymentType];
 };
 
-type ImportAccountThunkState = AccountsRootState & TokenDefinitionsRootState & NetworksRootState;
+// Only discovery reports which backend serves an account. An imported one takes the backend the
+// network is configured with, so a direct-RPC account is refreshed and paged like a discovered one.
+const getImportedAccountBackendType = (state: BlockchainRootState, symbol: NetworkSymbol) => {
+    const { type } = getBackendFromSettings(
+        symbol,
+        selectNetworkBlockchainInfo(state, symbol)?.backends,
+    );
 
-type ImportAccountThunkDeps = WithServices<GetTokenDefinitionsEnabledNetworksDep>;
+    return type === 'coinjoin' ? undefined : type;
+};
+
+export type ImportAccountThunkState = AccountsRootState &
+    BlockchainRootState &
+    TokenDefinitionsRootState &
+    NetworksRootState;
+
+export type ImportAccountThunkDeps = WithServices<GetTokenDefinitionsEnabledNetworksDep>;
 
 export const importAccountThunk = createThunk<
     void,
@@ -81,6 +101,7 @@ export const importAccountThunk = createThunk<
                         path: (accountInfo?.path ?? '') as Bip43Path,
                         accountType,
                         symbol,
+                        backendType: getImportedAccountBackendType(getState(), symbol),
                         accountInfo,
                         imported,
                         accountLabel,

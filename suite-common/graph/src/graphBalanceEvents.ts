@@ -10,7 +10,7 @@ import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
-import { isIgnoredBalanceHistoryCoin, isLocalBalanceHistoryCoin } from './constants';
+import { isIgnoredBalanceHistoryAccount, isLocalBalanceHistoryCoin } from './constants';
 import {
     type AccountHistoryMovementItem,
     type AccountItem,
@@ -135,7 +135,7 @@ export const getAccountMovementEvents = async ({
     const tokenAddress = tokensFilter?.[0]; // This is only for graph on detail screen where we have always only one token
 
     const getBalanceHistory = async () => {
-        if (isIgnoredBalanceHistoryCoin(symbol)) {
+        if (isIgnoredBalanceHistoryAccount(account)) {
             return [];
         }
         if (isLocalBalanceHistoryCoin(symbol)) {

@@ -15,6 +15,7 @@ import {
     selectAccountTransactionsWithNulls,
     selectAreAllAccountTransactionsLoaded,
     selectIsPageAlreadyFetched,
+    useDirectRpcHistoryState,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -23,7 +24,7 @@ import {
     groupTransactionsByDate,
     isPending,
 } from '@suite-common/wallet-utils';
-import { Box, useScrollDivider } from '@suite-native/atoms';
+import { Box, ListItemSkeleton, VStack, useScrollDivider } from '@suite-native/atoms';
 import {
     type TokensRootState,
     type TypedTokenTransfer,
@@ -36,6 +37,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { arrayPartition } from '@trezor/utils';
 
+import { OlderHistoryStatus } from './OlderHistoryStatus';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
@@ -158,6 +160,7 @@ export const TransactionList = ({
             selectAccountTransactionsFetchStatus(state, accountKey)?.status,
     );
     const isLoadingTransactions = fetchStatus === 'loading';
+    const directRpcHistoryState = useDirectRpcHistoryState(accountKey);
     const areAllTransactionsLoaded = useSelector(
         (state: TransactionsRootState & AccountsRootState) =>
             selectAreAllAccountTransactionsLoaded(state, accountKey),
@@ -188,6 +191,7 @@ export const TransactionList = ({
     // Page 1 is requested separately until its initial fetch succeeds.
     const initialPageNumber = Math.max(1, Math.floor(transactions.length / txnsPerPage));
     const [page, setPage] = useState(initialPageNumber);
+    const [hasLoadingOlderFailed, setHasLoadingOlderFailed] = useState(false);
     const isFetchingPageRef = useRef(false);
     // The loader and footer must agree when history ends, even if cached counts differ.
     const hasMoreTransactions =
@@ -227,8 +231,10 @@ export const TransactionList = ({
                 setPage(requestedPage);
                 // A successful partial page also unlocks pagination; shared idle status does not.
                 setIsInitialPageLoaded(true);
+                setHasLoadingOlderFailed(false);
             } catch {
-                // TODO handle error state (show retry button or something
+                // Only a step back has a place to show its failure; a failed page keeps the list as it is.
+                setHasLoadingOlderFailed(from !== undefined);
             } finally {
                 isFetchingPageRef.current = false;
             }
@@ -314,6 +320,9 @@ export const TransactionList = ({
     }, [transactions, tokenContract]);
 
     const visibleTransactionCount = data.filter(item => typeof item !== 'string').length;
+    const isHistoryUnscanned = directRpcHistoryState === 'unscanned';
+    const historyCoveredSince =
+        account.networkType === 'ethereum' ? account.misc.historyCoveredSince : undefined;
     const [requestedVisibleCount, setRequestedVisibleCount] = useState<number>(txnsPerPage);
     const shouldLoadMoreTokenTransactions =
         !!tokenContract &&
@@ -347,6 +356,30 @@ export const TransactionList = ({
     };
 
     useFetchMissingTransactionFiatRates({ accountKey, isEnabled: data.length > 0 });
+
+    const getListEmptyComponent = () => {
+        if (isHistoryUnscanned) {
+            return (
+                <VStack spacing="sp8">
+                    <ListItemSkeleton />
+                    <ListItemSkeleton />
+                    <ListItemSkeleton />
+                </VStack>
+            );
+        }
+
+        if (shouldDeferEmptyState) {
+            return null;
+        }
+
+        return (
+            listEmptyComponent ?? (
+                <TransactionsEmptyState
+                    isRecentWindowEmpty={directRpcHistoryState === 'recentWindowEmpty'}
+                />
+            )
+        );
+    };
 
     const renderItem = useCallback(
         ({ item, index }: { item: TransactionListItem; index: number }) => {
@@ -389,19 +422,26 @@ export const TransactionList = ({
                 data={data}
                 renderItem={renderItem}
                 contentContainerStyle={applyStyle(sectionListContainerStyle)}
-                ListEmptyComponent={
-                    shouldDeferEmptyState
-                        ? null
-                        : (listEmptyComponent ?? <TransactionsEmptyState />)
-                }
+                ListEmptyComponent={getListEmptyComponent()}
                 ListHeaderComponent={listHeaderComponent}
                 ListFooterComponent={
                     <TransactionsListFooter
                         hasMoreTransactions={hasMoreTransactions || olderHistoryFrom !== undefined}
                         isOlderHistory={olderHistoryFrom !== undefined}
-                        isLoading={isLoadingTransactions || shouldLoadMoreTokenTransactions}
+                        // The skeleton stands in for the loader until the first scan is done.
+                        isLoading={
+                            !isHistoryUnscanned &&
+                            (isLoadingTransactions || shouldLoadMoreTokenTransactions)
+                        }
                         onButtonPress={handleOnLoadMorePress}
-                    />
+                    >
+                        {olderHistoryFrom !== undefined && (
+                            <OlderHistoryStatus
+                                historyCoveredSince={historyCoveredSince}
+                                hasLoadingFailed={hasLoadingOlderFailed}
+                            />
+                        )}
+                    </TransactionsListFooter>
                 }
                 ListFooterComponentStyle={applyStyle(listFooterStyle)}
                 refreshControl={

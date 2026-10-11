@@ -38,6 +38,7 @@ export const selectAccountItemForGraph = createAccountsMemoizedSelector(
 
         return {
             symbol: account.symbol,
+            backendType: account.backendType,
             descriptor: account.descriptor,
             accountKey: account.key,
             identity: tryGetAccountIdentity(account),

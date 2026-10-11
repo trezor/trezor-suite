@@ -1,8 +1,5 @@
-import {
-    type NetworkDisplaySymbol,
-    type NetworkSymbol,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+import { getNativeAssetIconSymbol } from '@suite-common/icons';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type StakeType,
     type TokenAddress,
@@ -67,13 +64,8 @@ export const TransactionIcon = ({
 }: TransactionIconProps) => {
     const { applyStyle } = useNativeStyles();
 
-    let iconSymbol: NetworkSymbol | NetworkDisplaySymbol | undefined;
-
-    if (contractAddress) {
-        iconSymbol = symbol;
-    } else if (symbol) {
-        iconSymbol = getNetworkDisplaySymbol(symbol);
-    }
+    const iconSymbol =
+        contractAddress || symbol === undefined ? symbol : getNativeAssetIconSymbol(symbol);
 
     const iconName = stakeOperationType
         ? stakeOperationIconMap[stakeOperationType]

@@ -3,16 +3,35 @@ import { Translation } from '@suite-native/intl';
 
 import { NoTransactionsSvg } from './NoTransactionsSvg';
 
-export const TransactionsEmptyState = () => (
+type TransactionsEmptyStateProps = {
+    /** The direct-RPC window is empty while older history is still reachable. */
+    isRecentWindowEmpty?: boolean;
+};
+
+export const TransactionsEmptyState = ({
+    isRecentWindowEmpty = false,
+}: TransactionsEmptyStateProps) => (
     <VStack marginHorizontal="sp16" spacing="sp32">
         <Box alignItems="center">
             <NoTransactionsSvg />
             <VStack alignItems="center">
                 <Text textAlign="center" variant="headline-sm">
-                    <Translation id="transactions.emptyState.title" />
+                    <Translation
+                        id={
+                            isRecentWindowEmpty
+                                ? 'transactions.emptyState.recentWindowTitle'
+                                : 'transactions.emptyState.title'
+                        }
+                    />
                 </Text>
                 <Text textAlign="center" color="contentSecondary">
-                    <Translation id="transactions.emptyState.subtitle" />
+                    <Translation
+                        id={
+                            isRecentWindowEmpty
+                                ? 'transactions.emptyState.recentWindowSubtitle'
+                                : 'transactions.emptyState.subtitle'
+                        }
+                    />
                 </Text>
             </VStack>
         </Box>

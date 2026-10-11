@@ -1,4 +1,5 @@
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { type BackendType, type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { isDirectRpcBackendType } from '@suite-common/wallet-utils';
 import { isArrayMember } from '@trezor/utils';
 
 // Going over 180 will broke graph in mobile app
@@ -33,3 +34,14 @@ const IGNORED_BALANCE_HISTORY_COINS = [
 ] satisfies Array<NetworkSymbol>;
 export const isIgnoredBalanceHistoryCoin = (symbol: NetworkSymbol) =>
     isArrayMember(symbol, IGNORED_BALANCE_HISTORY_COINS);
+
+type IsIgnoredBalanceHistoryAccountParams = {
+    symbol: NetworkSymbol;
+    backendType?: BackendType;
+};
+
+export const isIgnoredBalanceHistoryAccount = ({
+    symbol,
+    backendType,
+}: IsIgnoredBalanceHistoryAccountParams) =>
+    isIgnoredBalanceHistoryCoin(symbol) || isDirectRpcBackendType(backendType);

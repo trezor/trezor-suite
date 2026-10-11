@@ -4,6 +4,7 @@ import { type TokenDefinitionsRootState } from '@suite-common/token-definitions'
 import {
     type AccountsRootState,
     selectAccountByKey,
+    useDirectRpcHistoryState,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
@@ -32,11 +33,14 @@ export const AccountDetailEmptyState = ({
             selectIsUnrecognizedToken(state, accountKey, tokenContract),
     );
 
+    const directRpcHistoryState = useDirectRpcHistoryState(accountKey);
+
     const isPriceCardDisplayed = shallDisplayBaseCurrency && !isUnrecognizedToken;
+    const isRecentWindowEmpty = directRpcHistoryState === 'recentWindowEmpty';
 
     return (
         <VStack spacing="sp24">
-            <TransactionsEmptyState />
+            <TransactionsEmptyState isRecentWindowEmpty={isRecentWindowEmpty} />
             <Box paddingHorizontal="sp16">
                 <AccountDetailActionButtons accountKey={accountKey} tokenContract={tokenContract} />
             </Box>

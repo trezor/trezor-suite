@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type BackendType, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { type BigNumber } from '@trezor/utils';
 
@@ -14,6 +14,7 @@ export type FiatGraphPointWithCryptoBalance = {
 /**
  * Represents an account item in graph
  * @symbol - network symbol
+ * @backendType - optional backend type of the account; a direct-RPC backend serves no balance history
  * @identity - optional identity string for ETH accounts
  * @descriptor - account descriptor
  * @accountKey - account key
@@ -22,6 +23,7 @@ export type FiatGraphPointWithCryptoBalance = {
  */
 export type AccountItem = {
     symbol: NetworkSymbol;
+    backendType?: BackendType;
     identity?: string;
     descriptor: string;
     accountKey: AccountKey;

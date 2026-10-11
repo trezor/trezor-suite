@@ -1,4 +1,6 @@
-import { Box, Button, Loader } from '@suite-native/atoms';
+import { type ReactNode } from 'react';
+
+import { Box, Button, Loader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type TransactionsListFooterProps = {
@@ -6,6 +8,8 @@ type TransactionsListFooterProps = {
     isOlderHistory: boolean;
     isLoading: boolean;
     onButtonPress: () => void;
+    /** Rendered above the button. */
+    children?: ReactNode;
 };
 
 export const TransactionsListFooter = ({
@@ -13,6 +17,7 @@ export const TransactionsListFooter = ({
     isOlderHistory,
     isLoading,
     onButtonPress,
+    children,
 }: TransactionsListFooterProps) => {
     if (isLoading) {
         return (
@@ -20,9 +25,16 @@ export const TransactionsListFooter = ({
                 <Loader />
             </Box>
         );
-    } else if (hasMoreTransactions) {
-        return (
-            <Box paddingTop="sp32" paddingHorizontal="sp16">
+    }
+
+    if (!hasMoreTransactions) {
+        return null;
+    }
+
+    return (
+        <Box paddingTop="sp32" paddingHorizontal="sp16">
+            <VStack spacing="sp12">
+                {children}
                 <Button
                     intent="neutral"
                     priority="secondary"
@@ -33,9 +45,7 @@ export const TransactionsListFooter = ({
                         id={isOlderHistory ? 'transactions.loadOlder' : 'transactions.more'}
                     />
                 </Button>
-            </Box>
-        );
-    }
-
-    return null;
+            </VStack>
+        </Box>
+    );
 };
