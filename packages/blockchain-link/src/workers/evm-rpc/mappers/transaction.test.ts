@@ -1,4 +1,11 @@
-import type { Transaction, TransactionReceipt } from 'viem';
+import {
+    type Transaction,
+    type TransactionReceipt,
+    encodeAbiParameters,
+    parseAbiItem,
+    parseAbiParameters,
+    toEventSelector,
+} from 'viem';
 
 import { mapTransaction } from './transaction';
 import { TRANSFER_TOPIC } from '../history/constants';
@@ -10,6 +17,9 @@ const OTHER = '0x1111111111111111111111111111111111111111';
 const CONTRACT = '0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a';
 const SENTINEL = '0xfffffffffffffffffffffffffffffffffffffffe';
 const NATIVE_VIEW = '0x3600000000000000000000000000000000000000';
+const UNISWAP_V3_SWAP = parseAbiItem(
+    'event Swap(address indexed sender, address indexed recipient, int256 amount0, int256 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick)',
+);
 
 const NATIVE_SOURCES: readonly NativeLogSource[] = [
     { address: SENTINEL, decimals: 18 },
@@ -168,6 +178,37 @@ describe(mapTransaction.name, () => {
 
         expect(result.tokens).toEqual([]);
         expect(result.type).toBe('unknown');
+    });
+
+    it('reads only the transfers of a swap, not the pool event that looks like one', () => {
+        const ROUTER = '0x3333333333333333333333333333333333333333';
+        const POOL = '0x4444444444444444444444444444444444444444';
+        const swapLog = {
+            address: POOL,
+            topics: [toEventSelector(UNISWAP_V3_SWAP), topic(ROUTER), topic(ME)],
+            // The pool paying out 12 units: a negative int256, so 2^256 - 12 read as a uint256.
+            data: encodeAbiParameters(
+                parseAbiParameters('int256, int256, uint160, uint128, int24'),
+                [-12n, 10_000n, 2n ** 96n, 1n, 0],
+            ),
+        } as unknown as TransactionReceipt['logs'][number];
+
+        const result = map(
+            makeTx({ from: ME, to: ROUTER, value: 0n }),
+            makeReceipt({
+                logs: [
+                    transferLog(CONTRACT, ME, POOL, 10_000n),
+                    transferLog(OTHER, POOL, ME, 12n),
+                    swapLog,
+                ],
+            }),
+        );
+
+        expect(result.type).toBe('sent');
+        expect(result.tokens).toEqual([
+            expect.objectContaining({ type: 'sent', amount: '10000' }),
+            expect.objectContaining({ type: 'recv', amount: '12' }),
+        ]);
     });
 
     it('treats a mirrored native transfer as the transaction it belongs to, not a token', () => {
