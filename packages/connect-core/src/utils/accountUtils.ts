@@ -4,7 +4,7 @@ import type { BitcoinNetworkInfo, CoinInfo } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { fromHardenedPathPart, toHardenedPathPart } from '@trezor/crypto-utils';
 
-import { getCoinName } from '../data/coinInfo';
+import { getCoinInfoOfPath, getCoinName } from '../data/coinInfo';
 
 type Bip44Options = {
     purpose?: number;
@@ -96,6 +96,22 @@ export const getAccountLabel = (path: number[], coinInfo: CoinInfo) => {
     const account = fromHardenedPathPart(path4);
 
     return `account #${account + 1}`;
+};
+
+// `crossChain` and the v9 btc fallback derive a key at a path outside `coinInfo` and serialise it
+// in `coinInfo`'s format, and the permission names the network of the path (`getCoinInfoOfPath`).
+// The dialog title names both, so that the user does not read "Export Bitcoin address" under an
+// "Ethereum" permission heading.
+export const getLabelWithPathNetwork = (
+    label: string,
+    path: number[],
+    coinInfo: Readonly<BitcoinNetworkInfo>,
+) => {
+    const pathNetwork = getCoinInfoOfPath(path, coinInfo);
+
+    return pathNetwork.shortcut === coinInfo.shortcut
+        ? label
+        : `${label} (${pathNetwork.name} path)`;
 };
 
 export const getPublicKeyLabel = (path: number[], coinInfo?: BitcoinNetworkInfo) => {

@@ -79,6 +79,48 @@ export const getMiscNetwork = (
     return miscNetworks.find(n => n.slip44 === slip44);
 };
 
+const getBitcoinNetworksOfPath = (path: number[]): Readonly<BitcoinNetworkInfo>[] => {
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const pathElement: number = path[1];
+    const slip44 = fromHardenedPathPart(pathElement);
+
+    return bitcoinNetworks.filter(n => n.slip44 === slip44);
+};
+
+// The network of the key at `path`: `coinInfo` when the path is in its SLIP-44 coin type,
+// otherwise the one network of the path's coin type, if there is exactly one. `crossChain` and the
+// v9 btc fallback derive keys outside `coinInfo`, so their permissions name this network instead. A
+// coin type of no Bitcoin network is resolved against the Ethereum networks, and a coin type
+// unknown to both families falls back to the declared `coinInfo`, so that the permission always
+// names a coin instead of collapsing into a coin-less (device-wide) one.
+//
+// Misc networks are deliberately not resolved here: a permission coin also feeds connect's
+// `enabledNetworks`, where `ada`/`tada` turn on `useCardanoDerivation` and re-create the device
+// session with `Initialize(derive_cardano=true)` — a passphrase re-prompt. These methods derive a
+// secp256k1 key in `coinInfo`'s format and never the misc network's own key, so that cost would
+// buy nothing.
+//
+// A coin type held by several Bitcoin networks (coin type 1: REGTEST, TEST, TBCH, ELEMENTS, tFIRO,
+// tGRS, tLTC, tQTUM, tRVN and TAZ) also falls back to the declared `coinInfo`. There is no
+// principled winner among the siblings — `coins.json` ordering is generated data — so naming one
+// of them would tell the user a network the host never asked for (a Bitcoin Testnet path would read
+// "Bitcoin Regtest access") and leave the permission impossible to pre-declare, because coverage is
+// exact equality.
+export const getCoinInfoOfPath = (
+    path: number[],
+    coinInfo: Readonly<BitcoinNetworkInfo>,
+): Readonly<CoinInfo> => {
+    const pathNetworks = getBitcoinNetworksOfPath(path);
+    const pathNetwork = pathNetworks[0];
+    if (pathNetwork) {
+        return pathNetwork.slip44 === coinInfo.slip44 || pathNetworks.length > 1
+            ? coinInfo
+            : pathNetwork;
+    }
+
+    return getEthereumNetwork(path) ?? coinInfo;
+};
+
 /*
  * Bitcoin networks
  */

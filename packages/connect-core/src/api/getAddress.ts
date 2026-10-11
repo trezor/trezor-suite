@@ -18,8 +18,10 @@ import {
     fixCoinInfoNetwork,
     getBitcoinNetwork,
     getBitcoinNetworkOrThrow,
+    getCoinInfoOfPath,
     getUniqueNetworks,
 } from '../data/coinInfo';
+import { getLabelWithPathNetwork } from '../utils/accountUtils';
 import { getLabel, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 type Params = {
@@ -87,7 +89,10 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
     }
 
     get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_address', this.requiredFirmwareCoins);
+        return this.coinPerms(
+            'read_address',
+            this.params.map(({ proto, coinInfo }) => getCoinInfoOfPath(proto.address_n, coinInfo)),
+        );
     }
 
     get info() {
@@ -97,7 +102,11 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const first: (typeof params)[number] = params[0];
 
-            return getLabel('Export #NETWORK address', first.coinInfo);
+            return getLabelWithPathNetwork(
+                getLabel('Export #NETWORK address', first.coinInfo),
+                first.proto.address_n,
+                first.coinInfo,
+            );
         }
         const requestedNetworks = this.params.map(b => b.coinInfo);
         const uniqNetworks = getUniqueNetworks(requestedNetworks);
