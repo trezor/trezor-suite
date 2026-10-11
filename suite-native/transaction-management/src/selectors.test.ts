@@ -322,6 +322,9 @@ describe('transaction-management selectors', () => {
 
     describe('selectTransactionReviewOutputs', () => {
         const precomposedForm = { outputs: [] } as unknown as FormState;
+        // Button requests are stored per physical-device path (see deviceReducer); the selectors read
+        // the selected device's path bucket.
+        const DEVICE_PATH = 'device-path';
 
         const buildState = (buttonRequests: { code: string }[]): TransactionReviewOutputsState =>
             ({
@@ -333,7 +336,8 @@ describe('transaction-management selectors', () => {
                     },
                 },
                 device: {
-                    selectedDevice: { buttonRequests },
+                    selectedDevice: { path: DEVICE_PATH },
+                    buttonRequestsByPath: { [DEVICE_PATH]: buttonRequests },
                 },
             }) as unknown as TransactionReviewOutputsState;
 
@@ -396,8 +400,9 @@ describe('transaction-management selectors', () => {
             const nextState = {
                 ...state,
                 device: {
-                    selectedDevice: {
-                        buttonRequests: [
+                    selectedDevice: { path: DEVICE_PATH },
+                    buttonRequestsByPath: {
+                        [DEVICE_PATH]: [
                             { code: 'ButtonRequest_ConfirmOutput' },
                             { code: 'ButtonRequest_SignTx' },
                         ],

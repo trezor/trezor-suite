@@ -4,6 +4,7 @@ import { type SelectedAccountRootState, selectedAccountReducer } from '@suite/ac
 import { type LocksRootState, locksReducer } from '@suite/locks';
 import { type State as ModalReducerState, modalReducer } from '@suite/modal';
 import { type TorRootState, TorStatus, torActions, torReducer } from '@suite/tor';
+import { type DeviceReducerState } from '@suite-common/device';
 import {
     type MessageSystemRootState,
     prepareMessageSystemReducer,
@@ -66,7 +67,7 @@ const rootReducer = combineReducers({
     discreetMode: createReducer({ isActive: false }, () => {}),
     locks: locksReducer,
     device: createReducer(
-        { devices: [fixtures.DEVICE], selectedDevice: fixtures.DEVICE },
+        { devices: [fixtures.DEVICE], selectedDevice: fixtures.DEVICE, buttonRequestsByPath: {} },
         () => ({}),
     ),
     modal: modalReducer,
@@ -93,7 +94,11 @@ type State = AccountsRootState &
     MessageSystemRootState & {
         suite: Record<never, never>;
         discreetMode: { isActive: boolean };
-        device: { devices: TrezorDevice[]; selectedDevice: TrezorDevice };
+        device: {
+            devices: TrezorDevice[];
+            selectedDevice: TrezorDevice;
+            buttonRequestsByPath: DeviceReducerState['buttonRequestsByPath'];
+        };
         modal: ModalReducerState;
     };
 type Wallet = Partial<State['wallet']> & {

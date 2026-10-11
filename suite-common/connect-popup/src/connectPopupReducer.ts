@@ -270,6 +270,11 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                         timestamp: Date.now(),
                     };
                 }
+            })
+            .addCase(connectPopupActions.setCallDevicePath, (state, { payload }) => {
+                if (state.activeCall) {
+                    state.activeCall.devicePath = payload;
+                }
             });
     },
 );

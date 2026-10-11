@@ -120,6 +120,7 @@ const createState = (
     device: {
         devices: [selectedDevice],
         selectedDevice,
+        buttonRequestsByPath: {},
     },
     wallet: {
         accounts,
