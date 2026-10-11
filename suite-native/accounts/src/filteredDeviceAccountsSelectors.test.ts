@@ -217,6 +217,7 @@ describe('selectFilteredDeviceAccountListRows', () => {
         expect(selectFilteredDeviceAccountListRows(state, '', true, [])).toEqual([
             { accountKey: btcTaprootAccount.key, isFirst: true, isLast: true },
             { accountKey: ethAccount.key, isFirst: true, isLast: true },
+            { accountKey: adaAccount.key, isFirst: true, isLast: true },
         ]);
     });
 
@@ -267,6 +268,7 @@ describe('selectNetworkFilterOptions', () => {
         expect(selectNetworkFilterOptions(state, true)).toEqual([
             { symbol: 'btc', accountCount: 1 },
             { symbol: 'eth', accountCount: 1 },
+            { symbol: 'ada', accountCount: 1 },
         ]);
     });
 

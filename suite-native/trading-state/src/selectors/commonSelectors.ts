@@ -28,11 +28,7 @@ import {
     selectTradingTradeByOrderId,
     toTokenCryptoId,
 } from '@suite-common/trading';
-import {
-    getNetwork,
-    getNetworkDisplaySymbolName,
-    getNetworkType,
-} from '@suite-common/wallet-config';
+import { getNetwork, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -56,11 +52,7 @@ import {
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { selectAccountLabel, sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts';
-import {
-    FeatureFlag,
-    type FeatureFlagsRootState,
-    selectIsFeatureFlagEnabled,
-} from '@suite-native/feature-flags';
+import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type CombinedLabelingState } from '@suite-native/labeling';
 import {
     type SettingsSliceRootState,
@@ -249,8 +241,6 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             selectCurrentFiatRates,
             selectBaseCurrency,
             selectTradingSupportedSymbols,
-            (state: CombinedSelectorsRootState) =>
-                selectIsFeatureFlagEnabled(state, FeatureFlag.IsCardanoSendEnabled),
             (_state, tradingType: TradingType) => tradingType,
             selectSupportedNetworkSymbols,
         ],
@@ -260,7 +250,6 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             fiatRates,
             localCurrency,
             sellCryptoIds,
-            isCardanoSendEnabled,
             tradingType,
             supportedNetworks,
         ) => {
@@ -269,16 +258,9 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             }
             const sellCryptoIdsSet = new Set(sellCryptoIds);
 
-            // TODO: Remove this filter when Cardano send is implemented (#15068)
-            // Currently filtering out Cardano accounts and tokens from trading until Cardano send is supported
-            const filteredAccounts = accounts.filter(account => {
-                if (!getNetwork(account.symbol).tradeCryptoId) {
-                    return false;
-                }
-                const networkType = getNetworkType(account.symbol);
-
-                return networkType !== 'cardano' || isCardanoSendEnabled;
-            });
+            const filteredAccounts = accounts.filter(
+                account => !!getNetwork(account.symbol).tradeCryptoId,
+            );
 
             const sortedAccounts = sortAccountsByNetworksAndAccountTypes(
                 filteredAccounts,

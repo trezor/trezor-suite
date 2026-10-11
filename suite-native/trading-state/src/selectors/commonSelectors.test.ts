@@ -1012,46 +1012,6 @@ describe('commonSelectors', () => {
             expect(accountAsset?.name).toBe('Base Ethereum');
         });
 
-        it('should filter out Cardano accounts when IsCardanoSendEnabled feature flag is disabled', () => {
-            const testDeviceState: StaticSessionId = 'testDevice@x:0';
-            const cardanoAccount = {
-                ...getCardanoAccount(),
-                visible: true,
-                deviceState: testDeviceState,
-            };
-            const btcAccount = {
-                ...getBtcAccount(),
-                visible: true,
-                deviceState: testDeviceState,
-            };
-            const cleanState = getInitializedTradingState('exchange');
-
-            const stateWithDevice = {
-                networks,
-                wallet: {
-                    trading: cleanState,
-                    accounts: [cardanoAccount, btcAccount],
-                    settings: { localCurrency: 'usd', enabledNetworks: ['ada', 'btc'] },
-                    transactions: { transactions: {} },
-                },
-                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
-                tokenDefinitions: {},
-                fiat: { rates: {}, current: 'usd' },
-                featureFlags: {
-                    ...featureFlagsInitialState,
-                    [FeatureFlag.IsCardanoSendEnabled]: false,
-                },
-            } as any;
-
-            const result = selectAccountsWithTokensToSellSectionListByTradingType(
-                stateWithDevice,
-                'exchange',
-            );
-
-            expect(result.length).toBe(1);
-            expect(result[0]?.sectionData.symbol).toBe('btc');
-        });
-
         it('should filter out accounts whose network has no tradeCryptoId', () => {
             const testDeviceState: StaticSessionId = 'test-device@x:0';
             const regtestAccount = {
@@ -1093,48 +1053,6 @@ describe('commonSelectors', () => {
 
             expect(result.length).toBe(1);
             expect(result[0]?.sectionData.symbol).toBe('btc');
-        });
-
-        it('should include Cardano accounts when IsCardanoSendEnabled feature flag is enabled', () => {
-            const testDeviceState: StaticSessionId = 'testDevice@x:0';
-            const cardanoAccount = {
-                ...getCardanoAccount(),
-                visible: true,
-                deviceState: testDeviceState,
-            };
-            const btcAccount = {
-                ...getBtcAccount(),
-                visible: true,
-                deviceState: testDeviceState,
-            };
-            const cleanState = getInitializedTradingState('exchange');
-
-            const stateWithDevice = {
-                networks,
-                wallet: {
-                    trading: cleanState,
-                    accounts: [cardanoAccount, btcAccount],
-                    settings: { localCurrency: 'usd', enabledNetworks: ['ada', 'btc'] },
-                    transactions: { transactions: {} },
-                },
-                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
-                tokenDefinitions: {},
-                fiat: { rates: {}, current: 'usd' },
-                featureFlags: {
-                    ...featureFlagsInitialState,
-                    [FeatureFlag.IsCardanoSendEnabled]: true,
-                },
-            } as any;
-
-            const result = selectAccountsWithTokensToSellSectionListByTradingType(
-                stateWithDevice,
-                'exchange',
-            );
-
-            expect(result.length).toBe(2);
-            const symbols = result.map(section => section.sectionData.symbol);
-            expect(symbols).toContain('btc');
-            expect(symbols).toContain('ada');
         });
 
         it('should handle contractIds as case insensitive', () => {

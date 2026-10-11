@@ -1,6 +1,5 @@
 import { type AccountItem } from '@suite-common/graph';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -16,11 +15,6 @@ import {
     isStellarContractToken,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import {
-    FeatureFlag,
-    type FeatureFlagsRootState,
-    selectIsFeatureFlagEnabled,
-} from '@suite-native/feature-flags';
 import { type AccountOverviewTab } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { deepEqual } from '@trezor/utils';
@@ -92,19 +86,4 @@ export const selectHasAccountOrTokenSpendableBalance = (
     }
 
     return isPositiveBalance(account.availableBalance);
-};
-
-export const selectIsNetworkSendFlowEnabled = (
-    state: FeatureFlagsRootState,
-    symbol?: NetworkSymbol,
-) => {
-    if (!symbol) return false;
-    const networkType = getNetworkType(symbol);
-
-    const isCardanoSendEnabled = selectIsFeatureFlagEnabled(
-        state,
-        FeatureFlag.IsCardanoSendEnabled,
-    );
-
-    return networkType !== 'cardano' || isCardanoSendEnabled;
 };

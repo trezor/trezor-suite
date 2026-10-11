@@ -9,7 +9,6 @@ import {
 const featureFlagsTitleMap = {
     [FeatureFlagEnum.AreDebugOnlyNetworksEnabled]: '🧪 Debug only networks',
     [FeatureFlagEnum.AreExperimentalOnlyNetworksEnabled]: '🧪 Experimental only networks',
-    [FeatureFlagEnum.IsCardanoSendEnabled]: 'Cardano send',
     [FeatureFlagEnum.IsDebugKeysAllowed]: 'Device Auth Check Debug Keys',
     [FeatureFlagEnum.IsTradingResidenceCheckEnabled]: '💰 Trading Residence Check',
     [FeatureFlagEnum.IsTradingDebugEnabled]: '💰 Trading Debug Mode',
