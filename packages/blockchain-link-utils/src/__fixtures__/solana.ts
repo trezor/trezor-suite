@@ -1,5 +1,6 @@
 import {
     STAKE_PROGRAM_PUBLIC_KEY,
+    TOKEN_2022_PROGRAM_PUBLIC_KEY,
     TOKEN_PROGRAM_PUBLIC_KEY,
 } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -27,6 +28,13 @@ const instructions = {
     tokenTransferNotParsed: {
         program: 'spl-token',
         programId: TOKEN_PROGRAM_PUBLIC_KEY,
+    },
+    tokenTransferCheckedWithFee: {
+        parsed: {
+            type: 'transferCheckedWithFee',
+        },
+        program: 'spl-token',
+        programId: TOKEN_2022_PROGRAM_PUBLIC_KEY,
     },
     tokenTransfer: {
         parsed: {
@@ -587,6 +595,37 @@ export const fixtures = {
             expectedOutput: 'sent',
         },
         {
+            description:
+                'should return "self" for a transferCheckedWithFee token self-transfer paid by the account',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: {
+                            accountKeys: [{ pubkey: 'myAddress' }],
+                            instructions: [instructions.tokenTransferCheckedWithFee],
+                        },
+                    },
+                    meta: { fee: 5 },
+                },
+                effects: [],
+                accountAddress: 'myAddress',
+                tokenEffects: [
+                    {
+                        type: 'self',
+                        standard: 'SPL',
+                        from: 'myAddress',
+                        to: 'myAddress',
+                        contract: 'someMint',
+                        decimals: 6,
+                        name: 'someMint',
+                        symbol: 'someMint',
+                        amount: '100',
+                    },
+                ],
+            },
+            expectedOutput: 'self',
+        },
+        {
             description: 'should return "self" if it matches a self-transaction with fee',
             input: {
                 transaction: {
@@ -1101,6 +1140,122 @@ export const fixtures = {
                     name: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
                     symbol: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
                     amount: '700',
+                },
+            ],
+        },
+        {
+            description:
+                'parses a received Token-2022 transferCheckedWithFee transfer without the withheld fee',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: {
+                            accountKeys: [
+                                { pubkey: 'senderAddress' },
+                                { pubkey: 'myTokenAccount' },
+                            ],
+                            instructions: [
+                                {
+                                    parsed: {
+                                        info: {
+                                            authority: 'senderAddress',
+                                            destination: 'myTokenAccount',
+                                            feeAmount: { amount: '1000', decimals: 6 },
+                                            mint: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                                            source: 'senderTokenAccount',
+                                            tokenAmount: { amount: '100000000', decimals: 6 },
+                                        },
+                                        type: 'transferCheckedWithFee',
+                                    },
+                                    program: 'spl-token',
+                                    programId: TOKEN_2022_PROGRAM_PUBLIC_KEY,
+                                },
+                            ],
+                        },
+                    },
+                    meta: {
+                        preTokenBalances: [],
+                        postTokenBalances: [
+                            { accountIndex: 1, uiTokenAmount: { amount: '99999000' } },
+                        ],
+                    },
+                },
+                accountAddress: 'myAddress',
+                map: sampleMintToDetailMap,
+                tokenAccountsInfos: [
+                    {
+                        address: 'myTokenAccount',
+                        mint: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                        decimals: 6,
+                    },
+                ],
+            },
+            expectedOutput: [
+                {
+                    type: 'recv',
+                    standard: 'SPL',
+                    from: 'senderAddress',
+                    to: 'myAddress',
+                    contract: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    decimals: 6,
+                    name: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    symbol: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    amount: '99999000',
+                },
+            ],
+        },
+        {
+            description: 'parses a sent Token-2022 transferCheckedWithFee transfer',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: {
+                            accountKeys: [
+                                { pubkey: 'myAddress' },
+                                { pubkey: 'myTokenAccount' },
+                                { pubkey: 'recipientTokenAccount' },
+                            ],
+                            instructions: [
+                                {
+                                    parsed: {
+                                        info: {
+                                            authority: 'myAddress',
+                                            destination: 'recipientTokenAccount',
+                                            feeAmount: { amount: '1000', decimals: 6 },
+                                            mint: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                                            source: 'myTokenAccount',
+                                            tokenAmount: { amount: '100000000', decimals: 6 },
+                                        },
+                                        type: 'transferCheckedWithFee',
+                                    },
+                                    program: 'spl-token',
+                                    programId: TOKEN_2022_PROGRAM_PUBLIC_KEY,
+                                },
+                            ],
+                        },
+                    },
+                },
+                accountAddress: 'myAddress',
+                map: sampleMintToDetailMap,
+                tokenAccountsInfos: [
+                    {
+                        address: 'myTokenAccount',
+                        mint: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                        decimals: 6,
+                    },
+                ],
+            },
+            expectedOutput: [
+                {
+                    type: 'sent',
+                    standard: 'SPL',
+                    from: 'myAddress',
+                    to: 'recipientTokenAccount',
+                    contract: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    decimals: 6,
+                    name: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    symbol: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    amount: '100000000',
                 },
             ],
         },

@@ -139,6 +139,12 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
         return (accountInfo.data.parsed?.info as { owner?: string })?.owner ?? address;
     };
 
+    // A token transfer derived from a balance change has no known counterparty and leaves it empty.
+    const getTransferPartyAddress = async (transferParty: string) =>
+        transferParty && transferParty !== payload.descriptor
+            ? await getATAOwnerAddress(address(transferParty))
+            : transferParty;
+
     const getTransactionPage = async (
         txIds: Signature[],
         tokenAccountsInfos: SolanaTokenAccountInfo[],
@@ -166,14 +172,8 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
                 const tokens = await Promise.all(
                     tx.tokens.map(async transfer => {
                         // token account address is derived from the wallet address who is owner of that account
-                        const from =
-                            transfer.from !== payload.descriptor
-                                ? await getATAOwnerAddress(address(transfer.from))
-                                : transfer.from;
-                        const to =
-                            transfer.to !== payload.descriptor
-                                ? await getATAOwnerAddress(address(transfer.to))
-                                : transfer.to;
+                        const from = await getTransferPartyAddress(transfer.from);
+                        const to = await getTransferPartyAddress(transfer.to);
 
                         return {
                             ...transfer,
