@@ -17,7 +17,7 @@ export interface CoinjoinRoundOptions {
     network: Network;
     signal: AbortSignal;
     coordinatorName: string;
-    coordinatorUrl: string;
+    coordinatorUrl?: string;
     middlewareUrl: string;
     logger: Logger;
     setSessionPhase: (event: SessionPhaseEvent) => void;

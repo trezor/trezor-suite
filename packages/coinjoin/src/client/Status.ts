@@ -208,19 +208,22 @@ export class Status extends TypedEmitter<StatusEvents> {
     }
 
     private async getVersion() {
-        const version = await coordinatorRequest<coordinator.SoftwareVersion>(
-            'api/Software/versions',
-            undefined,
-            {
-                method: 'GET',
-                baseUrl: this.settings.wabisabiBackendUrl,
-                signal: this.abortController.signal,
-                identity: this.identities[0],
-                attempts: 3, // schedule 3 attempts on start
-            },
-        )
-            .then(patchResponse)
-            .catch(() => undefined);
+        const { wabisabiBackendUrl } = this.settings;
+        const version = wabisabiBackendUrl
+            ? await coordinatorRequest<coordinator.SoftwareVersion>(
+                  'api/Software/versions',
+                  undefined,
+                  {
+                      method: 'GET',
+                      baseUrl: wabisabiBackendUrl,
+                      signal: this.abortController.signal,
+                      identity: this.identities[0],
+                      attempts: 3, // schedule 3 attempts on start
+                  },
+              )
+                  .then(patchResponse)
+                  .catch(() => undefined)
+            : undefined;
 
         return {
             majorVersion: version?.BackenMajordVersion ?? '0',
@@ -230,6 +233,10 @@ export class Status extends TypedEmitter<StatusEvents> {
     }
 
     async start() {
+        if (!this.settings.coordinatorUrl) {
+            return { success: false as const, error: 'Coordinator url is not set' };
+        }
+
         this.abortController = new AbortController();
         this.enabled = true;
 
