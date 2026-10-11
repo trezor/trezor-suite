@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
+import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
 
 import { useOnboarding, useSelector } from 'src/hooks/suite';

@@ -17,9 +17,6 @@
         { "path": "../../suite-common/icons" },
         { "path": "../../suite-common/jsonl" },
         {
-            "path": "../../suite-common/suite-constants"
-        },
-        {
             "path": "../../suite-common/suite-types"
         },
         {
@@ -33,6 +30,7 @@
         },
         { "path": "../asset-utils" },
         { "path": "../components" },
+        { "path": "../device" },
         { "path": "../device-utils" },
         { "path": "../env-utils" },
         { "path": "../icons" },

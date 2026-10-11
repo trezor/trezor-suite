@@ -156,6 +156,7 @@
         "@trezor/connect-common": "workspace:^",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
+        "@trezor/device": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",

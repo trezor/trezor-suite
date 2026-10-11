@@ -7,10 +7,10 @@
         },
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/redux-utils"
+            "path": "../../suite-common/device-authenticity"
         },
         {
-            "path": "../../suite-common/suite-constants"
+            "path": "../../suite-common/redux-utils"
         },
         {
             "path": "../../suite-common/suite-types"
