@@ -141,7 +141,13 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
         (isLegacyLabelingVisible ? outputLabels?.[utxo.txid]?.[utxo.vout] : undefined);
 
     return (
-        <GhostContainer onClick={handleCheckbox} padding={12} margin={{ horizontal: -12 }} as="div">
+        <GhostContainer
+            isDisabled={isDisabled}
+            onClick={handleCheckbox}
+            padding={12}
+            margin={{ horizontal: -12 }}
+            as="div"
+        >
             <Row gap={24} width="100%">
                 <Tooltip content={unspendableTooltip}>
                     <Checkbox
@@ -151,73 +157,79 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                         onClick={e => e.stopPropagation()}
                     />
                 </Tooltip>
-                <Column flex="1" gap={0}>
-                    <Row gap={12} justifyContent="space-between">
-                        <Text typographyStyle="body-md">
-                            <Labeling
-                                deviceStaticSessionId={account.deviceState}
-                                payload={{
-                                    type: 'addressLabel',
-                                    entityKey: account.key,
-                                    defaultValue: utxo.address,
-                                    accountDescriptor: account.descriptor,
-                                    networkSymbol: account.symbol,
-                                }}
-                                displayValue={<Address value={utxo.address} isTruncated />}
-                                placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
-                                maxWidth={350}
-                                minHeight={28}
-                                gap={6}
-                                leftAddon={
-                                    <>
-                                        {isPendingTransaction && (
-                                            <Tooltip
-                                                content={
-                                                    <Translation id="TR_IN_PENDING_TRANSACTION" />
-                                                }
-                                            >
-                                                <Icon
-                                                    as={ClockIcon}
-                                                    intent="neutral"
-                                                    priority="secondary"
-                                                    size={16}
-                                                />
-                                            </Tooltip>
-                                        )}
-                                        {coinjoinUnavailableMessage && (
-                                            <Tooltip content={coinjoinUnavailableMessage}>
-                                                <Icon
-                                                    as={XCircleIcon}
-                                                    intent="neutral"
-                                                    priority="secondary"
-                                                    size={16}
-                                                />
-                                            </Tooltip>
-                                        )}
-                                        {isChangeAddress && (
-                                            <Tooltip
-                                                content={
-                                                    <Translation id="TR_CHANGE_ADDRESS_TOOLTIP" />
-                                                }
-                                            >
-                                                <Icon
-                                                    as={ChangeIcon}
-                                                    intent="neutral"
-                                                    priority="secondary"
-                                                    size={16}
-                                                />
-                                            </Tooltip>
-                                        )}
-                                    </>
-                                }
-                            >
-                                {addressLabel}
-                            </Labeling>
+                <Column flex="1" gap={0} minWidth={0}>
+                    {/* When the address and amount don't fit on one line (narrow window, long label),
+                    the amount wraps below instead of being clipped by the Card. */}
+                    <Row columnGap={12} flexWrap="wrap" justifyContent="space-between">
+                        <Text typographyStyle="body-md" as="div">
+                            <Row>
+                                <Labeling
+                                    deviceStaticSessionId={account.deviceState}
+                                    payload={{
+                                        type: 'addressLabel',
+                                        entityKey: account.key,
+                                        defaultValue: utxo.address,
+                                        accountDescriptor: account.descriptor,
+                                        networkSymbol: account.symbol,
+                                    }}
+                                    displayValue={<Address value={utxo.address} isTruncated />}
+                                    placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
+                                    maxWidth={350}
+                                    minHeight={28}
+                                    gap={6}
+                                    leftAddon={
+                                        <>
+                                            {isPendingTransaction && (
+                                                <Tooltip
+                                                    content={
+                                                        <Translation id="TR_IN_PENDING_TRANSACTION" />
+                                                    }
+                                                >
+                                                    <Icon
+                                                        as={ClockIcon}
+                                                        intent="neutral"
+                                                        priority="secondary"
+                                                        size={16}
+                                                    />
+                                                </Tooltip>
+                                            )}
+                                            {coinjoinUnavailableMessage && (
+                                                <Tooltip content={coinjoinUnavailableMessage}>
+                                                    <Icon
+                                                        as={XCircleIcon}
+                                                        intent="neutral"
+                                                        priority="secondary"
+                                                        size={16}
+                                                    />
+                                                </Tooltip>
+                                            )}
+                                            {isChangeAddress && (
+                                                <Tooltip
+                                                    content={
+                                                        <Translation id="TR_CHANGE_ADDRESS_TOOLTIP" />
+                                                    }
+                                                >
+                                                    <Icon
+                                                        as={ChangeIcon}
+                                                        intent="neutral"
+                                                        priority="secondary"
+                                                        size={16}
+                                                    />
+                                                </Tooltip>
+                                            )}
+                                        </>
+                                    }
+                                >
+                                    {addressLabel}
+                                </Labeling>
+                            </Row>
                         </Text>
-                        <FormattedCryptoAmount
-                            value={formatNetworkAmount(utxo.amount, account.symbol)}
-                            symbol={account.symbol}
-                        />
+                        <Text textWrap="nowrap" margin={{ left: 'auto' }}>
+                            <FormattedCryptoAmount
+                                value={formatNetworkAmount(utxo.amount, account.symbol)}
+                                symbol={account.symbol}
+                            />
+                        </Text>
                     </Row>
                     <Row justifyContent="space-between" gap={12}>
                         <InfoSegments

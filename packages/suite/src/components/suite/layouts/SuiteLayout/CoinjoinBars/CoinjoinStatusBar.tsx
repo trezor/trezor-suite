@@ -18,9 +18,12 @@ import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useSelector } from 'src/hooks/suite';
 
 const SPACING = 6;
+// Lines the bar content up with the page content below it.
+const HORIZONTAL_PADDING = 16;
 
 const ViewText = styled.div`
-    margin-left: auto;
+    flex-shrink: 0;
+    padding-left: ${SPACING}px;
     color: ${({ theme }) => theme.contentSecondary};
     transition: transform 0.15s ease-in-out;
 `;
@@ -30,7 +33,7 @@ const Container = styled.div<{ $isClickable: boolean }>`
     align-self: stretch;
     align-items: center;
     height: 28px;
-    padding: 0 ${SPACING}px;
+    padding: 0 ${HORIZONTAL_PADDING}px;
     background: ${({ theme }) => theme.surfaceFillSunken};
     border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     ${typography['body-xs']}
@@ -39,6 +42,7 @@ const Container = styled.div<{ $isClickable: boolean }>`
         $isClickable &&
         css`
             cursor: pointer;
+            -webkit-app-region: no-drag;
 
             &:hover {
                 background: ${theme.surfaceFillPage};
@@ -50,12 +54,18 @@ const Container = styled.div<{ $isClickable: boolean }>`
         `}
 `;
 
-const StatusText = styled.span`
-    color: ${({ theme }) => theme.contentBrand};
+// The bar has a fixed height, so on narrow windows the text is truncated instead of wrapped.
+const Content = styled.div`
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: ${({ theme }) => theme.contentSecondary};
 `;
 
-const Note = styled.span`
-    color: ${({ theme }) => theme.contentSecondary};
+const StatusText = styled.span`
+    color: ${({ theme }) => theme.contentBrand};
 `;
 
 const Separator = styled.span`
@@ -143,42 +153,50 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
         >
             <ProgressPie valueInPercents={sessionProgress} margin={{ right: 8 }} />
 
-            <StatusText>
-                {getSessionStatusMessage()}
+            <Content>
+                <StatusText>
+                    {getSessionStatusMessage()}
 
-                {sessionDeadline && (
+                    {sessionDeadline && (
+                        <>
+                            <Separator>•</Separator>
+                            <CountdownTimer
+                                deadline={sessionDeadline}
+                                unitDisplay="long"
+                                minUnit="hour"
+                                minUnitValue={roundsDurationInHours}
+                                message="TR_COINJOIN_SESSION_COUNTDOWN_PLURAL"
+                            />
+                        </>
+                    )}
+                </StatusText>
+
+                {roundPhase !== undefined && !paused && roundPhaseDeadline && (
                     <>
                         <Separator>•</Separator>
-                        <CountdownTimer
-                            deadline={sessionDeadline}
-                            unitDisplay="long"
-                            minUnit="hour"
-                            minUnitValue={roundsDurationInHours}
-                            message="TR_COINJOIN_SESSION_COUNTDOWN_PLURAL"
+                        {/* The overtime copy is only the time value, not a replacement for the sentence. */}
+                        <Translation
+                            id="TR_COINJOIN_ROUND_COUNTDOWN_PLURAL"
+                            values={{
+                                value: (
+                                    <CountdownTimer
+                                        isApproximate
+                                        deadline={roundPhaseDeadline}
+                                        pastDeadlineMessage="TR_COINJOIN_ROUND_COUNTDOWN_OVERTIME"
+                                    />
+                                ),
+                            }}
                         />
                     </>
                 )}
-            </StatusText>
 
-            {roundPhase !== undefined && !paused && roundPhaseDeadline && (
-                <Note>
-                    <Separator>•</Separator>
-
-                    <CountdownTimer
-                        isApproximate
-                        deadline={roundPhaseDeadline}
-                        message="TR_COINJOIN_ROUND_COUNTDOWN_PLURAL"
-                        pastDeadlineMessage="TR_COINJOIN_ROUND_COUNTDOWN_OVERTIME"
-                    />
-                </Note>
-            )}
-
-            {!isSingle && (
-                <Note>
-                    <Separator>•</Separator>
-                    <WalletLabeling device={relatedDevice} shouldUseDeviceLabel />
-                </Note>
-            )}
+                {!isSingle && (
+                    <>
+                        <Separator>•</Separator>
+                        <WalletLabeling device={relatedDevice} shouldUseDeviceLabel />
+                    </>
+                )}
+            </Content>
 
             {isStatusBarClickable && (
                 <ViewText>

@@ -61,5 +61,12 @@ export const CoinjoinStatusMessage = ({ accountKey }: CoinjoinStatusMessageProps
         }
     };
 
-    return <Cointainer>{getStatusMessage()}</Cointainer>;
+    const statusMessage = getStatusMessage();
+
+    // An empty reserved box would push the Stop button of a paused session away from the wheel.
+    if (!statusMessage) {
+        return null;
+    }
+
+    return <Cointainer>{statusMessage}</Cointainer>;
 };

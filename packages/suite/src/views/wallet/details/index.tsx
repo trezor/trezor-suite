@@ -29,7 +29,6 @@ import { Bip329Labels } from '../labels/Bip329Labels';
 const Heading = styled.h3`
     color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm-strong']}
-    margin: 14px 0 4px;
     text-transform: uppercase;
 `;
 
@@ -44,7 +43,7 @@ const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowPr
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 
     return (
-        <ContentFlex gap={40} justifyContent="space-between">
+        <ContentFlex gap={isContentBelowBreakpoint ? 16 : 40} justifyContent="space-between">
             <InfoItem
                 label={<Translation id={title} />}
                 typographyStyle="body-md"
@@ -100,12 +99,12 @@ const Details = () => {
     return (
         <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>
             {isCoinjoinAccount && (
-                <>
+                <Column gap={8}>
                     <Heading>
                         <Translation id="TR_COINJOIN_SETUP_HEADING" />
                     </Heading>
                     <CoinjoinSetup accountKey={account.key} />
-                </>
+                </Column>
             )}
 
             <Card data-testid="@wallet/account-details">
@@ -161,7 +160,14 @@ const Details = () => {
                             </DetailsRow>
                         )
                     ) : (
-                        <RescanAccount account={account} />
+                        <DetailsRow
+                            title="TR_COINJOIN_ACCOUNT_RESCAN_TITLE"
+                            description={
+                                <Translation id="TR_COINJOIN_ACCOUNT_RESCAN_DESCRIPTION" />
+                            }
+                        >
+                            <RescanAccount account={account} />
+                        </DetailsRow>
                     )}
                     {account.networkType === 'ethereum' && (
                         <DetailsRow

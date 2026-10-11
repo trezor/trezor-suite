@@ -14,9 +14,10 @@ export const AccountItemSkeleton = () => {
                 gap={16}
                 justifyContent="center"
                 alignItems="center"
+                margin={{ vertical: 8 }}
                 data-testid="@account-menu/account-item-skeleton"
             >
-                <Skeleton type="circle" size={24} />
+                <Skeleton type="circle" size={24} animate={shouldAnimate} />
             </Row>
         );
     }

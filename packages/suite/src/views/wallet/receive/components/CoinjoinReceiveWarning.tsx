@@ -1,7 +1,7 @@
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { Banner, Column, H4 } from '@trezor/components';
+import { Banner, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
 import { hideCoinjoinReceiveWarning } from 'src/actions/suite/suiteActions';
@@ -18,21 +18,17 @@ export const CoinjoinReceiveWarning = () => {
     return (
         <Banner
             icon
+            title={<Translation id="TR_COINJOIN_RECEIVE_WARNING_TITLE" />}
             rightContent={
                 <Banner.Button onClick={() => dispatch(hideCoinjoinReceiveWarning())}>
                     <Translation id="TR_GOT_IT" />
                 </Banner.Button>
             }
             description={
-                <>
-                    <H4>
-                        <Translation id="TR_COINJOIN_RECEIVE_WARNING_TITLE" />
-                    </H4>
-                    <Column>
-                        <Translation id="TR_COINJOIN_CEX_WARNING" />
-                        <Translation id="TR_UNECO_COINJOIN_RECEIVE_WARNING" />
-                    </Column>
-                </>
+                <Column>
+                    <Translation id="TR_COINJOIN_CEX_WARNING" />
+                    <Translation id="TR_UNECO_COINJOIN_RECEIVE_WARNING" />
+                </Column>
             }
         />
     );

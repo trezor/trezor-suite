@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import styled from 'styled-components';
-
 import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -35,12 +33,6 @@ import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountL
 import { UtxoSearch } from './UtxoSearch';
 import { UtxoSelectionList } from './UtxoSelectionList/UtxoSelectionList';
 import { UtxoSortingSelect } from './UtxoSortingSelect';
-
-const Empty = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
-    margin-bottom: 12px;
-    padding: 12px 0;
-`;
 
 type CoinControlProps = {
     close: () => void;
@@ -244,9 +236,12 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     />
                 )}
                 {!hasEligibleUtxos && (
-                    <Empty>
-                        <Translation id="TR_NO_SPENDABLE_UTXOS" />
-                    </Empty>
+                    <>
+                        <Paragraph>
+                            <Translation id="TR_NO_SPENDABLE_UTXOS" />
+                        </Paragraph>
+                        {!!dustUtxosOnPage.length && <Divider margin={0} />}
+                    </>
                 )}
                 {!!dustUtxosOnPage.length && (
                     <UtxoSelectionList

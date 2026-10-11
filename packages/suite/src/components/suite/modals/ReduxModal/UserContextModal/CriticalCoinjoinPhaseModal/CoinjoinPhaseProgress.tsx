@@ -1,7 +1,7 @@
 import { type CoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { RoundPhase } from '@trezor/coinjoin';
-import { Column, StepList, type StepListItemState } from '@trezor/components';
+import { Column, StepList, type StepListItemState, Text } from '@trezor/components';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
@@ -33,11 +33,13 @@ export const CoinjoinPhaseProgress = ({
             ))}
         </StepList>
         {phaseDeadline && (
-            <CountdownTimer
-                isApproximate
-                deadline={phaseDeadline}
-                pastDeadlineMessage="TR_TIMER_PAST_DEADLINE"
-            />
+            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                <CountdownTimer
+                    isApproximate
+                    deadline={phaseDeadline}
+                    pastDeadlineMessage="TR_TIMER_PAST_DEADLINE"
+                />
+            </Text>
         )}
     </Column>
 );
