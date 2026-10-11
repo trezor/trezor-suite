@@ -354,14 +354,16 @@ export class TradingPage {
             await selectReceiveAddress();
         }
 
-        const quotesResponsePromise = this.page.waitForResponse(tradeEndpoint.swapQuotes);
         await expect(this.inputs.receiveAmount).toHaveText('0.0');
+        const quotesResponsePromise = this.page.waitForResponse(tradeEndpoint.swapQuotes);
         await this.inputs.cryptoAmount.fill(amount);
-        await expect(
-            this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
-            'Insufficient funds in the account to run swap flow test. Please contact the "tech_qa" Slack group immediately.',
-        ).toBeHidden();
-        await quotesResponsePromise;
+        await Promise.all([
+            expect(
+                this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
+                'Insufficient funds in the account to run swap flow test. Please contact the "tech_qa" Slack group immediately.',
+            ).toBeHidden(),
+            quotesResponsePromise,
+        ]);
         await this.quotes.waitForSync();
     }
 

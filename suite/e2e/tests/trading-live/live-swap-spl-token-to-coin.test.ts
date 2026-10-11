@@ -91,7 +91,7 @@ test.describe(
             });
 
             await test.step('Confirm the Swap trade', async () => {
-                await expect(tradingPage.inputs.youPayAssetSymbol).toHaveText(sendTokenSymbol);
+                await expect(tradingPage.inputs.youGetAssetSymbol).toHaveText(sendTokenSymbol);
                 await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
             });
 
