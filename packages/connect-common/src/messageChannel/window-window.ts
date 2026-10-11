@@ -18,6 +18,7 @@ export class WindowWindowChannel<
     },
 > extends AbstractMessageChannel<IncomingMessages> {
     _windowHere: Window;
+    _windowPeer: () => Window | undefined;
     _listener: typeof WindowWindowChannel.prototype.listener;
     _origin: string;
 
@@ -44,6 +45,7 @@ export class WindowWindowChannel<
 
         this._listener = this.listener.bind(this);
         this._windowHere = windowHere;
+        this._windowPeer = windowPeer;
         this._origin = origin;
         this.connect();
     }
@@ -59,6 +61,15 @@ export class WindowWindowChannel<
             this.logger?.warn(
                 `WindowWindowChannel: ignoring message from unexpected origin "${event.origin}", expected "${this._origin}"`,
             );
+
+            return;
+        }
+
+        // The origin and the channel names are the same for every peer of this
+        // kind, e.g. the bootstrap iframes of two connect-web copies on one page,
+        // so only messages from the current peer window belong to this channel.
+        if (event.source !== this._windowPeer()) {
+            this.logger?.debug('WindowWindowChannel: ignoring message from another window');
 
             return;
         }
