@@ -30,8 +30,9 @@ import { exhaustive } from '@trezor/type-utils';
 import { useSelector } from 'src/hooks/suite';
 import { selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
 
-// `connectionId` is undefined for MCP calls, so no connect-ws cancel can match them.
-type TrackedPopupCall = { connectionId?: string };
+// `connectionId` is undefined for MCP calls, so no connect-ws cancel can match them. `payload.callId`
+// is the id the client gave the call, if any; a cancel that names it is scoped to that call.
+type TrackedPopupCall = { connectionId?: string; payload?: { callId?: string } };
 
 export const useConnectPopupDesktop = () => {
     const { desktopApi, analytics, dispatch } = useServices(
@@ -171,9 +172,14 @@ export const useConnectPopupDesktop = () => {
                 }
             });
             desktopApi.on('connect-popup/cancel', params => {
-                const { connectionId } = params;
+                const { connectionId, callId } = params;
+                // Drop this connection's queued calls: only the one the cancel names, or all of
+                // them when it names none (a closed connection, an older client).
                 queuedPopupCalls.current.forEach(queuedPopupCall => {
-                    if (queuedPopupCall.connectionId === connectionId) {
+                    if (
+                        queuedPopupCall.connectionId === connectionId &&
+                        (!callId || queuedPopupCall.payload?.callId === callId)
+                    ) {
                         queuedPopupCalls.current.delete(queuedPopupCall);
                     }
                 });
