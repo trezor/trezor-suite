@@ -14,6 +14,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
+import { ConnectV9Notice } from 'src/components/suite/ConnectV9Notice';
 import { useSelector } from 'src/hooks/suite';
 import { GroupedPermissionsList } from 'src/views/settings/SettingsConnectedApps/ConnectPermissions';
 
@@ -128,6 +129,8 @@ export const ConnectPermissionsModal = () => {
                             </Column>
                         </Row>
                     </Card>
+
+                    <ConnectV9Notice source={source} />
 
                     <Text>
                         <Translation id="TR_PERMISSIONS" />

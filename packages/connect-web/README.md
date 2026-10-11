@@ -43,17 +43,14 @@ For more instructions [refer to this document](https://github.com/trezor/trezor-
 - clone repository: `git clone git@github.com:trezor/trezor-suite.git`
 - install node_modules: `yarn && yarn build:libs`
 
-## TrezorConnect Support Matrix
+## Browser support
 
-The table below details the support for different environments by TrezorConnect for integrating Trezor devices, including the use of WebUSB and the need for Trezor Bridge.
+With Connect 10, your page no longer talks to the Trezor device. Trezor Suite desktop or Suite Web does, so what matters is which runtime mode the browser can use.
 
-| Environment                   | Chrome | Firefox | Safari | Chrome Android | Firefox Android | Notes                                                                   |
-| ----------------------------- | :----: | :-----: | :----: | :------------: | :-------------: | ----------------------------------------------------------------------- |
-| Web (WebUSB)                  |   ✓    |    ✗    |   ✗    |       ✓        |        ✗        | WebUSB is fully supported where indicated. (Chromium based browsers)    |
-| Web (Bridge)                  |   ✓    |    ✓    |   ✗    |       ✗        |        ✗        | Trezor Bridge is required where WebUSB is not supported. (e.g. Firefox) |
-| WebExtension (WebUSB, Bridge) |   ✓    |    ✓    |   ✗    |       ✓        |        ✗        | Requires Trezor Bridge on platforms not supporting WebUSB.              |
+| Runtime mode                                   | Chrome | Firefox  |  Safari  | Mobile browsers | Notes                                                                                                                                                   |
+| ---------------------------------------------- | :----: | :------: | :------: | :-------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Suite Desktop WebSocket                        |   ✓    | untested | untested |        –        | Needs Trezor Suite desktop running on the same computer. If your page sends a Content-Security-Policy, `connect-src` must allow `ws://127.0.0.1:21335`. |
+| Suite Web popup (`@trezor/connect-web`)        |  125+  |    ✗     |    ✗     |    untested     | Needs `document.requestStorageAccess` with `BroadcastChannel` (Chrome 125+, Opera 111+). Many WebViews and some Chromium forks lack it.                 |
+| Suite Web tab (`@trezor/connect-webextension`) |   ✓    | untested | untested |    untested     | Needs `externally_connectable` and `host_permissions` for `https://suite.trezor.io/*`, see the `@trezor/connect-webextension` README.                   |
 
-## Key Differences
-
-- **WebUSB**: Allows direct communication with Trezor devices via the browser. Supported by most modern browsers but may have limitations on mobile devices and is not supported by Safari.
-- **Trezor Bridge**: A service that runs with Trezor Suite or Standalone that facilitates communication between your Trezor device and a web browser. Required for browsers that do not support WebUSB or for a more stable connection on desktop environments.
+✓ supported, ✗ not supported, untested: not verified yet, –: not applicable.

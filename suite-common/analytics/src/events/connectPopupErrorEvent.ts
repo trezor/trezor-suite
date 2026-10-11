@@ -42,8 +42,12 @@ export const connectPopupErrorEvent: EventDef<Attributes, EventType.ConnectPopup
             description: 'Source app email from manifest',
         },
         npmVersion: {
-            changelog: [{ version: '26.2.0', notes: 'added' }],
-            description: 'Source app NPM version (if known)',
+            changelog: [
+                { version: '26.2.0', notes: 'added' },
+                { version: '26.10.0', notes: '`9.x` for deeplink calls from Connect 9 apps' },
+            ],
+            description:
+                'Source app NPM version (if known), `9.x` for deeplink calls from Connect 9 apps',
         },
         connectionType: {
             changelog: [{ version: '26.2.0', notes: 'added' }],
