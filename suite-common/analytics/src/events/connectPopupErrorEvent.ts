@@ -10,6 +10,7 @@ type Attributes = {
     appEmail?: AttributeDef<string>;
     connectionType: AttributeDef<string>;
     npmVersion?: AttributeDef<string>;
+    paramNames: AttributeDef<string[]>;
 };
 
 export const connectPopupErrorEvent: EventDef<Attributes, EventType.ConnectPopupError> = {
@@ -49,6 +50,11 @@ export const connectPopupErrorEvent: EventDef<Attributes, EventType.ConnectPopup
             changelog: [{ version: '26.2.0', notes: 'added' }],
             description:
                 'Source of the call: `desktop-ws`, `mcp`, `walletconnect`, `web`, or `deeplink`',
+        },
+        paramNames: {
+            changelog: [{ version: '26.10.0', notes: 'added' }],
+            description:
+                'Alphabetically sorted names (not values) of the top-level call parameters sent by the app',
         },
     },
 };
