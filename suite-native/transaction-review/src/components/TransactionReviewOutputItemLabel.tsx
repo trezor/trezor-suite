@@ -20,6 +20,8 @@ export const TransactionReviewOutputItemLabel = ({
             return <Translation id="transactionManagement.review.outputs.contractLabel" />;
         case 'data':
             return <Translation id="transactionManagement.review.outputs.transactionDataLabel" />;
+        case 'opreturn':
+            return <Translation id="transactionManagement.review.outputs.opReturnLabel" />;
         case 'recipient_name':
             return (
                 <Translation id="transactionManagement.review.outputs.recipientProviderNameOutputLabel" />

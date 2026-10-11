@@ -27,7 +27,7 @@ export const SellCompletionFeeInfo = ({ quote, isTxnError }: SellCompletionFeeIn
 
     return (
         <Box flex={1}>
-            <TradeFeeInfoRow accountKey={fromAccount.key} tradingType="sell" />
+            <TradeFeeInfoRow trade={quote} accountKey={fromAccount.key} tradingType="sell" />
         </Box>
     );
 };

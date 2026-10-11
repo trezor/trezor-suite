@@ -315,6 +315,57 @@ describe('useExchangeSelectQuote', () => {
             );
         });
 
+        it.each<[string, ExchangeTrade, string | undefined]>([
+            [
+                'keep the quotes request fromAddress on a DEX quote',
+                { ...invityDexQuote, fromAddress: undefined },
+                'input-address-1;input-address-2',
+            ],
+            [
+                'not add the quotes request fromAddress to a CEX quote',
+                { ...mercuryoFixedBestQuote!, fromAddress: undefined },
+                undefined,
+            ],
+        ])('should %s', async (_, quote, expectedFromAddress) => {
+            await act(() => {
+                store.dispatch(
+                    tradingExchangeActions.saveQuoteRequest({
+                        send: quote.send!,
+                        receive: quote.receive!,
+                        sendStringAmount: '0.001',
+                        fromAddress: 'input-address-1;input-address-2',
+                    }),
+                );
+                exchangeForm.setValue('quote', quote);
+            });
+
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = await renderUseExchangeSelectQuote();
+            dispatchSpy.mockClear();
+
+            await act(() => {
+                result.current.selectQuote();
+            });
+
+            const [selectQuoteCall] = dispatchSpy.mock.calls;
+            const selectQuoteAction = selectQuoteCall?.[0] as unknown as {
+                payload: { nextStep: () => void; quote: ExchangeTrade };
+            };
+
+            expect(selectQuoteAction.payload.quote.fromAddress).toBe(expectedFromAddress);
+
+            await act(() => {
+                selectQuoteAction.payload.nextStep();
+            });
+
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                tradingExchangeActions.saveSelectedQuote({
+                    ...quote,
+                    fromAddress: expectedFromAddress,
+                }),
+            );
+        });
+
         it('should not call selectQuoteThunk when account is not fully selected', async () => {
             await act(() => {
                 [

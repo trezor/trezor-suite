@@ -12,6 +12,7 @@ import {
     requiresTokenApproval,
     selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId,
     selectTradingExchangeIsLoading,
+    selectTradingExchangeQuotesRequest,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { useWatch } from '@suite-native/forms';
@@ -40,6 +41,18 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
+/**
+ * Copies the quotes request `fromAddress` to a DEX quote, because the request is cleared before
+ * the trade is confirmed.
+ */
+const getQuoteWithRequestFromAddress = (
+    quote: ExchangeTrade,
+    requestFromAddress: string | undefined,
+): ExchangeTrade =>
+    quote.isDex && !quote.fromAddress && requestFromAddress
+        ? { ...quote, fromAddress: requestFromAddress }
+        : quote;
+
 export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const { dispatch } = useServices(injectDispatch);
     const candidateQuote = useWatch({ name: 'quote', control: form.control });
@@ -55,6 +68,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     );
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const receiveAccount = useSelector(selectExchangeSelectedReceiveAccount);
+    const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
 
     const navigation = useNavigation<NavigationProps>();
 
@@ -92,10 +106,12 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
             return;
         }
 
+        const quote = getQuoteWithRequestFromAddress(candidateQuote, quotesRequest?.fromAddress);
+
         await dispatch(
             exchangeThunks.selectQuoteThunk({
-                quote: candidateQuote,
-                nextStep: () => nextStep(getApprovalStatus(candidateQuote), candidateQuote),
+                quote,
+                nextStep: () => nextStep(getApprovalStatus(quote), quote),
             }),
         );
     };

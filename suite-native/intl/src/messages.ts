@@ -4832,6 +4832,7 @@ export const messages = {
                 feeLimitSummaryLabel: 'Summary',
                 noteLabel: 'Note',
                 transactionDataLabel: 'Data',
+                opReturnLabel: 'Hexadecimal message (OP_RETURN)',
                 transactionDataEmpty: 'No data',
                 transactionDataShowMore: 'Show more',
                 transactionDataShowLess: 'Show less',
