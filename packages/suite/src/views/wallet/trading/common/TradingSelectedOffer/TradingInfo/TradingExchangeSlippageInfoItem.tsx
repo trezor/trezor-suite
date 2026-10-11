@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { FormattedNumber } from 'react-intl';
 
 import { type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { SLIPPAGE_PERCENT_FORMAT_OPTIONS } from '@suite-common/trading';
 import { InfoItem, Text, TextButton, Tooltip } from '@trezor/components';
 import { PencilSimpleIcon } from '@trezor/icons';
 
@@ -20,6 +22,10 @@ export const TradingExchangeSlippageInfoItem = ({
     selectedQuote,
 }: TradingExchangeSlippageInfoItemProps) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    const formattedSlippage = (
+        <FormattedNumber value={Number(slippage) / 100} {...SLIPPAGE_PERCENT_FORMAT_OPTIONS} />
+    );
 
     return (
         <>
@@ -40,11 +46,11 @@ export const TradingExchangeSlippageInfoItem = ({
                         isUnderlined
                         data-testid="@trading/offer/info/slippage"
                     >
-                        {slippage}%
+                        {formattedSlippage}
                     </TextButton>
                 ) : (
                     <Text typographyStyle="body-sm" data-testid="@trading/offer/info/slippage">
-                        {slippage}%
+                        {formattedSlippage}
                     </Text>
                 )}
             </InfoItem>

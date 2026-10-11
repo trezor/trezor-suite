@@ -17,4 +17,17 @@ describe('TradingHistoryDetailSlippageRow', () => {
             getByTestId('@trading/history/detail/info/slippage-explanation/button'),
         ).toBeOnTheScreen();
     });
+
+    it.each([
+        ['0.5', '0.5%'],
+        ['0.25', '0.25%'],
+        ['0.125', '0.13%'],
+        ['1.23456', '1.23%'],
+    ])('renders slippage %s as %s', async (swapSlippage, expected) => {
+        const { getByText } = await renderWithBasicProvider(
+            <TradingHistoryDetailSlippageRow swapSlippage={swapSlippage} />,
+        );
+
+        expect(getByText(expected)).toBeOnTheScreen();
+    });
 });
