@@ -181,6 +181,12 @@ describe('cryptoIdToNetworkSymbol', () => {
         ['bitcoin', 'btc'],
         ['ethereum', 'eth'],
         ['ethereum--0x1234123412341234123412341234123412341234', 'eth'],
+        ['avalanche--0x1234123412341234123412341234123412341234', 'avax'],
+        ['optimistic-ethereum--0x0000000000000000000000000000000000000000', 'op'],
+        ['avalanche-2', 'avax'],
+        ['polygon-ecosystem-token', 'pol'],
+        ['binancecoin', 'bsc'],
+        ['hyperliquid', 'hype'],
     ] as [CryptoId, NetworkSymbol][])(
         'should return correct symbol for %s',
         (cryptoId, expectedSymbol) => {
