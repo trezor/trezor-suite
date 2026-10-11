@@ -31,7 +31,7 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1'] }, () => {
         await walletPage.openAccount({
             symbol: asNetworkSymbol('eth'),
             type: 'normal',
-            atIndex: 0,
+            atIndex: 2,
         });
     });
 
@@ -62,7 +62,7 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify Recipient address', async () => {
                 await tradingPage.sendButton.click();
-                await expect(devicePrompt.header.accountLabel).toHaveText('Ethereum #1');
+                await expect(devicePrompt.header.accountLabel).toHaveText('Ethereum #3');
                 await expect(devicePrompt.outputValueOf('address')).toHaveText(
                     formattedSendAddress,
                 );

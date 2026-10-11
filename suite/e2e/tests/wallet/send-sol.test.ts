@@ -32,7 +32,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
         await settingsPage.changeNetworks({ enableNetworks: [solSymbol] });
         await dashboardPage.deviceSwitchingOpenButton.click();
         await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-        await walletPage.openAccount({ symbol: solSymbol, type: 'normal', atIndex: 0 });
+        await walletPage.openAccount({ symbol: solSymbol, type: 'normal', atIndex: 3 });
     });
 
     test(
@@ -101,7 +101,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
             });
 
             await test.step('Verify Recipient Address', async () => {
-                await expect(devicePrompt.header.accountLabel).toHaveText('Solana #1');
+                await expect(devicePrompt.header.accountLabel).toHaveText('Solana #4');
                 await expect(devicePrompt.outputValueOf('address')).toHaveText(FORMATTED_ADDRESS);
 
                 // verify recipient address on device
