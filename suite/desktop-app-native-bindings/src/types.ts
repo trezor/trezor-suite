@@ -62,6 +62,6 @@ export interface WinHelloAPI {
  * Manager interface for the child process
  */
 export interface WinHelloManager extends WinHelloAPI {
-    create({ resourcesPath }: { resourcesPath: string }): Promise<void>;
+    create(options: WinHelloManagerOptions): Promise<void>;
     destroy(): Promise<void>;
 }

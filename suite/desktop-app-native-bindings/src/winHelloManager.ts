@@ -1,5 +1,5 @@
-import { type ChildProcess, fork } from 'child_process';
 import { randomUUID } from 'crypto';
+import { type UtilityProcess, utilityProcess } from 'electron';
 import path from 'path';
 
 import type {
@@ -16,7 +16,7 @@ const INITIALIZATION_TIMEOUT_MS = 30000; // 30 second initialization timeout
 const GRACEFUL_SHUTDOWN_TIMEOUT_MS = 5000; // 5 second graceful shutdown timeout
 
 export class WinHelloProcessManager implements WinHelloManager {
-    private childProcess: ChildProcess | null = null;
+    private childProcess: UtilityProcess | null = null;
     private pendingRequests = new Map<
         string,
         { resolve: (value: any) => void; reject: (error: Error) => void }
@@ -36,11 +36,13 @@ export class WinHelloProcessManager implements WinHelloManager {
 
             try {
                 logger.info('win-hello', 'Creating child process...');
-                this.childProcess = fork(childPath, [], {
+                // Node's `child_process.fork` cannot be used, because it requires the `RunAsNode` fuse.
+                this.childProcess = utilityProcess.fork(childPath, [], {
                     env: {
                         ...process.env,
                         RESOURCES_PATH: resourcesPath,
                     },
+                    serviceName: 'Windows Hello',
                 });
                 logger.info('win-hello', 'Child process created');
 
@@ -60,17 +62,12 @@ export class WinHelloProcessManager implements WinHelloManager {
                     this.handleResponse(message);
                 });
 
-                this.childProcess.on('error', (error: Error) => {
-                    logger.info('win-hello', `Child process error: ${error.message}`);
-                    if (error.stack) {
-                        logger.info('win-hello', `Error stack: ${error.stack}`);
-                    }
-
-                    this.cleanup();
-                    reject(new Error(`Child process error: ${error.message}`));
+                // Diagnostics only, Electron emits 'exit' after it, which handles the failure.
+                this.childProcess.on('error', (type, location) => {
+                    logger.info('win-hello', `Child process fatal error: ${type} at ${location}`);
                 });
 
-                this.childProcess.on('exit', (code: number | null) => {
+                this.childProcess.on('exit', code => {
                     logger.info('win-hello', `Child process exited with code: ${code}`);
                     this.cleanup();
 
@@ -187,7 +184,7 @@ export class WinHelloProcessManager implements WinHelloManager {
                 },
             });
 
-            this.childProcess!.send(request);
+            this.childProcess!.postMessage(request);
         });
     }
 

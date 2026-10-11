@@ -16367,6 +16367,7 @@ __metadata:
   resolution: "@suite/desktop-app-native-bindings@workspace:suite/desktop-app-native-bindings"
   dependencies:
     "@types/node": "npm:22.13.10"
+    electron: "npm:43.2.0"
     node-addon-api: "npm:8.5.0"
     node-gyp: "npm:12.2.0"
   languageName: unknown
