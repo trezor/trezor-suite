@@ -37,7 +37,8 @@ export const getCoingeckoIdAndContractAddressIncludesNativeTokens = (
     coingeckoId: string,
     contractAddress: string[] | undefined,
 ) => {
-    const mainNetworkSymbol = getNetworkByCoingeckoId(coingeckoId)?.displaySymbol.toLowerCase();
+    const network = getNetworkByCoingeckoId(coingeckoId);
+    const mainNetworkSymbol = network?.displaySymbol.toLowerCase();
 
     const addresses = ([] as Array<string | undefined>)
         .concat(contractAddress ?? [])
@@ -45,14 +46,20 @@ export const getCoingeckoIdAndContractAddressIncludesNativeTokens = (
 
     const hasNative = addresses.length === 0 || addresses.includes(ZERO_ADDRESS);
 
-    const shouldUseTradeId = hasNative && !!mainNetworkSymbol && isNetworkSymbol(mainNetworkSymbol);
+    const getNativeCoingeckoId = () => {
+        if (network?.nativeAssetCryptoId) {
+            return network.nativeAssetCryptoId;
+        }
 
-    const resolvedCoingeckoId = shouldUseTradeId
-        ? (getNetwork(mainNetworkSymbol).tradeCryptoId ?? coingeckoId)
-        : coingeckoId;
+        if (mainNetworkSymbol && isNetworkSymbol(mainNetworkSymbol)) {
+            return getNetwork(mainNetworkSymbol).tradeCryptoId ?? coingeckoId;
+        }
+
+        return coingeckoId;
+    };
 
     return {
-        coingeckoId: resolvedCoingeckoId,
+        coingeckoId: hasNative ? getNativeCoingeckoId() : coingeckoId,
         contractAddresses: addresses.length ? addresses : [ZERO_ADDRESS],
     };
 };
