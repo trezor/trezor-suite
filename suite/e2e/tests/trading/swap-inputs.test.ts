@@ -108,11 +108,24 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice', '@option
             });
 
             await test.step('Select sell asset USDC@ETH)', async () => {
-                await tradingPage.assetPicker.selectSellAsset({
-                    searchFilter: 'USDC',
-                    networkSymbol: fundedSymbol,
+                const { assetPicker } = tradingPage;
+                const fundedAccount = {
+                    accountSymbol: fundedSymbol,
+                    accountType: 'normal',
+                    index: 0,
+                };
+                const ethOption = assetPicker.sellOption(fundedAccount);
+                const usdcOption = assetPicker.sellOption({
+                    ...fundedAccount,
                     tokenSymbol: 'USDC',
                 });
+
+                await assetPicker.openSellModal.click();
+                await expect(ethOption).toBeVisible();
+                await assetPicker.searchAsset('USDC');
+                await expect(usdcOption).toBeVisible();
+                await expect(ethOption).toBeHidden();
+                await usdcOption.click();
             });
 
             for (const [index, asset] of buyAssets.entries()) {

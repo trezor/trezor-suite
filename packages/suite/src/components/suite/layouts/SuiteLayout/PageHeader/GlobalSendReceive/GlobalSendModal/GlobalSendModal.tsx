@@ -57,10 +57,10 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
         staticSessionId: device?.state?.staticSessionId ?? null,
     });
 
-    const filteredAccountsWithTokens = useFilterAccountsWithTokens(
+    const filteredAccountsWithTokens = useFilterAccountsWithTokens({
         accountsWithTokens,
-        searchFilter,
-    );
+        search: searchFilter,
+    });
     const globalSendListItems = useInsertGroupLabelsAndSpaces(filteredAccountsWithTokens);
 
     const submitRef = useCurrentRef(onSubmit);
