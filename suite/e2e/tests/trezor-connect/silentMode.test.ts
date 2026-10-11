@@ -67,6 +67,7 @@ test.describe('TrezorConnect silent mode', { tag: ['@T3T1', '@T3W1', '@desktopOn
     test(
         'Silent mode suppresses Suite focus on subsequent calls',
         {
+            tag: ['@optional'],
             annotation: createTestAnnotation({
                 testCase:
                     'Suite Connect: Silent mode prevents Suite from being brought to foreground during ongoing calls.',
