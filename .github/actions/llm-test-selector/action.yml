@@ -5,6 +5,11 @@ description: >
   fetch the PR head as 'pr-head' before invoking this action.
   Only code from the trusted checkout is installed and executed.
 inputs:
+  base-ref:
+    description: >
+      Git ref the PR is merged into (github.event.pull_request.base.sha). The calling job must
+      fetch it; stacked PRs diff against the whole stack without it.
+    required: true
   openrouter-api-key:
     description: "OpenRouter API key for the LLM test selector"
     required: true
@@ -39,8 +44,10 @@ runs:
       env:
         OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key }}
         SLACK_WEBHOOK: ${{ inputs.slack-webhook }}
+        BASE_REF: ${{ inputs.base-ref }}
       run: |
-        yarn workspace @trezor/e2e-utils select-tests-llm --head-ref pr-head > llm-selection.json
+        yarn workspace @trezor/e2e-utils select-tests-llm \
+          --head-ref pr-head --base-ref "$BASE_REF" > llm-selection.json
         echo "LLM test selector output:"
         cat llm-selection.json
 

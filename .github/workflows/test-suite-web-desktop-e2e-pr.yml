@@ -183,12 +183,18 @@ jobs:
         with:
           ref: develop
           fetch-depth: 0
-      - name: Fetch PR head for diff
-        run: git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-head
+      - name: Fetch PR head and base for diff
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_BRANCH: ${{ github.base_ref }}
+        run: |
+          git fetch origin "pull/$PR_NUMBER/head:pr-head"
+          git fetch origin "$BASE_BRANCH"
       - name: Check PR size
         id: check-size
         uses: ./.github/actions/check-pr-size
         with:
+          changed-files: ${{ github.event.pull_request.changed_files }}
           additions: ${{ github.event.pull_request.additions }}
           deletions: ${{ github.event.pull_request.deletions }}
       - name: Run LLM test selector
@@ -196,6 +202,7 @@ jobs:
         if: steps.check-size.outputs.is_small_pr == 'true'
         uses: ./.github/actions/llm-test-selector
         with:
+          base-ref: ${{ github.event.pull_request.base.sha }}
           openrouter-api-key: ${{ secrets.E2E_SELECTOR_API_KEY }}
           slack-webhook: ${{ secrets.SLACK_FIX_AGENT_WEBHOOK }}
       - name: Post LLM analysis to PR description
