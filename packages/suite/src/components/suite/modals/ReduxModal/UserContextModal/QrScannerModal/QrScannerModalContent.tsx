@@ -8,7 +8,7 @@ type QrScannerModalContentProps = {
 };
 
 /**
- * Must be lazy-loaded due to the heavy dependencies required for QR code scanning (react-zxing & @zxing/library)
+ * Must be lazy-loaded due to the heavy dependencies required for QR code scanning (qr)
  */
 export const QrScannerModalContent = ({ activeTab, onResult }: QrScannerModalContentProps) => (
     <>
