@@ -32,7 +32,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
         Assert(Bundle(GetPublicKeySchema), payload);
 
         const params = payload.bundle.map(batch => {
-            const path = validatePath(batch.path, 3);
+            const path = validatePath(batch.path, 1);
             const network = getEthereumNetwork(path);
 
             const proto = {
