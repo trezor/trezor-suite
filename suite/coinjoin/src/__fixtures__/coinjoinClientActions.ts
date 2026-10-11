@@ -757,9 +757,7 @@ export const signCoinjoinTx: SignCoinjoinTxFixture[] = [
                     { address: 'B1', path: 'm/10025', amount: 500000 }, // account-B
                     { address: 'C2', path: 'm/10025', amount: 499500 }, // account-C
                 ],
-                affiliateRequest: {
-                    coinjoin_flags_array: [],
-                },
+                coinjoinRequest: {},
             },
             liquidityClues: [{ accountKey: 'account-A', rawLiquidityClue: 1 }],
         },
@@ -902,9 +900,7 @@ export const signCoinjoinTx: SignCoinjoinTxFixture[] = [
                     { address: 'A1', path: 'm/10025', amount: 500000 }, // account-A
                     { address: 'A2', path: 'm/10025', amount: 499500 }, // account-A
                 ],
-                affiliateRequest: {
-                    coinjoin_flags_array: [],
-                },
+                coinjoinRequest: {},
             },
             liquidityClues: [],
         },
@@ -1053,9 +1049,7 @@ export const signCoinjoinTx: SignCoinjoinTxFixture[] = [
                 outputs: [
                     { address: 'A1', path: 'm/10025', amount: 500000 }, // account-A
                 ],
-                affiliateRequest: {
-                    coinjoin_flags_array: [],
-                },
+                coinjoinRequest: {},
             },
             liquidityClues: [],
         },

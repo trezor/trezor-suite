@@ -124,7 +124,7 @@ const readyToSign = (
     input: AliceShape,
     { signal, coordinatorUrl }: CoinjoinRoundOptions,
 ) =>
-    coordinator.readyToSign(id, input.registrationData!.AliceId, !!input.affiliationFlag, {
+    coordinator.readyToSign(id, input.registrationData!.AliceId, {
         signal,
         baseUrl: coordinatorUrl,
         identity: input.outpoint, // NOTE: recycle input identity

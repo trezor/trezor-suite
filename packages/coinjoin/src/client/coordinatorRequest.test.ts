@@ -186,9 +186,6 @@ describe('http', () => {
                                 },
                             },
                         },
-                        affiliateData: {
-                            abcd01234: { trezor: 'base64data', foo: 1 },
-                        },
                     },
                 });
             }
@@ -218,9 +215,6 @@ describe('http', () => {
                             Field4: [],
                         },
                     },
-                },
-                AffiliateData: {
-                    abcd01234: { trezor: 'base64data', foo: 1 },
                 },
             },
         });

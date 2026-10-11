@@ -30,12 +30,7 @@ describe('transactionSigning', () => {
         fee_rate: 300000,
         min_registrable_amount: 5000,
         no_fee_threshold: 1000000,
-        coinjoin_flags_array: [0, 0],
-        mask_public_key: '0'.repeat(33 * 2),
-        signature: '0'.repeat(64 * 2),
     };
-
-    const affiliateRequest = Buffer.from('0'.repeat(97 * 2 + 4), 'hex').toString('base64');
 
     beforeAll(async () => {
         server = await createServer();
@@ -49,7 +44,7 @@ describe('transactionSigning', () => {
         server?.close();
     });
 
-    it('getTransactionData: read affiliate-request and update-liquidity-clue', async () => {
+    it('getTransactionData: coinjoin request and update-liquidity-clue', async () => {
         server?.addListener('test-request', ({ url, data, resolve }) => {
             if (url.endsWith('/update-liquidity-clue')) {
                 resolve({ RawLiquidityClue: data.ExternalAmounts[0] });
@@ -73,7 +68,6 @@ describe('transactionSigning', () => {
                     ...server?.requestOptions,
                     round: {
                         phase: 3,
-                        affiliateRequest,
                         addresses: [
                             {
                                 accountKey: 'account-A',
@@ -164,7 +158,7 @@ describe('transactionSigning', () => {
 
         expect(response).toMatchObject({
             transactionData: {
-                affiliateRequest: COINJOIN_REQUEST,
+                coinjoinRequest: COINJOIN_REQUEST,
             },
             liquidityClues: [{ accountKey: 'account-A', rawLiquidityClue: 2000000 }],
         });
@@ -183,7 +177,6 @@ describe('transactionSigning', () => {
                     ...server?.requestOptions,
                     round: {
                         phase: 3,
-                        affiliateRequest,
                         addresses: [
                             {
                                 accountKey: 'account-A',
@@ -308,7 +301,6 @@ describe('transactionSigning', () => {
                     ...server?.requestOptions,
                     round: {
                         phase: 3,
-                        affiliateRequest,
                     },
                 },
             ),
@@ -334,7 +326,6 @@ describe('transactionSigning', () => {
                     ...server?.requestOptions,
                     round: {
                         phase: 3,
-                        affiliateRequest,
                         addresses: [
                             {
                                 accountKey: 'account-A',
@@ -388,7 +379,6 @@ describe('transactionSigning', () => {
                     ...server?.requestOptions,
                     round: {
                         phase: 3,
-                        affiliateRequest,
                         addresses: [
                             {
                                 accountKey: 'account-A',
@@ -463,9 +453,6 @@ describe('transactionSigning', () => {
                     ...server?.requestOptions,
                     round: {
                         phase: 3,
-                        affiliateRequest: Buffer.from('0'.repeat(97 * 2 + 4), 'hex').toString(
-                            'base64',
-                        ),
                         phaseDeadline: Date.now() + 5000, // use shortened delays...
                     },
                 },
@@ -507,7 +494,6 @@ describe('transactionSigning', () => {
                     ...server?.requestOptions,
                     round: {
                         phase: 3,
-                        affiliateRequest,
                     },
                 },
             ),
@@ -581,33 +567,6 @@ describe('transactionSigning', () => {
 
         expect(response.isSignedSuccessfully()).toBe(false);
     });
-
-    it('try to sign without affiliate request', async () => {
-        const response = await transactionSigning(
-            createCoinjoinRound(
-                [
-                    createInput(
-                        'account-A',
-                        'a00000000000000000000000000000000000000000000000000000000000000001000000',
-                    ),
-                ],
-                {
-                    ...server?.requestOptions,
-                    round: {
-                        phase: 3,
-                    },
-                },
-            ),
-            [], // Account is not relevant for this test
-            server?.requestOptions,
-        );
-
-        response.inputs.forEach(input => {
-            expect(input.error).toBe(undefined);
-        });
-
-        expect(response.isSignedSuccessfully()).toBe(false);
-    });
 });
 
 describe('transactionSigning signature delay', () => {
@@ -622,7 +581,6 @@ describe('transactionSigning signature delay', () => {
             round: {
                 phase: 3,
                 phaseDeadline: 60000 * 4, // 4 minutes
-                affiliateRequest: Buffer.from('0'.repeat(97 * 2 + 4), 'hex').toString('base64'),
             },
         });
     });
@@ -726,7 +684,6 @@ describe('transactionSigning signature delay', () => {
 
 describe('transactionSigning send window (phaseStartLowerBound)', () => {
     let server: Awaited<ReturnType<typeof createServer>>;
-    const affiliateRequest = Buffer.from('0'.repeat(97 * 2 + 4), 'hex').toString('base64');
 
     beforeAll(async () => {
         server = await createServer();
@@ -764,7 +721,7 @@ describe('transactionSigning send window (phaseStartLowerBound)', () => {
             ],
             {
                 ...server?.requestOptions,
-                round: { phase: 3, affiliateRequest, ...roundOverrides },
+                round: { phase: 3, ...roundOverrides },
             },
         );
 

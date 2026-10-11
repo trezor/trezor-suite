@@ -4,8 +4,6 @@
 
 For development and e2e purposes you can use local version of coinjoin backend (`Regtest` only).
 
-**VPN is required for communication with affiliate server**
-
 1. run `./docker/docker-coinjoin-backend.sh`
 
     > If you are using `trezor-user-env` make sure that it's started with `-r` option (disabled regtest)

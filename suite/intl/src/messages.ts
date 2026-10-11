@@ -9984,10 +9984,6 @@ export const messages = defineMessages({
         id: 'TR_SESSION_ERROR_PHASE_RETRYING_PAIRING',
         defaultMessage: 'Retrying pairing',
     },
-    TR_SESSION_ERROR_PHASE_AFFILIATE_SERVERS_OFFLINE: {
-        id: 'TR_SESSION_ERROR_PHASE_AFFILIATE_SERVERS_OFFLINE',
-        defaultMessage: 'The coinjoin service is temporarily unavailable',
-    },
     TR_SESSION_ERROR_PHASE_CRITICAL_ERROR: {
         id: 'TR_SESSION_ERROR_PHASE_CRITICAL_ERROR',
         defaultMessage: 'Critical error, stopping coinjoin.',

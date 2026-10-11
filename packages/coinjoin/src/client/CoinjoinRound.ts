@@ -71,7 +71,6 @@ interface CreateRoundProps {
     coinjoinRounds: CoinjoinRound[];
     prison: CoinjoinPrisonShape;
     options: CoinjoinRoundOptions;
-    runningAffiliateServer: boolean;
 }
 
 export class CoinjoinRound extends TypedEmitter<Events> {
@@ -90,7 +89,6 @@ export class CoinjoinRound extends TypedEmitter<Events> {
     inputRegistrationEnd: string;
     amountCredentialIssuerParameters: Round['AmountCredentialIssuerParameters'];
     vsizeCredentialIssuerParameters: Round['VsizeCredentialIssuerParameters'];
-    affiliateRequest: Round['AffiliateRequest'];
     //
     roundParameters: CoinjoinRoundParameters;
     inputs: Alice[] = []; // list of registered inputs
@@ -100,7 +98,6 @@ export class CoinjoinRound extends TypedEmitter<Events> {
     roundDeadline: number; // deadline is inaccurate,round may end earlier
     commitmentData: string; // commitment data used for ownership proof and witness requests
     addresses: (AccountAddress & { accountKey: string })[] = []; // list of addresses (outputs) used in this round in outputRegistration phase
-    transactionSignTries: number[] = []; // timestamps for processing transactionSigning phase
     transactionData?: CoinjoinTransactionData; // transaction to sign
     broadcastedTxDetails?: BroadcastedTransactionDetails; // transaction broadcasted
     liquidityClues?: CoinjoinTransactionLiquidityClue[]; // updated liquidity clues
@@ -145,14 +142,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         });
     }
 
-    static create({
-        accounts,
-        statusRounds,
-        coinjoinRounds,
-        prison,
-        options,
-        runningAffiliateServer,
-    }: CreateRoundProps) {
+    static create({ accounts, statusRounds, coinjoinRounds, prison, options }: CreateRoundProps) {
         return selectRound({
             roundGenerator: (...args) => new CoinjoinRound(...args),
             aliceGenerator: (...args) => new Alice(...args),
@@ -161,7 +151,6 @@ export class CoinjoinRound extends TypedEmitter<Events> {
             coinjoinRounds,
             prison,
             options,
-            runningAffiliateServer,
         }) as Promise<CoinjoinRound | undefined>;
     }
 
@@ -208,12 +197,6 @@ export class CoinjoinRound extends TypedEmitter<Events> {
             this.phaseDeadline = phaseDeadline;
             this.roundDeadline = roundDeadline;
             this.phaseStartLowerBound = phaseStartLowerBound;
-        }
-
-        // update affiliateRequest once and keep the value
-        // affiliateData are removed from the status once phase is changed to Ended
-        if (!this.affiliateRequest && changed.AffiliateRequest) {
-            this.affiliateRequest = changed.AffiliateRequest;
         }
 
         // NOTE: emit changed event before each async phase
@@ -426,21 +409,6 @@ export class CoinjoinRound extends TypedEmitter<Events> {
                 this.phase = RoundPhase.Ended;
                 this.emit('ended', { round: this.toSerialized() });
                 this.emit('changed', { round: this.toSerialized() });
-            }
-        }
-    }
-
-    onAffiliateServerStatus(status: boolean) {
-        if (!status) {
-            // if affiliate server goes offline try to abort round if it's not in critical phase.
-            // if round is in critical phase, there is noting much we can do, just log it...
-            // ...we need to continue and hope that server will become online before transaction signing phase
-            if (this.phase <= RoundPhase.OutputRegistration) {
-                this.logger.warn(`Affiliate server offline. Aborting round ${this.id}`);
-                this.lock?.abort();
-                this.inputs.forEach(i => i.clearConfirmationInterval());
-            } else {
-                this.logger.error(`Affiliate server offline in phase ${this.phase}!`);
             }
         }
     }
