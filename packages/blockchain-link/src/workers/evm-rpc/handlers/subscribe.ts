@@ -3,9 +3,10 @@ import type { MessageTypes, ResponseTypes as Responses } from '@trezor/blockchai
 
 import type { WorkerState } from '../../state';
 import { BLOCK_SUBSCRIPTION } from '../constants';
-import { detectAccountChanges } from '../history';
+import { detectAccountChanges, getCatchUpStart } from '../history';
 import { TIP_LAG_BLOCKS } from '../history/constants';
-import type { Request } from '../types';
+import type { Context, Request } from '../types';
+import { cleanupLiveWatch, isLiveWatching, postAccountChanges, syncLiveWatch } from './liveWatch';
 import { getErrorName } from '../utils/errors';
 
 type PollInterval = ReturnType<typeof setInterval>;
@@ -13,25 +14,43 @@ type PollInterval = ReturnType<typeof setInterval>;
 const getBlockPollInterval = (state: WorkerState) =>
     state.getSubscription('block') as PollInterval | undefined;
 
+// Accounts watched over a socket need no polling; blocks always do.
+const isPollingIdle = (state: WorkerState) =>
+    !state.getSubscription('blockNotifications') &&
+    (!state.getAccounts().length || isLiveWatching(state));
+
 /**
  * One poll loop serves both subscription kinds: it reports new blocks when blocks are subscribed,
  * and looks for transfers touching the subscribed accounts. There is no mempool on the chains this
  * worker serves, so a transfer can only ever be observed once mined, which makes the block tick the
  * natural moment to look.
  */
-const startPolling = async (request: Request<MessageTypes.Subscribe>) => {
-    const { state } = request;
+const startPolling = async (context: Context) => {
+    const { state } = context;
 
-    const client = await request.connect();
+    const client = await context.connect();
     let lastBlockHeight = Number(await client.getBlockNumber());
-    // The newest blocks' logs may not be queryable yet, so they are left for a later look.
-    let lastCheckedBlock = lastBlockHeight - TIP_LAG_BLOCKS;
+    // Unknown while a socket watches the accounts, and recovered from what it recorded once it fails.
+    // The newest blocks' logs may not be queryable yet, so they are always left for a later look.
+    let lastCheckedBlock: number | undefined = getCatchUpStart(
+        state,
+        lastBlockHeight - TIP_LAG_BLOCKS,
+    );
 
     const pollInterval: PollInterval = setInterval(async () => {
         // The state entry is the subscription. BaseWorker.cleanup() drops it without
         // knowing about the interval, so the poll has to stop itself.
         if (getBlockPollInterval(state) !== pollInterval) {
             clearInterval(pollInterval);
+
+            return;
+        }
+
+        // Everything subscribed may have left while the loop was still starting, after the last
+        // unsubscribe already looked for an interval to stop.
+        if (isPollingIdle(state)) {
+            clearInterval(pollInterval);
+            state.removeSubscription('block');
 
             return;
         }
@@ -45,7 +64,7 @@ const startPolling = async (request: Request<MessageTypes.Subscribe>) => {
             if (state.getSubscription('blockNotifications')) {
                 const block = await client.getBlock({ blockNumber: BigInt(currentBlock) });
                 if (block) {
-                    request.post({
+                    context.post({
                         id: -1,
                         type: RESPONSES.NOTIFICATION,
                         payload: {
@@ -57,22 +76,23 @@ const startPolling = async (request: Request<MessageTypes.Subscribe>) => {
             }
             lastBlockHeight = currentBlock;
 
+            if (isLiveWatching(state)) {
+                lastCheckedBlock = undefined;
+
+                return;
+            }
+
+            const scanTo = currentBlock - TIP_LAG_BLOCKS;
+            const scanFrom = lastCheckedBlock ?? getCatchUpStart(state, scanTo);
             const { changes, checkedTo } = await detectAccountChanges(
                 client,
                 state,
-                lastCheckedBlock + 1,
-                currentBlock - TIP_LAG_BLOCKS,
+                scanFrom + 1,
+                scanTo,
             );
             // An abandoned chunk is looked at again on the next tick rather than skipped.
-            lastCheckedBlock = Math.max(lastCheckedBlock, checkedTo);
-
-            changes.forEach(({ descriptor, tx }) => {
-                request.post({
-                    id: -1,
-                    type: RESPONSES.NOTIFICATION,
-                    payload: { type: 'notification', payload: { descriptor, tx } },
-                });
-            });
+            lastCheckedBlock = Math.max(scanFrom, checkedTo);
+            postAccountChanges(context, changes);
         } catch (error) {
             console.warn('[evm-rpc] Block polling error:', getErrorName(error));
         }
@@ -86,8 +106,8 @@ const startPolling = async (request: Request<MessageTypes.Subscribe>) => {
 // Concurrent callers share the first setup instead.
 const startingPolls = new WeakMap<WorkerState, Promise<void>>();
 
-const ensurePolling = (request: Request<MessageTypes.Subscribe>): Promise<void> => {
-    const { state } = request;
+const ensurePolling = (context: Context): Promise<void> => {
+    const { state } = context;
 
     if (getBlockPollInterval(state)) {
         return Promise.resolve();
@@ -98,7 +118,7 @@ const ensurePolling = (request: Request<MessageTypes.Subscribe>): Promise<void> 
         return starting;
     }
 
-    const pending = startPolling(request).finally(() => {
+    const pending = startPolling(context).finally(() => {
         startingPolls.delete(state);
     });
     startingPolls.set(state, pending);
@@ -114,7 +134,7 @@ const subscribeBlock = async (request: Request<MessageTypes.Subscribe>) => {
 };
 
 const stopPollingIfIdle = (state: WorkerState) => {
-    if (state.getSubscription('blockNotifications') || state.getAccounts().length) {
+    if (!isPollingIdle(state)) {
         return;
     }
 
@@ -123,6 +143,26 @@ const stopPollingIfIdle = (state: WorkerState) => {
         clearInterval(pollInterval);
         state.removeSubscription('block');
     }
+};
+
+// A socket that cannot serve hands the accounts back to polling, which resumes from whatever the
+// socket recorded as watched.
+const pollOnFailure = (context: Context) => () => {
+    ensurePolling(context).catch(error =>
+        console.warn('[evm-rpc] Polling not started:', getErrorName(error)),
+    );
+};
+
+const watchAccounts = async (request: Request<MessageTypes.Subscribe>) => {
+    await syncLiveWatch(request, pollOnFailure(request));
+
+    if (isLiveWatching(request.state)) {
+        stopPollingIfIdle(request.state);
+
+        return;
+    }
+
+    await ensurePolling(request);
 };
 
 const unsubscribeBlock = (request: Request<MessageTypes.Unsubscribe>) => {
@@ -144,7 +184,7 @@ export const subscribe = async (
         response = await subscribeBlock(request);
     } else if (payload.type === 'accounts') {
         state.addAccounts(payload.accounts);
-        await ensurePolling(request);
+        await watchAccounts(request);
         response = { subscribed: true };
     } else if (payload.type === 'addresses') {
         // Accepted so callers don't fail, but only account subscriptions are watched.
@@ -171,6 +211,7 @@ export const unsubscribe = (request: Request<MessageTypes.Unsubscribe>): Respons
         response = unsubscribeBlock(request);
     } else if (payload.type === 'accounts') {
         state.removeAccounts(payload.accounts ?? state.getAccounts());
+        syncLiveWatch(request, pollOnFailure(request));
         stopPollingIfIdle(state);
         response = { subscribed: state.getAccounts().length > 0 };
     } else if (payload.type === 'addresses') {
@@ -190,6 +231,7 @@ export const unsubscribe = (request: Request<MessageTypes.Unsubscribe>): Respons
 };
 
 export const cleanupSubscriptions = (state: WorkerState) => {
+    cleanupLiveWatch(state);
     const pollInterval = getBlockPollInterval(state);
 
     if (pollInterval) {

@@ -17,6 +17,7 @@ import {
     generateTransactionMonthKey,
     getAccountTransactions,
     getCardanoStakingAmount,
+    getConfirmations,
     getDecreaseOutputId,
     getEvmNonceInfo,
     getEvmNonceInfoFromConfirmedNonce,
@@ -215,6 +216,20 @@ describe('transaction utils', () => {
                 const { blockHeight } = transaction;
                 expect(isPending(transaction)).toEqual(!blockHeight || blockHeight < 0);
             });
+        });
+    });
+
+    describe('getConfirmations', () => {
+        it('counts the blocks from the transaction up to the tip', () => {
+            expect(getConfirmations(getWalletTransaction({ blockHeight: 100 }), 104)).toBe(5);
+        });
+
+        it('has no confirmations while pending', () => {
+            expect(getConfirmations(getWalletTransaction({ blockHeight: 0 }), 104)).toBe(0);
+        });
+
+        it('counts a mined transaction as confirmed when the known tip is behind it', () => {
+            expect(getConfirmations(getWalletTransaction({ blockHeight: 120 }), 104)).toBe(1);
         });
     });
 

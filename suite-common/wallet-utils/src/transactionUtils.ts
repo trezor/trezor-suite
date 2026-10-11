@@ -706,10 +706,12 @@ export const findChainedTransactions = (
     return result.own.concat(result.others).length > 0 ? result : undefined;
 };
 
+// A mined transaction has at least its own block, even when the known tip lags behind it: a backend
+// without block notifications only learns the tip when it reconnects.
 export const getConfirmations = (
     tx: WalletAccountTransaction | AccountTransaction,
     height: number,
-) => (tx.blockHeight && tx.blockHeight > 0 ? height - tx.blockHeight + 1 : 0);
+) => (tx.blockHeight && tx.blockHeight > 0 ? Math.max(1, height - tx.blockHeight + 1) : 0);
 
 // inner private type, it's pointless to move it outside of this file
 interface Analyze {

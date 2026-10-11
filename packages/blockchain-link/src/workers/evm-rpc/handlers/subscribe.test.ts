@@ -6,7 +6,19 @@ import type { MessageTypes } from '@trezor/blockchain-link-types';
 import { cleanupSubscriptions, subscribe, unsubscribe } from './subscribe';
 import { WorkerState } from '../../state';
 import { BLOCK_SUBSCRIPTION } from '../constants';
-import { TIP_LAG_BLOCKS } from '../history/constants';
+import { getDescriptorHistory } from '../history';
+import {
+    TIP_LAG_BLOCKS,
+    TRANSFER_TOPIC,
+    WATCH_HEALTH_CHECK_INTERVAL_MS,
+} from '../history/constants';
+import {
+    type LogSubscriptionSocket,
+    type SubscribeLogsParams,
+    openLogSubscriptionSocket,
+} from '../utils/logSubscriptionSocket';
+
+jest.mock('../utils/logSubscriptionSocket', () => ({ openLogSubscriptionSocket: jest.fn() }));
 
 const { POLL_INTERVAL_MS } = BLOCK_SUBSCRIPTION;
 
@@ -18,7 +30,8 @@ const TXID = `0x${'abc1'.padStart(64, '0')}`;
 const createWorker = ({
     blockNumber = 1n,
     logs = () => [],
-}: { blockNumber?: bigint; logs?: () => unknown[] } = {}) => {
+    subscriptionUrl,
+}: { blockNumber?: bigint; logs?: () => unknown[]; subscriptionUrl?: string } = {}) => {
     let currentBlock = blockNumber;
     const getBlockNumber = jest.fn(() => Promise.resolve(currentBlock));
     const getBlock = jest.fn(({ blockNumber: requested }: { blockNumber: bigint }) =>
@@ -64,6 +77,7 @@ const createWorker = ({
         post,
         state,
         coinName: 'ETH',
+        subscriptionUrl,
     };
 
     return {
@@ -451,5 +465,300 @@ describe('account subscriptions', () => {
         worker.unsubscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
 
         expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it('stops polling when the last account leaves while the loop is still starting', async () => {
+        const worker = createWorker();
+
+        const subscribing = worker.subscribe({
+            type: 'accounts',
+            accounts: [{ descriptor: ADDRESS }],
+        });
+        worker.unsubscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        await subscribing;
+
+        worker.mineBlock();
+        await jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS * 2);
+
+        expect(worker.rpcRequest).not.toHaveBeenCalled();
+        expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it('catches up from where the account history was last synced', async () => {
+        const worker = createWorker({ blockNumber: 100n });
+        const history = getDescriptorHistory(worker.state, ADDRESS);
+        history.syncedFrom = 1;
+        history.syncedTo = 50;
+
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        worker.mineBlock();
+        await jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS);
+
+        expect(worker.rpcRequest).toHaveBeenCalledWith(
+            expect.objectContaining({
+                params: [expect.objectContaining({ fromBlock: '0x33', toBlock: '0x63' })],
+            }),
+        );
+    });
+
+    it('resumes from where watching stopped instead of rescanning since the last sync', async () => {
+        const worker = createWorker({ blockNumber: 100n });
+        const history = getDescriptorHistory(worker.state, ADDRESS);
+        history.syncedFrom = 1;
+        history.syncedTo = 50;
+
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        worker.mineBlock();
+        await jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS);
+        worker.unsubscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+
+        worker.mineBlock();
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        worker.rpcRequest.mockClear();
+        worker.mineBlock();
+        await jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS);
+
+        // The first watch covered up to block 99, leaving the tip-lag blocks for later.
+        expect(worker.rpcRequest).toHaveBeenCalledWith(
+            expect.objectContaining({
+                params: [expect.objectContaining({ fromBlock: '0x64', toBlock: '0x65' })],
+            }),
+        );
+        expect(worker.rpcRequest).not.toHaveBeenCalledWith(
+            expect.objectContaining({
+                params: [expect.objectContaining({ fromBlock: '0x33' })],
+            }),
+        );
+    });
+});
+
+describe('account watching over a socket', () => {
+    const SOCKET_URL = 'wss://rpc.example';
+    const WATCHED_TOPIC = `0x${ADDRESS.slice(2).toLowerCase().padStart(64, '0')}`;
+
+    const transferLog = (from: string, to: string) => ({
+        address: '0x89b50855aa3be2f677cd6303cec089b5f319d72a',
+        topics: [
+            TRANSFER_TOPIC,
+            `0x${from.slice(2).toLowerCase().padStart(64, '0')}`,
+            `0x${to.slice(2).toLowerCase().padStart(64, '0')}`,
+        ],
+        data: `0x${'0'.repeat(63)}5`,
+        blockNumber: '0x2',
+        transactionHash: TXID,
+        transactionIndex: '0x0',
+    });
+
+    const mockSocket = ({ blockNumber = 1 }: { blockNumber?: number } = {}) => {
+        const subscriptions: SubscribeLogsParams[] = [];
+        const cancel = jest.fn();
+        const socket = {
+            subscribeLogs: jest.fn((params: SubscribeLogsParams) => {
+                subscriptions.push(params);
+
+                return Promise.resolve(cancel);
+            }),
+            getBlockNumber: jest.fn(() => Promise.resolve(blockNumber)),
+            close: jest.fn(),
+        } satisfies LogSubscriptionSocket;
+        jest.mocked(openLogSubscriptionSocket).mockReturnValue(socket);
+
+        return {
+            socket,
+            cancel,
+            subscriptions,
+            push: (log: unknown) => subscriptions.forEach(({ onLog }) => onLog(log as never)),
+            fail: () => subscriptions.at(-1)?.onError(new Error('socket closed')),
+        };
+    };
+
+    beforeEach(() => {
+        jest.mocked(openLogSubscriptionSocket).mockReset();
+    });
+
+    const createSocketWorker = (options: { blockNumber?: bigint } = {}) =>
+        createWorker({ ...options, subscriptionUrl: SOCKET_URL });
+
+    it('watches the accounts over the socket instead of polling', async () => {
+        const { subscriptions } = mockSocket();
+        const worker = createSocketWorker();
+
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        worker.mineBlock();
+        await jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS * 3);
+
+        expect(openLogSubscriptionSocket).toHaveBeenCalledWith(SOCKET_URL);
+        expect(subscriptions.map(({ topics }) => topics)).toEqual([
+            [TRANSFER_TOPIC, WATCHED_TOPIC],
+            [TRANSFER_TOPIC, null, WATCHED_TOPIC],
+        ]);
+        expect(worker.rpcRequest).not.toHaveBeenCalled();
+    });
+
+    it('reports a transfer the socket pushes', async () => {
+        const { push } = mockSocket();
+        const worker = createSocketWorker();
+
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        push(transferLog(OTHER_ADDRESS, ADDRESS));
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(worker.post).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: RESPONSES.NOTIFICATION,
+                payload: expect.objectContaining({
+                    type: 'notification',
+                    payload: expect.objectContaining({ descriptor: ADDRESS }),
+                }),
+            }),
+        );
+    });
+
+    it('catches up over HTTP on what was mined while nobody watched', async () => {
+        mockSocket();
+        const worker = createSocketWorker({ blockNumber: 100n });
+        const history = getDescriptorHistory(worker.state, ADDRESS);
+        history.syncedFrom = 1;
+        history.syncedTo = 50;
+
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+
+        expect(worker.rpcRequest).toHaveBeenCalledWith(
+            expect.objectContaining({
+                params: [expect.objectContaining({ fromBlock: '0x33', toBlock: '0x62' })],
+            }),
+        );
+    });
+
+    it('finishes an abandoned catch-up before vouching for the tip', async () => {
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
+        mockSocket({ blockNumber: 200 });
+        let isFailing = true;
+        const worker = createWorker({
+            blockNumber: 100n,
+            subscriptionUrl: SOCKET_URL,
+            logs: () => {
+                if (isFailing) {
+                    throw Object.assign(new Error('server confused'), { code: -32000 });
+                }
+
+                return [];
+            },
+        });
+        const history = getDescriptorHistory(worker.state, ADDRESS);
+        history.syncedFrom = 1;
+        history.syncedTo = 50;
+
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        await jest.advanceTimersByTimeAsync(WATCH_HEALTH_CHECK_INTERVAL_MS);
+
+        expect(history.watchedTo).toBeLessThanOrEqual(50);
+
+        isFailing = false;
+        worker.rpcRequest.mockClear();
+        await jest.advanceTimersByTimeAsync(WATCH_HEALTH_CHECK_INTERVAL_MS);
+
+        // the blocks mined before subscribing, tip included, are read before the tip is claimed
+        expect(worker.rpcRequest).toHaveBeenCalledWith(
+            expect.objectContaining({
+                params: [expect.objectContaining({ fromBlock: '0x33', toBlock: '0x64' })],
+            }),
+        );
+        expect(history.watchedTo).toBe(200 - TIP_LAG_BLOCKS);
+    });
+
+    it('records how far it has watched on every health check', async () => {
+        mockSocket({ blockNumber: 200 });
+        const worker = createSocketWorker();
+        const history = getDescriptorHistory(worker.state, ADDRESS);
+        history.syncedFrom = 1;
+        history.syncedTo = 1;
+
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        await jest.advanceTimersByTimeAsync(WATCH_HEALTH_CHECK_INTERVAL_MS);
+
+        expect(history.watchedTo).toBe(198);
+    });
+
+    it('falls back to polling when the socket closes', async () => {
+        const { fail } = mockSocket();
+        const worker = createSocketWorker();
+
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        fail();
+        await jest.advanceTimersByTimeAsync(0);
+        worker.mineBlock();
+        await jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS);
+
+        expect(worker.rpcRequest).toHaveBeenCalled();
+    });
+
+    it('falls back to polling when the socket stops answering', async () => {
+        const { socket } = mockSocket();
+        socket.getBlockNumber.mockRejectedValue(new Error('timed out'));
+        const worker = createSocketWorker();
+
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        await jest.advanceTimersByTimeAsync(WATCH_HEALTH_CHECK_INTERVAL_MS);
+        worker.mineBlock();
+        await jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS);
+
+        expect(socket.close).toHaveBeenCalled();
+        expect(worker.rpcRequest).toHaveBeenCalled();
+    });
+
+    it('tries the socket again once watching starts over', async () => {
+        const { fail } = mockSocket();
+        const worker = createSocketWorker();
+
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        fail();
+        await jest.advanceTimersByTimeAsync(0);
+        worker.unsubscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        await jest.advanceTimersByTimeAsync(0);
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+
+        expect(openLogSubscriptionSocket).toHaveBeenCalledTimes(2);
+    });
+
+    it('subscribes again when the watched accounts change', async () => {
+        const { cancel, subscriptions } = mockSocket();
+        const worker = createSocketWorker();
+
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: OTHER_ADDRESS }] });
+
+        expect(cancel).toHaveBeenCalledTimes(2);
+        expect(subscriptions.at(-1)?.topics).toEqual([
+            TRANSFER_TOPIC,
+            null,
+            [WATCHED_TOPIC, `0x${OTHER_ADDRESS.slice(2).padStart(64, '0')}`],
+        ]);
+    });
+
+    it('cancels the subscriptions and closes the socket once nobody is watched', async () => {
+        const { socket, cancel } = mockSocket();
+        const worker = createSocketWorker();
+
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        worker.unsubscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(cancel).toHaveBeenCalledTimes(2);
+        expect(socket.close).toHaveBeenCalled();
+        expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it('still polls for blocks, without looking for transfers the socket reports', async () => {
+        mockSocket();
+        const worker = createSocketWorker();
+
+        await worker.subscribe({ type: 'block' });
+        await worker.subscribe({ type: 'accounts', accounts: [{ descriptor: ADDRESS }] });
+        worker.mineBlock();
+        await jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS);
+
+        expect(worker.post).toHaveBeenCalledWith(blockNotification(2));
+        expect(worker.rpcRequest).not.toHaveBeenCalled();
     });
 });

@@ -4,9 +4,13 @@ import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountAddresses } from '@suite-common/wallet-utils';
 
-import { subscribeBlockchainThunk, unsubscribeBlockchainThunk } from './blockchainThunks';
+import {
+    type SubscribeBlockchainThunkState,
+    type UnsubscribeBlockchainThunkState,
+    subscribeBlockchainThunk,
+    unsubscribeBlockchainThunk,
+} from './blockchainThunks';
 import { accountsActions } from '../accounts/accountsActions';
-import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 
 // Networks without an address list are subscribed by descriptor.
@@ -27,7 +31,8 @@ const hasSubscriptionChanged = (previous: Account | null | undefined, next: Acco
     );
 };
 
-type BlockchainSubscriptionMiddlewareState = AccountsRootState;
+type BlockchainSubscriptionMiddlewareState = SubscribeBlockchainThunkState &
+    UnsubscribeBlockchainThunkState;
 
 // A backend connects on first use, which during discovery is before its accounts exist, so the
 // accounts (and the network's blocks) are subscribed as they enter the store.

@@ -1,5 +1,11 @@
 export { DEFAULT_PAGE_SIZE, getHistoryPage, mapEntries } from './getHistory';
-export { type AccountChange, detectAccountChanges } from './watch';
+export {
+    type AccountChange,
+    detectAccountChanges,
+    getCatchUpStart,
+    markWatched,
+    reportAccountChanges,
+} from './watch';
 export { getNativeLogSources, toNativeAmount, NATIVE_DECIMALS } from './nativeAsset';
 export type { NativeLogSource } from './nativeAsset';
 export { syncHistory } from './sync';
