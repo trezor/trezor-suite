@@ -46,6 +46,9 @@ const BLOCKAID_STELLAR_CHAIN_BY_SYMBOL = {
 export const resolveBlockaidEvmChain = (chainId: number | undefined = getNetwork('eth').chainId) =>
     BLOCKAID_EVM_CHAIN_BY_CHAIN_ID[chainId] ?? null;
 
+export const isEvmChainTxSimulationSupported = (chainId?: number) =>
+    resolveBlockaidEvmChain(chainId) !== null;
+
 export const resolveBlockaidSolanaChain = (symbol: SolanaNetworkSymbol) =>
     BLOCKAID_SOLANA_CHAIN_BY_SYMBOL[symbol];
 

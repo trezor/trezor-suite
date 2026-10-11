@@ -1,5 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { isEvmChainTxSimulationSupported } from '@suite-common/tx-simulation';
 import { asNetworkSymbol, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     accountsActions,
@@ -113,7 +114,13 @@ const preCallHook = async <M extends CallMethodKeys>({
             }),
         );
 
-        if (source.type !== 'desktop-ws' && source.type !== 'web') {
+        // The simulation modal has nothing to render for a chain Blockaid can't scan, so opening it
+        // would leave the call waiting on a confirmation the user never sees.
+        if (
+            source.type !== 'desktop-ws' &&
+            source.type !== 'web' &&
+            isEvmChainTxSimulationSupported(chainId)
+        ) {
             // Display simulation
             const device = selectSelectedDevice(getState());
             if (!device) throw new Error('No device selected');
