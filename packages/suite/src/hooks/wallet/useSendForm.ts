@@ -95,6 +95,15 @@ const getStateFromProps = (
 // see: ./packages/suite/docs/send/ARCHITECTURE.md
 
 export const useSendForm = (props: UseSendFormProps): SendContextValues => {
+    // React Compiler: compiling this hook breaks `changeFee: BTC fee changes` and
+    // `changeFee: XRP fee changes` in useSendForm.test.tsx, measured under a babel lane running the
+    // compiler at the production scope. It has been skipped all along, but only as a side effect of
+    // the two `react-hooks/exhaustive-deps` suppressions below being in the compiler's
+    // `DEFAULT_ESLINT_SUPPRESSIONS` -- so tidying those away would have silently shipped the break.
+    // This says it out loud instead. Remove once `composeDraft` is stable enough to appear in those
+    // dependency arrays.
+    'use no memo';
+
     const { selectedAccount, localCurrency, online, metadataEnabled } = props;
 
     // public variables, exported to SendFormContext
@@ -219,6 +228,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         composedLevels,
         composeRequest,
         ...useFormMethods,
+        formState,
     });
 
     // sub-hook

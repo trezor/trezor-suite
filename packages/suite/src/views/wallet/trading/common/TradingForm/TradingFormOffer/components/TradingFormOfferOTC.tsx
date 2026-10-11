@@ -26,6 +26,11 @@ import {
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 
 export const TradingFormOfferOTC = () => {
+    // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled
+    // render-time read of it freezes on the first render. Remove once these reads move to
+    // `useWatch` or out of render.
+    'use no memo';
+
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const otcQuery = useFetchOtc();
     const { data: otcData, isSuccess } = otcQuery;

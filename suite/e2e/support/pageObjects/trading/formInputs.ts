@@ -126,14 +126,4 @@ export class TradingFormInputs {
             await expect(this.cryptoAmount).toHaveValue(expectedValue);
         }
     }
-
-    @step()
-    async verifyCryptoAmountExceedsBalance(amount: string) {
-        await this.cryptoAmount.fill(amount);
-        await expect(this.youPayError).toHaveTranslation('AMOUNT_IS_NOT_ENOUGH', {
-            timeout: 15_000,
-        });
-        await this.cryptoAmount.clear();
-        await expect(this.youPayError).toBeHidden();
-    }
 }

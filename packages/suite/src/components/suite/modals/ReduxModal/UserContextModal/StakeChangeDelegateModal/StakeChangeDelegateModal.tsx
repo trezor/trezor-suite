@@ -1,8 +1,8 @@
 import { useLayoutEffect, useMemo } from 'react';
-import { FormProvider } from 'react-hook-form';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -184,9 +184,11 @@ export const StakeChangeDelegateModalLoaded = ({
         [currentVotingOption?.type],
     );
 
+    const { formState } = methods;
+
     return (
         <ChangeDelegateFormContext.Provider value={changeDelegateContextValues}>
-            <FormProvider {...methods}>
+            <Form form={methods} formState={formState}>
                 <Modal
                     heading={<Translation id="TR_STAKING_CHANGE_VOTING_PREFERENCE" />}
                     onCancel={handleCancel}
@@ -232,7 +234,7 @@ export const StakeChangeDelegateModalLoaded = ({
                         </Card>
                     </Column>
                 </Modal>
-            </FormProvider>
+            </Form>
         </ChangeDelegateFormContext.Provider>
     );
 };
