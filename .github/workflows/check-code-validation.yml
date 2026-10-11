@@ -41,6 +41,8 @@ jobs:
             yarn-cache-folder-
       # We can skip the build for all dependencies, even for those whitelisted, because this process is used only to validate the yarn.lock file and populate the cache.
       - name: Install deps
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
         run: |
           yarn --immutable --mode=skip-build
 
