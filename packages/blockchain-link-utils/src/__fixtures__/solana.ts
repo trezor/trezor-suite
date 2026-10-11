@@ -99,6 +99,20 @@ const instructions = {
         program: 'spl-token',
         programId: TOKEN_PROGRAM_PUBLIC_KEY,
     },
+    // without mint and tokenAmount, sent from the user's own token account
+    tokenTransferFromOwnTokenAccount: {
+        parsed: {
+            info: {
+                amount: '5',
+                authority: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                destination: 'H8TGGw7Z85w1wDxcH3aTBAyCoCYsDQZrKUim7fwtKAMs',
+                source: 'FRoT98CfAt984ZS9n1rmtw1p9nrTCzCcC6sygivztyZN',
+            },
+            type: 'transfer',
+        },
+        program: 'spl-token',
+        programId: TOKEN_PROGRAM_PUBLIC_KEY,
+    },
 };
 
 const parsedTransactions = {
@@ -216,6 +230,38 @@ const parsedTransactions = {
                 message: {
                     accountKeys: [{ pubkey: 'address1' }, { pubkey: 'address2' }],
                     instructions: [instructions.tokenTransferToAssociated],
+                },
+            },
+            version: 'legacy',
+            blockTime: 1631753600,
+            slot: 5n,
+        },
+    },
+    tokenTransferFromOwnTokenAccount: {
+        transaction: {
+            meta: {},
+            transaction: {
+                signatures: ['txid1'],
+                message: {
+                    accountKeys: [{ pubkey: 'address1' }, { pubkey: 'address2' }],
+                    instructions: [instructions.tokenTransferFromOwnTokenAccount],
+                },
+            },
+            version: 'legacy',
+            blockTime: 1631753600,
+            slot: 5n,
+        },
+    },
+    innerTokenTransfer: {
+        transaction: {
+            meta: {
+                innerInstructions: [{ index: 0, instructions: [instructions.tokenTransfer] }],
+            },
+            transaction: {
+                signatures: ['txid1'],
+                message: {
+                    accountKeys: [{ pubkey: 'address1' }, { pubkey: 'address2' }],
+                    instructions: [instructions.nonTransfer],
                 },
             },
             version: 'legacy',
@@ -1230,6 +1276,102 @@ export const fixtures = {
                     name: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
                     symbol: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
                     amount: '2',
+                },
+            ],
+        },
+        {
+            description: 'parses a token transfer from the inner instructions',
+            input: {
+                transaction: parsedTransactions.innerTokenTransfer.transaction,
+                accountAddress: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                map: sampleMintToDetailMap,
+                tokenAccountsInfos: [
+                    {
+                        address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        mint: 'So11111111111111111111111111111111111111112',
+                        decimals: 9,
+                    },
+                ],
+            },
+            expectedOutput: [
+                {
+                    type: 'sent',
+                    standard: 'SPL',
+                    from: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                    to: '2SyRvfaD5abg8j4cRfHViFXRh5KThuBBEU24RX8Cgrm3',
+                    contract: 'So11111111111111111111111111111111111111112',
+                    decimals: 9,
+                    name: 'Wrapped SOL',
+                    symbol: 'WSOL',
+                    amount: '2000000',
+                },
+            ],
+        },
+        {
+            description:
+                'resolves mint and decimals from the first listed token account when several share an address',
+            input: {
+                transaction: parsedTransactions.tokenTransferFromOwnTokenAccount.transaction,
+                accountAddress: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                map: sampleMintToDetailMap,
+                tokenAccountsInfos: [
+                    {
+                        address: 'FRoT98CfAt984ZS9n1rmtw1p9nrTCzCcC6sygivztyZN',
+                        mint: 'So11111111111111111111111111111111111111112',
+                        decimals: 9,
+                    },
+                    {
+                        address: 'FRoT98CfAt984ZS9n1rmtw1p9nrTCzCcC6sygivztyZN',
+                        mint: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                        decimals: 1,
+                    },
+                ],
+            },
+            expectedOutput: [
+                {
+                    type: 'sent',
+                    standard: 'SPL',
+                    from: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                    to: 'H8TGGw7Z85w1wDxcH3aTBAyCoCYsDQZrKUim7fwtKAMs',
+                    contract: 'So11111111111111111111111111111111111111112',
+                    decimals: 9,
+                    name: 'Wrapped SOL',
+                    symbol: 'WSOL',
+                    amount: '5',
+                },
+            ],
+        },
+        {
+            description:
+                'keeps the list order of token accounts as the tie-break when an instruction moves tokens between two owned token accounts',
+            input: {
+                transaction: parsedTransactions.singleTokenTransfer.transaction,
+                accountAddress: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                map: sampleMintToDetailMap,
+                tokenAccountsInfos: [
+                    {
+                        address: '2SyRvfaD5abg8j4cRfHViFXRh5KThuBBEU24RX8Cgrm3',
+                        mint: 'So11111111111111111111111111111111111111112',
+                        decimals: 9,
+                    },
+                    {
+                        address: 'FRoT98CfAt984ZS9n1rmtw1p9nrTCzCcC6sygivztyZN',
+                        mint: 'So11111111111111111111111111111111111111112',
+                        decimals: 9,
+                    },
+                ],
+            },
+            expectedOutput: [
+                {
+                    type: 'self',
+                    standard: 'SPL',
+                    from: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                    to: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                    contract: 'So11111111111111111111111111111111111111112',
+                    decimals: 9,
+                    name: 'Wrapped SOL',
+                    symbol: 'WSOL',
+                    amount: '2000000',
                 },
             ],
         },

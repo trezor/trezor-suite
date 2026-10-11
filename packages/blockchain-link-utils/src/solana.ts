@@ -630,14 +630,22 @@ export const getTokens = (
     tokenDetailByMint: TokenDetailByMint,
     tokenAccountsInfos: SolanaTokenAccountInfo[],
 ): TokenTransfer[] => {
-    const getUiType = ({ parsed }: TokenTransferInstruction) => {
-        const accountAddresses = [
-            ...tokenAccountsInfos.map(({ address }) => address),
-            accountAddress,
-        ];
-        const isAccountDestination = accountAddresses.includes(parsed.info.destination);
+    // Several token accounts may share an address, so the index keeps the first one, the entry a
+    // linear scan of the list would find.
+    const tokenAccountIndexByAddress = new Map<string, number>();
+    tokenAccountsInfos.forEach(({ address }, index) => {
+        if (!tokenAccountIndexByAddress.has(address)) {
+            tokenAccountIndexByAddress.set(address, index);
+        }
+    });
 
-        const isAccountSource = accountAddresses.includes(
+    const isAccountOwnedAddress = (address: string) =>
+        address === accountAddress || tokenAccountIndexByAddress.has(address);
+
+    const getUiType = ({ parsed }: TokenTransferInstruction) => {
+        const isAccountDestination = isAccountOwnedAddress(parsed.info.destination);
+
+        const isAccountSource = isAccountOwnedAddress(
             parsed.info.multisigAuthority || parsed.info.authority || parsed.info.source,
         );
 
@@ -651,10 +659,15 @@ export const getTokens = (
         return 'sent';
     };
 
-    const matchTokenAccountInfo = ({ parsed }: TokenTransferInstruction, address: string) =>
-        address === parsed.info?.source ||
-        address === parsed.info.destination ||
-        address === parsed.info?.authority;
+    // The first token account in the list order whose address is the source, destination or
+    // authority of the instruction.
+    const findTokenAccountInfo = ({ parsed }: TokenTransferInstruction) => {
+        const indexes = [parsed.info.source, parsed.info.destination, parsed.info.authority]
+            .map(address => tokenAccountIndexByAddress.get(address))
+            .filter(isNotNullOrUndefined);
+
+        return indexes.length > 0 ? tokenAccountsInfos[Math.min(...indexes)] : undefined;
+    };
 
     const instructions = [
         ...tx.transaction.message.instructions,
@@ -666,18 +679,14 @@ export const getTokens = (
         .filter(
             (instruction): instruction is TokenTransferInstruction =>
                 isTokenTransferInstruction(instruction) &&
-                tokenAccountsInfos.some(tokenAccountInfo =>
-                    matchTokenAccountInfo(instruction, tokenAccountInfo.address),
-                ),
+                findTokenAccountInfo(instruction) !== undefined,
         )
         .map<TokenTransfer>((ix): TokenTransfer => {
             const { parsed, program } = ix;
 
             // some data, like `mint` and `decimals` may not be present in the instruction, but can be found in the token account info
             // so we try to find the token account info that matches the instruction and use it's data
-            const instructionTokenInfo = tokenAccountsInfos.find(tokenAccountInfo =>
-                matchTokenAccountInfo(ix, tokenAccountInfo.address),
-            );
+            const instructionTokenInfo = findTokenAccountInfo(ix);
 
             // when sending tokens to associated token account, the instruction does not contain mint
             const mint = parsed.info.mint || instructionTokenInfo?.mint || 'Unknown token contract';
