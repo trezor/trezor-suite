@@ -45,7 +45,7 @@ impl PlatformDevice for WindowsDevice {
         let result = pairing.UnpairAsync()?.await?;
         let status = result.Status()?;
         if status != DeviceUnpairingResultStatus::Unpaired {
-            Err(format!("Unpair failed: {:?}", status).into())
+            Err(format!("Unpair failed: {status:?}").into())
         } else {
             let _ = device.Close();
             Ok(())
@@ -111,7 +111,7 @@ pub async fn try_to_pair(ctx: &ConnectDeviceContext) -> Result<(), PlatformError
                             info!("try_to_pair confirm PIN");
                             args.Accept()?; // automatically confirm pin
                             if let Err(err) = pin_sender.send(pin.to_string()) {
-                                info!("try_to_pair error sending PIN {:?}", err);
+                                info!("try_to_pair error sending PIN {err:?}");
                             }
                         }
                     }
@@ -132,12 +132,12 @@ pub async fn try_to_pair(ctx: &ConnectDeviceContext) -> Result<(), PlatformError
             // similar to linux, disconnect after successful paring and proceed to discover_services()
             let result = device.Close();
             if let Err(err) = result {
-                info!("try_to_pair close error {:?}", err);
+                info!("try_to_pair close error {err:?}");
             }
 
             dispatch_status(manager.clone(), bt_device, DeviceConnectionStatus::Paired).await;
         } else {
-            let error = format!("try_to_pair pairing failed status: {:?}", pairing_status);
+            let error = format!("try_to_pair pairing failed status: {pairing_status:?}");
             dispatch_status(
                 manager.clone(),
                 bt_device,

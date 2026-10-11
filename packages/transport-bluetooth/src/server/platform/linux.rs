@@ -12,9 +12,10 @@ use dbus::{
     nonblock::{Proxy, SyncConnection},
 };
 use log::info;
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::mpsc};
 use tokio::{
     sync::broadcast::error::RecvError,
+    task::AbortHandle,
     time::{sleep, Duration},
 };
 
@@ -36,8 +37,8 @@ impl PlatformDevice for LinuxDevice {
     }
 
     async fn connect(ctx: ConnectDeviceContext) -> Result<(), PlatformError> {
-        let id = ctx.params.id.clone();
-        let paired = is_paired(id).await?;
+        let device = ctx.manager.get_device_or_die(ctx.params.id.clone()).await?;
+        let paired = is_paired(device.get_id()).await?;
         if paired {
             connect_with_timeout(ctx.clone()).await?;
         } else {
@@ -84,7 +85,9 @@ fn get_device_proxy(
     ),
     dbus::Error,
 > {
-    let device_path = format!("/org/bluez/{}", id);
+    let device_path = dbus::Path::new(format!("/org/bluez/{id}")).map_err(|reason| {
+        dbus::Error::new_custom("org.freedesktop.DBus.Error.InvalidArgs", &reason)
+    })?;
     let (resource, conn) = dbus_tokio::connection::new_system_sync()?;
     let connection_task = tokio::spawn(resource);
     let timeout = Duration::from_millis(timeout.into());
@@ -113,13 +116,10 @@ async fn get_device_properties(
 
 async fn is_paired(id: String) -> Result<bool, PlatformError> {
     let (props,) = get_device_properties(id, DBUS_TIMEOUT).await?;
-    if let Some(variant) = props.get("Paired") {
-        if let Some(is_paired) = variant.0.as_any().downcast_ref::<bool>().cloned() {
-            return Ok(is_paired);
-        }
-    }
-
-    Ok(false)
+    props
+        .get("Paired")
+        .and_then(|variant| variant.0.as_any().downcast_ref::<bool>().copied())
+        .ok_or_else(|| PlatformError::from("Paired property is missing or not a boolean"))
 }
 
 /// try to disconnect the device silently
@@ -178,9 +178,9 @@ fn watch_abort(
 /// watch timeout event
 fn watch_timeout(id: String, timeout: u32) -> tokio::task::JoinHandle<()> {
     tokio::spawn(async move {
-        info!("Start connection with timeout {:?}", timeout);
+        info!("Start connection with timeout {timeout:?}");
         sleep(Duration::from_millis(timeout.into())).await;
-        info!("Connection timeout. disconnecting device");
+        info!("Connection timeout. disconnecting device {id:?}");
         disconnect_device(id).await;
     })
 }
@@ -227,6 +227,31 @@ async fn connect_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformE
     Ok(())
 }
 
+/// Stops the agent and aborts tracked tasks on every exit path, including `?` and future drop.
+struct PairingGuard {
+    agent_stop: mpsc::Sender<()>,
+    tasks: Vec<AbortHandle>,
+}
+
+impl PairingGuard {
+    fn stop_agent(&self) {
+        let _ = self.agent_stop.send(());
+    }
+
+    fn track(&mut self, abort_handle: AbortHandle) {
+        self.tasks.push(abort_handle);
+    }
+}
+
+impl Drop for PairingGuard {
+    fn drop(&mut self) {
+        self.stop_agent();
+        for task in &self.tasks {
+            task.abort();
+        }
+    }
+}
+
 async fn pair_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformError> {
     let ConnectDeviceContext {
         manager,
@@ -245,10 +270,16 @@ async fn pair_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformErro
         _ => false, // Ok(Err(_)) or Err(_)
     };
 
+    let mut guard = PairingGuard {
+        agent_stop,
+        tasks: Vec::new(),
+    };
+
     let (cancel_task, mut is_cancel_finished) = watch_abort(device.get_id(), broadcast.clone());
+    guard.track(cancel_task.abort_handle());
 
     if !agent_enabled {
-        let _ = agent_stop.send(());
+        guard.stop_agent();
 
         info!("Agent not registered");
         // if system_settings/bluetooth UI window is closed/unavailable
@@ -302,48 +333,59 @@ async fn pair_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformErro
             }
         }
     });
+    guard.track(props_task.abort_handle());
 
     // Pairing occasionally times out even if pairing process was successful
     // Err(D-Bus error: Timeout waiting for reply (org.freedesktop.DBus.Error.Timeout))
     // Err(D-Bus error: Did not receive a reply. Possible causes include: the remote application did not send a reply...
     // workaround: Listen for "Paired" property changes in props_task (see above)
     let (conn, device_proxy) = get_device_proxy(device.get_id(), DBUS_TIMEOUT)?;
+    guard.track(conn.abort_handle());
     let mut pairing_task = tokio::spawn(async move {
         // NOTE: there is no way to abort device_proxy.method_call
         let result: Result<(), dbus::Error> =
             device_proxy.method_call(DBUS_DEVICE, "Pair", ()).await;
-        match result {
-            Ok(_) => None,
-            Err(error) => Some(error),
-        }
+        result.err()
     });
+    guard.track(pairing_task.abort_handle());
 
-    tokio::select! {
-        response = &mut props_task => {
-            cancel_task.abort();
-            pairing_task.abort();
-            conn.abort();
-            if let Ok(Some(err)) = response {
-                info!("pair_with_timeout props_task error: {err:?}");
-                let _ = agent_stop.send(());
-                dispatch_status(manager, device, DeviceConnectionStatus::PairingError{ error: err.to_string() }).await;
-                return Err(err)?;
-            }
+    let outcome: Result<(), PlatformError> = tokio::select! {
+        response = &mut props_task => match response {
+            Ok(None) => Ok(()),
+            Ok(Some(err)) => Err(err),
+            Err(err) => Err(err.into()),
         },
-        response = &mut pairing_task => {
-            cancel_task.abort();
-            props_task.abort();
-            conn.abort();
-            if let Ok(Some(err)) = response {
-                info!("pair_with_timeout pairing_task error: {err:?}");
-                let _ = agent_stop.send(());
-                dispatch_status(manager, device, DeviceConnectionStatus::PairingError{ error: err.to_string() }).await;
-                return Err(err)?;
-            }
+        response = &mut pairing_task => match response {
+            // re-verify the pairing target before reporting success
+            Ok(None) => match is_paired(device.get_id()).await {
+                Ok(true) => Ok(()),
+                Ok(false) => Err("Device is not paired after pairing finished".into()),
+                Err(err) => Err(err),
+            },
+            // Pair may report a timeout although the bond was created
+            Ok(Some(err)) => match is_paired(device.get_id()).await {
+                Ok(true) => Ok(()),
+                _ => Err(err.into()),
+            },
+            Err(err) => Err(err.into()),
         },
     };
 
-    let _ = agent_stop.send(());
+    drop(guard);
+
+    if let Err(err) = outcome {
+        info!("pair_with_timeout error: {err:?}");
+        dispatch_status(
+            manager,
+            device,
+            DeviceConnectionStatus::PairingError {
+                error: err.to_string(),
+            },
+        )
+        .await;
+        return Err(err);
+    }
+
     dispatch_status(manager, device, DeviceConnectionStatus::Paired).await;
 
     Ok(())

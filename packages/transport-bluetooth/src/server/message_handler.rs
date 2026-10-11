@@ -67,7 +67,7 @@ pub async fn handle_message(
         WsRequestMethod::GetInfo => methods::get_info(manager).await,
         WsRequestMethod::Enumerate => methods::enumerate(manager).await,
         WsRequestMethod::StartScan => methods::start_scan(manager, broadcast).await,
-        WsRequestMethod::StopScan => methods::stop_scan(manager, broadcast).await,
+        WsRequestMethod::StopScan => methods::stop_scan(manager).await,
         WsRequestMethod::SetState(params) => methods::set_state(manager, params).await,
         WsRequestMethod::ConnectDevice(params) => {
             methods::connect_device(manager, broadcast, params).await

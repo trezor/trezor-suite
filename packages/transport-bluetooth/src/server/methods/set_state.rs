@@ -5,7 +5,7 @@ use crate::server::{
 use log::info;
 
 pub async fn set_state(manager: AdapterManager, params: SetStateParams) -> MethodResult {
-    info!("set_state {:?}", params);
+    info!("set_state {params:?}");
 
     manager.set_known_peripherals(params.devices).await;
 
