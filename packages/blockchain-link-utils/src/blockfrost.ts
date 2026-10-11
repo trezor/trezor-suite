@@ -1,6 +1,7 @@
 import {
     type AccountAddresses,
     type AccountInfo,
+    type Address,
     type AssetBalance,
     type BlockfrostAccountInfo,
     type BlockfrostTransaction,
@@ -15,7 +16,6 @@ import {
     type VinVout,
     cardanoStakingInfoSchema,
 } from '@trezor/blockchain-link-types';
-import { isNotNullOrUndefined } from '@trezor/utils';
 import { BigNumber, type BigNumberValue } from '@trezor/utils/src/bigNumber';
 
 import { enhanceVinVout, filterTargets, sumVinVout, transformTarget } from './utils';
@@ -158,61 +158,95 @@ export const transformInputOutput = (
         value: utxo.amount.find(a => a.unit === asset)?.quantity ?? '0',
     }));
 
+const isTokenAsset = (asset: AssetBalance) => asset.unit !== 'lovelace';
+
+const toAddressSet = (addresses: Address[]) => {
+    const addressSet = new Set<string>();
+    addresses.forEach(({ address }) => addressSet.add(address));
+
+    return addressSet;
+};
+
+// The `from` of a received token is the address of the first input carrying its unit, so the
+// first input seen per unit wins.
+const getFirstInputAddressByUnit = (inputs: BlockfrostTransaction['txUtxos']['inputs']) => {
+    const addressByUnit = new Map<string, string>();
+    inputs.forEach(input =>
+        input.amount.forEach(({ unit }) => {
+            if (!addressByUnit.has(unit)) addressByUnit.set(unit, input.address);
+        }),
+    );
+
+    return addressByUnit;
+};
+
 export const filterTokenTransfers = (
     accountAddress: AccountAddresses,
     tx: BlockfrostTransaction,
     type: TransferType,
 ): TokenTransfer[] => {
     const transfers: TokenTransfer[] = [];
-    const myNonChangeAddresses = accountAddress.used.concat(accountAddress.unused);
-    const myAddresses = accountAddress.change.concat(myNonChangeAddresses);
-    tx.txUtxos.outputs.forEach(output => {
-        output.amount
-            .filter(a => a.unit !== 'lovelace')
-            .forEach(asset => {
-                const tokenUnit = asset.unit;
+    const { inputs, outputs } = tx.txUtxos;
 
-                const inputs = transformInputOutput(tx.txUtxos.inputs, tokenUnit);
-                const outputs = transformInputOutput(tx.txUtxos.outputs, tokenUnit);
-                const outgoing = filterTargets(myAddresses, inputs); // inputs going from account address
-                const incoming = filterTargets(myAddresses, outputs); // outputs to account address
-                const isChange = accountAddress.change.find(a => a.address === output.address);
+    // Most Cardano transactions move only ADA and never produce a transfer, so they skip the
+    // per-transaction address indexing below.
+    if (!outputs.some(output => output.amount.some(isTokenAsset))) return transfers;
 
-                if (incoming.length === 0 && outgoing.length === 0) return null;
+    const changeAddressSet = toAddressSet(accountAddress.change);
+    const nonChangeAddressSet = toAddressSet(accountAddress.used.concat(accountAddress.unused));
+    const isMyAddress = (address: string) =>
+        changeAddressSet.has(address) || nonChangeAddressSet.has(address);
 
-                const incomingForOutput = filterTargets(
-                    myNonChangeAddresses,
-                    transformInputOutput([output], tokenUnit),
-                );
+    // Whether the transaction touches the account does not depend on the asset, so this is one
+    // check per transaction instead of one per (output, asset) pair.
+    const touchesMyAddresses =
+        inputs.some(input => isMyAddress(input.address)) ||
+        outputs.some(output => isMyAddress(output.address));
+    if (!touchesMyAddresses) return transfers;
 
-                let amount = '0';
-                if (type === 'sent') {
-                    amount = isChange ? '0' : asset.quantity;
-                } else if (type === 'recv') {
-                    amount = incomingForOutput.reduce(sumVinVout, 0).toString();
-                } else if (type === 'self' && !isChange) {
-                    amount = incomingForOutput.reduce(sumVinVout, 0).toString();
-                }
+    const firstInputAddressByUnit =
+        type === 'recv' ? getFirstInputAddressByUnit(inputs) : new Map<string, string>();
 
-                // fingerprint is always defined on tokens
-                if (amount === '0' || !asset.fingerprint) return null;
+    outputs.forEach(output => {
+        const isChange = changeAddressSet.has(output.address);
+        const isMyNonChangeOutput = nonChangeAddressSet.has(output.address);
 
-                transfers.push({
-                    ...transformToken(asset),
-                    type,
-                    amount: amount.toString(),
-                    from:
-                        type === 'sent' || type === 'self'
-                            ? tx.address
-                            : tx.txUtxos.inputs.find(i => i.amount.find(a => a.unit === tokenUnit))
-                                  ?.address || '',
-                    to: type === 'recv' ? tx.address : output.address,
-                    standard: 'BLOCKFROST',
-                });
+        output.amount.filter(isTokenAsset).forEach(asset => {
+            const tokenUnit = asset.unit;
+
+            // The one-element array keeps the BigNumber round trip the amount went through
+            // before, so a non-canonical quantity string is normalised exactly as it was.
+            const incomingForOutput = isMyNonChangeOutput
+                ? transformInputOutput([output], tokenUnit)
+                : [];
+
+            let amount = '0';
+            if (type === 'sent') {
+                amount = isChange ? '0' : asset.quantity;
+            } else if (type === 'recv') {
+                amount = incomingForOutput.reduce(sumVinVout, 0).toString();
+            } else if (type === 'self' && !isChange) {
+                amount = incomingForOutput.reduce(sumVinVout, 0).toString();
+            }
+
+            // fingerprint is always defined on tokens
+            if (amount === '0' || !asset.fingerprint) return;
+
+            transfers.push({
+                ...transformToken(asset),
+                type,
+                amount: amount.toString(),
+                from:
+                    type === 'sent' || type === 'self'
+                        ? tx.address
+                        : (firstInputAddressByUnit.get(tokenUnit) ?? ''),
+                to: type === 'recv' ? tx.address : output.address,
+                standard: 'BLOCKFROST',
             });
+        });
     });
 
-    return transfers.filter(isNotNullOrUndefined);
+    return transfers;
 };
 
 export const transformTransaction = (
@@ -253,13 +287,12 @@ export const transformTransaction = (
     const outgoing = filterTargets(myAddresses, inputs);
     const incoming = filterTargets(myAddresses, outputs);
     const internal = accountAddress ? filterTargets(accountAddress.change, outputs) : [];
+    const internalSet = new Set(internal);
     const totalInput = inputs.reduce(sumVinVout, 0);
     const totalOutput = outputs.reduce(sumVinVout, 0);
-    const allOutputsAreChange =
-        fullData &&
-        blockfrostTxData.txUtxos.outputs.every(o =>
-            accountAddress?.change.some(c => c.address === o.address),
-        );
+    // `internal` is the subset of `outputs` paid to a change address, so equal lengths mean
+    // every output is change.
+    const allOutputsAreChange = fullData && internal.length === outputs.length;
 
     if (outgoing.length === 0 && incoming.length === 0) {
         type = 'unknown';
@@ -271,7 +304,7 @@ export const transformTransaction = (
     ) {
         // all inputs and outputs are mine
         type = 'self';
-        targets = outputs.filter(o => !internal.includes(o));
+        targets = outputs.filter(o => !internalSet.has(o));
         // recalculate amount, amount spent is just a fee
         amount = blockfrostTxData.txData.fees;
 
@@ -300,7 +333,7 @@ export const transformTransaction = (
         }
     } else {
         type = 'sent';
-        targets = outputs.filter(o => !internal.includes(o));
+        targets = outputs.filter(o => !internalSet.has(o));
         // regular targets
         if (voutLength) {
             // bitcoin-like transaction
