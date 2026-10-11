@@ -34,9 +34,24 @@ env:
   STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
 
 jobs:
+  changed-scopes:
+    name: Determine changed scopes
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      javascript: ${{ steps.checks.outputs.javascript }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - uses: ./.github/actions/changed-scopes
+        id: checks
+
   determine-strategy:
     name: Determine test strategy
-    if: github.repository == 'trezor/trezor-suite'
+    needs: changed-scopes
+    if: github.repository == 'trezor/trezor-suite' && needs.changed-scopes.outputs.javascript == 'true'
     runs-on: ubuntu-latest
     outputs:
       strategy: ${{ steps.determine.outputs.strategy }}
@@ -127,11 +142,13 @@ jobs:
   # ── Web ────────────────────────────────────────────────────────────────────
 
   build-web:
-    if: github.repository == 'trezor/trezor-suite'
+    needs: changed-scopes
+    if: github.repository == 'trezor/trezor-suite' && needs.changed-scopes.outputs.javascript == 'true'
     uses: ./.github/workflows/build-suite-web-e2e.yml
 
   extract-branch:
-    if: github.repository == 'trezor/trezor-suite'
+    needs: changed-scopes
+    if: github.repository == 'trezor/trezor-suite' && needs.changed-scopes.outputs.javascript == 'true'
     runs-on: ubuntu-latest
     outputs:
       branch: ${{ steps.extract_branch.outputs.branch }}
@@ -208,9 +225,10 @@ jobs:
   resolve-spec-list:
     name: Resolve spec list
     needs:
+      - changed-scopes
       - determine-strategy
       - run-llm-analysis
-    if: always() && github.repository == 'trezor/trezor-suite'
+    if: always() && github.repository == 'trezor/trezor-suite' && needs.changed-scopes.outputs.javascript == 'true'
     runs-on: ubuntu-latest
     outputs:
       spec-list: ${{ steps.resolve.outputs.spec-list }}

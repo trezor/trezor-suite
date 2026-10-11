@@ -15,8 +15,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changed-scopes:
+    name: Determine changed scopes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      javascript: ${{ steps.checks.outputs.javascript }}
+      rust: ${{ steps.checks.outputs.rust }}
+      docs: ${{ steps.checks.outputs.docs }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - uses: ./.github/actions/changed-scopes
+        id: checks
+
   setup-and-cache:
     name: Setup and Cache Dependencies
+    needs: changed-scopes
+    if: needs.changed-scopes.outputs.javascript == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -89,15 +106,67 @@ jobs:
         run: yarn lint:js --output-style=stream
       - name: Lint Styles
         run: yarn lint:styles --output-style=stream
-      - name: Check rust files changes
-        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4
-        id: changes
+
+  rust-checks:
+    name: Rust checks
+    needs: changed-scopes
+    if: needs.changed-scopes.outputs.rust == 'true'
+    runs-on: ubuntu-latest
+    env:
+      # Same toolchain as packages/transport-bluetooth/scripts/Dockerfile
+      RUSTUP_TOOLCHAIN: "1.88.0"
+    defaults:
+      run:
+        working-directory: packages/transport-bluetooth
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - name: Install Rust toolchain
+        run: rustup toolchain install "$RUSTUP_TOOLCHAIN" --profile minimal --component rustfmt,clippy
+      - name: Cargo Cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
-          filters: |
-            rust: packages/transport-bluetooth/**/*.rs
-      - name: Lint Rust
-        if: steps.changes.outputs.rust == 'true'
-        run: yarn workspace @trezor/transport-bluetooth lint:rs
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            packages/transport-bluetooth/target
+          key: cargo-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('packages/transport-bluetooth/Cargo.lock') }}
+          restore-keys: |
+            cargo-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-
+      - name: Rust Formatting
+        run: cargo fmt --all -- --check
+      - name: Create UI build placeholder
+        run: mkdir -p build && touch build/index.html
+      - name: Clippy
+        run: cargo clippy --all-targets --locked -- -D warnings
+      - name: Rust Tests
+        run: cargo test --locked
+
+  docs-checks:
+    name: Docs checks
+    needs: changed-scopes
+    # With JavaScript changes the same checks run in "Other Checks".
+    if: needs.changed-scopes.outputs.docs == 'true' && needs.changed-scopes.outputs.javascript != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - name: "Checkout branches for Nx"
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+      - name: Check Files for Correct Formatting
+        run: yarn format:verify
+      - name: Verify Requirements
+        run: yarn requirements:verify --only=docs-summary-exhaustive
+      - name: Collect Markdown link inputs
+        run: |
+          git ls-files -s -- '*.md' | awk '$1 != "120000" { print $4 }' > "$RUNNER_TEMP/markdown-link-inputs.txt"
+      - name: Lint Markdown links
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          lycheeVersion: v0.24.2
+          args: --offline --no-progress --root-dir '${{ github.workspace }}' --files-from '${{ runner.temp }}/markdown-link-inputs.txt'
+          output: ${{ runner.temp }}/markdown-links.md
 
   test-madge-circular-imports:
     name: Check for new Circular Imports
@@ -169,6 +238,7 @@ jobs:
         # All tracked Markdown files; untracked dependencies and generated files are excluded.
         # Symlinks are skipped: lychee resolves their relative links from the symlink location,
         # and their targets are checked directly.
+        # Run lychee also on javascript scope changes, because md files link source code files.
         run: |
           git ls-files -s -- '*.md' | awk '$1 != "120000" { print $4 }' > "$RUNNER_TEMP/markdown-link-inputs.txt"
       - name: Lint Markdown links
