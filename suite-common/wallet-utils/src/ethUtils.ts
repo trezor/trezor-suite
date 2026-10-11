@@ -3,6 +3,7 @@ import { UINT256_MAX } from '@suite-common/suite-constants';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type EvmTransactionPurpose,
+    type PrecomposedTransactionFinal,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { type EthereumSpecific, type TokenInfo } from '@trezor/blockchain-link-types';
@@ -95,6 +96,47 @@ export const getEvmTransactionPurpose = ({
     if (isUnwrapNativeTx({ networkSymbol, to, data })) return 'unwrap';
 
     return getEvmTransactionTextSignature(data ?? undefined);
+};
+
+type GetPrecomposedTxWithAccountTokenParams = {
+    precomposedTx: PrecomposedTransactionFinal;
+    contract?: string | null;
+    data?: string;
+    accountTokens?: TokenInfo[];
+};
+
+/**
+ * Connect decodes an ERC-20 transfer only for a token with a firmware definition; otherwise it
+ * presents the call as a zero-value payment to the token contract. When the account holds the
+ * token, decode the transfer here so the review shows it like an unknown-token send.
+ */
+export const getPrecomposedTxWithAccountToken = ({
+    precomposedTx,
+    contract,
+    data,
+    accountTokens,
+}: GetPrecomposedTxWithAccountTokenParams): PrecomposedTransactionFinal => {
+    const [output] = precomposedTx.outputs;
+    const transfer = Calldata.evm.erc20.transfer.decode(data);
+    const token = contract
+        ? accountTokens?.find(
+              accountToken => accountToken.contract.toLowerCase() === contract.toLowerCase(),
+          )
+        : undefined;
+
+    if (precomposedTx.token || !transfer || !token || output?.amount !== '0') {
+        return precomposedTx;
+    }
+
+    const amount = transfer.amount.toString();
+
+    return {
+        ...precomposedTx,
+        outputs: [{ address: transfer.to, amount, script_type: 'PAYTOADDRESS' }],
+        totalSpent: amount,
+        token,
+        isTokenKnown: false,
+    };
 };
 
 // Amount (in wei) unwrapped by a WETH withdraw(uint256) call, or null when data is not one.

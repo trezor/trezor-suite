@@ -13,7 +13,7 @@ import {
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { TokenInfo } from '@trezor/connect';
 
-import { buildApprovalTransactionData } from './ethUtils';
+import { buildApprovalTransactionData, getPrecomposedTxWithAccountToken } from './ethUtils';
 import {
     constructTransactionReviewOutputs,
     isClearSignedEvmTradingSwapTransaction,
@@ -612,6 +612,68 @@ describe('constructTransactionReviewOutputs', () => {
         expect(outputs).not.toEqual(
             expect.arrayContaining([expect.objectContaining({ type: 'contract_intent' })]),
         );
+    });
+
+    describe('connect transfer of a token without a firmware definition', () => {
+        const recipient = '0x000000000000000000000000000000000000abcd';
+        const transferAmount = '1500000';
+        const transactionData = `a9059cbb${recipient.slice(2).padStart(64, '0')}${BigInt(
+            transferAmount,
+        )
+            .toString(16)
+            .padStart(64, '0')}`;
+        const precomposedTx = getPrecomposedTxWithAccountToken({
+            precomposedTx: {
+                type: 'final',
+                inputs: [],
+                outputsPermutation: [0],
+                outputs: [
+                    { address: usdcToken.contract, amount: '0', script_type: 'PAYTOADDRESS' },
+                ],
+                totalSpent: '42000',
+                fee: '42000',
+                feePerByte: '20',
+                bytes: 0,
+                max: undefined,
+                isTokenKnown: false,
+            },
+            contract: usdcToken.contract,
+            data: transactionData,
+            accountTokens: [usdcToken],
+        });
+
+        it('renders it like an unknown-token send', () => {
+            const outputs = constructTransactionReviewOutputs({
+                account,
+                device,
+                decreaseOutputId: undefined,
+                precomposedForm: buildFormState({ transactionData }),
+                precomposedTx,
+            });
+
+            expect(outputs).toEqual([
+                { type: 'contract', value: usdcToken.contract },
+                { type: 'address', value: recipient },
+            ]);
+        });
+
+        it('shows the decoded recipient on pre-2.6.0 firmware', () => {
+            const outputs = constructTransactionReviewOutputs({
+                account,
+                device: mockSuiteDevice(undefined, {
+                    major_version: 2,
+                    minor_version: 5,
+                    patch_version: 3,
+                }),
+                decreaseOutputId: undefined,
+                precomposedForm: buildFormState({ transactionData }),
+                precomposedTx,
+            });
+
+            expect(outputs).toEqual(
+                expect.arrayContaining([{ type: 'regular_legacy', value: recipient }]),
+            );
+        });
     });
 
     it('treats plain 0x calldata as a regular transfer', () => {

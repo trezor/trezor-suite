@@ -2,7 +2,7 @@ import { type DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type CryptoBaseCurrencyPair,
@@ -27,10 +27,15 @@ const PASSPHRASE_WALLET = mockSuiteDevice({ state: { staticSessionId: PASSPHRASE
 
 const USDT = '0xdac17f958d2ee523a2206206994597c13d831ec7' as TokenAddress;
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
+const UNLISTED_TOKEN = '0x128cc466b61f542da60c70e3aa11c10e19b84edb' as TokenAddress;
 
-const ethAccount = (deviceState: string, tokenContract: TokenAddress): Account =>
+const evmAccount = (
+    deviceState: string,
+    tokenContract: TokenAddress,
+    symbol: NetworkSymbol = asNetworkSymbol('eth'),
+): Account =>
     ({
-        symbol: 'eth',
+        symbol,
         deviceState,
         tokens: [{ contract: tokenContract, balance: '1000000', protocols: [] }],
     }) as unknown as Account;
@@ -47,8 +52,8 @@ type State = FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState 
 const getState = (
     selectedDevice: TrezorDevice,
     accounts: Account[] = [
-        ethAccount(STANDARD_WALLET_SSID, USDT),
-        ethAccount(PASSPHRASE_WALLET_SSID, USDC),
+        evmAccount(STANDARD_WALLET_SSID, USDT),
+        evmAccount(PASSPHRASE_WALLET_SSID, USDC),
     ],
 ): State =>
     ({
@@ -88,7 +93,7 @@ describe('selectTickerFromAccounts', () => {
     it('orders all native coin tickers before token tickers', () => {
         const result = selectTickerFromAccounts(
             getState(STANDARD_WALLET, [
-                ethAccount(STANDARD_WALLET_SSID, USDT),
+                evmAccount(STANDARD_WALLET_SSID, USDT),
                 xrpAccount(STANDARD_WALLET_SSID),
             ]),
         );
@@ -103,6 +108,24 @@ describe('selectTickerFromAccounts', () => {
         expect(result.map(ticker => ticker.symbol)).toContain('xrp');
         expect(tokenIndexes.length).toBeGreaterThan(0);
         expect(Math.max(...nativeIndexes)).toBeLessThan(Math.min(...tokenIndexes));
+    });
+
+    it('returns token tickers without a definition on a network that has no definitions', () => {
+        const result = selectTickerFromAccounts(
+            getState(STANDARD_WALLET, [
+                evmAccount(STANDARD_WALLET_SSID, UNLISTED_TOKEN, asNetworkSymbol('arc')),
+            ]),
+        );
+
+        expect(result.map(ticker => ticker.tokenAddress)).toContain(UNLISTED_TOKEN);
+    });
+
+    it('drops token tickers without a definition on a network that has definitions', () => {
+        const result = selectTickerFromAccounts(
+            getState(STANDARD_WALLET, [evmAccount(STANDARD_WALLET_SSID, UNLISTED_TOKEN)]),
+        );
+
+        expect(result.map(ticker => ticker.tokenAddress)).not.toContain(UNLISTED_TOKEN);
     });
 });
 
