@@ -14,6 +14,7 @@
         "@babel/cli": "7.29.7",
         "@mobily/ts-belt": "^3.13.1",
         "@trezor/eslint": "workspace:*",
+        "@trezor/requirements": "workspace:*",
         "@types/semver": "^7.7.0",
         "chalk": "^6.0.0",
         "cross-fetch": "^4.1.0",
