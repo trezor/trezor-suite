@@ -19,8 +19,9 @@ import {
     type Addresses,
     enhanceVinVout,
     filterShadowedPendingTxsByNonce,
-    filterTargets,
+    filterTargetsBySet,
     sumVinVout,
+    toAddressSet,
     transformTarget,
 } from './utils';
 
@@ -165,6 +166,35 @@ type TransformAddresses = {
     change: { address: string }[];
 };
 
+// The account side of `transformTransaction`, indexed once per account page instead of once per
+// transaction. `all` stays a list because `filterTokenTransfers` and the synthetic TRON staking
+// target take one.
+type AccountAddressIndex = {
+    descriptor?: string;
+    all: string[];
+    allSet: ReadonlySet<string>;
+    changeSet?: ReadonlySet<string>;
+};
+
+const indexAccountAddresses = (
+    addressesOrDescriptor?: TransformAddresses | string,
+): AccountAddressIndex => {
+    const [addresses, descriptor] =
+        typeof addressesOrDescriptor === 'object'
+            ? [addressesOrDescriptor, undefined]
+            : [undefined, addressesOrDescriptor];
+    const all = addresses
+        ? addresses.change.concat(addresses.used, addresses.unused).map(a => a.address)
+        : (descriptor && [descriptor]) || [];
+
+    return {
+        descriptor,
+        all,
+        allSet: new Set(all),
+        changeSet: addresses ? toAddressSet(addresses.change) : undefined,
+    };
+};
+
 export const isTxFailed = (tx: BlockbookTransaction) =>
     !(!tx.blockHeight || tx.blockHeight < 0) && tx.ethereumSpecific?.status === 0;
 
@@ -208,35 +238,27 @@ const getTronStakingClassification = (
     }
 };
 
-export const transformTransaction = (
+const transformIndexedTransaction = (
     tx: BlockbookTransaction,
-    addressesOrDescriptor?: TransformAddresses | string,
+    { descriptor, all: myAddresses, allSet: myAddressSet, changeSet }: AccountAddressIndex,
 ): Transaction => {
-    const [addresses, descriptor] =
-        typeof addressesOrDescriptor === 'object'
-            ? [addressesOrDescriptor, undefined]
-            : [undefined, addressesOrDescriptor];
-
-    // combine all addresses into array
-    const myAddresses = addresses
-        ? addresses.change.concat(addresses.used, addresses.unused).map(a => a.address)
-        : (descriptor && [descriptor]) || [];
-
     const inputs = Array.isArray(tx.vin) ? tx.vin : [];
     const totalInput = inputs.reduce(sumVinVout, 0);
-    const myInputs = filterTargets(myAddresses, tx.vin);
+    const myInputs = filterTargetsBySet(myAddressSet, tx.vin);
     const myTotalInput = myInputs.reduce(sumVinVout, 0);
 
     const outputs = Array.isArray(tx.vout) ? tx.vout : [];
     const totalOutput = outputs.reduce(sumVinVout, 0);
-    const myOutputs = filterTargets(myAddresses, tx.vout);
+    const myOutputs = filterTargetsBySet(myAddressSet, tx.vout);
     const myTotalOutput = myOutputs.reduce(sumVinVout, 0);
 
     const myTokens = filterTokenTransfers(myAddresses, tx.tokenTransfers);
     const myInternalTransfers = filterEthereumInternalTransfers(descriptor, tx.ethereumSpecific);
 
-    const isNonChangeOutput = (o: VinVout) =>
-        addresses ? !filterTargets(addresses.change, tx.vout).includes(o) : true;
+    // Keyed by output reference: `filterTargetsBySet` returns the `tx.vout` objects themselves,
+    // so `has(o)` is the identity match `.includes(o)` did, built once instead of once per output.
+    const changeOutputs = changeSet ? new Set(filterTargetsBySet(changeSet, tx.vout)) : undefined;
+    const isNonChangeOutput = (o: VinVout) => !changeOutputs?.has(o);
 
     const isNonZero = (o: VinVout) => o.value && o.value !== '0';
 
@@ -354,14 +376,31 @@ export const transformTransaction = (
         tronSpecific:
             tx.chainExtraData?.payloadType === 'tron' ? tx.chainExtraData.payload : undefined,
         details: {
-            vin: inputs.map(enhanceVinVout(myAddresses)),
-            vout: outputs.map(enhanceVinVout(myAddresses)),
+            vin: inputs.map(enhanceVinVout(myAddressSet)),
+            vout: outputs.map(enhanceVinVout(myAddressSet)),
             size,
             totalInput: totalInput.toString(),
             totalOutput: totalOutput.toString(),
         },
     };
 };
+
+/**
+ * Indexes the account's addresses once and returns the transform to map over a page of its
+ * transactions; `transformTransaction` rebuilds that index on every call.
+ */
+export const createTransactionTransformer = (
+    addressesOrDescriptor?: TransformAddresses | string,
+) => {
+    const index = indexAccountAddresses(addressesOrDescriptor);
+
+    return (tx: BlockbookTransaction): Transaction => transformIndexedTransaction(tx, index);
+};
+
+export const transformTransaction = (
+    tx: BlockbookTransaction,
+    addressesOrDescriptor?: TransformAddresses | string,
+): Transaction => transformIndexedTransaction(tx, indexAccountAddresses(addressesOrDescriptor));
 
 export const transformTokenInfo = (
     tokens: BlockbookAccountInfo['tokens'],
@@ -455,7 +494,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
         new BigNumber(availableBalance).isZero();
 
     const unfilteredTransactions = payload.transactions
-        ? payload.transactions.map(t => transformTransaction(t, addresses ?? descriptor))
+        ? payload.transactions.map(createTransactionTransformer(addresses ?? descriptor))
         : undefined;
 
     const transactions =
