@@ -1,4 +1,8 @@
 {
+    "fill-specializations": [
+        { "value": { "solid": "srgb:0.37647,0.88235,0.59608,1.00000" } },
+        { "appearance": "dark", "value": { "solid": "srgb:0.37647,0.88235,0.59608,1.00000" } }
+    ],
     "groups": [
         {
             "name": "Mark",
