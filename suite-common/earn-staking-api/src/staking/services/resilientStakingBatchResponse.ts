@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { stakingBatchResponse } from '../../api/schemas';
 import type { StakingBatch, StakingBatchDataItem, StakingBatchErrorsItem } from '../../api/types';
-import { EARN_API_BASE_URL } from '../../constants';
+import { earnStakingWorkerBaseUrl } from '../../context';
 
 // Derived from the generated schema rather than restated, so a regenerated shape flows through.
 const stakingBatchDataItem = stakingBatchResponse.shape.data.element;
@@ -16,16 +16,18 @@ const getDroppedItemLabel = (item: unknown, index: number) =>
 
 const reportedDriftSignatures = new Set<string>();
 
-const reportStakingBatchSchemaDrift = (labels: string[]) => {
+const reportStakingBatchSchemaDrift = async (labels: string[]) => {
     const signature = labels.join(', ');
 
     if (reportedDriftSignatures.has(signature)) return;
 
     reportedDriftSignatures.add(signature);
 
+    const baseUrl = await earnStakingWorkerBaseUrl.get();
+
     withScope(scope => {
         scope.setTag('error.code', 'staking_batch_schema_drift');
-        scope.setTag('error.source', EARN_API_BASE_URL);
+        scope.setTag('error.source', baseUrl);
         scope.setTag('error.service', 'staking_batch');
         captureException(
             new Error(`Staking batch entries no longer match the generated schemas: ${signature}`),
@@ -59,7 +61,7 @@ export const resilientStakingBatchResponse = stakingBatchResponse
         });
 
         if (droppedLabels.length) {
-            reportStakingBatchSchemaDrift(droppedLabels);
+            void reportStakingBatchSchemaDrift(droppedLabels);
         }
 
         const validationErrors: StakingBatchErrorsItem[] = droppedLabels.map(label => ({

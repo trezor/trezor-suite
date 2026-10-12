@@ -1,5 +1,7 @@
-import { isCodesignBuild } from '@trezor/env-utils';
+export const earnStakingWorkerBaseUrls = [
+    'https://earn.trezor.io/staking/v1',
+    'https://dev-earn.suite.sldev.cz/staking/v1',
+    'http://localhost:3001/staking/v1',
+] as const;
 
-export const EARN_API_BASE_URL = isCodesignBuild()
-    ? 'https://earn.trezor.io/staking/v1'
-    : 'https://dev-earn.suite.sldev.cz/staking/v1';
+export type EarnStakingWorkerBaseUrl = (typeof earnStakingWorkerBaseUrls)[number];

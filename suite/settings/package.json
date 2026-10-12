@@ -15,6 +15,7 @@
         "@reduxjs/toolkit": "2.13.0",
         "@suite-common/earn-stablecoin-api": "workspace:*",
         "@suite-common/earn-stablecoin-defs": "workspace:*",
+        "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/locale": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/trading": "workspace:*",
