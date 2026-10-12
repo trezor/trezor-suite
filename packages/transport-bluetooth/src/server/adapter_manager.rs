@@ -16,7 +16,7 @@ use tokio::{
 };
 
 use crate::server::{
-    device::{DeviceConnectionStatus, TrezorDevice},
+    device::{DeviceConnectionStatus, TrezorDevice, SERVICE_UUID},
     notification_registry::{NotificationRegistry, RemovedStream},
     types::{
         AbortProcess, AdapterState, ChannelMessage, KnownDevice, NotificationCharacteristic,
@@ -467,10 +467,15 @@ impl AdapterManager {
         Ok(())
     }
 
-    pub async fn update_serviceless_device(&self, id: &PeripheralId) -> Result<(), AdapterError> {
+    pub async fn update_serviceless_device(
+        &self,
+        id: &PeripheralId,
+        has_trezor_service: bool,
+    ) -> Result<(), AdapterError> {
         let id_string = id.to_string();
         let update_count = match self.serviceless_peripherals.remove(&id_string) {
             Some((_, device)) => device.update_count,
+            None if has_trezor_service => 0,
             None => return Ok(()),
         };
 
@@ -560,7 +565,7 @@ impl AdapterManager {
                                     .await;
                             }
                         } else {
-                            let _ = self_ref.update_serviceless_device(&id).await;
+                            let _ = self_ref.update_serviceless_device(&id, false).await;
                         }
                     }
                     CentralEvent::DeviceDisconnected(id) => {
@@ -629,11 +634,14 @@ impl AdapterManager {
                     } => {
                         // log is useful but noisy
                         // info!("ManufacturerDataAdvertisement: {:?} : {:?}", id, manufacturer_data);
-                        let _ = self_ref.update_serviceless_device(&id).await;
+                        let _ = self_ref.update_serviceless_device(&id, false).await;
                     }
-                    CentralEvent::ServicesAdvertisement { id, services: _ } => {
+                    CentralEvent::ServicesAdvertisement { id, services } => {
                         // info!("ServicesAdvertisement: {:?} : {:?}", id, services);
-                        let _ = self_ref.update_serviceless_device(&id).await;
+                        let has_trezor_service = services.contains(&SERVICE_UUID);
+                        let _ = self_ref
+                            .update_serviceless_device(&id, has_trezor_service)
+                            .await;
                     }
                     _ => {}
                 }
