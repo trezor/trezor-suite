@@ -16,18 +16,23 @@ export const subscribeBlock = async ({ state, connect, post }: Context) => {
     const dataSource = createStellarDataSource(api);
 
     const fetchBlock = async () => {
-        const { sequence: blockHeight, hash: blockHash } = await dataSource.readLatestLedger();
-        post({
-            id: -1,
-            type: RESPONSES.NOTIFICATION,
-            payload: {
-                type: 'block',
+        try {
+            const { sequence: blockHeight, hash: blockHash } = await dataSource.readLatestLedger();
+            post({
+                id: -1,
+                type: RESPONSES.NOTIFICATION,
                 payload: {
-                    blockHeight,
-                    blockHash,
+                    type: 'block',
+                    payload: {
+                        blockHeight,
+                        blockHash,
+                    },
                 },
-            },
-        });
+            });
+        } catch (error) {
+            // Nothing awaits the poll, so a rejection would surface as unhandled; the next tick retries.
+            console.warn('Stellar: failed to read the latest ledger', error);
+        }
     };
     fetchBlock();
 
