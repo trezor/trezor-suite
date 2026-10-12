@@ -4,5 +4,4 @@ export {
     type AssetFiatBalanceWithPercentage,
     type AssetFiatBalance,
 } from './utils';
-export * from './homeAssetTableSelectors';
 export * from './homeAssetTableUtils';

@@ -4,7 +4,11 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    getWalletAssetKey,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, useScrollDivider } from '@suite-native/atoms';
@@ -143,8 +147,11 @@ export const AccountOverviewTabContent = ({
                 navigation.navigate(RootStackRoutes.AssetsStack, {
                     screen: AssetsStackRoutes.AssetDetail,
                     params: {
-                        networkSymbol: account.symbol,
-                        tokenContract,
+                        assetKey: getWalletAssetKey({
+                            deviceState: account.deviceState,
+                            symbol: account.symbol,
+                            contractAddress: tokenContract,
+                        }),
                     },
                 });
             } else {

@@ -1,25 +1,20 @@
 import { useSelector } from 'react-redux';
 
-import { type AssetsRootState, selectAssetName } from '@suite-common/assets';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type AssetsRootState, selectWalletAssetDisplaySymbol } from '@suite-common/assets';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 
 import { AssetDetailPrice } from './AssetDetailPrice';
+import { useAssetDetailAsset } from '../hooks/useAssetDetailAsset';
 
-type AssetDetailPriceSectionProps = {
-    networkSymbol: NetworkSymbol;
-    tokenContract?: TokenAddress;
-};
+export const AssetDetailPriceSection = () => {
+    const { assetKey, networkSymbol, tokenContract } = useAssetDetailAsset();
 
-export const AssetDetailPriceSection = ({
-    networkSymbol,
-    tokenContract,
-}: AssetDetailPriceSectionProps) => {
-    const assetName = useSelector((state: AssetsRootState) =>
-        selectAssetName(state, networkSymbol, tokenContract),
+    const assetDisplaySymbol = useSelector((state: AssetsRootState) =>
+        selectWalletAssetDisplaySymbol(state, assetKey),
     );
+
+    if (networkSymbol === undefined || assetDisplaySymbol === undefined) return null;
 
     return (
         <VStack spacing="sp12" paddingHorizontal="sp16" paddingVertical="sp8">
@@ -27,14 +22,14 @@ export const AssetDetailPriceSection = ({
                 <TokenIcon
                     networkSymbol={networkSymbol}
                     contractAddress={tokenContract}
-                    tokenSymbol={assetName}
+                    tokenSymbol={assetDisplaySymbol}
                     showNetworkIcon
                     size="extraSmall"
                 />
-                <Text variant="body-md-strong">{assetName}</Text>
+                <Text variant="body-md-strong">{assetDisplaySymbol}</Text>
             </HStack>
 
-            <AssetDetailPrice networkSymbol={networkSymbol} tokenContract={tokenContract} />
+            <AssetDetailPrice />
         </VStack>
     );
 };

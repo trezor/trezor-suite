@@ -1,13 +1,19 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { getWalletAssetKey } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountWithNetworkType,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
+import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
-    type HomeAssetTableState,
+    type AssetsRootState,
+    selectAssetName,
     selectDisplayedNetworkSymbols,
     selectDisplayedWalletAssetKeys,
     selectDisplayedWalletAssetKeysOfNetwork,
@@ -18,7 +24,11 @@ import {
     selectShownWalletAssetKeys,
     selectSmallBalanceSummary,
     selectWalletAssetAmount,
-} from './homeAssetTableSelectors';
+    selectWalletAssetHasStaking,
+    selectWalletAssetName,
+    selectWalletAssetStakingAmount,
+    selectWalletAssetTotalAmount,
+} from './assetSelectors';
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
 const BOB = 'bobWallet@device:1' as StaticSessionId;
@@ -37,11 +47,12 @@ const UNKNOWN_TOKEN = '0x0000000000000000000000000000000000000bad' as TokenAddre
 
 type MockAccountParams = {
     deviceState?: StaticSessionId;
-    symbol?: Account['symbol'];
+    symbol?: NetworkSymbol;
     index?: number;
     balance?: string;
     isVisible?: boolean;
-    tokens?: { contract: TokenAddress; balance: string; symbol?: string }[];
+    misc?: AccountWithNetworkType<'ethereum'>['misc'];
+    tokens?: { contract: TokenAddress; balance: string; symbol?: string; name?: string }[];
 };
 
 const mockAccount = ({
@@ -50,18 +61,23 @@ const mockAccount = ({
     index = 0,
     balance = '1',
     isVisible = true,
+    misc,
     tokens = [],
 }: MockAccountParams = {}): Account =>
-    ({
-        key: `descriptor${index}-${symbol}-${deviceState}`,
-        deviceState,
-        symbol,
-        index,
-        accountType: 'normal',
-        formattedBalance: balance,
-        visible: isVisible,
-        tokens,
-    }) as unknown as Account;
+    mockWalletAccount(
+        {
+            descriptor: `descriptor_${index}_${symbol}_${deviceState}`,
+            deviceState,
+            symbol,
+            index,
+            balance,
+            availableBalance: balance,
+            formattedBalance: balance,
+            visible: isVisible,
+            tokens: tokens.map(token => mockAccountToken(token)),
+        },
+        misc === undefined ? undefined : { misc },
+    );
 
 // A current rate carries the dollar rate too; in dollars the two are the same number.
 const mockRate = (
@@ -94,7 +110,7 @@ const createState = ({
     areSmallBalancesShown = true,
     shownTokens = [],
     localCurrency = 'usd',
-}: MockStateParams): HomeAssetTableState => {
+}: MockStateParams): AssetsRootState => {
     const definitions = {
         coin: { data: knownTokens, hide: hiddenTokens, show: shownTokens },
     };
@@ -116,10 +132,38 @@ const createState = ({
             [ETH]: { symbol: ETH, name: 'Ethereum' },
             [POL]: { symbol: POL, name: 'Polygon PoS' },
         },
-    } as unknown as HomeAssetTableState;
+    } as AssetsRootState;
 };
 
-const selectHomeAssetRowKeys = (state: HomeAssetTableState) => selectShownWalletAssetKeys(state);
+const selectHomeAssetRowKeys = (state: AssetsRootState) => selectShownWalletAssetKeys(state);
+
+describe('asset names', () => {
+    it('selects the name of a native asset', () => {
+        const state = createState({ accounts: [mockAccount({ symbol: ETH })] });
+
+        expect(selectAssetName(state, ETH)).toBe('Ethereum');
+    });
+
+    it('selects the name of a token', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    tokens: [
+                        {
+                            contract: USDC_ON_ETH,
+                            symbol: 'USDC',
+                            name: 'USD Coin',
+                            balance: '2',
+                        },
+                    ],
+                }),
+            ],
+        });
+
+        expect(selectAssetName(state, ETH, USDC_ON_ETH)).toBe('USD Coin');
+    });
+});
 
 describe('the rows the table is given', () => {
     it('lists one key per asset and network', () => {
@@ -235,8 +279,14 @@ describe('the rows the table is given', () => {
             ],
             hiddenTokens: [USDC_ON_ETH],
         });
+        const hiddenAssetKey = getWalletAssetKey({
+            deviceState: ALICE,
+            symbol: ETH,
+            contractAddress: USDC_ON_ETH,
+        });
 
-        expect(selectHomeAssetRowKeys(state)).not.toContain(`${ALICE}/eth/${USDC_ON_ETH}`);
+        expect(selectHomeAssetRowKeys(state)).not.toContain(hiddenAssetKey);
+        expect(selectWalletAssetAmount(state, hiddenAssetKey, true)).toBe('10');
     });
 
     it('keeps a token the user asked to see, definition or not', () => {
@@ -301,7 +351,52 @@ describe('the rows the table is given', () => {
 
         expect(selectWalletAssetAmount(before, ethereumKey)).toBe('1');
         expect(selectWalletAssetAmount(after, ethereumKey)).toBe('2');
+        expect(selectWalletAssetName(after, ethereumKey)).toBe('Ethereum');
         expect(keysAfter).toBe(keysBefore);
+    });
+
+    it('adds staking to the total asset amount', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    balance: '1',
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }],
+                    misc: {
+                        nonce: '0',
+                        stakingPools: [
+                            {
+                                name: 'Everstake',
+                                contract: '0x456',
+                                autocompoundBalance: '2000000000000000000',
+                                claimableAmount: '0',
+                                depositedBalance: '2000000000000000000',
+                                pendingBalance: '0',
+                                pendingDepositedBalance: '0',
+                                restakedReward: '0',
+                                withdrawTotalAmount: '0',
+                            },
+                        ],
+                    },
+                }),
+                mockAccount({ symbol: ETH, index: 1, balance: '3' }),
+            ],
+        });
+
+        expect(selectWalletAssetAmount(state, ethereumKey)).toBe('4');
+        expect(selectWalletAssetStakingAmount(state, ethereumKey)).toBe('2');
+        expect(selectWalletAssetTotalAmount(state, ethereumKey)).toBe('6');
+        expect(selectWalletAssetHasStaking(state, ethereumKey)).toBe(true);
+
+        const tokenKey = getWalletAssetKey({
+            deviceState: ALICE,
+            symbol: ETH,
+            contractAddress: USDC_ON_ETH,
+        });
+
+        expect(selectWalletAssetStakingAmount(state, tokenKey)).toBe('0');
+        expect(selectWalletAssetTotalAmount(state, tokenKey)).toBe('10');
+        expect(selectWalletAssetHasStaking(state, tokenKey)).toBe(false);
     });
 
     it('hands back a new list when a balance change reorders it', () => {
@@ -367,7 +462,7 @@ describe('the work a rate write costs', () => {
                     },
                 },
             },
-        } as unknown as HomeAssetTableState;
+        } as AssetsRootState;
         const times = jest.spyOn(BigNumber.prototype, 'times');
 
         selectDisplayedWalletAssetKeys(touched);
@@ -482,7 +577,6 @@ describe('the networks the table can be grouped by', () => {
         expect(selectNetworkFiatValue(state, ETH)).toBeUndefined();
     });
 });
-
 describe('the tokens the table leaves out', () => {
     const stateWithBitcoinBalance = (balance: string) =>
         createState({
