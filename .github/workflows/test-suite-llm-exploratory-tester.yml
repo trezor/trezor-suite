@@ -31,6 +31,8 @@ on:
         required: false
         default: z-ai/glm-5.3-flash
         type: string
+  pull_request:
+    types: [ready_for_review]
 
 permissions:
   contents: read
@@ -38,25 +40,95 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: ${{ inputs.target }}
+  group: ${{ inputs.target || github.event.pull_request.html_url }}
   cancel-in-progress: true
 
 jobs:
+  # A PR marked ready for review runs the tester only when Jev picks "run"
+  # and the PR's web preview is built. Fork PRs have no secrets, so the Jev
+  # call would fail; skip them instead.
+  gate:
+    if: |
+      github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request' &&
+      !github.event.pull_request.head.repo.fork
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      run: ${{ steps.preview.outcome == 'success' }}
+    steps:
+      - id: jev
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.E2E_EXPLORATORY_TESTER_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -o pipefail
+          body=$(gh pr view "$PR_NUMBER" --json title,files --jq '{title, files: [.files[].path]}' |
+            jq '{
+              model: "typesafe/jev-1.13",
+              state: {
+                tester: "The LLM exploratory tester black-box tests the PR on the Suite web preview. It cannot open the desktop or mobile app. suite-native/ is mobile. suite/desktop-app, desktop-app-main, desktop-app-renderer, and desktop-app-native-bindings are the desktop shell. packages/suite and suite/web-app are the web UI. A run takes hours.",
+                pr: .
+              },
+              questions: { pick: {
+                type: "choice",
+                instructions: "Should CI run the LLM exploratory tester on this pull request?",
+                criteria: {
+                  run: "The diff changes user-facing behavior visible in Suite web, enough to be worth the cost.",
+                  skip: "Desktop-only, mobile-only, test bookkeeping, docs, or other churn the web tester cannot cover."
+                }
+              }}
+            }' |
+            curl -sS --fail-with-body https://openrouter.ai/api/alpha/decisions \
+              -H "Authorization: Bearer $OPENROUTER_API_KEY" -H "Content-Type: application/json" -d @-)
+          echo "$body"
+          pick=$(jq -r .answers.pick.choice <<< "$body")
+          echo "pick=$pick" >> "$GITHUB_OUTPUT"
+
+      # The tester hits dev.suite.sldev.cz/suite-web/<branch>/web, deployed by
+      # test-suite-web-desktop-e2e-pr.yml on push. Wait until that build has
+      # finished for this exact head SHA so we do not test a stale preview.
+      - name: Wait for web preview
+        id: preview
+        if: steps.jev.outputs.pick == 'run'
+        timeout-minutes: 30
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          until [ "$status" = completed ]; do
+            sleep 30
+            read -r status conclusion < <(gh api -X GET "repos/$GH_REPO/commits/$HEAD_SHA/check-runs" \
+              -f check_name='build-web / build-web' --jq '.check_runs[0] | "\(.status) \(.conclusion)"')
+            echo "build-web: $status $conclusion"
+          done
+          [ "$conclusion" = success ]
+
   llm-exploratory-tester:
+    needs: gate
     runs-on: ubuntu-latest
     timeout-minutes: 240
-    if: github.repository == 'trezor/trezor-suite' && inputs.confirm_trusted_branch
+    if: |
+      !cancelled() && github.repository == 'trezor/trezor-suite' &&
+      (inputs.confirm_trusted_branch || needs.gate.outputs.run == 'true')
     env:
       COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
-      TARGET: ${{ inputs.target }}
-      DEVICE_MODEL: ${{ inputs.device_model }}
+      TARGET: ${{ inputs.target || github.event.pull_request.html_url }}
+      DEVICE_MODEL: ${{ inputs.device_model || 'T3W1' }}
       LLM_EXPLORATORY_TESTER_MODEL: ${{ inputs.model }}
 
     steps:
       # Manual dispatch picks the branch. Do not run this workflow from an
       # untrusted PR branch — it would execute that branch's harness code.
+      # A pull_request run therefore checks out develop, not the PR.
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          ref: ${{ github.event_name == 'pull_request' && 'develop' || '' }}
 
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
