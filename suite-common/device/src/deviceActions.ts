@@ -6,6 +6,7 @@ import {
     type DecodedTrezorPushNotification,
     type Device,
     type DeviceState,
+    type DeviceUniquePath,
     type StaticSessionId,
 } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
@@ -81,7 +82,7 @@ const forgetDevice = createAction(
 
 const addButtonRequest = createAction(
     `${DEVICE_MODULE_PREFIX}/addButtonRequest`,
-    (payload: { device?: TrezorDevice; buttonRequest: ButtonRequest }) => ({ payload }),
+    (payload: { path: DeviceUniquePath; buttonRequest: ButtonRequest }) => ({ payload }),
 );
 
 const requestDeviceReconnect = createAction(`${DEVICE_MODULE_PREFIX}/requestDeviceReconnect`);
@@ -98,10 +99,10 @@ const updateSelectedDevice = createAction(
     (payload: TrezorDevice) => ({ payload }),
 );
 
-// Remove button requests for specific device by button request code or all button requests if no code is provided.
+// `path` is optional: a call can fail or be cancelled before it reaches a device.
 const removeButtonRequests = createAction(
     `${DEVICE_MODULE_PREFIX}/removeButtonRequests`,
-    (payload: { device?: TrezorDevice; buttonRequestCode?: ButtonRequest['code'] }) => ({
+    (payload: { path?: DeviceUniquePath }) => ({
         payload,
     }),
 );

@@ -96,6 +96,7 @@ const getInitialState = (state?: InitialState): MetadataRootState => {
             devices: device ? [device] : [],
             selectedDevice: device,
             persistentDeviceData: [],
+            buttonRequestsByPath: {},
             isConnectionModalOpen: false,
         },
         suite: {

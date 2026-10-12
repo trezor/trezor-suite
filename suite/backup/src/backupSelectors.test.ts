@@ -33,6 +33,7 @@ describe('selectBackupStatus', () => {
         backup: { ...baseBackup, ...backup },
         device: {
             devices: [],
+            buttonRequestsByPath: {},
             selectedDevice: mockSuiteDevice({}, { backup_availability }),
         },
     });

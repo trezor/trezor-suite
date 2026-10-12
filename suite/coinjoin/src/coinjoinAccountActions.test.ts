@@ -2,6 +2,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { type SelectedAccountState, selectedAccountReducer } from '@suite/account';
 import { type LocksState, locksReducer } from '@suite/locks';
+import { type DeviceReducerState } from '@suite-common/device';
 import { type MessageSystemState, prepareMessageSystemReducer } from '@suite-common/message-system';
 import { type NetworksState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
@@ -51,7 +52,10 @@ const rootReducer = combineReducers({
     messageSystem: prepareMessageSystemReducer({
         actionTypes: { storageLoad: mockActionType('storageLoad') },
     }),
-    device: createReducer({ devices: [DEVICE], selectedDevice: DEVICE }, () => ({})),
+    device: createReducer(
+        { devices: [DEVICE], selectedDevice: DEVICE, buttonRequestsByPath: {} },
+        () => ({}),
+    ),
     modal: () => ({}),
     wallet: combineReducers({
         coinjoin: coinjoinReducer,
@@ -72,7 +76,11 @@ type State = {
     suite: { settings: { debug: Record<never, never> } };
     locks: LocksState;
     messageSystem: MessageSystemState;
-    device: { devices: TrezorDevice[]; selectedDevice: TrezorDevice };
+    device: {
+        devices: TrezorDevice[];
+        selectedDevice: TrezorDevice;
+        buttonRequestsByPath: DeviceReducerState['buttonRequestsByPath'];
+    };
     modal: Record<never, never>;
     wallet: {
         coinjoin: CoinjoinState;
