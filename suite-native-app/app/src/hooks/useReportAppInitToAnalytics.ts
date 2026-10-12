@@ -20,17 +20,17 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { selectIsAppInitFinished } from '@suite-native-app/app-init';
 import { selectIsBiometricsEnabled } from '@suite-native/biometrics';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { useUserColorScheme } from '@suite-native/theme';
-import { selectIsAppReady } from '@suite-native-app/state';
 import { useServices } from '@trezor/dependency-injection';
 
 export const useReportAppInitToAnalytics = () => {
     const [initWasReported, setInitWasReported] = useState(false);
     const { analytics } = useServices(injectNativeAnalytics);
-    const isAppReady = useSelector(selectIsAppReady);
+    const isAppInitFinished = useSelector(selectIsAppInitFinished);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const { userColorScheme } = useUserColorScheme();
     const { isDiscreetMode } = useDiscreetMode();
@@ -46,7 +46,7 @@ export const useReportAppInitToAnalytics = () => {
     const activeExperimentsWithVariants = useSelector(selectActiveExperimentsWithVariants);
 
     useEffect(() => {
-        if (isAppReady && isOnboardingFinished && !initWasReported) {
+        if (isAppInitFinished && isOnboardingFinished && !initWasReported) {
             setInitWasReported(true);
             analytics.report({
                 type: events.appReadyEvent.name,
@@ -75,7 +75,7 @@ export const useReportAppInitToAnalytics = () => {
             });
         }
     }, [
-        isAppReady,
+        isAppInitFinished,
         isOnboardingFinished,
         initWasReported,
         currencyCode,

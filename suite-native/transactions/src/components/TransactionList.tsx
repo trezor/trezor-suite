@@ -26,6 +26,10 @@ import {
     groupTransactionsByDate,
     isPending,
 } from '@suite-common/wallet-utils';
+import {
+    selectIsBlockchainInitialized,
+    selectIsConnectAndBlockchainInitializationPending,
+} from '@suite-native-app/app-init';
 import { Box, useBannerAwareSafeAreaInsets, useScrollDivider } from '@suite-native/atoms';
 import { useIsBottomInsetApplicable } from '@suite-native/navigation';
 import {
@@ -164,6 +168,10 @@ export const TransactionList = ({
 }: AccountTransactionProps) => {
     const accountKey = account.key;
     const { dispatch } = useServices(injectDispatch);
+    const isBlockchainInitialized = useSelector(selectIsBlockchainInitialized);
+    const isConnectAndBlockchainInitializationPending = useSelector(
+        selectIsConnectAndBlockchainInitializationPending,
+    );
     const { bottom } = useBannerAwareSafeAreaInsets();
     const isBottomInsetApplicable = useIsBottomInsetApplicable();
 
@@ -233,6 +241,10 @@ export const TransactionList = ({
     // left to the button, as auto-fill would keep scanning back for a token with no transfers.
     const olderHistoryFrom =
         isInitialPageLoaded && !hasMoreTransactions ? getOlderHistoryFrom(account) : undefined;
+    const isWaitingForBlockchainInitialization =
+        !isBlockchainInitialized &&
+        isConnectAndBlockchainInitializationPending &&
+        (!isInitialPageLoaded || hasMoreTransactions || olderHistoryFrom !== undefined);
     const loadedTransactionCount = useSelector(
         (state: TransactionsRootState) =>
             selectAccountTransactionsWithNulls(state, accountKey).length,
@@ -247,6 +259,8 @@ export const TransactionList = ({
 
     const fetchPage = useCallback(
         async (requestedPage: number, from?: number) => {
+            if (!isBlockchainInitialized) return;
+
             // Initial loading, the button, and auto-fill share this lock before React rerenders.
             if (isFetchingPageRef.current) return;
             isFetchingPageRef.current = true;
@@ -274,7 +288,7 @@ export const TransactionList = ({
                 isFetchingPageRef.current = false;
             }
         },
-        [dispatch, accountKey, txnsPerPage],
+        [dispatch, accountKey, txnsPerPage, isBlockchainInitialized],
     );
 
     const handleOnLoadMore = useCallback(
@@ -287,6 +301,12 @@ export const TransactionList = ({
             handleOnLoadMore();
         }
     }, [isInitialPageLoaded, handleOnLoadMore]);
+
+    const handleOnRefresh = () => {
+        if (!isBlockchainInitialized) return;
+
+        void refreshAccountsAndLatestTransactions();
+    };
 
     const data = useMemo((): TransactionListItem[] => {
         // groupTransactionsByDate now sorts also pending transactions, if they have blockTime set.
@@ -429,7 +449,9 @@ export const TransactionList = ({
                     ListEmptyComponent={
                         <TransactionListEmptyState
                             isLoading={isHistoryUnscanned}
-                            isDeferred={shouldDeferEmptyState}
+                            isDeferred={
+                                shouldDeferEmptyState || isWaitingForBlockchainInitialization
+                            }
                             // The list is empty here, so a reachable older window is what sets this apart
                             // from an account (or token) without any transactions.
                             isRecentWindowEmpty={olderHistoryFrom !== undefined}
@@ -440,15 +462,18 @@ export const TransactionList = ({
                     ListFooterComponent={
                         <TransactionsListFooter
                             hasMoreTransactions={
-                                hasMoreTransactions ||
-                                olderHistoryFrom !== undefined ||
-                                hasInitialScanFailed
+                                isBlockchainInitialized &&
+                                (hasMoreTransactions ||
+                                    olderHistoryFrom !== undefined ||
+                                    hasInitialScanFailed)
                             }
                             isOlderHistory={olderHistoryFrom !== undefined}
                             // The skeleton stands in for the loader until the first scan is done.
                             isLoading={
                                 !isHistoryUnscanned &&
-                                (isLoadingTransactions || shouldAutoFillTransactions)
+                                (isLoadingTransactions ||
+                                    shouldAutoFillTransactions ||
+                                    isWaitingForBlockchainInitialization)
                             }
                             onButtonPress={handleOnLoadMorePress}
                         >
@@ -466,7 +491,7 @@ export const TransactionList = ({
                     refreshControl={
                         <RefreshControl
                             refreshing={isRefreshing}
-                            onRefresh={refreshAccountsAndLatestTransactions}
+                            onRefresh={handleOnRefresh}
                             colors={[colors.elementFillBrandBold]}
                         />
                     }

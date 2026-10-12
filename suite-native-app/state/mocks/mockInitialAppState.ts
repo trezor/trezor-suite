@@ -33,6 +33,7 @@ import {
     transactionsInitialState,
 } from '@suite-common/wallet-core';
 import { walletConnectInitialState } from '@suite-common/walletconnect';
+import { appInitInitialState } from '@suite-native-app/app-init';
 import { bannerFlagsInitialState } from '@suite-native/banners';
 import { biometricsSliceInitialState } from '@suite-native/biometrics';
 import { bluetoothInitialState } from '@suite-native/bluetooth';
@@ -48,7 +49,6 @@ import { appSettingsInitialState } from '@suite-native/settings';
 import { tradingInitialState } from '@suite-native/trading-shared';
 import { sendFormInitialState } from '@suite-native/transaction-management';
 
-import { appSliceInitialState } from '../src/appSlice';
 import type { FullAppState } from '../src/createReduxStore';
 
 /**
@@ -59,7 +59,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
     networks: null,
     earn: { staking: stakingInitialState },
     analytics: analyticsInitialState,
-    app: appSliceInitialState,
+    appInit: appInitInitialState,
     appSettings: appSettingsInitialState,
     bannerFlags: bannerFlagsInitialState,
     biometrics: biometricsSliceInitialState,
