@@ -120,6 +120,7 @@ const SECTIONS = {
         '/hidden-tokens',
         '/asset',
         '/notifications',
+        '/refer-a-friend',
         '/version',
         '/bridge',
         '/bridge-requested',
