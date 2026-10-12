@@ -28,20 +28,12 @@ const DATE_FNS_LOCALE_LOADERS: Record<SuiteLocale, DateFnsLocaleLoader> = {
 };
 
 /**
- * Loads the date-fns locale matching a Suite language, falling back to English when its chunk
- * cannot be fetched.
+ * Loads the date-fns locale matching a Suite language. A chunk that cannot be fetched rejects, so
+ * the query retries and refetches on reconnect; until it arrives the hook returns undefined and
+ * date-fns formats with its built-in English.
  */
-export const loadDateFnsLocale = async (locale: SuiteLocale): Promise<DateFnsLocale> => {
-    try {
-        return await DATE_FNS_LOCALE_LOADERS[locale]();
-    } catch {
-        // A locale chunk can fail to load when the user is offline or when a deploy invalidated
-        // it, so fall back to English instead of leaving dates unformatted.
-        console.warn(`date-fns locale ${locale} could not be loaded. Using en-US.`);
-
-        return DATE_FNS_LOCALE_LOADERS['en-US']();
-    }
-};
+export const loadDateFnsLocale = (locale: SuiteLocale): Promise<DateFnsLocale> =>
+    DATE_FNS_LOCALE_LOADERS[locale]();
 
 export const useDateFnsLocale = (locale: SuiteLocale) => {
     // A locale module never changes once its chunk is loaded, so it is cached forever rather than
