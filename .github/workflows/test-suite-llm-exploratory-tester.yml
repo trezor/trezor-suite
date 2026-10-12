@@ -44,21 +44,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # A PR marked ready for review runs the tester only when Jev picks "run"
-  # and the PR's web preview is built. Fork PRs have no secrets, so the Jev
-  # call would fail; skip them instead.
+  # Manual dispatch runs the tester when the human confirmed a trusted branch.
+  # A PR marked ready for review runs it only when Jev picks "run" and the
+  # PR's web preview is built. PRs from forks (external contributors) never run.
   gate:
-    if: |
-      github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request' &&
-      !github.event.pull_request.head.repo.fork
+    if: github.repository == 'trezor/trezor-suite' && !github.event.pull_request.head.repo.fork
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: read
     outputs:
-      run: ${{ steps.preview.outcome == 'success' }}
+      run: ${{ inputs.confirm_trusted_branch || steps.preview.outcome == 'success' }}
     steps:
       - id: jev
+        if: github.event_name == 'pull_request'
         env:
           OPENROUTER_API_KEY: ${{ secrets.E2E_EXPLORATORY_TESTER_API_KEY }}
           GH_TOKEN: ${{ github.token }}
@@ -112,9 +111,7 @@ jobs:
     needs: gate
     runs-on: ubuntu-latest
     timeout-minutes: 240
-    if: |
-      !cancelled() && github.repository == 'trezor/trezor-suite' &&
-      (inputs.confirm_trusted_branch || needs.gate.outputs.run == 'true')
+    if: needs.gate.outputs.run == 'true'
     env:
       COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
       TARGET: ${{ inputs.target || github.event.pull_request.html_url }}
