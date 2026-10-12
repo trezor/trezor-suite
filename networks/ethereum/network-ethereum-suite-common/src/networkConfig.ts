@@ -301,7 +301,7 @@ export const networkConfigBySymbol = {
         bip43Path: "m/44'/60'/0'/0/i",
         decimals: 18,
         testnet: false,
-        explorer: getExplorerUrls('https://robinscan.io'),
+        explorer: getExplorerUrls('https://robin.etherscan.io'),
         features: [
             'rbf',
             'sign-verify',
