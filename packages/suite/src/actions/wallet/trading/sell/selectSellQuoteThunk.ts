@@ -3,20 +3,18 @@ import { type SellFiatTrade } from 'invity-api';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
 import {
+    type TradingRootState,
     cryptoIdToNetworkSymbolAndContractAddress,
     selectTradingSellInfo,
     selectTradingSellQuotesRequest,
     selectTradingSymbolAndContractAddressByCryptoId,
     sellThunks,
-    sellUtils,
 } from '@suite-common/trading';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
-import { type RequestSellTradeThunkState, requestSellTradeThunk } from './requestSellTradeThunk';
-
 type SelectSellQuoteThunkParams = { quote: SellFiatTrade; fractionButton?: number };
 
-export type SelectSellQuoteThunkState = GotoThunkState & RequestSellTradeThunkState;
+export type SelectSellQuoteThunkState = GotoThunkState & TradingRootState;
 
 type SelectSellQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
 
@@ -64,15 +62,6 @@ export const selectSellQuoteThunk = createThunk<
 
         const nextStep = () => {
             dispatch(gotoThunk({ routeName: 'wallet-trading-sell-confirm' }));
-
-            // Empty quoteId means the partner requests login first; keep the UI moving
-            // to confirm while the partner request continues in the background.
-            if (
-                (sellInfo && sellUtils.needToRegisterOrVerifyBankAccount({ quote, sellInfo })) ||
-                !quote.quoteId
-            ) {
-                void dispatch(requestSellTradeThunk({ quote }));
-            }
         };
 
         await dispatch(sellThunks.selectQuoteThunk({ quote, nextStep }));

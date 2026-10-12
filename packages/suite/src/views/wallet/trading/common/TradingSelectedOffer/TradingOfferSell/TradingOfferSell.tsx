@@ -1,50 +1,77 @@
-import { Fragment, type JSX } from 'react';
+import { useSelector } from 'react-redux';
 
-import styled from 'styled-components';
-
-import { useDevice } from '@suite/device';
+import { Translation } from '@suite/intl';
 import {
+    type TradingFormAccountRootState,
+    type TradingRootState,
     selectTradingComposedTransactionInfo,
+    selectTradingProviderCompanyName,
     selectTradingSellActiveTrade,
     selectTradingSellFormStep,
     selectTradingSellInfo,
     selectTradingSellQuotesRequest,
     selectTradingSellSelectedQuote,
+    selectTradingSendAccount,
+    useTradingUtils,
 } from '@suite-common/trading';
-import { selectAccounts } from '@suite-common/wallet-core';
-import { Card, Column, Divider } from '@trezor/components';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { Button, Card, Column, H2, Text } from '@trezor/components';
+import { ArrowSquareOutIcon } from '@trezor/icons';
+import { useAsyncClickHandler } from '@trezor/react-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useTradingSellConfirmFees } from 'src/hooks/wallet/trading/useTradingSellConfirmFees';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
-import { TradingOfferSellBankAccount } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSellBankAccount';
-import { TradingSelectedOfferSellTransaction } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSellTransaction';
+import { type TradingOfferSellProps } from 'src/types/trading/tradingForm';
+import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
+import { TradingKYCWarning } from 'src/views/wallet/trading/common/TradingKYCWarning';
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
-import {
-    TradingSelectedOfferStepper,
-    type TradingSelectedOfferStepperItemProps,
-} from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferStepper';
-import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
-const Wrapper = styled.div`
-    ${TradingWrapper}
-`;
+import { TradingComposedNetworkFeeInfoItem } from '../TradingInfo/TradingComposedNetworkFeeInfoItem';
+import { getTradingNetworkFeeEdit } from '../TradingInfo/getTradingNetworkFeeEdit';
 
-export const TradingOfferSell = () => {
-    const accounts = useSelector(selectAccounts);
+export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOfferSellProps) => {
+    const { handleClick, disabled } = useAsyncClickHandler();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const formStep = useSelector(selectTradingSellFormStep);
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
+    const trade = useSelector(selectTradingSellActiveTrade);
     const sellInfo = useSelector(selectTradingSellInfo);
     const quotesRequest = useSelector(selectTradingSellQuotesRequest);
+    const account = useSelector((state: TradingFormAccountRootState) =>
+        selectTradingSendAccount(state, 'sell'),
+    );
+
     const { composed } = useSelector(selectTradingComposedTransactionInfo);
-    const trade = useSelector(selectTradingSellActiveTrade);
-    const { device } = useDevice();
+    const { feeInfo, composeFormState, applySelectedFee, assumeNewAccount } =
+        useTradingSellConfirmFees(account);
 
-    const sendAccount = accounts.find(account => account.key === trade?.sendAccountKey);
     const selectedTrade = trade?.data ?? selectedQuote;
-    const isDeviceDisconnected = !device?.connected;
+    const providerName = useSelector((state: TradingRootState) =>
+        selectTradingProviderCompanyName(state, selectedTrade?.exchange, 'sell'),
+    );
 
-    if (!selectedTrade) return null;
+    if (!selectedTrade || !account) {
+        return null;
+    }
+
+    const isSendStep = formStep === 'SEND_TRANSACTION';
+
+    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(
+        selectedTrade.cryptoCurrency,
+    );
+    const translationValues = {
+        providerName: providerName ?? '',
+        displaySymbol: coinSymbol ? getDisplaySymbol(coinSymbol, contractAddress) : '',
+    };
+
+    const networkFeeEdit = getTradingNetworkFeeEdit({
+        account,
+        feeInfo,
+        composeFormState,
+        assumeNewAccount,
+        onConfirm: applySelectedFee,
+        isTokenTransfer: !!composed?.token,
+    });
 
     const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
         amountInCrypto: quotesRequest?.amountInCrypto,
@@ -52,39 +79,35 @@ export const TradingOfferSell = () => {
         sendCurrency: selectedTrade.fiatCurrency,
         receiveAmount: selectedTrade.cryptoStringAmount ?? '',
         receiveCurrency: selectedTrade.cryptoCurrency,
-        networkFee: composed?.fee,
     };
 
-    const steps: (TradingSelectedOfferStepperItemProps & {
-        component: JSX.Element | null;
-    })[] = [
-        {
-            step: 'BANK_ACCOUNT',
-            translationId: 'TR_SELL_BANK_ACCOUNT_STEP',
-            isActive: formStep === 'BANK_ACCOUNT',
-            component: <TradingOfferSellBankAccount />,
-        },
-        {
-            step: 'SEND_TRANSACTION',
-            translationId: 'TR_SELL_CONFIRM_SEND_STEP',
-            isActive: formStep === 'SEND_TRANSACTION',
-            component: <TradingSelectedOfferSellTransaction />,
-        },
-    ];
-
     return (
-        <Column gap={16}>
-            {isDeviceDisconnected && <ConnectDeviceGenericPromo />}
+        <Column width="100%" alignItems="center">
+            <Card width="100%" maxWidth="440px" data-testid="@trading/selected-offer">
+                <Column gap={20}>
+                    <Column gap={4} alignItems="start">
+                        <H2 typographyStyle="headline-sm">
+                            <Translation
+                                id={
+                                    isSendStep
+                                        ? 'TR_TRADING_SELL_SEND_TITLE'
+                                        : 'TR_TRADING_SELL_CONFIRM_TITLE'
+                                }
+                                values={translationValues}
+                            />
+                        </H2>
+                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                            <Translation
+                                id={
+                                    isSendStep
+                                        ? 'TR_TRADING_SELL_SEND_DESCRIPTION'
+                                        : 'TR_TRADING_SELL_CONFIRM_DESCRIPTION'
+                                }
+                                values={translationValues}
+                            />
+                        </Text>
+                    </Column>
 
-            <Wrapper data-testid="@trading/selected-offer">
-                <Card>
-                    <TradingSelectedOfferStepper steps={steps} />
-                    <Divider margin={{ top: 20, bottom: 24 }} />
-                    {steps.map((step, index) => (
-                        <Fragment key={index}>{step.isActive && step.component}</Fragment>
-                    ))}
-                </Card>
-                <Card>
                     <TradingSelectedOfferInfo
                         type="sell"
                         selectedQuote={selectedTrade}
@@ -92,10 +115,42 @@ export const TradingOfferSell = () => {
                         quoteAmounts={quoteAmounts}
                         paymentMethod={selectedTrade.paymentMethod}
                         paymentMethodName={selectedTrade.paymentMethodName}
-                        selectedAccount={sendAccount}
+                        selectedAccount={account}
+                        networkFee={
+                            <TradingComposedNetworkFeeInfoItem
+                                account={account}
+                                fee={composed?.fee}
+                                edit={networkFeeEdit}
+                            />
+                        }
                     />
-                </Card>
-            </Wrapper>
+
+                    {isSendStep ? (
+                        <Button
+                            data-testid="@trading/offer/confirm-on-trezor-and-send"
+                            isDisabled
+                            size="large"
+                            width="100%"
+                        >
+                            <Translation id="TR_SELL_CONFIRM_ON_TREZOR_SEND" />
+                        </Button>
+                    ) : (
+                        <Column gap={12}>
+                            <TradingFormOfferConfirmButton
+                                translationId="TR_TRADING_SELL_VIA"
+                                translationValues={translationValues}
+                                iconRight={ArrowSquareOutIcon}
+                                testId="@trading/offer/sell-button"
+                                isDisabled={isRequestDisabled || disabled}
+                                isLoading={disabled}
+                                onClick={() => handleClick(requestTrade)}
+                            />
+
+                            <TradingKYCWarning />
+                        </Column>
+                    )}
+                </Column>
+            </Card>
         </Column>
     );
 };

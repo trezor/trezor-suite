@@ -4,7 +4,12 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { Translation } from '@suite/intl';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { type Account, type FeeInfo, type FormState } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type FeeInfo,
+    type FormState,
+    type GeneralPrecomposedTransaction,
+} from '@suite-common/wallet-types';
 import { Banner, Column, Modal } from '@trezor/components';
 import { WarningCircleIcon } from '@trezor/icons';
 
@@ -21,22 +26,30 @@ export type TradingExchangeNetworkFeeModalProps = {
     account: Account;
     feeInfo: FeeInfo;
     composeFormState: FormState;
+    assumeNewAccount?: boolean;
     onConfirm: (composedTransactionInfo: TradingComposedTransactionInfo) => void;
     onClose: () => void;
 };
+
+type ComposedFeeLevel = Exclude<GeneralPrecomposedTransaction, { type: 'error' }>;
+
+const isComposedFeeLevel = (
+    level: GeneralPrecomposedTransaction | undefined,
+): level is ComposedFeeLevel => level?.type === 'final' || level?.type === 'nonfinal';
 
 export const TradingExchangeNetworkFeeModal = ({
     account,
     feeInfo,
     composeFormState,
+    assumeNewAccount,
     onConfirm,
     onClose,
 }: TradingExchangeNetworkFeeModalProps) => {
     const form = useForm<FormState>({ mode: 'onChange', defaultValues: composeFormState });
 
     const composeContext = useMemo(
-        () => ({ account, network: getNetwork(account.symbol), feeInfo }),
-        [account, feeInfo],
+        () => ({ account, network: getNetwork(account.symbol), feeInfo, assumeNewAccount }),
+        [account, feeInfo, assumeNewAccount],
     );
 
     const { composedLevels, composeRequest, onFeeLevelChange, isLoading } = useCompose({
@@ -70,10 +83,10 @@ export const TradingExchangeNetworkFeeModal = ({
     }, []);
 
     const composedLevel = composedLevels?.[fees.selectedFee];
-    const isConfirmDisabled = isLoading || composedLevel?.type !== 'final';
+    const isConfirmDisabled = isLoading || !isComposedFeeLevel(composedLevel);
 
     const onConfirmClick = () => {
-        if (composedLevel?.type !== 'final') {
+        if (!isComposedFeeLevel(composedLevel)) {
             return;
         }
 

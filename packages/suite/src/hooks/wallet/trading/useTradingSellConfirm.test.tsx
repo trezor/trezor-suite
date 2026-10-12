@@ -22,6 +22,15 @@ jest.mock('src/hooks/wallet/trading/useServerEnviroment', () => ({
     useServerEnvironment: jest.fn(),
 }));
 
+const mockRequestSellTradeThunk = jest.fn((args: unknown) => ({
+    type: '@test/request-sell-trade',
+    args,
+}));
+
+jest.mock('src/actions/wallet/trading/sell/requestSellTradeThunk', () => ({
+    requestSellTradeThunk: (args: unknown) => mockRequestSellTradeThunk(args),
+}));
+
 const mockLoadInitialDataThunk = jest.fn((args: unknown) =>
     Object.assign(() => Promise.resolve(), { type: '@trading/loadInitialData', args }),
 );
@@ -113,6 +122,7 @@ const renderConfirm = (overrides?: StateOverrides) => {
 describe('useTradingSellConfirm', () => {
     beforeEach(() => {
         mockLoadInitialDataThunk.mockClear();
+        mockRequestSellTradeThunk.mockClear();
     });
 
     describe('initialization', () => {
@@ -137,6 +147,22 @@ describe('useTradingSellConfirm', () => {
                 pathname: '/accounts/coinmarket/sell',
                 hash: '',
             });
+        });
+    });
+
+    describe('partner request', () => {
+        it('requests the partner trade for the selected quote', async () => {
+            const { result } = renderConfirm();
+
+            await result.current.requestTrade();
+
+            expect(mockRequestSellTradeThunk).toHaveBeenCalledWith({ quote: SELECTED_QUOTE });
+        });
+
+        it('is disabled without a selected quote', () => {
+            const { result } = renderConfirm({ selectedQuote: undefined });
+
+            expect(result.current.isRequestDisabled).toBe(true);
         });
     });
 });

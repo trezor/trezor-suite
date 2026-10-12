@@ -19,6 +19,7 @@ export type TradingNetworkFeeInfoItemProps = {
         account: Account;
         feeInfo: FeeInfo;
         composeFormState: FormState;
+        assumeNewAccount?: boolean;
         onConfirm: (composedTransactionInfo: TradingComposedTransactionInfo) => void;
     };
 };
@@ -104,6 +105,7 @@ export const TradingNetworkFeeInfoItem = ({
                     account={edit.account}
                     feeInfo={edit.feeInfo}
                     composeFormState={edit.composeFormState}
+                    assumeNewAccount={edit.assumeNewAccount}
                     onConfirm={edit.onConfirm}
                     onClose={() => setIsEditModalOpen(false)}
                 />

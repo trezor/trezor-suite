@@ -1,3 +1,4 @@
+import { composeSellTradeFeeLevelsThunk } from './composeSellTradeFeeLevelsThunk';
 import { confirmSellTradeThunk } from './confirmSellTradeThunk';
 import { handleSellRequestThunk } from './handleSellRequestThunk';
 import { handleSellTradeThunk } from './handleSellTradeThunk';
@@ -12,4 +13,5 @@ export const sellThunks = {
     sendTransactionThunk: sendSellTransactionThunk,
     selectQuoteThunk: selectSellQuoteThunk,
     confirmTradeThunk: confirmSellTradeThunk,
+    composeTradeFeeLevelsThunk: composeSellTradeFeeLevelsThunk,
 };

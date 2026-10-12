@@ -903,10 +903,6 @@ export const messages = defineMessages({
         defaultMessage: 'Bank account',
         id: 'TR_SELL_BANK_ACCOUNT_STEP',
     },
-    TR_SELL_CONFIRM_SEND_STEP: {
-        defaultMessage: 'Confirm & send',
-        id: 'TR_SELL_CONFIRM_SEND_STEP',
-    },
     TR_SELL_SEND_FROM: {
         defaultMessage: 'Send from',
         id: 'TR_SELL_SEND_FROM',
@@ -1474,6 +1470,23 @@ export const messages = defineMessages({
     TR_TRADING_SELL_VIA: {
         id: 'TR_TRADING_SELL_VIA',
         defaultMessage: 'Sell with {providerName}',
+    },
+    TR_TRADING_SELL_CONFIRM_TITLE: {
+        id: 'TR_TRADING_SELL_CONFIRM_TITLE',
+        defaultMessage: 'Continue your sell on {providerName}',
+    },
+    TR_TRADING_SELL_CONFIRM_DESCRIPTION: {
+        id: 'TR_TRADING_SELL_CONFIRM_DESCRIPTION',
+        defaultMessage:
+            'Complete all the steps on the {providerName} website, then come back here to confirm the transaction on your Trezor.',
+    },
+    TR_TRADING_SELL_SEND_TITLE: {
+        id: 'TR_TRADING_SELL_SEND_TITLE',
+        defaultMessage: 'Send your {displaySymbol} to {providerName}',
+    },
+    TR_TRADING_SELL_SEND_DESCRIPTION: {
+        id: 'TR_TRADING_SELL_SEND_DESCRIPTION',
+        defaultMessage: 'Check the amount and address on your Trezor before confirming.',
     },
     TR_TRADING_KYC_REQUIRED_WARNING: {
         id: 'TR_TRADING_KYC_REQUIRED_WARNING',
