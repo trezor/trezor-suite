@@ -43,6 +43,25 @@ const matchingDevicePersistentData = {
     internal_model: defaultDevice.features.internal_model,
 };
 
+const discoveryEntropyCheckFailState: AuthenticityChecksRootState = {
+    ...initialState,
+    device: {
+        ...initialState.device,
+        selectedDevice: { ...defaultDevice, authenticityChecks: authenticityChecksSuccess },
+    },
+    persistentDeviceData: {
+        devices: [
+            {
+                ...matchingDevicePersistentData,
+                lastEntropyCheckResult: {
+                    success: true,
+                    discoveryCheckFailedPaths: ["m/84'/0'/0'"],
+                },
+            },
+        ],
+    },
+};
+
 const fixtures: Fixture[] = [
     {
         description: 'returns false if all checks pass',
@@ -191,6 +210,62 @@ const fixtures: Fixture[] = [
             persistentDeviceData: { devices: [matchingDevicePersistentData] },
         },
         result: true,
+    },
+    {
+        description: 'returns true if discovery entropy check failed',
+        state: discoveryEntropyCheckFailState,
+        result: true,
+    },
+    {
+        description: 'returns false if discovery entropy check failed and dismissed',
+        state: {
+            ...discoveryEntropyCheckFailState,
+            device: {
+                ...discoveryEntropyCheckFailState.device,
+                dismissedSecurityChecks: { discoveryEntropy: ['device-id'] },
+            },
+        },
+        result: false,
+    },
+    {
+        description: 'returns true if discovery entropy check failed and firmware check dismissed',
+        state: {
+            ...discoveryEntropyCheckFailState,
+            device: {
+                ...discoveryEntropyCheckFailState.device,
+                dismissedSecurityChecks: { firmwareAuthenticity: ['device-id'] },
+            },
+        },
+        result: true,
+    },
+    {
+        description: 'returns false if discovery entropy check failed but is disabled',
+        state: {
+            ...discoveryEntropyCheckFailState,
+            suiteSettings: {
+                ...initialState.suiteSettings,
+                enabledSecurityChecks: {
+                    ...initialState.suiteSettings.enabledSecurityChecks,
+                    entropy: false,
+                },
+            },
+        },
+        result: false,
+    },
+    {
+        description: 'returns false if discovery entropy check paths were all fixed',
+        state: {
+            ...discoveryEntropyCheckFailState,
+            persistentDeviceData: {
+                devices: [
+                    {
+                        ...matchingDevicePersistentData,
+                        lastEntropyCheckResult: { success: true, discoveryCheckFailedPaths: [] },
+                    },
+                ],
+            },
+        },
+        result: false,
     },
 ];
 
