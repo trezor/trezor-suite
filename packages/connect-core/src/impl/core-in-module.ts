@@ -216,7 +216,8 @@ export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings>
             const { promiseId, promise } = this.messagePromises.create();
             const payload = cloneObject<any>(params);
             this.handleCoreMessage({ type: CORE_CALL, id: promiseId, payload });
-            const response = cloneObject(await promise);
+            // No copy here: onCoreEvent already resolves with its own copy of Core's message.
+            const response = await promise;
 
             return response ?? createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
         } catch (error) {
