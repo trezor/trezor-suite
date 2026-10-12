@@ -62,10 +62,6 @@ export { TooltipRow } from './components/TooltipRow/TooltipRow';
 export * from './components/TopAssets/TopAssets';
 export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';
 export type { NetworkConfig } from './network-display/NetworkConfig';
-export {
-    NetworkDisplayProvider,
-    useNetworkDisplaySelector,
-} from './network-display/NetworkDisplayProvider';
 export { selectNetworkOptions } from './network-display/networkDisplaySelectors';
 export { getLargeModelImagePath, getModelFrontColor } from './utils/getModelFrontColor';
 export { mapTrezorModelToFilledIcon, mapTrezorModelToIcon } from './utils/mapTrezorModelToIcon';
