@@ -309,6 +309,14 @@ export const selectIsFirmwareAuthenticityCheckDismissed = createMemoizedSelector
     (deviceId, dismissedChecks) => !!(deviceId && dismissedChecks?.includes(deviceId)),
 );
 
+export const selectIsDiscoveryEntropyCheckDismissed = createMemoizedSelector(
+    [
+        (_state, deviceId: TrezorDevice['id']) => deviceId,
+        state => state.device.dismissedSecurityChecks?.discoveryEntropy,
+    ],
+    (deviceId, dismissedChecks) => !!(deviceId && dismissedChecks?.includes(deviceId)),
+);
+
 export const selectWasFwHashCheckOtherErrorLastTime = createMemoizedSelector(
     [state => state.device.lastConnectedAuthenticityChecks, selectIsDeviceConnected],
     (lastConnectedAuthenticityChecks, isDeviceConnected) => {
