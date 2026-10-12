@@ -22,6 +22,7 @@ import { EarnWithdraw } from 'src/views/earn/yield/withdraw';
 import { EarnWrap } from 'src/views/earn/yield/wrap';
 import { AssetDetail } from 'src/views/home/AssetDetail/AssetDetail';
 import PasswordManagerView from 'src/views/password-manager';
+import { ReferAFriend } from 'src/views/refer-a-friend';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsConnectedApps } from 'src/views/settings/SettingsConnectedApps/SettingsConnectedApps';
 import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
@@ -72,6 +73,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'suite-hidden-tokens': HiddenTokens,
     'suite-asset': AssetDetail,
     'suite-earn': Earn,
+    'suite-refer-a-friend': ReferAFriend,
     'earn-yield-deposit': EarnDeposit,
     'earn-yield-withdraw': EarnWithdraw,
     'earn-yield-claim': EarnClaim,

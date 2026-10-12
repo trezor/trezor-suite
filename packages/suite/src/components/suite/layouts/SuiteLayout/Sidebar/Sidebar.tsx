@@ -19,6 +19,7 @@ import { MIN_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
+import { BottomNavigation } from './BottomNavigation';
 import { Navigation } from './Navigation';
 import { QuickActions } from './QuickActions/QuickActions';
 import { SidebarBanners } from './SidebarBanners';
@@ -212,6 +213,7 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
                                 {showAccountsAndIsDeviceReady && <AccountsMenu />}
                             </HorizontalSpacer>
                             {!isSidebarCollapsed && <SidebarBanners />}
+                            <BottomNavigation />
                             <QuickActions isSidebarCollapsed={isSidebarCollapsed} />
                         </Content>
                     </TrafficLightOffset>

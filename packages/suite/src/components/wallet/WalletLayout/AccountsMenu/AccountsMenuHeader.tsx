@@ -55,7 +55,7 @@ export const AccountsMenuHeader = () => {
 
     return (
         <>
-            <Divider margin={{ top: 0, bottom: 12 }} />
+            <Divider margin={{ top: 0, bottom: 12 }} color="surfaceBorderSunken" />
             <Box margin={{ horizontal: 8 }}>
                 <ExpandedSidebarOnly>
                     <Row gap={12} padding={{ right: !isEmpty ? 10 : 0 }}>

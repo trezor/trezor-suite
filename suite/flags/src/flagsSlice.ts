@@ -43,6 +43,7 @@ export type FlagsState = {
     showCopyAddressModal: boolean;
     enableAutoupdateOnNextRun: boolean;
     showBluetoothDebugInfo: boolean;
+    isReferAFriendEnabled: boolean;
     stellarLimitedHistoryBannerClosed: boolean;
     solanaLimitedHistoryBannerClosed: boolean;
     hasSeenDisconnectTooltip: boolean;
@@ -91,6 +92,7 @@ export const flagsInitialState: FlagsState = {
     showUnhideTokenModal: true,
     enableAutoupdateOnNextRun: false,
     showBluetoothDebugInfo: false,
+    isReferAFriendEnabled: false,
     stellarLimitedHistoryBannerClosed: false,
     solanaLimitedHistoryBannerClosed: false,
     hasSeenDisconnectTooltip: false,
@@ -162,6 +164,8 @@ export const prepareFlagsReducer = flagsSlice.prepareReducer;
 export const selectFlags = (state: FlagsRootState) => state.flags;
 export const selectAssetPriceChartRange = (state: FlagsRootState) =>
     state.flags.assetPriceChartRange;
+export const selectIsReferAFriendEnabled = (state: FlagsRootState) =>
+    state.flags.isReferAFriendEnabled;
 export const selectIsTEXDashboardPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showTEXDashboardPromoBanner;
 export const selectIsTS7DashboardPromoBannerShown = (state: FlagsRootState) =>
