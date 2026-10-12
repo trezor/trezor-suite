@@ -27,7 +27,7 @@ export const PortfolioCardHeader = ({
             justifyContent="space-between"
             alignItems="center"
             gap={8}
-            padding={{ vertical: 16, horizontal: 24 }}
+            padding={{ vertical: 20, horizontal: 24 }}
         >
             {valueLoading ? (
                 <Skeleton width={140} height={53} />
