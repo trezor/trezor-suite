@@ -1,9 +1,13 @@
+import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+
 import {
     selectAdapterStatus,
     selectAutoConnectPolicy,
     selectKnownDevices,
 } from '@suite-common/bluetooth';
+import { type DeviceRootState } from '@suite-common/device';
 import { selectDevices } from '@suite-common/device';
+import { type FirmwareRootState } from '@suite-common/firmware';
 import { selectFirmware } from '@suite-common/firmware';
 import TrezorConnect from '@trezor/connect';
 import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
@@ -12,10 +16,24 @@ import { resolveAfter } from '@trezor/utils';
 import { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluetoothDevice';
 import { type BackgroundScan } from './bluetoothBackgroundScan';
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
-import { type BluetoothService, type BluetoothServiceDeps } from './bluetoothServiceTypes';
+import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 import { selectConnectingDevices } from './desktopBluetoothSelectors';
 
-type AttemptDeviceConnectDeps = Pick<BluetoothServiceDeps, 'getState' | 'dispatch'>;
+type BluetoothReconnectRootState = WithBluetoothRootState & DeviceRootState & FirmwareRootState;
+
+type BluetoothReconnectThunkDispatch = ThunkDispatch<
+    BluetoothReconnectRootState,
+    any,
+    UnknownAction
+>;
+
+type BluetoothAutoReconnectDeps = {
+    getState: () => BluetoothReconnectRootState;
+    dispatch: BluetoothReconnectThunkDispatch;
+    backgroundScan: BackgroundScan;
+};
+
+type AttemptDeviceConnectDeps = Pick<BluetoothAutoReconnectDeps, 'getState' | 'dispatch'>;
 
 const attemptDeviceConnect = async (
     deps: AttemptDeviceConnectDeps,
@@ -83,61 +101,36 @@ const attemptDeviceConnect = async (
     }
 };
 
-type SetupAutoReconnectDeps = Pick<BluetoothServiceDeps, 'getState' | 'dispatch'> & {
-    backgroundScan: BackgroundScan;
-};
+type BluetoothAutoReconnect = () => Promise<void>;
 
-const setupAutoReconnect = (deps: SetupAutoReconnectDeps) => {
-    // Wait for 3 seconds or earlier if a connected device is detected.
-    // The delay shouldn't be too perceptible, since other things are also loading at app start.
-    // If user connects a device via USB, we don't start the BT connection,
-    // this avoids clashes where both USB and BT try to connect at the same time.
-    const waitForDevice = new Promise<void>(resolve => {
-        const cleanup = () => {
-            TrezorConnect.off('device-connect', cleanup);
-            resolve();
-        };
-        TrezorConnect.on('device-connect', cleanup);
-        resolveAfter(3000).then(cleanup);
-    });
-
-    return waitForDevice.then(() => {
-        // Start attempting to connect to known BT devices
-        bluetoothIpc.on('device-update', async (deviceIpc: BluetoothDevice) => {
-            const device = fromBluetoothDevice(deviceIpc);
-            await attemptDeviceConnect(deps, device);
+export const createBluetoothAutoReconnect =
+    (deps: BluetoothAutoReconnectDeps): BluetoothAutoReconnect =>
+    () => {
+        // Wait for 3 seconds or earlier if a connected device is detected.
+        // The delay shouldn't be too perceptible, since other things are also loading at app start.
+        // If user connects a device via USB, we don't start the BT connection,
+        // this avoids clashes where both USB and BT try to connect at the same time.
+        const waitForDevice = new Promise<void>(resolve => {
+            const cleanup = () => {
+                TrezorConnect.off('device-connect', cleanup);
+                resolve();
+            };
+            TrezorConnect.on('device-connect', cleanup);
+            resolveAfter(3000).then(cleanup);
         });
 
-        // If we already have some paired devices, we assume user will have a BT device,
-        // and therefore we start looking for it.
-        const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(deps.getState());
-        if (knownDevices.length > 0) {
-            deps.backgroundScan.start();
-        }
-    });
-};
-
-export const createBluetoothService = (
-    deps: BluetoothServiceDeps,
-    internalDeps: { backgroundScan: BackgroundScan },
-): BluetoothService => {
-    let inited = false;
-
-    return {
-        init: () => {
-            if (inited) {
-                return Promise.resolve();
-            }
-            inited = true;
-
-            return setupAutoReconnect({
-                getState: deps.getState,
-                dispatch: deps.dispatch,
-                backgroundScan: internalDeps.backgroundScan,
+        return waitForDevice.then(() => {
+            // Start attempting to connect to known BT devices
+            bluetoothIpc.on('device-update', async (deviceIpc: BluetoothDevice) => {
+                const device = fromBluetoothDevice(deviceIpc);
+                await attemptDeviceConnect(deps, device);
             });
-        },
-        restartBackgroundScan: () => {
-            internalDeps.backgroundScan.restartIfNeeded();
-        },
+
+            // If we already have some paired devices, we assume user will have a BT device,
+            // and therefore we start looking for it.
+            const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(deps.getState());
+            if (knownDevices.length > 0) {
+                deps.backgroundScan.start();
+            }
+        });
     };
-};
