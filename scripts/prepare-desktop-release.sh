@@ -68,7 +68,7 @@ git commit -m "chore(suite): bump beta version to $BETA_VERSION"
 git push --set-upstream origin "$(git branch --show-current)"
 
 echo Creating pull request...
-if ! OUTPUT=$(gh pr create --repo trezor/trezor-suite --base $MAIN_BRANCH --title "Bump beta version to $BETA_VERSION" --body "Automatically generated PR to bump beta Suite version" --label deployment --web 2>&1); then
+if ! OUTPUT=$(gh pr create --repo trezor/trezor-suite --base $MAIN_BRANCH --title "Bump beta version to $BETA_VERSION" --body $'## Description\n\nAutomatically generated PR to bump beta Suite version' --label deployment --web 2>&1); then
   tput setaf 3
   echo -e "Pull request not created. Create one manually on GitHub!\n${OUTPUT}"
   tput sgr0
