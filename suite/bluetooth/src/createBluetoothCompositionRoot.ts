@@ -16,6 +16,7 @@ import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { createBackgroundScan } from './bluetoothBackgroundScan';
 import { type Bluetooth, type BluetoothDep, createBluetooth } from './createBluetooth';
 import { createBluetoothInit } from './createBluetoothInit';
+import { createBluetoothScan } from './createBluetoothScan';
 import { createSetupBluetoothAutoReconnect } from './createSetupBluetoothAutoReconnect';
 import { createSetupBluetoothListeners } from './createSetupBluetoothListeners';
 import { type WithBluetoothRootState } from './desktopBluetoothReducer';
@@ -32,9 +33,15 @@ type CompositionRootDeps = {
     dispatch: ThunkDispatch<CompositionRootState, CompositionRootThunkDispatch, UnknownAction>;
 };
 
+export const injectBluetooth = (services: BluetoothDep): BluetoothDep => ({
+    bluetooth: services.bluetooth,
+});
+
 export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluetooth => {
     const getAdapterStatus = toGetter(deps.getState, selectAdapterStatus);
     const getKnownDevices = toGetter(deps.getState, selectKnownDevices<DesktopBluetoothDevice>);
+
+    const bluetoothScan = createBluetoothScan(deps);
 
     const backgroundScan = createBackgroundScan({
         getAdapterStatus,
@@ -68,5 +75,6 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
     return createBluetooth({
         bluetoothInit,
         backgroundScan,
+        scan: bluetoothScan,
     });
 };

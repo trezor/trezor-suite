@@ -1,4 +1,4 @@
-export { createBluetoothCompositionRoot } from './createBluetoothCompositionRoot';
+export { createBluetoothCompositionRoot, injectBluetooth } from './createBluetoothCompositionRoot';
 export { type Bluetooth, type BluetoothDep } from './createBluetooth';
 export { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluetoothDevice';
 
@@ -7,8 +7,6 @@ export * from './desktopBluetoothSelectors';
 
 export { bluetoothAdapterEventThunk } from './bluetoothAdapterEventThunk';
 export { forgetAllBluetoothDevicesThunk } from './forgetAllBluetoothDevicesThunk';
-export { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';
-export { bluetoothStopScanningThunk } from './bluetoothStopScanningThunk';
 export { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 export { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
 export { bluetoothOnDeviceConnectedThunk } from './bluetoothOnDeviceConnectedThunk';
