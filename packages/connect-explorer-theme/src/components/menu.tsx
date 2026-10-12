@@ -16,9 +16,11 @@ import type { Heading } from 'nextra';
 import { useFSRoute } from 'nextra/hooks';
 import { ArrowRightIcon } from 'nextra/icons';
 import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
+import { removeLinks } from 'nextra/remove-links';
 import styled from 'styled-components';
 
-import { Select } from '@trezor/components';
+import { Icon, type IconComponent, Select } from '@trezor/components';
+import { BookIcon, LightningIcon, NewspaperIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 import { arrayPartition, typedObjectKeys } from '@trezor/utils';
@@ -28,34 +30,33 @@ import { Collapse } from './collapse';
 import { useActiveAnchor } from '../contexts/active-anchor';
 import { useMenu } from '../contexts/menu';
 import { FocusedItemContext, OnFocusItemContext } from '../contexts/sidebar-focus';
-import { useConfig } from '../contexts/useConfig';
+import { useThemeConfig } from '../contexts/theme-config';
 import { asNetworkRoute } from '../networkRoute';
 import { selectNetworkRouteToSymbolMap } from '../selectors/networkRouteToSymbolMapSelectors';
-import { renderComponent } from '../utils/render';
 
 const TreeState: Record<string, boolean> = Object.create(null);
 const FolderLevelContext = createContext(0);
 
 const classes = {
     link: cn(
-        'nx-flex nx-rounded-xl nx-px-2 nx-py-1.5 nx-text-sm nx-transition-colors [word-break:break-word]',
-        'nx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:nx-border',
+        '_flex _rounded-xl _px-2 _py-1.5 _text-sm _transition-colors [word-break:break-word]',
+        '_cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:_border',
     ),
     inactive: cn(
-        'nx-text-gray-500 hover:nx-bg-gray-100 hover:nx-text-gray-900',
-        'dark:nx-text-neutral-400 dark:hover:nx-bg-primary-100/5 dark:hover:nx-text-gray-50',
-        'contrast-more:nx-text-gray-900 contrast-more:dark:nx-text-gray-50',
-        'contrast-more:nx-border-transparent contrast-more:hover:nx-border-gray-900 contrast-more:dark:hover:nx-border-gray-50',
+        '_text-gray-500 hover:_bg-gray-100 hover:_text-gray-900',
+        'dark:_text-neutral-400 dark:hover:_bg-primary-100/5 dark:hover:_text-gray-50',
+        'contrast-more:_text-gray-900 contrast-more:dark:_text-gray-50',
+        'contrast-more:_border-transparent contrast-more:hover:_border-gray-900 contrast-more:dark:hover:_border-gray-50',
     ),
     active: cn(
-        'nx-bg-primary-100 nx-font-semibold nx-text-primary-800 dark:nx-bg-primary-400/10 dark:nx-text-primary-600',
-        'contrast-more:nx-border-primary-500 contrast-more:dark:nx-border-primary-500',
+        '_bg-primary-100 _font-semibold _text-primary-800 dark:_bg-primary-400/10 dark:_text-primary-600',
+        'contrast-more:_border-primary-500 contrast-more:dark:_border-primary-500',
     ),
-    list: cn('nx-flex nx-flex-col nx-gap-1'),
+    list: cn('_flex _flex-col _gap-1'),
     border: cn(
-        'nx-relative before:nx-absolute before:nx-inset-y-1',
-        'before:nx-w-px before:nx-bg-gray-200 before:nx-content-[""] dark:before:nx-bg-neutral-800',
-        'ltr:nx-pl-3 ltr:before:nx-left-0 rtl:nx-pr-3 rtl:before:nx-right-0',
+        '_relative before:_absolute before:_inset-y-1',
+        'before:_w-px before:_bg-gray-200 before:_content-[""] dark:before:_bg-neutral-800',
+        'ltr:_pl-3 ltr:before:_left-0 rtl:_pr-3 rtl:before:_right-0',
     ),
 };
 
@@ -80,6 +81,41 @@ const Option = styled.div`
 const Label = styled.div`
     padding-left: 10px;
 `;
+
+const SIDEBAR_ICONS: Partial<Record<string, IconComponent>> = {
+    book: BookIcon,
+    lightning: LightningIcon,
+    newspaper: NewspaperIcon,
+};
+
+const isFolder = (item: Item | PageItem) => Boolean(item.children?.length);
+
+const hasIndexPage = (item: Item | PageItem) => Boolean(item.withIndexPage);
+
+const getItemIcon = (item: Item | PageItem): string | undefined =>
+    'frontMatter' in item ? item.frontMatter?.icon : undefined;
+
+type TitleWithIconProps = {
+    title: string;
+    icon?: string;
+};
+
+function TitleWithIcon({ title, icon }: TitleWithIconProps): ReactElement {
+    const IconComponent = icon ? SIDEBAR_ICONS[icon] : undefined;
+
+    return (
+        <div
+            style={{
+                alignItems: 'center',
+                display: 'flex',
+                gap: '0.5rem',
+            }}
+        >
+            {IconComponent && <Icon as={IconComponent} size={16} />}
+            {title}
+        </div>
+    );
+}
 
 interface MenuProps {
     directories: PageItem[] | Item[];
@@ -135,12 +171,12 @@ export function Menu({
         if (defaultActiveCoin !== activeCoin) setActiveCoin(defaultActiveCoin);
     }, [route, activeCoin, setActiveCoin, defaultActiveCoin]);
 
-    const topLevelItems = directories.filter(item => item.kind !== 'Folder');
+    const topLevelItems = directories.filter(item => !isFolder(item) || hasIndexPage(item));
     const methodsItems =
-        directories.find(item => item.kind === 'Folder' && item.name === 'methods')?.children ?? [];
-    const [coinMethods, nonCoinMethods] = arrayPartition(
+        directories.find(item => isFolder(item) && item.name === 'methods')?.children ?? [];
+    const [coinMethods, nonCoinMethods] = arrayPartition<Item | PageItem>(
         methodsItems,
-        item => item.kind === 'Folder' && networkRoutes.includes(asNetworkRoute(item.name)),
+        item => isFolder(item) && networkRoutes.includes(asNetworkRoute(item.name)),
     );
     const methodsOptions = coinMethods.map(item => ({
         label: item.title,
@@ -150,11 +186,11 @@ export function Menu({
     const activeCoinItems = methodsItems.find(item => item.name === activeCoin)?.children;
     const [commonMethods, otherMethods] = arrayPartition(
         nonCoinMethods,
-        item => item.kind === 'Folder' && item.name === 'common',
+        item => isFolder(item) && item.name === 'common',
     );
     const commonMethodsItems = commonMethods[0]?.children ?? [];
     const otherFolders = directories.filter(
-        item => item.kind === 'Folder' && item.name !== 'methods',
+        item => isFolder(item) && item.name !== 'methods' && !hasIndexPage(item),
     );
 
     const [clickCounter, setClickCounter] = useState(0);
@@ -238,7 +274,7 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
     const level = useContext(FolderLevelContext);
 
     const { setMenu } = useMenu();
-    const config = useConfig();
+    const themeConfig = useThemeConfig();
     const { theme } = item as Item;
     const open =
         TreeState[item.route] === undefined
@@ -247,7 +283,7 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
               focusedRouteInside ||
               (theme && 'collapsed' in theme
                   ? !theme.collapsed
-                  : level < config.sidebar.defaultMenuCollapseLevel)
+                  : level < themeConfig.sidebar.defaultMenuCollapseLevel)
             : TreeState[item.route] || focusedRouteInside;
 
     const rerender = useState({})[1];
@@ -265,9 +301,9 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
                 delete TreeState[item.route];
             }
         };
-        if (config.sidebar.autoCollapse) updateAndPruneTreeState();
+        if (themeConfig.sidebar.autoCollapse) updateAndPruneTreeState();
         else updateTreeState();
-    }, [activeRouteInside, focusedRouteInside, item.route, config.sidebar.autoCollapse]);
+    }, [activeRouteInside, focusedRouteInside, item.route, themeConfig.sidebar.autoCollapse]);
 
     if (item.type === 'menu') {
         const menu = item as MenuItem;
@@ -289,7 +325,7 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
                 ...menuItem,
             };
         });
-        // @ts-expect-error: fallback routeMenuItem is a partial PageItem (missing kind/type)
+        // @ts-expect-error: fallback routeMenuItem is a partial PageItem (missing title/type)
         // eslint-disable-next-line react-hooks/immutability
         item.children = children;
     }
@@ -303,8 +339,8 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
             <ComponentToUse
                 href={isLink ? item.route : undefined}
                 className={cn(
-                    'nx-items-center nx-justify-between nx-gap-2',
-                    !isLink && 'nx-text-left nx-w-full',
+                    '_items-center _justify-between _gap-2',
+                    !isLink && '_text-left _w-full',
                     classes.link,
                     active ? classes.active : classes.inactive,
                 )}
@@ -332,24 +368,19 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
                     rerender({});
                 }}
             >
-                {renderComponent(config.sidebar.titleComponent, {
-                    title: item.title,
-                    type: item.type,
-                    route: item.route,
-                    icon: item.kind === 'MdxPage' && item.frontMatter?.icon,
-                })}
+                <TitleWithIcon title={item.title} icon={getItemIcon(item)} />
                 <ArrowRightIcon
-                    className="nx-h-[18px] nx-min-w-[18px] nx-rounded-sm nx-p-0.5 hover:nx-bg-gray-800/5 dark:hover:nx-bg-gray-100/5"
-                    pathClassName={cn(
-                        'nx-origin-center nx-transition-transform rtl:-nx-rotate-180',
-                        open && 'ltr:nx-rotate-90 rtl:nx-rotate-[-270deg]',
+                    className={cn(
+                        '_h-[18px] _min-w-[18px] _rounded-sm _p-0.5 hover:_bg-gray-800/5 dark:hover:_bg-gray-100/5',
+                        '_origin-center _transition-transform rtl:_-rotate-180',
+                        open && 'ltr:_rotate-90 rtl:_rotate-[-270deg]',
                     )}
                 />
             </ComponentToUse>
-            <Collapse className="ltr:nx-pr-0 rtl:nx-pl-0 nx-pt-1" isOpen={open}>
+            <Collapse className="ltr:_pr-0 rtl:_pl-0 _pt-1" isOpen={open}>
                 {Array.isArray(item.children) ? (
                     <MenuInner
-                        className={cn(classes.border, 'ltr:nx-ml-3 rtl:nx-mr-3')}
+                        className={cn(classes.border, 'ltr:_ml-3 rtl:_mr-3')}
                         directories={item.children}
                         base={item.route}
                         anchors={anchors}
@@ -361,25 +392,19 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
 }
 
 export function Separator({ title }: { title: string }): ReactElement {
-    const config = useConfig();
-
     return (
         <li
             className={cn(
                 '[word-break:break-word]',
                 title
-                    ? 'nx-mt-5 nx-mb-2 nx-px-2 nx-py-1.5 nx-text-sm nx-font-semibold nx-text-gray-900 first:nx-mt-0 dark:nx-text-gray-100'
-                    : 'nx-my-4',
+                    ? '_mt-5 _mb-2 _px-2 _py-1.5 _text-sm _font-semibold _text-gray-900 first:_mt-0 dark:_text-gray-100'
+                    : '_my-4',
             )}
         >
             {title ? (
-                renderComponent(config.sidebar.titleComponent, {
-                    title,
-                    type: 'separator',
-                    route: '',
-                })
+                <TitleWithIcon title={title} />
             ) : (
-                <hr className="nx-mx-2 nx-border-t nx-border-gray-200 dark:nx-border-primary-100/10" />
+                <hr className="_mx-2 _border-t _border-gray-200 dark:_border-primary-100/10" />
             )}
         </li>
     );
@@ -399,7 +424,6 @@ export function File({
     const active = item.route && [route, route + '/'].includes(item.route + '/');
     const activeAnchor = useActiveAnchor();
     const { setMenu } = useMenu();
-    const config = useConfig();
 
     if (item.type === 'separator') {
         return <Separator title={item.title} />;
@@ -421,29 +445,24 @@ export function File({
                     onFocus?.(null);
                 }}
             >
-                {renderComponent(config.sidebar.titleComponent, {
-                    title: item.title,
-                    type: item.type,
-                    route: item.route,
-                    icon: item.kind === 'MdxPage' && item.frontMatter?.icon,
-                })}
+                <TitleWithIcon title={item.title} icon={getItemIcon(item)} />
             </Anchor>
             {active && anchors.length > 0 && (
-                <ul className={cn(classes.list, classes.border, 'ltr:nx-ml-3 rtl:nx-mr-3')}>
+                <ul className={cn(classes.list, classes.border, 'ltr:_ml-3 rtl:_mr-3')}>
                     {anchors.map(({ id, value }) => (
                         <li key={id}>
                             <a
                                 href={`#${id}`}
                                 className={cn(
                                     classes.link,
-                                    'nx-flex nx-gap-2 before:nx-opacity-25 before:nx-content-["#"]',
+                                    '_flex _gap-2 before:_opacity-25 before:_content-["#"]',
                                     activeAnchor[id]?.isActive ? classes.active : classes.inactive,
                                 )}
                                 onClick={() => {
                                     setMenu(false);
                                 }}
                             >
-                                {value}
+                                {removeLinks(value)}
                             </a>
                         </li>
                     ))}

@@ -12,6 +12,6 @@ export type SearchResult = {
 };
 
 export type TOCProps = {
-    headings: Heading[];
+    toc: Heading[];
     filePath: string;
 };
