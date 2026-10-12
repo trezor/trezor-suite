@@ -204,7 +204,10 @@ export default class DiscoverAccounts extends AbstractMethod<
         );
 
         const [cardanoAccounts, otherAccounts] = arrayPartition(supported, isCardanoRequest);
-        const [_, filteredCardanoAccounts] = await this.filterCardanoDerivations(cardanoAccounts);
+        const [_, filteredCardanoAccounts] = await this.filterCardanoDerivations(
+            cardanoAccounts,
+            sendCoreMessage,
+        );
         const accounts = [...otherAccounts, ...filteredCardanoAccounts];
 
         accounts.forEach(({ account, skip }) => this.updateProgress(account, skip));
@@ -245,7 +248,10 @@ export default class DiscoverAccounts extends AbstractMethod<
     }
 
     /** This should have zero overhead thanks to descriptor caching */
-    private async filterCardanoDerivations(accounts: CardanoRequest[]) {
+    private async filterCardanoDerivations(
+        accounts: CardanoRequest[],
+        sendCoreMessage: MethodContext['sendCoreMessage'],
+    ) {
         const legacyRequest = accounts.find(a => a.account.type === 'legacy');
         const ledgerRequest = accounts.find(a => a.account.type === 'ledger');
         const filterableRequest = legacyRequest ?? ledgerRequest;
@@ -257,6 +263,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                 filterableRequest.account.path,
                 CARDANO_DERIVATIONS[derivation],
                 0,
+                sendCoreMessage,
             ).then(({ descriptor }) => descriptor);
 
         // normal descriptor or undefined when no legacy/ledger was requested as in that case it's useless
@@ -290,6 +297,7 @@ export default class DiscoverAccounts extends AbstractMethod<
         bip43PathTemplate: string,
         derivationType: CardanoDerivation | undefined,
         index: number,
+        sendCoreMessage: MethodContext['sendCoreMessage'],
     ) {
         const path = substituteBip43Path(bip43PathTemplate, index);
 
@@ -306,26 +314,45 @@ export default class DiscoverAccounts extends AbstractMethod<
                     .getAccountDescriptor(coinInfo, address_n, derivationType);
                 this.descriptorCache[key] = descriptor;
 
-                // Perform continuous entropy check for standard wallet, if data are available
-                const knownXPubHashes = this.params.entropyCheckResult?.xpubHashes;
-                const { legacyXpub: xpub } = descriptor; // only Bitcoin-like accounts have it, and only those are checked for now
-                const isPassphraseEnabled = this.getDevice().features?.passphrase_protection;
-                const alwaysPassphrase = this.getDevice().features?.passphrase_always_on_device; // if this feature is on, then useEmptyPassphrase is not reliable
-                const isStandardWallet =
-                    !isPassphraseEnabled || (this.useEmptyPassphrase && !alwaysPassphrase);
-                if (xpub && knownXPubHashes && isStandardWallet) {
-                    const isValid = checkXPubWithHashes({ xpub, path, knownXPubHashes });
-                    if (!isValid) {
-                        // TODO monitor this, and if the check is reliable, throw error to fail the account discovery, have Suite handle it
-                        console.error(`Entropy check failed at getAccountDescriptor on ${path}`);
-                    }
-                }
+                this.checkEntropy({ xpub: descriptor.legacyXpub, path, sendCoreMessage });
             }
 
             return this.descriptorCache[key];
         });
 
         return { path, ...descriptorRest };
+    }
+
+    /**
+     * Discovery entropy check: compares the xpub with hashes known from the wallet creation entropy check.
+     * The result is only reported via event and never interrupts the discovery; Suite handles failures.
+     * Wallet creation only checks standard wallet, so this check also runs only if we're sure that it's standard.
+     */
+    private checkEntropy({
+        xpub,
+        path,
+        sendCoreMessage,
+    }: {
+        xpub: string | undefined;
+        path: string;
+        sendCoreMessage: MethodContext['sendCoreMessage'];
+    }) {
+        const knownXPubHashes = this.params.entropyCheckResult?.xpubHashes;
+        const isPassphraseEnabled = this.getDevice().features?.passphrase_protection;
+        // If this feature is on, then useEmptyPassphrase is not a reliable indicator of empty wallet.
+        const alwaysPassphrase = this.getDevice().features?.passphrase_always_on_device;
+        const isStandardWallet =
+            !isPassphraseEnabled || (this.useEmptyPassphrase && !alwaysPassphrase);
+        if (!xpub || knownXPubHashes?.[path] === undefined || !isStandardWallet) return;
+
+        const success = checkXPubWithHashes({ xpub, path, knownXPubHashes });
+        sendCoreMessage(
+            createUiEventMessage(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, {
+                device: this.getDevice().toMessageObject(),
+                success,
+                path,
+            }),
+        );
     }
 
     private async discoverAccount(
@@ -363,12 +390,24 @@ export default class DiscoverAccounts extends AbstractMethod<
             return { nonempty: 0, error };
         }
 
-        let descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index);
+        let descPromise = this.getDescriptor(
+            coinInfo,
+            bip43,
+            derivation,
+            offset + index,
+            sendCoreMessage,
+        );
         descPromise.catch(() => {});
         while (true) {
             try {
                 const { descriptor, ...descRest } = await descPromise;
-                descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index + 1);
+                descPromise = this.getDescriptor(
+                    coinInfo,
+                    bip43,
+                    derivation,
+                    offset + index + 1,
+                    sendCoreMessage,
+                );
                 descPromise.catch(() => {});
 
                 const info = await blockchain.getAccountInfo({

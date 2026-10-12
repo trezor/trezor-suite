@@ -58,7 +58,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     const isAnyNetworkEnabled = selectIsAnyNetworkEnabled(getState());
     const isBitcoinEnabled = selectIsBitcoinEnabled(getState());
 
-    // Discovery must be blocked while the compromised device warning is shown.
+    // Discovery must not be started while the compromised device warning is shown,
+    // but an already running discovery is allowed to finish.
     const failedCheck = selectCompromisedDeviceFailedCheck(getState(), device);
     if (failedCheck !== null) return action;
 
@@ -105,6 +106,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
         deviceActions.selectDevice.match(action) ||
         changeCoinVisibilityThunk.fulfilled.match(action) ||
         deviceActions.dismissFirmwareAuthenticityCheck.match(action) || // may no longer be device compromised
+        // dismissDiscoveryEntropyCheck is intentionally not a trigger, the dismissing component ejects all wallets
         accountsActions.updateAccount.match(action) || // empty account can become nonempty
         accountsActions.changeAccountVisibility.match(action) ||
         createAndBackupWalletThunk.fulfilled.match(action) ||
