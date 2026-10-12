@@ -12947,7 +12947,7 @@ __metadata:
     react-native-safe-area-context: "npm:~5.7.0"
     react-native-screens: "npm:~4.26.0"
     react-native-svg: "npm:15.15.5"
-    react-native-tcp-socket: "npm:6.4.1"
+    react-native-tcp-socket: "npm:6.4.3"
     react-native-teleport: "npm:^1.2.1"
     react-native-worklets: "npm:0.13.0"
     react-redux: "npm:9.3.0"
@@ -42837,15 +42837,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-tcp-socket@npm:6.4.1":
-  version: 6.4.1
-  resolution: "react-native-tcp-socket@npm:6.4.1"
+"react-native-tcp-socket@npm:6.4.3":
+  version: 6.4.3
+  resolution: "react-native-tcp-socket@npm:6.4.3"
   dependencies:
     buffer: "npm:^5.4.3"
     eventemitter3: "npm:^4.0.7"
   peerDependencies:
     react-native: ">=0.60.0"
-  checksum: 10/ba840118695438bf0b338042b8c4d0623de909e1f186276228400b4a02e30fbffbb24b7fe8a6a4c6c47effa29d5803bc4311b24887c086a6db817a6f0d959e29
+  checksum: 10/cede56d17411d9f7c74f47dc50aec72650eb95b06a9c273c3bf8dc41ba7f9d59368389fcf6bce0566b380016653e13f4f8658397e6db4a85def3fe6c85049ca5
   languageName: node
   linkType: hard
 
