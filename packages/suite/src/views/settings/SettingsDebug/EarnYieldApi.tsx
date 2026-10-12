@@ -12,7 +12,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
-export const EarnApi = () => {
+export const EarnYieldApi = () => {
     const { dispatch } = useServices(injectDispatch);
     const storedValue = useSelector(selectEarnYieldWorkerBaseUrl);
     const options = useMemo(
@@ -44,6 +44,7 @@ export const EarnApi = () => {
                     onChange={handleChange}
                     value={selectedValue}
                     options={options}
+                    menuAlign="end"
                 />
             }
         />

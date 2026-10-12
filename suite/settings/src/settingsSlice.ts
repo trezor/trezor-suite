@@ -3,6 +3,7 @@ import { type PayloadAction } from '@reduxjs/toolkit';
 import { type SuiteThemeVariant } from '@suite/desktop-app-api';
 import type { ExperimentalFeature } from '@suite/experimental';
 import { type EarnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-defs';
+import { type EarnStakingWorkerBaseUrl } from '@suite-common/earn-staking-api';
 import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
 import { type Locale } from '@suite-common/suite-types';
 import type { TradeServerEnvironment } from '@suite-common/trading';
@@ -25,6 +26,7 @@ export type DebugTransport =
 export interface DebugModeOptions {
     tradeServerEnvironment?: TradeServerEnvironment;
     earnYieldWorkerBaseUrl?: EarnYieldWorkerBaseUrl;
+    earnStakingWorkerBaseUrl?: EarnStakingWorkerBaseUrl;
     oauthServerEnvironment?: OAuthServerEnvironment;
     transports: DebugTransport[];
     isUnlockedBootloaderAllowed: boolean;
@@ -91,6 +93,7 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
     debug: {
         tradeServerEnvironment: undefined,
         earnYieldWorkerBaseUrl: undefined,
+        earnStakingWorkerBaseUrl: undefined,
         transports: [],
         isUnlockedBootloaderAllowed: false,
         showConnectLogs: false,

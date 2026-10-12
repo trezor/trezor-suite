@@ -14,6 +14,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/earn-stablecoin-defs": "workspace:*",
+        "@suite-common/earn-staking-api": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@trezor/connect": "workspace:*",
         "react": "19.2.3"

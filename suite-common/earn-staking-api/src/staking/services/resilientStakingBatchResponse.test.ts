@@ -1,15 +1,22 @@
 import type { resilientStakingBatchResponse as importedSchema } from './resilientStakingBatchResponse';
 import { type StakingBatchDataItem, type StakingBatchErrorsItem } from '../../api/types';
+import type { earnStakingWorkerBaseUrl as importedBaseUrlContext } from '../../context';
 
 const mockCaptureException = jest.fn();
+const mockSetTag = jest.fn();
 
 jest.mock('@sentry/core', () => ({
     captureException: mockCaptureException,
     withScope: (callback: (scope: { setTag: jest.Mock }) => void) =>
-        callback({ setTag: jest.fn() }),
+        callback({ setTag: mockSetTag }),
 }));
 
 type SchemaModule = { resilientStakingBatchResponse: typeof importedSchema };
+type ContextModule = { earnStakingWorkerBaseUrl: typeof importedBaseUrlContext };
+
+const SELECTED_BASE_URL = 'http://localhost:3001/staking/v1';
+
+const flushPendingTasks = () => new Promise(resolve => setTimeout(resolve, 0));
 
 let resilientStakingBatchResponse: typeof importedSchema;
 
@@ -59,6 +66,7 @@ describe('resilientStakingBatchResponse', () => {
         jest.resetModules();
         ({ resilientStakingBatchResponse } =
             require('./resilientStakingBatchResponse') as SchemaModule);
+        (require('../../context') as ContextModule).earnStakingWorkerBaseUrl.set(SELECTED_BASE_URL);
     });
 
     it('passes through a batch in which every network matched the expected shape', () => {
@@ -122,11 +130,12 @@ describe('resilientStakingBatchResponse', () => {
         expect(resilientStakingBatchResponse.safeParse('not an object').success).toBe(false);
     });
 
-    it('reports a drift to Sentry once per signature, since the caller only logs it at warn level', () => {
+    it('reports a drift to Sentry once per signature, since the caller only logs it at warn level', async () => {
         const drifted = { data: [ethSection, driftedTrxSection], errors: [] };
 
         resilientStakingBatchResponse.parse(drifted);
         resilientStakingBatchResponse.parse(drifted);
+        await flushPendingTasks();
 
         expect(mockCaptureException).toHaveBeenCalledTimes(1);
         expect(mockCaptureException.mock.calls[0]?.[0]).toEqual(
@@ -137,8 +146,16 @@ describe('resilientStakingBatchResponse', () => {
             data: [ethSection, driftedTrxSection, driftedAdaSection],
             errors: [],
         });
+        await flushPendingTasks();
 
         expect(mockCaptureException).toHaveBeenCalledTimes(2);
         expect(mockCaptureException.mock.calls[1]?.[0].message).toContain('trx, ada');
+    });
+
+    it('tags a drift report with the selected staking worker base URL', async () => {
+        resilientStakingBatchResponse.parse({ data: [driftedTrxSection], errors: [] });
+        await flushPendingTasks();
+
+        expect(mockSetTag).toHaveBeenCalledWith('error.source', SELECTED_BASE_URL);
     });
 });
