@@ -29,7 +29,18 @@ export const cloneObject = <T>(obj: T, seen = new WeakMap<object, any>()): T => 
                 continue;
             }
 
-            clone[key] = cloneObject(value, seen);
+            if (key === '__proto__') {
+                // JSON.parse creates "__proto__" as an own key, but assigning it would call the
+                // Object.prototype.__proto__ setter and change the prototype of the copy instead.
+                Object.defineProperty(clone, key, {
+                    value: cloneObject(value, seen),
+                    writable: true,
+                    enumerable: true,
+                    configurable: true,
+                });
+            } else {
+                clone[key] = cloneObject(value, seen);
+            }
         }
     }
 

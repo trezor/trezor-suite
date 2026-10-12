@@ -67,5 +67,48 @@ describe('cloneObject', () => {
             expect(cloned).not.toBe(original);
             expect(cloned).toEqual(original);
         });
+
+        it('should keep an own __proto__ key as a property', () => {
+            // Unlike an object literal, JSON.parse creates "__proto__" as an own property.
+            const original = JSON.parse('{"name":"token","__proto__":{"isVerified":true}}');
+            const cloned = cloneObject(original);
+            const descriptor = Object.getOwnPropertyDescriptor(cloned, '__proto__');
+
+            expect(Object.getPrototypeOf(cloned)).toBe(Object.prototype);
+            expect(Object.keys(cloned)).toEqual(['name', '__proto__']);
+            expect(cloned.isVerified).toBeUndefined();
+            expect(descriptor).toEqual({
+                value: { isVerified: true },
+                writable: true,
+                enumerable: true,
+                configurable: true,
+            });
+            expect(descriptor?.value).not.toBe(
+                Object.getOwnPropertyDescriptor(original, '__proto__')?.value,
+            );
+        });
+
+        it.each([null, 42, 'text', [1, 2]])(
+            'should keep an own __proto__ key holding %p as a property',
+            value => {
+                const original = JSON.parse(`{"__proto__":${JSON.stringify(value)}}`);
+                const cloned = cloneObject(original);
+
+                expect(Object.getPrototypeOf(cloned)).toBe(Object.prototype);
+                expect(Object.keys(cloned)).toEqual(['__proto__']);
+                expect(Object.getOwnPropertyDescriptor(cloned, '__proto__')?.value).toEqual(value);
+            },
+        );
+
+        it('should keep own __proto__ keys of objects nested in arrays', () => {
+            const original = JSON.parse('{"rates":[{"__proto__":{"usd":1}},{"__proto__":null}]}');
+            const cloned = cloneObject(original);
+
+            expect(cloned).toEqual(original);
+            expect(cloned.rates.map(Object.getPrototypeOf)).toEqual([
+                Object.prototype,
+                Object.prototype,
+            ]);
+        });
     });
 });
