@@ -112,6 +112,11 @@ const dismissFirmwareAuthenticityCheck = createAction(
     (payload: string) => ({ payload }),
 );
 
+const dismissDiscoveryEntropyCheck = createAction(
+    `${DEVICE_MODULE_PREFIX}/dismissDiscoveryEntropyCheck`,
+    (payload: string) => ({ payload }),
+);
+
 const setDiscovered = createAction(
     `${DEVICE_MODULE_PREFIX}/setDiscovered`,
     (staticSessionId: StaticSessionId, success: boolean) => ({
@@ -134,6 +139,7 @@ export const deviceActions = {
     addAuthorizedDevice,
     deviceDisconnect,
     dismissFirmwareAuthenticityCheck,
+    dismissDiscoveryEntropyCheck,
     setRememberDevice,
     setTemporaryRememberedDevice,
     forgetDevice,
