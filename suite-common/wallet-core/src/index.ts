@@ -29,6 +29,7 @@ export * from './discovery/discoveryActions';
 export * from './discovery/discoveryReducer';
 export * from './discovery/discoverySelectors';
 export * from './discovery/discoveryThunks';
+export * from './discovery/ejectAllWalletsThunk';
 export * from './discovery/passphraseWalletThunks';
 export * from './earn/earnDepositsFiatUtils';
 export * from './earn/earnTransactionsMiddleware';

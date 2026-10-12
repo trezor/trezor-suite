@@ -102,11 +102,21 @@ type PersistedFeatureKey = UnionSubset<
 // Only successful result is persisted, because rejection by user is treated the same as check not done yet → check will pop up.
 export type ManualCheckResult = { success: true };
 
+export type StoredEntropyCheckResult = EntropyCheckResult & {
+    /**
+     * Paths where the discovery entropy check found an xpub not matching known `xpubHashes`.
+     * A path is removed once a later discovery checks it successfully.
+     * Note that `success` and `xpubHashes` are the result of the wallet creation entropy check,
+     * that's how the device commits itself to these xpubs.
+     */
+    discoveryCheckFailedPaths?: string[];
+};
+
 export type PersistentDeviceData = Pick<AcquiredDevice, PersistedDeviceKey> &
     Pick<Features, PersistedFeatureKey> & {
         firmwareVersion: VersionArray | null;
         lastConnectedVia: 'bluetooth' | 'usb' | null;
-        lastEntropyCheckResult?: EntropyCheckResult;
+        lastEntropyCheckResult?: StoredEntropyCheckResult;
         delegatedIdentityKey: EncryptedHex<DelegatedIdentityKey> | null;
         descriptor?: AcquiredDevice['descriptor'];
         manualCheckResult?: ManualCheckResult;

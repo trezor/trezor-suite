@@ -2,7 +2,7 @@ import { deviceActions } from '@suite-common/device';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import type { DelegatedIdentityKey } from '@suite-common/suite-types';
-import { mockConnectDevice } from '@suite-common/suite-types/mocks';
+import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { persistentDeviceDataActions } from './persistentDeviceDataActions';
@@ -94,6 +94,33 @@ describe('persistentDeviceDataReducer', () => {
         expect(state.devices).toEqual([expect.objectContaining({ device_id: 'device-id-2' })]);
     });
 
+    it('keeps device data including security checks results on forgetDevice (ejecting a wallet)', () => {
+        const stateBeforeForget = reduceMultipleActions(
+            deviceActions.connectDevice({ device: usbDevice }),
+            persistentDeviceDataActions.setEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: true,
+                xpubHashes: { "m/84'/0'/0'": 'hash-of-the-xpub' },
+            }),
+            persistentDeviceDataActions.setDiscoveryEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: false,
+                path: "m/84'/0'/0'",
+            }),
+        );
+
+        // not root state, because we are using only `persistentDeviceDataReducer`
+        const state: PersistentDeviceDataState = persistentDeviceDataReducer(
+            stateBeforeForget,
+            deviceActions.forgetDevice({ device: mockSuiteDevice({ id: 'device-id-1' }) }),
+        );
+
+        expect(state).toEqual(stateBeforeForget);
+        expect(state.devices[0]?.lastEntropyCheckResult?.discoveryCheckFailedPaths).toEqual([
+            "m/84'/0'/0'",
+        ]);
+    });
+
     it('clears device data on clearDevicePersistentData', () => {
         const state = reduceMultipleActions(
             deviceActions.connectDevice({ device: usbDevice }),
@@ -121,6 +148,91 @@ describe('persistentDeviceDataReducer', () => {
                 },
             }),
         );
+    });
+
+    it('adds and removes discovery entropy check failed paths on setDiscoveryEntropyCheckResult', () => {
+        const xpubHashes = { "m/84'/0'/0'": 'hash-of-the-xpub', "m/86'/0'/0'": 'different-hash' };
+        const stateWithFailedPaths = reduceMultipleActions(
+            deviceActions.connectDevice({ device: usbDevice }),
+            persistentDeviceDataActions.setEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: true,
+                xpubHashes,
+            }),
+            persistentDeviceDataActions.setDiscoveryEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: false,
+                path: "m/84'/0'/0'",
+            }),
+            // idempotency
+            persistentDeviceDataActions.setDiscoveryEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: false,
+                path: "m/84'/0'/0'",
+            }),
+            persistentDeviceDataActions.setDiscoveryEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: false,
+                path: "m/86'/0'/0'",
+            }),
+        );
+
+        expect(stateWithFailedPaths.devices[0]?.lastEntropyCheckResult).toEqual({
+            success: true,
+            xpubHashes,
+            discoveryCheckFailedPaths: ["m/84'/0'/0'", "m/86'/0'/0'"],
+        });
+
+        // a path which has failed once is cleared by a later successful check
+        const state = persistentDeviceDataReducer(
+            stateWithFailedPaths,
+            persistentDeviceDataActions.setDiscoveryEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: true,
+                path: "m/86'/0'/0'",
+            }),
+        );
+
+        expect(state.devices[0]?.lastEntropyCheckResult).toEqual({
+            success: true,
+            xpubHashes,
+            discoveryCheckFailedPaths: ["m/84'/0'/0'"],
+        });
+    });
+
+    it('clears discovery entropy check failed paths on wiping device and creating a new wallet', () => {
+        const state = reduceMultipleActions(
+            deviceActions.connectDevice({ device: usbDevice }),
+            persistentDeviceDataActions.setEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: true,
+            }),
+            persistentDeviceDataActions.setDiscoveryEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: false,
+                path: "m/84'/0'/0'",
+            }),
+            // this happens only when Suite calls resetDevice (i.e. when Suite requests a new wallet creation)
+            persistentDeviceDataActions.setEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: true,
+            }),
+        );
+
+        expect(state.devices[0]?.lastEntropyCheckResult).toEqual({ success: true });
+    });
+
+    it('ignores setDiscoveryEntropyCheckResult without stored entropy check result', () => {
+        const state = reduceMultipleActions(
+            deviceActions.connectDevice({ device: usbDevice }),
+            persistentDeviceDataActions.setDiscoveryEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: false,
+                path: "m/84'/0'/0'",
+            }),
+        );
+
+        expect(state.devices[0]?.lastEntropyCheckResult).toBeUndefined();
     });
 
     it('stores delegated identity key on setDelegatedIdentityKey', () => {

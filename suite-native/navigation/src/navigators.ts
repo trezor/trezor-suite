@@ -76,6 +76,7 @@ type DeviceCompromisedModalFailedCheck =
     | 'device-invariability'
     | 'device-authenticity'
     | 'entropy'
+    | 'entropy-discovery'
     | 'firmware-authenticity';
 
 type AccountDetailParams = {

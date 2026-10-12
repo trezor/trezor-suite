@@ -2,7 +2,10 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
-import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-device-data';
+import {
+    persistentDeviceDataActions,
+    preparePersistentDeviceDataReducer,
+} from '@suite-common/persistent-device-data';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { prepareThpReducer } from '@suite-common/thp';
@@ -512,5 +515,72 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
                 screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
             },
         },
+    },
+];
+
+const discoveryEntropyCheckDevice = mockSuiteDevice();
+const discoveryEntropyCheckDeviceModel = discoveryEntropyCheckDevice.features?.internal_model;
+if (!discoveryEntropyCheckDeviceModel) {
+    throw `${mockSuiteDevice.name}() must return a device with model.`;
+}
+
+const buildDiscoveryEntropyCheckState = (discoveryCheckFailedPaths: string[]) =>
+    buildInitialState({
+        walletSettings: { enabledNetworks: [asNetworkSymbol('btc')] },
+        device: { selectedDevice: discoveryEntropyCheckDevice },
+        persistentDeviceData: {
+            devices: [
+                {
+                    ...defaultDevicePersistentData,
+                    // Matching the device, so that the device invariability check passes.
+                    internal_model: discoveryEntropyCheckDeviceModel,
+                    unit_color: discoveryEntropyCheckDevice.features?.unit_color,
+                    lastEntropyCheckResult: { success: true, discoveryCheckFailedPaths },
+                },
+            ],
+        },
+    });
+
+export const discoveryEntropyCheckFailFixtures: NavigationFixture[] = [
+    {
+        description: 'navigates to DeviceCompromisedModal when discovery entropy check fails',
+        // Simulates state that would be reduced by the action. See `persistentDeviceDataReducer.test.ts` for coverage of the reducer.
+        initialState: buildDiscoveryEntropyCheckState(["m/84'/0'/0'"]),
+        action: persistentDeviceDataActions.setDiscoveryEntropyCheckResult({
+            deviceId: 'device-id',
+            success: false,
+            path: "m/84'/0'/0'",
+        }),
+        expectedNavigation: {
+            route: RootStackRoutes.DeviceCompromisedModal,
+            params: { failedCheck: 'entropy-discovery' },
+        },
+    },
+];
+
+export const discoveryEntropyCheckNoNavigationFixtures: NoNavigationFixture[] = [
+    {
+        description: 'does not navigate when discovery entropy check succeeds',
+        initialState: buildDiscoveryEntropyCheckState([]),
+        action: persistentDeviceDataActions.setDiscoveryEntropyCheckResult({
+            deviceId: 'device-id',
+            success: true,
+            path: "m/84'/0'/0'",
+        }),
+    },
+    {
+        description: 'does not navigate when discovery entropy check failure is dismissed',
+        initialState: {
+            ...buildDiscoveryEntropyCheckState([]),
+            device: {
+                ...buildDiscoveryEntropyCheckState([]).device,
+                dismissedSecurityChecks: { discoveryEntropy: ['device-id'] },
+            },
+        },
+        action: persistentDeviceDataActions.setDiscoveryEntropyCheckResult({
+            deviceId: 'device-id',
+            success: false,
+            path: "m/84'/0'/0'",
+        }),
     },
 ];
