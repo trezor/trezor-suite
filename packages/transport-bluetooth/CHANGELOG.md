@@ -8,6 +8,13 @@
 - fix: notification stream tasks are owned by a central registry and aborted when their websocket client disconnects, BLE subscriptions are released with the last stream
 - fix: scanning stops when the last websocket client disconnects, regardless of which client started it
 - fix: stop_scan resets the scanning flag even when called by another client or when the adapter call fails
+- fix: reject notification streams registered after their websocket client disconnects, abort their tasks and release BLE subscriptions
+- fix: stop_scan aborts scan watchers for all websocket clients, preventing duplicate watchers when another client stops scanning
+- fix: linux pairing fails when the BlueZ Paired property is unreadable and accepts Pair errors when the device is already bonded
+- fix: a successful connection clears a previous PairingError
+- fix: handle RssiUpdate alongside DeviceUpdated to keep device properties updated on linux
+- fix: prefer advertisement_name over local_name for device names and require an advertised name when tracking devices without services
+- fix: linux resolves services before unsubscribing to release BLE subscriptions, skipping disconnected devices
 
 ### 0.4.3
 
