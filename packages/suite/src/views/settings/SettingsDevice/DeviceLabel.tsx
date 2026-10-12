@@ -3,7 +3,7 @@ import { FormProvider } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { ChangeDeviceLabelForm } from 'src/components/suite/ChangeDeviceLabelForm';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
@@ -31,14 +31,17 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_DEVICE_SETTINGS_DEVICE_LABEL" />}
-                    description={
-                        <Translation
-                            id="TR_LABEL_REQUIREMENTS"
-                            values={{ length: MAX_LABEL_LENGTH }}
-                        />
-                    }
-                    actions={
+                >
+                    <TextColumn
+                        title={<Translation id="TR_DEVICE_SETTINGS_DEVICE_LABEL" />}
+                        description={
+                            <Translation
+                                id="TR_LABEL_REQUIREMENTS"
+                                values={{ length: MAX_LABEL_LENGTH }}
+                            />
+                        }
+                    />
+                    <ActionColumn>
                         <FormProvider {...form}>
                             <ChangeDeviceLabelForm
                                 isVertical
@@ -46,8 +49,8 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
                                 onClick={onSubmit}
                             />
                         </FormProvider>
-                    }
-                />
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

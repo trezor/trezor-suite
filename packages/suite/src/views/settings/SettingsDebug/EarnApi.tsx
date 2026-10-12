@@ -8,7 +8,7 @@ import {
 } from '@suite-common/earn-stablecoin-api';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -36,16 +36,14 @@ export const EarnApi = () => {
     };
 
     return (
-        <SectionItem
-            title="Yield worker base URL"
-            description="Set the base url for the earn yield worker"
-            actions={
-                <SectionItem.Select
-                    onChange={handleChange}
-                    value={selectedValue}
-                    options={options}
-                />
-            }
-        />
+        <SectionItem>
+            <TextColumn
+                title="Yield worker base URL"
+                description="Set the base url for the earn yield worker"
+            />
+            <ActionColumn>
+                <ActionSelect onChange={handleChange} value={selectedValue} options={options} />
+            </ActionColumn>
+        </SectionItem>
     );
 };

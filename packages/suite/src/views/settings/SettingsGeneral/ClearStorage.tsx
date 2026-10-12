@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
 
@@ -20,18 +20,21 @@ export const ClearStorage = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_SUITE_STORAGE" />}
-                    description={<Translation id="TR_CLEAR_STORAGE_DESCRIPTION" />}
-                    actions={
-                        <SectionItem.Button
+                >
+                    <TextColumn
+                        title={<Translation id="TR_SUITE_STORAGE" />}
+                        description={<Translation id="TR_CLEAR_STORAGE_DESCRIPTION" />}
+                    />
+                    <ActionColumn>
+                        <ActionButton
                             onClick={handleClick}
                             intent="warning"
                             data-testid="@settings/reset-app-button"
                         >
                             <Translation id="TR_CLEAR_STORAGE" />
-                        </SectionItem.Button>
-                    }
-                />
+                        </ActionButton>
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

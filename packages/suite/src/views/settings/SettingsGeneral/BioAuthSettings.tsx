@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { Switch, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useBioAuthDesktopApi } from 'src/hooks/suite/useBioAuthDesktopApi';
 
@@ -42,9 +42,12 @@ export const BioAuthSettings = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_BIO_AUTH" />}
-                    description={<Translation id="TR_BIO_AUTH_DESCRIPTION" />}
-                    actions={
+                >
+                    <TextColumn
+                        title={<Translation id="TR_BIO_AUTH" />}
+                        description={<Translation id="TR_BIO_AUTH_DESCRIPTION" />}
+                    />
+                    <ActionColumn>
                         <PositionedSwitch>
                             <Tooltip
                                 isActive={tooltipActive}
@@ -67,8 +70,8 @@ export const BioAuthSettings = () => {
                                 />
                             </Tooltip>
                         </PositionedSwitch>
-                    }
-                />
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

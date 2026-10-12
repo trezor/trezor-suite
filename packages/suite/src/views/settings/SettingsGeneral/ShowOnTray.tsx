@@ -7,7 +7,7 @@ import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 const PositionedSwitch = styled.div`
     align-self: center;
@@ -49,9 +49,12 @@ export const ShowOnTray = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_SHOW_ON_TRAY" />}
-                    description={<Translation id="TR_SHOW_ON_TRAY_DESCRIPTION" />}
-                    actions={
+                >
+                    <TextColumn
+                        title={<Translation id="TR_SHOW_ON_TRAY" />}
+                        description={<Translation id="TR_SHOW_ON_TRAY_DESCRIPTION" />}
+                    />
+                    <ActionColumn>
                         <PositionedSwitch>
                             <Switch
                                 data-testid="@show-on-tray/toggle-switch"
@@ -59,8 +62,8 @@ export const ShowOnTray = () => {
                                 onChange={() => handleChange(!showOnTrayEnabled)}
                             />
                         </PositionedSwitch>
-                    }
-                />
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

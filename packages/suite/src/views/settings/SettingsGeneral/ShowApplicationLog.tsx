@@ -3,7 +3,7 @@ import { openModal } from '@suite/modal';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 export const ShowApplicationLog = () => {
     const { dispatch } = useServices(injectDispatch);
@@ -17,18 +17,21 @@ export const ShowApplicationLog = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_LOG" />}
-                    description={<Translation id="TR_LOG_DESCRIPTION" />}
-                    actions={
-                        <SectionItem.Button
+                >
+                    <TextColumn
+                        title={<Translation id="TR_LOG" />}
+                        description={<Translation id="TR_LOG_DESCRIPTION" />}
+                    />
+                    <ActionColumn>
+                        <ActionButton
                             onClick={handleClick}
                             intent="brand"
                             data-testid="@settings/show-log-button"
                         >
                             <Translation id="TR_SHOW_LOG" />
-                        </SectionItem.Button>
-                    }
-                />
+                        </ActionButton>
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

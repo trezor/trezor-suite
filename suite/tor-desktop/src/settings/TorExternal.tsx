@@ -6,7 +6,7 @@ import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsTorEnabled } from '@suite/tor';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 const options = [
     {
@@ -72,17 +72,22 @@ export const TorExternal = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_EXPERIMENTAL_TOR_EXTERNAL_PORT" />}
-                    description={<Translation id="TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION" />}
-                    actions={
-                        <SectionItem.Select
+                >
+                    <TextColumn
+                        title={<Translation id="TR_EXPERIMENTAL_TOR_EXTERNAL_PORT" />}
+                        description={
+                            <Translation id="TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION" />
+                        }
+                    />
+                    <ActionColumn>
+                        <ActionSelect
                             value={selectedOption}
                             options={options}
                             onChange={onChange}
                             isDisabled={isTorEnabled}
                         />
-                    }
-                />
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

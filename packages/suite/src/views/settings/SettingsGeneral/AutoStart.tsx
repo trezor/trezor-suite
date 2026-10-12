@@ -7,7 +7,7 @@ import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 const PositionedSwitch = styled.div`
     align-self: center;
@@ -41,9 +41,12 @@ export const AutoStart = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_AUTO_START" />}
-                    description={<Translation id="TR_AUTO_START_DESCRIPTION" />}
-                    actions={
+                >
+                    <TextColumn
+                        title={<Translation id="TR_AUTO_START" />}
+                        description={<Translation id="TR_AUTO_START_DESCRIPTION" />}
+                    />
+                    <ActionColumn>
                         <PositionedSwitch>
                             <Switch
                                 data-testid="@autostart/toggle-switch"
@@ -51,8 +54,8 @@ export const AutoStart = () => {
                                 onChange={() => handleChange(!autoStartEnabled)}
                             />
                         </PositionedSwitch>
-                    }
-                />
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

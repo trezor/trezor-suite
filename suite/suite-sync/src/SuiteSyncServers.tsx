@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectSuiteSyncCustomRelayUrl } from '@suite-common/suite-sync';
-import { SectionItem } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { SelectSuiteSyncServer } from './SelectSuiteSyncServer';
 
@@ -19,28 +19,29 @@ export const SuiteSyncServers = () => {
     return (
         <>
             {isSelectServerOpen && <SelectSuiteSyncServer onCancel={toggleSelectServer} />}
-            <SectionItem
-                data-testid="@settings/labeling-servers"
-                title={
-                    <Translation
-                        id={
-                            isCustomServer
-                                ? 'TR_LABELING_SYNCED_THROUGH_CUSTOM_SERVER'
-                                : 'TR_LABELING_SYNCED_THROUGH_TREZOR_SERVERS'
-                        }
-                    />
-                }
-                description={<Translation id="TR_LABELING_SERVERS_DESCRIPTION" />}
-                actions={
-                    <SectionItem.Button
+            <SectionItem data-testid="@settings/labeling-servers">
+                <TextColumn
+                    title={
+                        <Translation
+                            id={
+                                isCustomServer
+                                    ? 'TR_LABELING_SYNCED_THROUGH_CUSTOM_SERVER'
+                                    : 'TR_LABELING_SYNCED_THROUGH_TREZOR_SERVERS'
+                            }
+                        />
+                    }
+                    description={<Translation id="TR_LABELING_SERVERS_DESCRIPTION" />}
+                />
+                <ActionColumn>
+                    <ActionButton
                         intent="brand"
                         onClick={toggleSelectServer}
                         data-testid="@settings/labeling-servers-change"
                     >
                         <Translation id="TR_LABELING_SERVERS_CHANGE" />
-                    </SectionItem.Button>
-                }
-            />
+                    </ActionButton>
+                </ActionColumn>
+            </SectionItem>
         </>
     );
 };

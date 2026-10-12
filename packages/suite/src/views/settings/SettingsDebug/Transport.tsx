@@ -11,7 +11,7 @@ import { Checkbox } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { type ArrayElement } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -32,7 +32,6 @@ const TRANSPORT_DESCRIPTIONS: Record<Transport, string> = {
     BridgeTransport:
         'Client for bridge http interface. It expects bridge to run on http://127.0.0.1:21328/.\
         This is the most general transport that may be used for both desktop and web version of Trezor Suite.',
-
     WebUsbTransport: 'Similar to NodeUsbTransport but using WebUSB API. Supported only in Chrome.',
     NodeUsbTransport: 'Direct access to usb using node.js implementation.',
     UdpTransport: 'Direct communication with emulators over udp.',
@@ -61,20 +60,23 @@ export const Transport = () => {
 
     return (
         <>
-            <SectionItem
-                data-testid="@settings/debug/transport"
-                title="Transport clients"
-                description="You may override TrezorConnect default settings here. Select your preferred transport clients that are to be used. You will need to reload after changes"
-            />
-
+            <SectionItem data-testid="@settings/debug/transport">
+                <TextColumn
+                    title="Transport clients"
+                    description="You may override TrezorConnect default settings here. Select your preferred transport clients that are to be used. You will need to reload after changes"
+                />
+            </SectionItem>
             {/* todo: make it drag and drop sortable */}
             {items.map(transport => (
                 <SectionItem
                     key={transport.name}
                     data-testid={`@settings/debug/transport/${transport.name}`}
-                    title={`${transport.name}${transport.active ? ' (Active)' : ''}`}
-                    description={transport.description}
-                    actions={
+                >
+                    <TextColumn
+                        title={`${transport.name}${transport.active ? ' (Active)' : ''}`}
+                        description={transport.description}
+                    />
+                    <ActionColumn>
                         <Checkbox
                             isChecked={transport.checked}
                             onChange={() => {
@@ -91,8 +93,8 @@ export const Transport = () => {
                                 });
                             }}
                         />
-                    }
-                />
+                    </ActionColumn>
+                </SectionItem>
             ))}
         </>
     );

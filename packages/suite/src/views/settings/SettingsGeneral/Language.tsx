@@ -9,7 +9,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { LANGUAGES, type Locale, type LocaleInfo } from '@suite-common/suite-types';
 import { useServices } from '@trezor/dependency-injection';
 import { getPlatformLanguages } from '@trezor/env-utils';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { CROWDIN_URL } from '@trezor/urls';
 import { typedObjectEntries } from '@trezor/utils';
 
@@ -51,7 +51,6 @@ const useLanguageOptions = () => {
                 options: getOptions(onlyCommunity),
             },
         ],
-
         [systemOption, translationString],
     );
 
@@ -104,26 +103,29 @@ export const Language = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_LANGUAGE" />}
-                    description={
-                        isCommunityLanguage && <Translation id="TR_LANGUAGE_DESCRIPTION" />
-                    }
-                    bottomContent={
-                        isCommunityLanguage ? (
-                            <LearnMoreButton url={CROWDIN_URL}>
-                                <Translation id="TR_LANGUAGE_CREDITS" />
-                            </LearnMoreButton>
-                        ) : undefined
-                    }
-                    actions={
-                        <SectionItem.Select
+                >
+                    <TextColumn
+                        title={<Translation id="TR_LANGUAGE" />}
+                        description={
+                            isCommunityLanguage && <Translation id="TR_LANGUAGE_DESCRIPTION" />
+                        }
+                        bottomContent={
+                            isCommunityLanguage ? (
+                                <LearnMoreButton url={CROWDIN_URL}>
+                                    <Translation id="TR_LANGUAGE_CREDITS" />
+                                </LearnMoreButton>
+                            ) : undefined
+                        }
+                    />
+                    <ActionColumn>
+                        <ActionSelect
                             value={selectedValue}
                             options={options}
                             onChange={onChange}
                             data-testid="@settings/language-select"
                         />
-                    }
-                />
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

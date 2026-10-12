@@ -3,7 +3,7 @@ import { selectIsTestnetNetworksEnabled, suiteSettingsActions } from '@suite/set
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -16,16 +16,18 @@ export const TestnetNetworks = () => {
     };
 
     return (
-        <SectionItem
-            title={<Translation id="TR_EXPERIMENTAL_TESTNET_NETWORKS" />}
-            description={<Translation id="TR_EXPERIMENTAL_TESTNET_NETWORKS_DESCRIPTION" />}
-            actions={
+        <SectionItem>
+            <TextColumn
+                title={<Translation id="TR_EXPERIMENTAL_TESTNET_NETWORKS" />}
+                description={<Translation id="TR_EXPERIMENTAL_TESTNET_NETWORKS_DESCRIPTION" />}
+            />
+            <ActionColumn>
                 <Switch
                     isChecked={isEnabled}
                     onChange={handleSwitchChange}
                     data-testid="@settings/testnet-networks-switch"
                 />
-            }
-        />
+            </ActionColumn>
+        </SectionItem>
     );
 };

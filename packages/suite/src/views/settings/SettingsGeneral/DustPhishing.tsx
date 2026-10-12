@@ -8,9 +8,9 @@ import {
     selectDustPhishingIsEnabled,
     selectDustPhishingThreshold,
 } from '@suite-common/wallet-core';
-import { Input, Row, Switch, Text } from '@trezor/components';
+import { Button, Input, Row, Switch, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -74,18 +74,24 @@ export const DustPhishing = () => {
                         data-testid={anchorId}
                         ref={anchorRef}
                         shouldHighlight={shouldHighlight}
-                        title={<Translation id="TR_DUST_PHISHING_PROTECTION" />}
-                        description={<Translation id="TR_DUST_PHISHING_PROTECTION_DESCRIPTION" />}
-                        actions={
+                    >
+                        <TextColumn
+                            title={<Translation id="TR_DUST_PHISHING_PROTECTION" />}
+                            description={
+                                <Translation id="TR_DUST_PHISHING_PROTECTION_DESCRIPTION" />
+                            }
+                        />
+                        <ActionColumn>
                             <Switch
                                 isChecked={dustPhishingIsEnabled}
                                 onChange={onSwitchChange}
                                 data-testid="@settings/dust-phishing-switch"
                             />
-                        }
-                    />
+                        </ActionColumn>
+                    </SectionItem>
                 )}
             </Anchor>
+
             {dustPhishingIsEnabled && (
                 <Anchor anchorId={SettingsAnchor.DustPhishingThreshold}>
                     {({ anchorId, anchorRef, shouldHighlight }) => (
@@ -93,11 +99,14 @@ export const DustPhishing = () => {
                             data-testid={anchorId}
                             ref={anchorRef}
                             shouldHighlight={shouldHighlight}
-                            title={<Translation id="TR_DUST_PHISHING_THRESHOLD" />}
-                            description={
-                                <Translation id="TR_DUST_PHISHING_THRESHOLD_DESCRIPTION" />
-                            }
-                            actions={
+                        >
+                            <TextColumn
+                                title={<Translation id="TR_DUST_PHISHING_THRESHOLD" />}
+                                description={
+                                    <Translation id="TR_DUST_PHISHING_THRESHOLD_DESCRIPTION" />
+                                }
+                            />
+                            <ActionColumn>
                                 <Row gap={6} alignItems="start">
                                     <Input
                                         value={dustThreshold}
@@ -113,17 +122,17 @@ export const DustPhishing = () => {
                                         width={125}
                                     />
 
-                                    <SectionItem.Button
+                                    <Button
                                         size="medium"
                                         intent="brand"
                                         onClick={onConfirm}
                                         isDisabled={isDisabled}
                                     >
                                         <Translation id="TR_SAVE" />
-                                    </SectionItem.Button>
+                                    </Button>
                                 </Row>
-                            }
-                        />
+                            </ActionColumn>
+                        </SectionItem>
                     )}
                 </Anchor>
             )}

@@ -18,7 +18,7 @@ import { injectReloadApp } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -75,25 +75,26 @@ const CoordinatorServer = ({
     if (!isCoinjoinSupportedSymbol(symbol)) return null;
 
     return (
-        <SectionItem
-            data-testid={`@settings/debug/coinjoin/${symbol}`}
-            title={`${networkName}`}
-            description={
-                <>
-                    {networkName} coordinator server configuration
-                    <CoordinatorVersion version={version} />
-                </>
-            }
-            actions={
-                <SectionItem.Select
+        <SectionItem data-testid={`@settings/debug/coinjoin/${symbol}`}>
+            <TextColumn
+                title={`${networkName}`}
+                description={
+                    <>
+                        {networkName} coordinator server configuration
+                        <CoordinatorVersion version={version} />
+                    </>
+                }
+            />
+            <ActionColumn>
+                <ActionSelect
                     isDisabled={options.length < 2}
                     onChange={({ value }) => onChange(symbol, value)}
                     value={selectedOption}
                     options={options}
                     data-testid={`@settings/debug/coinjoin/${symbol}/server-select`}
                 />
-            }
-        />
+            </ActionColumn>
+        </SectionItem>
     );
 };
 

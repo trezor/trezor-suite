@@ -7,7 +7,7 @@ import {
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -35,36 +35,39 @@ export const DisconnectLabelingProvider = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={
-                        selectedProvider.isCloud ? (
-                            <Translation
-                                id="TR_CONNECTED_TO_PROVIDER"
-                                values={{
-                                    provider: capitalizeFirstLetter(selectedProvider.type),
-                                    user: selectedProvider.user,
-                                }}
-                            />
-                        ) : (
-                            <Translation id="TR_CONNECTED_TO_PROVIDER_LOCALLY" />
-                        )
-                    }
-                    description={
-                        selectedProvider.isCloud ? (
-                            <Translation id="TR_YOUR_LABELING_IS_SYNCED" />
-                        ) : (
-                            <Translation id="TR_YOUR_LABELING_IS_SYNCED_LOCALLY" />
-                        )
-                    }
-                    actions={
-                        <SectionItem.Button
+                >
+                    <TextColumn
+                        title={
+                            selectedProvider.isCloud ? (
+                                <Translation
+                                    id="TR_CONNECTED_TO_PROVIDER"
+                                    values={{
+                                        provider: capitalizeFirstLetter(selectedProvider.type),
+                                        user: selectedProvider.user,
+                                    }}
+                                />
+                            ) : (
+                                <Translation id="TR_CONNECTED_TO_PROVIDER_LOCALLY" />
+                            )
+                        }
+                        description={
+                            selectedProvider.isCloud ? (
+                                <Translation id="TR_YOUR_LABELING_IS_SYNCED" />
+                            ) : (
+                                <Translation id="TR_YOUR_LABELING_IS_SYNCED_LOCALLY" />
+                            )
+                        }
+                    />
+                    <ActionColumn>
+                        <ActionButton
                             intent="brand"
                             onClick={handleClick}
                             data-testid="@settings/metadata/disconnect-provider-button"
                         >
                             <Translation id="TR_DISCONNECT" />
-                        </SectionItem.Button>
-                    }
-                />
+                        </ActionButton>
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

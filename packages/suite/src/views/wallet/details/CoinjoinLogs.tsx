@@ -3,7 +3,7 @@ import { injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
 import { Card, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -16,19 +16,19 @@ export const CoinjoinLogs = () => {
     return (
         <Card>
             <Column>
-                <SectionItem
+                <TextColumn
                     title={<Translation id="TR_COINJOIN_LOGS_TITLE" />}
                     description={<Translation id="TR_COINJOIN_LOGS_DESCRIPTION" />}
-                    actions={
-                        <SectionItem.Button
-                            onClick={() => {
-                                desktopApi.openUserDataDirectory('/logs');
-                            }}
-                        >
-                            <Translation id="TR_COINJOIN_LOGS_ACTION" />
-                        </SectionItem.Button>
-                    }
                 />
+                <ActionColumn>
+                    <ActionButton
+                        onClick={() => {
+                            desktopApi.openUserDataDirectory('/logs');
+                        }}
+                    >
+                        <Translation id="TR_COINJOIN_LOGS_ACTION" />
+                    </ActionButton>
+                </ActionColumn>
             </Column>
         </Card>
     );

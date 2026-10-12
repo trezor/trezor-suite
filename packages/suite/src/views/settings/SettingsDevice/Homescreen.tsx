@@ -6,9 +6,9 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { Column, Paragraph, Row, Tooltip } from '@trezor/components';
+import { Paragraph, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 import {
@@ -26,6 +26,10 @@ import { HomescreenSettingsTitle } from './Homescreen/HomescreenSettingsTitle';
 
 const HiddenInput = styled.input`
     display: none;
+`;
+
+const Col = styled.div`
+    flex-direction: column;
 `;
 
 type HomescreenProps = {
@@ -86,18 +90,16 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     const isSupportedHomescreen = isHomescreenSupportedOnDevice(device);
 
     const cancelButton = (
-        <SectionItem.Button
+        <ActionButton
             intent="neutral"
             priority="secondary"
             onClick={resetUpload}
             isDisabled={isDeviceLocked}
-            tooltip={{
-                isActive: isDeviceLocked,
-                content: <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />,
-            }}
+            isTooltipActive={isDeviceLocked}
+            tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
         >
             <Translation id="TR_CANCEL" />
-        </SectionItem.Button>
+        </ActionButton>
     );
 
     return (
@@ -111,7 +113,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     >
                         <HomescreenSettingsTitle deviceModelInternal={deviceModelInternal} />
 
-                        <Row flex="1" gap={8} flexWrap="wrap" justifyContent="flex-end">
+                        <ActionColumn>
                             <HiddenInput
                                 ref={fileInputElement}
                                 type="file"
@@ -135,68 +137,63 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                                     onImageUploadClick={() => fileInputElement?.current?.click()}
                                 />
                             </Tooltip>
-                        </Row>
+                        </ActionColumn>
                     </SectionItem>
                 )}
             </Anchor>
             {customHomescreen && !validationError && (
                 <SectionItem>
-                    <Column>
+                    <Col>
                         <img
                             width="144px"
                             alt="custom homescreen"
                             id="custom-image"
                             src={customHomescreen}
                         />
-                    </Column>
+                    </Col>
 
-                    <Row flex="1" gap={8} flexWrap="wrap" justifyContent="flex-end">
-                        <SectionItem.Button
-                            onClick={onChangeHomescreen}
-                            isDisabled={isDeviceLocked}
-                        >
+                    <ActionColumn>
+                        <ActionButton onClick={onChangeHomescreen} isDisabled={isDeviceLocked}>
                             <Translation id="TR_CHANGE_HOMESCREEN" />
-                        </SectionItem.Button>
+                        </ActionButton>
                         {cancelButton}
-                    </Row>
+                    </ActionColumn>
                 </SectionItem>
             )}
             {customHomescreen && validationError && (
                 <SectionItem>
-                    <Column flex="1" gap={12} alignItems="flex-start">
-                        <Paragraph typographyStyle="body-md">
-                            <Translation id="TR_CUSTOM_HOMESCREEN" />
-                        </Paragraph>
-                        <Paragraph typographyStyle="body-md" intent="warning">
-                            <Translation
-                                id={validationError}
-                                values={{
-                                    width: deviceModelInformation[deviceModelInternal].width,
-                                    height: deviceModelInformation[deviceModelInternal].height,
-                                    maxImageSize:
-                                        deviceModelInformation[deviceModelInternal].maxImageSize /
-                                        1024,
-                                }}
-                            />
-                        </Paragraph>
-                    </Column>
+                    <TextColumn
+                        title={<Translation id="TR_CUSTOM_HOMESCREEN" />}
+                        description={
+                            <Paragraph typographyStyle="body-md" intent="warning">
+                                <Translation
+                                    id={validationError}
+                                    values={{
+                                        width: deviceModelInformation[deviceModelInternal].width,
+                                        height: deviceModelInformation[deviceModelInternal].height,
+                                        maxImageSize:
+                                            deviceModelInformation[deviceModelInternal]
+                                                .maxImageSize / 1024,
+                                    }}
+                                />
+                            </Paragraph>
+                        }
+                    />
 
                     {![
                         ImageValidationError.InvalidFormatOnlyJpg,
                         ImageValidationError.InvalidFormatOnlyPngJpg,
                     ].includes(validationError) && (
-                        <Column>
+                        <Col>
                             <img
                                 width={`${deviceModelInformation[deviceModelInternal].width}px`}
                                 alt="Custom homescreen"
                                 id="custom-image"
                                 src={customHomescreen}
                             />
-                        </Column>
+                        </Col>
                     )}
-                    <Row flex="1" gap={8} flexWrap="wrap" justifyContent="flex-end">
-                        {cancelButton}
-                    </Row>
+                    <ActionColumn>{cancelButton}</ActionColumn>
                 </SectionItem>
             )}
         </>

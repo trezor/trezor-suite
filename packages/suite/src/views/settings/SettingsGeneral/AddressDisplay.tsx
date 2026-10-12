@@ -6,7 +6,7 @@ import { selectAddressDisplayType, setAddressDisplayType } from '@suite-common/w
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -36,15 +36,18 @@ export const AddressDisplay = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_ADDRESS_DISPLAY" />}
-                    description={<Translation id="TR_ADDRESS_DISPLAY_DESCRIPTION" />}
-                    actions={
+                >
+                    <TextColumn
+                        title={<Translation id="TR_ADDRESS_DISPLAY" />}
+                        description={<Translation id="TR_ADDRESS_DISPLAY_DESCRIPTION" />}
+                    />
+                    <ActionColumn>
                         <Switch
                             isChecked={selectedAddressDisplay === AddressDisplayOptions.CHUNKED}
                             onChange={onChange}
                         />
-                    }
-                />
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

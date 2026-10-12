@@ -11,7 +11,7 @@ import {
     hasBitcoinOnlyFirmware,
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
-import { SectionItem } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 
 interface FirmwareTypeProps {
@@ -45,42 +45,43 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_FIRMWARE_TYPE" />}
-                    description={
-                        currentFwVersion && currentFwType ? (
-                            <Translation
-                                id="TR_YOUR_FIRMWARE_TYPE"
-                                values={{
-                                    version: (
-                                        <Button
-                                            intent="neutral"
-                                            priority="secondary"
-                                            size="small"
-                                            href={HELP_FIRMWARE_TYPE}
-                                            margin={{ left: 4 }}
-                                        >
-                                            <Translation id={currentFwType} />
-                                        </Button>
-                                    ),
-                                }}
-                            />
-                        ) : (
-                            <Translation id="TR_YOUR_CURRENT_FIRMWARE_UNKNOWN" />
-                        )
-                    }
-                    actions={
-                        !bitcoinOnlyDevice ? (
-                            <SectionItem.Button
+                >
+                    <TextColumn
+                        title={<Translation id="TR_FIRMWARE_TYPE" />}
+                        description={
+                            currentFwVersion && currentFwType ? (
+                                <Translation
+                                    id="TR_YOUR_FIRMWARE_TYPE"
+                                    values={{
+                                        version: (
+                                            <Button
+                                                intent="neutral"
+                                                priority="secondary"
+                                                size="small"
+                                                href={HELP_FIRMWARE_TYPE}
+                                                margin={{ left: 4 }}
+                                            >
+                                                <Translation id={currentFwType} />
+                                            </Button>
+                                        ),
+                                    }}
+                                />
+                            ) : (
+                                <Translation id="TR_YOUR_CURRENT_FIRMWARE_UNKNOWN" />
+                            )
+                        }
+                    />
+                    {!bitcoinOnlyDevice && (
+                        <ActionColumn>
+                            <ActionButton
                                 intent="brand"
                                 onClick={handleAction}
                                 data-testid="@settings/device/switch-fw-type-button"
                                 isDisabled={isDeviceLocked}
-                                tooltip={{
-                                    isActive: isDeviceLocked,
-                                    content: (
-                                        <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                    ),
-                                }}
+                                isTooltipActive={isDeviceLocked}
+                                tooltipContent={
+                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                                }
                             >
                                 <Translation
                                     id={actionButtonId}
@@ -91,10 +92,10 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                                         regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
                                     }}
                                 />
-                            </SectionItem.Button>
-                        ) : undefined
-                    }
-                />
+                            </ActionButton>
+                        </ActionColumn>
+                    )}
+                </SectionItem>
             )}
         </Anchor>
     );

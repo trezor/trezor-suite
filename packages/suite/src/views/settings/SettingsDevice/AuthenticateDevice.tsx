@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { SectionItem } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 
 import { AuthenticateDeviceModal } from './AuthenticateDevice/AuthenticateDeviceModal';
@@ -19,26 +19,26 @@ export const AuthenticateDevice = ({ isDeviceLocked }: AuthenticateDeviceProps) 
     return (
         <>
             {isModalOpen && <AuthenticateDeviceModal handleClose={() => setIsModalOpen(false)} />}
-            <SectionItem
-                title={<Translation id="TR_CHECK_DEVICE_ORIGIN_TITLE" />}
-                description={<Translation id="TR_CHECK_DEVICE_ORIGIN_DESCRIPTION" />}
-                bottomContent={<LearnMoreButton url={HELP_CENTER_DEVICE_AUTHENTICATION} />}
-                actions={
-                    <SectionItem.Button
+            <SectionItem>
+                <TextColumn
+                    title={<Translation id="TR_CHECK_DEVICE_ORIGIN_TITLE" />}
+                    description={<Translation id="TR_CHECK_DEVICE_ORIGIN_DESCRIPTION" />}
+                    bottomContent={<LearnMoreButton url={HELP_CENTER_DEVICE_AUTHENTICATION} />}
+                />
+                <ActionColumn>
+                    <ActionButton
                         intent="brand"
                         onClick={handleClick}
                         isDisabled={isDeviceLocked}
-                        tooltip={{
-                            isActive: isDeviceLocked,
-                            content: (
-                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                            ),
-                        }}
+                        isTooltipActive={isDeviceLocked}
+                        tooltipContent={
+                            <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                        }
                     >
                         <Translation id="TR_CHECK_ORIGIN" />
-                    </SectionItem.Button>
-                }
-            />
+                    </ActionButton>
+                </ActionColumn>
+            </SectionItem>
         </>
     );
 };

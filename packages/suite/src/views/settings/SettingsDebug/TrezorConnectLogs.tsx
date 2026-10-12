@@ -3,7 +3,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -16,10 +16,11 @@ export const TrezorConnectLogs = () => {
         dispatch(suiteSettingsActions.setDebugMode({ showConnectLogs: !showConnectLogs }));
 
     return (
-        <SectionItem
-            title="TrezorConnect logs"
-            description={logsDescription}
-            actions={<Switch isChecked={showConnectLogs} onChange={toggleLogs} />}
-        />
+        <SectionItem>
+            <TextColumn title="TrezorConnect logs" description={logsDescription} />
+            <ActionColumn>
+                <Switch isChecked={showConnectLogs} onChange={toggleLogs} />
+            </ActionColumn>
+        </SectionItem>
     );
 };

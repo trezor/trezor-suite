@@ -3,7 +3,7 @@ import { openModal } from '@suite/modal';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 interface SafetyChecksProps {
     isDeviceLocked: boolean;
@@ -21,25 +21,26 @@ export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_TITLE" />}
-                    description={<Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_DESC" />}
-                    actions={
-                        <SectionItem.Button
+                >
+                    <TextColumn
+                        title={<Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_TITLE" />}
+                        description={<Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_DESC" />}
+                    />
+                    <ActionColumn>
+                        <ActionButton
                             intent="brand"
                             onClick={handleClick}
                             data-testid="@settings/device/safety-checks-button"
                             isDisabled={isDeviceLocked}
-                            tooltip={{
-                                isActive: isDeviceLocked,
-                                content: (
-                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                ),
-                            }}
+                            isTooltipActive={isDeviceLocked}
+                            tooltipContent={
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                            }
                         >
                             <Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_BUTTON" />
-                        </SectionItem.Button>
-                    }
-                />
+                        </ActionButton>
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

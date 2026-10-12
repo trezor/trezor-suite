@@ -6,7 +6,7 @@ import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_RECOVERY_SEED_URL } from '@trezor/urls';
 
 interface BackupRecoverySeedProps {
@@ -31,25 +31,26 @@ export const BackupRecoverySeed = ({ isDeviceLocked }: BackupRecoverySeedProps) 
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_BACKUP_RECOVERY_SEED" />}
-                    description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
-                    bottomContent={<LearnMoreButton url={HELP_CENTER_RECOVERY_SEED_URL} />}
-                    actions={
-                        <SectionItem.Button
+                >
+                    <TextColumn
+                        title={<Translation id="TR_BACKUP_RECOVERY_SEED" />}
+                        description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
+                        bottomContent={<LearnMoreButton url={HELP_CENTER_RECOVERY_SEED_URL} />}
+                    />
+                    <ActionColumn>
+                        <ActionButton
                             data-testid="@settings/device/create-backup-button"
                             onClick={handleClick}
                             isDisabled={isDeviceLocked}
-                            tooltip={{
-                                isActive: isDeviceLocked,
-                                content: (
-                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                ),
-                            }}
+                            isTooltipActive={isDeviceLocked}
+                            tooltipContent={
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                            }
                         >
                             <Translation id="TR_CREATE_BACKUP" />
-                        </SectionItem.Button>
-                    }
-                />
+                        </ActionButton>
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

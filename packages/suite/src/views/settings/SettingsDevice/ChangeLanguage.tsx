@@ -7,7 +7,7 @@ import { selectSupportedDeviceLanguages } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { changeLanguageThunk } from 'src/actions/settings/deviceSettingsActions';
 import { useSelector } from 'src/hooks/suite';
@@ -52,23 +52,22 @@ export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_LANGUAGE" />}
-                    actions={
-                        <SectionItem.Select
+                >
+                    <TextColumn title={<Translation id="TR_LANGUAGE" />} />
+                    <ActionColumn>
+                        <ActionSelect
                             value={selectedValue}
                             options={languageOptions}
                             onChange={onChange}
                             isDisabled={isDeviceLocked}
-                            tooltip={{
-                                isActive: isDeviceLocked,
-                                content: (
-                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                ),
-                            }}
+                            isTooltipActive={isDeviceLocked}
+                            tooltipContent={
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                            }
                             data-testid="@settings/device/firmware-language-select"
                         />
-                    }
-                />
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

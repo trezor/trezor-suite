@@ -6,7 +6,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { removeThpCredentialsThunk, startThpAutoconnectThunk } from '@suite-common/thp';
 import { Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 interface PinProtectionProps {
     isDeviceLocked: boolean;
@@ -51,17 +51,20 @@ export const ThpAutoconnect = ({ isDeviceLocked }: PinProtectionProps) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_THP_SETTINGS_AUTO_CONNECT" />}
-                    description={<Translation id="TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION" />}
-                    actions={
+                >
+                    <TextColumn
+                        title={<Translation id="TR_THP_SETTINGS_AUTO_CONNECT" />}
+                        description={<Translation id="TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION" />}
+                    />
+                    <ActionColumn>
                         <Switch
                             isChecked={isAutoconnectOn}
                             onChange={handleChange}
                             isDisabled={isDeviceLocked}
                             data-testid="@settings/device/thp-autoconnect"
                         />
-                    }
-                />
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

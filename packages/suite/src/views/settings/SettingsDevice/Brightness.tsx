@@ -3,7 +3,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 interface DeviceLabelProps {
     isDeviceLocked: boolean;
@@ -29,23 +29,23 @@ export const Brightness = ({ isDeviceLocked }: DeviceLabelProps) => {
     };
 
     return (
-        <SectionItem
-            title={<Translation id="TR_DEVICE_SETTINGS_BRIGHTNESS_TITLE" />}
-            description={<Translation id="TR_DEVICE_SETTINGS_BRIGHTNESS_DESC" />}
-            actions={
-                <SectionItem.Button
+        <SectionItem>
+            <TextColumn
+                title={<Translation id="TR_DEVICE_SETTINGS_BRIGHTNESS_TITLE" />}
+                description={<Translation id="TR_DEVICE_SETTINGS_BRIGHTNESS_DESC" />}
+            />
+            <ActionColumn>
+                <ActionButton
                     onClick={handleClick}
                     isDisabled={isDeviceLocked}
                     intent="brand"
                     data-testid="@settings/device/brightness-switch"
-                    tooltip={{
-                        isActive: isDeviceLocked,
-                        content: <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />,
-                    }}
+                    isTooltipActive={isDeviceLocked}
+                    tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                 >
                     <Translation id="TR_DEVICE_SETTINGS_BRIGHTNESS_BUTTON" />
-                </SectionItem.Button>
-            }
-        />
+                </ActionButton>
+            </ActionColumn>
+        </SectionItem>
     );
 };

@@ -7,7 +7,7 @@ import {
 } from '@suite-common/suite-sync';
 import { Checkbox } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { SuiteSyncConnectionStatus } from './SuiteSyncConnectionStatus';
 
@@ -21,17 +21,16 @@ export const SuiteSyncSettingsDebug = () => {
 
     return (
         <>
-            <SectionItem
-                title="Suite Sync (Evolu) Debug"
-                actions={
+            <SectionItem>
+                <TextColumn title="Suite Sync (Evolu) Debug" />
+                <ActionColumn>
                     <Checkbox
                         data-testid="@settings/debug/suite-sync/debug-toggle"
                         isChecked={isSuiteSyncDebugEnabled}
                         onChange={handleToggleSuiteSyncDebug}
                     />
-                }
-            />
-
+                </ActionColumn>
+            </SectionItem>
             <SuiteSyncConnectionStatus />
         </>
     );

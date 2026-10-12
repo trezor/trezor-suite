@@ -5,7 +5,7 @@ import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getFirmwareDowngradeUrl } from '@suite-common/suite-utils';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 export const CustomFirmware = () => {
     const { dispatch } = useServices(injectDispatch);
@@ -24,32 +24,33 @@ export const CustomFirmware = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                    title={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
-                    description={
-                        <Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION" />
-                    }
-                    bottomContent={
-                        firmwareDowngradeUrl ? (
-                            <LearnMoreButton url={firmwareDowngradeUrl} />
-                        ) : undefined
-                    }
-                    actions={
-                        <SectionItem.Button
+                >
+                    <TextColumn
+                        title={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
+                        description={
+                            <Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION" />
+                        }
+                        bottomContent={
+                            firmwareDowngradeUrl ? (
+                                <LearnMoreButton url={firmwareDowngradeUrl} />
+                            ) : undefined
+                        }
+                    />
+                    <ActionColumn>
+                        <ActionButton
                             onClick={openModal}
                             intent="critical"
                             isDisabled={isDeviceLocked}
                             data-testid="@settings/device/custom-firmware-modal-button"
-                            tooltip={{
-                                isActive: isDeviceLocked,
-                                content: (
-                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                ),
-                            }}
+                            isTooltipActive={isDeviceLocked}
+                            tooltipContent={
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                            }
                         >
                             <Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON" />
-                        </SectionItem.Button>
-                    }
-                />
+                        </ActionButton>
+                    </ActionColumn>
+                </SectionItem>
             )}
         </Anchor>
     );

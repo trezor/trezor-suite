@@ -5,7 +5,7 @@ import {
     selectSuiteSyncRelayConnectionStatuses,
 } from '@suite-common/suite-sync';
 import { Code, Column, Row, Text } from '@trezor/components';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { SuiteSyncConnectionStatusDot } from '../SuiteSyncConnectionStatusDot';
 
@@ -43,9 +43,9 @@ export const SuiteSyncConnectionStatus = () => {
     const relayConnectionStatuses = useSelector(selectSuiteSyncRelayConnectionStatuses);
 
     return (
-        <SectionItem
-            title="Evolu relay connections"
-            actions={
+        <SectionItem>
+            <TextColumn title="Evolu relay connections" />
+            <ActionColumn>
                 <Column gap={4}>
                     <ul>
                         {relayConnectionStatuses.map(connection => (
@@ -63,7 +63,7 @@ export const SuiteSyncConnectionStatus = () => {
                         ))}
                     </ul>
                 </Column>
-            }
-        />
+            </ActionColumn>
+        </SectionItem>
     );
 };

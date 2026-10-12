@@ -2,7 +2,7 @@ import { selectFlags, setFlag } from '@suite/flags';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Checkbox } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -15,9 +15,11 @@ export const ShowBluetoothDebugInfo = () => {
     };
 
     return (
-        <SectionItem
-            title="Show Bluetooth Debug Info"
-            actions={<Checkbox isChecked={showBluetoothDebugInfo} onChange={handleOnClick} />}
-        />
+        <SectionItem>
+            <TextColumn title="Show Bluetooth Debug Info" />
+            <ActionColumn>
+                <Checkbox isChecked={showBluetoothDebugInfo} onChange={handleOnClick} />
+            </ActionColumn>
+        </SectionItem>
     );
 };

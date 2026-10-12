@@ -3,7 +3,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { type DefinitionsChannel } from '@trezor/connect-common';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -23,16 +23,14 @@ export const DefinitionsEnvironmentSelect = () => {
     };
 
     return (
-        <SectionItem
-            title="Definitions channel"
-            description={`Set the source for Ethereum network, token and clear-signing definitions. ${isDesktop() ? 'Restart' : 'Refresh'} the application to apply changes.`}
-            actions={
-                <SectionItem.Select
-                    onChange={handleChange}
-                    value={selectedOption}
-                    options={options}
-                />
-            }
-        />
+        <SectionItem>
+            <TextColumn
+                title="Definitions channel"
+                description={`Set the source for Ethereum network, token and clear-signing definitions. ${isDesktop() ? 'Restart' : 'Refresh'} the application to apply changes.`}
+            />
+            <ActionColumn>
+                <ActionSelect onChange={handleChange} value={selectedOption} options={options} />
+            </ActionColumn>
+        </SectionItem>
     );
 };

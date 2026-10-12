@@ -10,7 +10,7 @@ import {
 import { injectDispatch } from '@suite-common/redux-utils';
 import { SelectBar } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 type ConfigSourceOption = {
     label: string;
@@ -41,18 +41,19 @@ export const MessageSystemConfigSourceSelect = () => {
     );
 
     return (
-        <SectionItem
-            data-testid="@settings/debug/message-system/source"
-            title="Config Source"
-            description="Load config from remote file or use local override for debugging and testing."
-            actions={
+        <SectionItem data-testid="@settings/debug/message-system/source">
+            <TextColumn
+                title="Config Source"
+                description="Load config from remote file or use local override for debugging and testing."
+            />
+            <ActionColumn>
                 <SelectBar
                     selectedOption={selectedConfigSource}
                     options={options}
                     onChange={onChange}
                     size="small"
                 />
-            }
-        />
+            </ActionColumn>
+        </SectionItem>
     );
 };

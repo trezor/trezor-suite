@@ -7,10 +7,10 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectExperimentalFeatures, suiteSettingsActions } from '@suite/settings';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { Banner, Checkbox, Column, Switch } from '@trezor/components';
+import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { useImperativeServices, useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
 
@@ -62,24 +62,26 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     };
 
     return (
-        <SectionItem
-            title={title ? <Translation {...title} /> : feature}
-            description={description ? <Translation {...description} /> : undefined}
-            bottomContent={url ? <LearnMoreButton url={url} /> : undefined}
-            actions={
-                config.routeName ? (
-                    <SectionItem.Button intent="neutral" priority="secondary" onClick={handleClick}>
+        <Row gap={12}>
+            <TextColumn
+                title={title ? <Translation {...title} /> : feature}
+                description={description ? <Translation {...description} /> : undefined}
+                bottomContent={url ? <LearnMoreButton url={url} /> : undefined}
+            />
+            <ActionColumn>
+                {config.routeName ? (
+                    <Button intent="neutral" priority="secondary" onClick={handleClick}>
                         <Translation id="TR_GO_TO_EXP_FEATURE" />
-                    </SectionItem.Button>
+                    </Button>
                 ) : (
                     <Checkbox
                         isChecked={checked}
                         onChange={onChangeFeature}
                         data-testid={`@settings/experimental-features/${feature}-checkbox`}
                     />
-                )
-            }
-        />
+                )}
+            </ActionColumn>
+        </Row>
     );
 };
 
@@ -140,36 +142,37 @@ export const Experimental = () => {
 
     return (
         <>
-            <SectionItem
-                title={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
-                description={
-                    <>
-                        <Translation id="TR_EXPERIMENTAL_FEATURES_DESCRIPTION" />
-                        <AnimatePresence>
-                            {isExperimentalEnabled && (
-                                <motion.div {...bannerMotionDivProps}>
-                                    <Banner
-                                        icon={WarningIcon}
-                                        intent="warning"
-                                        description={
-                                            <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING_IF_ENABLED" />
-                                        }
-                                    />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </>
-                }
-                bottomContent={<LearnMoreButton url={EXPERIMENTAL_FEATURES_KB_URL} />}
-                actions={
+            <SectionItem>
+                <TextColumn
+                    title={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
+                    description={
+                        <>
+                            <Translation id="TR_EXPERIMENTAL_FEATURES_DESCRIPTION" />
+                            <AnimatePresence>
+                                {isExperimentalEnabled && (
+                                    <motion.div {...bannerMotionDivProps}>
+                                        <Banner
+                                            icon={WarningIcon}
+                                            intent="warning"
+                                            description={
+                                                <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING_IF_ENABLED" />
+                                            }
+                                        />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </>
+                    }
+                    bottomContent={<LearnMoreButton url={EXPERIMENTAL_FEATURES_KB_URL} />}
+                />
+                <ActionColumn>
                     <Switch
                         isChecked={isExperimentalEnabled}
                         onChange={onSwitchExperimental}
                         data-testid="@settings/experimental-features/toggle-switch"
                     />
-                }
-            />
-
+                </ActionColumn>
+            </SectionItem>
             <AnimatePresence>
                 {enabledFeatures && experimentalFeatures.length > 0 && (
                     <motion.div {...motionDivProps}>

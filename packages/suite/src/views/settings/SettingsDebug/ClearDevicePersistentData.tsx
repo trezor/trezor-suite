@@ -2,7 +2,7 @@ import { persistentDeviceDataActions } from '@suite-common/persistent-device-dat
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 export const ClearDevicePersistentData = () => {
     const { dispatch } = useServices(injectDispatch);
@@ -14,14 +14,16 @@ export const ClearDevicePersistentData = () => {
     };
 
     return (
-        <SectionItem
-            title="Clear app's device persistent data"
-            description="Clears Suite's stored per-device persistent data (mostly security checks). Does not affect Bluetooth or THP."
-            actions={
-                <SectionItem.Button onClick={handleClick} size="small" intent="critical">
+        <SectionItem>
+            <TextColumn
+                title="Clear app's device persistent data"
+                description="Clears Suite's stored per-device persistent data (mostly security checks). Does not affect Bluetooth or THP."
+            />
+            <ActionColumn>
+                <ActionButton onClick={handleClick} size="small" intent="critical">
                     Clear
-                </SectionItem.Button>
-            }
-        />
+                </ActionButton>
+            </ActionColumn>
+        </SectionItem>
     );
 };

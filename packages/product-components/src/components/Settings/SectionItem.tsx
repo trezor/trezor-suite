@@ -1,121 +1,34 @@
-import { type HTMLAttributes, type ReactNode, type Ref } from 'react';
+import { type HTMLAttributes, type Ref } from 'react';
 
-import {
-    Button,
-    type ButtonProps,
-    Column,
-    Paragraph,
-    Row,
-    Select,
-    type SelectProps,
-    Tooltip,
-    type UnmanagedTooltipProps,
-} from '@trezor/components';
+import styled from 'styled-components';
 
-import { OutlineHighlight } from '../OutlineHighlight/OutlineHighlight';
+import { breakpoints } from '@trezor/theme';
 
-type SectionItemTooltipProps = {
-    tooltip?: Omit<UnmanagedTooltipProps, 'children'>;
-};
+import { OutlineHighlight } from './OutlineHighlight';
 
-type SectionItemButtonProps = ButtonProps & SectionItemTooltipProps;
+const ResponsiveFlex = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
-const SectionItemButton = ({
-    children,
-    minWidth = 140,
-    tooltip,
-    ...buttonProps
-}: SectionItemButtonProps) => (
-    <Tooltip content={null} cursor="inherit" {...tooltip}>
-        <Button {...buttonProps} minWidth={minWidth}>
-            {children}
-        </Button>
-    </Tooltip>
-);
+    @media (max-width: ${breakpoints.mobile}px) {
+        flex-direction: column;
+        align-items: normal;
+    }
+`;
 
-type SectionItemSelectProps = SelectProps & SectionItemTooltipProps;
-
-const SectionItemSelect = ({
-    size = 'small',
-    width = 170,
-    tooltip,
-    ...selectProps
-}: SectionItemSelectProps) => (
-    <Tooltip content={null} cursor="inherit" {...tooltip}>
-        <Select {...selectProps} size={size} width={width} />
-    </Tooltip>
-);
-
-type SectionItemCommonProps = Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'title'> & {
+type SectionItemProps = HTMLAttributes<HTMLDivElement> & {
     shouldHighlight?: boolean;
     ref?: Ref<HTMLDivElement>;
 };
 
-type StructuredSectionItemProps = {
-    title?: ReactNode;
-    description?: ReactNode;
-    bottomContent?: ReactNode;
-    actions?: ReactNode;
-    children?: never;
-};
-
-type CustomSectionItemProps = {
-    children: ReactNode;
-    title?: never;
-    description?: never;
-    bottomContent?: never;
-    actions?: never;
-};
-
-type SectionItemProps = SectionItemCommonProps &
-    (StructuredSectionItemProps | CustomSectionItemProps);
-
-const SectionItemBase = ({
-    title,
-    description,
-    bottomContent,
-    actions,
-    children,
-    shouldHighlight,
-    ref,
-    ...rest
-}: SectionItemProps) => (
+export const SectionItem = ({ children, shouldHighlight, ref, ...rest }: SectionItemProps) => (
     <div ref={ref} {...rest}>
         <OutlineHighlight
             shouldHighlight={shouldHighlight}
             offset={{ vertical: 16, horizontal: 20 }}
         >
-            <Row width="100%" gap={24} flexWrap="wrap" justifyContent="space-between">
-                {children ? (
-                    children
-                ) : (
-                    <>
-                        <Column flex="1" gap={12} maxWidth={500} minWidth="50%">
-                            {title && <Paragraph typographyStyle="body-md">{title}</Paragraph>}
-                            {description && (
-                                <Paragraph
-                                    typographyStyle="body-sm"
-                                    intent="neutral"
-                                    priority="secondary"
-                                >
-                                    {description}
-                                </Paragraph>
-                            )}
-                            {bottomContent}
-                        </Column>
-                        {actions && (
-                            <Row gap={8} flexWrap="wrap">
-                                {actions}
-                            </Row>
-                        )}
-                    </>
-                )}
-            </Row>
+            <ResponsiveFlex>{children}</ResponsiveFlex>
         </OutlineHighlight>
     </div>
 );
-
-SectionItemBase.Button = SectionItemButton;
-SectionItemBase.Select = SectionItemSelect;
-
-export const SectionItem = SectionItemBase;

@@ -7,10 +7,11 @@ import {
     type EnsureWalletSuiteSyncOnErrors,
     injectDangerouslyWipeAllLabelsFromWallet,
 } from '@suite-common/suite-sync-types';
+import { Button } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { parseStaticSessionId } from '@trezor/device-utils';
-import { SectionItem } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { type TimerId, exhaustive } from '@trezor/type-utils';
 
 const WIPE_CONFIRM_DELAY_MS = 3_000;
@@ -146,11 +147,13 @@ export const WipeSuiteSyncLabels = ({ onError }: WipeSuiteSyncLabelsProps) => {
     };
 
     return (
-        <SectionItem
-            title="Wipe Suite Sync labels"
-            description="Sets all current Suite Sync wallet, account, address, and output labels for the selected wallet to null."
-            actions={
-                <SectionItem.Button
+        <SectionItem>
+            <TextColumn
+                title="Wipe Suite Sync labels"
+                description="Sets all current Suite Sync wallet, account, address, and output labels for the selected wallet to null."
+            />
+            <ActionColumn>
+                <Button
                     data-testid="@settings/debug/suite-sync/wipe-labels-button"
                     intent="critical"
                     isLoading={step === 'wipingLoading'}
@@ -159,8 +162,8 @@ export const WipeSuiteSyncLabels = ({ onError }: WipeSuiteSyncLabelsProps) => {
                     onClick={handleWipeButtonClick}
                 >
                     {getButtonLabel(step)}
-                </SectionItem.Button>
-            }
-        />
+                </Button>
+            </ActionColumn>
+        </SectionItem>
     );
 };

@@ -5,7 +5,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { injectReloadApp } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectDesktopUserDataDirectory } from 'src/reducers/desktop';
@@ -44,20 +44,22 @@ export const WipeData = () => {
     };
 
     return (
-        <SectionItem
-            title="Wipe app data"
-            description={
-                <span>
-                    Clicking this button restarts your application and wipes all your data including
-                    locally saved labels. Your local folder is:{' '}
-                    <UserDataLink onClick={openUserDataDir}>{userDataDir}</UserDataLink>
-                </span>
-            }
-            actions={
-                <SectionItem.Button intent="critical" onClick={clearUserData}>
+        <SectionItem>
+            <TextColumn
+                title="Wipe app data"
+                description={
+                    <span>
+                        Clicking this button restarts your application and wipes all your data
+                        including locally saved labels. Your local folder is:{' '}
+                        <UserDataLink onClick={openUserDataDir}>{userDataDir}</UserDataLink>
+                    </span>
+                }
+            />
+            <ActionColumn>
+                <ActionButton intent="critical" onClick={clearUserData}>
                     Wipe data
-                </SectionItem.Button>
-            }
-        />
+                </ActionButton>
+            </ActionColumn>
+        </SectionItem>
     );
 };
