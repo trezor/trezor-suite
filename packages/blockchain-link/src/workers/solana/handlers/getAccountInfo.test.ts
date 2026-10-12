@@ -15,132 +15,115 @@ const senderTokenAccount = 'BRgrqMggCS1ZU8Yxmh1rVMDyqhiiq74rJN4yu9mgqUZ4';
 
 const token2022Program = tokenProgramsInfo['spl-token-2022'].publicKey;
 
-// A token issuer mints into the user's token account, so there is no transfer instruction to parse.
-const mintToTransaction = {
-    slot: 2n,
-    blockTime: 1790000000n,
-    transaction: {
-        signatures: ['mintToSignature'],
-        message: {
-            accountKeys: [
-                { pubkey: issuer, signer: true, writable: true, source: 'transaction' },
-                { pubkey: tokenAccount, signer: false, writable: true, source: 'transaction' },
-                { pubkey: mint, signer: false, writable: true, source: 'transaction' },
-                { pubkey: token2022Program, signer: false, writable: false, source: 'transaction' },
-            ],
-            recentBlockhash: 'recentBlockhash',
-            instructions: [
-                {
-                    program: 'spl-token',
-                    programId: token2022Program,
-                    parsed: {
-                        type: 'mintTo',
-                        info: {
-                            account: tokenAccount,
-                            amount: '100000000',
-                            mint,
-                            mintAuthority: issuer,
-                        },
-                    },
-                    stackHeight: 1,
-                },
-            ],
-        },
-    },
-    meta: {
-        err: null,
-        fee: 5000n,
-        preBalances: [1000000n, 2039280n, 1461600n, 1n],
-        postBalances: [995000n, 2039280n, 1461600n, 1n],
-        innerInstructions: [],
-        preTokenBalances: [],
-        postTokenBalances: [
-            {
-                accountIndex: 1,
-                mint,
-                owner: descriptor,
-                programId: token2022Program,
-                uiTokenAmount: { amount: '100000000', decimals: 6 },
-            },
-        ],
-    },
+type TokenBalance = {
+    accountIndex: number;
+    owner: string;
+    amount: string;
 };
 
-// Token-2022 mints with the transfer fee extension (e.g. PYUSD) are often sent with transferCheckedWithFee.
-const transferCheckedWithFeeTransaction = {
-    slot: 2n,
-    blockTime: 1790000000n,
-    transaction: {
-        signatures: ['transferCheckedWithFeeSignature'],
-        message: {
-            accountKeys: [
-                { pubkey: sender, signer: true, writable: true, source: 'transaction' },
-                { pubkey: tokenAccount, signer: false, writable: true, source: 'transaction' },
-                {
-                    pubkey: senderTokenAccount,
-                    signer: false,
+type CreateTransactionParams = {
+    signature: string;
+    // The first key is the fee payer.
+    accountKeys: string[];
+    instructions: unknown[];
+    tokenBalances: { pre: TokenBalance[]; post: TokenBalance[] };
+};
+
+const createTransaction = ({
+    signature,
+    accountKeys,
+    instructions,
+    tokenBalances,
+}: CreateTransactionParams) => {
+    const toTokenBalance = ({ accountIndex, owner, amount }: TokenBalance) => ({
+        accountIndex,
+        mint,
+        owner,
+        programId: token2022Program,
+        uiTokenAmount: { amount, decimals: 6 },
+    });
+
+    return {
+        slot: 2n,
+        blockTime: 1790000000n,
+        transaction: {
+            signatures: [signature],
+            message: {
+                accountKeys: accountKeys.map((pubkey, index) => ({
+                    pubkey,
+                    signer: index === 0,
                     writable: true,
                     source: 'transaction',
-                },
-                { pubkey: mint, signer: false, writable: false, source: 'transaction' },
-                { pubkey: token2022Program, signer: false, writable: false, source: 'transaction' },
-            ],
-            recentBlockhash: 'recentBlockhash',
-            instructions: [
-                {
-                    program: 'spl-token',
-                    programId: token2022Program,
-                    parsed: {
-                        type: 'transferCheckedWithFee',
-                        info: {
-                            authority: sender,
-                            destination: tokenAccount,
-                            feeAmount: { amount: '0', decimals: 6 },
-                            mint,
-                            source: senderTokenAccount,
-                            tokenAmount: { amount: '100000000', decimals: 6 },
-                        },
-                    },
-                    stackHeight: 1,
-                },
-            ],
+                })),
+                recentBlockhash: 'recentBlockhash',
+                instructions,
+            },
         },
-    },
-    meta: {
-        err: null,
-        fee: 5000n,
-        preBalances: [1000000n, 2039280n, 2039280n, 1461600n, 1n],
-        postBalances: [995000n, 2039280n, 2039280n, 1461600n, 1n],
-        innerInstructions: [],
-        preTokenBalances: [
-            {
-                accountIndex: 2,
-                mint,
-                owner: sender,
-                programId: token2022Program,
-                uiTokenAmount: { amount: '500000000', decimals: 6 },
-            },
-        ],
-        postTokenBalances: [
-            {
-                accountIndex: 1,
-                mint,
-                owner: descriptor,
-                programId: token2022Program,
-                uiTokenAmount: { amount: '100000000', decimals: 6 },
-            },
-            {
-                accountIndex: 2,
-                mint,
-                owner: sender,
-                programId: token2022Program,
-                uiTokenAmount: { amount: '400000000', decimals: 6 },
-            },
-        ],
-    },
+        meta: {
+            err: null,
+            fee: 5000n,
+            preBalances: accountKeys.map(() => 1000000n),
+            postBalances: accountKeys.map(() => 1000000n),
+            innerInstructions: [],
+            preTokenBalances: tokenBalances.pre.map(toTokenBalance),
+            postTokenBalances: tokenBalances.post.map(toTokenBalance),
+        },
+    };
 };
 
-const createApiMock = (transaction: unknown) =>
+type Transaction = ReturnType<typeof createTransaction>;
+
+// A token issuer mints into the user's token account, so there is no transfer instruction to parse.
+const mintToTransaction = createTransaction({
+    signature: 'mintToSignature',
+    accountKeys: [issuer, tokenAccount, mint, token2022Program],
+    instructions: [
+        {
+            program: 'spl-token',
+            programId: token2022Program,
+            parsed: {
+                type: 'mintTo',
+                info: { account: tokenAccount, amount: '100000000', mint, mintAuthority: issuer },
+            },
+        },
+    ],
+    tokenBalances: {
+        pre: [],
+        post: [{ accountIndex: 1, owner: descriptor, amount: '100000000' }],
+    },
+});
+
+// Token-2022 mints with the transfer fee extension (e.g. PYUSD) are often sent with transferCheckedWithFee.
+const transferCheckedWithFeeTransaction = createTransaction({
+    signature: 'transferCheckedWithFeeSignature',
+    accountKeys: [sender, tokenAccount, senderTokenAccount, mint, token2022Program],
+    instructions: [
+        {
+            program: 'spl-token',
+            programId: token2022Program,
+            parsed: {
+                type: 'transferCheckedWithFee',
+                info: {
+                    authority: sender,
+                    destination: tokenAccount,
+                    feeAmount: { amount: '0', decimals: 6 },
+                    mint,
+                    source: senderTokenAccount,
+                    tokenAmount: { amount: '100000000', decimals: 6 },
+                },
+            },
+        },
+    ],
+    tokenBalances: {
+        pre: [{ accountIndex: 2, owner: sender, amount: '500000000' }],
+        post: [
+            { accountIndex: 1, owner: descriptor, amount: '100000000' },
+            { accountIndex: 2, owner: sender, amount: '400000000' },
+        ],
+    },
+});
+
+const createApiMock = (transaction: Transaction) =>
     ({
         rpc: {
             getAccountInfo: (_address: string, { encoding }: { encoding: string }) => ({
@@ -188,7 +171,13 @@ const createApiMock = (transaction: unknown) =>
                     }),
             }),
             getSignaturesForAddress: () => ({
-                send: () => Promise.resolve([{ signature: 'mintToSignature', slot: 2n }]),
+                send: () =>
+                    Promise.resolve([
+                        {
+                            signature: transaction.transaction.signatures[0],
+                            slot: transaction.slot,
+                        },
+                    ]),
             }),
             getTransaction: () => ({ send: () => Promise.resolve(transaction) }),
             getBalance: () => ({ send: () => Promise.resolve({ value: 995000n }) }),
@@ -198,7 +187,7 @@ const createApiMock = (transaction: unknown) =>
         },
     }) as unknown as SolanaAPI;
 
-const createRequest = (transaction: unknown): Request<MessageTypes.GetAccountInfo> => ({
+const createRequest = (transaction: Transaction): Request<MessageTypes.GetAccountInfo> => ({
     type: MESSAGES.GET_ACCOUNT_INFO,
     payload: { descriptor, details: 'txs' },
     connect: () => Promise.resolve(createApiMock(transaction)),
