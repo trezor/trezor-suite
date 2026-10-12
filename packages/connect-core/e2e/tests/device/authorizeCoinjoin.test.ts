@@ -35,7 +35,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
     });
 
     conditionalTest(
-        ['1', '<2.5.4'],
+        ['1', '<2.7.2'],
         'Coinjoin success',
         async () => {
             // unlocked path is required for tx validation
@@ -195,7 +195,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
         40000, // extended timeout due to wait for auto-lock
     );
 
-    conditionalTest(['1', '<2.5.4'], 'Authorize and re-authorize', async () => {
+    conditionalTest(['1', '<2.7.2'], 'Authorize and re-authorize', async () => {
         const confirmationScreensCount = 1;
         // setup two wallets, 1 with and 1 without passphrase
         await TrezorConnect.applySettings({ use_passphrase: true });

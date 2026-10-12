@@ -21,7 +21,7 @@ describe('TrezorConnect.cancelCoinjoinAuthorization', () => {
         TrezorConnect.dispose();
     });
 
-    conditionalTest(['1', '<2.5.4'], 'Cancel authorization works', async () => {
+    conditionalTest(['1', '<2.7.2'], 'Cancel authorization works', async () => {
         const auth = await TrezorConnect.authorizeCoinjoin({
             coordinator: 'www.example.com',
             maxRounds: 2,
