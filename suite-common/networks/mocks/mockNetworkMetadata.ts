@@ -210,10 +210,10 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         color: '#ccff00',
         protocols: [asProtocol('robinhood'), asProtocol('robinhood-chain'), asProtocol('rhc')],
         explorer: {
-            base: 'https://robinscan.io',
-            tx: 'https://robinscan.io/tx/',
-            address: 'https://robinscan.io/address/',
-            nft: 'https://robinscan.io/nft/',
+            base: 'https://robin.etherscan.io',
+            tx: 'https://robin.etherscan.io/tx/',
+            address: 'https://robin.etherscan.io/address/',
+            nft: 'https://robin.etherscan.io/nft/',
         },
     },
     hype: {
