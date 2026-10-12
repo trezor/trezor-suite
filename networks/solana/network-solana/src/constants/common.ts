@@ -20,6 +20,10 @@ export const MEMO_PROGRAM_PUBLIC_KEY_V1 = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQ
 
 export const SOLANA_DECIMALS = 9;
 
+export const SOLANA_SLOT_TIME_MS = 200;
+export const SOLANA_BLOCKHASH_VALIDITY_BLOCKS = 150;
+export const SOLANA_BLOCKHASH_VALIDITY_MS = SOLANA_BLOCKHASH_VALIDITY_BLOCKS * SOLANA_SLOT_TIME_MS;
+
 // genesisHash is a reliable identifier of the network.
 export const SOLANA_MAINNET_GENESIS_HASH = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
 

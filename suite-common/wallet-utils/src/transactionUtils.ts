@@ -28,6 +28,7 @@ import {
     type TokenInfo,
     type TokenTransfer,
 } from '@trezor/connect';
+import { SOLANA_BLOCKHASH_VALIDITY_MS } from '@trezor/network-solana/constants';
 import { type Branded } from '@trezor/type-utils';
 import { BigNumber, arrayPartition, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
@@ -1274,10 +1275,11 @@ export const getTransactionWithLowestNonce = (
     );
 };
 
+const SOLANA_TX_VALIDITY_TIMEOUT_RATIO = 4 / 5;
+
 export const getTxValidityTimeoutInMs = (networkType?: NetworkType) => {
     if (networkType === 'solana') {
-        // Blockhash required in Solana tx is valid for 1 minute. Leave 15 seconds for tx confirmation.
-        return 45 * 1000;
+        return SOLANA_BLOCKHASH_VALIDITY_MS * SOLANA_TX_VALIDITY_TIMEOUT_RATIO;
     }
 
     return 0;
