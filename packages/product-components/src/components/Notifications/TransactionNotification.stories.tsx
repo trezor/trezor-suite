@@ -1,8 +1,8 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type IconComponent, Toast, type ToastProps } from '@trezor/components';
 import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 import { typedObjectKeys } from '@trezor/utils';
 
 import {

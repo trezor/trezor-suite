@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import {
     type TransactionNotificationToken,

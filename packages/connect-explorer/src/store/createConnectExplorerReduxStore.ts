@@ -2,6 +2,7 @@ import { type Middleware, type Store, applyMiddleware, compose, createStore } fr
 import { createLogger } from 'redux-logger';
 import { thunk } from 'redux-thunk';
 
+import type { NetworkRouteToSymbolMap } from '@trezor/connect-explorer-theme';
 import type { NetworkConfigs } from '@trezor/network-module-types';
 
 import { trezorConnectMiddleware } from '../middlewares/trezorConnectMiddleware';
@@ -10,6 +11,7 @@ import { type Action, type Dispatch } from '../types';
 
 type ConnectExplorerReduxStoreDeps = {
     networkConfig: NetworkConfigs;
+    networkRouteToSymbolMap: NetworkRouteToSymbolMap;
 };
 
 export type ConnectExplorerReduxStore = Store<AppState, Action>;
@@ -44,7 +46,11 @@ export const createConnectExplorerReduxStore = (
         composedEnhancers = compose(applyMiddleware(...middleware), ...enhancers);
     }
 
-    return createStore(reducers, { networks: deps.networkConfig }, composedEnhancers);
+    return createStore(
+        reducers,
+        { networks: deps.networkConfig, networkRouteToSymbolMap: deps.networkRouteToSymbolMap },
+        composedEnhancers,
+    );
 };
 
 export const injectConnectExplorerReduxStore = (

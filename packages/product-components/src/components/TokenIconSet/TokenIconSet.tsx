@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
+import { selectNetworkConfigs } from '../../network-display/networkDisplaySelectors';
 import { type CommonIconSetProps, IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
 import { TokenIcon } from '../TokenIcon/TokenIcon';
 
@@ -28,6 +30,7 @@ export const TokenIconSet = ({
     isReversed = false,
     isTransparent = false,
 }: TokenIconSetProps) => {
+    const networks = useSelector(selectNetworkConfigs);
     const { length } = tokens;
 
     const visibleTokensContent = useMemo(() => {
@@ -37,7 +40,7 @@ export const TokenIconSet = ({
             const tokenNetworkSymbol = token.networkSymbol ?? symbol;
             const key = `${tokenNetworkSymbol}-${token.contract ?? token.symbol ?? symbol}`;
             const nativeCoinSymbol =
-                getNetwork(tokenNetworkSymbol).settlementLayer ?? tokenNetworkSymbol;
+                networks?.[tokenNetworkSymbol]?.settlementLayer ?? tokenNetworkSymbol;
 
             return (
                 <IconWrapper key={key} $size={size} $gap={gap} $length={length}>
@@ -58,7 +61,7 @@ export const TokenIconSet = ({
                 </IconWrapper>
             );
         });
-    }, [tokens, maxVisibleIcons, symbol, size, gap, length, isTransparent]);
+    }, [networks, tokens, maxVisibleIcons, symbol, size, gap, length, isTransparent]);
 
     return (
         <IconSetBase

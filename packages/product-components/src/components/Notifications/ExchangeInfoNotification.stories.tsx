@@ -1,8 +1,8 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type IconComponent, Toast, type ToastProps } from '@trezor/components';
 import * as generatedIcons from '@trezor/icons';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { ExchangeInfoNotification } from './ExchangeInfoNotification';
 
