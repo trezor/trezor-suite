@@ -15,7 +15,7 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
         },
         accounts: [
             {
-                deviceState: 'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:0',
+                deviceState: 'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@34C8EB6F03D6406A86034A5D:0',
                 symbol: 'regtest',
                 index: 0,
                 accountType: 'normal',
@@ -31,7 +31,7 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
                     unconfirmed: 0,
                     addrTxCount: 1,
                 },
-                key: 'vpub5YHfp9RSUHcKc7Nu9KbS7TsiBENUMJiQAMiJhCNdQA8cDzqzL4rr7VZThZPbMCXYnASdHQurixwwjPKFr8THXUUT4567PsM4gfqDi87kXxS-regtest-mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:0',
+                key: 'vpub5YHfp9RSUHcKc7Nu9KbS7TsiBENUMJiQAMiJhCNdQA8cDzqzL4rr7VZThZPbMCXYnASdHQurixwwjPKFr8THXUUT4567PsM4gfqDi87kXxS-regtest-mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@34C8EB6F03D6406A86034A5D:0',
                 formattedBalance: '3.14',
                 tokens: [],
                 addresses: {
@@ -289,11 +289,11 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
                     id: '127.0.0.1:21324',
                 },
                 type: 'acquired',
-                id: '7ED4F891C5F1098B60B881DE',
+                id: '34C8EB6F03D6406A86034A5D',
                 label: 'My Trezor',
                 state: {
                     staticSessionId:
-                        'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:0',
+                        'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@34C8EB6F03D6406A86034A5D:0',
                     sessionId: '01',
                     deriveCardano: false,
                 },
@@ -307,7 +307,7 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
                     minor_version: 9,
                     patch_version: 3,
                     bootloader_mode: null,
-                    device_id: '7ED4F891C5F1098B60B881DE',
+                    device_id: '34C8EB6F03D6406A86034A5D',
                     pin_protection: false,
                     passphrase_protection: false,
                     language: 'en-US',
