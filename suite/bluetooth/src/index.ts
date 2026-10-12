@@ -1,5 +1,5 @@
-export { createBluetoothCompositionRoot } from './bluetoothCompositionRoot';
-export { type BluetoothService, type BluetoothDep } from './bluetoothServiceTypes';
+export { createBluetoothCompositionRoot } from './createBluetoothCompositionRoot';
+export { type Bluetooth, type BluetoothDep } from './createBluetooth';
 export {
     type DesktopBluetoothDevice,
     fromBluetoothDevice,
@@ -9,7 +9,6 @@ export {
 export * from './desktopBluetoothReducer';
 export * from './desktopBluetoothSelectors';
 
-export { initBluetoothThunk } from './initBluetoothThunk';
 export { bluetoothAdapterEventThunk } from './bluetoothAdapterEventThunk';
 export { forgetAllBluetoothDevicesThunk } from './forgetAllBluetoothDevicesThunk';
 export { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';

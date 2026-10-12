@@ -4,7 +4,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { type BluetoothDeviceId } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
-import { type BluetoothDep } from './bluetoothServiceTypes';
+import { type BluetoothDep } from './createBluetooth';
 import { stopConnectingBluetoothDevice } from './desktopBluetoothReducer';
 
 type BluetoothDisconnectDeviceThunkResult = {
