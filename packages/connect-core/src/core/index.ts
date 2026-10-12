@@ -103,6 +103,12 @@ const selectDevice = ({ deviceList }: CoreContext, methodCallDevice?: DeviceIden
     return device;
 };
 
+const getDeviceIdentity = (device: Device) => ({
+    path: device.getUniquePath(),
+    state: device.getState(),
+    instance: device.getInstance(),
+});
+
 /**
  * This function will run inside Device.run() after device will be acquired and initialized
  */
@@ -161,11 +167,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     try {
         const response = await method.run({ sendCoreMessage, createUiPromise: uiPromises.create });
 
-        return createResponseMessage(method.responseID, true, response, {
-            path: device.getUniquePath(),
-            state: device.getState(),
-            instance: device.getInstance(),
-        });
+        return createResponseMessage(method.responseID, true, response, getDeviceIdentity(device));
     } catch (error) {
         return Promise.reject(error);
     }
@@ -360,7 +362,14 @@ const onCallDevice = async (
             ) {
                 await deviceList.enumerate();
             }
-            messageResponse = createResponseMessage(method.responseID, false, { error });
+            // Like the success response in `inner`, so the host knows which device a failed call ran
+            // on. Runtime-only; the typed `Err` branch does not declare it.
+            messageResponse = createResponseMessage(
+                method.responseID,
+                false,
+                { error },
+                getDeviceIdentity(device),
+            );
         }
     } finally {
         // Work done
