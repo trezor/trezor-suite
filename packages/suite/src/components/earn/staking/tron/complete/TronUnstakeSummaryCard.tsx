@@ -34,7 +34,7 @@ export const TronUnstakeSummaryCard = () => {
     );
 
     return (
-        <Card type="contrast" paddingType="none">
+        <Card type="contrast" paddingType="none" data-testid="@staking/tron-complete/summary-card">
             <Column gap={0}>
                 <TronStakeInfoRow label={<Translation id="TR_EARN_YIELD_STATUS" />}>
                     <Row alignItems="center" gap={8}>
@@ -51,7 +51,10 @@ export const TronUnstakeSummaryCard = () => {
                     <Row alignItems="center" gap={8}>
                         <TokenIcon symbol={account.symbol} size={24} />
                         <Column gap={2} alignItems="flex-end">
-                            <Text typographyStyle="body-md-strong">
+                            <Text
+                                typographyStyle="body-md-strong"
+                                data-testid="@staking/tron-complete/unstaked-amount"
+                            >
                                 <FormattedCryptoAmount value={amount} symbol={account.symbol} />
                             </Text>
                             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
@@ -68,7 +71,10 @@ export const TronUnstakeSummaryCard = () => {
                 <Divider color="borderNeutral" margin={0} />
 
                 <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_RESOURCE_REDUCTION" />}>
-                    <Text typographyStyle="body-md">
+                    <Text
+                        typographyStyle="body-md"
+                        data-testid="@staking/tron-complete/resource-reduction"
+                    >
                         <Translation
                             id={REDUCTION_LABEL[resourceType]}
                             values={{ count: reduction }}

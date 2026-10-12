@@ -84,6 +84,7 @@ export const TronVoteAllocationSection = () => {
                             size="medium"
                             onClick={openSelectModal}
                             isDisabled={isSelectionDisabled}
+                            data-testid="@staking/tron-vote/change-representatives-button"
                         >
                             <Translation id="TR_EARN_TRON_CHANGE_REPRESENTATIVES" />
                         </Button>
@@ -93,6 +94,7 @@ export const TronVoteAllocationSection = () => {
                         <Banner
                             intent="info"
                             icon
+                            data-testid="@staking/tron-vote/votes-to-allocate-banner"
                             description={
                                 <Translation
                                     id="TR_EARN_TRON_VOTES_TO_ALLOCATE"
@@ -105,6 +107,7 @@ export const TronVoteAllocationSection = () => {
                     {remainingVotes < 0 && (
                         <Banner
                             intent="warning"
+                            data-testid="@staking/tron-vote/votes-exceed-banner"
                             description={
                                 <Translation
                                     id="TR_EARN_TRON_VOTES_EXCEED_TOTAL"
@@ -120,6 +123,7 @@ export const TronVoteAllocationSection = () => {
                     width="100%"
                     onClick={openSelectModal}
                     isDisabled={isSelectionDisabled}
+                    data-testid="@staking/tron-vote/select-representatives-button"
                 >
                     <Translation id="TR_EARN_TRON_SELECT_REPRESENTATIVES" />
                 </Button>

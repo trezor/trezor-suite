@@ -55,6 +55,7 @@ export const TronUnstakeSubmitButton = () => {
                 size="large"
                 width="100%"
                 onClick={handleClick}
+                data-testid="@staking/tron-unstake/continue-button"
                 isDisabled={
                     isUnstakingDisabled ||
                     !isValid ||

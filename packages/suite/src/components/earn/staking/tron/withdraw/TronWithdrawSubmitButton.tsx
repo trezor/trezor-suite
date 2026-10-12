@@ -52,6 +52,7 @@ export const TronWithdrawSubmitButton = () => {
                 size="large"
                 width="100%"
                 onClick={handleClick}
+                data-testid="@staking/tron-withdraw/continue-button"
                 isDisabled={
                     isWithdrawingDisabled ||
                     !hasWithdrawableAmount ||

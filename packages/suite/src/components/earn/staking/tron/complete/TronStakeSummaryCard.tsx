@@ -30,7 +30,7 @@ export const TronStakeSummaryCard = () => {
     });
 
     return (
-        <Card type="contrast" paddingType="none">
+        <Card type="contrast" paddingType="none" data-testid="@staking/tron-complete/summary-card">
             <Column gap={0}>
                 <TronStakeInfoRow label={<Translation id="TR_EARN_YIELD_STATUS" />}>
                     <Row alignItems="center" gap={8}>
@@ -44,13 +44,18 @@ export const TronStakeSummaryCard = () => {
                 <Divider color="borderNeutral" margin={0} />
 
                 <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_APR_LABEL" />}>
-                    <Text typographyStyle="body-md-strong">{formatApr(apr)}</Text>
+                    <Text typographyStyle="body-md-strong" data-testid="@staking/tron-complete/apr">
+                        {formatApr(apr)}
+                    </Text>
                 </TronStakeInfoRow>
 
                 <Divider color="borderNeutral" margin={0} />
 
                 <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_EARNED_RESOURCE" />}>
-                    <Text typographyStyle="body-md-strong">
+                    <Text
+                        typographyStyle="body-md-strong"
+                        data-testid="@staking/tron-complete/earned-resource"
+                    >
                         <Translation
                             id={RESOURCE_LABEL[resourceType]}
                             values={{ count: gain !== null ? Math.round(gain) : 0 }}
@@ -64,7 +69,10 @@ export const TronStakeSummaryCard = () => {
                     <Row alignItems="center" gap={8}>
                         <TokenIcon symbol={account.symbol} size={24} />
                         <Column gap={2} alignItems="flex-end">
-                            <Text typographyStyle="body-md-strong">
+                            <Text
+                                typographyStyle="body-md-strong"
+                                data-testid="@staking/tron-complete/supplied-amount"
+                            >
                                 <FormattedCryptoAmount value={amount} symbol={account.symbol} />
                             </Text>
                             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">

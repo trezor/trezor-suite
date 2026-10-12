@@ -53,6 +53,7 @@ export const TronFreezeSubmitButton = () => {
                 size="large"
                 width="100%"
                 onClick={handleClick}
+                data-testid="@staking/tron-freeze/continue-button"
                 isDisabled={
                     isStakingDisabled || !isValid || isSubmitting || isDeviceLocked || !!pendingTxid
                 }

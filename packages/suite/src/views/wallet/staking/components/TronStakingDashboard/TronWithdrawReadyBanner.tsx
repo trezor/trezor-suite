@@ -53,9 +53,14 @@ export const TronWithdrawReadyBanner = ({ account }: TronWithdrawReadyBannerProp
         <Banner
             icon
             intent="info"
+            data-testid="@staking/tron-withdraw-banner/container"
             rightContent={
                 <Tooltip content={withdrawingMessageContent}>
-                    <Banner.Button onClick={goToWithdraw} isDisabled={isWithdrawingDisabled}>
+                    <Banner.Button
+                        onClick={goToWithdraw}
+                        isDisabled={isWithdrawingDisabled}
+                        data-testid="@staking/tron-withdraw-banner/withdraw-button"
+                    >
                         <Translation id="TR_EARN_TRON_WITHDRAW_TITLE" />
                     </Banner.Button>
                 </Tooltip>

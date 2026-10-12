@@ -13,10 +13,16 @@ export const TronVoteAllocationRow = ({ vote, representatives }: TronVoteAllocat
     const representative = representatives?.find(({ address }) => address === vote.address);
 
     return (
-        <Table.Row>
-            <Table.Cell>{representative?.name ?? vote.address}</Table.Cell>
-            <Table.Cell>{vote.voteCount}</Table.Cell>
-            <Table.Cell>{formatApr(representative?.apr)}</Table.Cell>
+        <Table.Row data-testid={`@modal/tron-vote-allocation/row/${vote.address}`}>
+            <Table.Cell data-testid="@modal/tron-vote-allocation/row-name">
+                {representative?.name ?? vote.address}
+            </Table.Cell>
+            <Table.Cell data-testid="@modal/tron-vote-allocation/row-votes">
+                {vote.voteCount}
+            </Table.Cell>
+            <Table.Cell data-testid="@modal/tron-vote-allocation/row-apr">
+                {formatApr(representative?.apr)}
+            </Table.Cell>
         </Table.Row>
     );
 };

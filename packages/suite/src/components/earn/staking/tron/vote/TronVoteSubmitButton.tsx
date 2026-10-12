@@ -88,6 +88,7 @@ export const TronVoteSubmitButton = () => {
                 size="large"
                 width="100%"
                 onClick={handleClick}
+                data-testid="@staking/tron-vote/continue-button"
                 isDisabled={
                     isVotingDisabled ||
                     !hasVotesToSubmit ||

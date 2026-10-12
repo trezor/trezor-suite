@@ -54,7 +54,10 @@ export const TronStake = ({ account }: TronStakeProps) => {
                         </TronStakeComplete>
                     ) : (
                         <>
-                            <Text typographyStyle="headline-md">
+                            <Text
+                                typographyStyle="headline-md"
+                                data-testid="@staking/tron-stake/title"
+                            >
                                 <Translation id="TR_EARN_TRON_STAKE_TITLE" />
                             </Text>
 
@@ -67,6 +70,7 @@ export const TronStake = ({ account }: TronStakeProps) => {
                             >
                                 <StepList.Item
                                     state={getStepState('freeze')}
+                                    data-testid="@staking/tron-stake/freeze-step"
                                     title={
                                         <Column gap={2} width="100%">
                                             <Text
@@ -97,6 +101,7 @@ export const TronStake = ({ account }: TronStakeProps) => {
 
                                 <StepList.Item
                                     state={getStepState('vote')}
+                                    data-testid="@staking/tron-stake/vote-step"
                                     title={<TronVoteStepTitle isActive={step === 'vote'} />}
                                 >
                                     {step === 'vote' && <TronVoteStep />}

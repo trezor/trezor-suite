@@ -55,6 +55,7 @@ export const TronFreezeResourceSelect = () => {
             </Row>
 
             <SelectBar
+                data-testid="@staking/tron-freeze/resource-select"
                 options={resourceOptions}
                 selectedOption={resourceType}
                 isDisabled={!!actions.pendingTxid}
