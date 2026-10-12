@@ -36,6 +36,7 @@ export { tradingThunks } from './thunks/common';
 export type { LoadInitialDataThunkDeps } from './thunks/common/loadInitialDataThunk';
 export { exchangeThunks } from './thunks/exchange';
 export { sellThunks } from './thunks/sell';
+export * from './thunks/common/buildRecomposeInputsFromTrade';
 export * from './thunks/common/buildTradingComposeFormState';
 export * from './thunks/exchange/buildExchangeComposeInputs';
 export * from './selectors/tradingSelectors';

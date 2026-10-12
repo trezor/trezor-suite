@@ -15,21 +15,6 @@ import { type WithServices } from '@trezor/redux-utils';
 
 import { type SelectSellQuoteThunkState, selectSellQuoteThunk } from './selectSellQuoteThunk';
 
-const mockRequestSellTradeThunk = jest.fn((args: unknown) =>
-    Object.assign(
-        (dispatch: (action: { type: string }) => void) => {
-            dispatch({ type: '@test/request-sell-trade' });
-
-            return Promise.resolve({ isRedirecting: false, args });
-        },
-        { args },
-    ),
-);
-
-jest.mock('./requestSellTradeThunk', () => ({
-    requestSellTradeThunk: (args: unknown) => mockRequestSellTradeThunk(args),
-}));
-
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 
 type SelectSellQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
@@ -97,10 +82,6 @@ const buildStore = (
     }).services.store;
 
 describe('selectSellQuoteThunk', () => {
-    beforeEach(() => {
-        mockRequestSellTradeThunk.mockClear();
-    });
-
     it('reports analytics derived from the redux quotesRequest and the fraction button', async () => {
         const report = jest.fn();
         const store = buildStore(report);
@@ -133,7 +114,7 @@ describe('selectSellQuoteThunk', () => {
         expect(report).not.toHaveBeenCalled();
     });
 
-    it('navigates to sell confirm before starting the partner request flow', async () => {
+    it('navigates to sell confirm', async () => {
         const report = jest.fn();
         const store = buildStore(report, {
             quotesRequest: { ...DEFAULT_QUOTES_REQUEST, amountInCrypto: true },
@@ -149,7 +130,6 @@ describe('selectSellQuoteThunk', () => {
             }),
         );
 
-        expect(mockRequestSellTradeThunk).toHaveBeenCalledTimes(1);
         expect(store.getActions()).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({
@@ -158,18 +138,7 @@ describe('selectSellQuoteThunk', () => {
                         pathname: '/accounts/coinmarket/sell/confirm',
                     }),
                 }),
-                { type: '@test/request-sell-trade' },
             ]),
         );
-
-        const gotoActionIndex = store
-            .getActions()
-            .findIndex(action => action.type === routerLocationChange.type);
-        const requestActionIndex = store
-            .getActions()
-            .findIndex(action => action.type === '@test/request-sell-trade');
-
-        expect(gotoActionIndex).toBeGreaterThanOrEqual(0);
-        expect(requestActionIndex).toBeGreaterThan(gotoActionIndex);
     });
 });

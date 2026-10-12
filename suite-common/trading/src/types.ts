@@ -303,7 +303,7 @@ export type TradingSignAndPushSendFormTransactionProps = {
     paymentRequests?: PROTO.PaymentRequest[];
 };
 
-export type TradingSellStepType = 'BANK_ACCOUNT' | 'SEND_TRANSACTION';
+export type TradingSellStepType = 'PREVIEW' | 'BANK_ACCOUNT' | 'SEND_TRANSACTION';
 
 export interface TradingSellFormProps extends FormState {
     [constants.TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]: TradingAssetSellOption | undefined;

@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
 import { type UnknownAction } from '@reduxjs/toolkit';
@@ -275,7 +276,13 @@ export interface TradingOfferBuyProps {
     confirmTrade: () => Promise<BuyTrade | undefined>;
 }
 
+export interface TradingOfferSellProps {
+    requestTrade: () => Promise<void>;
+    isRequestDisabled: boolean;
+}
+
 export interface TradingSelectedOfferInfoProps extends TradingOfferCommonProps {
     selectedAccount?: Account;
     receiveAddress?: string;
+    networkFee?: ReactNode;
 }
