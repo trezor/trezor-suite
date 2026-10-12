@@ -216,5 +216,19 @@ describe('mergeDeepObject', () => {
                 l: { m: [8, 9] },
             });
         });
+
+        it('safeguards against prototype pollution in every segment', () => {
+            const merged: any = mergeDeepObject.withOptions(
+                { dotNotation: true },
+                {},
+                JSON.parse(
+                    '{ "__proto__.hasProto": true, "a.constructor.prototype.hasProto": true }',
+                ),
+            );
+
+            expect(Object.getPrototypeOf(merged)).toBe(Object.prototype);
+            expect(merged.hasProto).toBe(undefined);
+            expect(merged).toEqual({});
+        });
     });
 });

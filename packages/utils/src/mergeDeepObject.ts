@@ -80,7 +80,14 @@ export const mergeDeepObject = <T extends IObject[]>(...objects: T): TMerged<T[n
             }
 
             if (mergeDeepObject.options.dotNotation) {
-                const [first, ...rest] = key.split('.');
+                const segments = key.split('.');
+
+                // Every segment of a dotted key becomes a key, so each one has to be safe.
+                if (!segments.every(isSafeObjectKey)) {
+                    return;
+                }
+
+                const [first, ...rest] = segments;
                 // @ts-expect-error: noUncheckedIndexedAccess
                 const firstKey: string = first;
                 result[firstKey] = mergeValuesWithPath(result[firstKey], current[key], rest);
