@@ -4,7 +4,7 @@ import { type BluetoothDeviceId } from '@trezor/connect';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
-import { type BluetoothDep } from './bluetoothServiceTypes';
+import { type BluetoothDep } from './createBluetooth';
 import { stopConnectingBluetoothDevice } from './desktopBluetoothReducer';
 
 type BluetoothDisconnectDeviceThunkResult = {

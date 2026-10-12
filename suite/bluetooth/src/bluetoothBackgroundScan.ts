@@ -3,7 +3,7 @@ import { bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
-import type { BluetoothServiceDeps } from './bluetoothServiceTypes';
+import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 import { isBluetoothDeviceReachable } from './isBluetoothDeviceReachable';
 
 const BACKGROUND_SCAN_INTERVAL = 6_000;
@@ -15,7 +15,11 @@ export type BackgroundScan = {
     restartIfNeeded: () => void;
 };
 
-export type BackgroundScanDeps = Pick<BluetoothServiceDeps, 'getState'>;
+type BackgroundScanRootState = WithBluetoothRootState;
+
+type BackgroundScanDeps = {
+    getState: () => BackgroundScanRootState;
+};
 
 // TODO: add logger to deps
 const logger = {
