@@ -6,13 +6,14 @@ import { exhaustive } from '@trezor/type-utils';
 import { DeviceAuthenticityCheckFailModalContent } from '../components/DeviceAuthenticityCheckFailModalContent';
 import { DeviceIdCheckFailModalContent } from '../components/DeviceIdCheckFailModalContent';
 import { DeviceInvariabilityCheckFailModalContent } from '../components/DeviceInvariabilityCheckFailModalContent';
+import { DiscoveryEntropyCheckFailModalContent } from '../components/DiscoveryEntropyCheckFailModalContent';
 import { EntropyCheckFailModalContent } from '../components/EntropyCheckFailModalContent';
 import { FirmwareAuthenticityCheckFailModalContent } from '../components/FirmwareAuthenticityCheckFailModalContent';
 import { useCloseDeviceCompromisedScreen } from '../components/useCloseDeviceCompromisedScreen';
 
 /**
  * Modal can be displayed for:
- * - entropy check failure
+ * - entropy check failure (wallet creation or discovery)
  * - FW authenticity check failure
  * - device authenticity check failure
  * - device meta checks failure (id, invariability)
@@ -38,6 +39,8 @@ export const DeviceCompromisedModalScreen = () => {
             return <DeviceAuthenticityCheckFailModalContent />;
         case 'entropy':
             return <EntropyCheckFailModalContent />;
+        case 'entropy-discovery':
+            return <DiscoveryEntropyCheckFailModalContent />;
         case 'firmware-authenticity':
             return <FirmwareAuthenticityCheckFailModalContent />;
         default:
