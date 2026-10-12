@@ -20,6 +20,7 @@ import {
     routerReducer,
 } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TransactionNotification } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -29,7 +30,9 @@ import { type AppState } from 'src/reducers/store';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
+import { BottomNavigation } from './BottomNavigation';
 import { Navigation } from './Navigation';
+import { Sidebar } from './Sidebar';
 import { SIDEBAR_MIN_WIDTH } from './consts';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
@@ -38,6 +41,22 @@ type TranslationMockProps = { id: string };
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),
     Translation: ({ id }: TranslationMockProps) => <span>{id}</span>,
+}));
+
+jest.mock('src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu', () => ({
+    AccountsMenu: () => <div data-testid="accounts-menu" />,
+}));
+
+jest.mock('../DeviceSelector/DeviceSelector', () => ({
+    DeviceSelector: () => <div />,
+}));
+
+jest.mock('./SidebarBanners', () => ({
+    SidebarBanners: () => <div />,
+}));
+
+jest.mock('./QuickActions/QuickActions', () => ({
+    QuickActions: () => <div data-testid="quick-actions" />,
 }));
 
 const flagsReducer = prepareFlagsReducer(extraDependencies);
@@ -52,6 +71,8 @@ type RenderNavigationParams = {
     isCollapsed?: boolean;
     seenNewContentIndicators?: FlagsState['seenNewContentIndicators'];
     notifications?: AppState['notifications'];
+    devices?: TrezorDevice[];
+    renderSidebar?: boolean;
 };
 
 const renderNavigation = ({
@@ -61,6 +82,8 @@ const renderNavigation = ({
     // Empty object simulates an existing user, which hasn't seen any content, migrating to a new version.
     seenNewContentIndicators = {},
     notifications = [],
+    devices = [],
+    renderSidebar = false,
 }: RenderNavigationParams = {}) => {
     const preloadedState: AppState = {
         ...mockInitialAppState,
@@ -74,6 +97,7 @@ const renderNavigation = ({
             sidebarWidth: isCollapsed ? SIDEBAR_MIN_WIDTH : 280,
         },
         notifications,
+        device: { ...mockInitialAppState.device, devices, selectedDevice: devices[0] },
     };
     const root = createTestCompositionRoot<
         WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep>,
@@ -92,7 +116,17 @@ const renderNavigation = ({
         preloadedState,
     });
 
-    renderWithProviders(root.services, <Navigation />);
+    renderWithProviders(
+        root.services,
+        renderSidebar ? (
+            <Sidebar />
+        ) : (
+            <>
+                <Navigation />
+                <BottomNavigation />
+            </>
+        ),
+    );
 
     return root;
 };

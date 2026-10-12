@@ -13,27 +13,12 @@ import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import {
-    AppWindowIcon,
-    BellIcon,
-    GearSixIcon,
-    HouseIcon,
-    PiggyBankIcon,
-    RepeatIcon,
-} from '@trezor/icons';
+import { AppWindowIcon, BellIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
-
-export const SETTINGS_ROUTES: Route['name'][] = [
-    'settings-index',
-    'settings-device',
-    'settings-coins',
-    'settings-debug',
-    'settings-connected-apps',
-] as const;
 
 const EARN_ROUTES: Route['name'][] = [
     'suite-earn',
@@ -225,14 +210,6 @@ export const Navigation = ({ children }: NavigationProps) => {
                     onClick: handleActivityNavigation,
                     'data-testid': '@suite/menu/notifications',
                     shortcut: ['ALT', 'KEY_I'],
-                },
-                {
-                    nameId: 'TR_SETTINGS',
-                    icon: GearSixIcon,
-                    goToRoute: 'settings-index',
-                    routes: SETTINGS_ROUTES,
-                    'data-testid': '@suite/menu/settings',
-                    shortcut: ['MOD', 'COMMA'],
                 },
             ],
             [

@@ -179,8 +179,9 @@ export const NotificationRenderer = ({
 
         case 'copy-to-clipboard':
             return renderNotificationView(render, notification, {
-                variant: 'success',
+                variant: 'transparent',
                 message: 'TOAST_COPY_TO_CLIPBOARD',
+                icon: CheckIcon,
             });
 
         case 'raw-tx-sent':

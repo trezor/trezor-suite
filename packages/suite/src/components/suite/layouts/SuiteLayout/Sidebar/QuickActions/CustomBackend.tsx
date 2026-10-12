@@ -1,3 +1,4 @@
+import { useTranslation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@trezor/dependency-injection';
 import { CheckIcon, DatabaseIcon } from '@trezor/icons';
@@ -9,6 +10,7 @@ import { useEnabledBackends } from '../../utils';
 
 export const CustomBackend = () => {
     const { dispatch } = useServices(injectDispatch);
+    const { translationString } = useTranslation();
     const enabledBackends = useEnabledBackends();
     const isCustomBackendIconVisible = enabledBackends.length > 0;
 
@@ -19,6 +21,7 @@ export const CustomBackend = () => {
     return (
         isCustomBackendIconVisible && (
             <QuickActionButton
+                aria-label={translationString('TR_CUSTOM_BACKEND')}
                 tooltip={{ content: <NavBackends customBackends={enabledBackends} /> }}
                 onClick={handleClick}
                 data-testid="@quickActions/customBackend"

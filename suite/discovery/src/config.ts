@@ -7,6 +7,7 @@ import type { RouterApp } from '@suite/router-config';
  */
 export const SHOULD_ROUTER_APP_START_DISCOVERY: Record<RouterApp, boolean> = {
     dashboard: true,
+    'refer-a-friend': false,
     wallet: true,
     earn: true,
     'earn-yield': true,
