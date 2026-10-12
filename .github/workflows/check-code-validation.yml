@@ -184,7 +184,9 @@ jobs:
 
   unit-tests-suite:
     name: Unit Tests (${{ matrix.test-task }})
-    needs: setup-and-cache
+    needs: [changed-scopes, setup-and-cache]
+    # Expand the matrix even when setup is skipped so each required check reports a result.
+    if: ${{ !cancelled() && !failure() }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -193,14 +195,18 @@ jobs:
         test-task: [suite, native, "native:trading"]
     steps:
       - name: Checkout repository
+        if: needs.changed-scopes.outputs.default == 'true'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           lfs: true
       - name: "Checkout branches for Nx"
+        if: needs.changed-scopes.outputs.default == 'true'
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
+        if: needs.changed-scopes.outputs.default == 'true'
         uses: ./.github/actions/minimal-yarn-install
       - name: Unit Tests
+        if: needs.changed-scopes.outputs.default == 'true'
         run: yarn test:unit:${{ matrix.test-task }} --output-style=stream -- --silent
 
   build-libs-for-publishing:
