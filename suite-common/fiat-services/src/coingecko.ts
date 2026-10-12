@@ -47,16 +47,16 @@ const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
  * Build coinUrl using defined coin ids
  */
 const buildCoinUrls = async (ticker: TickerId) => {
-    const { coingeckoId, fiatRateCryptoId, networkType } = getNetwork(ticker.symbol);
+    const { coingeckoId, nativeAssetCryptoId, networkType } = getNetwork(ticker.symbol);
 
     if (!ticker.tokenAddress) {
-        if (!fiatRateCryptoId) {
-            console.error('buildCoinUrls: cannot find fiatRateCryptoId for', ticker);
+        if (!nativeAssetCryptoId) {
+            console.error('buildCoinUrls: cannot find nativeAssetCryptoId for', ticker);
 
             return [];
         }
 
-        return [`${COINGECKO_API_BASE_URL}/coins/${fiatRateCryptoId}`];
+        return [`${COINGECKO_API_BASE_URL}/coins/${nativeAssetCryptoId}`];
     }
 
     if (!coingeckoId) {

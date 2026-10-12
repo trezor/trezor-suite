@@ -8,7 +8,7 @@ import type { NetworkConfigState } from '@trezor/network-module-types';
 import { NativeTokenIcon } from './NativeTokenIcon';
 import { NonNativeTokenIcon } from './NonNativeTokenIcon';
 import { type TokenIconProps } from './tokenIconTypes';
-import { ZERO_ADDRESS } from './tokenIconUtils';
+import { ZERO_ADDRESS, hasForeignNativeAsset } from './tokenIconUtils';
 import { selectNetworkConfig } from '../../network-display/networkDisplaySelectors';
 import { NetworkIconBadge } from '../NetworkIcon/NetworkIconBadge';
 
@@ -35,7 +35,7 @@ export const TokenIcon = ({
         contractAddress = null;
     }
 
-    if (!contractAddress && showNetworkIcon && network?.nativeAssetCryptoId) {
+    if (!contractAddress && showNetworkIcon && network && hasForeignNativeAsset(network)) {
         contractAddress = ZERO_ADDRESS;
         placeholder = placeholder || network.displaySymbol || '';
     }

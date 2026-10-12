@@ -96,7 +96,6 @@ export type SuiteCommonNetworkConfig = {
      * Ethereum L2s set this to `eth` so native-asset metadata and icons resolve to Ethereum.
      */
     readonly settlementLayer?: NetworkSymbol;
-    readonly nativeAssetCryptoId?: string;
     readonly displaySymbol: string;
     readonly displaySymbolName?: string;
     readonly name: string;
@@ -115,7 +114,7 @@ export type SuiteCommonNetworkConfig = {
     readonly isExperimentalOnlyNetwork?: boolean;
     readonly coingeckoId?: string;
     readonly tradeCryptoId?: string;
-    readonly fiatRateCryptoId?: string;
+    readonly nativeAssetCryptoId?: string;
     readonly caipId?: string; // CAIP-2 chain ID, used by WalletConnect.
     readonly nativeTokenReserve?: string;
     /** Network ID used by Yield.xyz. */
