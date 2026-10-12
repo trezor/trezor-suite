@@ -116,14 +116,14 @@ export const config: Config = {
         },
         {
             capabilities: ['coinjoin'],
-            methods: [
-                'authorizeCoinjoin',
-                'cancelCoinjoinAuthorization',
-                'getOwnershipId',
-                'getOwnershipProof',
-                'setBusy',
-                'unlockPath',
+            methods: ['authorizeCoinjoin', 'cancelCoinjoinAuthorization'],
+            min: { T1B1: '1.13.0', T2T1: '2.7.2' },
+            comment: [
+                'CoinJoinRequest without affiliate mask_public_key and signature is accepted since 1.13.0/2.7.2',
             ],
+        },
+        {
+            methods: ['getOwnershipId', 'getOwnershipProof', 'setBusy', 'unlockPath'],
             min: { T1B1: '1.12.1', T2T1: '2.5.3' },
         },
         {
