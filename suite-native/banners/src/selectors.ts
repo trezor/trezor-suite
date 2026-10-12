@@ -42,7 +42,7 @@ const isPromoBannerFeatureEnabled = (
         .flatMap(m => m?.feature ?? [])
         .find(f => f.visibleBanner === visibleBanner);
 
-    return feature?.flag ?? true;
+    return feature?.flag === true;
 };
 
 export const selectIsTs7PromoBannerDisplayed = createMemoizedSelector(
