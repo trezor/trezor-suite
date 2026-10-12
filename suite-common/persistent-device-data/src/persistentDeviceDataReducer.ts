@@ -139,6 +139,30 @@ export const preparePersistentDeviceDataReducer = createReducerWithExtraDeps<
             },
         )
         .addCase(
+            persistentDeviceDataActions.setDiscoveryEntropyCheckResult,
+            (state: PersistentDeviceDataState, { payload: { deviceId, success, path } }) => {
+                const entropyCheckResult = state.devices.find(
+                    persistentDeviceData => persistentDeviceData.device_id === deviceId,
+                )?.lastEntropyCheckResult;
+
+                // Discovery entropy check is performed only against a stored wallet creation result.
+                if (entropyCheckResult === undefined) return;
+
+                const otherFailedPaths = (
+                    entropyCheckResult.discoveryCheckFailedPaths ?? []
+                ).filter(failedPath => failedPath !== path);
+
+                // Clear paths that succeeded in this discovery.
+                if (success) {
+                    entropyCheckResult.discoveryCheckFailedPaths = otherFailedPaths;
+
+                    return;
+                }
+                // If the path failed, add it, or keep deduplicated.
+                entropyCheckResult.discoveryCheckFailedPaths = [...otherFailedPaths, path];
+            },
+        )
+        .addCase(
             persistentDeviceDataActions.setDelegatedIdentityKey,
             (state: PersistentDeviceDataState, { payload: { deviceId, delegatedKey } }) => {
                 const data = state.devices.find(
