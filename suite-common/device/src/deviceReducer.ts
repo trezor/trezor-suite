@@ -15,7 +15,7 @@ import {
     type KnownDevice,
 } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { isStaticSessionId, parseStaticSessionId } from '@trezor/device-utils';
+import { isSameWallet, isStaticSessionId } from '@trezor/device-utils';
 import {
     type ActionTypesDep,
     type ReducersDep,
@@ -79,8 +79,7 @@ const describesSameWallet = (current: DeviceState, upcoming: DeviceState): boole
     current.staticSessionId === upcoming.staticSessionId ||
     (isStaticSessionId(current.staticSessionId) &&
         isStaticSessionId(upcoming.staticSessionId) &&
-        parseStaticSessionId(current.staticSessionId).walletDescriptor ===
-            parseStaticSessionId(upcoming.staticSessionId).walletDescriptor);
+        isSameWallet(current.staticSessionId, upcoming.staticSessionId));
 
 /**
  * Local utility: get state in DeviceState format from AcquiredDevice in backwards compatible way

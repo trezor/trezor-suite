@@ -2,7 +2,7 @@ import { UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
 import type { StaticSessionId } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { toHardenedPathPart } from '@trezor/crypto-utils';
-import { createStaticSessionId, parseStaticSessionId } from '@trezor/device-utils';
+import { createStaticSessionId, isSameWallet } from '@trezor/device-utils';
 
 import type { WorkflowContext } from '../../types/workflow';
 import { createThpSession } from '../thp';
@@ -46,10 +46,7 @@ const preauthorizeState = ({ device, method }: WorkflowContext) => {
 export const isUnexpectedState = (expected?: StaticSessionId, current?: StaticSessionId) => {
     if (!expected || !current) return false;
 
-    return (
-        parseStaticSessionId(expected).walletDescriptor !==
-        parseStaticSessionId(current).walletDescriptor
-    );
+    return !isSameWallet(expected, current);
 };
 
 const validate = async (context: WorkflowContext) => {
