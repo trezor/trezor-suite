@@ -11,6 +11,7 @@ import {
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { parseAccountKey } from '@suite-common/wallet-utils';
+import { selectIsBlockchainInitialized } from '@suite-native/app-init';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 import { TransactionList } from '@suite-native/transactions';
 import { useServices } from '@trezor/dependency-injection';
@@ -30,13 +31,16 @@ export const StakingManagementScreen = () => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const isBlockchainInitialized = useSelector(selectIsBlockchainInitialized);
 
     // Solana shows a rewards list, other networks keep the transaction history.
     const isSolanaStaking = isSupportedSolStakingNetworkSymbol(networkSymbol);
 
     useEffect(() => {
+        if (!isBlockchainInitialized) return;
+
         dispatch(fetchAllTransactionsForAccountThunk({ accountKey, noLoading: true }));
-    }, [accountKey, dispatch]);
+    }, [accountKey, dispatch, isBlockchainInitialized]);
 
     // Screen mounts are the only stake-data refresh path after app init.
     useEffect(() => {

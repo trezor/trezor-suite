@@ -1,6 +1,8 @@
 import { type RefObject, useCallback, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
+import { useSelector } from 'react-redux';
 
+import { selectIsBlockchainInitialized } from '@suite-native/app-init';
 import { syncAllAccountsWithBlockchainThunk } from '@suite-native/blockchain';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -17,6 +19,7 @@ export const useHomeRefreshControl = ({
 }) => {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const { dispatch } = useServices(injectDispatch);
+    const isBlockchainInitialized = useSelector(selectIsBlockchainInitialized);
     const {
         utils: { colors },
     } = useNativeStyles();
@@ -35,7 +38,7 @@ export const useHomeRefreshControl = ({
     }, [dispatch, portfolioGraphRef]);
 
     const refreshControl = useMemo(() => {
-        if (isDiscoveredDeviceAccountless) return undefined;
+        if (!isBlockchainInitialized || isDiscoveredDeviceAccountless) return undefined;
 
         return (
             <RefreshControl
@@ -44,7 +47,13 @@ export const useHomeRefreshControl = ({
                 colors={[colors.elementFillBrandBold]}
             />
         );
-    }, [isDiscoveredDeviceAccountless, handleRefresh, colors, isRefreshing]);
+    }, [
+        isBlockchainInitialized,
+        isDiscoveredDeviceAccountless,
+        handleRefresh,
+        colors,
+        isRefreshing,
+    ]);
 
     return refreshControl;
 };

@@ -8,6 +8,7 @@ import {
     fetchAllTransactionsForAccountThunk,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
+import { selectIsBlockchainInitialized } from '@suite-native/app-init';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { TransactionList } from '@suite-native/transactions';
@@ -26,14 +27,17 @@ export const YieldVaultDetailScreen = () => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const isBlockchainInitialized = useSelector(selectIsBlockchainInitialized);
 
     const yieldToken = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenContract),
     );
 
     useEffect(() => {
+        if (!isBlockchainInitialized) return;
+
         dispatch(fetchAllTransactionsForAccountThunk({ accountKey, noLoading: true }));
-    }, [accountKey, dispatch]);
+    }, [accountKey, dispatch, isBlockchainInitialized]);
 
     if (!account || !yieldToken) return null;
 

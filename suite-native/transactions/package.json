@@ -27,6 +27,7 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
+        "@suite-native/app-init": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/feature-feedback": "workspace:*",
         "@suite-native/formatters": "workspace:*",

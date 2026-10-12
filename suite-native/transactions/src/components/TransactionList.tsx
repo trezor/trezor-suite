@@ -24,6 +24,10 @@ import {
     groupTransactionsByDate,
     isPending,
 } from '@suite-common/wallet-utils';
+import {
+    selectIsBlockchainInitialized,
+    selectIsConnectAndBlockchainInitializationPending,
+} from '@suite-native/app-init';
 import { Box, ListItemSkeleton, VStack, useScrollDivider } from '@suite-native/atoms';
 import {
     type TokensRootState,
@@ -149,6 +153,10 @@ export const TransactionList = ({
 }: AccountTransactionProps) => {
     const accountKey = account.key;
     const { dispatch } = useServices(injectDispatch);
+    const isBlockchainInitialized = useSelector(selectIsBlockchainInitialized);
+    const isConnectAndBlockchainInitializationPending = useSelector(
+        selectIsConnectAndBlockchainInitializationPending,
+    );
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     const {
@@ -204,6 +212,10 @@ export const TransactionList = ({
     // left to the button, as auto-fill would keep scanning back for a token with no transfers.
     const olderHistoryFrom =
         isInitialPageLoaded && !hasMoreTransactions ? getOlderHistoryFrom(account) : undefined;
+    const isWaitingForBlockchainInitialization =
+        !isBlockchainInitialized &&
+        isConnectAndBlockchainInitializationPending &&
+        (!isInitialPageLoaded || hasMoreTransactions || olderHistoryFrom !== undefined);
     const loadedTransactionCount = useSelector(
         (state: TransactionsRootState) =>
             selectAccountTransactionsWithNulls(state, accountKey).length,
@@ -213,6 +225,8 @@ export const TransactionList = ({
 
     const fetchPage = useCallback(
         async (requestedPage: number, from?: number) => {
+            if (!isBlockchainInitialized) return;
+
             // Initial loading, the button, and auto-fill share this lock before React rerenders.
             if (isFetchingPageRef.current) return;
             isFetchingPageRef.current = true;
@@ -240,7 +254,7 @@ export const TransactionList = ({
                 isFetchingPageRef.current = false;
             }
         },
-        [dispatch, accountKey, txnsPerPage],
+        [dispatch, accountKey, txnsPerPage, isBlockchainInitialized],
     );
 
     const handleOnLoadMore = useCallback(
@@ -255,6 +269,8 @@ export const TransactionList = ({
     }, [isInitialPageLoaded, handleOnLoadMore]);
 
     const handleOnRefresh = useCallback(async () => {
+        if (!isBlockchainInitialized) return;
+
         try {
             setIsRefreshing(true);
             await Promise.allSettled([
@@ -273,7 +289,7 @@ export const TransactionList = ({
         }
         // It's usually too fast so loading indicator only flashes for a moment, which is not nice
         setTimeout(() => setIsRefreshing(false), 1500);
-    }, [dispatch, accountKey, txnsPerPage]);
+    }, [dispatch, accountKey, txnsPerPage, isBlockchainInitialized]);
 
     const data = useMemo((): TransactionListItem[] => {
         // groupTransactionsByDate now sorts also pending transactions, if they have blockTime set.
@@ -340,6 +356,8 @@ export const TransactionList = ({
     }, [shouldLoadMoreTokenTransactions, isLoadingTransactions, handleOnLoadMore]);
 
     const handleOnLoadMorePress = () => {
+        if (!isBlockchainInitialized) return;
+
         if (tokenContract) {
             setRequestedVisibleCount(requestedCount =>
                 getNextRequestedTransactionCount({
@@ -369,7 +387,7 @@ export const TransactionList = ({
             );
         }
 
-        if (shouldDeferEmptyState) {
+        if (shouldDeferEmptyState || isWaitingForBlockchainInitialization) {
             return null;
         }
 
@@ -430,15 +448,18 @@ export const TransactionList = ({
                 ListFooterComponent={
                     <TransactionsListFooter
                         hasMoreTransactions={
-                            hasMoreTransactions ||
-                            olderHistoryFrom !== undefined ||
-                            hasInitialScanFailed
+                            isBlockchainInitialized &&
+                            (hasMoreTransactions ||
+                                olderHistoryFrom !== undefined ||
+                                hasInitialScanFailed)
                         }
                         isOlderHistory={olderHistoryFrom !== undefined}
                         // The skeleton stands in for the loader until the first scan is done.
                         isLoading={
                             !isHistoryUnscanned &&
-                            (isLoadingTransactions || shouldLoadMoreTokenTransactions)
+                            (isLoadingTransactions ||
+                                shouldLoadMoreTokenTransactions ||
+                                isWaitingForBlockchainInitialization)
                         }
                         onButtonPress={handleOnLoadMorePress}
                     >
