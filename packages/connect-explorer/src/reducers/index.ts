@@ -1,11 +1,13 @@
 import { combineReducers } from 'redux';
 
 import method from './methodReducer';
+import { networkRouteToSymbolMapReducer } from './networkRouteToSymbolMapReducer';
 import { networksReducer } from './networksReducer';
 import connect from './trezorConnectReducer';
 
 export const reducers = combineReducers({
     method,
+    networkRouteToSymbolMap: networkRouteToSymbolMapReducer,
     networks: networksReducer,
     connect,
 });

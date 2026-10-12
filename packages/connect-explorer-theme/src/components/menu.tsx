@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import type { ReactElement } from 'react';
-import { createContext, memo, useContext, useEffect, useRef, useState } from 'react';
+import {
+    type ReactElement,
+    createContext,
+    memo,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
+import { useSelector } from 'react-redux';
 
 import cn from 'clsx';
 import { useRouter } from 'next/router';
@@ -13,7 +21,7 @@ import styled from 'styled-components';
 import { Select } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
-import { arrayPartition } from '@trezor/utils';
+import { arrayPartition, typedObjectKeys } from '@trezor/utils';
 
 import { Anchor } from './anchor';
 import { Collapse } from './collapse';
@@ -21,6 +29,8 @@ import { useActiveAnchor } from '../contexts/active-anchor';
 import { useMenu } from '../contexts/menu';
 import { FocusedItemContext, OnFocusItemContext } from '../contexts/sidebar-focus';
 import { useConfig } from '../contexts/useConfig';
+import { asNetworkRoute } from '../networkRoute';
+import { selectNetworkRouteToSymbolMap } from '../selectors/networkRouteToSymbolMapSelectors';
 import { renderComponent } from '../utils/render';
 
 const TreeState: Record<string, boolean> = Object.create(null);
@@ -110,21 +120,12 @@ export function Menu({
     const route = useFSRoute();
     const prevRoute = useRef(route);
 
-    const coinSymbols = {
-        bitcoin: 'btc',
-        cardano: 'ada',
-        ethereum: 'eth',
-        litecoin: 'ltc',
-        monero: 'xmr',
-        ripple: 'xrp',
-        solana: 'sol',
-        stellar: 'xlm',
-        tezos: 'xtz',
-        tron: 'trx',
-    };
-    const coinNames = Object.keys(coinSymbols);
-    const routeCoinSegment = route.split('/')[2] ?? '';
-    const defaultActiveCoin = coinNames.includes(routeCoinSegment) ? routeCoinSegment : 'bitcoin';
+    const networkRouteToSymbolMap = useSelector(selectNetworkRouteToSymbolMap);
+    const networkRoutes = typedObjectKeys(networkRouteToSymbolMap);
+    const networkRoute = asNetworkRoute(route.split('/')[2] ?? '');
+    const defaultActiveCoin = networkRoutes.includes(networkRoute)
+        ? networkRoute
+        : asNetworkRoute('bitcoin');
     const [activeCoin, setActiveCoin] = useState(defaultActiveCoin);
     useEffect(() => {
         // Only on route change
@@ -139,11 +140,12 @@ export function Menu({
         directories.find(item => item.kind === 'Folder' && item.name === 'methods')?.children ?? [];
     const [coinMethods, nonCoinMethods] = arrayPartition(
         methodsItems,
-        item => item.kind === 'Folder' && coinNames.includes(item.name),
+        item => item.kind === 'Folder' && networkRoutes.includes(asNetworkRoute(item.name)),
     );
     const methodsOptions = coinMethods.map(item => ({
         label: item.title,
-        value: item.name,
+        value: asNetworkRoute(item.name),
+        symbol: networkRouteToSymbolMap[asNetworkRoute(item.name)],
     }));
     const activeCoinItems = methodsItems.find(item => item.name === activeCoin)?.children;
     const [commonMethods, otherMethods] = arrayPartition(
@@ -179,9 +181,7 @@ export function Menu({
                     options={methodsOptions}
                     formatOptionLabel={option => (
                         <Option>
-                            {coinSymbols[option.value] && (
-                                <TokenIcon size={20} symbol={coinSymbols[option.value]} />
-                            )}
+                            {option.symbol && <TokenIcon size={20} symbol={option.symbol} />}
                             <Label>{option.label}</Label>
                         </Option>
                     )}

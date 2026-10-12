@@ -8,6 +8,9 @@
     "references": [
         { "path": "../components" },
         { "path": "../icons" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
         { "path": "../product-components" },
         { "path": "../theme" },
         { "path": "../type-utils" },

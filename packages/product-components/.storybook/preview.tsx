@@ -10,10 +10,15 @@ import { type NetworkConfigState, asNetworkSymbol } from '@trezor/network-module
 
 const networkConfigState: NetworkConfigState = {
     networks: {
-        [asNetworkSymbol('btc')]: { name: 'Bitcoin' },
-        [asNetworkSymbol('eth')]: { name: 'Ethereum' },
+        [asNetworkSymbol('btc')]: { name: 'Bitcoin', displaySymbol: 'BTC' },
+        [asNetworkSymbol('eth')]: {
+            name: 'Ethereum',
+            displaySymbol: 'ETH',
+            coingeckoId: 'ethereum',
+            features: ['tokens'],
+        },
         [asNetworkSymbol('ltc')]: { name: 'Litecoin' },
-        [asNetworkSymbol('ada')]: { name: 'Cardano' },
+        [asNetworkSymbol('ada')]: { name: 'Cardano', features: ['tokens'] },
     },
 };
 

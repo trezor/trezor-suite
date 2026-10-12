@@ -1,10 +1,11 @@
 import { getFiatCurrencyFlag } from '@suite-common/flags';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingUtils } from '@suite-common/trading';
 import { Flag, Row } from '@trezor/components';
-import { shouldShowNetworkIcon } from '@trezor/product-components';
+import { selectShouldShowNetworkIcon } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
 import { type TradingTransactionSide } from './tradingTransactionItemUtils';
@@ -20,21 +21,23 @@ export const TradingTransactionSideAmount = ({
 }: TradingTransactionSideAmountProps) => {
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
+    const cryptoId = side.type === 'crypto' ? side.cryptoId : undefined;
+    const { coinSymbol, contractAddress } = cryptoId
+        ? cryptoIdToSymbolAndContractAddress(cryptoId)
+        : { coinSymbol: undefined, contractAddress: undefined };
+    const { symbol: networkSymbol } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
+    const showNetworkIcon = useSelector(state =>
+        selectShouldShowNetworkIcon(state, networkSymbol, contractAddress),
+    );
+
     switch (side.type) {
         case 'crypto': {
-            const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(
-                side.cryptoId,
-            );
-            const { symbol: networkSymbol } = cryptoIdToNetworkSymbolAndContractAddress(
-                side.cryptoId,
-            );
-
             return (
                 <Row gap={8}>
                     <TradingCoinLogo
                         cryptoId={side.cryptoId}
                         size={32}
-                        showNetworkIcon={shouldShowNetworkIcon(networkSymbol, contractAddress)}
+                        showNetworkIcon={showNetworkIcon}
                     />
                     <FormattedCryptoAmount
                         value={side.amount}
