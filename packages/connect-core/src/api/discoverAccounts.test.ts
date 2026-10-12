@@ -1,6 +1,13 @@
-import type { CoinInfo, DiscoverAccountsProgress } from '@trezor/connect-common';
+import {
+    type CoinInfo,
+    type Device as DeviceMessage,
+    type DiscoverAccountsProgress,
+    UI_EVENTS,
+    createUiEventMessage,
+} from '@trezor/connect-common';
 
 import DiscoverAccounts from './discoverAccounts';
+import { calculateXPubHash } from './firmware/calculateXPubHash';
 import { initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
@@ -167,5 +174,107 @@ describe('DiscoverAccounts', () => {
         } as unknown as MethodContext);
 
         expect(result).toEqual({ empty: 0, nonempty: 0, failed: 1 });
+    });
+});
+
+const path = "m/84'/0'/0'";
+const xpub = 'xpub-of-the-created-wallet';
+const otherXpub = 'xpub-of-another-wallet';
+const deviceMessage = { id: 'device-id' } as DeviceMessage;
+
+const createEntropyCheckMethod = ({
+    passphraseProtection = false,
+    useEmptyPassphrase = false,
+}: { passphraseProtection?: boolean; useEmptyPassphrase?: boolean } = {}) => {
+    const method = new DiscoverAccounts({
+        payload: {
+            method: 'discoverAccounts',
+            coins: [],
+            entropyCheckResult: {
+                success: true,
+                xpubHashes: { [path]: calculateXPubHash(xpub) },
+            },
+            device: { useEmptyPassphrase },
+        },
+    });
+    const device = {
+        features: { passphrase_protection: passphraseProtection },
+        toMessageObject: () => deviceMessage,
+    } as Device;
+    method.setDevice(device);
+
+    return method;
+};
+
+describe('DiscoverAccounts discovery entropy check', () => {
+    it('emits success when the xpub matches the known hash', () => {
+        const sendCoreMessage = jest.fn();
+        createEntropyCheckMethod()['checkEntropy']({ xpub, path, sendCoreMessage });
+
+        expect(sendCoreMessage).toHaveBeenCalledWith(
+            createUiEventMessage(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, {
+                device: deviceMessage,
+                success: true,
+                path,
+            }),
+        );
+    });
+
+    it('emits failure without throwing when the xpub does not match the known hash', () => {
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+        const sendCoreMessage = jest.fn();
+        createEntropyCheckMethod()['checkEntropy']({ xpub: otherXpub, path, sendCoreMessage });
+
+        expect(sendCoreMessage).toHaveBeenCalledWith(
+            createUiEventMessage(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, {
+                device: deviceMessage,
+                success: false,
+                path,
+            }),
+        );
+    });
+
+    it('emits nothing when there is no known hash for the path', () => {
+        const sendCoreMessage = jest.fn();
+        createEntropyCheckMethod()['checkEntropy']({ xpub, path: "m/44'/0'/0'", sendCoreMessage });
+
+        expect(sendCoreMessage).not.toHaveBeenCalled();
+    });
+
+    it('emits nothing for accounts without xpub', () => {
+        const sendCoreMessage = jest.fn();
+        createEntropyCheckMethod()['checkEntropy']({ xpub: undefined, path, sendCoreMessage });
+
+        expect(sendCoreMessage).not.toHaveBeenCalled();
+    });
+
+    it('emits nothing for passphrase wallets', () => {
+        const sendCoreMessage = jest.fn();
+        createEntropyCheckMethod({ passphraseProtection: true })['checkEntropy']({
+            xpub: otherXpub,
+            path,
+            sendCoreMessage,
+        });
+
+        expect(sendCoreMessage).not.toHaveBeenCalled();
+    });
+
+    it('checks the standard wallet even when passphrase protection is enabled', () => {
+        const sendCoreMessage = jest.fn();
+        createEntropyCheckMethod({ passphraseProtection: true, useEmptyPassphrase: true })[
+            'checkEntropy'
+        ]({
+            xpub,
+            path,
+            sendCoreMessage,
+        });
+
+        expect(sendCoreMessage).toHaveBeenCalledWith(
+            createUiEventMessage(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, {
+                device: deviceMessage,
+                success: true,
+                path,
+            }),
+        );
     });
 });
