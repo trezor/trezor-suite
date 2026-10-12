@@ -1,11 +1,11 @@
 import fetch from 'cross-fetch';
 
+import { getProductionDefinitionsUrl } from '@trezor/connect-common';
 import { MessagesSchema, protobufManager } from '@trezor/protobuf';
 import { trzd } from '@trezor/protocol';
 import { Assert } from '@trezor/schema-utils';
 
 import type { DefinitionsVersion } from '../../utils/definitionsUtils';
-import { getProductionDefinitionsUrl } from '../../utils/definitionsUtils';
 
 interface GetSolanaTokenDefinition {
     mintAddress?: string;
