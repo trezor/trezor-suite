@@ -58,6 +58,14 @@ export const PageName = () => {
         );
     }
 
+    if (currentRoute === 'suite-refer-a-friend') {
+        return (
+            <BasicName>
+                <Translation id="TR_REFER_A_FRIEND" />
+            </BasicName>
+        );
+    }
+
     if (currentRoute === 'apps-embedding-index') {
         return (
             <BasicName>
