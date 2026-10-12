@@ -851,6 +851,12 @@ export class Core extends EventEmitter {
                         this.sendCoreMessage.bind(this),
                         message.payload.callId,
                     );
+                    const registerEvents = registerDeviceEvents(coreContext);
+                    // The device gets a new path with every reboot. Respond with the last one whose
+                    // events reached the host, like device calls respond with the device they ran on.
+                    let lastDevice: Device | undefined;
+                    const getLastDeviceIdentity = () =>
+                        lastDevice ? getDeviceIdentity(lastDevice) : undefined;
                     onCallFirmwareUpdate({
                         params: message.payload,
                         context: {
@@ -859,16 +865,31 @@ export class Core extends EventEmitter {
                             selectDevice: path => selectDevice(coreContext, { path }),
                             log: this.coreLogger,
                             abortSignal: this.abortController.signal,
-                            registerEvents: registerDeviceEvents(coreContext),
+                            registerEvents: device => {
+                                lastDevice = device;
+                                registerEvents(device);
+                            },
                             uiPromises: coreContext.uiPromises,
                         },
                     })
                         .then(payload => {
-                            this.sendCoreMessage(createResponseMessage(message.id, true, payload));
+                            this.sendCoreMessage(
+                                createResponseMessage(
+                                    message.id,
+                                    true,
+                                    payload,
+                                    getLastDeviceIdentity(),
+                                ),
+                            );
                         })
                         .catch(error => {
                             this.sendCoreMessage(
-                                createResponseMessage(message.id, false, { error }),
+                                createResponseMessage(
+                                    message.id,
+                                    false,
+                                    { error },
+                                    getLastDeviceIdentity(),
+                                ),
                             );
                             this.coreLogger.error('onCallFirmwareUpdate', error);
                         });
