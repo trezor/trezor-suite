@@ -39,6 +39,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { LOVELACE_UNIT } from '@trezor/network-cardano/constants';
+import { SOLANA_SLOT_TIME_MS } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
@@ -75,7 +76,7 @@ const STELLAR_LEDGER_CLOSE_SECONDS = 5;
 // Cardano's average block interval, not reported by @trezor/connect.
 const CARDANO_BLOCK_TIME_SECONDS = 20;
 // Solana's average block interval; its fee info reports the block time as unknown (-1).
-const SOLANA_BLOCK_TIME_SECONDS = 0.4;
+const SOLANA_BLOCK_TIME_SECONDS = SOLANA_SLOT_TIME_MS / 1000;
 
 /**
  * Replace existing transaction in the reducer (RBF)
