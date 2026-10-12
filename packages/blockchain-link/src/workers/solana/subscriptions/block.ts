@@ -11,21 +11,26 @@ export const subscribeBlock = async ({ state, connect, post }: Context) => {
     const api = await connect();
 
     const fetchBlock = async () => {
-        const {
-            value: { blockhash: blockHash, lastValidBlockHeight: blockHeight },
-        } = await api.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send();
-        if (blockHeight) {
-            post({
-                id: -1,
-                type: RESPONSES.NOTIFICATION,
-                payload: {
-                    type: 'block',
+        try {
+            const {
+                value: { blockhash: blockHash, lastValidBlockHeight: blockHeight },
+            } = await api.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send();
+            if (blockHeight) {
+                post({
+                    id: -1,
+                    type: RESPONSES.NOTIFICATION,
                     payload: {
-                        blockHeight: Number(blockHeight),
-                        blockHash,
+                        type: 'block',
+                        payload: {
+                            blockHeight: Number(blockHeight),
+                            blockHash,
+                        },
                     },
-                },
-            });
+                });
+            }
+        } catch (error) {
+            // Nothing awaits the poll, so a rejection would surface as unhandled; the next tick retries.
+            console.warn('Solana: failed to read the latest blockhash', error);
         }
     };
     fetchBlock();
