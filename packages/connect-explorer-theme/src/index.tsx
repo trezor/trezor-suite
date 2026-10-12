@@ -1,24 +1,20 @@
 import type { ReactElement, ReactNode } from 'react';
 import { useMemo } from 'react';
 
-import cn from 'clsx';
-import { useRouter } from 'next/router';
-import type { NextraThemeLayoutProps, PageOpts } from 'nextra';
+import type { NextraThemeLayoutProps } from 'nextra';
 import 'focus-visible';
-import { useFSRoute, useMounted } from 'nextra/hooks';
 import { MDXProvider } from 'nextra/mdx';
 import './polyfill';
-import type { PageTheme } from 'nextra/normalize-pages';
 import { createGlobalStyle } from 'styled-components';
 
-import { Banner, Breadcrumb, Head, NavLinks, Navbar, Sidebar, SkipNavContent } from './components';
-import { DEFAULT_LOCALE } from './constants';
+import { Banner, Head, Navbar } from './components';
 import { ActiveAnchorProvider } from './contexts/active-anchor';
 import { ConfigProvider } from './contexts/config';
+import { ThemeConfigProvider, useThemeConfig } from './contexts/theme-config';
 import { useConfig } from './contexts/useConfig';
 import { getComponents } from './mdx-components';
-import { type PartialDocsThemeConfig } from './schema';
-import { patchedNormalizePages } from './utils/patch-normalize-pages';
+import { type DocsThemeConfig, type PartialDocsThemeConfig } from './schema';
+import { DEEP_OBJECT_KEYS, DEFAULT_THEME } from './theme';
 import { renderComponent } from './utils/render';
 
 const GlobalStyle = createGlobalStyle`
@@ -26,117 +22,21 @@ const GlobalStyle = createGlobalStyle`
         background: ${({ theme }) => theme.surfaceFillPage}
     }
 `;
-interface BodyProps {
-    themeContext: PageTheme;
-    breadcrumb: ReactNode;
-    timestamp?: number;
-    navigation: ReactNode;
-    children: ReactNode;
-}
 
-const classes = {
-    toc: cn('nextra-toc nx-order-last nx-hidden nx-w-64 nx-shrink-0 xl:nx-block print:nx-hidden'),
-    main: cn('nx-w-full nx-break-words'),
-};
-
-const Body = ({
-    themeContext,
-    breadcrumb,
-    timestamp,
-    navigation,
-    children,
-}: BodyProps): ReactElement => {
+const InnerLayout = ({ children }: { children: ReactNode }): ReactElement => {
+    const themeConfig = useThemeConfig();
     const config = useConfig();
-    const mounted = useMounted();
-
-    if (themeContext.layout === 'raw') {
-        return <div className={classes.main}>{children}</div>;
-    }
-
-    const date =
-        themeContext.timestamp && config.gitTimestamp && timestamp ? new Date(timestamp) : null;
-
-    const gitTimestampEl =
-        // Because a user's time zone may be different from the server page
-        mounted && date ? (
-            <div className="nx-mt-12 nx-mb-8 nx-block nx-text-xs nx-text-gray-500 ltr:nx-text-right rtl:nx-text-left dark:nx-text-gray-400">
-                {renderComponent(config.gitTimestamp, { timestamp: date })}
-            </div>
-        ) : (
-            <div className="nx-mt-16" />
-        );
-
-    const content = (
-        <>
-            {children}
-            {gitTimestampEl}
-            {navigation}
-        </>
-    );
-
-    const body = config.main?.({ children: content }) || content;
-
-    if (themeContext.layout === 'full') {
-        return (
-            <article
-                className={cn(
-                    classes.main,
-                    'nextra-content nx-min-h-[calc(100vh-var(--nextra-navbar-height))] nx-pl-[max(env(safe-area-inset-left),1.5rem)] nx-pr-[max(env(safe-area-inset-right),1.5rem)]',
-                )}
-            >
-                {body as ReactNode}
-            </article>
-        );
-    }
-
-    return (
-        <article
-            className={cn(
-                classes.main,
-                'nextra-content nx-flex nx-min-h-[calc(100vh-var(--nextra-navbar-height))] nx-min-w-0 nx-justify-center nx-pb-8 nx-pr-[calc(env(safe-area-inset-right)-1.5rem)]',
-                themeContext.typesetting === 'article' && 'nextra-body-typesetting-article',
-            )}
-        >
-            <main className="nx-w-full nx-min-w-0 nx-max-w-6xl nx-px-6 nx-pt-4 md:nx-px-12">
-                {breadcrumb}
-                {body as ReactNode}
-            </main>
-        </article>
-    );
-};
-
-const InnerLayout = ({
-    filePath,
-    pageMap,
-    frontMatter,
-    headings,
-    timestamp,
-    children,
-}: PageOpts & { children: ReactNode }): ReactElement => {
-    const config = useConfig();
-    const { locale = DEFAULT_LOCALE, defaultLocale } = useRouter();
-    const fsPath = useFSRoute();
-
     const {
-        activeType,
-        activeIndex,
-        activeThemeContext,
+        activeThemeContext: themeContext,
         activePath,
         topLevelNavbarItems,
-        docsDirectories,
-        flatDirectories,
-        flatDocsDirectories,
-        directories,
-    } = useMemo(
-        () =>
-            patchedNormalizePages({
-                list: pageMap,
-                locale,
-                defaultLocale,
-                route: fsPath,
-            }),
-        [pageMap, locale, defaultLocale, fsPath],
-    );
+    } = config.normalizePagesResult;
+
+    const components = getComponents({
+        frontMatter: config.frontMatter,
+        isRawLayout: themeContext.layout === 'raw',
+        components: themeConfig.components,
+    });
 
     // Nextra derives the document title from the filename and title-cases it at build time
     // (e.g. `selectAccount` → `SelectAccount`), which is independent of the sidebar titles fixed
@@ -145,115 +45,61 @@ const InnerLayout = ({
     const documentTitle =
         activePath[0]?.route === '/methods' ? activePath[activePath.length - 1]?.title : undefined;
 
-    const themeContext = { ...activeThemeContext, ...frontMatter };
-    const hideSidebar =
-        !themeContext.sidebar || themeContext.layout === 'raw' || activeType === 'page';
-
-    const tocEl =
-        activeType === 'page' || !themeContext.toc || themeContext.layout !== 'default' ? (
-            themeContext.layout !== 'full' &&
-            themeContext.layout !== 'raw' && (
-                <nav className={classes.toc} aria-label="table of contents" />
-            )
-        ) : (
-            <nav className={cn(classes.toc, 'nx-px-4')} aria-label="table of contents">
-                {renderComponent(config.toc.component, {
-                    headings: config.toc.float ? headings : [],
-                    filePath,
-                })}
-            </nav>
-        );
-
-    const localeConfig = config.i18n.find(l => l.locale === locale);
-    const isRTL = localeConfig ? localeConfig.direction === 'rtl' : config.direction === 'rtl';
-
-    const direction = isRTL ? 'rtl' : 'ltr';
-
     return (
-        // This makes sure that selectors like `[dir=ltr] .nextra-container` work
-        // before hydration as Tailwind expects the `dir` attribute to exist on the
-        // `html` element.
-        <div dir={direction}>
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `document.documentElement.setAttribute('dir','${direction}')`,
-                }}
-            />
+        <div>
             <Head title={documentTitle} />
             <Banner />
-            {themeContext.navbar && (
-                <Navbar flatDirectories={flatDirectories} items={topLevelNavbarItems} />
-            )}
-
-            <div
-                className={cn(
-                    'nx-mx-auto nx-flex',
-                    themeContext.layout !== 'raw' && 'nx-max-w-[90rem]',
-                )}
-            >
-                <ActiveAnchorProvider>
-                    <Sidebar
-                        docsDirectories={docsDirectories}
-                        flatDirectories={flatDirectories}
-                        fullDirectories={directories}
-                        headings={headings}
-                        asPopover={hideSidebar}
-                        includePlaceholder={themeContext.layout === 'default'}
-                    />
-                    {tocEl}
-                    <SkipNavContent />
-                    <Body
-                        themeContext={themeContext}
-                        breadcrumb={
-                            activeType !== 'page' && themeContext.breadcrumb ? (
-                                <Breadcrumb activePath={activePath} />
-                            ) : null
-                        }
-                        timestamp={timestamp}
-                        navigation={
-                            activeType !== 'page' && themeContext.pagination ? (
-                                <NavLinks
-                                    flatDirectories={flatDocsDirectories}
-                                    currentIndex={activeIndex}
-                                />
-                            ) : null
-                        }
-                    >
-                        <MDXProvider
-                            components={getComponents({
-                                frontMatter,
-                                isRawLayout: themeContext.layout === 'raw',
-                                components: config.components,
-                            })}
-                        >
-                            {children}
-                        </MDXProvider>
-                    </Body>
-                </ActiveAnchorProvider>
-            </div>
-            {themeContext.footer && renderComponent(config.footer.component, { menu: hideSidebar })}
+            {themeContext.navbar && <Navbar items={topLevelNavbarItems} />}
+            <ActiveAnchorProvider>
+                <MDXProvider disableParentContext components={components}>
+                    {children}
+                </MDXProvider>
+            </ActiveAnchorProvider>
+            {themeContext.footer &&
+                renderComponent(themeConfig.footer.component, { menu: config.hideSidebar })}
         </div>
     );
 };
 
 // eslint-disable-next-line import/no-default-export
-export default function Layout({ children, ...context }: NextraThemeLayoutProps): ReactElement {
+export default function Layout({
+    children,
+    themeConfig,
+    pageOpts,
+}: NextraThemeLayoutProps): ReactElement {
+    const mergedThemeConfig: DocsThemeConfig = useMemo(
+        () => ({
+            ...DEFAULT_THEME,
+            ...Object.fromEntries(
+                Object.entries(themeConfig ?? {}).map(([key, value]) => [
+                    key,
+                    value && typeof value === 'object' && DEEP_OBJECT_KEYS.includes(key)
+                        ? { ...DEFAULT_THEME[key], ...value }
+                        : value,
+                ]),
+            ),
+        }),
+        [themeConfig],
+    );
+
     return (
-        <ConfigProvider value={context}>
-            <GlobalStyle />
-            <InnerLayout {...context.pageOpts}>{children}</InnerLayout>
-        </ConfigProvider>
+        <ThemeConfigProvider value={mergedThemeConfig}>
+            <ConfigProvider value={pageOpts}>
+                <GlobalStyle />
+                <InnerLayout>{children}</InnerLayout>
+            </ConfigProvider>
+        </ThemeConfigProvider>
     );
 }
 
-export { useConfig, type PartialDocsThemeConfig as DocsThemeConfig };
+export { useConfig, useThemeConfig, type PartialDocsThemeConfig as DocsThemeConfig };
 export { type NetworkRoute, asNetworkRoute } from './networkRoute';
 export {
     type NetworkRouteToSymbolMap,
     selectNetworkRouteToSymbolMap,
 } from './selectors/networkRouteToSymbolMapSelectors';
 export { useMDXComponents } from 'nextra/mdx';
-export { Callout, Steps, Tabs, Tab, Cards, Card, FileTree } from 'nextra/components';
+export { Callout, Steps, Tabs, Cards, FileTree } from 'nextra/components';
 export { useTheme } from 'next-themes';
 export { Link } from './mdx-components';
 export {

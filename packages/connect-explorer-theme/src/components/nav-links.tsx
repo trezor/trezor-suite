@@ -4,7 +4,7 @@ import cn from 'clsx';
 import { ArrowRightIcon } from 'nextra/icons';
 import type { Item } from 'nextra/normalize-pages';
 
-import { useConfig } from '../contexts/useConfig';
+import { useThemeConfig } from '../contexts/theme-config';
 import type { DocsThemeConfig } from '../schema';
 import { Anchor } from './anchor';
 
@@ -15,14 +15,14 @@ interface NavLinkProps {
 
 const classes = {
     link: cn(
-        'nx-flex nx-max-w-[50%] nx-items-center nx-gap-1 nx-py-4 nx-text-base nx-font-medium nx-text-gray-600 nx-transition-colors [word-break:break-word] hover:nx-text-primary-600 dark:nx-text-gray-300 md:nx-text-lg',
+        '_flex _max-w-[50%] _items-center _gap-1 _py-4 _text-base _font-medium _text-gray-600 _transition-colors [word-break:break-word] hover:_text-primary-600 dark:_text-gray-300 md:_text-lg',
     ),
-    icon: cn('nx-inline nx-h-5 nx-shrink-0'),
+    icon: cn('_inline _h-5 _shrink-0'),
 };
 
 export const NavLinks = ({ flatDirectories, currentIndex }: NavLinkProps): ReactElement | null => {
-    const config = useConfig();
-    const nav = config.navigation;
+    const themeConfig = useThemeConfig();
+    const nav = themeConfig.navigation;
     const navigation: Exclude<DocsThemeConfig['navigation'], boolean> =
         typeof nav === 'boolean' ? { prev: nav, next: nav } : nav;
     let prev = navigation.prev && flatDirectories[currentIndex - 1];
@@ -36,18 +36,18 @@ export const NavLinks = ({ flatDirectories, currentIndex }: NavLinkProps): React
     return (
         <div
             className={cn(
-                'nx-mb-8 nx-flex nx-items-center nx-border-t nx-pt-8 dark:nx-border-neutral-800',
-                'contrast-more:nx-border-neutral-400 dark:contrast-more:nx-border-neutral-400',
-                'print:nx-hidden',
+                '_mb-8 _flex _items-center _border-t _pt-8 dark:_border-neutral-800',
+                'contrast-more:_border-neutral-400 dark:contrast-more:_border-neutral-400',
+                'print:_hidden',
             )}
         >
             {prev && (
                 <Anchor
                     href={prev.route}
                     title={prev.title}
-                    className={cn(classes.link, 'ltr:nx-pr-4 rtl:nx-pl-4')}
+                    className={cn(classes.link, 'ltr:_pr-4 rtl:_pl-4')}
                 >
-                    <ArrowRightIcon className={cn(classes.icon, 'ltr:nx-rotate-180')} />
+                    <ArrowRightIcon className={cn(classes.icon, 'ltr:_rotate-180')} />
                     {prev.title}
                 </Anchor>
             )}
@@ -57,11 +57,11 @@ export const NavLinks = ({ flatDirectories, currentIndex }: NavLinkProps): React
                     title={next.title}
                     className={cn(
                         classes.link,
-                        'ltr:nx-ml-auto ltr:nx-pl-4 ltr:nx-text-right rtl:nx-mr-auto rtl:nx-pr-4 rtl:nx-text-left',
+                        'ltr:_ml-auto ltr:_pl-4 ltr:_text-right rtl:_mr-auto rtl:_pr-4 rtl:_text-left',
                     )}
                 >
                     {next.title}
-                    <ArrowRightIcon className={cn(classes.icon, 'rtl:nx-rotate-180')} />
+                    <ArrowRightIcon className={cn(classes.icon, 'rtl:_rotate-180')} />
                 </Anchor>
             )}
         </div>
