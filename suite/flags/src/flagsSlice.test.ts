@@ -10,6 +10,7 @@ import {
     prepareFlagsReducer,
     selectFlags,
     selectIsNewContentIndicatorVisible,
+    selectIsReferAFriendEnabled,
     setFlag,
     setNewContentIndicatorSeen,
 } from './flagsSlice';
@@ -37,6 +38,17 @@ describe('flagsSlice', () => {
         const store = initStore();
         store.dispatch(setFlag({ key: 'initialRun', value: false }));
         expect(store.getState().flags.initialRun).toBe(false);
+    });
+
+    it('keeps Refer-A-Friend off until its debug flag is enabled', () => {
+        const store = initStore();
+        expect(selectIsReferAFriendEnabled(store.getState())).toBe(false);
+
+        store.dispatch(setFlag({ key: 'isReferAFriendEnabled', value: true }));
+        expect(selectIsReferAFriendEnabled(store.getState())).toBe(true);
+
+        store.dispatch(setFlag({ key: 'isReferAFriendEnabled', value: false }));
+        expect(selectIsReferAFriendEnabled(store.getState())).toBe(false);
     });
 
     it('should set a flag to false', () => {
@@ -98,6 +110,7 @@ describe('flagsSlice', () => {
         expect(store.getState().flags.seenNewContentIndicators).toEqual({
             [NewContentIndicatorId.Earn26_8]: true,
             [NewContentIndicatorId.Swap26_10]: true,
+            [NewContentIndicatorId.ReferAFriend26_10]: true,
         });
     });
 

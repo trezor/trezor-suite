@@ -23,6 +23,7 @@ export const HideBalances = () => {
 
     return (
         <QuickActionButton
+            aria-label={translationString(translationLabel)}
             tooltip={{
                 content: (
                     <Row gap={8}>
