@@ -68,6 +68,7 @@ const getState = ({
     device: {
         devices: [device],
         selectedDevice: device,
+        buttonRequestsByPath: {},
     },
 });
 

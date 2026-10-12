@@ -7,7 +7,13 @@ import {
 } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { type Device, type DeviceState, type Features, type KnownDevice } from '@trezor/connect';
+import {
+    type Device,
+    type DeviceState,
+    type DeviceUniquePath,
+    type Features,
+    type KnownDevice,
+} from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import {
     type ActionTypesDep,
@@ -29,6 +35,12 @@ export type DeviceReducerState = {
      */
     devices: TrezorDevice[];
 
+    /**
+     * Pending button requests keyed by physical-device `path`: a prompt on the device does not
+     * depend on the wallet instance/state. Never persisted.
+     */
+    buttonRequestsByPath: Record<DeviceUniquePath, ButtonRequest[]>;
+
     selectedDevice?: TrezorDevice;
     dismissedSecurityChecks?: {
         firmwareAuthenticity?: string[];
@@ -40,6 +52,7 @@ export type DeviceReducerState = {
 
 export const deviceInitialState: DeviceReducerState = {
     devices: [],
+    buttonRequestsByPath: {},
     selectedDevice: undefined,
 };
 
@@ -126,7 +139,6 @@ const connectDevice = (draft: DeviceReducerState, { state, ...device }: Device) 
 
     const deviceCommonFields = {
         connected: true,
-        buttonRequests: [],
         metadata: {},
         passwords: {},
         firstConnectedTimestamp:
@@ -372,6 +384,9 @@ const setDeviceState = (
  * @param {Device} device
  */
 const disconnectDevice = (draft: DeviceReducerState, device: TrezorDevice) => {
+    // Must run before the `path` of remembered devices is blanked below.
+    if (device.path) delete draft.buttonRequestsByPath[device.path];
+
     // find all devices with "path"
     const affectedDevices = draft.devices.filter(d => d.path === device.path);
     affectedDevices.forEach(d => {
@@ -433,7 +448,6 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
         walletNumber: undefined,
         ts: currentTime,
         firstConnectedTimestamp: device.firstConnectedTimestamp ?? currentTime,
-        buttonRequests: [],
         metadata: {},
         passwords: {},
     };
@@ -514,37 +528,17 @@ const forget = (draft: DeviceReducerState, device: TrezorDevice) => {
 
 const addButtonRequest = (
     draft: DeviceReducerState,
-    device: TrezorDevice | undefined,
+    path: DeviceUniquePath,
     buttonRequest: ButtonRequest,
 ) => {
-    // only acquired devices
-    if (!device?.features) return;
-    const index = deviceUtils.findInstanceIndex(draft.devices, device);
-    if (!draft.devices[index]) return;
-    // update state
-
-    draft.devices[index].buttonRequests.push(buttonRequest);
+    // An entry under an empty path could never be read or removed.
+    if (!path) return;
+    (draft.buttonRequestsByPath[path] ??= []).push(buttonRequest);
 };
 
-const removeButtonRequests = (
-    draft: DeviceReducerState,
-    device?: TrezorDevice,
-    buttonRequestCode?: ButtonRequest['code'],
-) => {
-    // only acquired devices
-    if (!device?.features) return;
-    const index = deviceUtils.findInstanceIndex(draft.devices, device);
-    if (!draft.devices[index]) return;
-    // update state
-    if (!buttonRequestCode) {
-        draft.devices[index].buttonRequests = [];
-
-        return;
-    }
-
-    draft.devices[index].buttonRequests = draft.devices[index].buttonRequests.filter(
-        ({ code }) => code !== buttonRequestCode,
-    );
+const removeButtonRequests = (draft: DeviceReducerState, path?: DeviceUniquePath) => {
+    if (!path) return;
+    delete draft.buttonRequestsByPath[path];
 };
 
 // called after successful wipeDevice
@@ -590,10 +584,10 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                 forget(state, payload.device);
             })
             .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
-                addButtonRequest(state, payload.device, payload.buttonRequest);
+                addButtonRequest(state, payload.path, payload.buttonRequest);
             })
             .addCase(deviceActions.removeButtonRequests, (state, { payload }) => {
-                removeButtonRequests(state, payload.device, payload.buttonRequestCode);
+                removeButtonRequests(state, payload.path);
             })
             .addCase(deviceActions.requestDeviceReconnect, state => {
                 requestDeviceReconnect(state);

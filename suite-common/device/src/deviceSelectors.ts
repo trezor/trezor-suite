@@ -160,9 +160,14 @@ export const selectSupportedDeviceLanguages = createMemoizedSelector(
     },
 );
 
+export const selectDeviceButtonRequestsByPath = (state: DeviceRootState) =>
+    state.device.buttonRequestsByPath;
+
+// Only the selected device's requests are shown; requests of other devices stay stored.
 export const selectDeviceButtonRequests = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => device?.buttonRequests ?? [],
+    [selectSelectedDevice, selectDeviceButtonRequestsByPath],
+    (device, buttonRequestsByPath) =>
+        returnStableArrayIfEmpty(device?.path ? buttonRequestsByPath[device.path] : undefined),
 );
 
 export const selectDeviceButtonRequestsCodes = createMemoizedSelector(
