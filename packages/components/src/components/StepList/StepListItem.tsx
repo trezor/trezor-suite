@@ -168,8 +168,7 @@ const Line = styled.div<{
                   grid-column: 2;
                   grid-row: 1;
                   margin: 0 ${$bulletGap}px;
-                  border-top: ${$lineWidth}px dashed
-                      ${({ theme }) => theme.elementBorderNeutralSofter};
+                  border-top: ${$lineWidth}px dashed ${({ theme }) => theme.borderNeutral};
                   place-self: center stretch;
 
                   ${Item}:last-child & {
@@ -178,8 +177,7 @@ const Line = styled.div<{
               `
             : css`
                   place-self: stretch center;
-                  border-left: ${$lineWidth}px dashed
-                      ${({ theme }) => theme.elementBorderNeutralSofter};
+                  border-left: ${$lineWidth}px dashed ${({ theme }) => theme.borderNeutral};
                   margin: ${$lineWidth}px 0;
 
                   ${Item}:last-child & {

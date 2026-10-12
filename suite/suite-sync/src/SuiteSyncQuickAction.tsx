@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsDebugModeActive } from '@suite/debug';
-import { Translation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
 import {
     type SuiteSyncRelayConnection,
     selectIsSuiteSyncEnabled,
@@ -58,6 +58,7 @@ const LastSynced = ({ timestamp }: LastSyncedProps) => (
 );
 
 export const SuiteSyncQuickAction = () => {
+    const { translationString } = useTranslation();
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const isConnected = useSelector(selectIsSuiteSyncRelayConnected);
@@ -70,6 +71,7 @@ export const SuiteSyncQuickAction = () => {
 
     return (
         <QuickActionButton
+            aria-label={translationString('TR_EXPERIMENTAL_SUITE_SYNC_TITLE')}
             tooltip={{
                 content: (
                     <Column gap={8} padding={4} alignItems="start">

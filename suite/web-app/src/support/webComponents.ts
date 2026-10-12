@@ -3,6 +3,11 @@ import { type ComponentType, type LazyExoticComponent, lazy } from 'react';
 import { type PageName } from '@suite/router';
 
 export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>> = {
+    'suite-refer-a-friend': lazy(() =>
+        import(/* webpackChunkName: "refer-a-friend" */ 'src/views/refer-a-friend').then(
+            ({ ReferAFriend }) => ({ default: ReferAFriend }),
+        ),
+    ),
     'suite-index': lazy(() =>
         import(/* webpackChunkName: "dashboard" */ 'src/views/dashboard/index').then(
             ({ Dashboard }) => ({ default: Dashboard }),

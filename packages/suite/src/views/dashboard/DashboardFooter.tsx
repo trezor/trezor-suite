@@ -3,27 +3,17 @@ import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import {
-    selectRememberedHiddenWalletsCount,
-    selectRememberedStandardWalletsCount,
-} from '@suite-common/device';
 import { Box, Button, Column, Divider, Row, SvgImage, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isWeb } from '@trezor/env-utils';
-import { UsersFilledIcon } from '@trezor/icons';
 import { QrCode } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
-import {
-    SUITE_MOBILE_APP_STORE,
-    SUITE_MOBILE_PLAY_STORE,
-    SUITE_REFERRAL,
-    SUITE_URL,
-} from '@trezor/urls';
+import { SUITE_MOBILE_APP_STORE, SUITE_MOBILE_PLAY_STORE, SUITE_URL } from '@trezor/urls';
 
 import { useGuide } from 'src/hooks/guide';
-import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
+import { ReferralButton } from './ReferralButton';
 import { StoreBadge } from '../../components/suite/StoreBadge';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../support/suite/ContentFlex';
 
@@ -75,33 +65,6 @@ const StoreBadgeWithQr = ({ url, image, analyticsPayload }: StoreBadgeWithQrProp
                 image={image}
             />
         </Tooltip>
-    );
-};
-
-const ReferralButton = () => {
-    const { analytics } = useServices(injectDesktopAnalytics);
-    const hasAtLeastOneRememberedWallet = useSelector(
-        state =>
-            selectRememberedStandardWalletsCount(state) > 0 ||
-            selectRememberedHiddenWalletsCount(state) > 0,
-    );
-
-    return (
-        <Button
-            href={SUITE_REFERRAL}
-            intent="neutral"
-            priority="secondary"
-            iconLeft={UsersFilledIcon}
-            size="small"
-            onClick={() => {
-                analytics.report({
-                    type: events.promoReferralButtonEvent.name,
-                    payload: { hasAtLeastOneRememberedWallet },
-                });
-            }}
-        >
-            <Translation id="TR_DASHBOARD_REFERRAL_BUTTON" />
-        </Button>
     );
 };
 

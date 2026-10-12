@@ -1,5 +1,6 @@
 export type RouterApp =
     | 'dashboard'
+    | 'refer-a-friend'
     | 'earn'
     | 'earn-yield'
     | 'earn-staking'

@@ -5,6 +5,7 @@ export const illustrations = {
     assetsGet: require('../assets/assetsGet.svg'),
     connectTrezor: require('../assets/connectTrezor.svg'),
     disconnectTrezor: require('../assets/disconnectTrezor.svg'),
+    megaphone: require('../assets/megaphone.svg'),
     networks: require('../assets/networks.svg'),
     tradeFailure: require('../assets/tradeFailure.svg'),
     tradeSuccess: require('../assets/tradeSuccess.svg'),
