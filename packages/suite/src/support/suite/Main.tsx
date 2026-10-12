@@ -1,10 +1,7 @@
 import { HelmetProvider } from 'react-helmet-async';
 
 import { ReactQueryProvider } from '@suite-common/react-query/react';
-import { injectStore } from '@suite-common/redux-utils';
 import { SelectCacheProvider } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
-import { NetworkDisplayProvider } from '@trezor/product-components';
 
 import Autodetect from 'src/support/suite/Autodetect';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
@@ -24,38 +21,30 @@ type MainProps = {
     children: React.ReactNode;
 };
 
-export const Main = ({ trafficLightOffset, children }: MainProps) => {
-    const { store } = useServices(injectStore);
-
-    return (
-        // Todo: Enable when issues are fixed (ReactTruncate & BumpFee)
-        // <StrictMode>
-        <NetworkDisplayProvider store={store}>
-            <HelmetProvider>
-                {trafficLightOffset ?? null}
-                <ConnectPopupModals />
-                <ConnectedThemeProvider>
-                    <ResponsiveContextProvider>
-                        <ErrorBoundary>
-                            <ReactQueryProvider>
-                                <Autodetect />
-                                <Resize />
-                                <Protocol />
-                                <OnlineStatus />
-                                <RouterHandler />
-                                <ConnectedIntlProvider>
-                                    <SelectCacheProvider>
-                                        <ConnectedFormatterProvider>
-                                            {children}
-                                        </ConnectedFormatterProvider>
-                                    </SelectCacheProvider>
-                                </ConnectedIntlProvider>
-                            </ReactQueryProvider>
-                        </ErrorBoundary>
-                    </ResponsiveContextProvider>
-                </ConnectedThemeProvider>
-            </HelmetProvider>
-        </NetworkDisplayProvider>
-        // </StrictMode>
-    );
-};
+export const Main = ({ trafficLightOffset, children }: MainProps) => (
+    // Todo: Enable when issues are fixed (ReactTruncate & BumpFee)
+    // <StrictMode>
+    <HelmetProvider>
+        {trafficLightOffset ?? null}
+        <ConnectPopupModals />
+        <ConnectedThemeProvider>
+            <ResponsiveContextProvider>
+                <ErrorBoundary>
+                    <ReactQueryProvider>
+                        <Autodetect />
+                        <Resize />
+                        <Protocol />
+                        <OnlineStatus />
+                        <RouterHandler />
+                        <ConnectedIntlProvider>
+                            <SelectCacheProvider>
+                                <ConnectedFormatterProvider>{children}</ConnectedFormatterProvider>
+                            </SelectCacheProvider>
+                        </ConnectedIntlProvider>
+                    </ReactQueryProvider>
+                </ErrorBoundary>
+            </ResponsiveContextProvider>
+        </ConnectedThemeProvider>
+    </HelmetProvider>
+    // </StrictMode>
+);

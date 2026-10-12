@@ -22,6 +22,7 @@
         "@trezor/connect-mobile": "workspace:^",
         "@trezor/connect-web": "workspace:^",
         "@trezor/connect-webextension": "workspace:^",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/device-authenticity": "workspace:^",
         "@trezor/icons": "workspace:*",
         "@trezor/network-module-types": "workspace:*",

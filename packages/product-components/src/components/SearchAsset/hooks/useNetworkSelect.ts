@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
-import type { NetworkSymbol } from '@trezor/network-module-types';
+import type { NetworkConfigState, NetworkSymbol } from '@trezor/network-module-types';
 
-import { useNetworkDisplaySelector } from '../../../network-display/NetworkDisplayProvider';
 import { selectNetworkOptions } from '../../../network-display/networkDisplaySelectors';
 import { getNetworkIcons } from '../../../utils/getNetworkIcons';
 
@@ -17,7 +17,7 @@ export type SearchAssetSelectConfig = {
 
 export const useNetworkSelect = (config: SearchAssetSelectConfig) => {
     const { isToken, includeAllOption, allLabel, selectedNetwork } = config;
-    const networks = useNetworkDisplaySelector(state =>
+    const networks = useSelector((state: NetworkConfigState) =>
         selectNetworkOptions(state, config.networks),
     );
 

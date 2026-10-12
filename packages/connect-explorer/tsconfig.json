@@ -27,6 +27,7 @@
         { "path": "../connect-mobile" },
         { "path": "../connect-web" },
         { "path": "../connect-webextension" },
+        { "path": "../dependency-injection" },
         { "path": "../device-authenticity" },
         { "path": "../icons" },
         {
