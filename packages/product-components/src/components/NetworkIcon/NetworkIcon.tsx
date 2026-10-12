@@ -57,7 +57,8 @@ export function NetworkIcon({
     'data-testid': dataTestId,
 }: NetworkIconProps) {
     if (!isNetworkIconSymbol(networkSymbol)) {
-        console.error(`Network icon for ${networkSymbol} not found`);
+        // Not console.error: captureConsoleIntegration would report every unknown symbol to Sentry.
+        console.warn(`Network icon for ${networkSymbol} not found`);
 
         return null;
     }
