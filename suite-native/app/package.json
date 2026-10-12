@@ -170,7 +170,7 @@
         "react-native-safe-area-context": "~5.7.0",
         "react-native-screens": "~4.26.0",
         "react-native-svg": "15.15.5",
-        "react-native-tcp-socket": "6.4.1",
+        "react-native-tcp-socket": "6.4.3",
         "react-native-teleport": "^1.2.1",
         "react-native-worklets": "0.13.0",
         "react-redux": "9.3.0",
