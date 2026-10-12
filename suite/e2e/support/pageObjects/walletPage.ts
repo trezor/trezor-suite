@@ -38,6 +38,7 @@ export class WalletPage {
     readonly tradingDropdownBuyButton: Locator;
     readonly tokenBuyButton: Locator;
     readonly tokenSellButton: Locator;
+    readonly zeroBalanceTokensToggle: Locator;
     readonly tokenRow = (tokenName: string): Locator =>
         this.page.getByTestId(`@token-row/${tokenName}`);
     readonly tokenRowMoreButton = (tokenName: string): Locator =>
@@ -125,6 +126,7 @@ export class WalletPage {
             .getByTestId('@wallet/menu/wallet-trading-buy');
         this.tokenBuyButton = this.page.getByTestId('@trading/tokens/buy-button');
         this.tokenSellButton = this.page.getByTestId('@trading/tokens/sell-button');
+        this.zeroBalanceTokensToggle = this.page.getByTestId('@wallet/tokens/zero-balance-toggle');
         this.accountDetailsTabButton = this.page.getByTestId('@wallet/menu/wallet-details');
         this.accountDetails = this.page.getByTestId('@wallet/account-details');
         this.showPublicKeyButton = this.page.getByTestId('@wallets/details/show-xpub-button');
@@ -267,25 +269,35 @@ export class WalletPage {
     }
 
     @step()
-    async openBuyTradingOfToken({ tokenName, ...params }: TokenWalletParams) {
+    async openTokensOfAccountWithVisibleToken({ tokenName, ...params }: TokenWalletParams) {
         await this.openAccount({ ...params, subAccount: 'tokens' });
-        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins');
+        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins', {
+            timeout: 30_000,
+        });
+        await expect(this.tokenRow(tokenName)).toBeAttached();
+        if (await this.tokenRow(tokenName).isHidden()) {
+            await this.zeroBalanceTokensToggle.click();
+        }
+        await expect(this.tokenRow(tokenName)).toBeVisible();
+    }
+
+    @step()
+    async openBuyTradingOfToken({ tokenName, ...params }: TokenWalletParams) {
+        await this.openTokensOfAccountWithVisibleToken({ tokenName, ...params });
         await this.tokenRowMoreButton(tokenName).click();
         await this.tokenBuyButton.click();
     }
 
     @step()
     async openSellTradingOfToken({ tokenName, ...params }: TokenWalletParams) {
-        await this.openAccount({ ...params, subAccount: 'tokens' });
-        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins');
+        await this.openTokensOfAccountWithVisibleToken({ tokenName, ...params });
         await this.tokenRowMoreButton(tokenName).click();
         await this.tokenSellButton.click();
     }
 
     @step()
     async openSwapTradingOfToken({ tokenName, ...params }: TokenWalletParams) {
-        await this.openAccount({ ...params, subAccount: 'tokens' });
-        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins');
+        await this.openTokensOfAccountWithVisibleToken({ tokenName, ...params });
         await this.tokenRowSwapButton(tokenName).click();
     }
 

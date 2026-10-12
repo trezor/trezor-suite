@@ -109,7 +109,10 @@ export const TokensTable = ({
                         ))}
                         {tokensWithoutBalance.length !== 0 && (
                             <>
-                                <Table.Row onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}>
+                                <Table.Row
+                                    onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}
+                                    data-testid="@wallet/tokens/zero-balance-toggle"
+                                >
                                     <Table.Cell colSpan={1}>
                                         <DropdownRow
                                             isActive={isZeroBalanceOpen}
