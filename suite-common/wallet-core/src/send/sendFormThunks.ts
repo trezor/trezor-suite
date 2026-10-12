@@ -42,8 +42,15 @@ import {
 } from '@suite-common/wallet-utils';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type PROTO } from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
+import {
+    type DefinitionsChannel,
+    asCoinSymbol,
+    getDefinitionsVersionForFirmware,
+    getEthereumDefinitionsBaseUrl,
+} from '@trezor/connect-common';
 import { getSolanaTokenDefinition } from '@trezor/connect-core/src/api/solana/solanaDefinitions';
+import { type Getter } from '@trezor/dependency-injection';
+import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
 
@@ -827,6 +834,12 @@ export const signTransactionThunk = createThunk<
 
 export type EnhancePrecomposedTransactionThunkState = DeviceRootState;
 
+export type EnhancePrecomposedTransactionThunkDeps = {
+    services: {
+        getDebugSettings: Getter<[], { definitionsChannel?: DefinitionsChannel }>;
+    };
+};
+
 export const enhancePrecomposedTransactionThunk = createThunk<
     GeneralPrecomposedTransactionFinal,
     {
@@ -834,12 +847,16 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         precomposedTransaction: GeneralPrecomposedTransactionFinal;
         selectedAccount: Account;
     },
-    { rejectValue: string; state: EnhancePrecomposedTransactionThunkState }
+    {
+        rejectValue: string;
+        state: EnhancePrecomposedTransactionThunkState;
+        extra: EnhancePrecomposedTransactionThunkDeps;
+    }
 >(
     `${SEND_MODULE_PREFIX}/enhancePrecomposedTransactionThunk`,
     async (
         { transactionFormValues: formValues, precomposedTransaction, selectedAccount },
-        { getState, dispatch, rejectWithValue },
+        { getState, dispatch, rejectWithValue, extra },
     ) => {
         const device = selectSelectedDevice(getState());
         const selectedAccountNetwork = getNetwork(selectedAccount.symbol);
@@ -903,10 +920,13 @@ export const enhancePrecomposedTransactionThunk = createThunk<
             enhancedPrecomposedTransaction.token?.contract &&
             selectedAccountNetwork.chainId
         ) {
+            // Probe the same definitions Connect will send to the device.
+            const baseUrl = getEthereumDefinitionsBaseUrl(
+                getDefinitionsVersionForFirmware(getFirmwareVersionArray(device) ?? undefined),
+                extra.services.getDebugSettings().definitionsChannel,
+            );
             isTokenKnown = await fetch(
-                `https://data.trezor.io/firmware/definitions/eth/chain-id/${
-                    selectedAccountNetwork.chainId
-                }/token-${enhancedPrecomposedTransaction.token.contract.substring(2).toLowerCase()}.dat`,
+                `${baseUrl}/chain-id/${selectedAccountNetwork.chainId}/token-${enhancedPrecomposedTransaction.token.contract.substring(2).toLowerCase()}.dat`,
                 { method: 'HEAD' },
             )
                 .then(response => response.ok)
