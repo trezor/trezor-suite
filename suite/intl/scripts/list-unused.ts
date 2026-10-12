@@ -55,7 +55,8 @@ if (unused.length) {
                 .slice(0, 12);
             const branchName = 'chore/remove-unused-messages-' + dateCode;
             const title = 'chore(intl): remove unused messages';
-            const body = 'This PR removes unused localization messages from Suite';
+            const body =
+                '## Description\n\nThis PR removes unused localization messages from Suite';
             execLocal(`git checkout -b ${branchName}`);
             execLocal(`git add ${pathToMessages}`);
             execLocal(`git commit -m "${title}"`);

@@ -97,12 +97,12 @@ jobs:
         run: |
           if [ "${{ github.event.inputs.platform }}" = "desktop" ]; then
             PR_TITLE="Crowdin translations update [DESKTOP]"
-            PR_BODY="Automatically generated PR for updating DESKTOP crowdin translations from ${{ env.SOURCE_BRANCH }} branch."
+            PR_BODY=$'## Description\n\nAutomatically generated PR for updating DESKTOP crowdin translations from ${{ env.SOURCE_BRANCH }} branch.'
             COMMIT_SCOPE="suite"
             PLATFORM_LABEL_ARGS="--label desktop"
           else
             PR_TITLE="Crowdin translations update [MOBILE]"
-            PR_BODY="Automatically generated PR for updating MOBILE crowdin translations from ${{ env.SOURCE_BRANCH }} branch."
+            PR_BODY=$'## Description\n\nAutomatically generated PR for updating MOBILE crowdin translations from ${{ env.SOURCE_BRANCH }} branch.'
             COMMIT_SCOPE="suite-native"
             PLATFORM_LABEL_ARGS=""
           fi
