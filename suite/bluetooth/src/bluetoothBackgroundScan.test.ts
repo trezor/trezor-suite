@@ -2,21 +2,17 @@
  * @jest-environment jsdom
  */
 
-import { deviceInitialState } from '@suite-common/device';
-import { firmwareInitialState } from '@suite-common/firmware';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { type IpcResponse, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { createDeferred } from '@trezor/utils';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
+import { type BackgroundScan, createBackgroundScan } from './bluetoothBackgroundScan';
 import {
-    type BackgroundScan,
-    type BackgroundScanDeps,
-    createBackgroundScan,
-} from './bluetoothBackgroundScan';
-import { type BluetoothServiceRootState } from './bluetoothServiceTypes';
-import { initialDesktopBluetoothState } from './desktopBluetoothReducer';
+    type WithBluetoothRootState,
+    initialDesktopBluetoothState,
+} from './desktopBluetoothReducer';
 
 const disconnectedDevice: DesktopBluetoothDevice = {
     id: asBluetoothDeviceId('test-device'),
@@ -32,7 +28,7 @@ const disconnectedDevice: DesktopBluetoothDevice = {
 };
 
 describe('createBackgroundScan', () => {
-    let state: BluetoothServiceRootState;
+    let state: WithBluetoothRootState;
     let scan: BackgroundScan;
 
     beforeEach(() => {
@@ -46,11 +42,8 @@ describe('createBackgroundScan', () => {
                 adapterStatus: 'enabled',
                 knownDevices: [disconnectedDevice],
             },
-            device: deviceInitialState,
-            firmware: firmwareInitialState,
         };
-        const deps: BackgroundScanDeps = { getState: () => state };
-        scan = createBackgroundScan(deps);
+        scan = createBackgroundScan({ getState: () => state });
     });
 
     afterEach(async () => {

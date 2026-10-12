@@ -1,7 +1,7 @@
 import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 
-import { type BluetoothDep } from './bluetoothServiceTypes';
+import { type BluetoothDep } from './createBluetooth';
 
 type ForgetAllBluetoothDevicesThunkDeps = WithServices<BluetoothDep>;
 
