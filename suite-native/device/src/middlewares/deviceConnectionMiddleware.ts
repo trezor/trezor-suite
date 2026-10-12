@@ -5,7 +5,8 @@ import {
     createListenerMiddleware,
 } from '@reduxjs/toolkit';
 
-import { deviceActions, selectDevices } from '@suite-common/device';
+import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import {
     getDeviceInternalModel,
     getIsDeviceDescriptorApiTypeBluetooth,
@@ -171,6 +172,25 @@ deviceConnectionMiddleware.startListening({
             wasDeviceOnboardingCancelled: selectWasDeviceOnboardingCancelled(getState()),
             isAnyNetworkEnabled,
         });
+    },
+});
+
+// Discovery entropy check fails during discovery, not on connect, so the modal is displayed as soon as it fails.
+// When you reconnect such compromised device, navigation to modal is handled in the `deviceActions.connectDevice` predicate.
+deviceConnectionMiddleware.startListening({
+    predicate: action => persistentDeviceDataActions.setDiscoveryEntropyCheckResult.match(action),
+    effect: (_action: UnknownAction, { getState }) => {
+        if (!navigationContainerRef.isReady()) return;
+        const device = selectSelectedDevice(getState());
+        if (!device) return;
+        const failedCheck = selectCompromisedDeviceFailedCheck(getState(), device);
+        if (failedCheck !== 'entropy-discovery') return;
+        // One of the blacklisted routes is DeviceCompromisedModal, which means that if we are there already,
+        // navigation is not dispatched again.
+        if (checkIsActiveRouteAnyOf(DEVICE_CONNECTION_BLACKLISTED_ROUTES)) return;
+        if (selectIsFirmwareInstallationRunning(getState())) return;
+
+        navigationContainerRef.navigate(RootStackRoutes.DeviceCompromisedModal, { failedCheck });
     },
 });
 
