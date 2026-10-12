@@ -54,9 +54,16 @@ export const selectDeviceAuthenticityByDeviceId = createMemoizedSelector(
     persistentDeviceData => persistentDeviceData?.authenticityResult,
 );
 
+// Result of the wallet creation entropy check.
 export const selectIsEntropyCheckFailed = createMemoizedSelector(
     [selectPersistentDeviceDataById],
     persistentDeviceData => persistentDeviceData?.lastEntropyCheckResult?.success === false,
+);
+
+export const selectIsDiscoveryEntropyCheckFailed = createMemoizedSelector(
+    [selectPersistentDeviceDataById],
+    persistentDeviceData =>
+        (persistentDeviceData?.lastEntropyCheckResult?.discoveryCheckFailedPaths?.length ?? 0) > 0,
 );
 
 export const selectIsDeviceInvariabilityCheckSuccess = createMemoizedSelector(
