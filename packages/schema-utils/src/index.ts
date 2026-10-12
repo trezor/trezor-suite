@@ -12,6 +12,8 @@ import {
 import { Errors, type ValueError, ValueErrorType } from '@sinclair/typebox/errors';
 import { Mixin } from 'ts-mixer';
 
+import { isSafeObjectKey } from '@trezor/utils';
+
 import { ArrayBufferBuilder, BufferBuilder, KeyofEnumBuilder, UintBuilder } from './custom-types';
 import { InvalidParameter } from './errors';
 import { setDeepValue } from './utils';
@@ -88,9 +90,15 @@ export function Assert<T extends TSchema>(schema: T, value: unknown): asserts va
             // String instead of number, try to autocast
             const currentValue = error.value;
             const parsedNumber = Number(currentValue);
-            if (!Number.isNaN(parsedNumber) && currentValue === parsedNumber.toString()) {
+            const pathParts = error.path.slice(1).split('/');
+            // setDeepValue never sets a value under a key like "__proto__", so such a value
+            // cannot be autocast and stays invalid.
+            if (
+                !Number.isNaN(parsedNumber) &&
+                currentValue === parsedNumber.toString() &&
+                pathParts.every(isSafeObjectKey)
+            ) {
                 // Autocast successful
-                const pathParts = error.path.slice(1).split('/');
                 setDeepValue(value, pathParts, parsedNumber);
             } else {
                 throw new InvalidParameter(error.message, error.path, error.type, error.value);

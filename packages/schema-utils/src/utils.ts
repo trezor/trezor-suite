@@ -1,12 +1,16 @@
+import { isSafeObjectKey } from '@trezor/utils';
+
 /**
  * Sets a value in an object by a path
  * From https://stackoverflow.com/a/53762921
+ * Keys that lead to a prototype ("__proto__", "constructor", "prototype") are never
+ * followed or set.
  * @param obj object to set value in
  * @param param path to the value
  * @param value value to set
  */
 export function setDeepValue(obj: any, [prop, ...path]: string[], value: any) {
-    if (prop === undefined) return;
+    if (prop === undefined || !isSafeObjectKey(prop)) return;
 
     if (!path.length) {
         obj[prop] = value;

@@ -18,4 +18,23 @@ describe('setDeepValue', () => {
         setDeepValue(obj, ['a', 'b', 'c'], 123);
         expect(obj).toEqual({ a: { b: { c: 123 } } });
     });
+
+    it.each([
+        { path: ['__proto__', 'polluted'], value: true },
+        { path: ['constructor', 'prototype', 'polluted'], value: true },
+        { path: ['__proto__'], value: { polluted: true } },
+    ])('does not follow or set a key that leads to a prototype: $path', ({ path, value }) => {
+        const obj = {};
+
+        try {
+            setDeepValue(obj, path, value);
+
+            expect(({} as Record<string, unknown>).polluted).toBeUndefined();
+            expect(Object.getPrototypeOf(obj)).toBe(Object.prototype);
+            expect(obj).toEqual({});
+        } finally {
+            // Keeps a regression from leaking into the other tests of this worker.
+            delete (Object.prototype as Record<string, unknown>).polluted;
+        }
+    });
 });

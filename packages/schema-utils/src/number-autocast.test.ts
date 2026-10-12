@@ -1,3 +1,5 @@
+import { InvalidParameter } from './errors';
+
 import { Assert, Type } from './index';
 
 describe('number-autocast', () => {
@@ -19,5 +21,13 @@ describe('number-autocast', () => {
         Assert(schema, input);
         expect(input.number).toEqual(1);
         expect(input.nested.number).toEqual(1);
+    });
+
+    it('should not autocast a value under a key that setDeepValue does not follow', () => {
+        const schema = Type.Record(Type.String(), Type.Number());
+        // JSON.parse creates "__proto__" as an own key.
+        const input = JSON.parse('{"__proto__":"1"}');
+
+        expect(() => Assert(schema, input)).toThrow(InvalidParameter);
     });
 });
