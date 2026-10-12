@@ -164,6 +164,7 @@ export * from './constants/keyboardEvents';
 export * from './utils/useScrollShadow';
 export * from './utils/transientProps';
 export { useMediaQuery } from './utils/useMediaQuery';
+export { useHeightAnimationOnChange } from './hooks/useHeightAnimationOnChange';
 export { commonFocusStyles } from './utils/utils';
 
 export { intermediaryTheme } from './config/colors';

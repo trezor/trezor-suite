@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 import { getNetworkFeatures } from '@suite-common/wallet-config';
-import { Card, Column, motionEasing } from '@trezor/components';
+import { Card, Column, motionEasing, useHeightAnimationOnChange } from '@trezor/components';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -27,6 +27,12 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
         getValues,
     } = useSendFormContext();
 
+    // Only adding or removing an output slides the content below, typing never does.
+    const containerRef = useHeightAnimationOnChange({
+        trigger: outputs.length,
+        isDisabled: disableAnim || !hasRenderedOutputs,
+    });
+
     const formOutputs = getValues().outputs;
     const isSendingTokens = formOutputs?.some(output => !!output.token);
 
@@ -41,7 +47,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
     const areTokensSupported = getNetworkFeatures(symbol).includes('tokens');
 
     return (
-        <div>
+        <div ref={containerRef}>
             <Column gap={16}>
                 {outputs.map((output, index) => (
                     <motion.div
