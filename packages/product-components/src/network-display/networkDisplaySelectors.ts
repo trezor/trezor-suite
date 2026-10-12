@@ -1,11 +1,50 @@
 import { createSelector } from 'reselect';
 
-import type { NetworkConfigState, NetworkSymbol } from '@trezor/network-module-types';
+import {
+    type NetworkConfigState,
+    type NetworkSymbol,
+    asNetworkSymbol,
+} from '@trezor/network-module-types';
 import { typedObjectKeys } from '@trezor/utils';
 
 import type { NetworkConfig } from './NetworkConfig';
 
-const selectNetworkConfigs = (state: NetworkConfigState) => state.networks;
+export const selectNetworkConfigs = (state: NetworkConfigState) => state.networks;
+
+export const selectNetworkConfig: (
+    state: NetworkConfigState,
+    symbol: string,
+) => NetworkConfig | undefined = createSelector(
+    [
+        (state: NetworkConfigState, symbol: string) => state.networks?.[asNetworkSymbol(symbol)],
+        (_state: NetworkConfigState, symbol: string) => asNetworkSymbol(symbol),
+    ],
+    (config, symbol) => (config ? { ...config, symbol } : undefined),
+);
+
+export const selectNetworkConfigByCoingeckoId = (
+    state: NetworkConfigState,
+    coingeckoId: string,
+): NetworkConfig | undefined => {
+    if (!state.networks) return undefined;
+
+    const symbol = typedObjectKeys(state.networks).find(
+        networkSymbol => state.networks?.[networkSymbol]?.coingeckoId === coingeckoId,
+    );
+
+    return symbol ? selectNetworkConfig(state, symbol) : undefined;
+};
+
+export const selectDisplaySymbol = (
+    state: NetworkConfigState,
+    coinSymbol: string,
+    contractAddress?: string | null,
+): string => {
+    const config = selectNetworkConfig(state, coinSymbol.toLowerCase());
+    if (config && !contractAddress) return config.displaySymbol ?? coinSymbol;
+
+    return coinSymbol;
+};
 
 export const selectNetworkOptions: (
     state: NetworkConfigState,
@@ -34,3 +73,14 @@ export const selectNetworkOptions: (
         return typedObjectKeys(networks).map(toNetworkConfig);
     },
 );
+
+export const selectShouldShowNetworkIcon = (
+    state: NetworkConfigState,
+    networkSymbol?: NetworkSymbol,
+    contractAddress?: string | null,
+): boolean =>
+    !!(
+        networkSymbol &&
+        contractAddress &&
+        state.networks?.[networkSymbol]?.features?.includes('tokens')
+    );

@@ -1,9 +1,12 @@
 import { type ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Row, Text } from '@trezor/components';
+import type { NetworkConfigState } from '@trezor/network-module-types';
 
+import { formatDisplaySymbol } from './formatDisplaySymbol';
 import { type ExchangeInfoAsset } from './notificationsTypes';
+import { selectDisplaySymbol } from '../../network-display/networkDisplaySelectors';
 
 type ExchangeAmountWithSymbolProps = {
     amount: ReactNode;
@@ -11,12 +14,15 @@ type ExchangeAmountWithSymbolProps = {
 };
 
 export const ExchangeAmountWithSymbol = ({ amount, asset }: ExchangeAmountWithSymbolProps) => {
-    const resolvedDisplaySymbol = asset.displaySymbol ?? getDisplaySymbol(asset.symbol);
+    const resolvedDisplaySymbol = useSelector((state: NetworkConfigState) =>
+        selectDisplaySymbol(state, asset.symbol),
+    );
+    const displaySymbol = asset.displaySymbol ?? formatDisplaySymbol(resolvedDisplaySymbol);
 
     return (
         <Row gap={4} alignItems="baseline">
             {amount}
-            <Text>{resolvedDisplaySymbol}</Text>
+            <Text>{displaySymbol}</Text>
         </Row>
     );
 };

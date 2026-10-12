@@ -1,6 +1,12 @@
 import { type NetworkConfigState, asNetworkSymbol } from '@trezor/network-module-types';
 
-import { selectNetworkOptions } from './networkDisplaySelectors';
+import {
+    selectDisplaySymbol,
+    selectNetworkConfig,
+    selectNetworkConfigByCoingeckoId,
+    selectNetworkOptions,
+    selectShouldShowNetworkIcon,
+} from './networkDisplaySelectors';
 
 const bitcoin = asNetworkSymbol('btc');
 const ethereum = asNetworkSymbol('eth');
@@ -12,6 +18,45 @@ const state: NetworkConfigState = {
         [ethereum]: { name: 'Ethereum' },
     },
 };
+
+it('keeps a network config selection stable when another network changes', () => {
+    const config = selectNetworkConfig(state, bitcoin);
+    const updatedState: NetworkConfigState = {
+        networks: {
+            ...state.networks,
+            [ethereum]: { name: 'Updated Ethereum' },
+        },
+    };
+
+    expect(selectNetworkConfig(updatedState, bitcoin)).toBe(config);
+    expect(selectNetworkConfig(updatedState, ethereum)?.name).toBe('Updated Ethereum');
+    expect(selectNetworkConfig(updatedState, 'unregistered')).toBeUndefined();
+});
+
+it('selects logo metadata by Coingecko ID', () => {
+    const configuredState: NetworkConfigState = {
+        networks: { [bitcoin]: { name: 'Bitcoin', coingeckoId: 'bitcoin' } },
+    };
+
+    expect(selectNetworkConfigByCoingeckoId(configuredState, 'bitcoin')).toEqual({
+        symbol: bitcoin,
+        name: 'Bitcoin',
+        coingeckoId: 'bitcoin',
+    });
+    expect(selectNetworkConfigByCoingeckoId(configuredState, 'missing')).toBeUndefined();
+    expect(selectNetworkConfigByCoingeckoId({ networks: null }, 'bitcoin')).toBeUndefined();
+});
+
+it('selects native display symbols and preserves full token symbols', () => {
+    const configuredState: NetworkConfigState = {
+        networks: { [bitcoin]: { name: 'Bitcoin', displaySymbol: 'BTC' } },
+    };
+
+    expect(selectDisplaySymbol(configuredState, 'btc')).toBe('BTC');
+    expect(selectDisplaySymbol(configuredState, 'btc', 'contract')).toBe('btc');
+    expect(selectDisplaySymbol(configuredState, 'long-token-symbol')).toBe('long-token-symbol');
+    expect(selectDisplaySymbol({ networks: null }, 'btc')).toBe('btc');
+});
 
 describe('selectNetworkOptions', () => {
     it('uses all configured networks when no list is supplied', () => {
@@ -48,4 +93,28 @@ describe('selectNetworkOptions', () => {
             selectNetworkOptions({ networks: { [bitcoin]: { name: 'Updated Bitcoin' } } }, symbols),
         ).toEqual([{ symbol: bitcoin, name: 'Updated Bitcoin' }]);
     });
+});
+
+it('shows token network badges only for configured token networks', () => {
+    const bsc = asNetworkSymbol('bsc');
+    const configuredState: NetworkConfigState = {
+        networks: {
+            [bsc]: { name: 'BNB Smart Chain', displaySymbol: 'BNB', features: ['tokens'] },
+        },
+    };
+
+    expect(selectShouldShowNetworkIcon(configuredState, bsc, 'contract')).toBe(true);
+    expect(selectShouldShowNetworkIcon(configuredState, bsc, null)).toBe(false);
+    expect(selectShouldShowNetworkIcon(configuredState, undefined, 'contract')).toBe(false);
+    expect(
+        selectShouldShowNetworkIcon(configuredState, asNetworkSymbol('unregistered'), 'contract'),
+    ).toBe(false);
+
+    const updatedState: NetworkConfigState = {
+        networks: {
+            [bsc]: { name: 'BNB Smart Chain', displaySymbol: 'BNB', features: [] },
+        },
+    };
+    expect(selectShouldShowNetworkIcon(updatedState, bsc, 'contract')).toBe(false);
+    expect(selectShouldShowNetworkIcon({ networks: null }, bsc, 'contract')).toBe(false);
 });

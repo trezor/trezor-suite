@@ -1,12 +1,15 @@
 import { type ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
+import { type NetworkConfigState, type NetworkSymbol } from '@trezor/network-module-types';
 
+import { formatDisplaySymbol } from './formatDisplaySymbol';
 import {
     type TransactionNotificationToken,
     type TransactionNotificationType,
 } from './notificationsTypes';
+import { selectDisplaySymbol } from '../../network-display/networkDisplaySelectors';
 
 type TransactionAmountProps = {
     amount: ReactNode;
@@ -31,7 +34,10 @@ export const TransactionAmount = ({
 }: TransactionAmountProps) => {
     const shouldRenderApprovalAmountWithSymbol =
         notificationType === 'tx-approved' || notificationType === 'tx-revoked';
-    const resolvedTokenDisplaySymbol = getDisplaySymbol(tokenSymbol ?? token?.symbol ?? symbol);
+    const resolvedTokenDisplaySymbol = useSelector((state: NetworkConfigState) =>
+        selectDisplaySymbol(state, tokenSymbol ?? token?.symbol ?? symbol),
+    );
+    const displaySymbol = formatDisplaySymbol(resolvedTokenDisplaySymbol);
     const resolvedAmountValue =
         notificationType === 'tx-approved' && isInfiniteApproval
             ? (unlimitedApprovalLabel ?? amount)
@@ -40,7 +46,7 @@ export const TransactionAmount = ({
     const amountContent = shouldRenderApprovalAmountWithSymbol ? (
         <Row display="inline-flex" gap={4} alignItems="baseline">
             {resolvedAmountValue}
-            <span>{resolvedTokenDisplaySymbol}</span>
+            <span>{displaySymbol}</span>
         </Row>
     ) : (
         resolvedAmountValue

@@ -17,11 +17,11 @@ import {
 } from '@trezor/components';
 import { type CoinSymbol, type PermissionRequest, isCoinSymbol } from '@trezor/connect-common';
 import { CheckIcon, FadersIcon, LightningIcon } from '@trezor/icons';
-import { selectNetworkOptions } from '@trezor/product-components';
 
 import { RequestedPermissions } from './RequestedPermissions';
 import * as trezorConnectActions from '../actions/trezorConnectActions';
 import { useActions } from '../hooks';
+import { selectNetworkOptions } from '../reducers/networksReducer';
 import {
     selectConnectInitError,
     selectIsConnectInitSuccess,
