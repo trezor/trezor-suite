@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import * as fs from 'fs';
 import * as path from 'path';
 
 import { uploadToCurrents } from './currentsUpload';
@@ -25,6 +26,7 @@ export const runAllProjects = async (
     quarantinedActions: Action[] = [],
 ): Promise<void> => {
     const failedProjects: string[] = [];
+    let hasRawFailures = false;
 
     for (const project of projects) {
         const previousArtifactsRootDirs = listDetoxArtifactsRootDirs(project.target);
@@ -47,6 +49,7 @@ export const runAllProjects = async (
             artifactsRootDir,
             instanceAttachments,
         });
+        hasRawFailures ||= detoxFailed || hasRemainingFailures;
         uploadToCurrents(project.projectName);
 
         // A project fails only when non-quarantined failures remain,
@@ -55,6 +58,13 @@ export const runAllProjects = async (
             failedProjects.push(project.projectName);
         }
     }
+
+    const reportsDirectory = path.resolve(process.cwd(), 'reports');
+    fs.mkdirSync(reportsDirectory, { recursive: true });
+    fs.writeFileSync(
+        path.join(reportsDirectory, 'e2e-reuse-status.json'),
+        JSON.stringify({ hasFailures: hasRawFailures }),
+    );
 
     if (failedProjects.length > 0) {
         console.error('\nThe following projects failed:');

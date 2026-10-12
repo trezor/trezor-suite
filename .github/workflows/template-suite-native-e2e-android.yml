@@ -162,6 +162,15 @@ jobs:
           script: |
             yarn test:e2e --config=${{ inputs.runner_config }} --shard=${{ matrix.TEST_GROUP }} --totalShards=5 --headless --quarantine
 
+      - name: Store raw test result for reuse checks
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: e2e-reuse-status-${{ github.run_attempt }}-${{ matrix.TEST_GROUP }}
+          path: suite-native/app/reports/e2e-reuse-status.json
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Post Currents link
         if: ${{ !cancelled() && github.event_name == 'pull_request' }}
         uses: ./.github/actions/post-currents-link
