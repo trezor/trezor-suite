@@ -43,7 +43,6 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
     const bluetoothInit = createBluetoothInit({
         dispatch: deps.dispatch,
         getState: deps.getState,
-        backgroundScan,
         setupListeners,
         setupAutoReconnect,
     });

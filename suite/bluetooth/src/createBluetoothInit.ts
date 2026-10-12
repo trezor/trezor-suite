@@ -5,7 +5,6 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
-import { type BackgroundScan } from './bluetoothBackgroundScan';
 import type { WithBluetoothRootState } from './desktopBluetoothReducer';
 
 type BluetoothInitRootState = WithBluetoothRootState;
@@ -15,7 +14,6 @@ type BluetoothInitThunkDispatch = ThunkDispatch<BluetoothInitRootState, unknown,
 type BluetoothInitDeps = {
     getState: () => BluetoothInitRootState;
     dispatch: BluetoothInitThunkDispatch;
-    backgroundScan: BackgroundScan;
     setupListeners: () => void;
     setupAutoReconnect: () => void;
 };
