@@ -4,6 +4,8 @@ export {
     selectIsDeviceCompromised,
     selectIsDeviceIdCheckEnabledAndFailed,
     selectIsDeviceInvariabilityEnabledAndFailed,
+    selectIsDiscoveryEntropyCheckEnabledAndFailed,
+    selectIsDiscoveryEntropyCheckEnabledAndUndismissedFailed,
     selectIsEntropyCheckEnabledAndFailed,
     selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
     selectShouldDisplayDeviceCompromised,
