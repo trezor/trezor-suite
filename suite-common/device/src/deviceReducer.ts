@@ -44,6 +44,7 @@ export type DeviceReducerState = {
     selectedDevice?: TrezorDevice;
     dismissedSecurityChecks?: {
         firmwareAuthenticity?: string[];
+        discoveryEntropy?: string[];
     };
     lastConnectedAuthenticityChecks?: KnownDevice['authenticityChecks'];
     // Setting with no UI to toggle it on, used in tests to simulate various outcomes of entropy check failure
@@ -606,7 +607,20 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                 if (!state.dismissedSecurityChecks.firmwareAuthenticity) {
                     state.dismissedSecurityChecks.firmwareAuthenticity = [];
                 }
+                // The array only grows; there is no mechanism to undo a dismissal → start displaying Device Compromised again.
+                // That's intentional – this data is not persisted, it's session-scoped → reloading the app refreshes it.
                 state.dismissedSecurityChecks.firmwareAuthenticity.unshift(payload);
+            })
+            .addCase(deviceActions.dismissDiscoveryEntropyCheck, (state, { payload }) => {
+                if (!state.dismissedSecurityChecks) {
+                    state.dismissedSecurityChecks = {};
+                }
+                if (!state.dismissedSecurityChecks.discoveryEntropy) {
+                    state.dismissedSecurityChecks.discoveryEntropy = [];
+                }
+                // The array only grows; there is no mechanism to undo a dismissal → start displaying Device Compromised again.
+                // That's intentional – this data is not persisted, it's session-scoped → reloading the app refreshes it.
+                state.dismissedSecurityChecks.discoveryEntropy.unshift(payload);
             })
             .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
             .addCase(
