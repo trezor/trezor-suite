@@ -41,6 +41,7 @@ export const TronVoteForm = () => {
                 {hasInsufficientFunds && pendingTxid === null && (
                     <Banner
                         intent="warning"
+                        data-testid="@staking/tron-vote/insufficient-funds-banner"
                         description={
                             <Translation
                                 id="AMOUNT_NOT_ENOUGH_CURRENCY_FEE"
@@ -56,6 +57,7 @@ export const TronVoteForm = () => {
                     <Banner
                         intent="warning"
                         description={<Translation id="TR_EARN_TRON_SUBMIT_ERROR" />}
+                        data-testid="@staking/tron-vote/submit-error"
                     />
                 )}
 

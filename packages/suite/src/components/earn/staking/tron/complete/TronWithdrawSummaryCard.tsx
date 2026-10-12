@@ -14,7 +14,7 @@ export const TronWithdrawSummaryCard = () => {
     const { amount } = form.methods.getValues();
 
     return (
-        <Card type="contrast" paddingType="none">
+        <Card type="contrast" paddingType="none" data-testid="@staking/tron-complete/summary-card">
             <Column gap={0}>
                 <TronStakeInfoRow label={<Translation id="TR_EARN_YIELD_STATUS" />}>
                     <Row alignItems="center" gap={8}>
@@ -31,7 +31,10 @@ export const TronWithdrawSummaryCard = () => {
                     <Row alignItems="center" gap={8}>
                         <TokenIcon symbol={account.symbol} size={24} />
                         <Column gap={2} alignItems="flex-end">
-                            <Text typographyStyle="body-md-strong">
+                            <Text
+                                typographyStyle="body-md-strong"
+                                data-testid="@staking/tron-complete/withdrawn-amount"
+                            >
                                 <FormattedCryptoAmount value={amount} symbol={account.symbol} />
                             </Text>
                             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">

@@ -30,7 +30,7 @@ export const TronUnstakeForm = () => {
         <FormProvider {...form.methods}>
             <Column gap={16}>
                 <Column gap={4}>
-                    <Text typographyStyle="headline-md">
+                    <Text typographyStyle="headline-md" data-testid="@staking/tron-unstake/title">
                         <Translation id="TR_EARN_TRON_UNSTAKE_TITLE" />
                     </Text>
                     <Text typographyStyle="body-md" intent="neutral" priority="secondary">
@@ -71,6 +71,7 @@ export const TronUnstakeForm = () => {
                     <Banner
                         intent="warning"
                         description={<Translation id="TR_EARN_TRON_SUBMIT_ERROR" />}
+                        data-testid="@staking/tron-unstake/submit-error"
                     />
                 )}
 

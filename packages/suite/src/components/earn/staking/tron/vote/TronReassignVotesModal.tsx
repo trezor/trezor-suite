@@ -53,15 +53,25 @@ export const TronReassignVotesModal = ({
     return (
         <Modal
             width={600}
+            data-testid="@modal/tron-reassign-votes"
             heading={<Translation id="TR_EARN_TRON_REASSIGN_VOTES" />}
             description={<Translation id="TR_EARN_TRON_REASSIGN_VOTES_DESCRIPTION" />}
             onCancel={onClose}
             bottomContent={
                 <>
-                    <Modal.Button onClick={handleConfirm} isDisabled={!canConfirm}>
+                    <Modal.Button
+                        onClick={handleConfirm}
+                        isDisabled={!canConfirm}
+                        data-testid="@modal/tron-reassign-votes/confirm-button"
+                    >
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>
-                    <Modal.Button intent="neutral" priority="secondary" onClick={onClose}>
+                    <Modal.Button
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={onClose}
+                        data-testid="@modal/tron-reassign-votes/close-button"
+                    >
                         <Translation id="TR_CLOSE" />
                     </Modal.Button>
                 </>
@@ -72,7 +82,10 @@ export const TronReassignVotesModal = ({
                     <TronStakeInfoRow
                         label={<Translation id="TR_EARN_TRON_REMAINING_VOTES_LABEL" />}
                     >
-                        <Text typographyStyle="body-md-strong">
+                        <Text
+                            typographyStyle="body-md-strong"
+                            data-testid="@staking/tron-reassign-votes/remaining-votes"
+                        >
                             {Math.max(remainingVotes, 0)} / {totalVotes}
                         </Text>
                     </TronStakeInfoRow>
@@ -110,7 +123,10 @@ export const TronReassignVotesModal = ({
                                 const isCountInvalid = parseVoteCount(votes) === null;
 
                                 return (
-                                    <Table.Row key={address}>
+                                    <Table.Row
+                                        key={address}
+                                        data-testid={`@staking/tron-reassign-votes/row/${address}`}
+                                    >
                                         <Table.Cell>
                                             <TronRepresentativeCell
                                                 address={address}
@@ -120,6 +136,7 @@ export const TronReassignVotesModal = ({
                                         </Table.Cell>
                                         <Table.Cell align="end">
                                             <Input
+                                                data-testid="@staking/tron-reassign-votes/votes-input"
                                                 value={votes}
                                                 onChange={event =>
                                                     updateVotes(address, event.target.value)

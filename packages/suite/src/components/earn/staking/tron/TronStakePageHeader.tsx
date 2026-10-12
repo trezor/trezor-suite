@@ -135,7 +135,12 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
                             tooltip={{ content: <Translation id="TR_EARN_HOW_IT_WORKS" /> }}
                         />
                     ) : (
-                        <Button intent="neutral" priority="secondary" onClick={onHowItWorksClick}>
+                        <Button
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={onHowItWorksClick}
+                            data-testid="@staking/tron-header/how-it-works-button"
+                        >
                             <Translation id="TR_EARN_HOW_IT_WORKS" />
                         </Button>
                     )}

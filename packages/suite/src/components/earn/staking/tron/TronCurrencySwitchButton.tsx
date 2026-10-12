@@ -27,7 +27,12 @@ export const TronCurrencySwitchButton = ({
     };
 
     return (
-        <TextButton type="button" size="small" onClick={onToggle}>
+        <TextButton
+            type="button"
+            size="small"
+            onClick={onToggle}
+            data-testid="@staking/tron-form/currency-switch-button"
+        >
             <Translation id="TR_ENTER_AMOUNT_IN" values={{ currency: currencySymbol }} />
         </TextButton>
     );

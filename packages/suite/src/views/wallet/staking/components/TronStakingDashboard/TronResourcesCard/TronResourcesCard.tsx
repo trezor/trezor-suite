@@ -62,6 +62,7 @@ export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
     return (
         <Card
             paddingType="normal"
+            data-testid="@staking/tron-resources-card/container"
             header={
                 <Row gap={8} alignItems="center">
                     <Icon as={LightningIcon} size={20} />
@@ -77,6 +78,7 @@ export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
                         priority="secondary"
                         onClick={goToFreeze}
                         isDisabled={isStakingDisabled}
+                        data-testid="@staking/tron-resources-card/get-more-button"
                     >
                         <Translation id="TR_EARN_TRON_GET_MORE" />
                     </Button>
@@ -87,6 +89,7 @@ export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
                 <TronResourceRow
                     label="TR_TRON_BANDWIDTH"
                     tooltip="TR_TRON_BANDWIDTH_TOOLTIP"
+                    data-testid="@staking/tron-resources-card/bandwidth"
                     available={bandwidthAvailable}
                     total={bandwidthTotal}
                     onClick={() => setOpenResource('bandwidth')}
@@ -94,6 +97,7 @@ export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
                 <TronResourceRow
                     label="TR_TRON_ENERGY"
                     tooltip="TR_TRON_ENERGY_TOOLTIP"
+                    data-testid="@staking/tron-resources-card/energy"
                     available={energyAvailable}
                     total={energyTotal}
                     onClick={() => setOpenResource('energy')}

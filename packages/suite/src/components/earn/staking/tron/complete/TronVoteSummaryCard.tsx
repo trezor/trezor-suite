@@ -16,7 +16,11 @@ export const TronVoteSummaryCard = () => {
 
     return (
         <Column gap={16} alignItems="stretch">
-            <Card type="contrast" paddingType="none">
+            <Card
+                type="contrast"
+                paddingType="none"
+                data-testid="@staking/tron-complete/summary-card"
+            >
                 <TronStakeInfoRow label={<Translation id="TR_EARN_YIELD_STATUS" />}>
                     <Row alignItems="center" gap={8}>
                         <Icon as={CheckCircleFilledIcon} intent="brand" />
@@ -27,7 +31,7 @@ export const TronVoteSummaryCard = () => {
                 </TronStakeInfoRow>
             </Card>
 
-            <Card paddingType="none">
+            <Card paddingType="none" data-testid="@staking/tron-complete/vote-allocations">
                 <TronVoteAllocationTable
                     allocations={allocations}
                     representatives={representatives.data}

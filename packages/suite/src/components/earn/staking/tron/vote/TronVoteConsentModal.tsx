@@ -42,6 +42,7 @@ export const TronVoteConsentModal = ({
 
     return (
         <Modal
+            data-testid="@modal/tron-vote-consent"
             heading={
                 <Translation
                     id="TR_TRON_VOTE_CONSENT_MODAL_HEADING"
@@ -53,11 +54,20 @@ export const TronVoteConsentModal = ({
             width={600}
             bottomContent={
                 <>
-                    <Modal.Button isDisabled={!isConsentGiven} onClick={onConfirm}>
+                    <Modal.Button
+                        isDisabled={!isConsentGiven}
+                        onClick={onConfirm}
+                        data-testid="@modal/tron-vote-consent/confirm-button"
+                    >
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>
 
-                    <Modal.Button intent="neutral" priority="secondary" onClick={onDecline}>
+                    <Modal.Button
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={onDecline}
+                        data-testid="@modal/tron-vote-consent/cancel-button"
+                    >
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>
@@ -93,6 +103,7 @@ export const TronVoteConsentModal = ({
                         verticalAlignment="center"
                         onChange={onConsentToggle}
                         isChecked={isConsentGiven}
+                        data-testid="@modal/tron-vote-consent/checkbox"
                     >
                         <Column gap={4}>
                             {representatives.map(({ address, name, termsOfServiceUrl }) => (

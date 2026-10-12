@@ -138,15 +138,25 @@ export const TronSelectRepresentativesModal = ({
     return (
         <Modal
             width={600}
+            data-testid="@modal/tron-select-representatives"
             heading={<Translation id="TR_EARN_TRON_SELECT_REPRESENTATIVES" />}
             description={<Translation id="TR_EARN_TRON_SELECT_REPRESENTATIVES_DESCRIPTION" />}
             onCancel={onClose}
             bottomContent={
                 <>
-                    <Modal.Button onClick={handleConfirm} isDisabled={!canConfirm}>
+                    <Modal.Button
+                        onClick={handleConfirm}
+                        isDisabled={!canConfirm}
+                        data-testid="@modal/tron-select-representatives/confirm-button"
+                    >
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>
-                    <Modal.Button intent="neutral" priority="secondary" onClick={onClose}>
+                    <Modal.Button
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={onClose}
+                        data-testid="@modal/tron-select-representatives/close-button"
+                    >
                         <Translation id="TR_CLOSE" />
                     </Modal.Button>
                 </>
@@ -166,10 +176,14 @@ export const TronSelectRepresentativesModal = ({
                     </Table.Header>
                     <Table.Body>
                         {(representatives ?? []).map(({ address }) => (
-                            <Table.Row key={address}>
+                            <Table.Row
+                                key={address}
+                                data-testid={`@staking/tron-select-representatives/row/${address}`}
+                            >
                                 <Table.Cell>
                                     <Checkbox
                                         isChecked={selectedKnownAddresses.includes(address)}
+                                        data-testid="@staking/tron-select-representatives/checkbox"
                                         onChange={() => toggleKnownAddress(address)}
                                         verticalAlignment="center"
                                     >

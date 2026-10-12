@@ -18,9 +18,16 @@ export const TronRepresentativeCell = ({
 
     return (
         <Column gap={2} alignItems="flex-start">
-            <Text typographyStyle="body-md">{name ?? address}</Text>
+            <Text typographyStyle="body-md" data-testid="@staking/tron-representative/name">
+                {name ?? address}
+            </Text>
             {name !== undefined && isAddressShown && (
-                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                <Text
+                    typographyStyle="body-sm"
+                    intent="neutral"
+                    priority="secondary"
+                    data-testid="@staking/tron-representative/address"
+                >
                     {address}
                 </Text>
             )}

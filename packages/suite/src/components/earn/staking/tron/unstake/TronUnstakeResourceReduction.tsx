@@ -41,10 +41,18 @@ export const TronUnstakeResourceReduction = () => {
                 <Translation id="TR_EARN_TRON_RESOURCE_REDUCTION" />
             </Text>
             <Column alignItems="flex-end" gap={2}>
-                <Text typographyStyle="body-md">
+                <Text
+                    typographyStyle="body-md"
+                    data-testid="@staking/tron-unstake/resource-reduction"
+                >
                     <Translation id={REDUCTION_LABEL[resourceType]} values={{ count: reduction }} />
                 </Text>
-                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                <Text
+                    typographyStyle="body-sm"
+                    intent="neutral"
+                    priority="secondary"
+                    data-testid="@staking/tron-unstake/resource-change"
+                >
                     {currentResource} → {newResource}
                 </Text>
             </Column>

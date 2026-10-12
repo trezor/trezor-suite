@@ -16,7 +16,12 @@ export const TronVoteRemainingVotes = () => {
     const remainingVotes = Math.max(getRemainingVotes({ totalVotes, allocations }), 0);
 
     return (
-        <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+        <Text
+            typographyStyle="body-md"
+            intent="neutral"
+            priority="secondary"
+            data-testid="@staking/tron-vote/remaining-votes"
+        >
             <Translation
                 id="TR_EARN_TRON_REMAINING_VOTES_OF_TOTAL"
                 values={{ remaining: remainingVotes, total: totalVotes }}

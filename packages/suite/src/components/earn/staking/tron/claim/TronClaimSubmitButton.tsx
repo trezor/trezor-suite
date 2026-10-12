@@ -79,6 +79,7 @@ export const TronClaimSubmitButton = () => {
                     size="large"
                     width="100%"
                     onClick={handleClick}
+                    data-testid="@staking/tron-claim/continue-button"
                     isDisabled={isDisabled}
                     isLoading={isLoading}
                 >

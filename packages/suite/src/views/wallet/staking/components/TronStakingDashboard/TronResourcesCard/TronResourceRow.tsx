@@ -7,6 +7,7 @@ interface TronResourceRowProps {
     available: number;
     total: number;
     onClick: () => void;
+    'data-testid'?: string;
 }
 
 export const TronResourceRow = ({
@@ -15,6 +16,7 @@ export const TronResourceRow = ({
     available,
     total,
     onClick,
+    'data-testid': dataTestId,
 }: TronResourceRowProps) => (
     <Row justifyContent="space-between" alignItems="center">
         <Tooltip hasIcon content={<Translation id={tooltip} />}>
@@ -29,6 +31,7 @@ export const TronResourceRow = ({
                 priority="primary"
                 isUnderlined
                 onClick={onClick}
+                data-testid={dataTestId}
             >
                 {available}/{total}
             </TextButton>

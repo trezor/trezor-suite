@@ -34,7 +34,10 @@ export const TronVoteAllocationTable = ({
         </Table.Header>
         <Table.Body>
             {allocations.map(({ address, votes }) => (
-                <Table.Row key={address}>
+                <Table.Row
+                    key={address}
+                    data-testid={`@staking/tron-vote/allocation-row/${address}`}
+                >
                     <Table.Cell>
                         <TronRepresentativeCell
                             address={address}
@@ -50,14 +53,20 @@ export const TronVoteAllocationTable = ({
                                 isUnderlined
                                 iconRight={PencilIcon}
                                 onClick={onEditVotes}
+                                data-testid="@staking/tron-vote/allocation-row-votes-button"
                             >
                                 {votes}
                             </TextButton>
                         ) : (
-                            <Text typographyStyle="body-md-strong">{votes}</Text>
+                            <Text
+                                typographyStyle="body-md-strong"
+                                data-testid="@staking/tron-vote/allocation-row-votes"
+                            >
+                                {votes}
+                            </Text>
                         )}
                     </Table.Cell>
-                    <Table.Cell align="end">
+                    <Table.Cell align="end" data-testid="@staking/tron-vote/allocation-row-apr">
                         <TronRepresentativeApr
                             address={address}
                             representatives={representatives}
