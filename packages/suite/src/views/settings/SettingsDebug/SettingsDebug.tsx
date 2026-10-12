@@ -29,7 +29,8 @@ import { ConnectPopup } from './ConnectPopup';
 import { DefinitionsEnvironmentSelect } from './DefinitionsEnvironmentSelect';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
-import { EarnApi } from './EarnApi';
+import { EarnStakingApi } from './EarnStakingApi';
+import { EarnYieldApi } from './EarnYieldApi';
 import { FirmwareUpdateEnvironmentSelect } from './FirmwareUpdateEnvironmentSelect';
 import { Flags } from './Flags';
 import { ForgetAllDevicesButton } from './ForgetBluetoothDevices';
@@ -93,7 +94,8 @@ export const SettingsDebug = () => {
                 <AppsEmbeddingSwitch />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Earn">
-                <EarnApi />
+                <EarnYieldApi />
+                <EarnStakingApi />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="OAuth">
                 <OAuthApi />

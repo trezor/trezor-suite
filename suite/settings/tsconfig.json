@@ -8,6 +8,9 @@
         {
             "path": "../../suite-common/earn-stablecoin-defs"
         },
+        {
+            "path": "../../suite-common/earn-staking-api"
+        },
         { "path": "../../suite-common/locale" },
         {
             "path": "../../suite-common/metadata-types"

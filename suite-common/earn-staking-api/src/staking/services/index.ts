@@ -24,12 +24,12 @@ import type {
     StakingSolanaRewardsHistoryParams,
     TrxStats,
 } from '../../api/types';
-import { EARN_API_BASE_URL } from '../../constants';
+import { earnStakingWorkerBaseUrl } from '../../context';
 
 export const earnHttpClient = createHttpClient({
     fetch: (input, init) => globalThis.fetch(input, init),
 })({
-    baseUrl: EARN_API_BASE_URL,
+    baseUrl: () => earnStakingWorkerBaseUrl.get(),
 });
 
 type RequestOptions = { signal?: AbortSignal };
