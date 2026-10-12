@@ -34,6 +34,7 @@ import {
     type FiatRatesRootState,
     type WalletSettingsRootState,
     selectBaseCurrency,
+    selectCurrentFiatRateByKey,
     selectCurrentFiatRates,
     selectVisibleDeviceAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
@@ -230,7 +231,7 @@ export const selectFiatRateByTradeableAsset = (
 
     const fiatRateKey = getFiatRateKey(symbol, selectBaseCurrency(state), asset?.contractAddress);
 
-    return selectCurrentFiatRates(state)?.[fiatRateKey]?.rate;
+    return selectCurrentFiatRateByKey(state, fiatRateKey)?.rate;
 };
 
 export const selectAccountsWithTokensToSellSectionListByTradingType =
