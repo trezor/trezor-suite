@@ -177,17 +177,13 @@ export class FeeSection {
     calculateEthereumMaxFee({
         gasLimit,
         maxFeePerGas,
-        numberOfDecimals = 14,
+        numberOfDecimals = 18,
     }: CalculateEthereumMaxFeeParams) {
         const ratioToEthereum = 1e9;
-        const maxFeeInEthereum =
-            (parseFloat(gasLimit) * parseFloat(maxFeePerGas)) / ratioToEthereum;
+        const maxFeeInEthereum = new BigNumber(gasLimit).times(maxFeePerGas).div(ratioToEthereum);
         const maxFeeRounded = localizeNumber(maxFeeInEthereum, 'en-US', 0, numberOfDecimals);
         // This method is also providing detailed error message for troubleshooting expect if it fails
-        const errorMessageMaxCalculation = `expected to have max Fee: 
-"(parseFloat(${gasLimit}) * parseFloat(${maxFeePerGas})) / ${ratioToEthereum}"
-here are applied parseFloats:
-(${parseFloat(gasLimit)} * ${parseFloat(maxFeePerGas)}) / ${ratioToEthereum}
+        const errorMessageMaxCalculation = `expected to have max Fee: (${gasLimit} * ${maxFeePerGas}) / ${ratioToEthereum}
 before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
 
         return {
@@ -307,13 +303,12 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
     private async readEthereumCustomFees() {
         const gasLimit = (await this.ethereumFeeLimit.inputValue()).replace(/,/g, '');
         const maxFeePerGas = await this.ethereumMaxFeePerGas.inputValue();
-        const maxFeePerGasRounded = new BigNumber(maxFeePerGas)
-            .decimalPlaces(4, BigNumber.ROUND_UP)
-            .toFixed(4);
+        // Mirrors FeeRate, which ceils in floating point (17.42 renders as 17.4201).
+        const maxFeePerGasRounded = (Math.ceil(Number(maxFeePerGas) * 1e4) / 1e4).toFixed(4);
         const maxPriorityFeePerGas = await this.ethereumMaxPriorityFeePerGas.inputValue();
-        const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas)
-            .decimalPlaces(4, BigNumber.ROUND_UP)
-            .toFixed(4);
+        const maxPriorityFeePerGasRounded = (
+            Math.ceil(Number(maxPriorityFeePerGas) * 1e4) / 1e4
+        ).toFixed(4);
 
         return {
             gasLimit,
