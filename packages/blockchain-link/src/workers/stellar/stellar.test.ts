@@ -407,6 +407,18 @@ describe('Stellar worker account history', () => {
         expect(result.misc?.baseReserve).toBe('5000000');
     });
 
+    it('keeps a failed ledger head poll from rejecting unhandled', async () => {
+        const onUnhandledRejection = jest.fn();
+        process.on('unhandledRejection', onUnhandledRejection);
+        mockState.ledgerHeadError = new TypeError('fetch failed');
+
+        await blockchain.subscribe({ type: 'block' });
+        await new Promise(resolve => setImmediate(resolve));
+
+        process.off('unhandledRejection', onUnhandledRejection);
+        expect(onUnhandledRejection).not.toHaveBeenCalled();
+    });
+
     it('reads the account effects alongside the operations', async () => {
         mockState.operationRecords = [accountMergeOperation()];
         mockState.effectRecords = [accountDebitedEffect('5.0000000')];
