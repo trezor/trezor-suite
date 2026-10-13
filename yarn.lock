@@ -12892,6 +12892,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@types/invity-api": "npm:^1.1.22"
     "@types/lodash": "npm:^4.17.16"
     "@types/minimist": "npm:^1.2.5"
     "@types/node": "npm:22.13.10"

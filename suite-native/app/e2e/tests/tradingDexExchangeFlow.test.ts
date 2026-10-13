@@ -9,6 +9,7 @@ import {
 } from '../pageObjects/trading/exchangeApprovalActions';
 import { tradingExchangeActions } from '../pageObjects/trading/tradingExchangeActions';
 import { exchangeTransactionReviewActions } from '../pageObjects/trading/transactionReviewActions';
+import { DexRevokeTradingServer } from '../support/dexRevokeTradingServer';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 import { waitForVisible } from '../support/utils';
 
@@ -17,8 +18,23 @@ const preloadedStateWithEthereum = preparePreloadedReduxState(
     onboardingCompletedState,
 );
 
+const preloadedStateWithDexRevoke = preparePreloadedReduxState(
+    ethCoinEnabled,
+    onboardingCompletedState,
+    { wallet: { trading: { tradingEnvironment: 'localhost' } } },
+);
+
+const dexRevokeServer = new DexRevokeTradingServer();
+let isFixturePortReversed = false;
 const passphrase = process.env.TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE;
 const dexProviderName = 'LI.FI';
+
+const openDexExchangeForm = async (preloadedState: string) => {
+    await openApp({ args: { preloadedState } });
+    await waitForVisible(by.text('Connected'));
+    await onPassphrase.openPassphraseWallet(passphrase!);
+    await tradingExchangeActions.openForm();
+};
 
 const prepareDexExchangeForm = async () => {
     await tradingExchangeActions.selectSendAsset('USDC', 'Ethereum', 'USD Coin');
@@ -55,18 +71,22 @@ describe('Trade Exchange DEX [@androidOnly @T3T1]', () => {
         }
     });
 
+    afterAll(async () => {
+        await dexRevokeServer.stop();
+        if (isFixturePortReversed) {
+            await device.unreverseTcpPort(dexRevokeServer.port);
+        }
+    });
+
     beforeEach(async () => {
         await prepareTrezorEmulator({
             seed: MNEMONICS.mnemonic_academic,
             passphrase_protection: true,
         });
-        await openApp({ args: { preloadedState: preloadedStateWithEthereum } });
-        await waitForVisible(by.text('Connected'));
-        await onPassphrase.openPassphraseWallet(passphrase!);
-        await tradingExchangeActions.openForm();
     });
 
     it('signs approval transaction for DEX quote requiring allowance and stops before sending', async () => {
+        await openDexExchangeForm(preloadedStateWithEthereum);
         await prepareDexExchangeForm();
         await tradingExchangeActions.expectValidExchangeForm();
         await tradingExchangeActions.confirmTradingForm();
@@ -79,17 +99,13 @@ describe('Trade Exchange DEX [@androidOnly @T3T1]', () => {
     });
 
     it('signs revoke transaction for DEX quote with existing allowance and stops before sending', async () => {
+        await dexRevokeServer.start();
+        await device.reverseTcpPort(dexRevokeServer.port);
+        isFixturePortReversed = true;
+
+        await openDexExchangeForm(preloadedStateWithDexRevoke);
         await prepareDexExchangeForm();
-        try {
-            await tradingExchangeActions.revokeApproval();
-        } catch (error) {
-            throw new Error(
-                'DEX revoke flow prerequisite is missing an existing approval, revoke button not shown',
-                {
-                    cause: error,
-                },
-            );
-        }
+        await tradingExchangeActions.revokeApproval();
 
         await exchangeRevokeActions.expectScreenToBeVisible();
         await exchangeRevokeActions.waitForFeesToLoad();
