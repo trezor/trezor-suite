@@ -1,5 +1,6 @@
 import {
     type ReportedMeasurement,
+    formatCommentSection,
     formatMarkdownReport,
     mergeMeasurements,
     perfReportComment,
@@ -34,7 +35,7 @@ const publish = (existingBody: string | undefined, measurements: ReportedMeasure
     perfReportComment({
         existingBody,
         label: LABEL,
-        section: formatMarkdownReport(
+        section: formatCommentSection(
             mergeMeasurements(
                 readSectionMeasurements({ body: existingBody, label: LABEL }),
                 measurements,
@@ -115,13 +116,39 @@ describe(mergeMeasurements.name, () => {
 
 // The orchestrator runs a Playwright process per test file, so one job publishes several times under
 // the same section label, each time knowing only its own file's scenarios.
+describe(formatCommentSection.name, () => {
+    it('sums a job up in one line, linked to its run', () => {
+        const section = formatCommentSection(
+            [measurement('wallet-discovery'), overLimitMeasurement('account-switch')],
+            { heading: LABEL, runUrl: 'https://example.test/run' },
+        );
+
+        expect(section.split('\n')[0]).toBe(
+            `- [${LABEL}](https://example.test/run): 1/2 flows within limits`,
+        );
+    });
+
+    it('leaves the tables to the job summary', () => {
+        expect(formatCommentSection([measurement('wallet-discovery')])).not.toContain('|');
+    });
+});
+
+describe('the pull request comment', () => {
+    it('points at the develop trends instead of repeating the numbers', () => {
+        const body = publish(undefined, [measurement('wallet-discovery')]);
+
+        expect(body).toContain('dashboard/index.html?platform=web&branch=develop');
+        expect(body).toContain('dashboard/index.html?platform=desktop&branch=develop');
+        expect(body).not.toContain('<details');
+    });
+});
+
 describe('publishing a section twice', () => {
     it('holds the scenarios of both publishes', () => {
         const first = publish(undefined, [measurement('multi-account-discovery')]);
         const second = publish(first, [measurement('wallet-discovery')]);
 
-        expect(second).toContain('multi-account-discovery');
-        expect(second).toContain('wallet-discovery');
+        expect(second).toContain('2/2 flows within limits');
         expect(
             readSectionMeasurements({ body: second, label: LABEL }).map(({ key }) => key),
         ).toEqual(['multi-account-discovery', 'wallet-discovery']);
