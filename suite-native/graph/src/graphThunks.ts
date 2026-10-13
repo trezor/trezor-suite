@@ -164,7 +164,7 @@ export const refetchGraphThunk = createThunk<
         });
     } catch (error) {
         // Preserve the stack trace in the local console while storing only a sanitized message.
-        console.error(error);
+        console.warn(error);
 
         const graphError = getGraphError(error);
         checkAndReportGraphError(graphError);
