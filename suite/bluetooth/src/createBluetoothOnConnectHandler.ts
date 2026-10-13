@@ -5,8 +5,8 @@ import { type WithServices } from '@suite-common/redux-utils';
 import { type Device } from '@trezor/connect';
 
 import { type BackgroundScan } from './bluetoothBackgroundScan';
-import { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
 import { type BluetoothDep } from './createBluetooth';
+import type { BluetoothDisconnectDevice } from './createBluetoothDisconnectDevice';
 import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 
 type BluetoothOnConnectHandlerRootState = WithBluetoothRootState;
@@ -21,6 +21,7 @@ type BluetoothOnConnectHandlerDeps = {
     getState: () => BluetoothOnConnectHandlerRootState;
     dispatch: BluetoothOnConnectHandlerThunkDispatch;
     backgroundScan: BackgroundScan;
+    disconnectDevice: BluetoothDisconnectDevice;
 };
 
 export type BluetoothOnConnectHandler = (device: Device) => void;
@@ -40,10 +41,6 @@ export const createBluetoothOnConnectHandler =
                 knownDevice.connectionStatus.type === 'connecting')
         ) {
             console.warn('Disconnecting BT device because the same device was connected over USB');
-            deps.dispatch(
-                bluetoothDisconnectDeviceThunk({
-                    id: knownDevice.id,
-                }),
-            );
+            deps.disconnectDevice({ deviceId: knownDevice.id });
         }
     };

@@ -1,11 +1,7 @@
 import { useMemo, useState } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
-import {
-    type DesktopBluetoothDevice,
-    bluetoothDisconnectDeviceThunk,
-    injectBluetooth,
-} from '@suite/bluetooth';
+import { type DesktopBluetoothDevice, injectBluetooth } from '@suite/bluetooth';
 import { setConnectionModal } from '@suite/device';
 import { events } from '@suite-common/analytics';
 import { selectKnownDevices } from '@suite-common/bluetooth';
@@ -93,7 +89,7 @@ export const useBluetoothConnection = ({
     };
 
     const handlePairingCancel = async (deviceId: BluetoothDeviceId): Promise<void> => {
-        await dispatch(bluetoothDisconnectDeviceThunk({ id: deviceId }));
+        await bluetooth.disconnectDevice({ deviceId });
         setSelectedDeviceId(null);
         onReScanClick();
     };

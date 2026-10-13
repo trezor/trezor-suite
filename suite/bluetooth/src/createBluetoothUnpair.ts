@@ -9,8 +9,8 @@ import TrezorConnect from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { type BackgroundScan } from './bluetoothBackgroundScan';
-import { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
 import { type BluetoothDep } from './createBluetooth';
+import { type BluetoothDisconnectDevice } from './createBluetoothDisconnectDevice';
 import { type WithBluetoothRootState, setIsUnpairingDevice } from './desktopBluetoothReducer';
 
 type BluetoothUnpairRootState = WithBluetoothRootState & DesktopDeviceRootState;
@@ -25,6 +25,7 @@ type BluetoothUnpairDeps = {
     getState: () => BluetoothUnpairRootState;
     dispatch: BluetoothUnpairThunkDispatch;
     backgroundScan: BackgroundScan;
+    disconnectDevice: BluetoothDisconnectDevice;
 };
 
 export type BluetoothUnpair = {
@@ -39,7 +40,7 @@ const forgetDevice = async (
 ) => {
     deps.dispatch(setIsUnpairingDevice({ isUnpairing: true }));
     if (!params.skipDisconnect) {
-        await deps.dispatch(bluetoothDisconnectDeviceThunk({ id: params.bluetoothId }));
+        await deps.disconnectDevice({ deviceId: params.bluetoothId });
     }
 
     const resultForget = await bluetoothIpc.forgetDevice(params.bluetoothId);
