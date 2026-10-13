@@ -1,30 +1,24 @@
-import fs from 'fs/promises';
+import { readFile } from 'fs/promises';
 import { join } from 'path';
 import sharp from 'sharp';
 
+import { createMockDeps } from '@trezor/dependency-injection';
 import { ethereumCryptoIcons } from '@trezor/network-ethereum-assets';
 
+import { type DownloadVaultIconsDeps, createDownloadVaultIcons } from './createDownloadVaultIcons';
 import { COIN_IMAGE_SIZES, ICONS_URL_BASE, createCoinImageName } from '../../src/coinImages';
 import { FILES_CRYPTOICONS_PATH, YIELD_VAULTS_URL } from '../constants';
 import { rasterizeSvg } from './images';
 
-// `readFile` stays real so the bundled-icon path actually rasterizes the design-system SVG, while
-// `writeFile` is mocked to keep the run off the disk.
-jest.mock('fs/promises', () => ({
-    ...jest.requireActual('fs/promises'),
-    writeFile: jest.fn(),
-    mkdir: jest.fn(),
-}));
-
 const fetchMock = jest.fn();
 global.fetch = fetchMock as unknown as typeof fetch;
 
-// `createHttpClient` captures `globalThis.fetch` when the module under test is first evaluated, so
-// the mock above has to be installed before that happens — hence the require instead of a top-level
-// import, which would be hoisted above the assignment.
-const { downloadVaultIcons } = require('./downloadVaultIcons') as {
-    downloadVaultIcons: () => Promise<void>;
-};
+const deps = createMockDeps<DownloadVaultIconsDeps>({
+    writeFile: () => Promise.resolve(),
+    mkdir: () => Promise.resolve(undefined),
+});
+
+const downloadVaultIcons = () => createDownloadVaultIcons(deps)();
 
 const ETH_WETH_VAULT = '0x704cfb08969048a8dff298b214f959791d8da509';
 const ETH_USDT_VAULT = '0xe4db1c5a1b709ce4d2ada6985d9d506e58f73829';
@@ -95,10 +89,10 @@ const mockFetchRoutes = (routes: Record<string, Response>) => {
     );
 };
 
-const writtenFiles = () => (fs.writeFile as jest.Mock).mock.calls.map(([path]) => String(path));
+const writtenFiles = () => deps.writeFile.mock.calls.map(([path]) => String(path));
 
 const writtenIcon = (fileName: string): Buffer | undefined =>
-    (fs.writeFile as jest.Mock).mock.calls.find(
+    deps.writeFile.mock.calls.find(
         ([path]) => String(path) === join(FILES_CRYPTOICONS_PATH, fileName),
     )?.[1];
 
@@ -108,7 +102,7 @@ const requestedUrls = () => fetchMock.mock.calls.map(([input]) => urlOf(input));
 const bundledIcon = async (
     networkSymbol: keyof typeof ethereumCryptoIcons,
     size: (typeof COIN_IMAGE_SIZES)[number],
-) => await rasterizeSvg(await fs.readFile(ethereumCryptoIcons[networkSymbol].getIconPath()), size);
+) => await rasterizeSvg(await readFile(ethereumCryptoIcons[networkSymbol].getIconPath()), size);
 
 describe('downloadVaultIcons', () => {
     let consoleErrorSpy: jest.SpyInstance;
@@ -141,13 +135,14 @@ describe('downloadVaultIcons', () => {
 
         await downloadVaultIcons();
 
+        expect(deps.mkdir).toHaveBeenCalledWith(FILES_CRYPTOICONS_PATH, { recursive: true });
         for (const size of COIN_IMAGE_SIZES) {
-            expect(fs.writeFile).toHaveBeenCalledWith(
+            expect(deps.writeFile).toHaveBeenCalledWith(
                 join(FILES_CRYPTOICONS_PATH, `ethereum--${ETH_USDT_VAULT}@${size}.webp`),
                 Buffer.from([size]),
             );
         }
-        expect(fs.writeFile).toHaveBeenCalledTimes(COIN_IMAGE_SIZES.length);
+        expect(deps.writeFile).toHaveBeenCalledTimes(COIN_IMAGE_SIZES.length);
     });
 
     it('renders the bundled native coin disc when the underlying is the wrapped native token', async () => {
@@ -299,7 +294,7 @@ describe('downloadVaultIcons', () => {
             expect.stringContaining('brand-new-chain'),
             expect.anything(),
         );
-        expect(fs.writeFile).toHaveBeenCalledTimes(COIN_IMAGE_SIZES.length);
+        expect(deps.writeFile).toHaveBeenCalledTimes(COIN_IMAGE_SIZES.length);
         expect(writtenFiles().every(path => path.includes('ethereum--'))).toBe(true);
     });
 
@@ -322,7 +317,7 @@ describe('downloadVaultIcons', () => {
 
         await downloadVaultIcons();
 
-        expect(fs.writeFile).toHaveBeenCalledTimes(COIN_IMAGE_SIZES.length - 1);
+        expect(deps.writeFile).toHaveBeenCalledTimes(COIN_IMAGE_SIZES.length - 1);
         expect(writtenFiles()).not.toContain(
             join(FILES_CRYPTOICONS_PATH, `ethereum--${ETH_USDT_VAULT}@80.webp`),
         );
@@ -354,7 +349,7 @@ describe('downloadVaultIcons', () => {
 
         // Both vaults resolve to usd-coin: one vault-list request plus one per source size.
         expect(fetchMock).toHaveBeenCalledTimes(1 + COIN_IMAGE_SIZES.length);
-        expect(fs.writeFile).toHaveBeenCalledTimes(2 * COIN_IMAGE_SIZES.length);
+        expect(deps.writeFile).toHaveBeenCalledTimes(2 * COIN_IMAGE_SIZES.length);
     });
 
     it('renders a shared bundled disc once for vaults across platforms', async () => {
@@ -382,7 +377,7 @@ describe('downloadVaultIcons', () => {
         // Both vaults read as native ETH, so nothing beyond the vault list is fetched and the two
         // vault addresses end up with byte-identical renditions.
         expect(requestedUrls()).toEqual([YIELD_VAULTS_URL]);
-        expect(fs.writeFile).toHaveBeenCalledTimes(2 * COIN_IMAGE_SIZES.length);
+        expect(deps.writeFile).toHaveBeenCalledTimes(2 * COIN_IMAGE_SIZES.length);
         expect(writtenIcon(`base--${BASE_WETH_VAULT}@80.webp`)).toEqual(
             writtenIcon(`ethereum--${ETH_WETH_VAULT}@80.webp`),
         );
@@ -392,13 +387,13 @@ describe('downloadVaultIcons', () => {
         mockFetchRoutes({});
 
         await expect(downloadVaultIcons()).rejects.toThrow();
-        expect(fs.writeFile).not.toHaveBeenCalled();
+        expect(deps.writeFile).not.toHaveBeenCalled();
     });
 
     it('throws when the vault list does not match the expected schema', async () => {
         mockFetchRoutes(vaultListRoute({ ethereum: [{ yieldId: 'missing-fields' }] }));
 
         await expect(downloadVaultIcons()).rejects.toThrow();
-        expect(fs.writeFile).not.toHaveBeenCalled();
+        expect(deps.writeFile).not.toHaveBeenCalled();
     });
 });
