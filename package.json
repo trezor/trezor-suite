@@ -62,7 +62,7 @@
         "gen:workflow-paths:check": "yarn tsx ./scripts/ci/gen-workflow-paths.ts --check",
         "check-workspace-resolutions": "yarn tsx ./scripts/check-workspace-resolutions.ts",
         "build:libs:verify": "yarn nx affected --target=build:lib",
-        "validate": "yarn verify-project-references && yarn lint:js:fix && yarn lint:styles && yarn build:libs:verify && yarn type-check && yarn check-workspace-resolutions && yarn depcheck",
+        "validate": "yarn verify-project-references && yarn gen:workflow-paths:check && yarn lint:js:fix && yarn lint:styles && yarn build:libs:verify && yarn type-check && yarn check-workspace-resolutions && yarn depcheck",
         "_______ Global Scripts _______": "Generic script definitions to be run in individual workspaces.",
         "g:eslint": "cd $INIT_CWD && eslint --cache --cache-strategy content --max-warnings 0",
         "g:jest": "cd $INIT_CWD && jest",
