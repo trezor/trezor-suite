@@ -1,22 +1,26 @@
 ### 🚀 New features
 
-- Sign & Verify has a revamped UI with dedicated copy buttons for message, address, and signature.
-- Exchange swaps now show a transaction simulation on the confirm page
-- Blockaid transaction simulation extended to Solana, Tron, and Stellar networks (previously EVM-only)
-- Chinese (Simplified) and Indonesian are now official languages in Suite, moved up from community translations
-- MEV protection is now enabled for Robinhood transactions
-- Suite now supports the root Solana derivation path (`m/44'/501'`), making it easier to migrate accounts from other wallets
+- Passphrases can now be up to 128 characters long
+- Arc EVM network now supported in Suite
+- Trade form can be used with sats as the BTC unit
+- Trade history can be exported in CSV format, including trade ID, date, type, amounts, networks, provider, status, and transaction IDs
+- You can now swap Bitcoin to EVM chains (Ethereum, Avalanche, BNB Smart Chain) through LI.FI in Suite’s trading flow
+- You can now sign Tron resource (un)delegation transactions (Bandwidth and Energy) on your Trezor through WalletConnect, in dApps such as TronScan
 
 ### 🎨 Improvements
 
-- Add Account flow improved with a unified, searchable Network list
-- Optimized rendering for improved app performance
-- Search icon added to currency, country, and state search fields (for Buy / Sell / Swap)
-- WalletConnect has improved UI for account selection
+- Trade form has a refreshed layout and improved performance
+- Improved support for Soroban-based (SEP-41) tokens: you can receive them, see their transactions, attach a memo, and track custom tokens
+- Improved custom Electrum server setup in Trezor Suite
+- Receive flow now starts with an asset search, rather than an account list
+- Yield deposits have a dynamic minimum fee reserve instead of a fixed one
 
 ### 🔧 Bug fixes
 
-- Transactions flagged as phishing are hidden from the Activity Center notifications
-- Excessive network requests fixed for wallets with a large number of Solana accounts
-- Cardano native tokens now show up in a transaction's Inputs/Outputs section, instead of only ADA
+- Suite Sync label export behavior fixed
+- Startup issues fixed
+- Stellar USDC added to Inactive tokens list by default, and can be activated during trading
+- Fixed Solana reconnect issue when using many accounts
+- Fiat rate tickers fixed for when rates are filtered out
+- Solana staking instructions unified between device and app
 - Minor bugs have been resolved, along with general usability enhancements for a more reliable and seamless experience
