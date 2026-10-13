@@ -1,4 +1,5 @@
 name: "[Check] Validation"
+#! When adding validation jobs, update both this needs list and the expected-result checks below.
 
 on:
   pull_request:
@@ -32,6 +33,8 @@ jobs:
 
   setup-and-cache:
     name: Setup and Cache Dependencies
+    needs: changed-scopes
+    if: needs.changed-scopes.result == 'success' && needs.changed-scopes.outputs.default == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -61,7 +64,8 @@ jobs:
 
   type-check:
     name: Type Checking
-    needs: setup-and-cache
+    needs: [changed-scopes, setup-and-cache]
+    if: needs.changed-scopes.result == 'success' && needs.changed-scopes.outputs.default == 'true' && needs.setup-and-cache.result == 'success'
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: --max-old-space-size=6144
@@ -79,7 +83,8 @@ jobs:
 
   lint:
     name: Linting and formatting
-    needs: setup-and-cache
+    needs: [changed-scopes, setup-and-cache]
+    if: needs.changed-scopes.result == 'success' && needs.changed-scopes.outputs.default == 'true' && needs.setup-and-cache.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -108,7 +113,7 @@ jobs:
   rust-checks:
     name: Rust checks
     needs: changed-scopes
-    if: needs.changed-scopes.outputs.rust == 'true'
+    if: needs.changed-scopes.result == 'success' && needs.changed-scopes.outputs.rust == 'true'
     runs-on: ubuntu-latest
     env:
       # Same toolchain as packages/transport-bluetooth/scripts/Dockerfile
@@ -143,7 +148,7 @@ jobs:
     name: Docs checks
     needs: changed-scopes
     # With default scope changes the same checks run in "Other Checks".
-    if: needs.changed-scopes.outputs.docs == 'true' && needs.changed-scopes.outputs.default != 'true'
+    if: needs.changed-scopes.result == 'success' && needs.changed-scopes.outputs.docs == 'true' && needs.changed-scopes.outputs.default != 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -168,7 +173,8 @@ jobs:
 
   test-madge-circular-imports:
     name: Check for new Circular Imports
-    needs: setup-and-cache
+    needs: [changed-scopes, setup-and-cache]
+    if: needs.changed-scopes.result == 'success' && needs.changed-scopes.outputs.default == 'true' && needs.setup-and-cache.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -185,8 +191,7 @@ jobs:
   unit-tests-suite:
     name: Unit Tests (${{ matrix.test-task }})
     needs: [changed-scopes, setup-and-cache]
-    # Expand the matrix even when setup is skipped so each required check reports a result.
-    if: ${{ !cancelled() && !failure() }}
+    if: needs.changed-scopes.result == 'success' && needs.changed-scopes.outputs.default == 'true' && needs.setup-and-cache.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -195,23 +200,20 @@ jobs:
         test-task: [suite, native, "native:trading"]
     steps:
       - name: Checkout repository
-        if: needs.changed-scopes.outputs.default == 'true'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           lfs: true
       - name: "Checkout branches for Nx"
-        if: needs.changed-scopes.outputs.default == 'true'
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
-        if: needs.changed-scopes.outputs.default == 'true'
         uses: ./.github/actions/minimal-yarn-install
       - name: Unit Tests
-        if: needs.changed-scopes.outputs.default == 'true'
         run: yarn test:unit:${{ matrix.test-task }} --output-style=stream -- --silent
 
   build-libs-for-publishing:
     name: "Build libs for publishing"
-    needs: setup-and-cache
+    needs: [changed-scopes, setup-and-cache]
+    if: needs.changed-scopes.result == 'success' && needs.changed-scopes.outputs.default == 'true' && needs.setup-and-cache.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -225,7 +227,8 @@ jobs:
 
   other-checks:
     name: Other Checks
-    needs: setup-and-cache
+    needs: [changed-scopes, setup-and-cache]
+    if: needs.changed-scopes.result == 'success' && needs.changed-scopes.outputs.default == 'true' && needs.setup-and-cache.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -285,7 +288,8 @@ jobs:
 
   releases-revision-checks:
     name: Releases revision Checks
-    needs: setup-and-cache
+    needs: [changed-scopes, setup-and-cache]
+    if: needs.changed-scopes.result == 'success' && needs.changed-scopes.outputs.default == 'true' && needs.setup-and-cache.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -308,3 +312,77 @@ jobs:
       - name: Check releases.json revisions
         if: steps.changes.outputs.releases-json == 'true'
         run: yarn workspace @trezor/connect-data validate-releases.json
+
+  validation-result:
+    name: Validation result
+    needs:
+      - changed-scopes
+      - setup-and-cache
+      - type-check
+      - lint
+      - rust-checks
+      - docs-checks
+      - test-madge-circular-imports
+      - unit-tests-suite
+      - build-libs-for-publishing
+      - other-checks
+      - releases-revision-checks
+    # always() keeps this job from being skipped when a needed job fails.
+    # A skipped required check is a successful conclusion and would allow the merge.
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require the expected jobs
+        env:
+          NEEDS: ${{ toJson(needs) }}
+        run: |
+          set -euo pipefail
+          result() { echo "$NEEDS" | jq -er --arg id "$1" '.[$id].result'; }
+          output() { echo "$NEEDS" | jq -r --arg id "$1" --arg key "$2" '.[$id].outputs[$key] // empty'; }
+          fail() { echo "::error::$1"; exit 1; }
+          expect() {
+            local id="$1"
+            local expected="$2"
+            local actual
+            actual="$(result "$id")" || fail "$id has no result"
+            [ "$actual" = "$expected" ] || fail "$id is ${actual}, expected ${expected}"
+          }
+          scope() {
+            local name="$1"
+            local value="$2"
+            case "$value" in
+              true | false) ;;
+              *) fail "changed-scopes ${name} output is '${value}'" ;;
+            esac
+          }
+
+          expect changed-scopes success
+          default="$(output changed-scopes default)"
+          rust="$(output changed-scopes rust)"
+          docs="$(output changed-scopes docs)"
+          scope default "$default"
+          scope rust "$rust"
+          scope docs "$docs"
+          echo "$NEEDS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+          echo "scopes: default=${default} rust=${rust} docs=${docs}"
+
+          for id in setup-and-cache type-check lint test-madge-circular-imports \
+            unit-tests-suite build-libs-for-publishing other-checks releases-revision-checks; do
+            if [ "$default" = "true" ]; then
+              expect "$id" success
+            else
+              expect "$id" skipped
+            fi
+          done
+
+          if [ "$rust" = "true" ]; then
+            expect rust-checks success
+          else
+            expect rust-checks skipped
+          fi
+
+          if [ "$docs" = "true" ] && [ "$default" != "true" ]; then
+            expect docs-checks success
+          else
+            expect docs-checks skipped
+          fi
