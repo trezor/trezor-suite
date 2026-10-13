@@ -29,6 +29,11 @@ class CommonDB<TDBStructure> {
     onDowngrade!: () => any;
     onBlocked?: () => void;
     onBlocking?: () => void;
+    /**
+     * Incremented whenever the connection is dropped. Rows written through an earlier connection may be
+     * gone, e.g. when the browser cleared the site data and the next call created a new database.
+     */
+    connectionGeneration = 0;
 
     /**
      * when db is opened for the first time, postpone all other calls to getDB until the first call is resolved.
@@ -80,9 +85,14 @@ class CommonDB<TDBStructure> {
 
     closeAfterTimeout = (timeout = 1000) => {
         setTimeout(() => {
-            this.lazyDb.dispose();
+            this.disposeConnection();
         }, timeout);
     };
+
+    private disposeConnection() {
+        this.connectionGeneration++;
+        this.lazyDb.dispose();
+    }
 
     private initDb() {
         return openDB<TDBStructure>(this.dbName, this.version, {
@@ -110,7 +120,7 @@ class CommonDB<TDBStructure> {
             },
             terminated: () => {
                 // browser killed idb / user cleared history so let's open DB again on next operation
-                this.lazyDb.dispose();
+                this.disposeConnection();
                 console.warn('Unexpected IDB close');
             },
         }).catch(error => {
@@ -193,7 +203,8 @@ class CommonDB<TDBStructure> {
     ) => {
         const db = await this.getDB();
         const tx = db.transaction(store, 'readwrite');
-        const res = await tx.store.delete(key);
+        // Resolve once the delete is committed, so that a failed commit reaches the caller.
+        const [res] = await Promise.all([tx.store.delete(key), tx.done]);
 
         return res;
         // TODO: needs to differentiate between PKs, Index keys...
@@ -367,7 +378,7 @@ class CommonDB<TDBStructure> {
     };
 
     removeDatabase = () => {
-        this.lazyDb.dispose();
+        this.disposeConnection();
 
         return deleteDB(this.dbName);
     };

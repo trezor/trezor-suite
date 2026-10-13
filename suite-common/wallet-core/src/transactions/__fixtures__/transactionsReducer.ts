@@ -211,6 +211,59 @@ export const addTransaction: {
     },
 ];
 
+export const replaceTransaction: {
+    description: string;
+    initialState: Partial<TransactionsState>;
+    actionPayload: ReturnType<typeof transactionsActions.replaceTransaction>['payload'];
+    result: Partial<TransactionsState>;
+}[] = [
+    {
+        description: 'tx will be replaced in its place',
+        initialState: {
+            transactions: {
+                [ACCOUNT.key]: [
+                    testMocks.getWalletTransaction({ txid: '00' }),
+                    testMocks.getWalletTransaction({ txid: '01' }),
+                ],
+            },
+        },
+        actionPayload: {
+            key: ACCOUNT.key,
+            txid: '00',
+            tx: testMocks.getWalletTransaction({ txid: '02' }),
+        },
+        result: {
+            [ACCOUNT.key]: [
+                testMocks.getWalletTransaction({ txid: '02' }),
+                testMocks.getWalletTransaction({ txid: '01' }),
+            ],
+        },
+    },
+    {
+        description: 'replacement is listed already, the replaced tx will be removed',
+        initialState: {
+            transactions: {
+                [ACCOUNT.key]: [
+                    testMocks.getWalletTransaction({ txid: '02' }),
+                    testMocks.getWalletTransaction({ txid: '00' }),
+                    testMocks.getWalletTransaction({ txid: '01' }),
+                ],
+            },
+        },
+        actionPayload: {
+            key: ACCOUNT.key,
+            txid: '00',
+            tx: testMocks.getWalletTransaction({ txid: '02', amount: '2000' }), // NOTE: different amount
+        },
+        result: {
+            [ACCOUNT.key]: [
+                testMocks.getWalletTransaction({ txid: '02' }),
+                testMocks.getWalletTransaction({ txid: '01' }),
+            ],
+        },
+    },
+];
+
 export const removeTransaction: {
     description: string;
     initialState: Partial<TransactionsState>;

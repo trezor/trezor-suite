@@ -29,6 +29,25 @@ describe(transactionsReducer.name, () => {
         });
     });
 
+    describe('replaceTransaction', () => {
+        fixtures.replaceTransaction.forEach(f => {
+            it(f.description, () => {
+                const result = transactionsReducer(
+                    {
+                        ...transactionsInitialState,
+                        ...f.initialState,
+                    },
+                    {
+                        type: transactionsActions.replaceTransaction.type,
+                        payload: f.actionPayload,
+                    },
+                );
+
+                expect(result.transactions).toStrictEqual(f.result);
+            });
+        });
+    });
+
     describe('removeTransaction', () => {
         fixtures.removeTransaction.forEach(f => {
             it(f.description, () => {

@@ -61,6 +61,7 @@ import {
     changeNetworks,
     earnOnboardingActions,
     explorerActions,
+    fetchAllTransactionsForAccountThunk,
     phishingActions,
     selectAccountByKey,
     selectAccountsByDeviceState,
@@ -141,6 +142,10 @@ const defineRememberedDeviceHandler = <Matchers extends ReadonlyArray<TypeGuard<
         deps: RememberedDeviceSaveDeps,
     ) => void;
 }): RememberedDeviceHandler => handler;
+
+// Accounts whose transaction history is being loaded page by page. Their historic rates are saved once
+// the load settles, not re-derived from all of the account's transactions for every page.
+const accountsLoadingHistory = new Set<AccountKey>();
 
 // Device-scoped data must be persisted only for remembered devices. Do not check
 // getIsDeviceRemembered by hand — register a handler here and the loop in the middleware below
@@ -267,6 +272,13 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
                 return;
             }
 
+            if (
+                updateTxsFiatRatesThunk.fulfilled.match(action) &&
+                accountsLoadingHistory.has(account.key)
+            ) {
+                return;
+            }
+
             const historicRates = selectHistoricFiatRates(deps.getState());
             if (historicRates) {
                 // The put replaces the account's row, so it needs no delete first.
@@ -276,6 +288,21 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
             } else {
                 storageActions.removeAccountHistoricRates(deps, account.key);
             }
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: [
+            fetchAllTransactionsForAccountThunk.fulfilled.match,
+            fetchAllTransactionsForAccountThunk.rejected.match,
+        ],
+        getDevice: (action, state) => getDeviceByAccountKey(action.meta.arg.accountKey, state),
+        save: ({ action }, deps) => {
+            deps.dispatch(
+                storageActions.saveAccountHistoricRatesThunk(
+                    action.meta.arg.accountKey,
+                    selectHistoricFiatRates(deps.getState()),
+                ),
+            );
         },
     }),
     defineRememberedDeviceHandler({
@@ -377,6 +404,17 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             );
         }
     });
+
+    if (fetchAllTransactionsForAccountThunk.pending.match(action)) {
+        accountsLoadingHistory.add(action.meta.arg.accountKey);
+    } else if (
+        isAnyOf(
+            fetchAllTransactionsForAccountThunk.fulfilled,
+            fetchAllTransactionsForAccountThunk.rejected,
+        )(action)
+    ) {
+        accountsLoadingHistory.delete(action.meta.arg.accountKey);
+    }
 
     if (accountsActions.removeAccount.match(action)) {
         action.payload.forEach(
