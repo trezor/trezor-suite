@@ -237,6 +237,10 @@ describe('parseRequestUrl', () => {
     it.each(parseFixtures)('$description: $input', ({ input, expected }) => {
         expect(parseRequestUrl(input)).toEqual(expected);
     });
+
+    it('throws for a request target that the URL parser rejects', () => {
+        expect(() => parseRequestUrl('//[')).toThrow('Invalid URL');
+    });
 });
 
 describe('formatRequestUrl', () => {
