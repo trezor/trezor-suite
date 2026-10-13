@@ -5,7 +5,11 @@ import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { joinAmountWithSymbol } from '@suite-common/formatters';
 import { selectTradingProviderMetadata, tradingBuyActions } from '@suite-common/trading';
-import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
+    setBaseCurrency,
+} from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { act, renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import {
@@ -22,7 +26,11 @@ import {
     mercuryoApplePayBuyQuote,
     mercuryoCreditCardBuyQuote,
 } from '@suite-native/trading-fixtures';
-import { type TradingRootState, selectTradingResidenceCountry } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    selectBuyAmountLimits,
+    selectTradingResidenceCountry,
+} from '@suite-native/trading-state';
 import { type BuyFormType, type TradeableAsset } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
@@ -709,6 +717,38 @@ describe('useBuyForm', () => {
             });
 
             expect(selectTradingResidenceCountry(store.getState())).toBe('CA');
+        });
+    });
+
+    describe('on base currency change', () => {
+        it('should keep fiatCurrency and amount limits on mount', async () => {
+            const store = getInitializedStore();
+            const { result } = await renderUseTradingBuyForm(store);
+
+            expect(result.current.getValues('fiatCurrency')).toBe('usd');
+            expect(selectBuyAmountLimits(store.getState())).toBeDefined();
+        });
+
+        it('should update fiatCurrency to the new base currency', async () => {
+            const store = getInitializedStore();
+            const { result } = await renderUseTradingBuyForm(store);
+
+            await act(() => {
+                store.dispatch(setBaseCurrency('eur'));
+            });
+
+            expect(result.current.getValues('fiatCurrency')).toBe('eur');
+        });
+
+        it('should clear amount limits', async () => {
+            const store = getInitializedStore();
+            await renderUseTradingBuyForm(store);
+
+            await act(() => {
+                store.dispatch(setBaseCurrency('eur'));
+            });
+
+            expect(selectBuyAmountLimits(store.getState())).toBeUndefined();
         });
     });
 });
