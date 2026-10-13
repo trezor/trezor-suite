@@ -36,7 +36,10 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
     const getAdapterStatus = toGetter(deps.getState, selectAdapterStatus);
     const getKnownDevices = toGetter(deps.getState, selectKnownDevices<DesktopBluetoothDevice>);
 
-    const backgroundScan = createBackgroundScan(deps);
+    const backgroundScan = createBackgroundScan({
+        getAdapterStatus,
+        getKnownDevices,
+    });
 
     const setupBluetoothListeners = createSetupBluetoothListeners({
         getKnownDevices,
