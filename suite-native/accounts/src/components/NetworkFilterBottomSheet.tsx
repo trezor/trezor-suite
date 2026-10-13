@@ -26,7 +26,7 @@ type NetworkFilterBottomSheetProps = {
     selectedNetworks: NetworkSymbol[];
     onApply: (selected: NetworkSymbol[]) => void;
     onClear: () => void;
-    isSendFlow: boolean;
+    isSendFlow?: boolean;
 };
 
 export const NetworkFilterBottomSheet = forwardRef(
