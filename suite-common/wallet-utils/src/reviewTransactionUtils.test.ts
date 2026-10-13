@@ -1,6 +1,7 @@
+import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { EARN_YIELD_CLAIM_PROVIDER, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type FormState,
@@ -12,10 +13,12 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { TokenInfo } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils';
 
 import { buildApprovalTransactionData, getPrecomposedTxWithAccountToken } from './ethUtils';
 import {
     constructTransactionReviewOutputs,
+    getIsClearSignedEvmClaimFlow,
     isClearSignedEvmTradingSwapTransaction,
     isClearSignedWrappedNativeTransaction,
     isDeviceReviewOnlyTransaction,
@@ -41,6 +44,19 @@ const EVERSTAKE_POOL = '0xD523794C879D9eC028960a231F866758e405bE34';
 const STAKE_DATA = `0x3a29dbae${'00'.repeat(32)}`;
 const UNSTAKE_DATA = `0x76ec871c${'00'.repeat(32 * 3)}`;
 const CLAIM_DATA = '0x33986ffa';
+
+// Merkl distributor claim(address[],address[],uint256[],bytes32[][]) — DeFi yield rewards claim
+const MERKL_DISTRIBUTOR = '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae';
+const YIELD_CLAIM_SENDER = asEvmAddress('0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3');
+const YIELD_CLAIM_DATA = Calldata.evm.distributor.claim.encode(
+    {
+        users: [YIELD_CLAIM_SENDER],
+        tokens: [asEvmAddress('0x58D97B57BB95320F9a05dC918Aef65434969c2B2')],
+        amounts: [new BigNumber('848795999565318')],
+        proofs: [['0xd8f0361b28675e4ac82f066f7abdaaffaa6e0fbd418f60dca41ae70656edd18b']],
+    },
+    { sender: YIELD_CLAIM_SENDER },
+).data!;
 
 const ERC20_APPROVE_SPENDER = '0x0000000000000000000000000000000000001234';
 const ERC20_APPROVE_DATA = buildApprovalTransactionData({
@@ -126,6 +142,20 @@ const buildUpdatedDevice = () =>
         minor_version: 12,
         patch_version: 4,
     });
+
+// Model One firmware predates the updated send flow (2.6.0), so it reviews via the legacy flow.
+const buildModelOneDevice = () =>
+    mockSuiteDevice(undefined, {
+        major_version: 1,
+        minor_version: 12,
+        patch_version: 1,
+    });
+
+const buildDeviceWithoutClearSigning = (): TrezorDevice =>
+    ({
+        ...buildUpdatedDevice(),
+        unavailableCapabilities: { evmClearSigning: 'no-support' },
+    }) as TrezorDevice;
 type BuildPrecomposedTransactionParams = {
     isTokenKnown?: boolean;
     to: string;
@@ -297,9 +327,75 @@ describe('isClearSignedWrappedNativeTransaction', () => {
     });
 });
 
+describe('getIsClearSignedEvmClaimFlow', () => {
+    it('returns true on firmware with the updated ethereum send flow and clear signing', () => {
+        expect(getIsClearSignedEvmClaimFlow(buildUpdatedDevice(), 'ethereum')).toBe(true);
+    });
+
+    it('returns false on Model One', () => {
+        expect(getIsClearSignedEvmClaimFlow(buildModelOneDevice(), 'ethereum')).toBe(false);
+    });
+
+    it('returns false when the device cannot clear-sign', () => {
+        expect(getIsClearSignedEvmClaimFlow(buildDeviceWithoutClearSigning(), 'ethereum')).toBe(
+            false,
+        );
+    });
+
+    it('returns false outside ethereum', () => {
+        expect(getIsClearSignedEvmClaimFlow(buildUpdatedDevice(), 'bitcoin')).toBe(false);
+    });
+});
+
 describe('constructTransactionReviewOutputs', () => {
     const account = buildEthereumAccount();
     const device = buildUpdatedDevice();
+
+    it('renders the provider and reward tokens for a clear-signed rewards claim', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            availableRewards: [],
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData: YIELD_CLAIM_DATA }),
+            precomposedTx: buildPrecomposedTransaction({ to: MERKL_DISTRIBUTOR }),
+        });
+
+        expect(outputs).toEqual([
+            { type: 'data', value: EARN_YIELD_CLAIM_PROVIDER },
+            { type: 'rewards', rewards: [] },
+        ]);
+    });
+
+    it('renders the contract and raw data rows for a rewards claim on firmware without clear signing', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device: buildDeviceWithoutClearSigning(),
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData: YIELD_CLAIM_DATA }),
+            precomposedTx: buildPrecomposedTransaction({ to: MERKL_DISTRIBUTOR }),
+        });
+
+        expect(outputs).toEqual([
+            { type: 'data', value: YIELD_CLAIM_DATA },
+            { type: 'contract', value: MERKL_DISTRIBUTOR },
+        ]);
+    });
+
+    it('renders the legacy address and raw data rows for a rewards claim on Model One', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device: buildModelOneDevice(),
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData: YIELD_CLAIM_DATA }),
+            precomposedTx: buildPrecomposedTransaction({ to: MERKL_DISTRIBUTOR }),
+        });
+
+        expect(outputs).toEqual([
+            { type: 'regular_legacy', value: MERKL_DISTRIBUTOR },
+            { type: 'data', value: YIELD_CLAIM_DATA },
+        ]);
+    });
 
     it.each(['btc', 'eth'] as const)(
         'renders traded assets before provider for a SLIP-24 sell on %s',
