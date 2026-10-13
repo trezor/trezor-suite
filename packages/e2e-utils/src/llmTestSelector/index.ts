@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-import { getWeakRandomInt, scheduleAction, unique } from '@trezor/utils';
+import { arrayPartition, getWeakRandomInt, scheduleAction, unique } from '@trezor/utils';
 
 import { error, log, output, printProblemSummary, warn } from '../logger';
 import { githubRunLink, postSlackMessage } from '../slack';
@@ -69,6 +69,7 @@ const DEFAULT_COVERAGE_MAP_DIR = 'coverage-map';
 const DEFAULT_INDEX_FILE = `${DEFAULT_COVERAGE_MAP_DIR}/index.json`;
 const DEFAULT_LLM_ANALYSIS_FILE = `${DEFAULT_COVERAGE_MAP_DIR}/llm-analysis.json`;
 const DEFAULT_BASE_REF = 'origin/develop';
+const SUITE_E2E_TESTS_DIR = 'suite/e2e/tests/';
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const OPENROUTER_MODEL = 'moonshotai/kimi-k2.7-code';
@@ -212,6 +213,24 @@ const getChangedFiles = (headRef = 'HEAD', baseRef = DEFAULT_BASE_REF): string[]
 
     // Deduplicate
     return unique(files).filter(isAllowedFile);
+};
+
+const getSuiteE2ETestFiles = (headRef: string): Set<string> => {
+    // --full-tree because the script runs from the e2e-utils workspace, not the repository root.
+    const result = spawnSync(
+        'git',
+        ['ls-tree', '-r', '--name-only', '--full-tree', headRef, '--', SUITE_E2E_TESTS_DIR],
+        { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] },
+    );
+
+    if (result.error) {
+        throw new Error(`Failed to run git ls-tree: ${result.error.message}`);
+    }
+    if (result.status !== 0) {
+        throw new Error(`git ls-tree exited with status ${result.status}:\n${result.stderr}`);
+    }
+
+    return new Set(result.stdout.split('\n').filter(line => line.length > 0));
 };
 
 // ---------------------------------------------------------------------------
@@ -426,6 +445,7 @@ ${uncoveredFiles.length > 0 ? uncoveredFiles.map(f => `- ${f}`).join('\n') : '(n
 4. Populate **related_changes** with the subset of changed files that are most relevant to each test.
 5. In **uncovered_changes** list the changed files that have no known test coverage at all (neither static nor inferred).
 6. Write a short **summary** (2–4 sentences) describing the overall risk profile of this change set and the recommended test strategy.
+7. Recommend only Suite e2e tests, i.e. files under \`${SUITE_E2E_TESTS_DIR}\`. Other test files in the changed-file list, such as \`packages/*/e2e/...\`, don't run in this workflow.
 
 ## Output format
 Return a single JSON object — no prose outside the JSON. The schema is:
@@ -764,6 +784,45 @@ const isInsufficientCreditsError = (err: unknown): boolean =>
     err instanceof OpenRouterHttpError && err.status === 402;
 
 // ---------------------------------------------------------------------------
+// Result validation
+// ---------------------------------------------------------------------------
+
+type KeepRunnableTestsParams = {
+    llmResult: Omit<SelectionResult, 'changed_files'>;
+    suiteE2ETestFiles: Set<string>;
+};
+
+// The model can return tests the Suite e2e job can't run, e.g. a connect-core e2e test the PR edits
+// or an LLM analysis entry whose file was deleted since. The job fails when none of its specs exists
+// at the PR head. An empty recommendation set makes the caller run everything, which `summary` has
+// to say.
+const keepRunnableTests = ({
+    llmResult,
+    suiteE2ETestFiles,
+}: KeepRunnableTestsParams): Omit<SelectionResult, 'changed_files'> => {
+    const [runnableRecommendations, droppedRecommendations] = arrayPartition(
+        llmResult.recommendations,
+        ({ test }) => suiteE2ETestFiles.has(test),
+    );
+
+    if (droppedRecommendations.length === 0) {
+        return llmResult;
+    }
+
+    const droppedTestList = droppedRecommendations.map(({ test }) => test).join(', ');
+    const droppedNote = `Dropped recommended tests that don't exist under ${SUITE_E2E_TESTS_DIR}: ${droppedTestList}.`;
+    const fallbackNote =
+        runnableRecommendations.length === 0 ? ' Falling back to the full e2e suite.' : '';
+    warn(droppedNote);
+
+    return {
+        ...llmResult,
+        recommendations: runnableRecommendations,
+        summary: `${llmResult.summary} ${droppedNote}${fallbackNote}`,
+    };
+};
+
+// ---------------------------------------------------------------------------
 // Degraded output and alerting
 // ---------------------------------------------------------------------------
 
@@ -873,6 +932,14 @@ const main = async () => {
         process.exit(0);
     }
 
+    let suiteE2ETestFiles: Set<string>;
+    try {
+        suiteE2ETestFiles = getSuiteE2ETestFiles(headRef);
+    } catch (err) {
+        error(err instanceof Error ? err.message : String(err));
+        process.exit(1);
+    }
+
     // 2. Download / refresh coverage index
     try {
         await downloadIfStale(COVERAGE_INDEX_URL, indexFile);
@@ -952,7 +1019,7 @@ const main = async () => {
     // 6. Emit result
     const result: SelectionResult = {
         changed_files: changedFiles,
-        ...llmResult,
+        ...keepRunnableTests({ llmResult, suiteE2ETestFiles }),
     };
 
     output(JSON.stringify(result, null, 2));
