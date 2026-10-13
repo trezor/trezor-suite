@@ -32,12 +32,17 @@ import {
     type ChangeCoinVisibilityThunkState,
     blockchainInitialState,
     changeCoinVisibilityThunk,
+    fetchAllTransactionsForAccountThunk,
     selectBaseCurrency,
     transactionsActions,
     updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
-import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type WalletAccountTransaction,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
@@ -60,7 +65,7 @@ import {
     walletSettingsReducer,
 } from 'src/reducers/wallet';
 import graphReducer from 'src/reducers/wallet/graphReducer';
-import { type Db, type DbDep } from 'src/storage/createDb';
+import { type Db, type DbDep, createDb } from 'src/storage/createDb';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { type PreloadStore, createPreloadStore } from 'src/support/suite/createPreloadStore';
 import { type AcquiredDevice } from 'src/types/suite';
@@ -167,10 +172,18 @@ const getTransactionsPage = (account: Account, page: number) =>
         getAccountTransaction(account, `txid-page${page}-${index}`),
     );
 
-// The storage middleware does not await its writes, so wait for every write the spied db methods
-// have started.
-const settleStorageWrites = (...spies: jest.SpyInstance[]) =>
-    Promise.all(spies.flatMap(spy => spy.mock.results.map(result => result.value)));
+// The storage middleware does not await its writes, and an account's save starts once its previous
+// one settled, so wait until the spied db methods start no more writes.
+const settleStorageWrites = async (...spies: jest.SpyInstance[]) => {
+    const getWrites = () => spies.flatMap(spy => spy.mock.results.map(result => result.value));
+    let writeCount: number;
+
+    do {
+        writeCount = getWrites().length;
+        await Promise.all(getWrites());
+        await new Promise(resolve => setTimeout(resolve, 0));
+    } while (getWrites().length > writeCount);
+};
 
 // The tested thunks and the storage middleware declare the persisted slices; the sync slices are
 // kept so that their reducers can apply the loaded storage.
@@ -608,6 +621,17 @@ describe('Storage actions', () => {
         const getStoreTransactions = (store: ReturnType<typeof mockStore>) =>
             store.getState().wallet.transactions.transactions[acc1.key];
 
+        // A reload keeps one row per `order`, so it can hide a stale row: compare the stored rows.
+        const getStoredRows = async () =>
+            (await db.getItemsExtended('txs')).map(({ tx, order }) => `${tx.txid}@${order}`).sort();
+
+        const getStoreRows = (store: ReturnType<typeof mockStore>) => {
+            const transactions: ReadonlyArray<WalletAccountTransaction | undefined> =
+                getStoreTransactions(store) ?? [];
+
+            return transactions.flatMap((tx, order) => (tx ? [`${tx.txid}@${order}`] : [])).sort();
+        };
+
         const reloadTransactions = async () => {
             const reloadedStore = mockStore(db, getInitialState());
             reloadedStore.dispatch((await preloadStore())!);
@@ -675,6 +699,7 @@ describe('Storage actions', () => {
             expect(deleteQueries).toHaveLength(1);
             expect(rows).toHaveLength(2 * TRANSACTIONS_PER_PAGE - 2);
             expect(await reloadTransactions()).toEqual(getStoreTransactions(store));
+            expect(await getStoredRows()).toEqual(getStoreRows(store));
         });
 
         it('deletes the row of a transaction pushed out of a refetched page', async () => {
@@ -801,6 +826,142 @@ describe('Storage actions', () => {
 
             expect(addItemSpy).toHaveBeenCalledWith('historicRates', {}, acc1.key, true);
             expect(removeItemByPKSpy).not.toHaveBeenCalled();
+        });
+
+        it('saves the historic rates once a history load settles', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const addItemSpy = jest.spyOn(db, 'addItem');
+            const loadArg = { accountKey: acc1.key };
+            const ratesFulfilled = updateTxsFiatRatesThunk.fulfilled(
+                { account: acc1, rates: [] },
+                'requestId',
+                {
+                    accountKey: acc1.key,
+                    txs: [],
+                    baseCurrencyCode: selectBaseCurrency(store.getState()),
+                },
+            );
+
+            store.dispatch(fetchAllTransactionsForAccountThunk.pending('loadId', loadArg));
+            [1, 2].forEach(() => store.dispatch(ratesFulfilled));
+            store.dispatch(fetchAllTransactionsForAccountThunk.fulfilled([], 'loadId', loadArg));
+            await settleStorageWrites(addItemSpy);
+
+            expect(addItemSpy.mock.calls).toEqual([['historicRates', {}, acc1.key, true]]);
+        });
+
+        it('replaces the rows after a failed save, also in the save queued behind it', async () => {
+            // Without a remembered device, only the saves below write.
+            const store = mockStore(db, getInitialState({ wallet: { accounts: [acc1] } }));
+            const saveTransactions = () =>
+                store.dispatch(storageActions.saveAccountTransactionsThunk(acc1));
+
+            addTransactionsPage(store, 1);
+            await saveTransactions();
+            jest.spyOn(db, 'updateItems').mockRejectedValueOnce(new Error('Transaction aborted'));
+            // In the same tick, as fetchAndUpdateAccountThunk dispatches them.
+            store.dispatch(
+                transactionsActions.removeTransaction({
+                    account: acc1,
+                    txs: [{ txid: 'txid-page1-1' }],
+                }),
+            );
+            const failedSave = saveTransactions();
+            store.dispatch(
+                transactionsActions.addTransaction({
+                    transactions: [getAccountTransaction(acc1, 'txid-new')],
+                    account: acc1,
+                }),
+            );
+            const queuedSave = saveTransactions();
+
+            await expect(failedSave).rejects.toThrow('Transaction aborted');
+            await queuedSave;
+
+            expect(await getStoredRows()).toEqual(getStoreRows(store));
+        });
+
+        it('replaces the rows after the connection was dropped', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const writeSpies = [
+                jest.spyOn(db, 'replaceItemsByIndex'),
+                jest.spyOn(db, 'updateItems'),
+                jest.spyOn(db, 'addItem'),
+            ];
+
+            addTransactionsPage(store, 1);
+            store.dispatch(
+                transactionsActions.markTransactionAsNotScam({
+                    key: acc1.key,
+                    txid: 'txid-page1-0',
+                    isMarkedAsNotScam: true,
+                }),
+            );
+            await settleStorageWrites(...writeSpies);
+            // As when the browser cleared the site data: the next call creates a new database.
+            await db.removeDatabase();
+            addTransactionsPage(store, 2);
+            await settleStorageWrites(...writeSpies);
+
+            expect(await getStoredRows()).toEqual(getStoreRows(store));
+            expect(await db.getItemByPK('phishing', acc1.key)).toEqual(['txid-page1-0']);
+        });
+
+        it('replaces the rows after another tab wrote the database', async () => {
+            // jsdom has no BroadcastChannel: deliver to the other channels of the same name.
+            const channels = new Set<{
+                name: string;
+                onmessage: ((event: object) => void) | null;
+            }>();
+            class TestBroadcastChannel {
+                onmessage: ((event: object) => void) | null = null;
+
+                constructor(readonly name: string) {
+                    channels.add(this);
+                }
+
+                postMessage(data: unknown) {
+                    channels.forEach(channel => {
+                        if (channel !== this && channel.name === this.name) {
+                            setTimeout(() => channel.onmessage?.({ data }));
+                        }
+                    });
+                }
+            }
+            const { BroadcastChannel: originalBroadcastChannel } = globalThis;
+            globalThis.BroadcastChannel =
+                TestBroadcastChannel as unknown as typeof BroadcastChannel;
+            // The same database with its own cache, as in another tab.
+            const otherTabDb = createDb({ dispatch: jest.fn(), reloadApp: jest.fn() });
+
+            try {
+                const store = mockStore(db, getRememberedDeviceState());
+                const otherTabStore = mockStore(otherTabDb, getRememberedDeviceState());
+                const writeSpies = [db, otherTabDb].flatMap(tabDb => [
+                    jest.spyOn(tabDb, 'replaceItemsByIndex'),
+                    jest.spyOn(tabDb, 'updateItems'),
+                ]);
+
+                addTransactionsPage(store, 1);
+                await settleStorageWrites(...writeSpies);
+                addTransactionsPage(otherTabStore, 1);
+                await settleStorageWrites(...writeSpies);
+                addTransactionsPage(store, 2);
+                await settleStorageWrites(...writeSpies);
+                otherTabStore.dispatch(
+                    transactionsActions.addTransaction({
+                        transactions: [getAccountTransaction(acc1, 'txid-new')],
+                        account: acc1,
+                    }),
+                );
+                await settleStorageWrites(...writeSpies);
+
+                expect(await getStoredRows()).toEqual(getStoreRows(otherTabStore));
+            } finally {
+                globalThis.BroadcastChannel = originalBroadcastChannel;
+                otherTabDb.closeAfterTimeout(0);
+                await new Promise(resolve => setTimeout(resolve, 0));
+            }
         });
     });
 

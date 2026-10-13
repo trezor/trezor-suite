@@ -89,7 +89,7 @@ import {
 import { type WalletConnectStateRootState, selectSessions } from '@suite-common/walletconnect';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
-import { cloneObject, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
+import { cloneObject, isNotNullOrUndefined, noop, typedObjectKeys } from '@trezor/utils';
 
 import { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { type GraphState } from 'src/reducers/wallet/graphReducer';
@@ -381,16 +381,57 @@ type AccountTransactions = ReadonlyArray<WalletAccountTransaction | null | undef
 type WrittenAccountRows = {
     transactions: AccountTransactions;
     phishing: string[] | undefined;
+    // The connection the rows were written through, see `CommonDB.connectionGeneration`.
+    connectionGeneration: number;
 };
 
-// Each account's transactions and phishing list as last saved to a database. Redux state is
-// immutable, so a slot that still holds the same transaction object is stored with the right
-// `order` already.
-const writtenAccountRowsByDb = new WeakMap<Db, Map<AccountKey, WrittenAccountRows>>();
+type AccountRows = {
+    // What the last successful save wrote. Unknown after a failed save or a write by another tab, so the
+    // next save replaces all rows.
+    written: WrittenAccountRows | undefined;
+    // Counts the writes by other tabs, so that a save in flight does not record its rows as the known ones.
+    otherTabWrites: number;
+    // The next save of the account starts once this one settled, so that it diffs against rows on disk.
+    lastSave: Promise<void> | undefined;
+};
+
+type AccountRowsCache = {
+    accountRowsByKey: Map<AccountKey, AccountRows>;
+    // Other Suite tabs write the same database.
+    otherTabsChannel: BroadcastChannel | undefined;
+};
+
+// Each account's transactions and phishing list as saved to a database. Redux state is immutable, so a
+// slot that still holds the same transaction object is stored with the right `order` already.
+const accountRowsCacheByDb = new WeakMap<Db, AccountRowsCache>();
+
+const getAccountRowsCache = (db: Db) => {
+    const existingCache = accountRowsCacheByDb.get(db);
+    if (existingCache) return existingCache;
+
+    const accountRowsByKey = new Map<AccountKey, AccountRows>();
+    const otherTabsChannel =
+        typeof BroadcastChannel === 'undefined'
+            ? undefined
+            : new BroadcastChannel(`${db.dbName}/transactions`);
+
+    if (otherTabsChannel) {
+        otherTabsChannel.onmessage = () =>
+            accountRowsByKey.forEach(accountRows => {
+                accountRows.written = undefined;
+                accountRows.otherTabWrites++;
+            });
+    }
+
+    const cache = { accountRowsByKey, otherTabsChannel };
+    accountRowsCacheByDb.set(db, cache);
+
+    return cache;
+};
 
 export const removeAccountTransactions = async (deps: DbDep, account: Account) => {
-    // The next save cannot diff against rows that are gone, so it replaces all of them.
-    writtenAccountRowsByDb.get(deps.db)?.delete(account.key);
+    // Drops the account's queued saves, and its next save replaces all rows.
+    accountRowsCacheByDb.get(deps.db)?.accountRowsByKey.delete(account.key);
 
     if (!deps.db.isAccessible()) return;
     await deps.db.removeItemByIndex('txs', 'accountKey', [
@@ -666,7 +707,9 @@ type SaveAccountTransactionsThunkDeps = WithServices<DbDep>;
  * Persists the account's transactions and phishing list. The first save of an account replaces
  * all of its rows. Later saves put only the slots whose transaction changed (`order` is the slot
  * index) and delete the transactions that left the list, so a paged history load writes each row
- * once instead of rewriting the account on every page.
+ * once instead of rewriting the account on every page. A save starts once the account's previous
+ * save settled, and replaces all rows again when that one failed, another tab wrote the database or
+ * the connection was dropped.
  */
 export const saveAccountTransactionsThunk =
     (account: Account) =>
@@ -675,37 +718,63 @@ export const saveAccountTransactionsThunk =
         getState: () => SaveAccountTransactionsThunkState,
         extra: SaveAccountTransactionsThunkDeps,
     ) => {
-        if (!extra.services.db.isAccessible()) return;
+        const { db } = extra.services;
+        if (!db.isAccessible()) return;
 
         const transactions = selectTransactions(getState())[account.key] ?? [];
         const phishing = selectPhishingTransactions(getState())[account.key];
-        const writtenAccountRows =
-            writtenAccountRowsByDb.get(extra.services.db) ??
-            new Map<AccountKey, WrittenAccountRows>();
-        const written = writtenAccountRows.get(account.key);
-        const isPhishingWritten = written !== undefined && written.phishing === phishing;
+        const { accountRowsByKey, otherTabsChannel } = getAccountRowsCache(db);
+        const accountRows: AccountRows = accountRowsByKey.get(account.key) ?? {
+            written: undefined,
+            otherTabWrites: 0,
+            lastSave: undefined,
+        };
+        const previousSave = accountRows.lastSave;
 
-        writtenAccountRowsByDb.set(extra.services.db, writtenAccountRows);
-        writtenAccountRows.set(account.key, { transactions, phishing });
+        accountRowsByKey.set(account.key, accountRows);
 
-        try {
-            await Promise.all([
+        const save = async () => {
+            // Diff against the rows the previous save wrote, not the ones it was about to write.
+            if (previousSave) await previousSave.catch(noop);
+            // removeAccountTransactions dropped the account meanwhile, so these rows must not come back.
+            if (accountRowsByKey.get(account.key) !== accountRows) return;
+
+            const { otherTabWrites } = accountRows;
+            const { connectionGeneration } = db;
+            const written =
+                accountRows.written?.connectionGeneration === connectionGeneration
+                    ? accountRows.written
+                    : undefined;
+
+            // Unknown until this save succeeds.
+            accountRows.written = undefined;
+
+            const writes = [
                 saveAccountTransactionRows({
                     deps: extra.services,
                     account,
                     writtenTransactions: written?.transactions,
                     transactions,
                 }),
-                isPhishingWritten
+                written && written.phishing === phishing
                     ? undefined
                     : saveAccountPhishing(extra.services, account.key, phishing),
-            ]);
-        } catch (error) {
-            // The rows may be in any state now, so the next save replaces all of them.
-            writtenAccountRows.delete(account.key);
+            ];
 
-            throw error;
-        }
+            await Promise.all(writes);
+
+            if (accountRows.otherTabWrites === otherTabWrites) {
+                accountRows.written = { transactions, phishing, connectionGeneration };
+            }
+            if (writes.some(isNotNullOrUndefined)) {
+                otherTabsChannel?.postMessage(null);
+            }
+        };
+
+        const currentSave = save();
+        accountRows.lastSave = currentSave;
+
+        await currentSave;
     };
 
 type SavePhishingMetadataThunkState = PhishingRootState;
