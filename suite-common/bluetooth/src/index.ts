@@ -1,4 +1,5 @@
 export type {
+    BluetoothAdapterStatus,
     BluetoothManufacturerData,
     BluetoothScanStatus,
     BluetoothFilterPolicy,

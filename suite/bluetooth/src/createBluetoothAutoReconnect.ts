@@ -1,51 +1,43 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import {
-    selectAdapterStatus,
-    selectAutoConnectPolicy,
-    selectKnownDevices,
+    type BluetoothAdapterStatus,
+    type BluetoothAutoConnectPolicy,
 } from '@suite-common/bluetooth';
-import { type DeviceRootState } from '@suite-common/device';
-import { selectDevices } from '@suite-common/device';
-import { type FirmwareRootState } from '@suite-common/firmware';
-import { selectFirmware } from '@suite-common/firmware';
-import TrezorConnect from '@trezor/connect';
+import { type FirmwareUpdateState } from '@suite-common/firmware';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import TrezorConnect, { type BluetoothDeviceId } from '@trezor/connect';
 import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
 
 import { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluetoothDevice';
 import { type BackgroundScan } from './bluetoothBackgroundScan';
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
-import { type WithBluetoothRootState } from './desktopBluetoothReducer';
-import { selectConnectingDevices } from './desktopBluetoothSelectors';
 
-type BluetoothReconnectRootState = WithBluetoothRootState & DeviceRootState & FirmwareRootState;
-
-type BluetoothReconnectThunkDispatch = ThunkDispatch<
-    BluetoothReconnectRootState,
-    any,
-    UnknownAction
->;
+type BluetoothReconnectThunkDispatch = ThunkDispatch<unknown, any, UnknownAction>;
 
 type BluetoothAutoReconnectDeps = {
-    getState: () => BluetoothReconnectRootState;
+    getKnownDevices: () => DesktopBluetoothDevice[];
+    getConnectingDeviceIds: () => string[];
+    getAdapterStatus: () => BluetoothAdapterStatus;
+    getAutoConnectPolicy: () => Record<BluetoothDeviceId, BluetoothAutoConnectPolicy | undefined>;
+    getDevices: () => TrezorDevice[];
+    getFirmware: () => FirmwareUpdateState;
     dispatch: BluetoothReconnectThunkDispatch;
     backgroundScan: BackgroundScan;
 };
 
-type AttemptDeviceConnectDeps = Pick<BluetoothAutoReconnectDeps, 'getState' | 'dispatch'>;
+type AttemptDeviceConnectDeps = Omit<BluetoothAutoReconnectDeps, 'backgroundScan'>;
 
 const attemptDeviceConnect = async (
     deps: AttemptDeviceConnectDeps,
     device: DesktopBluetoothDevice,
 ) => {
-    const knownDevice = selectKnownDevices<DesktopBluetoothDevice>(deps.getState()).find(
-        d => d.id === device.id,
-    );
-    const connectingDevices = selectConnectingDevices(deps.getState());
-    const adapterStatus = selectAdapterStatus(deps.getState());
-    const suiteDevices = selectDevices(deps.getState());
-    const firmwareStatus = selectFirmware(deps.getState());
+    const knownDevice = deps.getKnownDevices().find(d => d.id === device.id);
+    const connectingDevices = deps.getConnectingDeviceIds();
+    const adapterStatus = deps.getAdapterStatus();
+    const suiteDevices = deps.getDevices();
+    const firmwareStatus = deps.getFirmware();
 
     if (adapterStatus === 'power-suspending') {
         // system is going to sleep
@@ -76,7 +68,7 @@ const attemptDeviceConnect = async (
     }
 
     // do not hijack BT connection
-    const autoConnectPolicy = selectAutoConnectPolicy(deps.getState());
+    const autoConnectPolicy = deps.getAutoConnectPolicy();
     const devicePolicy = autoConnectPolicy[knownDevice.id];
     const isConnectable =
         device.connectionStatus.type === 'disconnected' &&
@@ -128,7 +120,7 @@ export const createBluetoothAutoReconnect =
 
             // If we already have some paired devices, we assume user will have a BT device,
             // and therefore we start looking for it.
-            const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(deps.getState());
+            const knownDevices = deps.getKnownDevices();
             if (knownDevices.length > 0) {
                 deps.backgroundScan.start();
             }

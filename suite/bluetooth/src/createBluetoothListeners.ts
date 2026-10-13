@@ -1,7 +1,7 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type DesktopApiDep } from '@suite/desktop-app-api';
-import { bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { type WithServices } from '@suite-common/redux-utils';
 import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 
@@ -9,21 +9,18 @@ import { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluet
 import { bluetoothAdapterEventThunk } from './bluetoothAdapterEventThunk';
 import { type BackgroundScan } from './bluetoothBackgroundScan';
 import { type BluetoothDep } from './createBluetooth';
-import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 import { fixLinuxManufacturerData } from './fixLinuxManufacturerData';
 import { openSystemSettingsThunk } from './openSystemSettingsThunk';
 import { remapKnownDevices } from './remapKnownDevices';
 
-type BluetoothListenersRootState = WithBluetoothRootState;
-
 type BluetoothListenersThunkDispatch = ThunkDispatch<
-    BluetoothListenersRootState,
+    unknown,
     WithServices<DesktopApiDep<'openSystemSettings'> & BluetoothDep>,
     UnknownAction
 >;
 
 type BluetoothListenersDeps = {
-    getState: () => BluetoothListenersRootState;
+    getKnownDevices: () => DesktopBluetoothDevice[];
     dispatch: BluetoothListenersThunkDispatch;
     backgroundScan: BackgroundScan;
 };
@@ -43,7 +40,7 @@ export const createBluetoothListeners =
             const nearbyDevices = nearbyDevicesIpc.map(fromBluetoothDevice);
 
             const remappedKnownDevices = remapKnownDevices({
-                knownDevices: selectKnownDevices<DesktopBluetoothDevice>(deps.getState()),
+                knownDevices: deps.getKnownDevices(),
                 nearbyDevices,
             });
 
@@ -64,9 +61,7 @@ export const createBluetoothListeners =
         bluetoothIpc.on('device-update', (deviceIpc: BluetoothDevice) => {
             let device = fromBluetoothDevice(deviceIpc);
 
-            const knownDevice = selectKnownDevices<DesktopBluetoothDevice>(deps.getState()).find(
-                d => d.id === device.id,
-            );
+            const knownDevice = deps.getKnownDevices().find(d => d.id === device.id);
             device = fixLinuxManufacturerData(device, knownDevice);
 
             deps.dispatch(bluetoothActions.deviceUpdateAction({ device }));

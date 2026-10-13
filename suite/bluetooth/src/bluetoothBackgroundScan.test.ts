@@ -2,17 +2,19 @@
  * @jest-environment jsdom
  */
 
+import { type BluetoothAdapterStatus } from '@suite-common/bluetooth';
 import { asBluetoothDeviceId } from '@trezor/connect';
+import { createMockDeps } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { type IpcResponse, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { createDeferred } from '@trezor/utils';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
-import { type BackgroundScan, createBackgroundScan } from './bluetoothBackgroundScan';
 import {
-    type WithBluetoothRootState,
-    initialDesktopBluetoothState,
-} from './desktopBluetoothReducer';
+    type BackgroundScan,
+    type BackgroundScanDeps,
+    createBackgroundScan,
+} from './bluetoothBackgroundScan';
 
 const disconnectedDevice: DesktopBluetoothDevice = {
     id: asBluetoothDeviceId('test-device'),
@@ -28,22 +30,26 @@ const disconnectedDevice: DesktopBluetoothDevice = {
 };
 
 describe('createBackgroundScan', () => {
-    let state: WithBluetoothRootState;
+    let knownDevices: DesktopBluetoothDevice[];
+    let adapterStatus: BluetoothAdapterStatus;
     let scan: BackgroundScan;
+
+    const createScan = () =>
+        createBackgroundScan(
+            createMockDeps<BackgroundScanDeps>({
+                getKnownDevices: () => knownDevices,
+                getAdapterStatus: () => adapterStatus,
+            }),
+        );
 
     beforeEach(() => {
         jest.useFakeTimers();
         jest.spyOn(bluetoothIpc, 'startScan').mockResolvedValue({ success: true });
         jest.spyOn(bluetoothIpc, 'stopScan').mockResolvedValue({ success: true });
         jest.spyOn(console, 'warn').mockImplementation(() => {});
-        state = {
-            bluetooth: {
-                ...initialDesktopBluetoothState,
-                adapterStatus: 'enabled',
-                knownDevices: [disconnectedDevice],
-            },
-        };
-        scan = createBackgroundScan({ getState: () => state });
+        knownDevices = [disconnectedDevice];
+        adapterStatus = 'enabled';
+        scan = createScan();
     });
 
     afterEach(async () => {
@@ -74,13 +80,10 @@ describe('createBackgroundScan', () => {
     it.each(['none', 'connected', 'connecting', 'paired', 'pairing'] as const)(
         'does not scan when known devices are %s',
         async status => {
-            state.bluetooth = {
-                ...state.bluetooth,
-                knownDevices:
-                    status === 'none'
-                        ? []
-                        : [{ ...disconnectedDevice, connectionStatus: { type: status } }],
-            };
+            knownDevices =
+                status === 'none'
+                    ? []
+                    : [{ ...disconnectedDevice, connectionStatus: { type: status } }];
 
             scan.start();
             await jest.advanceTimersByTimeAsync(12000);
@@ -96,8 +99,8 @@ describe('createBackgroundScan', () => {
         'permission-denied',
         'not-compatible',
         'power-suspending',
-    ] as const)('does not scan when the adapter is %s', async adapterStatus => {
-        state.bluetooth = { ...state.bluetooth, adapterStatus };
+    ] as const)('does not scan when the adapter is %s', async status => {
+        adapterStatus = status;
 
         scan.start();
         scan.restartIfNeeded();
@@ -111,13 +114,13 @@ describe('createBackgroundScan', () => {
     it('uses the latest adapter status before another cycle and can restart when enabled', async () => {
         scan.start();
         await jest.advanceTimersByTimeAsync(2000);
-        state.bluetooth = { ...state.bluetooth, adapterStatus: 'disabled' };
+        adapterStatus = 'disabled';
 
         await jest.advanceTimersByTimeAsync(10000);
 
         expect(bluetoothIpc.startScan).toHaveBeenCalledTimes(1);
         expect(jest.getTimerCount()).toBe(0);
-        state.bluetooth = { ...state.bluetooth, adapterStatus: 'enabled' };
+        adapterStatus = 'enabled';
         scan.restartIfNeeded();
         expect(bluetoothIpc.startScan).toHaveBeenCalledTimes(2);
     });
@@ -125,12 +128,12 @@ describe('createBackgroundScan', () => {
     it('uses the latest device state when deciding whether to start another cycle', async () => {
         scan.start();
         await jest.advanceTimersByTimeAsync(2000);
-        state.bluetooth = { ...state.bluetooth, knownDevices: [] };
+        knownDevices = [];
 
         await jest.advanceTimersByTimeAsync(10000);
 
         expect(bluetoothIpc.startScan).toHaveBeenCalledTimes(1);
-        state.bluetooth = { ...state.bluetooth, knownDevices: [disconnectedDevice] };
+        knownDevices = [disconnectedDevice];
         scan.restartIfNeeded();
         expect(bluetoothIpc.startScan).toHaveBeenCalledTimes(2);
     });
@@ -138,7 +141,7 @@ describe('createBackgroundScan', () => {
     it('stops an active scan when no disconnected devices remain', async () => {
         scan.start();
         await jest.advanceTimersByTimeAsync(0);
-        state.bluetooth = { ...state.bluetooth, knownDevices: [] };
+        knownDevices = [];
 
         scan.restartIfNeeded();
         await jest.advanceTimersByTimeAsync(12000);
@@ -227,7 +230,7 @@ describe('createBackgroundScan', () => {
 
     it('skips cycles when the window was already hidden before the scan was created', async () => {
         jest.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden');
-        scan = createBackgroundScan({ getState: () => state });
+        scan = createScan();
 
         scan.start();
         await jest.advanceTimersByTimeAsync(12000);

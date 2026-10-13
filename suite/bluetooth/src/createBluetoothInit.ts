@@ -1,18 +1,15 @@
 import type { ThunkDispatch, UnknownAction } from '@reduxjs/toolkit';
 
-import { bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
-import type { WithBluetoothRootState } from './desktopBluetoothReducer';
 
-type BluetoothInitRootState = WithBluetoothRootState;
-
-type BluetoothInitThunkDispatch = ThunkDispatch<BluetoothInitRootState, unknown, UnknownAction>;
+type BluetoothInitThunkDispatch = ThunkDispatch<unknown, unknown, UnknownAction>;
 
 type BluetoothInitDeps = {
-    getState: () => BluetoothInitRootState;
+    getKnownDevices: () => DesktopBluetoothDevice[];
     dispatch: BluetoothInitThunkDispatch;
     setupListeners: () => void;
     setupAutoReconnect: () => void;
@@ -29,7 +26,7 @@ export const createBluetoothInit = (deps: BluetoothInitDeps): BluetoothInit => {
         }
         inited = true;
 
-        const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(deps.getState());
+        const knownDevices = deps.getKnownDevices();
         const result = await bluetoothIpc.init({
             knownDevices,
         });

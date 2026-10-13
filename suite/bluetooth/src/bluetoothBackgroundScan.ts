@@ -1,9 +1,8 @@
-import { selectAdapterStatus, selectKnownDevices } from '@suite-common/bluetooth';
+import { type BluetoothAdapterStatus } from '@suite-common/bluetooth';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
-import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 import { isBluetoothDeviceReachable } from './isBluetoothDeviceReachable';
 
 const BACKGROUND_SCAN_INTERVAL = 6_000;
@@ -15,10 +14,9 @@ export type BackgroundScan = {
     restartIfNeeded: () => void;
 };
 
-type BackgroundScanRootState = WithBluetoothRootState;
-
-type BackgroundScanDeps = {
-    getState: () => BackgroundScanRootState;
+export type BackgroundScanDeps = {
+    getKnownDevices: () => DesktopBluetoothDevice[];
+    getAdapterStatus: () => BluetoothAdapterStatus;
 };
 
 // TODO: add logger to deps
@@ -30,20 +28,15 @@ const logger = {
  * BluetoothService internal dependency.
  */
 export const createBackgroundScan = (deps: BackgroundScanDeps): BackgroundScan => {
-    const { getState } = deps;
-
     let abortController: AbortController | undefined;
     let currentRun: Promise<void> | undefined;
 
     const isWindowVisible = () => document.visibilityState === 'visible';
 
     const hasDisconnectedKnownDevice = () =>
-        selectKnownDevices<DesktopBluetoothDevice>(getState()).some(
-            device => !isBluetoothDeviceReachable(device),
-        );
+        deps.getKnownDevices().some(device => !isBluetoothDeviceReachable(device));
 
-    const shouldScan = () =>
-        selectAdapterStatus(getState()) === 'enabled' && hasDisconnectedKnownDevice();
+    const shouldScan = () => deps.getAdapterStatus() === 'enabled' && hasDisconnectedKnownDevice();
 
     const run = async (signal: AbortSignal) => {
         while (!signal.aborted && shouldScan()) {
