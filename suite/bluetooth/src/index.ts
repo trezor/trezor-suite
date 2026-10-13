@@ -1,10 +1,6 @@
 export { createBluetoothCompositionRoot } from './createBluetoothCompositionRoot';
 export { type Bluetooth, type BluetoothDep } from './createBluetooth';
-export {
-    type DesktopBluetoothDevice,
-    fromBluetoothDevice,
-    toBluetoothDevice,
-} from './DesktopBluetoothDevice';
+export { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluetoothDevice';
 
 export * from './desktopBluetoothReducer';
 export * from './desktopBluetoothSelectors';
