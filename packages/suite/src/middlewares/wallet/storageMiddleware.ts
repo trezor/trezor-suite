@@ -237,7 +237,10 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         },
     }),
     defineRememberedDeviceHandler({
-        match: [transactionsActions.markTransactionAsNotScam.match],
+        match: [
+            transactionsActions.markTransactionAsNotScam.match,
+            transactionsActions.replaceTransaction.match,
+        ],
         getDevice: (action, state) => getDeviceByAccountKey(action.payload.key, state),
         save: ({ action }, deps) => {
             const account = selectAccountByKey(deps.getState(), action.payload.key);

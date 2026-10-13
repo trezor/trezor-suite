@@ -704,6 +704,24 @@ describe('Storage actions', () => {
             expect(await reloadTransactions()).toEqual(getStoreTransactions(store));
         });
 
+        it('persists a transaction replaced by RBF', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const replaceItemsByIndexSpy = jest.spyOn(db, 'replaceItemsByIndex');
+            const updateItemsSpy = jest.spyOn(db, 'updateItems');
+
+            addTransactionsPage(store, 1);
+            store.dispatch(
+                transactionsActions.replaceTransaction({
+                    key: acc1.key,
+                    txid: 'txid-page1-1',
+                    tx: getAccountTransaction(acc1, 'txid-page1-1-replacement'),
+                }),
+            );
+            await settleStorageWrites(replaceItemsByIndexSpy, updateItemsSpy);
+
+            expect(await reloadTransactions()).toEqual(getStoreTransactions(store));
+        });
+
         it('replaces the rows left from an earlier session on the first save', async () => {
             await db.addItems('txs', [{ tx: getAccountTransaction(acc1, 'txid-stale'), order: 0 }]);
             const store = mockStore(db, getRememberedDeviceState());
