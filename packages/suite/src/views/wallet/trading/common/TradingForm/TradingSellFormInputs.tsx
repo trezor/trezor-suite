@@ -13,10 +13,12 @@ import {
     selectTradingSellSupportedCryptoIds,
     selectTradingSendAccount,
 } from '@suite-common/trading';
+import { useFetchFees } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
+import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
 import { useSelector } from 'src/hooks/suite';
 import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
@@ -29,7 +31,6 @@ import { TradingFormInputFiat } from 'src/views/wallet/trading/common/TradingFor
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
 
 import { TradingFormCard } from './TradingFormCard';
-import { TradingFormFees } from './TradingFormFees';
 import { TradingFractionButtons } from './TradingFractionButtons';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
@@ -47,15 +48,15 @@ export const TradingSellFormInputs = () => {
 
     const {
         type,
-        feeInfo,
-        composedLevels,
         form: { helpers },
         shouldSendInSats,
-        changeFeeLevel,
         showReserveBanner,
     } = context;
     const asset = useSelectedTradingAsset(type);
     const account = useSelector(state => selectTradingSendAccount(state, type));
+    const isRefetchDisabled = useIsFeeRefetchDisabled();
+
+    useFetchFees({ networkSymbol: account?.symbol, isRefetchDisabled });
 
     const {
         control,
@@ -163,15 +164,7 @@ export const TradingSellFormInputs = () => {
                     />
                 )}
                 {!!quotes.length && account && (
-                    <>
-                        <TradingFormFees
-                            feeInfo={feeInfo}
-                            account={account}
-                            composedLevels={composedLevels}
-                            changeFeeLevel={changeFeeLevel}
-                        />
-                        <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
-                    </>
+                    <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
                 )}
 
                 <TradingSelectedOfferProvider />

@@ -903,14 +903,6 @@ export const messages = defineMessages({
         defaultMessage: 'Bank account',
         id: 'TR_SELL_BANK_ACCOUNT_STEP',
     },
-    TR_SELL_SEND_FROM: {
-        defaultMessage: 'Send from',
-        id: 'TR_SELL_SEND_FROM',
-    },
-    TR_SELL_SEND_TO: {
-        defaultMessage: "Send to {providerName}'s address",
-        id: 'TR_SELL_SEND_TO',
-    },
     TR_SELL_CONFIRM_ON_TREZOR_SEND: {
         defaultMessage: 'Confirm on Trezor & send',
         id: 'TR_SELL_CONFIRM_ON_TREZOR_SEND',
@@ -970,10 +962,6 @@ export const messages = defineMessages({
     TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO_INFO: {
         defaultMessage: 'The send address is being generated.',
         id: 'TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO_INFO',
-    },
-    TR_SELL_EXTRA_FIELD: {
-        defaultMessage: '{extraFieldName}',
-        id: 'TR_SELL_EXTRA_FIELD',
     },
     TR_SELL_HEADER_TITLE: {
         defaultMessage: 'Your sell',
