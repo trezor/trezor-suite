@@ -1,5 +1,4 @@
 import { type ReactNode } from 'react';
-import { View } from 'react-native';
 import {
     type EntryExitAnimationFunction,
     FadeOut,
@@ -14,7 +13,7 @@ import { SEARCH_INPUT_ANIMATION_DURATION, SearchForm } from '@suite-native/searc
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AddAccountButton } from './AddAccountsButton';
-import { FilterCountBadge } from './FilterCountBadge';
+import { type NetworkFilter, NetworkFilterButton } from './NetworkFilterButton';
 
 export type SearchableAccountsListHeaderProps = {
     title: ReactNode;
@@ -22,11 +21,11 @@ export type SearchableAccountsListHeaderProps = {
     isSearchActive: boolean;
     onSearchActiveChange: (value: boolean) => void;
     flowType?: AddCoinFlowType;
+    isSendFlow?: boolean;
     closeActionType?: CloseActionType;
     closeAction?: () => void;
     onAddAccount?: () => void;
-    onFilterPress?: () => void;
-    activeFilterCount?: number;
+    networkFilter: NetworkFilter;
     noPaddingTop?: boolean;
 };
 
@@ -46,11 +45,11 @@ export const SearchableAccountsListHeader = ({
     isSearchActive,
     onSearchActiveChange,
     flowType,
+    isSendFlow,
     closeActionType,
     closeAction,
     onAddAccount,
-    onFilterPress,
-    activeFilterCount = 0,
+    networkFilter,
     noPaddingTop = false,
 }: SearchableAccountsListHeaderProps) => {
     const isFirstRender = useSharedValue(true);
@@ -121,21 +120,7 @@ export const SearchableAccountsListHeader = ({
                             alignItems="center"
                             spacing="sp8"
                         >
-                            {onFilterPress && (
-                                <View>
-                                    <IconButton
-                                        iconName="funnelSimple"
-                                        size="medium"
-                                        onPress={onFilterPress}
-                                        intent="neutral"
-                                        priority="secondary"
-                                        testID="@myAssets/networkFilterButton"
-                                    />
-                                    {activeFilterCount > 0 && (
-                                        <FilterCountBadge count={activeFilterCount} />
-                                    )}
-                                </View>
-                            )}
+                            <NetworkFilterButton isSendFlow={isSendFlow} filter={networkFilter} />
                             {flowType && (
                                 <AddAccountButton
                                     flowType={flowType}

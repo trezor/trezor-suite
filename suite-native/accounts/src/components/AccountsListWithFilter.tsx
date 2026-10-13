@@ -1,22 +1,14 @@
-import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { type ReactNode, useCallback, useEffect, useState } from 'react';
 
-import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
 
-import { type NetworksRootState } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AddCoinFlowType, type CloseActionType } from '@suite-native/navigation';
 
-import {
-    type NativeAccountsRootState,
-    selectIsAccountsListNetworkFilterVisible,
-} from '../selectors';
 import { type OnSelectAccount } from '../types';
 import { AccountsList } from './AccountsList/AccountsList';
 import { AccountsListEmptyPlaceholder } from './AccountsList/AccountsListEmptyPlaceholder';
 import { AccountsListFooter } from './AccountsListFooter';
-import { NetworkFilterBottomSheet } from './NetworkFilterBottomSheet';
 import { SearchableAccountsListHeader } from './SearchableAccountsListHeader';
 
 const EMPTY_NETWORKS_FILTER: NetworkSymbol[] = [];
@@ -49,12 +41,6 @@ export const AccountsListWithFilter = ({
     const [searchValue, setSearchValue] = useState('');
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [filteredNetworks, setFilteredNetworks] = useState<NetworkSymbol[]>(networksFilter);
-    const filterBottomSheetRef = useRef<BottomSheetModalMethods>(null);
-
-    const isNetworkFilterVisible = useSelector(
-        (state: NativeAccountsRootState & NetworksRootState) =>
-            selectIsAccountsListNetworkFilterVisible(state, isSendFlow),
-    );
 
     useEffect(() => {
         setFilteredNetworks(networksFilter);
@@ -89,18 +75,6 @@ export const AccountsListWithFilter = ({
         [onSelectAccount],
     );
 
-    const handleFilterPress = () => {
-        filterBottomSheetRef.current?.present();
-    };
-
-    const handleApplyFilter = (selected: NetworkSymbol[]) => {
-        setFilteredNetworks(selected);
-    };
-
-    const handleClearFilters = () => {
-        setFilteredNetworks([]);
-    };
-
     return (
         <>
             <SearchableAccountsListHeader
@@ -109,11 +83,11 @@ export const AccountsListWithFilter = ({
                 isSearchActive={isSearchActive}
                 onSearchActiveChange={setIsSearchActive}
                 flowType={flowType}
+                isSendFlow={isSendFlow}
                 closeActionType={closeActionType}
                 closeAction={closeAction}
                 onAddAccount={onAddAccount}
-                onFilterPress={isNetworkFilterVisible ? handleFilterPress : undefined}
-                activeFilterCount={filteredNetworks.length}
+                networkFilter={{ filteredNetworks, setFilteredNetworks }}
                 noPaddingTop={noHeaderPaddingTop}
             />
             <AccountsList
@@ -129,16 +103,9 @@ export const AccountsListWithFilter = ({
                     <AccountsListFooter
                         isSendFlow={isSendFlow}
                         activeFilterCount={filteredNetworks.length}
-                        onClearFilters={handleClearFilters}
+                        onClearFilters={() => setFilteredNetworks([])}
                     />
                 }
-            />
-            <NetworkFilterBottomSheet
-                ref={filterBottomSheetRef}
-                selectedNetworks={filteredNetworks}
-                onApply={handleApplyFilter}
-                onClear={handleClearFilters}
-                isSendFlow={isSendFlow ?? false}
             />
         </>
     );
