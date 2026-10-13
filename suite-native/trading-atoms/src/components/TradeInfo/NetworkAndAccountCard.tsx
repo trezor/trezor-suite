@@ -22,7 +22,7 @@ export const NetworkAndAccountCard = ({ title, account, children }: NetworkAndAc
                 title={title}
                 rightContent={
                     <HStack alignItems="center">
-                        {!!symbol && <NetworkIcon symbol={symbol} size="extraLarge" />}
+                        {!!symbol && <NetworkIcon symbol={symbol} size={24} />}
                         <AccountLabel variant="body-sm" account={account} />
                     </HStack>
                 }

@@ -56,7 +56,7 @@ export const NetworkPicker = ({
                 shouldWrapChildrenInText={!selectedNetwork}
             >
                 {selectedNetwork ? (
-                    <NetworkIcon symbol={selectedNetwork} size="extraLarge" />
+                    <NetworkIcon symbol={selectedNetwork} size={24} />
                 ) : (
                     <Text variant="body-md-strong">{pickerLabel}</Text>
                 )}

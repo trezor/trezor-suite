@@ -19,7 +19,7 @@ import { useAsyncMemo } from '@trezor/react-utils';
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { MAX_FONT_SIZE_MULTIPLIER } from './Icon';
-import { NetworkIcon, networkIconSizes } from './NetworkIcon';
+import { NetworkIcon, type NetworkIconSize } from './NetworkIcon';
 
 export const tokenIconSizes = {
     tiny: 16,
@@ -32,6 +32,19 @@ export const tokenIconSizes = {
 
 export type TokenIconSize = keyof typeof tokenIconSizes;
 
+const networkIconSizeByTokenIconSize: Record<TokenIconSize, NetworkIconSize> = {
+    tiny: 8, // no better match in NetworkIconSize
+    extraSmall: 8,
+    small: 12,
+    medium: 16,
+    large: 20,
+    extraLarge: 24,
+};
+
+// The numeric fallback to 8 is not right but doesn't happen at runtime and makes TS happy.
+const getNetworkIconSize = (size: TokenIconSize | number): NetworkIconSize =>
+    typeof size === 'number' ? 8 : networkIconSizeByTokenIconSize[size];
+
 const iconStyle = prepareNativeStyle<{ width: number; height: number }>(
     (utils, { width, height }) => ({
         borderRadius: utils.borders.radii.round,
@@ -41,16 +54,14 @@ const iconStyle = prepareNativeStyle<{ width: number; height: number }>(
     }),
 );
 
-const networkWrapperStyle = prepareNativeStyle<{ size: TokenIconSize | number }>(
-    (utils, { size }) => ({
-        position: 'absolute',
-        right: 0,
-        bottom: 0,
-        borderWidth: utils.borders.widths.small,
-        borderColor: utils.colors.borderNeutral,
-        borderRadius: typeof size === 'number' ? size : networkIconSizes[size] / 3,
-    }),
-);
+const networkWrapperStyle = prepareNativeStyle<{ size: number }>((utils, { size }) => ({
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    borderWidth: utils.borders.widths.small,
+    borderColor: utils.colors.borderNeutral,
+    borderRadius: size / 3,
+}));
 
 const tokenIconPlaceholderIconStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.surfaceFillPage,
@@ -269,6 +280,7 @@ export const TokenIcon = ({
 
     const iconSymbol = contractAddress ? networkSymbol : displaySymbol;
     const iconSize = typeof size === 'number' ? size : tokenIconSizes[size];
+    const networkIconSize = getNetworkIconSize(size);
 
     return (
         <View style={{ width: iconSize, height: iconSize }}>
@@ -281,7 +293,7 @@ export const TokenIcon = ({
             />
             {shouldShowNetwork && (
                 <View style={applyStyle(networkWrapperStyle, { size: iconSize })}>
-                    <NetworkIcon symbol={networkSymbol} size={size} />
+                    <NetworkIcon symbol={networkSymbol} size={networkIconSize} />
                 </View>
             )}
         </View>
