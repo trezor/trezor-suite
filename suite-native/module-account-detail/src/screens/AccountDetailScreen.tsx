@@ -10,6 +10,7 @@ import {
     type AccountDetailStackParamList,
     type AccountDetailStackRoutes,
 } from '@suite-native/navigation';
+import { ScreenPerformanceRoot } from '@suite-native/performance-metrics';
 
 import { AccountDetailContentScreen } from './AccountDetailContentScreen';
 import { AccountDetailLoadingScreen } from './AccountDetailLoadingScreen';
@@ -44,9 +45,13 @@ export const AccountDetailScreen = memo(() => {
         selectAccountByKey(state, accountKey),
     );
 
-    return account ? (
-        <AccountDetailContentScreen account={account} tokenContract={tokenContract} />
-    ) : (
-        <AccountDetailLoadingScreen />
+    return (
+        <ScreenPerformanceRoot screen="account-detail" isReady={!!account}>
+            {account ? (
+                <AccountDetailContentScreen account={account} tokenContract={tokenContract} />
+            ) : (
+                <AccountDetailLoadingScreen />
+            )}
+        </ScreenPerformanceRoot>
     );
 });
