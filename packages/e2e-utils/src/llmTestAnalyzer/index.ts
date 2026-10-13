@@ -184,7 +184,7 @@ const analyzeTestFileViaApi = async (
 
     const response = await client.messages.create({
         model: 'claude-opus-4-6',
-        max_tokens: 1024,
+        max_tokens: 2250,
         tools: [
             {
                 name: 'summarize_test',
@@ -221,6 +221,10 @@ const analyzeTestFileViaApi = async (
         tool_choice: { type: 'tool', name: 'summarize_test' },
         messages: [{ role: 'user', content: buildPrompt(testSource) }],
     });
+
+    if (response.stop_reason === 'max_tokens') {
+        throw new Error(`Anthropic API response hit max_tokens for: ${filePath}`);
+    }
 
     type ContentBlock = { type: string; input?: unknown };
     const toolUse = (response.content as ContentBlock[]).find(block => block.type === 'tool_use');
