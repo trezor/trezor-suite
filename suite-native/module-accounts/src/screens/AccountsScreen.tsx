@@ -14,6 +14,7 @@ import {
     Screen,
     type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
+import { ScreenPerformanceRoot, useScreenPerformance } from '@suite-native/performance-metrics';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
 type ScreenNavigationProps = StackToStackCompositeScreenProps<
@@ -23,6 +24,7 @@ type ScreenNavigationProps = StackToStackCompositeScreenProps<
 >;
 
 export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => {
+    const { panHandlers } = useScreenPerformance('accounts');
     const networksFilter = useMemo(
         () => route.params?.networksFilter ?? [],
         [route.params?.networksFilter],
@@ -46,21 +48,25 @@ export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => 
     };
 
     return (
-        <Screen
-            header={<DeviceManagerScreenHeader />}
-            isScrollable={false}
-            noHorizontalPadding
-            noBottomPadding
-        >
-            <AccountsListWithFilter
-                title={<Translation id="moduleAccountManagement.accountsScreen.accountsTitle" />}
-                onSelectAccount={handleSelectAccount}
-                flowType="accounts"
-                networksFilter={networksFilter}
-                noHeaderPaddingTop
+        <ScreenPerformanceRoot panHandlers={panHandlers}>
+            <Screen
+                header={<DeviceManagerScreenHeader />}
+                isScrollable={false}
+                noHorizontalPadding
+                noBottomPadding
             >
-                <AccountsRediscoveryNeededWarning marginHorizontal="sp16" marginBottom="sp16" />
-            </AccountsListWithFilter>
-        </Screen>
+                <AccountsListWithFilter
+                    title={
+                        <Translation id="moduleAccountManagement.accountsScreen.accountsTitle" />
+                    }
+                    onSelectAccount={handleSelectAccount}
+                    flowType="accounts"
+                    networksFilter={networksFilter}
+                    noHeaderPaddingTop
+                >
+                    <AccountsRediscoveryNeededWarning marginHorizontal="sp16" marginBottom="sp16" />
+                </AccountsListWithFilter>
+            </Screen>
+        </ScreenPerformanceRoot>
     );
 };

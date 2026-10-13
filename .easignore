@@ -223,6 +223,7 @@
 !/suite-native/module-transactions
 !/suite-native/navigation
 !/suite-native/passphrase
+!/suite-native/performance-metrics
 !/suite-native/platform-encryption-native
 !/suite-native/qr-code
 !/suite-native/react-native-graph
