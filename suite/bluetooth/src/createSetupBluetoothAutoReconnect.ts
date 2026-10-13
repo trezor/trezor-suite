@@ -9,8 +9,8 @@ import { resolveAfter } from '@trezor/utils';
 
 import { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluetoothDevice';
 import { type BackgroundScan } from './bluetoothBackgroundScan';
-import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 import { type BluetoothDep } from './createBluetooth';
+import { type BluetoothConnectDevice } from './createBluetoothConnectDevice';
 import { type DesktopBluetoothState } from './desktopBluetoothReducer';
 
 type BluetoothReconnectThunkDispatch = ThunkDispatch<
@@ -28,6 +28,7 @@ type SetupBluetoothAutoReconnectDeps = {
     getFirmware: () => FirmwareUpdateState;
     dispatch: BluetoothReconnectThunkDispatch;
     backgroundScan: BackgroundScan;
+    connectDevice: BluetoothConnectDevice;
 };
 
 type SetupBluetoothAutoReconnect = () => Promise<void>;
@@ -94,7 +95,7 @@ const attemptDeviceConnect = async (
     // }
 
     if (isConnectable) {
-        await deps.dispatch(bluetoothConnectDeviceThunk({ deviceId: device.id }));
+        await deps.connectDevice({ deviceId: device.id });
     }
 };
 

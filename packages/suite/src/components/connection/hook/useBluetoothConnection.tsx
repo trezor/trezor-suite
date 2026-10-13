@@ -3,8 +3,8 @@ import { useMemo, useState } from 'react';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import {
     type DesktopBluetoothDevice,
-    bluetoothConnectDeviceThunk,
     bluetoothDisconnectDeviceThunk,
+    injectBluetooth,
 } from '@suite/bluetooth';
 import { setConnectionModal } from '@suite/device';
 import { events } from '@suite-common/analytics';
@@ -33,7 +33,11 @@ export const useBluetoothConnection = ({
     devices,
     onReScanClick,
 }: UseBluetoothConnectionProps): UseBluetoothConnectionReturn => {
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const { analytics, bluetooth, dispatch } = useServices(
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectBluetooth,
+    );
     const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
 
     const knownDevices = useSelector(selectKnownDevices<DesktopBluetoothDevice>);
@@ -70,7 +74,7 @@ export const useBluetoothConnection = ({
         setSelectedDeviceId(deviceId);
 
         try {
-            const result = await dispatch(bluetoothConnectDeviceThunk({ deviceId })).unwrap();
+            const result = await bluetooth.connectDevice({ deviceId });
 
             if (result.success) {
                 analytics.report({
@@ -78,7 +82,7 @@ export const useBluetoothConnection = ({
                 });
                 dispatch(setConnectionModal(false));
             } else {
-                // Error handling is managed in bluetoothConnectDeviceThunk
+                // Error handling is managed in bluetooth.connectDevice
                 setSelectedDeviceId(null);
             }
         } catch (error) {

@@ -56,6 +56,12 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         backgroundScan,
     });
 
+    const connectDevice = createBluetoothConnectDevice({
+        getState: deps.getState,
+        dispatch: deps.dispatch,
+        backgroundScan,
+    });
+
     const setupBluetoothAutoReconnect = createSetupBluetoothAutoReconnect({
         getKnownDevices,
         getConnectingDeviceIds: toGetter(deps.getState, selectConnectingDevices),
@@ -63,8 +69,7 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         getAutoConnectPolicy: toGetter(deps.getState, selectAutoConnectPolicy),
         getTrezorDevices: toGetter(deps.getState, selectDevices),
         getFirmware: toGetter(deps.getState, selectFirmware),
-        dispatch: deps.dispatch,
-        backgroundScan,
+        connectDevice,
     });
 
     const bluetoothInit = createBluetoothInit({
@@ -86,11 +91,19 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         backgroundScan,
     });
 
+    const onConnectHandler = createBluetoothOnConnectHandler({
+        getState: deps.getState,
+        dispatch: deps.dispatch,
+        backgroundScan,
+    });
+
     return createBluetooth({
         bluetoothInit,
         backgroundScan,
         scan: bluetoothScan,
         suspendHandler,
         unpair: bluetoothUnpair,
+        onConnectHandler,
+        connectDevice,
     });
 };

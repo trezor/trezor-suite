@@ -1,4 +1,6 @@
 import type { BackgroundScan } from './bluetoothBackgroundScan';
+import { type BluetoothConnectDevice } from './createBluetoothConnectDevice';
+import type { BluetoothOnConnectHandler } from './createBluetoothOnConnectHandler';
 import type { BluetoothScan } from './createBluetoothScan';
 import type { BluetoothUnpair } from './createBluetoothUnpair';
 
@@ -8,6 +10,8 @@ type BluetoothDeps = {
     scan: BluetoothScan;
     suspendHandler: () => void;
     unpair: BluetoothUnpair;
+    onConnectHandler: BluetoothOnConnectHandler;
+    connectDevice: BluetoothConnectDevice;
 };
 
 export type Bluetooth = {
@@ -20,6 +24,8 @@ export type Bluetooth = {
     forgetDevice: BluetoothUnpair['forgetDevice'];
     forgetAllDevices: BluetoothUnpair['forgetAllDevices'];
     unpairCurrentBond: BluetoothUnpair['unpairCurrentBond'];
+    onConnect: BluetoothOnConnectHandler;
+    connectDevice: BluetoothConnectDevice;
 };
 
 export type BluetoothDep = {
@@ -36,4 +42,6 @@ export const createBluetooth = (deps: BluetoothDeps): Bluetooth => ({
     forgetDevice: deps.unpair.forgetDevice,
     forgetAllDevices: deps.unpair.forgetAllDevices,
     unpairCurrentBond: deps.unpair.unpairCurrentBond,
+    onConnect: params => deps.onConnectHandler(params),
+    connectDevice: params => deps.connectDevice(params),
 });
