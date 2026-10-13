@@ -398,7 +398,8 @@ export const exposeConnectWs = ({
             return;
         }
 
-        const { pathname } = new URL(request.url, 'http://localhost');
+        // `new URL()` would throw for some request targets that node's http parser accepts.
+        const pathname = request.url.split('?')[0];
         if (pathname === '/connect-ws') {
             wss.handleUpgrade(request, socket, head, ws => {
                 wss.emit('connection', ws, request);
