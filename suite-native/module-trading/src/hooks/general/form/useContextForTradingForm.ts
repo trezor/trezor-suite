@@ -28,6 +28,7 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
         accountKey,
         tokenContract: contractAddress,
         symbol: sendNetworkSymbol,
+        assumeNewAccount: true,
     });
 
     const context = useMemo<TradingFormContext>(

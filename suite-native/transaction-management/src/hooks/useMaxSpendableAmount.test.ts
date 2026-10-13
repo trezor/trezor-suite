@@ -56,6 +56,7 @@ describe('useMaxSpendableAmount', () => {
         formState,
         enabled,
         symbol,
+        assumeNewAccount,
     }: Parameters<typeof useMaxSpendableAmount>[0]) =>
         await renderHookWithStoreProvider(
             () =>
@@ -65,6 +66,7 @@ describe('useMaxSpendableAmount', () => {
                     formState,
                     enabled,
                     symbol,
+                    assumeNewAccount,
                 }),
             {
                 preloadedState: {
@@ -141,6 +143,28 @@ describe('useMaxSpendableAmount', () => {
                 {
                     formState: customFormState,
                     accountKey: btcAccountKey,
+                },
+                expect.objectContaining({ signal: expect.any(AbortSignal) }),
+            );
+            expect(result.current.maxSpendableAmount).toBe('0.009');
+        });
+    });
+
+    it('should pass assumeNewAccount to max amount thunk when requested', async () => {
+        mockMaxAmountThunkResult({ normal: '0.009', economy: '0.008' });
+
+        const { result } = await renderUseMaxSpendableAmount({
+            accountKey: btcAccountKey,
+            symbol: btcSymbol,
+            assumeNewAccount: true,
+        });
+
+        await waitFor(() => {
+            expect(mockCalculateFeeLevelsMaxAmountThunk).toHaveBeenCalledWith(
+                {
+                    formState: expect.any(Object),
+                    accountKey: btcAccountKey,
+                    assumeNewAccount: true,
                 },
                 expect.objectContaining({ signal: expect.any(AbortSignal) }),
             );
