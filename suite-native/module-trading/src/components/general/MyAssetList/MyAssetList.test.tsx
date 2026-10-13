@@ -3,7 +3,7 @@ import type { CryptoId } from 'invity-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
-import { fireEvent } from '@suite-native/test-utils-store';
+import { fireEvent, within } from '@suite-native/test-utils-store';
 import { eth1NormalAccount } from '@suite-native/trading-fixtures';
 import { type MyAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
@@ -81,6 +81,16 @@ describe('MyAssetList', () => {
             expanded: true,
         });
         expect(getByText('Disabled')).toBeDisabled();
+    });
+
+    it('identifies each account section by account type, network symbol and index', async () => {
+        const { getByTestId } = await renderList([
+            { ...section, sectionData: { ...eth1NormalAccount, index: 2 } },
+        ]);
+
+        expect(
+            within(getByTestId(`${testID}/account/normal/eth/2`)).getByText('Regular'),
+        ).toBeOnTheScreen();
     });
 
     it('renders the existing empty-state copy', async () => {

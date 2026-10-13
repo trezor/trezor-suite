@@ -22,9 +22,16 @@ export const MyAssetListSection = ({
 }: MyAssetListSectionProps) => {
     const hasLowBalanceAssets = section.lowBalanceAssets.length > 0;
     const hasNonTradeableAssets = section.nonTradeableAssets.length > 0;
+    const { accountType, symbol, index: accountIndex } = section.sectionData;
 
     return (
-        <VStack spacing="sp8" paddingTop={index === 0 ? undefined : 'sp32'}>
+        <VStack
+            spacing="sp8"
+            paddingTop={index === 0 ? undefined : 'sp32'}
+            testID={
+                testID ? `${testID}/account/${accountType}/${symbol}/${accountIndex}` : undefined
+            }
+        >
             <AccountLabel
                 account={section.sectionData}
                 variant="body-md-strong"

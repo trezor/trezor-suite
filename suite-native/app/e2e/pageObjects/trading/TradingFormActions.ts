@@ -209,7 +209,12 @@ export abstract class TradingFormActions extends TradingActions {
             .withTimeout(this.SHORT_TIMEOUT);
     }
 
-    async selectSendAsset(asset: string, network?: string, searchString?: string) {
+    async selectSendAsset(
+        asset: string,
+        network?: string,
+        searchString?: string,
+        account?: { accountType: string; networkSymbol: string; accountIndex: number },
+    ) {
         const sendAssetButton = this.getElementById('asset-send-button');
         await waitForVisible(sendAssetButton, { timeout: this.SHORT_TIMEOUT });
         await sendAssetButton.tap();
@@ -234,7 +239,17 @@ export abstract class TradingFormActions extends TradingActions {
             await networkOption.tap();
         }
 
-        const firstMatchingAsset = element(by.label(asset)).atIndex(0);
+        const assetLabelMatcher = by.label(asset);
+        const assetMatcher = account
+            ? assetLabelMatcher.withAncestor(
+                  by.id(
+                      this.getTestId(
+                          `send-asset-screen/account/${account.accountType}/${account.networkSymbol}/${account.accountIndex}`,
+                      ),
+                  ),
+              )
+            : assetLabelMatcher;
+        const firstMatchingAsset = element(assetMatcher).atIndex(0);
         await waitForVisible(firstMatchingAsset);
         await firstMatchingAsset.tap();
 
