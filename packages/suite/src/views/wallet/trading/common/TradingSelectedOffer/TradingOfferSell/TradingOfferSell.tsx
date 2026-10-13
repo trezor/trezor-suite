@@ -1,25 +1,30 @@
 import { useSelector } from 'react-redux';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import {
-    type TradingFormAccountRootState,
     type TradingRootState,
     selectTradingComposedTransactionInfo,
     selectTradingProviderCompanyName,
     selectTradingSellActiveTrade,
     selectTradingSellFormStep,
     selectTradingSellInfo,
+    selectTradingSellIsLoading,
     selectTradingSellQuotesRequest,
     selectTradingSellSelectedQuote,
-    selectTradingSendAccount,
     useTradingUtils,
 } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { Button, Card, Column, H2, Text } from '@trezor/components';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Button, Card, Column, H2, Spinner, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { useTradingSellConfirmFees } from 'src/hooks/wallet/trading/useTradingSellConfirmFees';
+import { useTradingSellTradeActions } from 'src/hooks/wallet/trading/useTradingSellTradeActions';
+import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { type TradingOfferSellProps } from 'src/types/trading/tradingForm';
 import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
@@ -29,21 +34,31 @@ import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/Tradin
 import { TradingComposedNetworkFeeInfoItem } from '../TradingInfo/TradingComposedNetworkFeeInfoItem';
 import { getTradingNetworkFeeEdit } from '../TradingInfo/getTradingNetworkFeeEdit';
 
+const SELL_PROVIDER_CONFIRMATION_POLLING_INTERVAL_SECONDS = 10;
+
 export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOfferSellProps) => {
-    const { handleClick, disabled } = useAsyncClickHandler();
+    const { analytics } = useServices(injectDesktopAnalytics);
+    const { handleClick: handleRequestClick, disabled: isRequesting } = useAsyncClickHandler();
+    const { handleClick: handleSendClick, disabled: isSending } = useAsyncClickHandler();
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
+    const { device } = useDevice();
+    const { account, sendTransaction } = useTradingSellTradeActions();
     const formStep = useSelector(selectTradingSellFormStep);
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
     const trade = useSelector(selectTradingSellActiveTrade);
     const sellInfo = useSelector(selectTradingSellInfo);
     const quotesRequest = useSelector(selectTradingSellQuotesRequest);
-    const account = useSelector((state: TradingFormAccountRootState) =>
-        selectTradingSendAccount(state, 'sell'),
-    );
-
+    const isLoading = useSelector(selectTradingSellIsLoading);
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { composed } = useSelector(selectTradingComposedTransactionInfo);
     const { feeInfo, composeFormState, applySelectedFee, assumeNewAccount } =
         useTradingSellConfirmFees(account);
+
+    useTradingWatchTrade({
+        account,
+        trade,
+        refreshIntervalSeconds: SELL_PROVIDER_CONFIRMATION_POLLING_INTERVAL_SECONDS,
+    });
 
     const selectedTrade = trade?.data ?? selectedQuote;
     const providerName = useSelector((state: TradingRootState) =>
@@ -55,6 +70,8 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
     }
 
     const isSendStep = formStep === 'SEND_TRANSACTION';
+    const isPartnerReadyToReceive =
+        selectedTrade.status === 'SEND_CRYPTO' && !!selectedTrade.destinationAddress;
 
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(
         selectedTrade.cryptoCurrency,
@@ -62,6 +79,14 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
     const translationValues = {
         providerName: providerName ?? '',
         displaySymbol: coinSymbol ? getDisplaySymbol(coinSymbol, contractAddress) : '',
+    };
+
+    const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
+        amountInCrypto: quotesRequest?.amountInCrypto,
+        sendAmount: selectedTrade.fiatStringAmount ?? '',
+        sendCurrency: selectedTrade.fiatCurrency,
+        receiveAmount: selectedTrade.cryptoStringAmount ?? '',
+        receiveCurrency: selectedTrade.cryptoCurrency,
     };
 
     const networkFeeEdit = getTradingNetworkFeeEdit({
@@ -73,12 +98,51 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
         isTokenTransfer: !!composed?.token,
     });
 
-    const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
-        amountInCrypto: quotesRequest?.amountInCrypto,
-        sendAmount: selectedTrade.fiatStringAmount ?? '',
-        sendCurrency: selectedTrade.fiatCurrency,
-        receiveAmount: selectedTrade.cryptoStringAmount ?? '',
-        receiveCurrency: selectedTrade.cryptoCurrency,
+    const onConfirmAndSendClick = async () => {
+        const result = await sendTransaction();
+
+        analytics.report({
+            type: events.tradeSellEvent.name,
+            payload: {
+                action: result ? 'continue' : 'cancel',
+                step: 'confirm-and-send-transaction',
+            },
+        });
+    };
+
+    const renderSendStepAction = () => {
+        if (!isPartnerReadyToReceive) {
+            return (
+                <Column alignItems="center" gap={8} padding={{ vertical: 16 }}>
+                    <Spinner size={40} isDisabled margin={{ bottom: 8 }} />
+                    <Text>
+                        <Translation
+                            id="TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO"
+                            values={translationValues}
+                        />
+                    </Text>
+                    <Text intent="neutral" priority="secondary">
+                        <Translation
+                            id="TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO_INFO"
+                            values={translationValues}
+                        />
+                    </Text>
+                </Column>
+            );
+        }
+
+        return (
+            <Button
+                data-testid="@trading/offer/confirm-on-trezor-and-send"
+                isLoading={isLoading || isSending}
+                isDisabled={isLoading || !device?.connected || isDiscoveryRunning || isSending}
+                onClick={() => handleSendClick(onConfirmAndSendClick)}
+                size="large"
+                width="100%"
+            >
+                <Translation id="TR_SELL_CONFIRM_ON_TREZOR_SEND" />
+            </Button>
+        );
     };
 
     return (
@@ -126,14 +190,7 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
                     />
 
                     {isSendStep ? (
-                        <Button
-                            data-testid="@trading/offer/confirm-on-trezor-and-send"
-                            isDisabled
-                            size="large"
-                            width="100%"
-                        >
-                            <Translation id="TR_SELL_CONFIRM_ON_TREZOR_SEND" />
-                        </Button>
+                        renderSendStepAction()
                     ) : (
                         <Column gap={12}>
                             <TradingFormOfferConfirmButton
@@ -141,9 +198,9 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
                                 translationValues={translationValues}
                                 iconRight={ArrowSquareOutIcon}
                                 testId="@trading/offer/sell-button"
-                                isDisabled={isRequestDisabled || disabled}
-                                isLoading={disabled}
-                                onClick={() => handleClick(requestTrade)}
+                                isDisabled={isRequestDisabled || isRequesting}
+                                isLoading={isRequesting}
+                                onClick={() => handleRequestClick(requestTrade)}
                             />
 
                             <TradingKYCWarning />
