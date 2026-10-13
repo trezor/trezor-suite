@@ -104,6 +104,50 @@ test.describe('TrezorConnect.selectAccount', { tag: ['@T3T1', '@T3W1', '@desktop
         },
     );
 
+    // `requireOnDeviceVerification` is a dead option: it defaults to true, and `eth` is always an
+    // address flow, yet the picker exposes no blocking gate — selecting an account is enough to
+    // confirm and export, without ever verifying it on the device. This locks in the present
+    // (broken) behaviour so the follow-up fix that wires the option to an actual gate has a test to
+    // flip. The option is left out on purpose so this also pins the default.
+    test(
+        'requireOnDeviceVerification is not enforced (dead option)',
+        { annotation: createTestAnnotation({ stream: TestStream.Connect }) },
+        async ({ connectPermissionsModal, connectSelectAccountModal }) => {
+            const res = TrezorConnect.selectAccount({
+                coin: 'eth',
+                selectionType: 'single',
+            });
+
+            await connectPermissionsModal.confirmButton.click();
+
+            await expect(connectSelectAccountModal.account(0)).toBeVisible();
+
+            // Selection count is the only gate: disabled with nothing selected, enabled the moment an
+            // account is picked — regardless of verification state.
+            await expect(connectSelectAccountModal.confirmButton).toBeDisabled();
+            await connectSelectAccountModal.checkbox(0).click();
+
+            // The account is selected but never verified on the device...
+            await expect(connectSelectAccountModal.verifiedBadge(0)).toBeHidden();
+            // ...yet confirm is enabled all the same — there is no gate to block it.
+            await expect(connectSelectAccountModal.confirmButton).toBeEnabled();
+
+            await connectSelectAccountModal.confirmButton.click();
+
+            const response = await res;
+            // Export succeeds with an unverified address — the option had no effect.
+            expect(response.success).toBe(true);
+            if (!response.success) return;
+
+            expect(response.payload).toHaveLength(1);
+            const [account] = response.payload;
+            if (!account) return;
+            expect(account.address).toMatch(/^0x[0-9a-fA-F]{40}$/);
+
+            await connectSelectAccountModal.closeButton.click();
+        },
+    );
+
     test(
         'rejects a coin Suite cannot render before asking for permissions',
         { annotation: createTestAnnotation({ stream: TestStream.Connect }) },
