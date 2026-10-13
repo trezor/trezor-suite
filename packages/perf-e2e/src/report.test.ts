@@ -21,6 +21,10 @@ describe(formatMetricValue.name, () => {
         expect(formatMetricValue(18, 'count')).toBe('18');
     });
 
+    it('writes a score as the bare number', () => {
+        expect(formatMetricValue(87, 'score')).toBe('87');
+    });
+
     it('writes an unmeasurable metric as n/a rather than as a zero', () => {
         expect(formatMetricValue(null, 'ms')).toBe('n/a');
     });
