@@ -22,6 +22,7 @@ export type Bluetooth = {
     forgetDevice: BluetoothForgetDevice;
     forgetAllDevices: BluetoothForgetAllDevices;
     unpairCurrentBond: BluetoothUnpairCurrentBond;
+    removeStaleDevices: () => void;
 };
 
 export type BluetoothDep = {

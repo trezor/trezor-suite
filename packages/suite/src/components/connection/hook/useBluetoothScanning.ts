@@ -1,10 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import {
-    type DesktopBluetoothDevice,
-    injectBluetooth,
-    removeNonResponsiveNearbyDevicesThunk,
-} from '@suite/bluetooth';
+import { type DesktopBluetoothDevice, injectBluetooth } from '@suite/bluetooth';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -89,16 +85,12 @@ export const useBluetoothScanning = ({
     // currently we need to check periodically for non-responsive devices and filter them out
     // we do not get update from bluetooth adapter when device is non responsive
     useEffect(() => {
-        function updateNonResponsiveDevices() {
-            dispatch(removeNonResponsiveNearbyDevicesThunk());
-        }
-
         if (bluetoothMode) {
-            const interval = setInterval(updateNonResponsiveDevices, 1_000);
+            const interval = setInterval(bluetooth.removeStaleDevices, 1_000);
 
             return () => clearInterval(interval);
         }
-    }, [dispatch, bluetoothMode]);
+    }, [bluetooth, bluetoothMode]);
 
     return {
         onReScanClick,
