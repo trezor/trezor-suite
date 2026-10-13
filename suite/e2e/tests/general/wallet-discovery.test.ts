@@ -6,14 +6,16 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const btcSymbol = asNetworkSymbol('btc');
 
-test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+test.use({
+    deviceSetup: { mnemonic: 'mnemonic_all' },
+    electronConf: { measurePerf: true },
+});
 
 test.beforeEach(async ({ onboardingPage, settingsPage }) => {
     await onboardingPage.completeOnboarding();
     await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
 });
 
-// The @perf tag marks this as a performance-measurement host.
 test.describe('Wallet discover tests', { tag: ['@T3W1', '@T3T1', '@perf'] }, () => {
     test(
         'Discover a standard wallet',

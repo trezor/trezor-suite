@@ -177,3 +177,22 @@ jobs:
         run: |
           jq -n --arg text "Nightly e2e coverage map build failed: <$GITHUB_RUN_URL|Github run>" '{text: $text}' \
             | curl -X POST -H 'Content-type: application/json' --data @- "$SLACK_WEBHOOK_URL"
+
+  # See docs/tests/perf-history.md. Runs on the base branch, so it seals the baseline.
+  publish_performance_history:
+    if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' }}
+    needs:
+      - run-e2e-suite-desktop-tests
+      - run-e2e-suite-web-tests
+    permissions:
+      id-token: write # to assume the dev-deploy role
+      contents: read
+    concurrency:
+      group: publish-performance-history-web-${{ github.ref }}
+      cancel-in-progress: false
+    uses: ./.github/workflows/template-publish-performance-history.yml
+    with:
+      workspace: "@trezor/suite-e2e"
+      artifact-pattern: perf-history-*
+      publish-command: yarn workspace @trezor/suite-e2e perf:publish
+      timeout-minutes: 15

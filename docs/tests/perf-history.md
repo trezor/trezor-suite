@@ -87,6 +87,56 @@ Each line carries the identity, the sample count, the metric map and the key of 
 
 Fetch `runs/…` under the same prefix for the document behind a point.
 
+## Lighthouse
+
+Lighthouse records a timespan around each `@perf` measurement and the run stores the flow result —
+one audited step per timespan — as an artifact of kind `flow-result`. Fetch one and render it, with
+nothing installed but Lighthouse itself:
+
+```sh
+curl -sO https://dev.suite.sldev.cz/e2e/perf/v1/runs/web/develop/<sha>/<run>-1/shard-web-3/flow-<test>-T3W1-0.json
+node -e "import('lighthouse').then(({generateReport})=>require('fs').writeFileSync('report.html',generateReport(JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')),'html')))" flow-*.json
+```
+
+Its numbers also travel in the index row that points at it, under `lh:` keys. Those are namespaced
+apart from `browser:` on purpose: Lighthouse and our in-page instrumentation measure overlapping
+things by different means and disagree, so a report must never present them as one metric.
+
+**What is stripped before storing**, and why — the audits themselves stay, so the rendered report
+still lists them:
+
+| removed                                     | why                                                                                                            |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `lhr.fullPageScreenshot`                    | top-level in Lighthouse 13, not an audit; the biggest payload, and the only part that can show a wallet screen |
+| `final-screenshot`, `screenshot-thumbnails` | base64 images and the filmstrip                                                                                |
+| `user-timings` details                      | unbounded — a profiling build emits tens of thousands of entries, most of the document                         |
+
+**Every e2e run profiles** — pull requests, the nightly, and anything else that calls
+`template-suite-run-e2e.yml`, which sets `LIGHTHOUSE: "1"` unconditionally rather than offering a
+switch. Only the tests that call `perf.measure` open a timespan, so the cost stays with the flows
+already being measured, and a run that cannot attach to the app's debugging endpoint warns and
+records nothing — it never fails a test. Locally, `LIGHTHOUSE` is unset and nothing is traced.
+
+Tracing costs the app time, so a profiled run's own `browser:` numbers sit above what the same
+commit costs untraced. Three things follow, and all three are implemented rather than left to the
+reader:
+
+- the index row carries `profiled: true`, so a trend can keep traced and untraced points apart and
+  a step between them reads as the tracer rather than as a regression;
+- the run's report says so — in the console header, in the pull request comment, and by downgrading
+  the over-limit annotation from a red `::error` to a `::notice`;
+- no budgets paste and no suggested limit is offered for a profiled run. Writing a traced number
+  into `budgets.ts` would raise the limit by the overhead and leave every later untraced run
+  comfortably under it.
+
+Because every run profiles, the sealed baseline and the pull request compared against it were
+measured the same way. What stays incomparable is `budgets.ts`, whose numbers were recorded without
+a tracer; refresh those from an unprofiled local run.
+
+The browser history document and its mapping live in `packages/perf-e2e/src/browserHistory.ts`, the
+flow-result stripping in `lighthouseFlow.ts`, and the web/desktop adapter in
+`suite/e2e/performance/publishPerformance.ts`.
+
 ## Baselines
 
 Only a run on the base branch seals `baseline/<surface>/<branch>/latest.json`
