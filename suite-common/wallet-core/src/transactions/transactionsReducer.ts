@@ -47,7 +47,15 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                 const { key, txid, tx } = payload;
                 const accountTxs = initializeAccount(state, key);
                 const index = accountTxs.findIndex(t => t?.txid === txid);
-                if (accountTxs[index]) accountTxs[index] = tx;
+                if (!accountTxs[index]) return;
+
+                // The replacement can be listed already, e.g. from a backend notification, and the list
+                // must not hold it twice.
+                if (tx.txid !== txid && accountTxs.some(t => t?.txid === tx.txid)) {
+                    accountTxs.splice(index, 1);
+                } else {
+                    accountTxs[index] = tx;
+                }
             })
             .addCase(transactionsActions.removeTransaction, (state, { payload }) => {
                 const { account, txs } = payload;

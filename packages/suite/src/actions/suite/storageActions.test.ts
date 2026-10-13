@@ -745,6 +745,7 @@ describe('Storage actions', () => {
             await settleStorageWrites(replaceItemsByIndexSpy, updateItemsSpy);
 
             expect(await reloadTransactions()).toEqual(getStoreTransactions(store));
+            expect(await getStoredRows()).toEqual(getStoreRows(store));
         });
 
         it('replaces the rows left from an earlier session on the first save', async () => {
