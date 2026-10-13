@@ -101,7 +101,8 @@ type DiscoverAccountsParams = {
 
 type ProgressBaseType = AccountTypeKey & { index: number; path: string; backendType?: string };
 type DiscoveryError = { failed: true; error: string; code?: string };
-export type DiscoverAccountsProgressOk = ProgressBaseType & AccountInfo & { failed: false };
+export type DiscoverAccountsProgressOk = ProgressBaseType &
+    AccountInfo & { failed: false; last: boolean };
 export type DiscoverAccountsProgressError = ProgressBaseType & DiscoveryError;
 export type DiscoverAccountsProgress = DiscoverAccountsProgressOk | DiscoverAccountsProgressError;
 

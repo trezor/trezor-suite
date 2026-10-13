@@ -380,6 +380,8 @@ export default class DiscoverAccounts extends AbstractMethod<
                     gap,
                 });
 
+                const last = singleAccount || info.empty;
+
                 // eslint-disable-next-line no-nested-ternary
                 const utxo = !utxoRequired
                     ? undefined
@@ -387,7 +389,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                       ? []
                       : await blockchain.getAccountUtxo(descriptor);
 
-                this.updateProgress(accountKey, index + 1, info.empty || singleAccount);
+                this.updateProgress(accountKey, index + 1, last);
                 sendProgress({
                     ...info,
                     descriptor,
@@ -397,9 +399,10 @@ export default class DiscoverAccounts extends AbstractMethod<
                     index,
                     backendType,
                     failed: false,
+                    last,
                 });
 
-                if (info.empty || singleAccount) {
+                if (last) {
                     await descPromise.catch(() => {});
 
                     return { nonempty: index - skip + (info.empty ? 0 : 1) };
