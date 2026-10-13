@@ -14,16 +14,16 @@ const test = {
                 0,
                 0,
             ],
-            amount: '123456789',
-            prev_index: 0,
-            prev_hash: '20912f98ea3ed849042efed0fdac8cb4fc301961c5988cba56902d8ffb61c337',
+            amount: '1000000',
+            prev_index: 1,
+            prev_hash: 'bb0f9ece9adbca11c7e5a69351c8c4aa7548591f2c06defa690baaa110ad3f44',
             script_type: 'SPENDWITNESS',
         },
     ],
     outputs: [
         {
             address: 'tb1q9l0rk0gkgn73d0gc57qn3t3cwvucaj3h8wtrlu',
-            amount: '12300000',
+            amount: '500000',
             script_type: 'PAYTOADDRESS',
         },
         {
@@ -35,7 +35,7 @@ const test = {
                 0,
             ],
             script_type: 'PAYTOWITNESS',
-            amount: Number(123456789 - 11000 - 12300000).toString(),
+            amount: Number(1000000 - 11000 - 500000).toString(),
         },
     ],
 };
@@ -56,6 +56,7 @@ export default [
                 affect: ['inputs', 'outputs'],
                 data: select
                     .filter(c => c.affectedValue.includes('m/49'))
+                    .filter(c => examples[c.value])
                     .map(v => {
                         const example = examples[v.value];
 
