@@ -133,6 +133,7 @@ export type SelectAccountOptions = {
     // Normalized: 'fullAccount' when the coin is UTXO-based and the param was omitted or explicit;
     // undefined only for account-based networks, where `addressSelection` is ignored entirely.
     addressSelection?: AddressSelection;
+    // Normalized: the app's explicit value, otherwise true in 'address' mode and false in 'xpub'.
     requireOnDeviceVerification: boolean;
     minCount: number;
     maxCount?: number;

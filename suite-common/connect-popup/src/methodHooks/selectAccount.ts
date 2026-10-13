@@ -87,6 +87,7 @@ const buildOptions = (payload: Record<string, any>): SelectAccountOptions => {
     const addressSelection = isUtxoNetwork(symbol)
         ? (payload.addressSelection ?? 'fullAccount')
         : undefined;
+    const mode = addressSelection === 'fullAccount' ? 'xpub' : 'address';
 
     return {
         symbol,
@@ -94,9 +95,12 @@ const buildOptions = (payload: Record<string, any>): SelectAccountOptions => {
         minCount,
         maxCount,
         accountTypeTabs: buildAccountTypeTabs(symbol, payload.accountType),
-        mode: addressSelection === 'fullAccount' ? 'xpub' : 'address',
+        mode,
         addressSelection,
-        requireOnDeviceVerification: payload.requireOnDeviceVerification ?? true,
+        // Same split as the showOnTrezor defaults of getAddress (true) and getPublicKey (false). An
+        // address is short enough to compare on the device and yields a SLIP-0019 MAC; an xpub is
+        // neither, so it is only confirmed on the device when the app asks for it explicitly.
+        requireOnDeviceVerification: payload.requireOnDeviceVerification ?? mode === 'address',
     };
 };
 
