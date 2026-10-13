@@ -20,17 +20,18 @@ export const electronSetup = async (
     // default for Electron projects (playwright#13180 workaround).
     await (testInfo as any)._tracing.startIfNeeded('on');
 
+    const { measurePerf, ...launchConf } = electronConf;
     const suite = await launchSuite({
         locale,
         colorScheme,
         artefactFolder: testInfo.outputDir,
         viewport: testInfo.project.use.viewport!,
-        ...electronConf,
+        ...launchConf,
     });
 
     // The reload puts the init script in place before the renderer's React loads; the window is
-    // still on its initial screen, so no state is lost. Passive until a test opts in. PERF=0 skips it.
-    if (process.env.PERF !== '0') {
+    // still on its initial screen, so no state is lost.
+    if (measurePerf) {
         await suite.window.addInitScript(installPerfInstrumentation);
         await suite.window.reload();
     }
