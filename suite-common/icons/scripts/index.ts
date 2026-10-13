@@ -5,7 +5,8 @@ export {
     type DownloadCryptoIconsDeps,
 } from './createDownloadCryptoIcons';
 export {
-    downloadVaultIcons,
+    createDownloadVaultIcons,
     type DownloadVaultIcons,
     type DownloadVaultIconsDep,
-} from './utils/downloadVaultIcons';
+    type DownloadVaultIconsDeps,
+} from './utils/createDownloadVaultIcons';

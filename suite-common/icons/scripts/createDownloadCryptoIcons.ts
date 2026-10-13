@@ -15,7 +15,7 @@ import {
     IMAGE_SIZE_SEPARATOR,
     createCoinImageName,
 } from '../src/coinImages';
-import type { DownloadVaultIconsDep } from './utils/downloadVaultIcons';
+import type { DownloadVaultIconsDep } from './utils/createDownloadVaultIcons';
 import {
     fetchCoinList,
     fetchUpdatedIconsList,
@@ -132,7 +132,9 @@ async function ensureDirectoryExists(path: string) {
     }
 }
 
-export type DownloadCryptoIconsDeps = DownloadVaultIconsDep;
+export type DownloadCryptoIconsDeps = DownloadVaultIconsDep & {
+    now: () => number;
+};
 
 export type DownloadCryptoIcons = () => Promise<void>;
 
@@ -143,19 +145,23 @@ export const createDownloadCryptoIcons =
     async () => {
         const previousIcons = await fetchUpdatedIconsList();
 
-        const startedAt = Date.now();
+        const startedAt = deps.now();
         const coins = await fetchCoinList();
         if (coins.length === 0) {
             throw new Error('No coins found');
         } else {
-            console.log(new Date().toISOString(), 'Total coins in coin list:', coins.length);
+            console.log(
+                new Date(deps.now()).toISOString(),
+                'Total coins in coin list:',
+                coins.length,
+            );
         }
 
         // Image urls in bulk (~250 coins/request) instead of one /coins/{id} request per coin.
         // Only coins with market data are covered here; the rest fall back to getCoinData below.
         const marketImageUrls = await getCoinMarketImageUrls();
         console.log(
-            new Date().toISOString(),
+            new Date(deps.now()).toISOString(),
             'Total market image urls fetched:',
             marketImageUrls.size,
         );
@@ -185,7 +191,7 @@ export const createDownloadCryptoIcons =
         for (let i = 0; i < coins.length; i++) {
             const logPrefix = `${i + 1}/${coins.length} ${coins[i]?.id}:`;
 
-            if (Date.now() - startedAt > RUN_LIMIT_SECONDS * 1000) {
+            if (deps.now() - startedAt > RUN_LIMIT_SECONDS * 1000) {
                 console.log(logPrefix, `Run limit reached`);
                 break;
             }
@@ -234,7 +240,7 @@ export const createDownloadCryptoIcons =
             const success = await updateIcon(logPrefix, coin.id, imageUrl, platforms);
 
             updatedIcons[coin.id] = {
-                updatedAt: Math.floor(Date.now() / 1000),
+                updatedAt: Math.floor(deps.now() / 1000),
                 // Only fingerprint on success so a failed coin is retried on the next run.
                 ...(success ? { imageUrl, outputsHash } : {}),
             };
