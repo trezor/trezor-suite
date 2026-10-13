@@ -1,13 +1,9 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
-        {
-            "path": "../http-client"
-        },
+        { "path": "../http-client" },
         {
             "path": "../../networks/bitcoin/network-bitcoin-assets"
         },
@@ -35,14 +31,12 @@
         {
             "path": "../../networks/tron/network-tron-assets"
         },
+        { "path": "../wallet-config" },
         {
-            "path": "../wallet-config"
+            "path": "../../packages/dependency-injection"
         },
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
-        },
-        {
-            "path": "../../packages/dependency-injection"
         }
     ]
 }
