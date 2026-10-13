@@ -79,7 +79,7 @@ const NetworkRow = ({
         >
             <HStack alignItems="center" justifyContent="space-between">
                 <HStack alignItems="center" spacing="sp12">
-                    {symbol && <NetworkIcon symbol={symbol} size="extraLarge" />}
+                    {symbol && <NetworkIcon symbol={symbol} size={24} />}
                     <Text variant="body-md">{name}</Text>
                 </HStack>
                 {isSelected && (

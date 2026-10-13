@@ -50,7 +50,7 @@ export const CorrectNetworkMessageCard = ({
     return (
         <Card style={applyStyle(cardStyle)}>
             <HStack spacing="sp12" alignItems="center">
-                <NetworkIcon symbol={symbol} size="extraLarge" />
+                <NetworkIcon symbol={symbol} size={24} />
                 <Text variant="body-sm">
                     <Translation
                         id="moduleSend.outputs.correctNetworkMessage"
