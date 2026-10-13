@@ -34,8 +34,13 @@ export const paramDescriptions = {
 ## Select account
 
 Opens Trezor Suite's account picker so the user chooses which account(s) to share with the
-connecting app. The picker is rendered by Suite — addresses can be verified on the Trezor before
-they are shared.
+connecting app. The picker is rendered by Suite — by default, selected addresses must be confirmed
+on the Trezor before they are shared (see `requireOnDeviceVerification`).
+
+Both the picker and the verification requirement are implemented by Suite, not by the SDK package
+your app installs: Suite 26.11 is the first release that enforces `requireOnDeviceVerification`
+(earlier releases accepted the option and ignored it), so what the user sees follows their Suite
+version rather than the `@trezor/connect` version you pin.
 
 ```javascript
 const result = await TrezorConnect.selectAccount(params);
