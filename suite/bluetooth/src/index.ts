@@ -5,7 +5,6 @@ export { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluet
 export * from './desktopBluetoothReducer';
 export * from './desktopBluetoothSelectors';
 
-export { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
 export { removeNonResponsiveNearbyDevicesThunk } from './removeNonResponsiveNearbyDevicesThunk';
 export { forgetBluetoothDeviceThunk } from './bluetoothEraseBondsThunk';
 

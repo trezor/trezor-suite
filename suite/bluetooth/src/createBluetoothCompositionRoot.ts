@@ -15,6 +15,8 @@ import { type WithServices } from '@trezor/redux-utils';
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { createBackgroundScan } from './bluetoothBackgroundScan';
 import { type Bluetooth, type BluetoothDep, createBluetooth } from './createBluetooth';
+import { createBluetoothConnectDevice } from './createBluetoothConnectDevice';
+import { createBluetoothDisconnectDevice } from './createBluetoothDisconnectDevice';
 import { createBluetoothInit } from './createBluetoothInit';
 import { createBluetoothScan } from './createBluetoothScan';
 import { createBluetoothUnpair } from './createBluetoothUnpair';
@@ -62,6 +64,12 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         backgroundScan,
     });
 
+    const disconnectDevice = createBluetoothDisconnectDevice({
+        getState: deps.getState,
+        dispatch: deps.dispatch,
+        backgroundScan,
+    });
+
     const setupBluetoothAutoReconnect = createSetupBluetoothAutoReconnect({
         getKnownDevices,
         getConnectingDeviceIds: toGetter(deps.getState, selectConnectingDevices),
@@ -83,18 +91,21 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         dispatch: deps.dispatch,
         getState: deps.getState,
         backgroundScan,
+        disconnectDevice,
     });
 
     const bluetoothUnpair = createBluetoothUnpair({
         getState: deps.getState,
         dispatch: deps.dispatch,
         backgroundScan,
+        disconnectDevice,
     });
 
     const onConnectHandler = createBluetoothOnConnectHandler({
         getState: deps.getState,
         dispatch: deps.dispatch,
         backgroundScan,
+        disconnectDevice,
     });
 
     return createBluetooth({
@@ -105,5 +116,6 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         unpair: bluetoothUnpair,
         onConnectHandler,
         connectDevice,
+        disconnectDevice,
     });
 };

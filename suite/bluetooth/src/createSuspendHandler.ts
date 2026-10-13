@@ -6,8 +6,8 @@ import { type WithServices } from '@suite-common/redux-utils';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { type BackgroundScan } from './bluetoothBackgroundScan';
-import { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
 import { type BluetoothDep } from './createBluetooth';
+import type { BluetoothDisconnectDevice } from './createBluetoothDisconnectDevice';
 import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 import { isBluetoothDeviceReachable } from './isBluetoothDeviceReachable';
 
@@ -23,6 +23,7 @@ type SuspendHandlerDeps = {
     getState: () => SuspendHandlerRootState;
     dispatch: SuspendHandlerThunkDispatch;
     backgroundScan: BackgroundScan;
+    disconnectDevice: BluetoothDisconnectDevice;
 };
 
 type SuspendHandler = () => void;
@@ -36,7 +37,6 @@ export const createSuspendHandler =
 
         const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(deps.getState());
         knownDevices.forEach(device => {
-            if (isBluetoothDeviceReachable(device))
-                deps.dispatch(bluetoothDisconnectDeviceThunk({ id: device.id }));
+            if (isBluetoothDeviceReachable(device)) deps.disconnectDevice({ deviceId: device.id });
         });
     };
