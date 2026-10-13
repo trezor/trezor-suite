@@ -67,6 +67,7 @@
     - [@suite/test-utils](./tests/suite-test-utils.md)
     - [@suite-common/test-utils](./tests/suite-common-test-utils.md)
     - [@suite-native/test-utils](./tests/suite-native-test-utils.md)
+    - [Performance history](./tests/perf-history.md)
 - [Miscellaneous](./misc/index.md)
     - [local development security](./misc/local-development-security.md)
     - [build](./misc/build.md)
