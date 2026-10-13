@@ -5,6 +5,7 @@ type BluetoothDeps = {
     bluetoothInit: () => Promise<void>;
     backgroundScan: BackgroundScan;
     scan: BluetoothScan;
+    suspendHandler: () => void;
 };
 
 export type Bluetooth = {
@@ -13,6 +14,7 @@ export type Bluetooth = {
     stopScan: BluetoothScan['stop'];
     setScanStatus: BluetoothScan['setStatus'];
     restartBackgroundScan: () => void;
+    onPowerSuspend: () => void;
 };
 
 export type BluetoothDep = {
@@ -25,4 +27,5 @@ export const createBluetooth = (deps: BluetoothDeps): Bluetooth => ({
     stopScan: () => deps.scan.stop(),
     setScanStatus: status => deps.scan.setStatus(status),
     restartBackgroundScan: () => deps.backgroundScan.restartIfNeeded(),
+    onPowerSuspend: () => deps.suspendHandler(),
 });

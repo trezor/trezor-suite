@@ -6,7 +6,6 @@ import { type WithServices } from '@suite-common/redux-utils';
 import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluetoothDevice';
-import { bluetoothAdapterEventThunk } from './bluetoothAdapterEventThunk';
 import { type BackgroundScan } from './bluetoothBackgroundScan';
 import { type BluetoothDep } from './createBluetooth';
 import { type WithBluetoothRootState } from './desktopBluetoothReducer';
@@ -36,7 +35,8 @@ export const createBluetoothListeners =
         bluetoothIpc.on('adapter-event', status => {
             // TODO: check if redux.status != status && status == enabled
             // and fetch bluetoothIpc.getInfo() again
-            deps.dispatch(bluetoothAdapterEventThunk({ status }));
+            deps.dispatch(bluetoothActions.adapterEventAction({ status }));
+            deps.backgroundScan.restartIfNeeded();
         });
 
         bluetoothIpc.on('device-list-update', nearbyDevicesIpc => {

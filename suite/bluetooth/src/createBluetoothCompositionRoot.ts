@@ -11,6 +11,7 @@ import { createBluetoothAutoReconnect } from './createBluetoothAutoReconnect';
 import { createBluetoothInit } from './createBluetoothInit';
 import { createBluetoothListeners } from './createBluetoothListeners';
 import { createBluetoothScan } from './createBluetoothScan';
+import { createSuspendHandler } from './createSuspendHandler';
 import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 
 type CompositionRootState = WithBluetoothRootState & DesktopDeviceRootState & FirmwareRootState;
@@ -53,9 +54,16 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         setupAutoReconnect,
     });
 
+    const suspendHandler = createSuspendHandler({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        backgroundScan,
+    });
+
     return createBluetooth({
         bluetoothInit,
         backgroundScan,
         scan: bluetoothScan,
+        suspendHandler,
     });
 };

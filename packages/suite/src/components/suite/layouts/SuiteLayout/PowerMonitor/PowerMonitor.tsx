@@ -1,22 +1,12 @@
 import { useEffect } from 'react';
 
-import {
-    type DesktopBluetoothDevice,
-    bluetoothAdapterEventThunk,
-    bluetoothDisconnectDeviceThunk,
-    isBluetoothDeviceReachable,
-} from '@suite/bluetooth';
+import { injectBluetooth } from '@suite/bluetooth';
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { selectKnownDevices } from '@suite-common/bluetooth';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { isMacOs } from '@trezor/env-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 export const PowerMonitorManager = () => {
-    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
-    const knownDevices = useSelector(selectKnownDevices<DesktopBluetoothDevice>);
+    const { bluetooth, desktopApi } = useServices(injectDesktopApi, injectBluetooth);
     const isDesktopApiAvailable = desktopApi?.available === true;
 
     useEffect(() => {
@@ -25,19 +15,15 @@ export const PowerMonitorManager = () => {
         // This is only useful for macOS
         if (!isMacOs()) return;
 
-        const disconnectAllDevices = () => {
-            dispatch(bluetoothAdapterEventThunk({ status: 'power-suspending' }));
-            knownDevices.forEach(device => {
-                if (isBluetoothDeviceReachable(device))
-                    dispatch(bluetoothDisconnectDeviceThunk({ id: device.id }));
-            });
+        const onPowerSuspend = () => {
+            bluetooth.onPowerSuspend();
         };
-        desktopApi.on('power-monitor/suspend', disconnectAllDevices);
+        desktopApi.on('power-monitor/suspend', onPowerSuspend);
 
         return () => {
             desktopApi.removeAllListeners('power-monitor/suspend');
         };
-    }, [desktopApi, dispatch, knownDevices, isDesktopApiAvailable]);
+    }, [bluetooth, desktopApi, isDesktopApiAvailable]);
 
     return null;
 };
