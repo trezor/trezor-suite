@@ -47,13 +47,10 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
     });
 
     const connectDevice = createBluetoothConnectDevice({
-        getState: deps.getState,
         dispatch: deps.dispatch,
-        backgroundScan,
     });
 
     const disconnectDevice = createBluetoothDisconnectDevice({
-        getState: deps.getState,
         dispatch: deps.dispatch,
         backgroundScan,
     });
@@ -88,8 +85,6 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
 
     const onConnectHandler = createBluetoothOnConnectHandler({
         getState: deps.getState,
-        dispatch: deps.dispatch,
-        backgroundScan,
         disconnectDevice,
     });
 

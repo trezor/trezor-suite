@@ -1,4 +1,4 @@
-import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -6,22 +6,10 @@ import { type BluetoothDeviceId } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { type BackgroundScan } from './bluetoothBackgroundScan';
-import {
-    type WithBluetoothRootState,
-    stopConnectingBluetoothDevice,
-} from './desktopBluetoothReducer';
-
-type BluetoothDisconnectDeviceRootState = WithBluetoothRootState;
-
-type BluetoothDisconnectDeviceThunkDispatch = ThunkDispatch<
-    BluetoothDisconnectDeviceRootState,
-    unknown,
-    UnknownAction
->;
+import { stopConnectingBluetoothDevice } from './desktopBluetoothReducer';
 
 type BluetoothDisconnectDeviceDeps = {
-    getState: () => BluetoothDisconnectDeviceRootState;
-    dispatch: BluetoothDisconnectDeviceThunkDispatch;
+    dispatch: Dispatch;
     backgroundScan: BackgroundScan;
 };
 

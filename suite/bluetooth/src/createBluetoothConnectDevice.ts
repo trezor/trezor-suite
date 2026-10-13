@@ -7,8 +7,6 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { type BluetoothDeviceId, type Device } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
-import { type BackgroundScan } from './bluetoothBackgroundScan';
-import { type BluetoothDep } from './createBluetooth';
 import {
     type WithBluetoothRootState,
     setBluetoothDeviceNeedsManualPairing,
@@ -20,14 +18,12 @@ type BluetoothConnectDeviceRootState = WithBluetoothRootState;
 
 type BluetoothConnectDeviceThunkDispatch = ThunkDispatch<
     BluetoothConnectDeviceRootState,
-    WithServices<DesktopApiDep<'openSystemSettings'> & BluetoothDep>,
+    WithServices<DesktopApiDep<'openSystemSettings'>>,
     UnknownAction
 >;
 
 type BluetoothConnectDeviceDeps = {
-    getState: () => BluetoothConnectDeviceRootState;
     dispatch: BluetoothConnectDeviceThunkDispatch;
-    backgroundScan: BackgroundScan;
 };
 
 export type BluetoothConnectDevice = (params: {
