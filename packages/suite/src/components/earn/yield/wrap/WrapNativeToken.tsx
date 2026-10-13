@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { useMutation } from '@tanstack/react-query';
 
@@ -25,7 +26,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
 import { submitWrapNativeTokenThunk } from 'src/actions/wallet/wrapNativeTokenThunks';
-import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
+import { selectIsFeeRefetchBlockedByModal } from 'src/components/wallet/Fees/feeSelectors';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';
@@ -92,7 +93,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
         decimals: token.decimals,
     };
 
-    const isRefetchDisabled = useIsFeeRefetchDisabled();
+    const isRefetchDisabled = useSelector(selectIsFeeRefetchBlockedByModal);
     useFetchFees({ networkSymbol: account.symbol, isRefetchDisabled });
 
     // The same reserve a wrapped-native vault deposit keeps aside: a wrap is the first step of
