@@ -1,3 +1,4 @@
+import { type Url } from '../../src/types';
 import * as URLS from '../../src/urls';
 
 /**
@@ -33,6 +34,17 @@ const expectedFailingUrls = [
     URLS.IMAGE_PROXY_API_URL,
 ];
 
+/**
+ * URLs that permanently redirect to a target that must not be hardcoded.
+ * Only their final destination is checked.
+ */
+const allowedPermanentRedirectUrls = [
+    // App Store expands the region-less link with a storefront and the app name.
+    URLS.SUITE_MOBILE_APP_STORE,
+    // OneLink redirects to the app store matching the visitor's platform.
+    URLS.TRADING_DOWNLOAD_INVITY_APP_URL,
+];
+
 // Sometimes we run test too much, I guess....
 const clientErrorCodeWhitelist = [429];
 
@@ -52,11 +64,29 @@ const isAcceptableHttpCode = (code: number): boolean => {
     return clientErrorCodeWhitelist.includes(code);
 };
 
-describe('External URLs integration', () => {
-    beforeEach(() => {
-        jest.setTimeout(30000);
-    });
+const fetchHttpCode = async (url: Url): Promise<number> => {
+    if (allowedPermanentRedirectUrls.includes(url)) {
+        return (await fetch(url)).status;
+    }
 
+    // By default, fetch follows redirects and reports only the final status, which would hide
+    // permanent redirects.
+    const { status } = await fetch(url, { redirect: 'manual' });
+    const isTemporaryRedirect =
+        status >= 300 && status < 400 && !permanentRedirectCodes.includes(status);
+
+    // A temporary redirect is fine on its own, but its final destination must be alive too.
+    if (isTemporaryRedirect) {
+        return (await fetch(url)).status;
+    }
+
+    return status;
+};
+
+// Jest reads the timeout when the run starts, so setting it in a hook would have no effect.
+jest.setTimeout(30000);
+
+describe('External URLs integration', () => {
     describe('Internal test utils', () => {
         it(isAcceptableHttpCode.name, () => {
             expect(isAcceptableHttpCode(200)).toBe(true);
@@ -76,7 +106,7 @@ describe('External URLs integration', () => {
             .filter(url => !expectedFailingUrls.includes(url) && !skippedUrls.includes(url))
             .forEach(url => {
                 it(`HTTP GET request to ${url} should respond with an acceptable http code`, async () => {
-                    const { status } = await fetch(url);
+                    const status = await fetchHttpCode(url);
                     const isAcceptable = isAcceptableHttpCode(status);
                     if (!isAcceptable) {
                         throw `Got unacceptable http code ${status}`;
@@ -90,7 +120,7 @@ describe('External URLs integration', () => {
             .filter(url => expectedFailingUrls.includes(url) && !skippedUrls.includes(url))
             .forEach(url => {
                 it(`HTTP GET request to ${url} should respond with an unacceptable http code`, async () => {
-                    const { status } = await fetch(url);
+                    const status = await fetchHttpCode(url);
                     const isAcceptable = isAcceptableHttpCode(status);
                     if (isAcceptable) {
                         throw `Got acceptable http code ${status}. Remove ${url} from expectedFailingUrls.`;
