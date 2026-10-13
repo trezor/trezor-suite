@@ -12,9 +12,10 @@ import type { TradingPage } from '../../support/pageObjects/trading/tradingPage'
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const fundedSymbol = asNetworkSymbol('eth');
+const fundedAccountIndex = 2;
 const insufficientCryptoAmount = '1000';
 
-const sellBalance = '58.72333';
+const sellBalance = '69.17132';
 const sellDecimals = 6;
 const amount = '37.12345';
 const baseCurrencyAmount = '10';
@@ -30,7 +31,7 @@ const buyAssets: {
         label: 'ETH@ETH',
         buy: { searchFilter: 'Ethereum', assetCryptoId: getCryptoId(fundedSymbol) },
         receiveNetwork: fundedSymbol,
-        accountIndex: 0,
+        accountIndex: fundedAccountIndex,
     },
     {
         label: 'USDC@SOL',
@@ -43,7 +44,7 @@ const buyAssets: {
             ),
         },
         receiveNetwork: asNetworkSymbol('sol'),
-        accountIndex: 1,
+        accountIndex: 3,
     },
     {
         label: 'USDT@ETH',
@@ -53,7 +54,7 @@ const buyAssets: {
             assetCryptoId: getCryptoId(fundedSymbol, '0xdac17f958d2ee523a2206206994597c13d831ec7'),
         },
         receiveNetwork: fundedSymbol,
-        accountIndex: 0,
+        accountIndex: fundedAccountIndex,
     },
     {
         label: 'ETH@ETH',
@@ -63,7 +64,7 @@ const buyAssets: {
             assetCryptoId: getCryptoId(fundedSymbol),
         },
         receiveNetwork: fundedSymbol,
-        accountIndex: 0,
+        accountIndex: fundedAccountIndex,
     },
 ];
 
@@ -102,7 +103,7 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice', '@option
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
         async ({ page, walletPage, tradingPage }) => {
             await test.step('Open the funded account and open the Swap form', async () => {
-                await walletPage.openAccount({ symbol: fundedSymbol });
+                await walletPage.openAccount({ symbol: fundedSymbol, atIndex: fundedAccountIndex });
                 await walletPage.swapButton.click();
                 await tradingPage.verifySwapFormOpened(/ETH/);
             });
@@ -112,7 +113,7 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice', '@option
                 const fundedAccount = {
                     accountSymbol: fundedSymbol,
                     accountType: 'normal',
-                    index: 0,
+                    index: fundedAccountIndex,
                 };
                 const ethOption = assetPicker.sellOption(fundedAccount);
                 const usdcOption = assetPicker.sellOption({
