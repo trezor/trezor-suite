@@ -1,4 +1,3 @@
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
@@ -9,6 +8,7 @@ import {
     type PROTO,
     type UnavailableCapability,
 } from '@trezor/connect';
+import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';

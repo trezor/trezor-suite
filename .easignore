@@ -47,6 +47,7 @@
 !/packages/connect-mobile
 !/packages/crypto-utils
 !/packages/dependency-injection
+!/packages/device
 !/packages/device-authenticity
 !/packages/device-utils
 !/packages/e2e-utils

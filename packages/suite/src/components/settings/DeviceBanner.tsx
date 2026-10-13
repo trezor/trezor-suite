@@ -1,9 +1,9 @@
 import { type ReactNode } from 'react';
 
 import { useDevice } from '@suite/device';
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { Banner, type BannerIntent } from '@trezor/components';
+import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';

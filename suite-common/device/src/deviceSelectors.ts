@@ -1,7 +1,6 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import {
     type BackupType,
     LANGUAGES,
@@ -370,13 +369,6 @@ export const selectDeviceModel = createMemoizedSelector([selectSelectedDevice], 
 export const selectDeviceModelWithFlagshipFallback = (
     state: DeviceRootState,
 ): DeviceModelInternal => getDeviceModelWithFlagshipFallback(selectSelectedDevice(state));
-
-export const selectIsDeviceAuthenticityCheckSupported = createMemoizedSelector(
-    [selectIsPortfolioTrackerDevice, selectDeviceModel],
-    (isPortfolioTrackerDevice, deviceModel) =>
-        isPortfolioTrackerDevice ||
-        (!!deviceModel && SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel]),
-);
 
 export const selectFirmwareReleaseConfig = createMemoizedSelector(
     [selectSelectedDevice],
