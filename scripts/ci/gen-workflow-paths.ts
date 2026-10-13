@@ -26,6 +26,8 @@ import path from 'node:path';
 // hence `createRequire` plus the type-only import below.
 import type * as Requirements from '@trezor/requirements';
 
+import { CONNECT_PUBLISH_ROOTS } from './connect-publish-roots';
+
 const { computePublishClosure, createReadWorkspaceDeps, getWorkspaceDirectoryMap } = createRequire(
     import.meta.url,
 )('@trezor/requirements') as typeof Requirements;
@@ -34,12 +36,6 @@ const ROOT = path.resolve(import.meta.dirname, '..', '..');
 const WORKFLOWS_DIR = path.join(ROOT, '.github', 'workflows');
 const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);
 const workspaceDirs = getWorkspaceDirectoryMap(ROOT);
-
-// Kept in sync with `CONNECT_PUBLISH_ROOTS` in
-// `scripts/ci/get-connect-dependencies-to-release.ts`. If they diverge,
-// either one or both should justify it inline; if they stay identical for
-// long enough, extract to a shared module.
-const CONNECT_PUBLISH_ROOTS = ['connect', 'connect-web', 'connect-mobile', 'connect-webextension'];
 
 const SENTINEL_CONFIGS: Record<string, { roots: string[] }> = {
     CONNECT_PUBLISH_DEPS: { roots: CONNECT_PUBLISH_ROOTS },

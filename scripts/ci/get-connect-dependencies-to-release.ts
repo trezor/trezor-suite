@@ -9,6 +9,7 @@ import semver from 'semver';
 // hence `createRequire` plus the type-only import below.
 import type * as Requirements from '@trezor/requirements';
 
+import { CONNECT_PUBLISH_ROOTS } from './connect-publish-roots';
 import { getNpmRemoteGreatestVersion } from './helpers';
 
 const {
@@ -21,17 +22,6 @@ const {
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);
 const workspaceDirs = getWorkspaceDirectoryMap(ROOT);
-
-// The connect distribution packages. Used both as BFS roots to compute the
-// @trezor/* dep closure, and as the exclude list for the output — these four
-// are released by `deploy-npm-connect` (a hardcoded matrix), not by
-// `deploy-npm-connect-dependencies` (which consumes this script's output).
-//
-// Kept in sync with `CONNECT_PUBLISH_ROOTS` in
-// `scripts/ci/gen-workflow-paths.ts`. If they diverge, either one or both
-// should justify it inline; if they stay identical for long enough, extract
-// to a shared module.
-const CONNECT_PUBLISH_ROOTS = ['connect', 'connect-web', 'connect-mobile', 'connect-webextension'];
 
 const isPackageBumped = async (packageName: string): Promise<boolean> => {
     const dir = workspaceDirs.get(`@trezor/${packageName}`);
