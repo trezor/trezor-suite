@@ -123,6 +123,7 @@ export const AssetPickerSearchHeader = memo(function AssetPickerSearchHeaderInne
                 >
                     {networkFilter ? (
                         <Row
+                            height={24}
                             data-testid={`${DATA_TESTID_BASE}/filter/select-option-value/${networkFilter}`}
                         >
                             {isNetworkIconSymbol(networkFilter) ? (
