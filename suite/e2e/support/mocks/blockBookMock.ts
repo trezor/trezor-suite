@@ -10,8 +10,9 @@ import {
 import { fixtures as dogeFixtures } from './doge-endpoints';
 import { ETH_MOCKED_ACCOUNT, fixtures as ethFixtures } from './eth-endpoints';
 import { fixtures as ltcFixtures } from './ltc-mw-endpoints';
+import { TRX_MOCKED_ACCOUNT, fixtures as trxFixtures } from './trx-endpoints';
 
-type SupportedSymbols = 'ltc' | 'doge' | 'eth' | 'ada';
+type SupportedSymbols = 'ltc' | 'doge' | 'eth' | 'ada' | 'trx';
 
 type SendNewBlockNotificationParams = { height: number; hash: string };
 
@@ -47,6 +48,10 @@ export class BlockbookMock {
                 this.accountState = ADA_MOCKED_ACCOUNT;
 
                 return adaFixtures;
+            case 'trx':
+                this.accountState = TRX_MOCKED_ACCOUNT;
+
+                return trxFixtures;
             default:
                 throw new Error('Unknown blockbook mock type');
         }
@@ -74,7 +79,7 @@ export class BlockbookMock {
 
     @step()
     updateAccountState(accountData: any) {
-        if (this.mockType !== 'eth' && this.mockType !== 'ada') {
+        if (this.mockType !== 'eth' && this.mockType !== 'ada' && this.mockType !== 'trx') {
             throw new Error(
                 `Account state update not supported for this mock type: ${this.mockType}`,
             );
@@ -91,6 +96,11 @@ export class BlockbookMock {
                 accountMethod: 'GET_ACCOUNT_INFO',
                 accountId: 'descriptor',
                 fallbackResponse: ADA_MOCKED_EMPTY_ACCOUNT,
+            },
+            trx: {
+                accountMethod: 'getAccountInfo',
+                accountId: 'address',
+                fallbackResponse: undefined,
             },
         };
         const { accountMethod, accountId, fallbackResponse } = accountParams[this.mockType];
