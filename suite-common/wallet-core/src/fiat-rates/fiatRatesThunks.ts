@@ -5,11 +5,8 @@ import {
 } from '@suite-common/fiat-services';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
-import {
-    type TokenDefinitionsRootState,
-    selectIsSpecificCoinDefinitionKnown,
-} from '@suite-common/token-definitions';
-import { type BackendType, getNetworkFeatures } from '@suite-common/wallet-config';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type BackendType } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountKey,
@@ -33,7 +30,7 @@ import { type TimerId, exhaustive } from '@trezor/type-utils';
 import { BigNumber, isNotUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { FIAT_RATES_MODULE_PREFIX, REFETCH_INTERVAL } from './fiatRatesConstants';
-import { selectTickersToBeUpdated } from './fiatRatesSelectors';
+import { selectIsTokenFiatRateAllowed, selectTickersToBeUpdated } from './fiatRatesSelectors';
 import { type FiatRatesRootState } from './fiatRatesTypes';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
@@ -150,20 +147,8 @@ export const updateTxsFiatRatesThunk = createThunk<
                 continue;
             }
 
-            const hasCoinDefinitions = getNetworkFeatures(account.symbol).includes(
-                'coin-definitions',
-            );
-
-            if (hasCoinDefinitions) {
-                const isTokenKnown = selectIsSpecificCoinDefinitionKnown(
-                    getState(),
-                    account.symbol,
-                    token,
-                );
-
-                if (!isTokenKnown) {
-                    continue;
-                }
+            if (!selectIsTokenFiatRateAllowed(getState(), account.symbol, token)) {
+                continue;
             }
 
             await fetchTransactionsRates(
@@ -224,19 +209,12 @@ export const updateFiatRatesThunk = createThunk<
                 });
             }
 
-            const hasCoinDefinitions = getNetworkFeatures(ticker.symbol).includes(
-                'coin-definitions',
-            );
-            if (ticker.tokenAddress && hasCoinDefinitions && !forceFetchToken) {
-                const isTokenKnown = selectIsSpecificCoinDefinitionKnown(
-                    getState(),
-                    ticker.symbol,
-                    ticker.tokenAddress,
-                );
-
-                if (!isTokenKnown) {
-                    throw new Error('Missing token definition');
-                }
+            if (
+                ticker.tokenAddress &&
+                !forceFetchToken &&
+                !selectIsTokenFiatRateAllowed(getState(), ticker.symbol, ticker.tokenAddress)
+            ) {
+                throw new Error('Missing token definition');
             }
 
             const rate = await ((): Promise<FiatRatesResult | null> => {

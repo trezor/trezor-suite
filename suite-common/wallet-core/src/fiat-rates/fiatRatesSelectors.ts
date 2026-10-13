@@ -155,6 +155,14 @@ export const selectShouldUpdateFiatRate = (
     return currentTimestamp - lastSuccessfulFetchTimestamp > MAX_AGE[rateType];
 };
 
+export const selectIsTokenFiatRateAllowed = (
+    state: TokenDefinitionsRootState,
+    symbol: NetworkSymbol,
+    tokenAddress: TokenAddress,
+) =>
+    !getNetworkFeatures(symbol).includes('coin-definitions') ||
+    selectIsSpecificCoinDefinitionKnown(state, symbol, tokenAddress);
+
 export const selectTickerFromAccounts = (
     state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState,
 ): TickerId[] => {
@@ -184,8 +192,7 @@ export const selectTickerFromAccounts = (
         A.filter(
             ticker =>
                 !ticker.tokenAddress ||
-                !getNetworkFeatures(ticker.symbol).includes('coin-definitions') ||
-                selectIsSpecificCoinDefinitionKnown(state, ticker.symbol, ticker.tokenAddress),
+                selectIsTokenFiatRateAllowed(state, ticker.symbol, ticker.tokenAddress),
         ),
         A.uniqBy(ticker =>
             ticker.tokenAddress ? `${ticker.symbol}-${ticker.tokenAddress}` : ticker.symbol,
