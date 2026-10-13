@@ -162,8 +162,18 @@ export const useSellForm = (): TradingFormWithMetadata<SellFormType> => {
         context,
     });
 
-    const { control } = form;
+    const { control, getValues, setValue } = form;
     const { dispatch } = useServices(injectDispatch);
+
+    useEffect(() => {
+        const defaultFiatCurrency = defaultValues.fiatCurrency;
+        if (!defaultFiatCurrency || defaultFiatCurrency === getValues('fiatCurrency')) {
+            return;
+        }
+
+        setValue('fiatCurrency', defaultFiatCurrency);
+        dispatch(sellActions.fiatCurrencyChanged());
+    }, [defaultValues.fiatCurrency, dispatch, getValues, setValue]);
 
     const onSendAssetCleared = useCallback(() => {
         form.setValue('cryptoStringAmount', undefined, { shouldValidate: true });

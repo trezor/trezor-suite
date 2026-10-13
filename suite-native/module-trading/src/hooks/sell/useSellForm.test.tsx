@@ -3,7 +3,11 @@ import type { SellFiatTrade } from 'invity-api';
 
 import { joinAmountWithSymbol } from '@suite-common/formatters';
 import { tradingSellActions } from '@suite-common/trading';
-import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
+    setBaseCurrency,
+} from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { act, renderHookWithStoreProvider, screen, waitFor } from '@suite-native/test-utils-store';
@@ -17,7 +21,11 @@ import {
     sellQuotes,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { type TradingRootState, selectTradingResidenceCountry } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    selectSellAmountLimits,
+    selectTradingResidenceCountry,
+} from '@suite-native/trading-state';
 import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
@@ -570,6 +578,35 @@ describe('useSellForm', () => {
             });
 
             expect(selectTradingResidenceCountry(store.getState())).toBe('CA');
+        });
+    });
+
+    describe('on base currency change', () => {
+        it('should keep fiatCurrency and amount limits on mount', async () => {
+            const { result } = await renderUseSellForm();
+
+            expect(result.current.getValues('fiatCurrency')).toBe('usd');
+            expect(selectSellAmountLimits(store.getState())).toBeDefined();
+        });
+
+        it('should update fiatCurrency to the new base currency', async () => {
+            const { result } = await renderUseSellForm();
+
+            await act(() => {
+                store.dispatch(setBaseCurrency('eur'));
+            });
+
+            expect(result.current.getValues('fiatCurrency')).toBe('eur');
+        });
+
+        it('should clear amount limits', async () => {
+            await renderUseSellForm();
+
+            await act(() => {
+                store.dispatch(setBaseCurrency('eur'));
+            });
+
+            expect(selectSellAmountLimits(store.getState())).toBeUndefined();
         });
     });
 });

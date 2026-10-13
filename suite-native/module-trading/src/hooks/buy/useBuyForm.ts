@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import type { BuyCryptoPaymentMethod, BuyTrade } from 'invity-api';
 
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingAmountLimitProps,
     cryptoIdToNetwork,
@@ -18,12 +19,14 @@ import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
 import {
+    buyActions,
     selectBuyAmountLimits,
     selectBuyFormDefaultValues,
     selectBuySelectedReceiveAccount,
     selectValidTradingBuyQuotesNative,
 } from '@suite-native/trading-state';
 import { type BuyFormType, type BuyFormValues } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
@@ -161,8 +164,19 @@ export const useBuyForm = (): BuyFormType => {
         validation: buyFormValidationSchema,
         context,
     });
-    const { control, setValue } = form;
+    const { control, getValues, setValue } = form;
+    const { dispatch } = useServices(injectDispatch);
     const asset = useWatch({ control, name: 'asset' });
+
+    useEffect(() => {
+        const defaultFiatCurrency = defaultValues.fiatCurrency;
+        if (!defaultFiatCurrency || defaultFiatCurrency === getValues('fiatCurrency')) {
+            return;
+        }
+
+        setValue('fiatCurrency', defaultFiatCurrency);
+        dispatch(buyActions.fiatCurrencyChanged());
+    }, [defaultValues.fiatCurrency, dispatch, getValues, setValue]);
 
     useEffect(() => {
         setContractAddress(asset?.contractAddress);
