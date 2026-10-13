@@ -3,6 +3,7 @@ import { type Dispatch } from '@suite-common/redux-utils';
 import { type ConnectInitDeviceEventHooks } from '@suite-common/suite-types';
 import { DEVICE } from '@trezor/connect';
 
+import { showConnectedDeviceToastThunk } from '../actions/suite/connectedDeviceToastThunks';
 import { markDeviceAsRecentlyConnectedThunk } from '../actions/wallet/markDeviceAsRecentlyConnectedThunk';
 
 type ConnectInitDeviceEventHooksDeps = {
@@ -15,6 +16,7 @@ export const createConnectInitDeviceEventHooks = (
 ): ConnectInitDeviceEventHooks => ({
     [DEVICE.CONNECT]: device => {
         deps.dispatch(markDeviceAsRecentlyConnectedThunk(device));
+        deps.dispatch(showConnectedDeviceToastThunk(device));
         deps.dispatch(bluetoothOnDeviceConnectedThunk(device));
     },
     [DEVICE.CONNECT_UNACQUIRED]: device => {

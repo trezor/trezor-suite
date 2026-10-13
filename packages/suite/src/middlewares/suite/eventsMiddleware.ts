@@ -5,12 +5,25 @@ import { routerAppChanged } from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type Dispatch } from '@suite-common/redux-utils';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
+import {
+    type NotificationEntry,
+    notificationsActions,
+    removeAccountEventsThunk,
+} from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
 import { DEVICE, isDeviceEventOfType } from '@trezor/connect';
 
 import { type AppState } from 'src/types/suite';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
+
+const closeDeviceConnectedToasts = (
+    api: MiddlewareAPI<Dispatch, AppState>,
+    predicate: (notification: NotificationEntry) => boolean,
+) => {
+    api.getState()
+        .notifications.filter(n => n.type === 'device-connected' && !n.closed && predicate(n))
+        .forEach(n => api.dispatch(notificationsActions.close(n.id)));
+};
 
 /*
  * Middleware for event notifications.
@@ -92,6 +105,14 @@ const eventsMiddleware =
             if (notifications.length > 0) {
                 api.dispatch(notificationsActions.resetUnseen(notifications));
             }
+
+            closeDeviceConnectedToasts(api, n =>
+                deviceUtils.isSelectedDevice(action.payload, n.device),
+            );
+        }
+
+        if (deviceActions.deviceDisconnect.match(action)) {
+            closeDeviceConnectedToasts(api, n => n.device?.path === action.payload.path);
         }
 
         if (

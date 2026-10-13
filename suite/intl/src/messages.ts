@@ -4870,6 +4870,14 @@ export const messages = defineMessages({
         id: 'EVENT_DEVICE_CONNECT',
         defaultMessage: 'Device {label} connected',
     },
+    TOAST_DEVICE_CONNECTED: {
+        id: 'TOAST_DEVICE_CONNECTED',
+        defaultMessage: '{label} connected',
+    },
+    TOAST_DEVICE_CONNECTED_SWITCH: {
+        id: 'TOAST_DEVICE_CONNECTED_SWITCH',
+        defaultMessage: 'Switch to this device',
+    },
     EVENT_DEVICE_CONNECT_UNACQUIRED: {
         id: 'EVENT_DEVICE_CONNECT_UNACQUIRED',
         defaultMessage: '{label} connected',

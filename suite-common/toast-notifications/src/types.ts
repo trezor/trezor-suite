@@ -166,6 +166,10 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
           error?: string;
       }
     | {
+          type: 'device-connected';
+          device: TrezorDevice;
+      }
+    | {
           type:
               | 'settings-applied'
               | 'pin-changed'
