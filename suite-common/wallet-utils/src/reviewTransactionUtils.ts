@@ -81,6 +81,11 @@ export const getIsUpdatedEthereumSendFlow = (
     return versionUtils.isNewer(firmwareVersion, '2.6.0') || !!stakeType;
 };
 
+export const getIsClearSignedEvmClaimFlow = (
+    device: TrezorDevice,
+    network: Account['networkType'],
+) => getIsUpdatedEthereumSendFlow(device, network) && isEvmClearSigningSupportedByDevice(device);
+
 const getIsUpdatedStellarSendFlow = (device: TrezorDevice, network: Account['networkType']) => {
     if (network !== 'stellar') return false;
 
@@ -444,7 +449,7 @@ const constructNewFlow = ({
     clearSignedSwapCoverage,
     isClearSignedWrapUnwrap,
     isApprovalFlowSupported,
-    isEvmClearSigningSupported,
+    isClearSignedEvmClaimFlow,
     isUpdatedEthereumSendFlow,
     isUpdatedStellarSendFlow,
 }: ConstructOutputsParams & {
@@ -452,7 +457,7 @@ const constructNewFlow = ({
     isUpdatedEthereumSendFlow: boolean;
     isUpdatedStellarSendFlow: boolean;
     isApprovalFlowSupported: boolean;
-    isEvmClearSigningSupported: boolean;
+    isClearSignedEvmClaimFlow: boolean;
 }): TransactionReviewOutput[] => {
     const isClearSignedTradingSwap = clearSignedSwapCoverage !== undefined;
     const outputs: TransactionReviewOutput[] = [];
@@ -483,7 +488,6 @@ const constructNewFlow = ({
     });
     const isClaimOp = evmTxType === 'claim';
     const isYieldOp = isEvmYieldTxByTextSignature(evmTxType);
-    const isEvmClaimClearSign = isUpdatedEthereumSendFlow && isEvmClearSigningSupported;
 
     if (networkType === 'ethereum' && stakeType && isUpdatedEthereumSendFlow) {
         // The firmware clear-signs staking operations as a single confirmation screen followed
@@ -519,7 +523,7 @@ const constructNewFlow = ({
         return outputs;
     }
 
-    if (isClaimOp && isEvmClaimClearSign) {
+    if (isClaimOp && isClearSignedEvmClaimFlow) {
         outputs.push(
             { type: 'data', value: EARN_YIELD_CLAIM_PROVIDER },
             { type: 'rewards', rewards: availableRewards ?? [] },
@@ -605,7 +609,7 @@ const constructNewFlow = ({
             isSolana ||
             (isEvmApproval && !isApprovalFlowSupported) ||
             (isYieldOp && !isUpdatedEthereumSendFlow) ||
-            (isClaimOp && !isEvmClaimClearSign)) &&
+            (isClaimOp && !isClearSignedEvmClaimFlow)) &&
         !isClearSignedTradingSwap
     ) {
         outputs.push({ type: 'data', value: precomposedForm.transactionData! });
@@ -877,7 +881,7 @@ export const constructTransactionReviewOutputs = ({
         }),
         isUpdatedEthereumSendFlow,
         isApprovalFlowSupported: isApprovalSupported(device),
-        isEvmClearSigningSupported: isEvmClearSigningSupportedByDevice(device),
+        isClearSignedEvmClaimFlow: getIsClearSignedEvmClaimFlow(device, params.account.networkType),
         isUpdatedStellarSendFlow,
     });
 };
