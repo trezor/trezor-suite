@@ -6,6 +6,7 @@ import {
     type PrecomposedTransactionCardanoFinal,
     type PrecomposedTransactionFinal,
     type PrecomposedTransactionFinalBumpFeeRbf,
+    type StakeType,
     type Timestamp,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
@@ -77,6 +78,8 @@ const STELLAR_LEDGER_CLOSE_SECONDS = 5;
 const CARDANO_BLOCK_TIME_SECONDS = 20;
 // Solana's average block interval; its fee info reports the block time as unknown (-1).
 const SOLANA_BLOCK_TIME_SECONDS = SOLANA_SLOT_TIME_MS / 1000;
+// A Solana tx expires with its blockhash after about a minute, so a fake one is kept only briefly.
+const SOLANA_FAKE_TX_TTL_SECONDS = 3 * 60;
 
 /**
  * Replace existing transaction in the reducer (RBF)
@@ -815,13 +818,85 @@ export const addFakePendingTronSendTxThunk = createThunk<
     },
 );
 
-interface AddFakePendingSolanaSendTxThunkParams {
-    precomposedTransaction: PrecomposedTransactionFinal;
+type SolanaStakeOperation = NonNullable<
+    NonNullable<WalletAccountTransaction['solanaSpecific']>['stakeOperation']
+>;
+
+type AddFakePendingSolanaTxThunkParams = {
     txid: string;
     account: Account;
-}
+    amount: string;
+    fee: string;
+    type: WalletAccountTransaction['type'];
+    target?: { address: string; amount: string };
+    tokens?: WalletAccountTransaction['tokens'];
+    internalTransfers?: WalletAccountTransaction['internalTransfers'];
+    stakeOperation?: SolanaStakeOperation;
+};
 
-type AddFakePendingSolanaSendTxThunkState = BlockchainRootState;
+export type AddFakePendingSolanaTxThunkState = BlockchainRootState;
+
+export const addFakePendingSolanaTxThunk = createThunk<
+    void,
+    AddFakePendingSolanaTxThunkParams,
+    { state: AddFakePendingSolanaTxThunkState }
+>(
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
+    (
+        { txid, account, amount, fee, type, target, tokens, internalTransfers, stakeOperation },
+        { dispatch, getState },
+    ) => {
+        if (account.networkType !== 'solana') return;
+
+        const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol) ?? 0;
+
+        const fakeTx = {
+            type,
+            txid,
+            blockTime: Math.floor(Date.now() / 1000),
+            blockHash: undefined,
+            amount,
+            fee,
+            feeRate: undefined,
+            targets: target
+                ? [{ n: 0, addresses: [target.address], isAddress: true, amount: target.amount }]
+                : [],
+            tokens: tokens ?? [],
+            internalTransfers: internalTransfers ?? [],
+            solanaSpecific: stakeOperation
+                ? { status: 'pending' as const, stakeOperation }
+                : undefined,
+            details: {
+                vin: [
+                    {
+                        n: 0,
+                        addresses: [account.descriptor],
+                        isAddress: true,
+                        isOwn: true,
+                        isAccountOwned: true,
+                    },
+                ],
+                vout: target
+                    ? [{ value: target.amount, n: 0, addresses: [target.address], isAddress: true }]
+                    : [],
+                size: 0,
+                totalInput: '0',
+                totalOutput: target?.amount ?? '0',
+            },
+            deadline:
+                blockHeight + Math.ceil(SOLANA_FAKE_TX_TTL_SECONDS / SOLANA_BLOCK_TIME_SECONDS),
+        };
+        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+    },
+);
+
+type AddFakePendingSolanaSendTxThunkParams = {
+    precomposedTransaction: Pick<PrecomposedTransactionFinal, 'outputs' | 'fee' | 'token'>;
+    txid: string;
+    account: Account;
+};
+
+export type AddFakePendingSolanaSendTxThunkState = AddFakePendingSolanaTxThunkState;
 
 export const addFakePendingSolanaSendTxThunk = createThunk<
     void,
@@ -829,14 +904,11 @@ export const addFakePendingSolanaSendTxThunk = createThunk<
     { state: AddFakePendingSolanaSendTxThunkState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    ({ precomposedTransaction, txid, account }, { dispatch, getState }) => {
-        if (account.networkType !== 'solana') return;
-
+    ({ precomposedTransaction, txid, account }, { dispatch }) => {
         const [output] = precomposedTransaction.outputs;
         const { token } = precomposedTransaction;
         const recipient = output?.address;
         const outputAmount = output?.amount?.toString() ?? '0';
-        const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol) ?? 0;
 
         const tokenTransfer: TokenTransfer | undefined =
             token && recipient
@@ -853,44 +925,71 @@ export const addFakePendingSolanaSendTxThunk = createThunk<
                   }
                 : undefined;
         const nativeTarget = recipient && !token ? recipient : undefined;
+        const solBalanceChange = new BigNumber(token ? '0' : outputAmount)
+            .plus(precomposedTransaction.fee)
+            .toString();
 
-        const fakeTx = {
-            type: 'sent' as const,
-            txid,
-            blockTime: Math.floor(Date.now() / 1000),
-            blockHash: undefined,
-            // the fee is included to match the confirmed tx, whose amount is the account's SOL
-            // balance change; for an SPL token transfer that change is only the fee
-            amount: new BigNumber(token ? '0' : outputAmount)
-                .plus(precomposedTransaction.fee)
-                .toString(),
-            fee: precomposedTransaction.fee,
-            feeRate: undefined,
-            targets: nativeTarget
-                ? [{ n: 0, addresses: [nativeTarget], isAddress: true, amount: outputAmount }]
-                : [],
-            tokens: tokenTransfer ? [tokenTransfer] : [],
-            internalTransfers: [],
-            details: {
-                vin: [
-                    {
-                        n: 0,
-                        addresses: [account.descriptor],
-                        isAddress: true,
-                        isOwn: true,
-                        isAccountOwned: true,
-                    },
-                ],
-                vout: nativeTarget
-                    ? [{ value: outputAmount, n: 0, addresses: [nativeTarget], isAddress: true }]
-                    : [],
-                size: 0,
-                totalInput: '0',
-                totalOutput: nativeTarget ? outputAmount : '0',
-            },
-            deadline: blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / SOLANA_BLOCK_TIME_SECONDS),
-        };
-        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(
+            addFakePendingSolanaTxThunk({
+                txid,
+                account,
+                amount: solBalanceChange,
+                fee: precomposedTransaction.fee,
+                type: 'sent',
+                target: nativeTarget ? { address: nativeTarget, amount: outputAmount } : undefined,
+                tokens: tokenTransfer ? [tokenTransfer] : [],
+            }),
+        );
+    },
+);
+
+type AddFakePendingSolanaStakeTxThunkParams = {
+    precomposedTransaction: Pick<PrecomposedTransactionFinal, 'outputs' | 'fee' | 'solanaTxMeta'>;
+    stakeType: StakeType;
+    txid: string;
+    account: Account;
+};
+
+export type AddFakePendingSolanaStakeTxThunkState = AddFakePendingSolanaTxThunkState;
+
+export const addFakePendingSolanaStakeTxThunk = createThunk<
+    void,
+    AddFakePendingSolanaStakeTxThunkParams,
+    { state: AddFakePendingSolanaStakeTxThunkState }
+>(
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
+    ({ precomposedTransaction, stakeType, txid, account }, { dispatch }) => {
+        const { solanaTxMeta } = precomposedTransaction;
+        const operatedAmount =
+            solanaTxMeta?.deviceAmountLamports ??
+            precomposedTransaction.outputs[0]?.amount?.toString() ??
+            '0';
+        const fee = solanaTxMeta?.feeLamports ?? precomposedTransaction.fee;
+
+        dispatch(
+            addFakePendingSolanaTxThunk({
+                txid,
+                account,
+                amount:
+                    stakeType === 'stake'
+                        ? new BigNumber(operatedAmount).plus(fee).toString()
+                        : '0',
+                fee,
+                type: 'sent',
+                internalTransfers:
+                    stakeType === 'claim'
+                        ? [
+                              {
+                                  type: 'recv',
+                                  from: '',
+                                  to: account.descriptor,
+                                  amount: operatedAmount,
+                              },
+                          ]
+                        : undefined,
+                stakeOperation: { type: stakeType, amount: operatedAmount },
+            }),
+        );
     },
 );
 

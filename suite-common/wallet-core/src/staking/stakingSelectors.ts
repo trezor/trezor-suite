@@ -42,6 +42,7 @@ import {
     selectExpectedRewardsForEpoch,
     selectSolanaCanClaimByAccountKey,
     selectSolanaClaimableAmountByAccountKey,
+    selectSolanaIsStakeConfirmingByAccountKey,
     selectSolanaIsStakePendingByAccountKey,
     selectSolanaStakedBalanceByAccountKey,
     selectSolanaTotalStakePendingByAccountKey,
@@ -187,7 +188,7 @@ export const selectIsStakeConfirmingByAccountKey = (
             return selectEthereumIsStakeConfirmingByAccountKey(state, accountKey);
         case 'dsol':
         case 'sol':
-            return false; // there are no pending txns for solana staking;
+            return selectSolanaIsStakeConfirmingByAccountKey(state, accountKey);
         case 'ada':
             return false;
         case 'trx':
