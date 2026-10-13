@@ -1,6 +1,8 @@
-import type { Socket as TCPSocket } from 'net';
+import type { Socket as TCPSocket, TcpSocketConnectOpts } from 'net';
 import type { SocksProxyAgent } from 'socks-proxy-agent';
 import type { TLSSocket } from 'tls';
+
+import { isNative } from '@trezor/env-utils';
 
 import type { ISocket, SocketListener } from './interface';
 
@@ -27,6 +29,10 @@ export type SocketConfig = SocketOptions & {
     port: number;
 };
 
+type ConnectOptions = TcpSocketConnectOpts & {
+    connectTimeout?: number; // honoured by react-native-tcp-socket
+};
+
 export abstract class SocketBase implements ISocket {
     private socket?: Socket;
     protected host: string;
@@ -39,6 +45,18 @@ export abstract class SocketBase implements ISocket {
         this.port = port;
         this.timeout = timeout !== undefined ? timeout : TIMEOUT;
         this.keepAlive = keepAlive !== undefined ? keepAlive : KEEP_ALIVE;
+    }
+
+    protected connectOptions(): ConnectOptions {
+        const options: ConnectOptions = { host: this.host, port: this.port };
+
+        if (isNative()) {
+            // The React Native connect() method has no timeout and thus stays pending until
+            // the OS gives up on it, which leaves the socket and its native client behind.
+            options.connectTimeout = this.timeout;
+        }
+
+        return options;
     }
 
     async connect(listener: SocketListener) {

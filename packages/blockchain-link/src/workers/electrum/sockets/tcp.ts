@@ -13,7 +13,7 @@ export class TcpSocket extends SocketBase {
             const errorHandler = (err: Error) => reject(err);
             socket.on('error', errorHandler);
             // The React Native implementation requires connect(options[, callback]) to be used.
-            socket.connect({ host: this.host, port: this.port }, () => {
+            socket.connect(this.connectOptions(), () => {
                 socket.removeListener('error', errorHandler);
                 resolve(socket);
             });
