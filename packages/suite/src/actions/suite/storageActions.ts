@@ -79,6 +79,7 @@ import type {
     FormState,
     RatesByTimestamps,
     SuccessfulAccount,
+    WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     getFormDraftKey,
@@ -97,7 +98,8 @@ import {
     selectEvmSettings,
     selectSeenDisconnectNotificationForDeviceIds,
 } from 'src/selectors/suite/suiteSelectors';
-import { type DbDep } from 'src/storage/createDb';
+import { type Db, type DbDep } from 'src/storage/createDb';
+import { type DBWalletAccountTransaction } from 'src/storage/definitions';
 import type { TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 import { type GraphData } from 'src/types/wallet/graph';
@@ -374,7 +376,22 @@ const removeAccount = (deps: DbDep, account: Account) => {
     ]);
 };
 
+type AccountTransactions = ReadonlyArray<WalletAccountTransaction | null | undefined>;
+
+type WrittenAccountRows = {
+    transactions: AccountTransactions;
+    phishing: string[] | undefined;
+};
+
+// Each account's transactions and phishing list as last saved to a database. Redux state is
+// immutable, so a slot that still holds the same transaction object is stored with the right
+// `order` already.
+const writtenAccountRowsByDb = new WeakMap<Db, Map<AccountKey, WrittenAccountRows>>();
+
 export const removeAccountTransactions = async (deps: DbDep, account: Account) => {
+    // The next save cannot diff against rows that are gone, so it replaces all of them.
+    writtenAccountRowsByDb.get(deps.db)?.delete(account.key);
+
     if (!deps.db.isAccessible()) return;
     await deps.db.removeItemByIndex('txs', 'accountKey', [
         account.descriptor,
@@ -541,33 +558,154 @@ export const saveAccountHistoricRatesThunk =
         return extra.services.db.addItem('historicRates', accHistoricRates, accountKey, true);
     };
 
+// The `txs` store keyPath.
+const getTransactionRowKey = (tx: WalletAccountTransaction) => [
+    tx.deviceState,
+    tx.descriptor,
+    tx.txid,
+    tx.type,
+];
+
+const serializeTransactionRowKey = (tx: WalletAccountTransaction) =>
+    getTransactionRowKey(tx).join('\n');
+
+const getTransactionRows = (transactions: AccountTransactions): DBWalletAccountTransaction[] =>
+    transactions.flatMap((tx, order) => (tx ? [{ tx, order }] : []));
+
+type AccountTransactionsDiff = {
+    rowsToPut: DBWalletAccountTransaction[];
+    transactionsToDelete: WalletAccountTransaction[];
+};
+
+const diffAccountTransactions = (
+    writtenTransactions: AccountTransactions,
+    transactions: AccountTransactions,
+): AccountTransactionsDiff => {
+    const rowsToPut: DBWalletAccountTransaction[] = [];
+    const replacedTransactions: WalletAccountTransaction[] = [];
+    const length = Math.max(writtenTransactions.length, transactions.length);
+
+    for (let order = 0; order < length; order++) {
+        const writtenTx = writtenTransactions[order];
+        const tx = transactions[order];
+
+        if (tx === writtenTx) continue;
+        if (tx) rowsToPut.push({ tx, order });
+        if (
+            writtenTx &&
+            (!tx || serializeTransactionRowKey(tx) !== serializeTransactionRowKey(writtenTx))
+        ) {
+            replacedTransactions.push(writtenTx);
+        }
+    }
+
+    if (replacedTransactions.length === 0) {
+        return { rowsToPut, transactionsToDelete: [] };
+    }
+
+    // A replaced transaction may only have moved to another slot, after a prepend or a removal,
+    // and then its row is among the puts.
+    const rowKeys = new Set(
+        transactions.filter(isNotNullOrUndefined).map(serializeTransactionRowKey),
+    );
+
+    return {
+        rowsToPut,
+        transactionsToDelete: replacedTransactions.filter(
+            tx => !rowKeys.has(serializeTransactionRowKey(tx)),
+        ),
+    };
+};
+
+type SaveAccountTransactionRowsParams = {
+    deps: DbDep;
+    account: Account;
+    writtenTransactions: AccountTransactions | undefined;
+    transactions: AccountTransactions;
+};
+
+const saveAccountTransactionRows = ({
+    deps,
+    account,
+    writtenTransactions,
+    transactions,
+}: SaveAccountTransactionRowsParams) => {
+    if (!writtenTransactions) {
+        return deps.db.replaceItemsByIndex(
+            'txs',
+            'accountKey',
+            [account.descriptor, account.symbol, account.deviceState],
+            getTransactionRows(transactions),
+        );
+    }
+
+    const { rowsToPut, transactionsToDelete } = diffAccountTransactions(
+        writtenTransactions,
+        transactions,
+    );
+
+    if (rowsToPut.length === 0 && transactionsToDelete.length === 0) return;
+
+    return deps.db.updateItems(
+        'txs',
+        transactionsToDelete.map(tx => IDBKeyRange.only(getTransactionRowKey(tx))),
+        rowsToPut,
+    );
+};
+
+const saveAccountPhishing = (deps: DbDep, accountKey: AccountKey, phishing: string[] = []) =>
+    phishing.length > 0
+        ? deps.db.addItem('phishing', phishing, accountKey, true)
+        : deps.db.removeItemByPK('phishing', accountKey);
+
 type SaveAccountTransactionsThunkState = TransactionsRootState;
 
 type SaveAccountTransactionsThunkDeps = WithServices<DbDep>;
 
+/**
+ * Persists the account's transactions and phishing list. The first save of an account replaces
+ * all of its rows. Later saves put only the slots whose transaction changed (`order` is the slot
+ * index) and delete the transactions that left the list, so a paged history load writes each row
+ * once instead of rewriting the account on every page.
+ */
 export const saveAccountTransactionsThunk =
     (account: Account) =>
-    (
+    async (
         _dispatch: Dispatch<UnknownAction>,
         getState: () => SaveAccountTransactionsThunkState,
         extra: SaveAccountTransactionsThunkDeps,
     ) => {
-        if (!extra.services.db.isAccessible()) return Promise.resolve();
-        const transactions = selectTransactions(getState());
-        const phishing = selectPhishingTransactions(getState());
-        const accTxs = transactions[account.key] || [];
+        if (!extra.services.db.isAccessible()) return;
 
-        // wrap txs and add its order inside the array
-        const orderedTxs = accTxs.map((tx, order) => ({ tx, order })).filter(({ tx }) => !!tx);
-        const transactionsPromise = extra.services.db.addItems('txs', orderedTxs, true);
+        const transactions = selectTransactions(getState())[account.key] ?? [];
+        const phishing = selectPhishingTransactions(getState())[account.key];
+        const writtenAccountRows =
+            writtenAccountRowsByDb.get(extra.services.db) ??
+            new Map<AccountKey, WrittenAccountRows>();
+        const written = writtenAccountRows.get(account.key);
+        const isPhishingWritten = written !== undefined && written.phishing === phishing;
 
-        const phishingList = phishing[account.key] ?? [];
-        const phishingPromise =
-            phishingList.length > 0
-                ? extra.services.db.addItem('phishing', phishingList, account.key, true)
-                : extra.services.db.removeItemByPK('phishing', account.key);
+        writtenAccountRowsByDb.set(extra.services.db, writtenAccountRows);
+        writtenAccountRows.set(account.key, { transactions, phishing });
 
-        return Promise.all([transactionsPromise, phishingPromise]);
+        try {
+            await Promise.all([
+                saveAccountTransactionRows({
+                    deps: extra.services,
+                    account,
+                    writtenTransactions: written?.transactions,
+                    transactions,
+                }),
+                isPhishingWritten
+                    ? undefined
+                    : saveAccountPhishing(extra.services, account.key, phishing),
+            ]);
+        } catch (error) {
+            // The rows may be in any state now, so the next save replaces all of them.
+            writtenAccountRows.delete(account.key);
+
+            throw error;
+        }
     };
 
 type SavePhishingMetadataThunkState = PhishingRootState;

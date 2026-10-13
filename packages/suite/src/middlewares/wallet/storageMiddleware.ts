@@ -233,10 +233,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         getDevice: (action, state) =>
             findAccountDevice(action.payload.account, selectDevices(state)),
         save: ({ action }, deps) => {
-            const { account } = action.payload;
-
-            storageActions.removeAccountTransactions(deps, account);
-            deps.dispatch(storageActions.saveAccountTransactionsThunk(account));
+            deps.dispatch(storageActions.saveAccountTransactionsThunk(action.payload.account));
         },
     }),
     defineRememberedDeviceHandler({
@@ -267,13 +264,14 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
                 return;
             }
 
-            storageActions.removeAccountHistoricRates(deps, account.key);
-
             const historicRates = selectHistoricFiatRates(deps.getState());
             if (historicRates) {
+                // The put replaces the account's row, so it needs no delete first.
                 deps.dispatch(
                     storageActions.saveAccountHistoricRatesThunk(account.key, historicRates),
                 );
+            } else {
+                storageActions.removeAccountHistoricRates(deps, account.key);
             }
         },
     }),

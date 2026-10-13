@@ -32,10 +32,12 @@ import {
     type ChangeCoinVisibilityThunkState,
     blockchainInitialState,
     changeCoinVisibilityThunk,
+    selectBaseCurrency,
     transactionsActions,
+    updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
@@ -148,6 +150,27 @@ const tx2 = getWalletTransaction({
     descriptor: asAccountDescriptor('desc2'),
     symbol: btcSymbol,
 });
+
+const TRANSACTIONS_PER_PAGE = 3;
+
+const getAccountTransaction = (account: Account, txid: string) =>
+    getWalletTransaction({
+        deviceState: account.deviceState,
+        descriptor: account.descriptor,
+        symbol: account.symbol,
+        txid,
+    });
+
+// One page of fetchAllTransactionsForAccountThunk.
+const getTransactionsPage = (account: Account, page: number) =>
+    Array.from({ length: TRANSACTIONS_PER_PAGE }, (_, index) =>
+        getAccountTransaction(account, `txid-page${page}-${index}`),
+    );
+
+// The storage middleware does not await its writes, so wait for every write the spied db methods
+// have started.
+const settleStorageWrites = (...spies: jest.SpyInstance[]) =>
+    Promise.all(spies.flatMap(spy => spy.mock.results.map(result => result.value)));
 
 // The tested thunks and the storage middleware declare the persisted slices; the sync slices are
 // kept so that their reducers can apply the loaded storage.
@@ -551,6 +574,216 @@ describe('Storage actions', () => {
         expect(acc2Txs.length).toEqual(1);
         await store.dispatch(storageActions.forgetDeviceThunk(dev1));
         await store.dispatch(storageActions.forgetDeviceThunk(dev2));
+    });
+
+    describe('transaction writes of a remembered device', () => {
+        const getRememberedDeviceState = () =>
+            getInitialState({
+                device: {
+                    devices: [dev1],
+                    isConnectionModalOpen: false,
+                    defaultConnectionMode: 'cable',
+                },
+                wallet: {
+                    accounts: [acc1],
+                },
+            });
+
+        const addTransactionsPage = (store: ReturnType<typeof mockStore>, page: number) =>
+            store.dispatch(
+                transactionsActions.addTransaction({
+                    transactions: getTransactionsPage(acc1, page),
+                    account: acc1,
+                    page,
+                    perPage: TRANSACTIONS_PER_PAGE,
+                }),
+            );
+
+        const getTransactionsPageRows = (page: number) =>
+            getTransactionsPage(acc1, page).map((tx, index) => ({
+                tx,
+                order: (page - 1) * TRANSACTIONS_PER_PAGE + index,
+            }));
+
+        const getStoreTransactions = (store: ReturnType<typeof mockStore>) =>
+            store.getState().wallet.transactions.transactions[acc1.key];
+
+        const reloadTransactions = async () => {
+            const reloadedStore = mockStore(db, getInitialState());
+            reloadedStore.dispatch((await preloadStore())!);
+
+            return getStoreTransactions(reloadedStore);
+        };
+
+        it('writes each page of a history load once', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const replaceItemsByIndexSpy = jest.spyOn(db, 'replaceItemsByIndex');
+            const updateItemsSpy = jest.spyOn(db, 'updateItems');
+
+            [1, 2, 3].forEach(page => addTransactionsPage(store, page));
+            await settleStorageWrites(replaceItemsByIndexSpy, updateItemsSpy);
+
+            // The first save replaces the account's rows, the next pages only put their own.
+            expect(replaceItemsByIndexSpy).toHaveBeenCalledWith(
+                'txs',
+                'accountKey',
+                [acc1.descriptor, acc1.symbol, acc1.deviceState],
+                getTransactionsPageRows(1),
+            );
+            expect(updateItemsSpy.mock.calls).toEqual([
+                ['txs', [], getTransactionsPageRows(2)],
+                ['txs', [], getTransactionsPageRows(3)],
+            ]);
+            expect(await reloadTransactions()).toEqual(getStoreTransactions(store));
+        });
+
+        it('puts the shifted rows of a prepended transaction without deleting any', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const replaceItemsByIndexSpy = jest.spyOn(db, 'replaceItemsByIndex');
+            const updateItemsSpy = jest.spyOn(db, 'updateItems');
+
+            [1, 2].forEach(page => addTransactionsPage(store, page));
+            store.dispatch(
+                transactionsActions.addTransaction({
+                    transactions: [getAccountTransaction(acc1, 'txid-pending')],
+                    account: acc1,
+                }),
+            );
+            await settleStorageWrites(replaceItemsByIndexSpy, updateItemsSpy);
+
+            const [, deleteQueries, rows] = updateItemsSpy.mock.lastCall!;
+            expect(deleteQueries).toEqual([]);
+            expect(rows).toHaveLength(2 * TRANSACTIONS_PER_PAGE + 1);
+            expect(await reloadTransactions()).toEqual(getStoreTransactions(store));
+        });
+
+        it('deletes the row of a removed transaction', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const replaceItemsByIndexSpy = jest.spyOn(db, 'replaceItemsByIndex');
+            const updateItemsSpy = jest.spyOn(db, 'updateItems');
+
+            [1, 2].forEach(page => addTransactionsPage(store, page));
+            store.dispatch(
+                transactionsActions.removeTransaction({
+                    account: acc1,
+                    txs: [{ txid: 'txid-page1-1' }],
+                }),
+            );
+            await settleStorageWrites(replaceItemsByIndexSpy, updateItemsSpy);
+
+            const [, deleteQueries, rows] = updateItemsSpy.mock.lastCall!;
+            expect(deleteQueries).toHaveLength(1);
+            expect(rows).toHaveLength(2 * TRANSACTIONS_PER_PAGE - 2);
+            expect(await reloadTransactions()).toEqual(getStoreTransactions(store));
+        });
+
+        it('deletes the row of a transaction pushed out of a refetched page', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const replaceItemsByIndexSpy = jest.spyOn(db, 'replaceItemsByIndex');
+            const updateItemsSpy = jest.spyOn(db, 'updateItems');
+
+            addTransactionsPage(store, 1);
+            // A new transaction on top shifts page 1, so the reducer overwrites its slots and the
+            // last transaction of the page is gone until page 2 is fetched.
+            store.dispatch(
+                transactionsActions.addTransaction({
+                    transactions: [
+                        getAccountTransaction(acc1, 'txid-incoming'),
+                        ...getTransactionsPage(acc1, 1).slice(0, 2),
+                    ],
+                    account: acc1,
+                    page: 1,
+                    perPage: TRANSACTIONS_PER_PAGE,
+                }),
+            );
+            await settleStorageWrites(replaceItemsByIndexSpy, updateItemsSpy);
+
+            const [, deleteQueries, rows] = updateItemsSpy.mock.lastCall!;
+            expect(deleteQueries).toHaveLength(1);
+            expect(rows).toHaveLength(TRANSACTIONS_PER_PAGE);
+            expect(await reloadTransactions()).toEqual(getStoreTransactions(store));
+        });
+
+        it('replaces the rows left from an earlier session on the first save', async () => {
+            await db.addItems('txs', [{ tx: getAccountTransaction(acc1, 'txid-stale'), order: 0 }]);
+            const store = mockStore(db, getRememberedDeviceState());
+            const replaceItemsByIndexSpy = jest.spyOn(db, 'replaceItemsByIndex');
+
+            addTransactionsPage(store, 1);
+            await settleStorageWrites(replaceItemsByIndexSpy);
+
+            expect(await reloadTransactions()).toEqual(getTransactionsPage(acc1, 1));
+        });
+
+        it('writes the phishing list only when it changes', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const addItemSpy = jest.spyOn(db, 'addItem');
+            const removeItemByPKSpy = jest.spyOn(db, 'removeItemByPK');
+            const replaceItemsByIndexSpy = jest.spyOn(db, 'replaceItemsByIndex');
+            const updateItemsSpy = jest.spyOn(db, 'updateItems');
+
+            [1, 2].forEach(page => addTransactionsPage(store, page));
+            store.dispatch(
+                transactionsActions.markTransactionAsNotScam({
+                    key: acc1.key,
+                    txid: 'txid-page1-0',
+                    isMarkedAsNotScam: true,
+                }),
+            );
+            await settleStorageWrites(
+                addItemSpy,
+                removeItemByPKSpy,
+                replaceItemsByIndexSpy,
+                updateItemsSpy,
+            );
+
+            // The first save deletes the empty list, the second page leaves it alone and the mark
+            // writes it without touching the transaction rows.
+            expect(removeItemByPKSpy).toHaveBeenCalledTimes(1);
+            expect(removeItemByPKSpy).toHaveBeenCalledWith('phishing', acc1.key);
+            expect(addItemSpy).toHaveBeenCalledTimes(1);
+            expect(addItemSpy).toHaveBeenCalledWith('phishing', ['txid-page1-0'], acc1.key, true);
+            expect(updateItemsSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('writes the transactions again after the account transactions were reset', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const removeItemByIndexSpy = jest.spyOn(db, 'removeItemByIndex');
+            const replaceItemsByIndexSpy = jest.spyOn(db, 'replaceItemsByIndex');
+            const updateItemsSpy = jest.spyOn(db, 'updateItems');
+            const addPage = transactionsActions.addTransaction({
+                transactions: getTransactionsPage(acc1, 1),
+                account: acc1,
+                page: 1,
+                perPage: TRANSACTIONS_PER_PAGE,
+            });
+
+            // The same transaction objects come back after the reset, as from a rescan.
+            store.dispatch(addPage);
+            store.dispatch(transactionsActions.resetTransaction({ account: acc1 }));
+            store.dispatch(addPage);
+            await settleStorageWrites(removeItemByIndexSpy, replaceItemsByIndexSpy, updateItemsSpy);
+
+            expect(await reloadTransactions()).toEqual(getTransactionsPage(acc1, 1));
+        });
+
+        it('puts the historic rates row without deleting it first', async () => {
+            const store = mockStore(db, getRememberedDeviceState());
+            const addItemSpy = jest.spyOn(db, 'addItem');
+            const removeItemByPKSpy = jest.spyOn(db, 'removeItemByPK');
+
+            store.dispatch(
+                updateTxsFiatRatesThunk.fulfilled({ account: acc1, rates: [] }, 'requestId', {
+                    accountKey: acc1.key,
+                    txs: [],
+                    baseCurrencyCode: selectBaseCurrency(store.getState()),
+                }),
+            );
+            await settleStorageWrites(addItemSpy, removeItemByPKSpy);
+
+            expect(addItemSpy).toHaveBeenCalledWith('historicRates', {}, acc1.key, true);
+            expect(removeItemByPKSpy).not.toHaveBeenCalled();
+        });
     });
 
     it('should ignore stored accounts of networks unknown to this build', async () => {
