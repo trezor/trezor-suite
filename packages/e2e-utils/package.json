@@ -8,6 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest",
         "test-health": "tsx ./src/quarantineBot/index.ts",
         "select-tests": "tsx ./src/testCoverage/selectTestsByChangedFiles.ts",
         "build-coverage-map": "tsx ./src/testCoverage/buildCoverageMap.ts",

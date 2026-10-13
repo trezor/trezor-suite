@@ -3,31 +3,17 @@ import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-import { arrayPartition, getWeakRandomInt, scheduleAction, unique } from '@trezor/utils';
+import { getWeakRandomInt, scheduleAction, unique } from '@trezor/utils';
 
 import { error, log, output, printProblemSummary, warn } from '../logger';
 import { githubRunLink, postSlackMessage } from '../slack';
+import { SUITE_E2E_TESTS_DIR, keepRunnableTests } from './keepRunnableTests';
+import type { SelectionResult } from './types';
 import type { CoverageIndex } from '../testCoverage/types';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-
-type Priority = 'high' | 'medium' | 'low';
-
-interface TestRecommendation {
-    test: string;
-    priority: Priority;
-    reasoning: string;
-    related_changes: string[];
-}
-
-interface SelectionResult {
-    changed_files: string[];
-    uncovered_changes: string[];
-    recommendations: TestRecommendation[];
-    summary: string;
-}
 
 interface PromptParts {
     /** Large semi-stable blob — the filtered LLM analysis. */
@@ -69,8 +55,6 @@ const DEFAULT_COVERAGE_MAP_DIR = 'coverage-map';
 const DEFAULT_INDEX_FILE = `${DEFAULT_COVERAGE_MAP_DIR}/index.json`;
 const DEFAULT_LLM_ANALYSIS_FILE = `${DEFAULT_COVERAGE_MAP_DIR}/llm-analysis.json`;
 const DEFAULT_BASE_REF = 'origin/develop';
-const SUITE_E2E_DIR = 'suite/e2e/';
-const SUITE_E2E_TESTS_DIR = `${SUITE_E2E_DIR}tests/`;
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const OPENROUTER_MODEL = 'moonshotai/kimi-k2.7-code';
@@ -783,58 +767,6 @@ const selectTestsViaApiWithRetry = (
 
 const isInsufficientCreditsError = (err: unknown): boolean =>
     err instanceof OpenRouterHttpError && err.status === 402;
-
-// ---------------------------------------------------------------------------
-// Result validation
-// ---------------------------------------------------------------------------
-
-type KeepRunnableTestsParams = {
-    llmResult: Omit<SelectionResult, 'changed_files'>;
-    suiteE2ETestFiles: Set<string>;
-};
-
-// The job strips a leading `suite/e2e/` before resolving a spec, so a path relative to suite/e2e/
-// names a runnable file too. Accept both spellings and emit the repository-root-relative one, which
-// is what the spec list and the `git ls-tree` listing use.
-const normalizeRecommendedTest = (test: string): string => {
-    const trimmed = test.trim().replace(/^\.\//, '');
-
-    return trimmed.startsWith(SUITE_E2E_DIR) ? trimmed : `${SUITE_E2E_DIR}${trimmed}`;
-};
-
-// The model can return tests the Suite e2e job can't run, e.g. a connect-core e2e test the PR edits
-// or an LLM analysis entry whose file was deleted since. The job fails when none of its specs exists
-// at the PR head. An empty recommendation set makes the caller run everything, which `summary` has
-// to say.
-const keepRunnableTests = ({
-    llmResult,
-    suiteE2ETestFiles,
-}: KeepRunnableTestsParams): Omit<SelectionResult, 'changed_files'> => {
-    const [runnableRecommendations, droppedRecommendations] = arrayPartition(
-        llmResult.recommendations,
-        ({ test }) => suiteE2ETestFiles.has(normalizeRecommendedTest(test)),
-    );
-    // The emitted spec list stays repository-root-relative even when the model wrote the other form.
-    const runnableSpecs = runnableRecommendations.map(recommendation => ({
-        ...recommendation,
-        test: normalizeRecommendedTest(recommendation.test),
-    }));
-
-    if (droppedRecommendations.length === 0) {
-        return { ...llmResult, recommendations: runnableSpecs };
-    }
-
-    const droppedTestList = droppedRecommendations.map(({ test }) => test).join(', ');
-    const droppedNote = `Dropped recommended tests that don't exist under ${SUITE_E2E_TESTS_DIR}: ${droppedTestList}.`;
-    const fallbackNote = runnableSpecs.length === 0 ? ' Falling back to the full e2e suite.' : '';
-    warn(droppedNote);
-
-    return {
-        ...llmResult,
-        recommendations: runnableSpecs,
-        summary: `${llmResult.summary} ${droppedNote}${fallbackNote}`,
-    };
-};
 
 // ---------------------------------------------------------------------------
 // Degraded output and alerting
