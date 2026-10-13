@@ -97,6 +97,11 @@ export const DeviceContextModal = ({
             return <ConfirmActionModal device={device} title="TR_COMPARE_ADDRESS_ON_TREZOR" />;
         }
         case 'ButtonRequest_PublicKey':
+            // Verifying an xpub row must keep the picker on screen, same as an address row.
+            if (popupCallState === 'select-account') {
+                return <ConnectSelectAccount />;
+            }
+
             return <ConfirmXpubModal onCancel={abort} />;
         default:
             return null;
