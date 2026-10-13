@@ -60,7 +60,7 @@ TrezorConnect.init({
 New method for asking the user to choose one or more accounts, replacing the old "call `getAccountInfo` with no path to trigger on-device discovery" pattern. The picker, derivation and on-device verification run entirely inside Suite.
 
 - **More private:** for UTXO coins you can request only what you need. `addressSelection: 'firstFresh' | 'manual'` exports a single **address** (with an optional SLIP-0019 `mac` to later re-prove device ownership) and never reveals the account xpub — requiring only the narrow `read_address` permission. The full-account/watch-only flow (`addressSelection: 'fullAccount'`, the default) shares the xpub and requires `read_xpub`. Account-based networks (EVM, Solana, …) always return an individual address.
-- **Better UX:** `selectionType` supports `'single'` (default), `'multi'`, or bounded multi-select (`{ minCount, maxCount }`); `accountType` filters/tabs the allowed derivation types (including custom `bip43Path` templates); `requireOnDeviceVerification` (default `true`) controls device confirmation.
+- **Better UX:** `selectionType` supports `'single'` (default), `'multi'`, or bounded multi-select (`{ minCount, maxCount }`); `accountType` filters/tabs the allowed derivation types (including custom `bip43Path` templates); `requireOnDeviceVerification` (default `true` for the address flows, `false` for the `fullAccount` xpub flow) controls device confirmation.
 - Always returns an array of `{ symbol, path, address? | xpub?, accountType?, mac? }`, even for a single selection.
 
 ### 3. Granular, per-coin permissions
