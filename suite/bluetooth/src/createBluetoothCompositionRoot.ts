@@ -11,6 +11,7 @@ import {
     selectAutoConnectPolicy,
     selectKnownDeviceByDeviceId,
     selectKnownDevices,
+    selectNearbyDevices,
 } from '@suite-common/bluetooth';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type FirmwareRootState, selectFirmware } from '@suite-common/firmware';
@@ -25,6 +26,7 @@ import { createBluetoothForgetAllDevices } from './createBluetoothForgetAllDevic
 import { createBluetoothForgetDevice } from './createBluetoothForgetDevice';
 import { createBluetoothInit } from './createBluetoothInit';
 import { createBluetoothOnDeviceConnected } from './createBluetoothOnDeviceConnected';
+import { createBluetoothRemoveStaleDevices } from './createBluetoothRemoveStaleDevices';
 import { createBluetoothStartScan } from './createBluetoothStartScan';
 import { createBluetoothStopScan } from './createBluetoothStopScan';
 import { createBluetoothUnpairCurrentBond } from './createBluetoothUnpairCurrentBond';
@@ -120,6 +122,11 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         setupBluetoothAutoReconnect,
     });
 
+    const removeStaleDevices = createBluetoothRemoveStaleDevices({
+        dispatch: deps.dispatch,
+        getNearbyDevices: toGetter(deps.getState, selectNearbyDevices),
+    });
+
     return {
         init: bluetoothInit,
         restartBackgroundScan: backgroundScan.restartIfNeeded,
@@ -133,5 +140,6 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         forgetDevice,
         forgetAllDevices,
         unpairCurrentBond,
+        removeStaleDevices,
     };
 };
