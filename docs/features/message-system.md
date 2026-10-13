@@ -345,6 +345,44 @@ To create an experiment for components, use ExperimentWrapper.tsx. It requires t
 1. Conditions of config are evaluated on specific Redux actions. See `messageSystemMiddleware.ts` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite/src/middlewares/suite/messageSystemMiddleware.ts).
 1. If conditions of a message satisfy the user's stack, the message is accordingly propagated. If it is dismissible, its ID is saved to Redux state (IndexDB) on close, to avoid displaying it next time.
 
+### Desktop main process gate
+
+On desktop the Electron main process acquires the config on its own, in
+`suite/desktop-app-main/src/modules/message-system.ts`: it verifies the JWS persisted in
+`electron-store` at launch, polls for a newer one and never accepts a lower sequence. It evaluates
+only the conditions whose every key is `duration` or `environment`, because the facts behind the
+other keys (`devices`, `transport`, `settings`, `countryCodes`, `os`) are reported by the renderer,
+and with `--bridge-daemon` or an auto-started launch no renderer is ever created.
+
+An active killswitch in that result stops what main serves without a renderer: the bridge
+(including its 30 s watcher), `/connect-ws` upgrades and the http-receiver, with the disabled state
+shown in the tray. A config that drops the killswitch brings them back without an app restart. The
+acquisition runs after `createInterceptor()` so that it is Tor-aware and whitelist-checked, it is
+postponed while Tor is wanted but not running yet, because `interceptFetch` proxies a request only
+once Tor is up, and it is skipped entirely with `--offline-mode` or under Playwright.
+
+#### Scope of the main process gate
+
+Main owns the gate only for the surfaces it serves on its own. It is not (yet) the single
+evaluation point on desktop: the renderer keeps its own acquisition and evaluation, so messages,
+feature flags and experiments reach the UI through Redux as described above. Nothing is pushed
+across the process boundary in either direction, which has consequences worth knowing before
+relying on either side:
+
+- A desktop build runs two independent acquisition loops against `data.trezor.io`, each with its
+  own fetch clock and its own sequence, so the config is downloaded twice per fetch interval.
+- The two can disagree for up to a fetch interval. Main's gate can already be closed - the bridge,
+  `/connect-ws` and the http-receiver stopped - while the renderer still renders a normal UI, in
+  which case the user sees a transport error rather than the killswitch screen.
+- The Message Manager debug tooling (config source Local, manually added messages, experiment
+  inclusion overrides) acts on renderer Redux only. It cannot exercise or reproduce main's gate,
+  and with the Local source selected the renderer keeps showing no killswitch while main's gate
+  may stay closed.
+
+Making main the single evaluation point - renderer facts reported to main, the verified config and
+the evaluation result pushed back, the renderer's own acquisition dropped on desktop, and the debug
+tooling commanding main - is follow-up work.
+
 ### Message Manager (UI)
 
 Built-in UI to inspect and test messages:

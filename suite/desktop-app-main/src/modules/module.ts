@@ -4,6 +4,7 @@ import type { DeviceEvent, FirmwareStoreEvent, LocalFirmwares } from '@trezor/co
 import { type InterceptedEvent } from '@trezor/request-manager';
 import { TypedEmitter } from '@trezor/utils';
 
+import type { MessageSystemOwner } from './message-system';
 import { type PowerSaveBlocker } from '../libs/createPowerSaveBlocker';
 import type { ILogger } from '../libs/logger';
 import { type MainWindowProxy } from '../libs/main-window-proxy';
@@ -41,6 +42,7 @@ export type Dependencies = {
     cspNonce: string;
     powerSaveBlocker: PowerSaveBlocker;
     logger: ILogger;
+    messageSystem: MessageSystemOwner;
 };
 
 export type ModuleInterface = {

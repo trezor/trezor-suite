@@ -59,6 +59,9 @@ describe('connect-ws upgrade', () => {
             logger,
             mainThreadEmitter: {} as ExposeConnectWsParams['mainThreadEmitter'],
             mainWindowProxy: {} as ExposeConnectWsParams['mainWindowProxy'],
+            messageSystem: {
+                getGate: () => ({ isKillswitchActive: false, killswitchMessageId: undefined }),
+            } as unknown as ExposeConnectWsParams['messageSystem'],
             store: {} as ExposeConnectWsParams['store'],
         });
 

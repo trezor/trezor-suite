@@ -1,6 +1,7 @@
 import { app } from 'electron';
 
 import type { HandshakeClient } from '@suite/desktop-app-api';
+import { TorStatus } from '@suite/tor-types';
 import { isMacOs } from '@trezor/env-utils';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
@@ -22,11 +23,16 @@ import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { initSentry } from './libs/sentry';
 import { Store } from './libs/store';
 import { clearAppCache } from './libs/user-data';
-import { initBackgroundModules, initModules } from './modules';
+import { type Dependencies, initBackgroundModules, initModules } from './modules';
 // todo: why is this separated here? shoudlnt it be part of modules?
 import { initBioAuthModule } from './modules/bioAuthModule';
 import { isWebContentsOfInAppBrowser } from './modules/in-app-browser';
+import { createMessageSystemOwner } from './modules/message-system';
 import { mainThreadEmitter } from './modules/module';
+import {
+    getIsInterceptorInstalled,
+    init as initRequestInterceptor,
+} from './modules/request-interceptor';
 import { init as initTorModule } from './modules/tor';
 
 type DesktopMainAppDeps = {
@@ -105,28 +111,68 @@ export const createDesktopMainApp =
 
         await app.whenReady();
 
-        // Load bridge module first, it is required in both UI and daemon mode
+        // Daemon mode with no UI. Resolved before the modules load, because what the message
+        // system acquisition is allowed to hold up depends on whether a window waits for it.
+        const { wasOpenedAtLogin } = app.getLoginItemSettings();
+        const daemon = hasSwitch('bridge-daemon') || wasOpenedAtLogin;
+        const daemonShowUI = hasSwitch('bridge-daemon-show-ui'); // show UI immediately even in daemon mode
+        const isHeadlessBoot = daemon && !daemonShowUI;
+
         const interceptor = createElectronSessionInterceptor();
+
+        // Tor is bootstrapped only when the renderer asks for it, and `interceptFetch` proxies a
+        // request only once Tor is running, so main must not reach the network on its own between
+        // the launch and that point. A boot with `--tor` on a profile that never enabled Tor is
+        // the leaking case: `torSettings.running` is still false there, so the switch is read too.
+        let torStatus = TorStatus.Disabled;
+        mainThreadEmitter.on('module/tor-status-update', status => {
+            torStatus = status;
+        });
+        const shouldUseTor = () => hasSwitch('tor') || store.getTorSettings().running;
+
+        const messageSystem = createMessageSystemOwner({
+            store,
+            logger: deps.logger,
+            isInterceptorInstalled: getIsInterceptorInstalled,
+            isTorReady: () => !shouldUseTor() || torStatus === TorStatus.Enabled,
+        });
+
+        const moduleDependencies: Dependencies = {
+            mainWindowProxy: deps.mainWindowProxy,
+            store,
+            interceptor,
+            mainThreadEmitter,
+            cspNonce,
+            powerSaveBlocker: deps.powerSaveBlocker,
+            logger: deps.logger,
+            messageSystem,
+        };
+
+        // `createInterceptor()` is what makes a request from main Tor-aware and whitelist-checked,
+        // so the request interceptor is initialized ahead of everything that can reach the
+        // network - the message system acquisition and the background modules.
+        initRequestInterceptor(moduleDependencies);
+
+        messageSystem.loadPersistedConfig();
+        // `startPolling` acquires the config once before it starts the interval. In a headless
+        // boot that first attempt is awaited, because no window is waiting for the boot and
+        // nothing should be served before it; a separate attempt next to it would only make a
+        // failed one retry back to back and double the boot latency it is budgeted for.
+        if (isHeadlessBoot) {
+            await messageSystem.startPolling();
+        } else {
+            void messageSystem.startPolling();
+        }
+
+        // Load bridge module first, it is required in both UI and daemon mode
         const { loadModules: loadBackgroundModules, quitModules: quitBackgroundModules } =
-            initBackgroundModules({
-                mainWindowProxy: deps.mainWindowProxy,
-                store,
-                interceptor,
-                mainThreadEmitter,
-                cspNonce,
-                powerSaveBlocker: deps.powerSaveBlocker,
-                logger: deps.logger,
-            });
+            initBackgroundModules(moduleDependencies);
 
         // todo:
         // @ts-expect-error ClientHanshake is no longer any. But I can't make loadmodules inner the same type since it called sooner
         const backgroundModulesResponse = await loadBackgroundModules(undefined);
 
-        // Daemon mode with no UI
-        const { wasOpenedAtLogin } = app.getLoginItemSettings();
-        const daemon = hasSwitch('bridge-daemon') || wasOpenedAtLogin;
-        const daemonShowUI = hasSwitch('bridge-daemon-show-ui'); // show UI immediately even in daemon mode
-        if (daemon && !daemonShowUI) {
+        if (isHeadlessBoot) {
             deps.logger.info('main', 'App is hidden, starting bridge only');
             app.dock?.hide(); // hide dock icon on macOS
             const waitForFullStart = createDeferred<void>();
@@ -173,15 +219,7 @@ export const createDesktopMainApp =
         deps.logger.debug('init', `Create Browser Window (${winBounds.width}x${winBounds.height})`);
 
         // init modules
-        const { loadModules, quitModules } = initModules({
-            mainWindowProxy: deps.mainWindowProxy,
-            store,
-            interceptor,
-            mainThreadEmitter,
-            cspNonce,
-            powerSaveBlocker: deps.powerSaveBlocker,
-            logger: deps.logger,
-        });
+        const { loadModules, quitModules } = initModules(moduleDependencies);
 
         const reactivateWindow = () => {
             // Someone tried to run a second instance, we should focus our window.
@@ -238,15 +276,7 @@ export const createDesktopMainApp =
 
         // Tor module initializes separated from general `initModules` because Tor is different
         // since it is allowed to fail and then the user decides whether to `try again` or `disable`.
-        const { onLoad: loadTorModule, onQuit: quitTorModule } = initTorModule({
-            mainWindowProxy: deps.mainWindowProxy,
-            store,
-            interceptor,
-            mainThreadEmitter,
-            cspNonce,
-            powerSaveBlocker: deps.powerSaveBlocker,
-            logger: deps.logger,
-        });
+        const { onLoad: loadTorModule, onQuit: quitTorModule } = initTorModule(moduleDependencies);
 
         const { onLoad: loadBioAuthModule, onQuit: quitBioAuthModule } = initBioAuthModule({
             mainWindowProxy: deps.mainWindowProxy,
@@ -309,6 +339,7 @@ export const createDesktopMainApp =
             }
 
             deps.logger.info('modules', 'Quitting all modules');
+            messageSystem.stopPolling();
             await Promise.race([
                 // await quitting all registered modules
                 Promise.allSettled([quitModules(), quitTorModule(), quitBackgroundModules()]),
