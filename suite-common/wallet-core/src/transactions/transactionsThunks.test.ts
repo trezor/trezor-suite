@@ -1,19 +1,32 @@
+import { createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type PrecomposedTransactionCardanoFinal,
+    type SolanaTxMeta,
+    type StakeType,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
-import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
+import {
+    mockWalletAccount,
+    networkSpecificDefaultCardano,
+    networkSpecificDefaultSolana,
+} from '@suite-common/wallet-types/mocks';
+import { isPending } from '@suite-common/wallet-utils';
+import { SOLANA_SLOT_TIME_MS } from '@trezor/network-solana/constants';
 
 import { transactionsActions } from './transactionsActions';
 import {
     type AddFakePendingCardanoTxThunkState,
+    type AddFakePendingSolanaTxThunkState,
     type AddFakePendingStellarTxThunkState,
     addFakePendingCardanoTxThunk,
+    addFakePendingSolanaSendTxThunk,
+    addFakePendingSolanaStakeTxThunk,
     addFakePendingStellarTxThunk,
 } from './transactionsThunks';
+import { blockchainInitialState } from '../blockchain/blockchainReducer';
 
 const OWN_ADDRESS = 'addr1-own';
 const OWN_PATH = "m/1852'/1815'/0'/0/0";
@@ -374,5 +387,191 @@ describe('addFakePendingStellarTxThunk', () => {
         );
 
         expect(store.getActions().find(transactionsActions.addTransaction.match)).toBeUndefined();
+    });
+});
+
+describe('Solana fake pending transactions', () => {
+    const SOL_DESCRIPTOR = asAccountDescriptor('soldescriptor');
+    const SOL_RECIPIENT = 'sol-recipient';
+    const SOL_FEE = '5000';
+    const SOL_DEADLINE = BLOCK_HEIGHT + Math.ceil((15 * 60) / (SOLANA_SLOT_TIME_MS / 1000));
+
+    const solanaAccount = mockWalletAccount(
+        { symbol: asNetworkSymbol('sol'), descriptor: SOL_DESCRIPTOR },
+        networkSpecificDefaultSolana,
+    );
+
+    const state: AddFakePendingSolanaTxThunkState = {
+        wallet: {
+            blockchain: {
+                ...blockchainInitialState,
+                sol: { ...blockchainInitialState.sol, blockHeight: BLOCK_HEIGHT },
+            },
+        },
+    };
+    const getState = () => state;
+
+    const getAddedTransaction = (actions: unknown[]) =>
+        actions.find(transactionsActions.addTransaction.match)?.payload.transactions[0];
+
+    describe('addFakePendingSolanaSendTxThunk', () => {
+        it('stores a native transfer as sent with the fee included in the amount', async () => {
+            const { actions, dispatch } = createMockDispatch({ getState });
+
+            await addFakePendingSolanaSendTxThunk({
+                precomposedTransaction: {
+                    outputs: [{ address: SOL_RECIPIENT, amount: '1000' }],
+                    fee: SOL_FEE,
+                },
+                txid: 'sol-send-txid',
+                account: solanaAccount,
+            })(dispatch, getState, {});
+
+            expect(getAddedTransaction(actions)).toEqual(
+                expect.objectContaining({
+                    txid: 'sol-send-txid',
+                    type: 'sent',
+                    amount: '6000',
+                    fee: SOL_FEE,
+                    targets: [
+                        { n: 0, addresses: [SOL_RECIPIENT], isAddress: true, amount: '1000' },
+                    ],
+                    tokens: [],
+                    internalTransfers: [],
+                    solanaSpecific: undefined,
+                    deadline: SOL_DEADLINE,
+                }),
+            );
+        });
+    });
+
+    describe('addFakePendingSolanaStakeTxThunk', () => {
+        const dispatchStakeTransaction = async (
+            stakeType: StakeType,
+            solanaTxMeta?: SolanaTxMeta,
+            fee = SOL_FEE,
+        ) => {
+            const { actions, dispatch } = createMockDispatch({ getState });
+
+            await addFakePendingSolanaStakeTxThunk({
+                precomposedTransaction: {
+                    outputs: [{ address: SOL_DESCRIPTOR, amount: '1000' }],
+                    fee,
+                    solanaTxMeta,
+                },
+                stakeType,
+                txid: `sol-${stakeType}-txid`,
+                account: solanaAccount,
+            })(dispatch, getState, {});
+
+            return getAddedTransaction(actions);
+        };
+
+        it('stores a claim as a pending stake operation that credits the account', async () => {
+            const transaction = await dispatchStakeTransaction('claim');
+
+            expect(transaction).toEqual(
+                expect.objectContaining({
+                    txid: 'sol-claim-txid',
+                    type: 'sent',
+                    amount: '0',
+                    fee: SOL_FEE,
+                    targets: [],
+                    internalTransfers: [
+                        { type: 'recv', from: '', to: SOL_DESCRIPTOR, amount: '1000' },
+                    ],
+                    solanaSpecific: {
+                        status: 'pending',
+                        stakeOperation: { type: 'claim', amount: '1000' },
+                    },
+                    deadline: SOL_DEADLINE,
+                }),
+            );
+            expect(transaction && isPending(transaction)).toBe(true);
+        });
+
+        it('stores a stake with the staked amount and the fee as the balance change', async () => {
+            const transaction = await dispatchStakeTransaction('stake');
+
+            expect(transaction).toEqual(
+                expect.objectContaining({
+                    type: 'sent',
+                    amount: '6000',
+                    internalTransfers: [],
+                    solanaSpecific: {
+                        status: 'pending',
+                        stakeOperation: { type: 'stake', amount: '1000' },
+                    },
+                }),
+            );
+        });
+
+        it('stores an unstake without a balance change', async () => {
+            const transaction = await dispatchStakeTransaction('unstake');
+
+            expect(transaction).toEqual(
+                expect.objectContaining({
+                    type: 'sent',
+                    amount: '0',
+                    internalTransfers: [],
+                    solanaSpecific: {
+                        status: 'pending',
+                        stakeOperation: { type: 'unstake', amount: '1000' },
+                    },
+                }),
+            );
+        });
+
+        it('prefers the amount the device reviewed over the form output', async () => {
+            const transaction = await dispatchStakeTransaction('claim', {
+                deviceAmountLamports: '2500',
+                feeLamports: SOL_FEE,
+                rentLamports: '0',
+                feeIncludingRentLamports: SOL_FEE,
+            });
+
+            expect(transaction?.solanaSpecific?.stakeOperation?.amount).toBe('2500');
+        });
+
+        it('counts the rent of a new stake account once and reports the bare network fee', async () => {
+            const RENT = '2282880';
+            const transaction = await dispatchStakeTransaction(
+                'stake',
+                {
+                    deviceAmountLamports: '2283880',
+                    feeLamports: SOL_FEE,
+                    rentLamports: RENT,
+                    feeIncludingRentLamports: '2287880',
+                },
+                '2287880',
+            );
+
+            expect(transaction).toEqual(
+                expect.objectContaining({
+                    amount: '2288880',
+                    fee: SOL_FEE,
+                    solanaSpecific: {
+                        status: 'pending',
+                        stakeOperation: { type: 'stake', amount: '2283880' },
+                    },
+                }),
+            );
+        });
+
+        it('does nothing for an account on another network', async () => {
+            const { actions, dispatch } = createMockDispatch({ getState });
+
+            await addFakePendingSolanaStakeTxThunk({
+                precomposedTransaction: {
+                    outputs: [{ address: OWN_ADDRESS, amount: '1000' }],
+                    fee: SOL_FEE,
+                },
+                stakeType: 'claim',
+                txid: 'ada-claim-txid',
+                account,
+            })(dispatch, getState, {});
+
+            expect(getAddedTransaction(actions)).toBeUndefined();
+        });
     });
 });

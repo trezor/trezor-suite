@@ -25,6 +25,7 @@ import {
     type SyncAccountsWithBlockchainThunkState,
     type WalletSettingsRootState,
     addFakePendingCardanoTxThunk,
+    addFakePendingSolanaStakeTxThunk,
     isSupportedAdaStakingNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
@@ -226,6 +227,17 @@ const pushTransactionThunk =
                 // The confirmed selection is spent by this transaction; keeping it would let it
                 // reach the next plan composed for this account.
                 dispatch(stakeActions.clearAccountVotingDelegation());
+            }
+
+            if (account.networkType === 'solana') {
+                dispatch(
+                    addFakePendingSolanaStakeTxThunk({
+                        precomposedTransaction: precomposedTx,
+                        stakeType,
+                        txid,
+                        account,
+                    }),
+                );
             }
 
             // notification from the backend may be delayed.

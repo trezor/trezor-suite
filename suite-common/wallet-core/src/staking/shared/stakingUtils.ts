@@ -430,7 +430,7 @@ export const getTxStakeType = (tx: WalletAccountTransaction) => {
     const signature = tx?.ethereumSpecific?.parsedData?.methodId;
 
     if (signature) {
-        return signatureToStakeTypeMap[signature];
+        return signatureToStakeTypeMap[signature.toLowerCase()];
     }
 
     if (tx?.solanaSpecific?.stakeOperation) {

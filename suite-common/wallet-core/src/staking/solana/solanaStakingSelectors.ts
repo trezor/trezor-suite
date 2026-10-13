@@ -1,11 +1,13 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { isPending } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { calculateSolanaStakingReward, getSolStakingAccountsInfo } from './solanaStakingUtils';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey, selectDeviceAccounts } from '../../accounts/accountsSelectors';
+import { selectAccountStakeTransactions } from '../../transactions/transactionsSelectors';
 import { selectPoolStatsApy } from '../shared/stakingSelectors';
 import { type StakeRootState } from '../stakingReducerTypes';
 
@@ -44,6 +46,11 @@ export const selectSolanaIsStakePendingByAccountKey = (
 
     return Number(stakingInfo.solPendingStakeBalance ?? 0) > 0;
 };
+
+export const selectSolanaIsStakeConfirmingByAccountKey = (
+    state: StakeRootState,
+    accountKey: AccountKey,
+) => selectAccountStakeTransactions(state, accountKey).some(tx => isPending(tx));
 
 export const selectSolanaAPYByAccountKey = (
     state: StakeRootState & AccountsRootState,

@@ -1,4 +1,5 @@
 import { type DeviceRootState } from '@suite-common/device';
+import { testMocks } from '@suite-common/test-utils';
 import {
     type NotificationsRootState,
     type TransactionNotification,
@@ -7,6 +8,7 @@ import {
     DUST_PHISHING_THRESHOLD,
     type TokenDefinitionsRootState,
 } from '@suite-common/token-definitions';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountKey,
@@ -17,6 +19,8 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { type TransactionsRootState } from './transactionsReducerTypes';
 import {
+    selectAccountClaimTransactions,
+    selectAccountStakeTransactions,
     selectEvmPrivatePendingHint,
     selectHasUnseenNonPhishingTransactionNotifications,
     selectNonPhishingTransactionNotifications,
@@ -228,5 +232,99 @@ describe('selectNonPhishingTransactionNotifications', () => {
 
         expect(selectNonPhishingTransactionNotifications(state)).toEqual([receivedNotification]);
         expect(selectHasUnseenNonPhishingTransactionNotifications(state)).toBe(true);
+    });
+});
+
+describe('staking transaction selectors', () => {
+    const EVERSTAKE_CLAIM_METHOD_ID = '0x33986ffa';
+    const EVERSTAKE_STAKE_METHOD_ID = '0x3a29dbae';
+
+    const ethereumStakingTransaction = (txid: string, methodId: string) =>
+        testMocks.getWalletTransaction({
+            txid,
+            symbol: asNetworkSymbol('eth'),
+            ethereumSpecific: {
+                status: 1,
+                nonce: 1,
+                gasLimit: 21000,
+                parsedData: { methodId, name: 'everstake' },
+            },
+        });
+
+    const solanaStakingTransaction = (
+        txid: string,
+        type: 'stake' | 'unstake' | 'claim',
+        blockHeight?: number,
+    ) =>
+        testMocks.getWalletTransaction({
+            txid,
+            symbol: asNetworkSymbol('sol'),
+            blockHeight,
+            solanaSpecific: {
+                status: blockHeight ? 'confirmed' : 'pending',
+                stakeOperation: { type, amount: '1' },
+            },
+        });
+
+    const transferTransaction = testMocks.getWalletTransaction({
+        txid: 'transfer',
+        symbol: asNetworkSymbol('sol'),
+    });
+
+    describe('selectAccountClaimTransactions', () => {
+        it('returns Ethereum claims by their Everstake method id regardless of its casing', () => {
+            const ethereumClaim = ethereumStakingTransaction('eth-claim', '0x33986FFA');
+
+            expect(
+                selectAccountClaimTransactions(
+                    getState([
+                        ethereumClaim,
+                        ethereumStakingTransaction('eth-stake', EVERSTAKE_STAKE_METHOD_ID),
+                        transferTransaction,
+                    ]),
+                    ACCOUNT_KEY,
+                ),
+            ).toEqual([ethereumClaim]);
+        });
+
+        it('returns Solana claims by their stake operation, including a pending stand-in', () => {
+            const pendingClaim = solanaStakingTransaction('sol-claim-pending', 'claim');
+            const confirmedClaim = solanaStakingTransaction('sol-claim', 'claim', 100);
+
+            expect(
+                selectAccountClaimTransactions(
+                    getState([
+                        pendingClaim,
+                        confirmedClaim,
+                        solanaStakingTransaction('sol-unstake', 'unstake'),
+                        transferTransaction,
+                    ]),
+                    ACCOUNT_KEY,
+                ),
+            ).toEqual([pendingClaim, confirmedClaim]);
+        });
+    });
+
+    describe('selectAccountStakeTransactions', () => {
+        it('returns Ethereum and Solana stakes and leaves out the other operations', () => {
+            const ethereumStake = ethereumStakingTransaction(
+                'eth-stake',
+                EVERSTAKE_STAKE_METHOD_ID,
+            );
+            const solanaStake = solanaStakingTransaction('sol-stake', 'stake');
+
+            expect(
+                selectAccountStakeTransactions(
+                    getState([
+                        ethereumStake,
+                        solanaStake,
+                        ethereumStakingTransaction('eth-claim', EVERSTAKE_CLAIM_METHOD_ID),
+                        solanaStakingTransaction('sol-claim', 'claim'),
+                        transferTransaction,
+                    ]),
+                    ACCOUNT_KEY,
+                ),
+            ).toEqual([ethereumStake, solanaStake]);
+        });
     });
 });
