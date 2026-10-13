@@ -13,6 +13,7 @@ import { rasterizeSvg } from './images';
 jest.mock('fs/promises', () => ({
     ...jest.requireActual('fs/promises'),
     writeFile: jest.fn(),
+    mkdir: jest.fn(),
 }));
 
 const fetchMock = jest.fn();

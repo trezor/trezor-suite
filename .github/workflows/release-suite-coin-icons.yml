@@ -35,8 +35,7 @@ jobs:
       - name: Download crypto icons
         run: |
           yarn install
-          cd suite-common/icons
-          yarn download-crypto-icons
+          yarn suite:cli download-crypto-icons
 
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6

@@ -154,7 +154,13 @@ const sourceIconKey = (source: VaultIconSource, size: CoinImageSize) =>
  * CoinGecko-driven pipeline never produces them — instead, write the icon of the asset the vault is
  * denominated in under each vault-address file name.
  */
-export const downloadVaultIcons = async (): Promise<void> => {
+export type DownloadVaultIcons = () => Promise<void>;
+
+export type DownloadVaultIconsDep = { downloadVaultIcons: DownloadVaultIcons };
+
+export const downloadVaultIcons: DownloadVaultIcons = async () => {
+    await fs.mkdir(FILES_CRYPTOICONS_PATH, { recursive: true });
+
     const vaults = await fetchYieldVaults();
 
     // The same underlying backs vaults on several platforms, so load each source rendition once.
