@@ -258,7 +258,6 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                     <BaseCurrencyInput
                                         output={output}
                                         outputId={outputId}
-                                        isSendMaxActive={isSendMaxActive}
                                         // To fix alignment with the other input
                                         labelLeft={isBelowLaptop ? undefined : <>&nbsp;</>}
                                         labelRight={!isBelowLaptop && sendMaxSwitch}
