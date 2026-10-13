@@ -338,4 +338,27 @@ describe('composeSolanaStakingTransactionFeeLevelsThunk', () => {
             error: { error: 'sign-transaction-failed', message: 'Solana account not found.' },
         });
     });
+
+    it('reports a failed preparation as such instead of as an insufficient fee', async () => {
+        prepareClaimSolTxMock.mockResolvedValue({
+            success: false,
+            errorMessage: 'Solana staking: claiming failed - Nothing to claim while claiming',
+        });
+        const store = buildStore();
+
+        const result = await dispatchCompose(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'claim',
+            amount: '1',
+        });
+
+        expect(result.ok).toBe(true);
+        const levels = (result as { payload: Record<string, any> }).payload;
+        expect(levels.normal).toEqual({
+            type: 'error',
+            error: 'TR_STAKE_TX_PREPARATION_FAILED',
+            errorMessage: { id: 'TR_STAKE_TX_PREPARATION_FAILED' },
+        });
+        expect(blockchainEstimateFeeMock).not.toHaveBeenCalled();
+    });
 });

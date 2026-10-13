@@ -6757,6 +6757,11 @@ export const messages = defineMessages({
             'After sending this amount, your account will have {remainingSolBalance} SOL remaining. A non-empty account must maintain a balance of more than {rent} SOL.',
         id: 'REMAINING_BALANCE_LESS_THAN_RENT',
     },
+    TR_STAKE_TX_PREPARATION_FAILED: {
+        id: 'TR_STAKE_TX_PREPARATION_FAILED',
+        defaultMessage:
+            'The transaction could not be prepared. Make sure the account is up to date and try again.',
+    },
     OP_RETURN: {
         id: 'OP_RETURN',
         defaultMessage: 'Hexadecimal message (OP_RETURN)',
