@@ -1,4 +1,5 @@
 import { type AnalyticsRootState, selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
+import { getKillswitchMessage } from '@suite-common/message-system-core';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type Category, type Message } from '@suite-common/suite-types';
 
@@ -212,8 +213,7 @@ export const selectIsFeatureDisabled = (
 
 export const selectActiveKillswitchMessage = createMemoizedSelector(
     [selectActiveFeatureMessages],
-    messages =>
-        messages.find(m => m.feature?.some(item => item.domain === 'killswitch' && item?.flag)),
+    getKillswitchMessage,
 );
 
 export const selectAllManuallyAddedMessageIds = (state: MessageSystemRootState) =>

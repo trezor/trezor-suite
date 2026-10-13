@@ -32,7 +32,6 @@ import type {
 } from './module';
 import * as powerMonitor from './power-monitor';
 import * as requestFilter from './request-filter';
-import * as requestInterceptor from './request-interceptor';
 import * as responseHeaders from './response-headers';
 import * as safeStorage from './safeStorage';
 import * as shortcuts from './shortcuts';
@@ -70,7 +69,6 @@ const MODULES: Module[] = [
     userData,
     trezorConnect,
     devTools,
-    requestInterceptor,
     coinjoin,
     autoStart,
     bridge,

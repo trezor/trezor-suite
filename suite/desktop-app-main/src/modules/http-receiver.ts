@@ -7,6 +7,7 @@ import { isMacOs, isWindows } from '@trezor/env-utils';
 import { isArrayMember } from '@trezor/utils';
 
 import { ipcMain } from '../ipcMain';
+import { type MessageSystemGate } from './message-system';
 import { type ModuleInitBackground } from './module';
 import { restartApp } from '../libs/app-utils';
 import { initConnectPopupResponseHandler } from '../libs/connect-popup-messages';
@@ -22,31 +23,19 @@ export const TRADING_REDIRECT_PATHS = [
     '/exchange-redirect',
 ] as const;
 
+type HttpReceiver = ReturnType<typeof createHttpReceiver>;
+
 export const initBackground: ModuleInitBackground = ({
     mainWindowProxy,
     mainThreadEmitter,
     store,
+    messageSystem,
     logger,
 }) => {
-    let httpReceiver: ReturnType<typeof createHttpReceiver> | null = null;
+    let httpReceiver: HttpReceiver | null = null;
 
-    const onLoad = async () => {
-        if (httpReceiver) {
-            return httpReceiver.getInfo();
-        }
-        const connectPopupEnabled = () => !store.getConnectSettings().disableWs;
-
-        // External request handler.
-        // Note that if we override the `port` to something else than 21335, it might break google oauth
-        const receiver = createHttpReceiver({
-            logger,
-            getStatus: () => ({
-                appVersion: app.getVersion(),
-                connectPopupWsEnabled: connectPopupEnabled(),
-            }),
-        });
-        httpReceiver = receiver;
-
+    // Stopping the server drops every listener it has, so they are registered again on each start.
+    const registerReceiverEvents = (receiver: HttpReceiver) => {
         // wait for httpReceiver to start accepting connections then register event handlers
         receiver.on('server/listening', () => {
             // when httpReceiver accepted oauth response
@@ -76,6 +65,62 @@ export const initBackground: ModuleInitBackground = ({
                 app.focus({ steal: true });
             });
         });
+    };
+
+    const startServer = async (receiver: HttpReceiver) => {
+        registerReceiverEvents(receiver);
+
+        logger.info(SERVICE_NAME, 'Starting server');
+
+        const startResult = await receiver.start();
+        if (!startResult.success) {
+            // Don't fail hard if the server can't start
+            logger.error(
+                SERVICE_NAME,
+                `Failed to start server:  ${startResult.error}, error details: ${startResult.message}`,
+            );
+            captureMessage(
+                `http-receiver failed to start: ${startResult.error} (${startResult.message})`,
+                'warning',
+            );
+
+            return { url: null };
+        }
+
+        return receiver.getInfo();
+    };
+
+    // A killswitch arriving from a later poll stops serving, and a config that drops it starts
+    // the server again without an app restart.
+    const applyGate = async (gate: MessageSystemGate) => {
+        if (!httpReceiver) return;
+
+        if (gate.isKillswitchActive) {
+            logger.info(SERVICE_NAME, 'Stopping server, disabled by the message system');
+            await httpReceiver.stop();
+
+            return;
+        }
+
+        await startServer(httpReceiver);
+    };
+
+    const onLoad = () => {
+        if (httpReceiver) {
+            return httpReceiver.getInfo();
+        }
+        const connectPopupEnabled = () => !store.getConnectSettings().disableWs;
+
+        // External request handler.
+        // Note that if we override the `port` to something else than 21335, it might break google oauth
+        const receiver = createHttpReceiver({
+            logger,
+            getStatus: () => ({
+                appVersion: app.getVersion(),
+                connectPopupWsEnabled: connectPopupEnabled(),
+            }),
+        });
+        httpReceiver = receiver;
 
         // when httpReceiver was asked to provide current address for given pathname
         ipcMain.handle('server/request-address', (_, pathname) => {
@@ -114,28 +159,24 @@ export const initBackground: ModuleInitBackground = ({
                 httpReceiver: receiver,
                 mainWindowProxy,
                 store,
+                messageSystem,
                 logger,
             });
         }
 
-        logger.info(SERVICE_NAME, 'Starting server');
+        messageSystem.subscribe(gate => {
+            applyGate(gate).catch(err =>
+                logger.error(SERVICE_NAME, `Failed to apply the gate: ${err.message}`),
+            );
+        });
 
-        const startResult = await receiver.start();
-        if (!startResult.success) {
-            // Don't fail hard if the server can't start
-            logger.error(
-                SERVICE_NAME,
-                `Failed to start server:  ${startResult.error}, error details: ${startResult.message}`,
-            );
-            captureMessage(
-                `http-receiver failed to start: ${startResult.error} (${startResult.message})`,
-                'warning',
-            );
+        if (messageSystem.getGate().isKillswitchActive) {
+            logger.info(SERVICE_NAME, 'Not starting server, disabled by the message system');
 
             return { url: null };
         }
 
-        return receiver.getInfo();
+        return startServer(receiver);
     };
 
     const onQuit = async () => {
