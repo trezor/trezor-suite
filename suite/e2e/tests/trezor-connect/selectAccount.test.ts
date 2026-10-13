@@ -104,15 +104,14 @@ test.describe('TrezorConnect.selectAccount', { tag: ['@T3T1', '@T3W1', '@desktop
         },
     );
 
-    // `requireOnDeviceVerification` is a dead option: it defaults to true, and `eth` is always an
-    // address flow, yet the picker exposes no blocking gate — selecting an account is enough to
-    // confirm and export, without ever verifying it on the device. This locks in the present
-    // (broken) behaviour so the follow-up fix that wires the option to an actual gate has a test to
-    // flip. The option is left out on purpose so this also pins the default.
+    // With requireOnDeviceVerification omitted — it defaults to true for an address flow, which
+    // `eth` always is — the picker must not let the user export a selection until it has been
+    // confirmed on the device: selecting alone keeps confirm disabled, and only verifying the
+    // address unlocks it. The option is left out on purpose so this also pins the default.
     test(
-        'requireOnDeviceVerification is not enforced (dead option)',
+        'requireOnDeviceVerification blocks confirm until the address is verified',
         { annotation: createTestAnnotation({ stream: TestStream.Connect }) },
-        async ({ connectPermissionsModal, connectSelectAccountModal }) => {
+        async ({ device, connectPermissionsModal, connectSelectAccountModal }) => {
             const res = TrezorConnect.selectAccount({
                 coin: 'eth',
                 selectionType: 'single',
@@ -122,20 +121,28 @@ test.describe('TrezorConnect.selectAccount', { tag: ['@T3T1', '@T3W1', '@desktop
 
             await expect(connectSelectAccountModal.account(0)).toBeVisible();
 
-            // Selection count is the only gate: disabled with nothing selected, enabled the moment an
-            // account is picked — regardless of verification state.
-            await expect(connectSelectAccountModal.confirmButton).toBeDisabled();
+            // Selecting an account is not enough — confirm stays disabled while it is unverified.
             await connectSelectAccountModal.checkbox(0).click();
-
-            // The account is selected but never verified on the device...
             await expect(connectSelectAccountModal.verifiedBadge(0)).toBeHidden();
-            // ...yet confirm is enabled all the same — there is no gate to block it.
+            await expect(connectSelectAccountModal.confirmButton).toBeDisabled();
+
+            // Verify the selected address on the device; only then does confirm unlock.
+            await connectSelectAccountModal.verifyButton(0).click();
+            // 'verifying' is set right after clicking, so it says nothing about the device call
+            // having started. Poll the emulator display instead — it is not affected by the
+            // Suite-side modal switching the older tests work around with a fixed delay. The
+            // address screen is titled 'Receive address' on T3T1 and 'Receive' on T3W1.
+            await expect(async () => {
+                const { header } = await device.getDisplayContent();
+                expect(header.title).toMatch(/^Receive/);
+            }).toPass({ timeout: 10_000 });
+            await device.pressYes();
+            await expect(connectSelectAccountModal.verifiedBadge(0)).toBeVisible();
             await expect(connectSelectAccountModal.confirmButton).toBeEnabled();
 
             await connectSelectAccountModal.confirmButton.click();
 
             const response = await res;
-            // Export succeeds with an unverified address — the option had no effect.
             expect(response.success).toBe(true);
             if (!response.success) return;
 

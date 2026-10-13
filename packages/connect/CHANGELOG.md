@@ -16,6 +16,10 @@
 
 Use [connect.trezor.io/10.0.1](https://connect.trezor.io/10.0.1/) to access this release of Connect Explorer. The persistent link [connect.trezor.io/10](https://connect.trezor.io/10/) points to the latest stable version.
 
+# UNRELEASED
+
+- `selectAccount`: `requireOnDeviceVerification` is now enforced. Suite 26.7.1 through 26.10 accepted the option and ignored it; Suite 26.11 is the first release in which a selected entry cannot be shared until it has been confirmed on the device. Omitted, the option defaults to `true` for the address flows and `false` for the `fullAccount` xpub flow. The option is interpreted by Suite, not by the client package, so this follows the user's Suite version rather than the `@trezor/connect` version your app pins.
+
 # 10.0.1
 
 Fixes communication between `@trezor/connect-webextension` and Suite Web due to message channel ID mismatch in version 10.0.0
