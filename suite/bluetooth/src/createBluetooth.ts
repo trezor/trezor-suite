@@ -14,6 +14,7 @@ type BluetoothDeps = {
     onConnectHandler: BluetoothOnConnectHandler;
     connectDevice: BluetoothConnectDevice;
     disconnectDevice: BluetoothDisconnectDevice;
+    removeStaleDevices: () => void;
 };
 
 export type Bluetooth = {
@@ -29,6 +30,7 @@ export type Bluetooth = {
     onConnect: BluetoothOnConnectHandler;
     connectDevice: BluetoothConnectDevice;
     disconnectDevice: BluetoothDisconnectDevice;
+    removeStaleDevices: () => void;
 };
 
 export type BluetoothDep = {
@@ -48,4 +50,5 @@ export const createBluetooth = (deps: BluetoothDeps): Bluetooth => ({
     onConnect: params => deps.onConnectHandler(params),
     connectDevice: params => deps.connectDevice(params),
     disconnectDevice: params => deps.disconnectDevice(params),
+    removeStaleDevices: () => deps.removeStaleDevices(),
 });

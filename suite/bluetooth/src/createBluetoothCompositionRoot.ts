@@ -18,6 +18,8 @@ import { type Bluetooth, type BluetoothDep, createBluetooth } from './createBlue
 import { createBluetoothConnectDevice } from './createBluetoothConnectDevice';
 import { createBluetoothDisconnectDevice } from './createBluetoothDisconnectDevice';
 import { createBluetoothInit } from './createBluetoothInit';
+import { createBluetoothOnConnectHandler } from './createBluetoothOnConnectHandler';
+import { createBluetoothRemoveStaleDevices } from './createBluetoothRemoveStaleDevices';
 import { createBluetoothScan } from './createBluetoothScan';
 import { createBluetoothUnpair } from './createBluetoothUnpair';
 import { createSetupBluetoothAutoReconnect } from './createSetupBluetoothAutoReconnect';
@@ -108,6 +110,11 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         disconnectDevice,
     });
 
+    const removeStaleDevices = createBluetoothRemoveStaleDevices({
+        getState: deps.getState,
+        dispatch: deps.dispatch,
+    });
+
     return createBluetooth({
         bluetoothInit,
         backgroundScan,
@@ -117,5 +124,6 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         onConnectHandler,
         connectDevice,
         disconnectDevice,
+        removeStaleDevices,
     });
 };

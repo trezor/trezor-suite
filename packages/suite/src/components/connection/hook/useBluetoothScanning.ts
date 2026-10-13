@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import {
-    type DesktopBluetoothDevice,
-    injectBluetooth,
-    removeNonResponsiveNearbyDevicesThunk,
-} from '@suite/bluetooth';
+import { type DesktopBluetoothDevice, injectBluetooth } from '@suite/bluetooth';
 import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
 import { type TimerId } from '@trezor/type-utils';
 
 type UseBluetoothScanningProps = {
@@ -26,7 +21,7 @@ export const useBluetoothScanning = ({
     devices,
     setShowHints,
 }: UseBluetoothScanningProps): UseBluetoothScanningReturn => {
-    const { dispatch, bluetooth } = useServices(injectDispatch, injectBluetooth);
+    const { bluetooth } = useServices(injectBluetooth);
     const scannerTimerId = useRef<TimerId | null>(null);
 
     const clearScanTimer = useCallback(() => {
@@ -89,7 +84,7 @@ export const useBluetoothScanning = ({
     // we do not get update from bluetooth adapter when device is non responsive
     useEffect(() => {
         function updateNonResponsiveDevices() {
-            dispatch(removeNonResponsiveNearbyDevicesThunk());
+            bluetooth.removeStaleDevices();
         }
 
         if (bluetoothMode) {
@@ -97,7 +92,7 @@ export const useBluetoothScanning = ({
 
             return () => clearInterval(interval);
         }
-    }, [dispatch, bluetoothMode]);
+    }, [bluetooth, bluetoothMode]);
 
     return {
         onReScanClick,
