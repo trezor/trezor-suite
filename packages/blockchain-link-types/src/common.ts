@@ -255,7 +255,7 @@ export interface Transaction {
         deposit?: string;
     };
     solanaSpecific?: {
-        status: 'confirmed';
+        status: 'confirmed' | 'pending';
         stakeOperation?: { type: StakeType; amount: string };
         memo?: string;
     };
