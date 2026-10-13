@@ -341,9 +341,6 @@ export const ESHOP_KEEP_METAL_SINGLE_SHARE_URL: Url = withPlatformUtm(
 
 export const SUITE_REFERRAL: Url = withPlatformUtm('https://trezor.io/refer-a-friend');
 
-export const DASHBOARD_BANNER_TEX_URL: Url =
-    'https://trezor.io/trezor-expert-consultation?utm_source=trezor_suite&utm_medium=suite_desktop_banner&utm_campaign=expert_consultation';
-
 export const DASHBOARD_BANNER_TS7_URL: Url = withPlatformUtm(
     'https://trezor.io/trezor-safe-7?utm_source=trezor_suite&utm_campaign=ts7_introduction',
 );
