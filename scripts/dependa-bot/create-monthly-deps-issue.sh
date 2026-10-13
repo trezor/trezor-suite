@@ -8,6 +8,8 @@
 # Environment variables:
 #   TEAM     (required) - e.g. Suite-Growth, Suite-Wallet, Suite-Trade, Suite-Earn, Suite-Networks
 #   GH_TOKEN - GitHub token for gh CLI (optional if already authenticated)
+#   ASSIGNEE_TEAM_SLUG - GitHub team slug used as assignee candidate source (optional)
+#   ASSIGNEES - comma, space, or newline separated fallback GitHub logins (optional)
 
 set -euo pipefail
 
@@ -37,6 +39,7 @@ else
     PREV_YEAR=$CURRENT_YEAR
 fi
 PREV_YEAR_MONTH=$(printf "%02d.%02d" $(( PREV_YEAR % 100 )) "$PREV_MONTH")
+YEAR_MONTH="$(date +%y).${CURRENT_MONTH}"
 
 # Find and link previous month's issue
 PREV_ISSUE_URL=$(gh issue list \
@@ -54,8 +57,20 @@ else
 fi
 mv "${ISSUE_BODY_FILE}.tmp" "$ISSUE_BODY_FILE"
 
+# Optional fair assignee rotation. The JS selector prints only the login on stdout.
+ASSIGNEE=""
+if [ -n "${ASSIGNEE_TEAM_SLUG:-}" ] || [ -n "${ASSIGNEES:-}" ]; then
+    if ASSIGNEE=$(YEAR_MONTH="$YEAR_MONTH" node scripts/dependa-bot/select-monthly-deps-assignee.mjs); then
+        if [ -n "$ASSIGNEE" ]; then
+            echo "Selected assignee: $ASSIGNEE"
+        fi
+    else
+        echo "Warning: Could not select an assignee, creating issue without assignee" >&2
+        ASSIGNEE=""
+    fi
+fi
+
 # Create the issue
-YEAR_MONTH="$(date +%y).${CURRENT_MONTH}"
 ISSUE_URL=$(gh issue create \
     --repo "$REPO" \
     --title "Bump ${TEAM} deps (${YEAR_MONTH})" \
@@ -63,6 +78,14 @@ ISSUE_URL=$(gh issue create \
     --label "dependencies")
 
 echo "Created issue: $ISSUE_URL"
+
+if [ -n "$ASSIGNEE" ]; then
+    if gh issue edit "$ISSUE_URL" --repo "$REPO" --add-assignee "$ASSIGNEE"; then
+        echo "Assigned issue to: $ASSIGNEE"
+    else
+        echo "Warning: Could not assign issue to '$ASSIGNEE'" >&2
+    fi
+fi
 
 # Add issue to Suite project and capture item ID
 ITEM_ID=$(gh project item-add 58 \

@@ -17,14 +17,16 @@ jobs:
 
     strategy:
       matrix:
-        team:
-          [
-            "Suite-Growth 🎨",
-            "Suite-Wallet 👛",
-            "Suite-Trade 💹",
-            "Suite-Earn 🐷",
-            "Suite-Networks 🌐",
-          ]
+        # Any team can opt into fair rotation by adding assignee_team_slug.
+        # assignees is only a fallback for tokens that cannot read org teams.
+        include:
+          - team: "Suite-Growth 🎨"
+          - team: "Suite-Wallet 👛"
+            assignee_team_slug: "suite-wallet"
+            assignees: "vojtatranta,matusbalascak,PeKne,juriczech,peter-sanderson"
+          - team: "Suite-Trade 💹"
+          - team: "Suite-Earn 🐷"
+          - team: "Suite-Networks 🌐"
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -40,4 +42,6 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
           TEAM: ${{ matrix.team }}
+          ASSIGNEE_TEAM_SLUG: ${{ matrix.assignee_team_slug || '' }}
+          ASSIGNEES: ${{ matrix.assignees || '' }}
         run: bash scripts/dependa-bot/create-monthly-deps-issue.sh
