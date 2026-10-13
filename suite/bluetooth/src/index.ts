@@ -9,12 +9,11 @@ export {
 export * from './desktopBluetoothReducer';
 export * from './desktopBluetoothSelectors';
 
-export { forgetAllBluetoothDevicesThunk } from './forgetAllBluetoothDevicesThunk';
 export { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 export { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
 export { bluetoothOnDeviceConnectedThunk } from './bluetoothOnDeviceConnectedThunk';
 export { removeNonResponsiveNearbyDevicesThunk } from './removeNonResponsiveNearbyDevicesThunk';
-export { unpairCurrentBondThunk, forgetBluetoothDeviceThunk } from './bluetoothEraseBondsThunk';
+export { forgetBluetoothDeviceThunk } from './bluetoothEraseBondsThunk';
 
 export { openSystemSettingsThunk } from './openSystemSettingsThunk';
 
