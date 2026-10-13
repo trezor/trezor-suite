@@ -56,6 +56,7 @@
 !/packages/icons
 !/packages/logger
 !/packages/node-utils
+!/packages/perf-e2e
 !/packages/protobuf
 !/packages/protocol
 !/packages/react-native-usb

@@ -77,3 +77,23 @@ jobs:
       CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
       CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
       E2E_TEST_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
+
+  # See docs/tests/suite-native-e2e-performance.md.
+  publish_performance_history:
+    # Forks get no OIDC token; a deleted fork's null head.repo fails the check closed.
+    if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+    needs: run_android_e2e_tests
+    permissions:
+      id-token: write # to assume the dev-deploy role
+      contents: read
+    # Serializes writers of the rolling branch index.
+    concurrency:
+      group: publish-performance-history-${{ github.ref }}
+      cancel-in-progress: false
+    uses: ./.github/workflows/template-publish-performance-history.yml
+    with:
+      workspace: "@suite-native/app"
+      artifact-pattern: android-perf-report-*
+      # Not a package.json script: the scripts block is an Expo fingerprint input, and changing it
+      # forces a ~50 minute native rebuild.
+      publish-command: yarn workspace @suite-native/app exec tsx e2e/performance/publish.ts
