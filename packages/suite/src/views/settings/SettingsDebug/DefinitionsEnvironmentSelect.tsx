@@ -9,7 +9,8 @@ import { useSelector } from 'src/hooks/suite';
 
 const options: { label: string; value: DefinitionsChannel }[] = [
     { label: 'Production', value: 'production' },
-    { label: 'Development', value: 'development' },
+    { label: 'Development (signed)', value: 'signed' },
+    { label: 'Development (unsigned)', value: 'development' },
     { label: 'Local', value: 'local' },
 ];
 

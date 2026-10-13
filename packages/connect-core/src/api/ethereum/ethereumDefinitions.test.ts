@@ -44,15 +44,22 @@ describe('getEthereumDefinitions', () => {
         ]);
     });
 
-    it.each([1, 2] as const)(
+    it.each([
+        [1, 'development'],
+        [2, 'development'],
+        [1, 'signed'],
+        [2, 'signed'],
+    ] as const)(
         'fetches v%s definitions from the development channel',
-        async version => {
-            settingsStore.set(parseConnectSettings({ definitionsChannel: 'development' }));
+        async (version, definitionsChannel) => {
+            settingsStore.set(parseConnectSettings({ definitionsChannel }));
 
             await getEthereumDefinitions({ slip44: 60, version });
 
+            const signedOrUnsigned = definitionsChannel === 'signed' ? 'signed' : 'unsigned';
+
             expect(getFetchedUrls()).toEqual([
-                `https://dev.firmware.sldev.cz/definitions/v${version}/eth/slip44/60/network.dat`,
+                `https://dev.firmware.sldev.cz/definitions/${signedOrUnsigned}/v${version}/eth/slip44/60/network.dat`,
             ]);
         },
     );
