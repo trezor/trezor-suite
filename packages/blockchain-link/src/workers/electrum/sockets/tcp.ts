@@ -10,7 +10,10 @@ export class TcpSocket extends SocketBase {
         this.bindSocket(socket, listener);
 
         return new Promise<TCPSocket>((resolve, reject) => {
-            const errorHandler = (err: Error) => reject(err);
+            const errorHandler = (err: Error) => {
+                socket.destroy();
+                reject(err);
+            };
             socket.on('error', errorHandler);
             // The React Native implementation requires connect(options[, callback]) to be used.
             socket.connect(this.connectOptions(), () => {
