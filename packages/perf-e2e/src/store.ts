@@ -41,6 +41,8 @@ export type PerfMeasurement = {
     metrics: PerfStoredMetrics;
     /** Name of the artifact this was reduced from. Several measurements may share one. */
     artifact?: string;
+    /** See `PerfRunContext.profiled`; set per measurement when only some of a run was traced. */
+    profiled?: boolean;
 };
 
 export type PerfRunContext = {
@@ -177,7 +179,7 @@ export const toIndexRows = ({ context, artifacts, measurements }: PerfRun): Perf
             ...(measurement.variant ? { variant: measurement.variant } : {}),
             samples: measurement.samples,
             metrics: measurement.metrics,
-            ...(context.profiled ? { profiled: true } : {}),
+            ...(context.profiled || measurement.profiled ? { profiled: true } : {}),
             ...(context.env ? { env: context.env } : {}),
             ...(measurement.artifact && kind
                 ? { blob: { kind, key: artifactKey(context, measurement.artifact) } }

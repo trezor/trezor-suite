@@ -7,24 +7,33 @@ import {
     PerfJsonReport,
     PerfMetrics,
     aggregateSamples,
+    buildHistoryFile,
     buildJsonReport,
     compareScenario,
     formatMetricValue,
     measurementKey,
     resolveBudget,
+    resolvePlatform,
     suggestLimits,
 } from '@trezor/perf-e2e';
 
 import { BASELINES, LIMITS } from './budgets';
+import { LIGHTHOUSE_PROFILED_ANNOTATION } from './lighthouseConfig';
+import { writeHistoryFile } from './perfHistory';
 import { publishPerfReport } from './perfReportPublisher';
 
 const BUDGETS_MODULE_PATH = 'suite/e2e/performance/budgets.ts';
 
 type Metric = PerfJsonReport['metrics'][number];
 
-type MeasuredRun = { project: string; testId: string; report: PerfJsonReport };
+type MeasuredRun = { project: string; testId: string; report: PerfJsonReport; profiled: boolean };
 
-type MeasurementSamples = { scenario: string; project: string; metrics: PerfMetrics[] };
+type MeasurementSamples = {
+    scenario: string;
+    project: string;
+    metrics: PerfMetrics[];
+    profiled: boolean;
+};
 
 const fmtOfLimit = (metric: Metric) =>
     metric.ratioToLimit === null ? 'n/a' : `${Math.round(metric.ratioToLimit * 100)}%`;
@@ -59,6 +68,14 @@ const toMetrics = (report: PerfJsonReport): PerfMetrics =>
         {} as PerfMetrics,
     );
 
+/** Set by the Lighthouse flow only once a timespan actually started, so a failed attach is not one. */
+const isProfiled = (annotations: TestResult['annotations'], scenario: string) =>
+    annotations.some(
+        annotation =>
+            annotation.type === LIGHTHOUSE_PROFILED_ANNOTATION &&
+            (annotation.description === undefined || annotation.description === scenario),
+    );
+
 const scenarioVerdict = (report: PerfJsonReport) => {
     if (report.overLimit) {
         return chalk.bold.red('OVER LIMIT');
@@ -72,16 +89,25 @@ const scenarioVerdict = (report: PerfJsonReport) => {
  * renders red there, while the exit code stays the job's own. No-op outside GitHub Actions, where the
  * console table is the whole report.
  */
-const annotateOverLimit = (measurements: string[]) => {
+const annotateOverLimit = (measurements: string[], profiled: boolean) => {
     if (!process.env.GITHUB_ACTIONS || measurements.length === 0) {
         return;
     }
+
+    // A profiled run sits above limits set without a tracer, so it gets a notice, not an alarm.
+    const { command, title, note } = profiled
+        ? {
+              command: 'notice',
+              title: 'Performance over limit (profiled run)',
+              note: ' Recorded under Lighthouse tracing.',
+          }
+        : { command: 'error', title: 'Performance over limit', note: '' };
 
     // Measurement names go in the message, not in `title=`: workflow-command properties are
     // comma-separated, so a comma in the title would start another property.
     // eslint-disable-next-line no-console
     console.log(
-        `::error title=Performance over limit::${measurements.join(', ')} — see PERFORMANCE REPORT in this job's log. Does not fail the run.`,
+        `::${command} title=${title}::${measurements.join(', ')} — see PERFORMANCE REPORT in this job's log. Does not fail the run.${note}`,
     );
 };
 
@@ -101,7 +127,12 @@ class PerfReporter implements Reporter {
             .filter(attachment => attachment.name.startsWith('perf-report-') && attachment.body)
             .map(attachment => parseReport(attachment.body))
             .filter((report): report is PerfJsonReport => report !== null)
-            .map(report => ({ project, testId: test.id, report }));
+            .map(report => ({
+                project,
+                testId: test.id,
+                report,
+                profiled: isProfiled(result.annotations, report.scenario),
+            }));
 
         this.reports.push(...runs);
     }
@@ -115,7 +146,7 @@ class PerfReporter implements Reporter {
         // Grouping by scenario alone would average a slow device model with a fast one and hide a
         // breach in the middle.
         const samplesByMeasurement = this.reports.reduce<Record<string, MeasurementSamples>>(
-            (samples, { project, testId, report }) => {
+            (samples, { project, testId, report, profiled }) => {
                 const key = `${project}\u0000${testId}\u0000${report.scenario}`;
                 const existing = samples[key];
 
@@ -125,6 +156,8 @@ class PerfReporter implements Reporter {
                         scenario: report.scenario,
                         project,
                         metrics: [...(existing?.metrics ?? []), toMetrics(report)],
+                        // One traced sample is enough to lift the median.
+                        profiled: (existing?.profiled ?? false) || profiled,
                     },
                 };
             },
@@ -132,7 +165,7 @@ class PerfReporter implements Reporter {
         );
 
         const scenarios = Object.values(samplesByMeasurement).map(
-            ({ scenario, project, metrics }) => {
+            ({ scenario, project, metrics, profiled }) => {
                 const median = aggregateSamples(metrics);
                 const comparison = compareScenario(
                     scenario,
@@ -144,6 +177,7 @@ class PerfReporter implements Reporter {
                 return {
                     scenario,
                     project,
+                    profiled,
                     median,
                     comparison,
                     runs: metrics.length,
@@ -153,6 +187,7 @@ class PerfReporter implements Reporter {
         );
 
         const overLimit = scenarios.filter(entry => entry.report.overLimit);
+        const hasProfiled = scenarios.some(entry => entry.profiled);
         // Chalk keeps its colors in GitHub Actions logs, so a failure is visible at a glance.
         const headerStyle = overLimit.length > 0 ? chalk.bold.red : chalk.bold.green;
 
@@ -163,10 +198,21 @@ class PerfReporter implements Reporter {
             headerStyle('━'.repeat(72)),
         ];
 
+        if (hasProfiled) {
+            lines.push(
+                chalk.yellow(
+                    'Scenarios marked (profiled) ran with Lighthouse attached, so their numbers carry',
+                ),
+                chalk.yellow(
+                    'its tracing overhead. Compare them against another profiled run, not the limits.',
+                ),
+            );
+        }
+
         lines.push(
-            ...scenarios.flatMap(({ scenario, project, report, runs }) => [
+            ...scenarios.flatMap(({ scenario, project, report, runs, profiled }) => [
                 '',
-                `Scenario: ${measurementKey(scenario, project)}  (median of ${runs} run${runs === 1 ? '' : 's'})   →   ${scenarioVerdict(report)}`,
+                `Scenario: ${measurementKey(scenario, project)}${profiled ? ' (profiled)' : ''}  (median of ${runs} run${runs === 1 ? '' : 's'})   →   ${scenarioVerdict(report)}`,
                 `  ${'metric'.padEnd(24)}${'current'.padEnd(12)}${'limit'.padEnd(12)}${'% of limit'.padEnd(12)}baseline`,
                 ...report.metrics.map(metric => {
                     const row =
@@ -203,23 +249,33 @@ class PerfReporter implements Reporter {
         // Nothing is removed, only added to: a run that covers one device model must not delete the
         // scenario-wide entry the other one still falls back to, and CI is free to measure the models
         // in separate jobs whose reports are pasted one after the other.
+        // Never from a profiled measurement: tracing overhead must not become the budget.
+        const unprofiled = measured.filter(entry => !entry.profiled);
         const updatedBaselines: Baselines = {
             ...BASELINES,
-            ...Object.fromEntries(measured.map(entry => [entry.key, entry.median])),
+            ...Object.fromEntries(unprofiled.map(entry => [entry.key, entry.median])),
         };
         const suggestedLimits = suggestLimits(
-            measured.map(entry => ({ ...entry.comparison, scenario: entry.key })),
+            unprofiled.map(entry => ({ ...entry.comparison, scenario: entry.key })),
         );
         const updatedLimits: Limits = { ...LIMITS, ...suggestedLimits };
 
         lines.push(
-            '',
-            `To record this run's numbers, run from the repo root then commit`,
-            '(the baseline is reference only; a raised limit says the app may cost more):',
-            '',
-            `cat > ${BUDGETS_MODULE_PATH} <<'TS'`,
-            formatBudgetsModule(updatedBaselines, updatedLimits),
-            'TS',
+            ...(unprofiled.length === 0
+                ? [
+                      '',
+                      'No budgets paste for a profiled run: these numbers include Lighthouse',
+                      'tracing, and recording them as the budget would raise it by the overhead.',
+                  ]
+                : [
+                      '',
+                      `To record this run's numbers, run from the repo root then commit`,
+                      '(the baseline is reference only; a raised limit says the app may cost more):',
+                      '',
+                      `cat > ${BUDGETS_MODULE_PATH} <<'TS'`,
+                      formatBudgetsModule(updatedBaselines, updatedLimits),
+                      'TS',
+                  ]),
         );
 
         lines.push(headerStyle('━'.repeat(72)), '');
@@ -227,7 +283,41 @@ class PerfReporter implements Reporter {
         // eslint-disable-next-line no-console
         console.log(lines.join('\n'));
 
-        annotateOverLimit(overLimit.map(entry => measurementKey(entry.scenario, entry.project)));
+        annotateOverLimit(
+            overLimit
+                .filter(entry => !entry.profiled)
+                .map(entry => measurementKey(entry.scenario, entry.project)),
+            false,
+        );
+        annotateOverLimit(
+            overLimit
+                .filter(entry => entry.profiled)
+                .map(entry => measurementKey(entry.scenario, entry.project)),
+            true,
+        );
+
+        // For the publish job; a platform it cannot name contributes no history.
+        const platform = resolvePlatform(process.env.PERF_PLATFORM);
+
+        if (platform) {
+            writeHistoryFile(
+                buildHistoryFile(
+                    platform,
+                    measured.map(entry => ({
+                        scenario: entry.scenario,
+                        variant: entry.project,
+                        runs: entry.runs,
+                        metrics: entry.median,
+                        ...(entry.profiled ? { profiled: true } : {}),
+                    })),
+                ),
+                process.env.PERF_HISTORY_DIR,
+                message => {
+                    // eslint-disable-next-line no-console
+                    console.log(message);
+                },
+            );
+        }
 
         await publishPerfReport({
             measurements: measured.map(entry => ({
@@ -237,6 +327,7 @@ class PerfReporter implements Reporter {
                 suggestedLimits: suggestedLimits[entry.key],
             })),
             budgetsPath: BUDGETS_MODULE_PATH,
+            profiled: hasProfiled,
             log: message => {
                 // eslint-disable-next-line no-console
                 console.log(message);
