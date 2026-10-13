@@ -1,6 +1,11 @@
 import net from 'net';
+import { WebSocket } from 'ws';
 
-import { exposeConnectWs } from './connect-ws';
+import {
+    MAX_CONCURRENT_CONNECTIONS,
+    MAX_CONNECTIONS_PER_ORIGIN,
+    exposeConnectWs,
+} from './connect-ws';
 import { createHttpReceiver } from './http-receiver';
 import { Logger } from './logger';
 
@@ -11,7 +16,7 @@ const logger = new Logger('mute');
 
 // A raw socket instead of a `ws` client, so that any request target can be sent and the exact
 // response observed.
-const rawUpgrade = (port: number, path: string) => {
+const rawUpgrade = (port: number, path: string, origin: string) => {
     const chunks: Buffer[] = [];
     const socket = net.connect(port, LOOPBACK, () =>
         socket.write(
@@ -22,6 +27,7 @@ const rawUpgrade = (port: number, path: string) => {
                 'Connection: Upgrade',
                 'Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==',
                 'Sec-WebSocket-Version: 13',
+                `Origin: ${origin}`,
                 '',
                 '',
             ].join('\r\n'),
@@ -42,6 +48,7 @@ const rawUpgrade = (port: number, path: string) => {
 describe('connect-ws upgrade', () => {
     let receiver: ReturnType<typeof createHttpReceiver> | undefined;
     const sockets: net.Socket[] = [];
+    const clients: WebSocket[] = [];
 
     const startServer = async () => {
         receiver = createHttpReceiver({ logger, port: 0 });
@@ -58,15 +65,25 @@ describe('connect-ws upgrade', () => {
         return startResult.payload.port;
     };
 
-    const probe = (port: number, path: string) => {
-        const upgrade = rawUpgrade(port, path);
+    const probe = (port: number, path: string, origin = 'https://probe.test') => {
+        const upgrade = rawUpgrade(port, path, origin);
         sockets.push(upgrade.socket);
 
         return upgrade;
     };
 
+    const openClient = async (port: number, origin: string) => {
+        const client = new WebSocket(`ws://${LOOPBACK}:${port}/connect-ws`, { origin });
+        clients.push(client);
+        await new Promise((resolve, reject) => {
+            client.on('open', resolve);
+            client.on('error', reject);
+        });
+    };
+
     afterEach(async () => {
         sockets.splice(0).forEach(socket => socket.destroy());
+        clients.splice(0).forEach(client => client.terminate());
         await receiver?.stop();
     });
 
@@ -78,4 +95,26 @@ describe('connect-ws upgrade', () => {
         expect(await upgrade.closed).toBe(true);
         expect(upgrade.received()).toBe('');
     });
+
+    it.each([
+        ['per-origin', MAX_CONNECTIONS_PER_ORIGIN, () => 'https://same.test'],
+        [
+            'global',
+            MAX_CONCURRENT_CONNECTIONS,
+            (i: number) => `https://origin-${Math.floor(i / MAX_CONNECTIONS_PER_ORIGIN)}.test`,
+        ],
+    ] as const)(
+        'closes an upgrade over the %s limit without a response',
+        async (_, limit, originOf) => {
+            const port = await startServer();
+            for (let i = 0; i < limit; i++) {
+                await openClient(port, originOf(i));
+            }
+
+            const upgrade = probe(port, '/connect-ws', originOf(limit));
+
+            expect(await upgrade.closed).toBe(true);
+            expect(upgrade.received()).toBe('');
+        },
+    );
 });
