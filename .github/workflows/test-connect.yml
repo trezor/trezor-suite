@@ -53,6 +53,7 @@ on:
       - "submodules/trezor-common/**"
       - ".github/workflows/test-connect.yml"
       - ".github/workflows/template-connect-test-params.yml"
+      - "scripts/ci/connect-test-matrix-generator.js"
   workflow_dispatch:
 
 concurrency:
