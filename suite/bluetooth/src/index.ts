@@ -9,7 +9,6 @@ export {
 export * from './desktopBluetoothReducer';
 export * from './desktopBluetoothSelectors';
 
-export { removeNonResponsiveNearbyDevicesThunk } from './removeNonResponsiveNearbyDevicesThunk';
 export { forgetBluetoothDeviceThunk } from './bluetoothEraseBondsThunk';
 
 export { openSystemSettingsThunk } from './openSystemSettingsThunk';
