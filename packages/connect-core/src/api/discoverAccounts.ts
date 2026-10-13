@@ -213,9 +213,9 @@ export default class DiscoverAccounts extends AbstractMethod<
         const counts = await Promise.all(
             accounts.map(account => this.discoverAccount(account, sendCoreMessage)),
         );
+        const empty = counts.reduce((sum, acc) => sum + acc.empty, 0);
         const nonempty = counts.reduce((sum, acc) => sum + acc.nonempty, 0);
         const failed = counts.filter(acc => acc.error).length;
-        const empty = counts.length - failed;
 
         return { empty, nonempty, failed };
     }
@@ -332,7 +332,7 @@ export default class DiscoverAccounts extends AbstractMethod<
     private async discoverAccount(
         request: Request,
         sendCoreMessage: MethodContext['sendCoreMessage'],
-    ): Promise<{ nonempty: number; error?: string }> {
+    ): Promise<{ empty: number; nonempty: number; error?: string }> {
         const { details, identity, pageSize, gap, protocols, coinInfo, derivation, offset, skip } =
             request;
         const { path: bip43, ...accountKey } = request.account;
@@ -342,7 +342,7 @@ export default class DiscoverAccounts extends AbstractMethod<
         if (singleAccount && skip > 0) {
             this.updateProgress(accountKey, skip, true);
 
-            return { nonempty: 0 };
+            return { empty: 0, nonempty: 0 };
         }
 
         const backendType = coinInfo.blockchainLink?.type;
@@ -361,8 +361,14 @@ export default class DiscoverAccounts extends AbstractMethod<
             const error = err.message;
             sendProgress({ ...accountKey, index, failed: true, error, path, backendType });
 
-            return { nonempty: 0, error };
+            return { empty: 0, nonempty: 0, error };
         }
+
+        const getAccountInfo = (descriptor: string) =>
+            blockchain.getAccountInfo({ descriptor, details, pageSize, protocols, gap });
+
+        let empty = 0;
+        let prefetchedInfo: Awaited<ReturnType<typeof getAccountInfo>> | undefined;
 
         let descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index);
         descPromise.catch(() => {});
@@ -372,15 +378,17 @@ export default class DiscoverAccounts extends AbstractMethod<
                 descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index + 1);
                 descPromise.catch(() => {});
 
-                const info = await blockchain.getAccountInfo({
-                    descriptor,
-                    details,
-                    pageSize,
-                    protocols,
-                    gap,
-                });
+                const info = prefetchedInfo ?? (await getAccountInfo(descriptor));
+                // Suite 25.9.x let users add and use an account right after an empty one.
+                prefetchedInfo =
+                    info.empty && !singleAccount
+                        ? await descPromise
+                              .then(nextDesc => getAccountInfo(nextDesc.descriptor))
+                              .then(nextInfo => (nextInfo.empty ? undefined : nextInfo))
+                              .catch(() => undefined)
+                        : undefined;
 
-                const last = singleAccount || info.empty;
+                const last = singleAccount || (info.empty && !prefetchedInfo);
 
                 // eslint-disable-next-line no-nested-ternary
                 const utxo = !utxoRequired
@@ -402,10 +410,12 @@ export default class DiscoverAccounts extends AbstractMethod<
                     last,
                 });
 
+                if (info.empty) empty++;
+
                 if (last) {
                     await descPromise.catch(() => {});
 
-                    return { nonempty: index - skip + (info.empty ? 0 : 1) };
+                    return { empty, nonempty: index - skip - empty + 1 };
                 }
             } catch (err) {
                 const path = substituteBip43Path(bip43, offset + index);
@@ -414,7 +424,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                 this.updateProgress(accountKey, index + 1, true);
                 sendProgress({ ...accountKey, index, failed, error, code, path, backendType });
 
-                return { nonempty: index - skip, error };
+                return { empty, nonempty: index - skip - empty, error };
             }
 
             index++;
