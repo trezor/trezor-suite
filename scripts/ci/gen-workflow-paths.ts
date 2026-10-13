@@ -22,9 +22,8 @@ import fs from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 
-// `@trezor/requirements` is a CommonJS workspace package of TypeScript sources.
-// Node cannot detect its named exports when this ESM script imports it, so the
-// helpers are pulled in through `createRequire` and typed from the package.
+// `@trezor/requirements` is CJS: Node cannot detect its named exports from ESM,
+// hence `createRequire` plus the type-only import below.
 import type * as Requirements from '@trezor/requirements';
 
 const { computePublishClosure, createReadWorkspaceDeps, getWorkspaceDirectoryMap } = createRequire(
