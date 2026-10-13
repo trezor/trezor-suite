@@ -11843,13 +11843,30 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/message-system-core@workspace:*, @suite-common/message-system-core@workspace:suite-common/message-system-core":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/message-system-core@workspace:suite-common/message-system-core"
+  dependencies:
+    "@suite-common/geolocation": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    "@types/semver": "npm:^7.7.0"
+    semver: "npm:^7.7.1"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/message-system@workspace:*, @suite-common/message-system@workspace:^, @suite-common/message-system@workspace:suite-common/message-system":
   version: 0.0.0-use.local
   resolution: "@suite-common/message-system@workspace:suite-common/message-system"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/analytics-redux": "workspace:*"
-    "@suite-common/geolocation": "workspace:*"
+    "@suite-common/message-system-core": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -11863,13 +11880,11 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/fs-extra": "npm:^11.0.4"
-    "@types/semver": "npm:^7.7.0"
     fs-extra: "npm:^11.3.1"
     json-schema-to-typescript: "npm:^15.0.4"
     jws: "npm:^4.0.1"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
-    semver: "npm:^7.7.1"
     tsx: "npm:^4.21.0"
     yup: "npm:1.7.1"
   languageName: unknown

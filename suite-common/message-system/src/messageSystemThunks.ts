@@ -1,19 +1,19 @@
+import {
+    compareConfigSequence,
+    fetchRemoteConfigJws,
+    getRemoteConfigUrl,
+    verifyConfigJws,
+} from '@suite-common/message-system-core';
 import { createThunk } from '@suite-common/redux-utils';
-import { type MessageSystem } from '@suite-common/suite-types';
-import { PollingController, decodeJws, verifyJws } from '@suite-common/suite-utils';
+import { PollingController } from '@suite-common/suite-utils';
 import { isCodesignBuild, isNative } from '@trezor/env-utils';
-import { scheduleAction } from '@trezor/utils';
 
 import { ACTION_PREFIX, messageSystemActions } from './messageSystemActions';
 import {
-    CONFIG_URL_REMOTE,
     FETCH_CHECK_INTERVAL_IN_MS,
     FETCH_CHECK_INTERVAL_IN_MS_MOBILE,
     FETCH_INTERVAL_IN_MS,
     FETCH_INTERVAL_IN_MS_MOBILE,
-    FETCH_TIMEOUT_IN_MS,
-    JWS_SIGN_ALGORITHM,
-    VERSION,
 } from './messageSystemConstants';
 import {
     selectMessageSystemConfigSource,
@@ -33,20 +33,8 @@ const getConfigJws = async (forceLocalJws: boolean) => {
         };
     }
 
-    const remoteConfigUrl = isCodesignBuild()
-        ? CONFIG_URL_REMOTE.stable
-        : CONFIG_URL_REMOTE.develop;
-
     try {
-        const response = await scheduleAction(signal => fetch(remoteConfigUrl, { signal }), {
-            timeout: FETCH_TIMEOUT_IN_MS,
-        });
-
-        if (!response.ok) {
-            throw Error(response.statusText);
-        }
-
-        const configJws = await response.text();
+        const configJws = await fetchRemoteConfigJws(getRemoteConfigUrl(isCodesignBuild()));
 
         return {
             configJws,
@@ -85,39 +73,19 @@ export const fetchConfigThunk = createThunk<void, void, { state: FetchConfigThun
             try {
                 const { configJws, isRemote } = await getConfigJws(useLocalConfig);
 
-                const decodedJws = decodeJws(configJws);
-
-                if (!decodedJws) {
-                    throw Error('Decoding of config failed');
-                }
-
-                const algorithmInHeader = decodedJws?.header.alg;
-                if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
-                    throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
-                }
-
-                const isAuthenticityValid = verifyJws(configJws, JWS_SIGN_ALGORITHM);
-
-                if (!isAuthenticityValid) {
-                    throw Error('Config authenticity is invalid');
-                }
-
-                const config: MessageSystem = JSON.parse(decodedJws.payload);
-
-                if (VERSION !== config.version) {
-                    throw Error('Config version is not supported');
-                }
+                const config = verifyConfigJws(configJws);
 
                 const timestampNew = isRemote ? Date.now() : 0;
+                const sequenceComparison = compareConfigSequence(currentSequence, config.sequence);
 
-                if (currentSequence < config.sequence || useLocalConfig) {
+                if (sequenceComparison === 'newer' || useLocalConfig) {
                     dispatch(
                         messageSystemActions.fetchSuccessUpdate({
                             config,
                             timestamp: timestampNew,
                         }),
                     );
-                } else if (currentSequence === config.sequence) {
+                } else if (sequenceComparison === 'same') {
                     dispatch(messageSystemActions.fetchSuccess({ timestamp: timestampNew }));
                 } else {
                     throw Error(
