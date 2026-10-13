@@ -5,7 +5,16 @@ import { z } from 'zod';
 
 import { createHttpClient, isResponseError } from '@suite-common/http-client';
 import { type Network, getNetwork, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
+import { bitcoinCryptoIcons } from '@trezor/network-bitcoin-assets';
+import { cardanoCryptoIcons } from '@trezor/network-cardano-assets';
+import { ethereumCryptoIcons } from '@trezor/network-ethereum-assets';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { moneroCryptoIcons } from '@trezor/network-monero-assets';
+import { rippleCryptoIcons } from '@trezor/network-ripple-assets';
+import { solanaCryptoIcons } from '@trezor/network-solana-assets';
+import { stellarCryptoIcons } from '@trezor/network-stellar-assets';
+import { tezosCryptoIcons } from '@trezor/network-tezos-assets';
+import { tronCryptoIcons } from '@trezor/network-tron-assets';
 
 import { rasterizeSvg } from './images';
 import {
@@ -16,7 +25,7 @@ import {
 } from '../../src/coinImages';
 import { type NetworkIconSymbol } from '../../src/iconSymbols';
 import { isCryptoIconSymbol } from '../../src/iconUtils';
-import { CRYPTO_ICONS_SVG_PATH, FILES_CRYPTOICONS_PATH, YIELD_VAULTS_URL } from '../constants';
+import { FILES_CRYPTOICONS_PATH, YIELD_VAULTS_URL } from '../constants';
 import { type YieldVault, yieldVaultsSchema } from '../schemas';
 
 const earnYieldApi = createHttpClient({
@@ -102,11 +111,23 @@ const fetchPublishedSourceIcon = async (
     }
 };
 
+const bundledCryptoIcons = {
+    ...bitcoinCryptoIcons,
+    ...cardanoCryptoIcons,
+    ...ethereumCryptoIcons,
+    ...moneroCryptoIcons,
+    ...rippleCryptoIcons,
+    ...solanaCryptoIcons,
+    ...stellarCryptoIcons,
+    ...tezosCryptoIcons,
+    ...tronCryptoIcons,
+};
+
 const renderBundledSourceIcon = async (
     networkSymbol: NetworkIconSymbol,
     size: CoinImageSize,
 ): Promise<Buffer | undefined> => {
-    const svgPath = join(CRYPTO_ICONS_SVG_PATH, `${networkSymbol}.svg`);
+    const svgPath = bundledCryptoIcons[networkSymbol].getIconPath();
 
     try {
         return await rasterizeSvg(await fs.readFile(svgPath), size);
