@@ -23,8 +23,8 @@ export const getProductionDefinitionsUrl = (version: DefinitionsVersion) =>
         ? 'https://data.trezor.io/firmware/definitions'
         : `https://data.trezor.io/firmware/definitions/v${version}`;
 
-export const getDevelopmentDefinitionsUrl = (version: DefinitionsVersion) =>
-    `https://dev.firmware.sldev.cz/definitions/v${version}`;
+export const getDevelopmentDefinitionsUrl = (version: DefinitionsVersion, signed = false) =>
+    `https://dev.firmware.sldev.cz/definitions/${signed ? 'signed' : 'unsigned'}/v${version}`;
 
 export const getEthereumDefinitionsBaseUrl = (
     version: DefinitionsVersion,
@@ -35,6 +35,8 @@ export const getEthereumDefinitionsBaseUrl = (
             return `${getProductionDefinitionsUrl(version)}/eth`;
         case 'development':
             return `${getDevelopmentDefinitionsUrl(version)}/eth`;
+        case 'signed':
+            return `${getDevelopmentDefinitionsUrl(version, true)}/eth`;
         case 'local':
             return 'http://localhost:3000';
         default:

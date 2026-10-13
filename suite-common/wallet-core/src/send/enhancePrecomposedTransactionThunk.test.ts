@@ -76,12 +76,17 @@ describe('enhancePrecomposedTransactionThunk', () => {
         [
             'development',
             [2, 13, 0],
-            `https://dev.firmware.sldev.cz/definitions/v2/eth/${TOKEN_FILE}`,
+            `https://dev.firmware.sldev.cz/definitions/unsigned/v2/eth/${TOKEN_FILE}`,
         ],
         [
             'development',
             [1, 14, 1],
-            `https://dev.firmware.sldev.cz/definitions/v1/eth/${TOKEN_FILE}`,
+            `https://dev.firmware.sldev.cz/definitions/unsigned/v1/eth/${TOKEN_FILE}`,
+        ],
+        [
+            'signed',
+            [2, 13, 0],
+            `https://dev.firmware.sldev.cz/definitions/signed/v2/eth/${TOKEN_FILE}`,
         ],
     ])(
         'checks the token definition on the %s channel for firmware %j',
