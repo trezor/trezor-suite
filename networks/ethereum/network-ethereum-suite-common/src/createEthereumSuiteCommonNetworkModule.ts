@@ -1,3 +1,5 @@
+import { isWrappedNativeToken } from '@trezor/network-ethereum/constants';
+import { ethereumAssets } from '@trezor/network-ethereum-assets';
 import { supportedEthereumNetworks } from '@trezor/network-ethereum-types';
 import {
     type SuiteCommonNetworkModule,
@@ -22,6 +24,11 @@ export const createEthereumSuiteCommonNetworkModule = (
         createEthereumNamedAddressResolverCompositionRoot(deps);
 
     return createNetworkModule(supportedEthereumNetworks, {
+        icon: {
+            ...ethereumAssets,
+            getTokenLogoIdentifiers: (_symbol, contract) => [contract.toLowerCase()],
+        },
+        isWrappedNativeToken,
         addressValidator: ethereumValidator,
         namedAddressResolver: ethereumNamedAddressResolver,
         getNetworkConfig,

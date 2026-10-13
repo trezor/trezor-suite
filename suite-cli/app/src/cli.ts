@@ -1,6 +1,8 @@
+import TrezorConnect from '@trezor/connect';
+
 import { createCliCompositionRoot } from './createCliCompositionRoot';
 
-const { cliApp } = createCliCompositionRoot();
+const { cliApp } = createCliCompositionRoot({ getTrezorConnect: () => TrezorConnect });
 
 cliApp(process.argv.slice(2))
     .then(exitCode => {

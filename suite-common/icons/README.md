@@ -21,7 +21,6 @@ These packages export lazy icon loaders and filesystem-path readers through thei
 
 ## Download coin icons
 
-Run `yarn suite:cli download-crypto-icons` from the repository root. The CLI composes the existing
-icon-download services, available through the Node-only `@suite-common/icons/scripts` entry point.
-
-Use `yarn suite:cli download-vault-icons` to download only vault-position icons.
+Run `yarn suite:cli download-crypto-icons` from the repository root. The CLI composes network modules
+and injects their configuration and asset-path capabilities into the downloader. The Node-only
+service factories are available through `@suite-common/icons/scripts`.

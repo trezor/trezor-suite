@@ -17,6 +17,10 @@ export async function resizeImage(imageBuffer: ArrayBuffer | Buffer, size: numbe
 // rasterizes at when none is given.
 const SVG_DEFAULT_DENSITY = 72;
 
+export type RasterizeSvg = (svgBuffer: Buffer, size: number) => Promise<Buffer>;
+
+export type RasterizeSvgDep = { rasterizeSvg: RasterizeSvg };
+
 /**
  * Renders an SVG into a webp of the given size.
  *

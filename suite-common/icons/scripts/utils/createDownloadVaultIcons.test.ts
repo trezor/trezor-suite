@@ -1,24 +1,45 @@
-import { readFile } from 'fs/promises';
 import { join } from 'path';
-import sharp from 'sharp';
 
+import { mockNetworkMetadata } from '@suite-common/networks/mocks';
 import { createMockDeps } from '@trezor/dependency-injection';
-import { ethereumCryptoIcons } from '@trezor/network-ethereum-assets';
+import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
 
 import { type DownloadVaultIconsDeps, createDownloadVaultIcons } from './createDownloadVaultIcons';
-import { COIN_IMAGE_SIZES, ICONS_URL_BASE, createCoinImageName } from '../../src/coinImages';
-import { FILES_CRYPTOICONS_PATH, YIELD_VAULTS_URL } from '../constants';
-import { rasterizeSvg } from './images';
+import { COIN_IMAGE_SIZES } from '../../src/coinImages';
+import { FILES_CRYPTOICONS_PATH } from '../constants';
 
-const fetchMock = jest.fn();
-global.fetch = fetchMock as unknown as typeof fetch;
+const svgBuffer = Buffer.from('<svg/>');
+const renderedIcon = Buffer.from('rendered-icon');
+const publishedIcon = new Uint8Array([1, 2, 3]).buffer;
 
-const deps = createMockDeps<DownloadVaultIconsDeps>({
-    writeFile: () => Promise.resolve(),
-    mkdir: () => Promise.resolve(undefined),
-});
+const createDeps = () => {
+    const networks = new Map([
+        ['ethereum', mockNetworkMetadata.eth],
+        ['base', { ...mockNetworkMetadata.base, settlementLayer: asNetworkSymbol('eth') }],
+        ['arc', mockNetworkMetadata.arc],
+        ['bitcoin', mockNetworkMetadata.btc],
+    ]);
 
-const downloadVaultIcons = () => createDownloadVaultIcons(deps)();
+    return createMockDeps<DownloadVaultIconsDeps>({
+        getIconPaths: symbol => ({ coin: `${symbol}.svg`, network: `${symbol}-network.svg` }),
+        isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+        getNetworkByCoingeckoId: coingeckoId => networks.get(coingeckoId),
+        isWrappedNativeToken: () => false,
+        fetchYieldVaults: () => Promise.resolve({}),
+        fetchPublishedIcon: () => Promise.resolve(publishedIcon),
+        readFile: () => Promise.resolve(svgBuffer),
+        rasterizeSvg: () => Promise.resolve(renderedIcon),
+        writeFile: () => Promise.resolve(),
+        mkdir: () => Promise.resolve(undefined),
+        logger: {
+            log: () => undefined,
+            error: () => undefined,
+            info: null,
+            debug: null,
+            warn: null,
+        },
+    });
+};
 
 const ETH_WETH_VAULT = '0x704cfb08969048a8dff298b214f959791d8da509';
 const ETH_USDT_VAULT = '0xe4db1c5a1b709ce4d2ada6985d9d506e58f73829';
@@ -26,29 +47,10 @@ const ETH_USDC_VAULT = '0x8cb3649114051ca5119141a34c200d65dc0faa73';
 const BASE_WETH_VAULT = '0x4edc6ab1964e25eb2c202ab9f201e9548baa53df';
 const BASE_USDC_VAULT = '0x5e6fc406960a1c2d9ab6813ff1c914c6836bc53e';
 
-// Underlying tokens; the WETH ones are the wrapped-native contracts from @suite-common/wallet-config.
-const ETH_WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
-const BASE_WETH = '0x4200000000000000000000000000000000000006';
 const ETH_USDC = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 const BASE_USDC = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 const ETH_USDT = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
 
-type FakeResponseInit = { status?: number; json?: unknown; buffer?: ArrayBuffer };
-
-const fakeResponse = ({ status = 200, json, buffer }: FakeResponseInit): Response => {
-    const response = {
-        ok: status >= 200 && status < 300,
-        status,
-        statusText: status === 200 ? 'OK' : 'Not Found',
-        headers: new Headers({ 'content-type': json ? 'application/json' : 'image/webp' }),
-        json: () => Promise.resolve(json),
-        text: () => Promise.resolve(json ? JSON.stringify(json) : ''),
-        arrayBuffer: () => Promise.resolve(buffer ?? new ArrayBuffer(0)),
-        clone: () => fakeResponse({ status, json, buffer }),
-    };
-
-    return response as unknown as Response;
-};
 type VaultParams = {
     address: string;
     underlyingToken: string;
@@ -62,338 +64,258 @@ const vault = ({ address, underlyingToken, coingeckoId }: VaultParams) => ({
     coingeckoId,
 });
 
-const iconUrl = (coingeckoId: string, size: (typeof COIN_IMAGE_SIZES)[number]) =>
-    `${ICONS_URL_BASE}/${createCoinImageName({ coingeckoId, size })}`;
+const writtenFiles = (deps: ReturnType<typeof createDeps>) =>
+    deps.writeFile.mock.calls.map(([path]) => path);
 
-const sourceIconRoutes = (coingeckoId: string) =>
-    Object.fromEntries(
-        COIN_IMAGE_SIZES.map(size => [
-            iconUrl(coingeckoId, size),
-            fakeResponse({ buffer: new Uint8Array([size]).buffer }),
-        ]),
-    );
-
-const vaultListRoute = (vaults: Record<string, unknown[]>) => ({
-    [YIELD_VAULTS_URL]: fakeResponse({ json: vaults }),
-});
-
-// up-fetch hands `fetch` a Request instance rather than a URL string.
-const urlOf = (input: unknown) =>
-    typeof input === 'object' && input !== null && 'url' in input
-        ? String((input as Request).url)
-        : String(input);
-
-const mockFetchRoutes = (routes: Record<string, Response>) => {
-    fetchMock.mockImplementation((input: unknown) =>
-        Promise.resolve(routes[urlOf(input)] ?? fakeResponse({ status: 404 })),
-    );
-};
-
-const writtenFiles = () => deps.writeFile.mock.calls.map(([path]) => String(path));
-
-const writtenIcon = (fileName: string): Buffer | undefined =>
+const writtenIcon = (deps: ReturnType<typeof createDeps>, fileName: string): Buffer | undefined =>
     deps.writeFile.mock.calls.find(
-        ([path]) => String(path) === join(FILES_CRYPTOICONS_PATH, fileName),
+        ([path]) => path === join(FILES_CRYPTOICONS_PATH, fileName),
     )?.[1];
 
-const requestedUrls = () => fetchMock.mock.calls.map(([input]) => urlOf(input));
-
-// What the app itself renders for a native coin, i.e. what the published vault icon has to equal.
-const bundledIcon = async (
-    networkSymbol: keyof typeof ethereumCryptoIcons,
-    size: (typeof COIN_IMAGE_SIZES)[number],
-) => await rasterizeSvg(await readFile(ethereumCryptoIcons[networkSymbol].getIconPath()), size);
-
 describe('downloadVaultIcons', () => {
-    let consoleErrorSpy: jest.SpyInstance;
-    let consoleLogSpy: jest.SpyInstance;
-
-    beforeEach(() => {
-        jest.clearAllMocks();
-        consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    });
-
-    afterEach(() => {
-        consoleErrorSpy.mockRestore();
-        consoleLogSpy.mockRestore();
-    });
-
     it('writes the underlying icon under the vault address file name in every size', async () => {
-        mockFetchRoutes({
-            ...vaultListRoute({
-                ethereum: [
-                    vault({
-                        address: ETH_USDT_VAULT,
-                        underlyingToken: ETH_USDT,
-                        coingeckoId: 'tether',
-                    }),
-                ],
-            }),
-            ...sourceIconRoutes('tether'),
+        const deps = createDeps();
+        deps.fetchYieldVaults.mockResolvedValue({
+            ethereum: [
+                vault({
+                    address: ETH_USDT_VAULT,
+                    underlyingToken: ETH_USDT,
+                    coingeckoId: 'tether',
+                }),
+            ],
         });
 
-        await downloadVaultIcons();
+        await createDownloadVaultIcons(deps)();
 
         expect(deps.mkdir).toHaveBeenCalledWith(FILES_CRYPTOICONS_PATH, { recursive: true });
         for (const size of COIN_IMAGE_SIZES) {
             expect(deps.writeFile).toHaveBeenCalledWith(
                 join(FILES_CRYPTOICONS_PATH, `ethereum--${ETH_USDT_VAULT}@${size}.webp`),
-                Buffer.from([size]),
+                Buffer.from(publishedIcon),
             );
         }
         expect(deps.writeFile).toHaveBeenCalledTimes(COIN_IMAGE_SIZES.length);
-    });
-
-    it('renders the bundled native coin disc when the underlying is the wrapped native token', async () => {
-        mockFetchRoutes({
-            ...vaultListRoute({
-                ethereum: [
-                    vault({
-                        address: ETH_WETH_VAULT,
-                        underlyingToken: ETH_WETH,
-                        coingeckoId: 'weth',
-                    }),
-                ],
-            }),
-            ...sourceIconRoutes('ethereum'),
-        });
-
-        await downloadVaultIcons();
-
-        // A WETH vault reads as an ETH vault, and the app renders native ETH from the bundled disc
-        // rather than from CoinGecko — so neither the WETH nor the CoinGecko ETH rendition is used.
-        expect(requestedUrls()).toEqual([YIELD_VAULTS_URL]);
-        for (const size of COIN_IMAGE_SIZES) {
-            expect(writtenIcon(`ethereum--${ETH_WETH_VAULT}@${size}.webp`)).toEqual(
-                await bundledIcon('eth', size),
-            );
-        }
-    });
-
-    it('renders each size of the bundled disc at its own pixel dimensions', async () => {
-        mockFetchRoutes(
-            vaultListRoute({
-                ethereum: [
-                    vault({
-                        address: ETH_WETH_VAULT,
-                        underlyingToken: ETH_WETH,
-                        coingeckoId: 'weth',
-                    }),
-                ],
-            }),
+        expect(deps.logger.log).toHaveBeenCalledWith(
+            `Vault icons: 🟢 Saved ${COIN_IMAGE_SIZES.length} files:\n`,
+            writtenFiles(deps).map(path => path.slice(FILES_CRYPTOICONS_PATH.length + 1)),
         );
+    });
 
-        await downloadVaultIcons();
-
-        for (const size of COIN_IMAGE_SIZES) {
-            const icon = writtenIcon(`ethereum--${ETH_WETH_VAULT}@${size}.webp`);
-            const { format, width, height } = await sharp(icon).metadata();
-
-            expect({ format, width, height }).toEqual({
-                format: 'webp',
-                width: size,
-                height: size,
+    it.each([
+        { platform: 'ethereum', symbol: 'eth', nativeSymbol: 'eth' },
+        { platform: 'base', symbol: 'base', nativeSymbol: 'eth' },
+        { platform: 'arc', symbol: 'arc', nativeSymbol: 'arc' },
+        { platform: 'bitcoin', symbol: 'btc', nativeSymbol: 'btc' },
+    ])(
+        'renders the injected $nativeSymbol icon for a wrapped-native vault on $platform',
+        async ({ platform, symbol, nativeSymbol }) => {
+            const deps = createDeps();
+            deps.isWrappedNativeToken.mockReturnValue(true);
+            deps.fetchYieldVaults.mockResolvedValue({
+                [platform]: [
+                    vault({
+                        address: ETH_WETH_VAULT,
+                        underlyingToken: 'wrapped-native',
+                        coingeckoId: 'wrapped-token',
+                    }),
+                ],
             });
-        }
-    });
 
-    it('resolves an L2 wrapped-native underlying to the settlement layer native coin', async () => {
-        mockFetchRoutes({
-            ...vaultListRoute({
-                base: [
-                    vault({
-                        address: BASE_WETH_VAULT,
-                        underlyingToken: BASE_WETH,
-                        coingeckoId: 'l2-standard-bridged-weth-base',
-                    }),
-                ],
-            }),
-            ...sourceIconRoutes('ethereum'),
+            await createDownloadVaultIcons(deps)();
+
+            expect(deps.fetchPublishedIcon).not.toHaveBeenCalled();
+            expect(deps.isWrappedNativeToken).toHaveBeenCalledWith(symbol, 'wrapped-native');
+            expect(deps.getIconPaths).toHaveBeenCalledWith(nativeSymbol);
+            expect(deps.readFile).toHaveBeenCalledWith(`${nativeSymbol}.svg`);
+            for (const size of COIN_IMAGE_SIZES) {
+                expect(deps.rasterizeSvg).toHaveBeenCalledWith(svgBuffer, size);
+                expect(writtenIcon(deps, `${platform}--${ETH_WETH_VAULT}@${size}.webp`)).toEqual(
+                    renderedIcon,
+                );
+            }
+        },
+    );
+
+    it('skips a wrapped-native vault when its native network is unsupported', async () => {
+        const deps = createDeps();
+        deps.isWrappedNativeToken.mockReturnValue(true);
+        deps.isSupportedNetwork.mockReturnValue(false);
+        deps.fetchYieldVaults.mockResolvedValue({
+            ethereum: [
+                vault({
+                    address: ETH_WETH_VAULT,
+                    underlyingToken: 'wrapped-native',
+                    coingeckoId: 'wrapped-token',
+                }),
+            ],
         });
 
-        await downloadVaultIcons();
+        await createDownloadVaultIcons(deps)();
 
-        // Base settles on Ethereum, so its native coin — and hence its disc — is ETH, not BASE.
-        expect(requestedUrls()).toEqual([YIELD_VAULTS_URL]);
-        expect(writtenIcon(`base--${BASE_WETH_VAULT}@24.webp`)).toEqual(
-            await bundledIcon('eth', 24),
-        );
-        expect(writtenIcon(`base--${BASE_WETH_VAULT}@24.webp`)).not.toEqual(
-            await bundledIcon('base', 24),
-        );
+        expect(deps.readFile).not.toHaveBeenCalled();
+        expect(deps.rasterizeSvg).not.toHaveBeenCalled();
+        expect(deps.writeFile).not.toHaveBeenCalled();
     });
 
     it('keeps the underlying coin id for a non-wrapped underlying on the same platform', async () => {
-        mockFetchRoutes({
-            ...vaultListRoute({
-                base: [
-                    vault({
-                        address: BASE_USDC_VAULT,
-                        underlyingToken: BASE_USDC,
-                        coingeckoId: 'usd-coin',
-                    }),
-                ],
-            }),
-            ...sourceIconRoutes('usd-coin'),
+        const deps = createDeps();
+        deps.fetchYieldVaults.mockResolvedValue({
+            base: [
+                vault({
+                    address: BASE_USDC_VAULT,
+                    underlyingToken: BASE_USDC,
+                    coingeckoId: 'usd-coin',
+                }),
+            ],
         });
 
-        await downloadVaultIcons();
+        await createDownloadVaultIcons(deps)();
 
-        expect(requestedUrls()).toContain(iconUrl('usd-coin', 24));
-        expect(writtenFiles()).toContain(
+        expect(deps.fetchPublishedIcon).toHaveBeenCalledWith('usd-coin@24.webp');
+        expect(writtenFiles(deps)).toContain(
             join(FILES_CRYPTOICONS_PATH, `base--${BASE_USDC_VAULT}@24.webp`),
         );
     });
 
     it('lowercases the vault address in the written file name', async () => {
-        mockFetchRoutes({
-            ...vaultListRoute({
-                base: [
-                    vault({
-                        address: BASE_USDC_VAULT.toUpperCase().replace('0X', '0x'),
-                        underlyingToken: BASE_USDC,
-                        coingeckoId: 'usd-coin',
-                    }),
-                ],
-            }),
-            ...sourceIconRoutes('usd-coin'),
+        const deps = createDeps();
+        deps.fetchYieldVaults.mockResolvedValue({
+            base: [
+                vault({
+                    address: BASE_USDC_VAULT.toUpperCase().replace('0X', '0x'),
+                    underlyingToken: BASE_USDC,
+                    coingeckoId: 'usd-coin',
+                }),
+            ],
         });
 
-        await downloadVaultIcons();
+        await createDownloadVaultIcons(deps)();
 
-        expect(writtenFiles()).toContain(
+        expect(writtenFiles(deps)).toContain(
             join(FILES_CRYPTOICONS_PATH, `base--${BASE_USDC_VAULT}@24.webp`),
         );
     });
 
     it('skips and reports a platform with no known network, still processing the rest', async () => {
-        mockFetchRoutes({
-            ...vaultListRoute({
-                'brand-new-chain': [
-                    vault({
-                        address: '0xabc',
-                        underlyingToken: '0xdef',
-                        coingeckoId: 'usd-coin',
-                    }),
-                ],
-                ethereum: [
-                    vault({
-                        address: ETH_USDT_VAULT,
-                        underlyingToken: ETH_USDT,
-                        coingeckoId: 'tether',
-                    }),
-                ],
-            }),
-            ...sourceIconRoutes('tether'),
+        const deps = createDeps();
+        deps.fetchYieldVaults.mockResolvedValue({
+            'brand-new-chain': [
+                vault({
+                    address: '0xabc',
+                    underlyingToken: '0xdef',
+                    coingeckoId: 'usd-coin',
+                }),
+            ],
+            ethereum: [
+                vault({
+                    address: ETH_USDT_VAULT,
+                    underlyingToken: ETH_USDT,
+                    coingeckoId: 'tether',
+                }),
+            ],
         });
 
-        await downloadVaultIcons();
+        await createDownloadVaultIcons(deps)();
 
-        expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect(deps.logger.error).toHaveBeenCalledWith(
             expect.stringContaining('brand-new-chain'),
             expect.anything(),
         );
         expect(deps.writeFile).toHaveBeenCalledTimes(COIN_IMAGE_SIZES.length);
-        expect(writtenFiles().every(path => path.includes('ethereum--'))).toBe(true);
+        expect(writtenFiles(deps).every(path => path.includes('ethereum--'))).toBe(true);
     });
 
     it('skips sizes whose source icon is not published and writes the remaining ones', async () => {
-        const routes: Record<string, Response> = {
-            ...vaultListRoute({
-                ethereum: [
-                    vault({
-                        address: ETH_USDT_VAULT,
-                        underlyingToken: ETH_USDT,
-                        coingeckoId: 'tether',
-                    }),
-                ],
-            }),
-            ...sourceIconRoutes('tether'),
-        };
-        delete routes[iconUrl('tether', 80)];
+        const deps = createDeps();
+        deps.fetchYieldVaults.mockResolvedValue({
+            ethereum: [
+                vault({
+                    address: ETH_USDT_VAULT,
+                    underlyingToken: ETH_USDT,
+                    coingeckoId: 'tether',
+                }),
+            ],
+        });
 
-        mockFetchRoutes(routes);
+        deps.fetchPublishedIcon.mockImplementation(fileName =>
+            fileName.endsWith('@80.webp')
+                ? Promise.reject(new Error('Icon is not published'))
+                : Promise.resolve(publishedIcon),
+        );
 
-        await downloadVaultIcons();
+        await createDownloadVaultIcons(deps)();
 
         expect(deps.writeFile).toHaveBeenCalledTimes(COIN_IMAGE_SIZES.length - 1);
-        expect(writtenFiles()).not.toContain(
+        expect(writtenFiles(deps)).not.toContain(
             join(FILES_CRYPTOICONS_PATH, `ethereum--${ETH_USDT_VAULT}@80.webp`),
         );
-        expect(consoleErrorSpy).toHaveBeenCalled();
+        expect(deps.logger.error).toHaveBeenCalled();
     });
 
     it('downloads each source rendition once when several vaults share an underlying', async () => {
-        mockFetchRoutes({
-            ...vaultListRoute({
-                ethereum: [
-                    vault({
-                        address: ETH_USDC_VAULT,
-                        underlyingToken: ETH_USDC,
-                        coingeckoId: 'usd-coin',
-                    }),
-                ],
-                base: [
-                    vault({
-                        address: BASE_USDC_VAULT,
-                        underlyingToken: BASE_USDC,
-                        coingeckoId: 'usd-coin',
-                    }),
-                ],
-            }),
-            ...sourceIconRoutes('usd-coin'),
+        const deps = createDeps();
+        deps.fetchYieldVaults.mockResolvedValue({
+            ethereum: [
+                vault({
+                    address: ETH_USDC_VAULT,
+                    underlyingToken: ETH_USDC,
+                    coingeckoId: 'usd-coin',
+                }),
+            ],
+            base: [
+                vault({
+                    address: BASE_USDC_VAULT,
+                    underlyingToken: BASE_USDC,
+                    coingeckoId: 'usd-coin',
+                }),
+            ],
         });
 
-        await downloadVaultIcons();
+        await createDownloadVaultIcons(deps)();
 
-        // Both vaults resolve to usd-coin: one vault-list request plus one per source size.
-        expect(fetchMock).toHaveBeenCalledTimes(1 + COIN_IMAGE_SIZES.length);
+        // Both vaults resolve to usd-coin, so each source size is fetched once.
+        expect(deps.fetchPublishedIcon).toHaveBeenCalledTimes(COIN_IMAGE_SIZES.length);
         expect(deps.writeFile).toHaveBeenCalledTimes(2 * COIN_IMAGE_SIZES.length);
     });
 
     it('renders a shared bundled disc once for vaults across platforms', async () => {
-        mockFetchRoutes(
-            vaultListRoute({
-                ethereum: [
-                    vault({
-                        address: ETH_WETH_VAULT,
-                        underlyingToken: ETH_WETH,
-                        coingeckoId: 'weth',
-                    }),
-                ],
-                base: [
-                    vault({
-                        address: BASE_WETH_VAULT,
-                        underlyingToken: BASE_WETH,
-                        coingeckoId: 'l2-standard-bridged-weth-base',
-                    }),
-                ],
-            }),
-        );
+        const deps = createDeps();
+        deps.isWrappedNativeToken.mockReturnValue(true);
+        deps.fetchYieldVaults.mockResolvedValue({
+            ethereum: [
+                vault({
+                    address: ETH_WETH_VAULT,
+                    underlyingToken: 'wrapped-native',
+                    coingeckoId: 'weth',
+                }),
+            ],
+            base: [
+                vault({
+                    address: BASE_WETH_VAULT,
+                    underlyingToken: 'wrapped-native',
+                    coingeckoId: 'l2-standard-bridged-weth-base',
+                }),
+            ],
+        });
 
-        await downloadVaultIcons();
+        await createDownloadVaultIcons(deps)();
 
         // Both vaults read as native ETH, so nothing beyond the vault list is fetched and the two
         // vault addresses end up with byte-identical renditions.
-        expect(requestedUrls()).toEqual([YIELD_VAULTS_URL]);
+        expect(deps.fetchPublishedIcon).not.toHaveBeenCalled();
         expect(deps.writeFile).toHaveBeenCalledTimes(2 * COIN_IMAGE_SIZES.length);
-        expect(writtenIcon(`base--${BASE_WETH_VAULT}@80.webp`)).toEqual(
-            writtenIcon(`ethereum--${ETH_WETH_VAULT}@80.webp`),
+        expect(deps.readFile).toHaveBeenCalledTimes(COIN_IMAGE_SIZES.length);
+        expect(deps.rasterizeSvg).toHaveBeenCalledTimes(COIN_IMAGE_SIZES.length);
+        expect(writtenIcon(deps, `base--${BASE_WETH_VAULT}@80.webp`)).toEqual(
+            writtenIcon(deps, `ethereum--${ETH_WETH_VAULT}@80.webp`),
         );
     });
 
     it('throws when the vault list cannot be fetched', async () => {
-        mockFetchRoutes({});
+        const deps = createDeps();
+        deps.fetchYieldVaults.mockRejectedValue(new Error('Vault list unavailable'));
 
-        await expect(downloadVaultIcons()).rejects.toThrow();
-        expect(deps.writeFile).not.toHaveBeenCalled();
-    });
-
-    it('throws when the vault list does not match the expected schema', async () => {
-        mockFetchRoutes(vaultListRoute({ ethereum: [{ yieldId: 'missing-fields' }] }));
-
-        await expect(downloadVaultIcons()).rejects.toThrow();
+        await expect(createDownloadVaultIcons(deps)()).rejects.toThrow();
         expect(deps.writeFile).not.toHaveBeenCalled();
     });
 });

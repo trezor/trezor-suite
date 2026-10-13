@@ -3,5 +3,12 @@
     "compilerOptions": {
         "outDir": "libDev"
     },
-    "references": []
+    "references": [
+        {
+            "path": "../../network-module/network-assets-types"
+        },
+        {
+            "path": "../network-solana-types"
+        }
+    ]
 }

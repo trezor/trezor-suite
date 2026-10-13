@@ -14,9 +14,7 @@
         "test:unit": "yarn g:jest"
     },
     "devDependencies": {
-        "@suite-common/wallet-config": "workspace:^",
         "@trezor/dependency-injection": "workspace:*",
-        "@trezor/network-ethereum-suite-common": "workspace:*",
         "chalk": "^6.0.0",
         "fantasticon": "4.1.0",
         "prettier": "^3.9.6",
@@ -25,9 +23,13 @@
     },
     "dependencies": {
         "@suite-common/http-client": "workspace:^",
+        "@suite-common/networks": "workspace:*",
+        "@suite-common/wallet-config": "workspace:^",
+        "@trezor/logger": "workspace:*",
         "@trezor/network-bitcoin-assets": "workspace:*",
         "@trezor/network-cardano-assets": "workspace:*",
         "@trezor/network-ethereum-assets": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
         "@trezor/network-monero-assets": "workspace:*",
         "@trezor/network-ripple-assets": "workspace:*",
         "@trezor/network-solana-assets": "workspace:*",

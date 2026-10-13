@@ -1,10 +1,21 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
     "references": [
-        { "path": "../earn-stablecoin-defs" },
-        { "path": "../legacy-network-config" },
-        { "path": "../redux-utils" },
+        {
+            "path": "../earn-stablecoin-defs"
+        },
+        {
+            "path": "../legacy-network-config"
+        },
+        {
+            "path": "../redux-utils"
+        },
+        {
+            "path": "../../networks/network-module/network-assets-types"
+        },
         {
             "path": "../../networks/bitcoin/network-bitcoin-suite-common"
         },
@@ -32,7 +43,9 @@
         {
             "path": "../../networks/tron/network-tron-suite-common"
         },
-        { "path": "../../packages/utils" },
+        {
+            "path": "../../packages/utils"
+        },
         {
             "path": "../../packages/dependency-injection"
         }
