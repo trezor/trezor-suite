@@ -90,7 +90,7 @@ export class TradingFormInputs {
     @step()
     async selectFiatCurrency(currencyCode: BaseCurrencyCode) {
         await expect(this.currencySelect).not.toBeEmpty();
-        const currentCurrency = (await this.currencySelect.innerText()).trim();
+        const currentCurrency = await this.currencySelect.innerText();
         if (currentCurrency === currencyCode.toUpperCase()) {
             return;
         }
