@@ -29,7 +29,11 @@ import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { sumAssetAccounts } from './homeAssetTableUtils';
+import {
+    groupAssetAccountsByAssetKey,
+    partitionAssetAccounts,
+    sumAssetAccounts,
+} from './homeAssetTableUtils';
 
 export type HomeAssetTableState = AssetAccountsRootState &
     DeviceRootState &
@@ -56,21 +60,9 @@ type WalletAsset = {
 const groupWalletAssets = (
     assetAccounts: readonly AssetAccount[],
 ): ReadonlyMap<WalletAssetKey, WalletAsset> => {
-    const byKey = new Map<WalletAssetKey, [AssetAccount, ...AssetAccount[]]>();
-
-    assetAccounts.forEach(assetAccount => {
-        const held = byKey.get(assetAccount.assetKey);
-
-        if (held === undefined) {
-            byKey.set(assetAccount.assetKey, [assetAccount]);
-        } else {
-            held.push(assetAccount);
-        }
-    });
-
     const assets = new Map<WalletAssetKey, WalletAsset>();
 
-    byKey.forEach((held, assetKey) => {
+    groupAssetAccountsByAssetKey(assetAccounts).forEach((held, assetKey) => {
         const [{ symbol, contractAddress }] = held;
         const { cryptoBalance, tokenInfo } = sumAssetAccounts(held);
 
@@ -96,16 +88,7 @@ const groupWalletAssets = (
 
 const selectPartitionedAssetAccounts = createMemoizedSelector(
     [selectDeviceAssetAccounts, selectHiddenAssetAccountKeySet],
-    (assetAccounts, hiddenAccounts) => {
-        const shown: AssetAccount[] = [];
-        const hidden: AssetAccount[] = [];
-
-        assetAccounts.forEach(assetAccount => {
-            (hiddenAccounts.has(assetAccount.assetAccountKey) ? hidden : shown).push(assetAccount);
-        });
-
-        return { shown, hidden };
-    },
+    partitionAssetAccounts,
 );
 
 const selectWalletAssets = createMemoizedSelector([selectPartitionedAssetAccounts], ({ shown }) =>

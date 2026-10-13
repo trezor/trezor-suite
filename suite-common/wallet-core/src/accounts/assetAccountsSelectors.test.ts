@@ -7,7 +7,9 @@ import {
     type WalletAssetKey,
     getWalletAssetKey,
     selectAssetAccounts,
+    selectDeviceNftAssetAccounts,
     selectHiddenAssetAccountKeys,
+    selectHiddenNftReasons,
 } from './assetAccountsSelectors';
 
 const accountsOfAsset = (state: AssetAccountsRootState, assetKey: WalletAssetKey) =>
@@ -38,7 +40,7 @@ type MockAccountParams = {
     index?: number;
     balance?: string;
     isVisible?: boolean;
-    tokens?: { contract: TokenAddress; balance: string; standard?: string }[];
+    tokens?: { contract: TokenAddress; balance: string; standard?: string; ids?: string[] }[];
 };
 
 const mockAccount = ({
@@ -64,6 +66,8 @@ type MockStateParams = {
     knownTokens?: TokenAddress[];
     hiddenTokens?: TokenAddress[];
     shownTokens?: TokenAddress[];
+    knownCollections?: TokenAddress[];
+    hiddenCollections?: TokenAddress[];
 };
 
 const createState = ({
@@ -71,12 +75,16 @@ const createState = ({
     knownTokens = [USDC_ON_ETH, USDT_ON_ETH],
     hiddenTokens = [],
     shownTokens = [],
+    knownCollections = [],
+    hiddenCollections = [],
 }: MockStateParams): AssetAccountsRootState => {
     const definitions = {
         coin: { data: knownTokens, hide: hiddenTokens, show: shownTokens },
+        nft: { data: knownCollections, hide: hiddenCollections, show: [] },
     };
 
     return {
+        device: { selectedDevice: { state: { staticSessionId: ALICE } } },
         wallet: { accounts },
         tokenDefinitions: { eth: definitions, dsol: definitions },
     } as unknown as AssetAccountsRootState;
@@ -370,5 +378,90 @@ describe('what a write does not change', () => {
         const state = createState({ accounts: [mockAccount()] });
 
         expect(selectAssetAccounts(state)).toBe(selectAssetAccounts(state));
+    });
+});
+
+describe('the collections the selectors keep apart', () => {
+    const PUNKS = '0x00000000000000000000000000000000000000a1' as TokenAddress;
+    const SCAM_DROP = '0x00000000000000000000000000000000000000a3' as TokenAddress;
+    const punks = { contract: PUNKS, balance: '2', standard: 'ERC721', ids: ['1', '2'] };
+
+    it('keeps a collection out of the tokens and lists it among the collections', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '100' }, punks] })],
+        });
+
+        expect(
+            selectAssetAccounts(state).map(assetAccount => assetAccount.contractAddress),
+        ).toEqual([undefined, USDC_ON_ETH]);
+        expect(
+            selectDeviceNftAssetAccounts(state).map(assetAccount => assetAccount.contractAddress),
+        ).toEqual([PUNKS]);
+    });
+
+    it('holds a collection that lists its items even with no balance reported', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [{ ...punks, balance: '0' }] })],
+        });
+
+        expect(selectDeviceNftAssetAccounts(state)).toHaveLength(1);
+    });
+
+    it('drops a collection that holds nothing', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [{ ...punks, balance: '0', ids: [] }] })],
+        });
+
+        expect(selectDeviceNftAssetAccounts(state)).toEqual([]);
+    });
+
+    it('hides a collection by the NFT definitions, not the token ones', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    tokens: [
+                        punks,
+                        { contract: SCAM_DROP, balance: '1', standard: 'ERC721', ids: ['3'] },
+                    ],
+                }),
+            ],
+            // PUNKS is known as a collection only; SCAM_DROP is known to nothing.
+            knownTokens: [SCAM_DROP],
+            knownCollections: [PUNKS],
+        });
+
+        expect(selectHiddenNftReasons(state).get(ETH)).toEqual(
+            new Map([[SCAM_DROP, 'unrecognized']]),
+        );
+    });
+
+    it('says a collection the user hid was hidden by the user', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [punks] })],
+            knownCollections: [PUNKS],
+            hiddenCollections: [PUNKS],
+        });
+
+        expect(selectHiddenNftReasons(state).get(ETH)?.get(PUNKS)).toBe('hiddenByUser');
+    });
+
+    it('keeps the collections a balance refresh leaves as they were', () => {
+        const stateWith = (balance: string) =>
+            createState({
+                accounts: [mockAccount({ balance, tokens: [{ ...punks }] })],
+            });
+
+        expect(selectDeviceNftAssetAccounts(stateWith('2'))).toBe(
+            selectDeviceNftAssetAccounts(stateWith('1')),
+        );
+    });
+
+    it('hands out new collections once an item moves', () => {
+        const before = createState({ accounts: [mockAccount({ tokens: [punks] })] });
+        const after = createState({
+            accounts: [mockAccount({ tokens: [{ ...punks, ids: ['1'] }] })],
+        });
+
+        expect(selectDeviceNftAssetAccounts(after)).not.toBe(selectDeviceNftAssetAccounts(before));
     });
 });
