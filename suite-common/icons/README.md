@@ -18,3 +18,10 @@ These packages export lazy icon loaders and filesystem-path readers through thei
 3. Select the problematic segment in the _Commands_ section and fix it by running _Reverse Subpath_.
 4. Check the _Minify output_ checkbox and copy&paste the fixed path back into the SVG file.
 5. Regenerate icons with `yarn generate-icons`.
+
+## Download coin icons
+
+Run `yarn suite:cli download-crypto-icons` from the repository root. The CLI composes the existing
+icon-download services, available through the Node-only `@suite-common/icons/scripts` entry point.
+
+Use `yarn suite:cli download-vault-icons` to download only vault-position icons.

@@ -10,7 +10,6 @@
         "type-check": "yarn g:tsc --build",
         "generate-icons": "yarn g:tsx generateIcons.mjs && yarn g:tsx generateIconFont.ts",
         "generate-icon-font": "yarn g:tsx generateIconFont.ts",
-        "download-crypto-icons": "yarn g:tsx ./scripts/downloadCryptoIcons.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest"
     },

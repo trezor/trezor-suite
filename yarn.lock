@@ -11259,6 +11259,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@suite-cli/app@workspace:suite-cli/app":
+  version: 0.0.0-use.local
+  resolution: "@suite-cli/app@workspace:suite-cli/app"
+  dependencies:
+    "@suite-common/icons": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/address@workspace:*, @suite-common/address@workspace:suite-common/address":
   version: 0.0.0-use.local
   resolution: "@suite-common/address@workspace:suite-common/address"

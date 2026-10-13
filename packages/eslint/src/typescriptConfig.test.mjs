@@ -26,6 +26,25 @@ const lintRestrictedImports = async ({ code, filename = nativeFilename, instance
     return result.messages.filter(message => message.ruleId === ruleId);
 };
 
+test('allows shared Suite services in the CLI app composition root', async () => {
+    assert.deepEqual(
+        await lintRestrictedImports({
+            code: "import { createNetworkModulesCompositionRoot } from '@suite-common/networks';",
+            filename: `${repositoryRoot}suite-cli/app/src/createCliCompositionRoot.ts`,
+        }),
+        [],
+    );
+});
+
+test('keeps shared Suite services private outside application packages', async () => {
+    const errors = await lintRestrictedImports({
+        code: "import { createNetworkModulesCompositionRoot } from '@suite-common/networks';",
+        filename: `${repositoryRoot}packages/example/src/index.ts`,
+    });
+
+    assert.equal(errors.length, 1);
+});
+
 for (const code of [
     "import Animated from 'react-native-reanimated';",
     "import Motion from 'react-native-reanimated';",

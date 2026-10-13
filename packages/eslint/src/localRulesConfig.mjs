@@ -61,14 +61,20 @@ export const localRulesConfig = [
         },
     },
     {
-        files: [allRoots.suite, allRoots.suiteNative, allRoots.suiteCommon].map(
+        files: [allRoots.suite, allRoots.suiteCli, allRoots.suiteNative, allRoots.suiteCommon].map(
             root => `${root}/**/*.{js,mjs,cjs,ts,jsx,tsx}`,
         ),
         rules: {
             'local-rules/no-package-deep-imports': [
                 'error',
                 {
-                    packageScopes: ['@suite-native', '@suite', '@suite-common', '@trezor'],
+                    packageScopes: [
+                        '@suite-native',
+                        '@suite',
+                        '@suite-cli',
+                        '@suite-common',
+                        '@trezor',
+                    ],
                     ignoredPackages: [
                         ...publishableTrezorPackages,
                         ...packagesWithSectionEntryPoints,
@@ -77,7 +83,9 @@ export const localRulesConfig = [
                         // Packages expose reusable test mocks (`/mocks`) and platform-specific React
                         // bindings (`/react` for web and desktop, `/react-native` for native) through
                         // dedicated public entry points.
-                        /^@(?:suite-native|suite|suite-common|trezor)\/[^/]+\/(?:mocks|react|react-native)$/,
+                        /^@(?:suite-native|suite|suite-cli|suite-common|trezor)\/[^/]+\/(?:mocks|react|react-native)$/,
+                        // Node CLI services have a dedicated public entry point.
+                        /^@suite-common\/icons\/scripts$/,
                         // Suite test setup imports global polyfills through this side-effect-only entry point.
                         /^@suite-common\/test-utils\/globalOverrides$/,
                         // `@suite/intl` ships the translation catalogs as files next to its sources;
@@ -103,6 +111,7 @@ export const localRulesConfig = [
             allRoots.networks,
             `${allRoots.packages}/suite`,
             allRoots.suite,
+            allRoots.suiteCli,
             allRoots.suiteCommon,
         ].map(root => `${root}/**/*.{ts,tsx}`),
         rules: {

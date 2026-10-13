@@ -25,6 +25,7 @@ const networksPackagePattern = {
 const networksAppScopePattern = {
     group: [
         '@suite/**',
+        '@suite-cli/**',
         '@suite-common/**',
         '@suite-native/**',
         // TODO(#32493): the last app-scoped dependency left under networks/. `calldata` is a
@@ -200,7 +201,7 @@ export const typescriptConfig = [
         },
     },
     {
-        // restrict import of suite-common and suite-native packages outside of suite
+        // Suite application roots can compose shared services.
         files: [`${allRoots.packages}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
         ignores: [`${allRoots.packages}/suite*/**/*`],
         rules: {
