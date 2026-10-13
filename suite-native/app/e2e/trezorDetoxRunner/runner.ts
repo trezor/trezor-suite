@@ -18,6 +18,22 @@ import type { ProjectConfig } from './types';
 const shouldExtractTrezorUserEnvLogs = (project: ProjectConfig): boolean =>
     Boolean(process.env.GITHUB_ACTION) && project.target.startsWith('android');
 
+/**
+ * Performance metrics are a by-product of the run and must never change its verdict. The module is
+ * loaded lazily so that a broken import in the collection pipeline cannot take the runner down
+ * before a single test has started.
+ */
+const collectPerformanceSafely = async (projects: ProjectConfig[]): Promise<void> => {
+    try {
+        const { collectPerformanceReport } =
+            await import('../support/performance/collectPerformance');
+
+        collectPerformanceReport(projects.map(project => project.target));
+    } catch (error) {
+        console.warn('Failed to collect the performance report, continuing:', error);
+    }
+};
+
 export const runAllProjects = async (
     projects: ProjectConfig[],
     headless: boolean,
@@ -55,6 +71,8 @@ export const runAllProjects = async (
             failedProjects.push(project.projectName);
         }
     }
+
+    await collectPerformanceSafely(projects);
 
     if (failedProjects.length > 0) {
         console.error('\nThe following projects failed:');
