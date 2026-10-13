@@ -12,8 +12,7 @@ export const verifyAvailability = ({
     scopedAccounts,
     unavailableCapability,
 }: VerifyAvailabilityParams) => {
-    const emptyAccounts = scopedAccounts.filter(account => account.empty && !account.visible);
-    const account = scopedAccounts.at(-1);
+    const [lastAccount, ...prevAccounts] = scopedAccounts.toReversed();
 
     if (unavailableCapability === 'no-support') {
         return 'TR_ACCOUNT_TYPE_NO_SUPPORT';
@@ -27,22 +26,20 @@ export const verifyAvailability = ({
     if (unavailableCapability === 'no-capability') {
         return 'TR_ACCOUNT_TYPE_NO_CAPABILITY';
     }
-    if (!account) {
+    if (!lastAccount) {
         // discovery failed?
         return 'MODAL_ADD_ACCOUNT_NO_ACCOUNT';
     }
 
-    if (account.networkType !== 'ethereum') {
-        if (emptyAccounts.length === 0) {
-            return 'MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT';
-        }
-        if (emptyAccounts.length > 1) {
-            // prev account is empty, do not add another
-            return 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY';
-        }
-        if (account.index === 0 && account.empty && account.accountType === 'normal') {
-            // current (first normal) account is empty, do not add another
-            return 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY';
-        }
+    if (lastAccount.networkType === 'ethereum') {
+        return;
+    }
+
+    if (prevAccounts.some(a => a.empty)) {
+        // prev account is empty, do not add another
+        return 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY';
+    }
+    if (!lastAccount.empty || lastAccount.visible) {
+        return 'MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT';
     }
 };
