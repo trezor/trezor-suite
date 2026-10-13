@@ -6,6 +6,7 @@ import {
     categorizeMessages,
     getValidExperimentIds,
     getValidMessages,
+    initMessageSystemThunk,
     messageSystemActions,
     selectMessageSystemConfig,
 } from '@suite-common/message-system';
@@ -14,6 +15,7 @@ import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discov
 import { createMiddleware } from '@trezor/redux-utils';
 
 const isAnyOfMessageSystemAffectingActions = isAnyOf(
+    initMessageSystemThunk.pending,
     messageSystemActions.fetchSuccessUpdate,
     messageSystemActions.addMessage,
     messageSystemActions.removeMessage,
