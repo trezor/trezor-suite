@@ -5,7 +5,6 @@ import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
     Button,
@@ -18,6 +17,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { EjectIcon } from '@trezor/icons';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 

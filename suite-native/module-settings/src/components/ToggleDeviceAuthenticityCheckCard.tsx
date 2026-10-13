@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsDeviceAuthenticityCheckSupported } from '@suite-common/device';
+import { selectIsDeviceAuthenticityCheckSupported } from '@suite-common/device-authenticity';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

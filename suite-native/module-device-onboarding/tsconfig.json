@@ -7,6 +7,9 @@
         },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/device-authenticity"
+        },
+        {
             "path": "../../suite-common/message-system"
         },
         {
@@ -14,9 +17,6 @@
         },
         {
             "path": "../../suite-common/redux-utils"
-        },
-        {
-            "path": "../../suite-common/suite-constants"
         },
         {
             "path": "../../suite-common/suite-types"

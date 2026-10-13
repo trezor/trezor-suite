@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../redux-utils" },
-        { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../toast-notifications" },
@@ -11,6 +10,7 @@
         {
             "path": "../../packages/connect-common"
         },
+        { "path": "../../packages/device" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/type-utils" },

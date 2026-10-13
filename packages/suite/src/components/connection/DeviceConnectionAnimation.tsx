@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
+import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { DeviceAnimation } from '@trezor/product-components';
 
 import { AnimationCard } from './AnimationCard';
