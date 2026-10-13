@@ -1,12 +1,14 @@
 import { type DeviceRootState } from '@suite-common/device';
 import {
+    DefinitionType,
     type TokenDefinitionsRootState,
+    type TokenDefinitionsState,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { isNftToken } from '@suite-common/wallet-utils';
-import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { type MultiTokenValue, type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { type Branded } from '@trezor/type-utils';
@@ -63,31 +65,82 @@ export type AssetAccount = {
     tokenInfo: TokenInfo | undefined;
 };
 
-const toAssetAccounts = (account: Account): readonly AssetAccount[] => {
-    const toAssetAccount = (
-        contractAddress: TokenAddress | undefined,
-        cryptoBalance: string,
-        tokenInfo: TokenInfo | undefined,
-    ): AssetAccount => ({
-        assetAccountKey: getAssetAccountKey({ accountKey: account.key, contractAddress }),
-        accountKey: account.key,
-        assetKey: getWalletAssetKey({
-            deviceState: account.deviceState,
-            symbol: account.symbol,
-            contractAddress,
-        }),
+type ToAssetAccountParams = {
+    account: Account;
+    contractAddress: TokenAddress | undefined;
+    cryptoBalance: string;
+    tokenInfo: TokenInfo | undefined;
+};
+
+const toAssetAccount = ({
+    account,
+    contractAddress,
+    cryptoBalance,
+    tokenInfo,
+}: ToAssetAccountParams): AssetAccount => ({
+    assetAccountKey: getAssetAccountKey({ accountKey: account.key, contractAddress }),
+    accountKey: account.key,
+    assetKey: getWalletAssetKey({
         deviceState: account.deviceState,
         symbol: account.symbol,
         contractAddress,
-        cryptoBalance,
-        tokenInfo,
+    }),
+    deviceState: account.deviceState,
+    symbol: account.symbol,
+    contractAddress,
+    cryptoBalance,
+    tokenInfo,
+});
+
+const hasBalance = (token: TokenInfo) => new BigNumber(token.balance ?? '0').gt(0);
+
+// A collection is held when it lists its items, even where the backend reports no balance for it.
+// Items first: Blockbook reports no balance for most collections, so this rarely builds a number.
+const isNftHeld = (token: TokenInfo) =>
+    (token.ids?.length ?? 0) > 0 || (token.multiTokenValues?.length ?? 0) > 0 || hasBalance(token);
+
+type AssetAccountsByKind = {
+    assetAccounts: readonly AssetAccount[];
+    nftAssetAccounts: readonly AssetAccount[];
+};
+
+/** One walk over the accounts' tokens for both kinds, so a token-heavy wallet pays for it once. */
+const splitAssetAccounts = (accounts: readonly Account[]): AssetAccountsByKind => {
+    const assetAccounts: AssetAccount[] = [];
+    const nftAssetAccounts: AssetAccount[] = [];
+
+    accounts.forEach(account => {
+        assetAccounts.push(
+            toAssetAccount({
+                account,
+                contractAddress: undefined,
+                cryptoBalance: account.formattedBalance,
+                tokenInfo: undefined,
+            }),
+        );
+
+        (account.tokens ?? []).forEach(token => {
+            const isNft = isNftToken(token);
+
+            if (isNft ? !isNftHeld(token) : !hasBalance(token)) {
+                return;
+            }
+
+            (isNft ? nftAssetAccounts : assetAccounts).push(
+                toAssetAccount({
+                    account,
+                    contractAddress: token.contract as TokenAddress,
+                    cryptoBalance: token.balance ?? '0',
+                    tokenInfo: token,
+                }),
+            );
+        });
     });
 
-    const tokenAccounts = (account.tokens ?? [])
-        .filter(token => !isNftToken(token) && new BigNumber(token.balance ?? '0').gt(0))
-        .map(token => toAssetAccount(token.contract as TokenAddress, token.balance ?? '0', token));
-
-    return [toAssetAccount(undefined, account.formattedBalance, undefined), ...tokenAccounts];
+    return {
+        assetAccounts: returnStableArrayIfEmpty(assetAccounts),
+        nftAssetAccounts: returnStableArrayIfEmpty(nftAssetAccounts),
+    };
 };
 
 export type AssetAccountsRootState = AccountsRootState &
@@ -96,115 +149,215 @@ export type AssetAccountsRootState = AccountsRootState &
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<AssetAccountsRootState>();
 
-export const selectAssetAccounts = createMemoizedSelector([selectAccounts], accounts =>
-    returnStableArrayIfEmpty(accounts.flatMap(toAssetAccounts)),
-);
+const selectAssetAccountsByKind = createMemoizedSelector([selectAccounts], splitAssetAccounts);
 
 /** Only the wallet on screen: another wallet's accounts are no work this table has to do. */
-export const selectDeviceAssetAccounts = createMemoizedSelector(
+const selectDeviceAssetAccountsByKind = createMemoizedSelector(
     [selectVisibleDeviceAccounts],
-    accounts => returnStableArrayIfEmpty(accounts.flatMap(toAssetAccounts)),
+    splitAssetAccounts,
+);
+
+export const selectAssetAccounts = createMemoizedSelector(
+    [selectAssetAccountsByKind],
+    ({ assetAccounts }) => assetAccounts,
+);
+
+export const selectDeviceAssetAccounts = createMemoizedSelector(
+    [selectDeviceAssetAccountsByKind],
+    ({ assetAccounts }) => assetAccounts,
+);
+
+const haveSameEntries = <T>(left: readonly T[] | undefined, right: readonly T[] | undefined) =>
+    left === right ||
+    (left?.length === right?.length &&
+        (left ?? []).every((entry, index) => entry === right?.[index]));
+
+const haveSameMultiTokenValues = (
+    left: readonly MultiTokenValue[] | undefined,
+    right: readonly MultiTokenValue[] | undefined,
+) =>
+    left === right ||
+    (left?.length === right?.length &&
+        (left ?? []).every(
+            ({ id, value }, index) => id === right?.[index]?.id && value === right?.[index]?.value,
+        ));
+
+const haveSameNftAssetAccounts = (left: readonly AssetAccount[], right: readonly AssetAccount[]) =>
+    left.length === right.length &&
+    left.every((held, index) => {
+        const other = right[index];
+
+        return (
+            held.assetAccountKey === other?.assetAccountKey &&
+            held.cryptoBalance === other.cryptoBalance &&
+            held.tokenInfo?.name === other.tokenInfo?.name &&
+            held.tokenInfo?.symbol === other.tokenInfo?.symbol &&
+            haveSameEntries(held.tokenInfo?.ids, other.tokenInfo?.ids) &&
+            haveSameMultiTokenValues(
+                held.tokenInfo?.multiTokenValues,
+                other.tokenInfo?.multiTokenValues,
+            )
+        );
+    });
+
+/**
+ * Every balance refresh hands out new token objects, but a collection rarely changes, so a write
+ * that leaves every collection as it was keeps the previous list and spares everything built on it.
+ */
+export const selectDeviceNftAssetAccounts = createMemoizedSelector(
+    [selectDeviceAssetAccountsByKind],
+    ({ nftAssetAccounts }) => nftAssetAccounts,
+    { memoizeOptions: { resultEqualityCheck: haveSameNftAssetAccounts } },
 );
 
 type AssetAccountsByContract = ReadonlyMap<TokenAddress, readonly AssetAccount[]>;
 
+type AssetAccountsByToken = ReadonlyMap<NetworkSymbol, AssetAccountsByContract>;
+
+const groupAssetAccountsByToken = (
+    assetAccounts: readonly AssetAccount[],
+): AssetAccountsByToken => {
+    const byNetwork = new Map<NetworkSymbol, Map<TokenAddress, AssetAccount[]>>();
+
+    assetAccounts.forEach(assetAccount => {
+        const { symbol, contractAddress } = assetAccount;
+
+        if (contractAddress === undefined) {
+            return;
+        }
+
+        let byContract = byNetwork.get(symbol);
+
+        if (byContract === undefined) {
+            byContract = new Map<TokenAddress, AssetAccount[]>();
+            byNetwork.set(symbol, byContract);
+        }
+
+        const held = byContract.get(contractAddress);
+
+        if (held === undefined) {
+            byContract.set(contractAddress, [assetAccount]);
+        } else {
+            held.push(assetAccount);
+        }
+    });
+
+    return byNetwork;
+};
+
 const selectAssetAccountsByToken = createMemoizedSelector(
     [selectAssetAccounts],
-    (assetAccounts): ReadonlyMap<NetworkSymbol, AssetAccountsByContract> => {
-        const byNetwork = new Map<NetworkSymbol, Map<TokenAddress, AssetAccount[]>>();
+    groupAssetAccountsByToken,
+);
 
-        assetAccounts.forEach(assetAccount => {
-            const { symbol, contractAddress } = assetAccount;
-
-            if (contractAddress === undefined) {
-                return;
-            }
-
-            let byContract = byNetwork.get(symbol);
-
-            if (byContract === undefined) {
-                byContract = new Map<TokenAddress, AssetAccount[]>();
-                byNetwork.set(symbol, byContract);
-            }
-
-            const held = byContract.get(contractAddress);
-
-            if (held === undefined) {
-                byContract.set(contractAddress, [assetAccount]);
-            } else {
-                held.push(assetAccount);
-            }
-        });
-
-        return byNetwork;
-    },
+// Only collections the wallet on screen holds: no other wallet's collections reach the screen.
+const selectNftAssetAccountsByToken = createMemoizedSelector(
+    [selectDeviceNftAssetAccounts],
+    groupAssetAccountsByToken,
 );
 
 export type HiddenTokenReason = 'hiddenByUser' | 'unrecognized';
 
-export const selectHiddenTokenReasons = createMemoizedSelector(
-    [selectAssetAccountsByToken, selectTokenDefinitions],
-    (
-        byNetwork,
-        tokenDefinitions,
-    ): ReadonlyMap<NetworkSymbol, ReadonlyMap<TokenAddress, HiddenTokenReason>> => {
-        const reasons = new Map<NetworkSymbol, Map<TokenAddress, HiddenTokenReason>>();
+type HiddenTokenReasons = ReadonlyMap<NetworkSymbol, ReadonlyMap<TokenAddress, HiddenTokenReason>>;
 
-        byNetwork.forEach((byContract, symbol) => {
-            byContract.forEach((group, contractAddress) => {
-                const [assetAccount] = group;
+type GetHiddenTokenReasonsParams = {
+    byNetwork: AssetAccountsByToken;
+    tokenDefinitions: TokenDefinitionsState;
+    definitionType: DefinitionType;
+};
 
-                if (assetAccount?.tokenInfo === undefined) {
-                    return;
-                }
+const getHiddenTokenReasons = ({
+    byNetwork,
+    tokenDefinitions,
+    definitionType,
+}: GetHiddenTokenReasonsParams): HiddenTokenReasons => {
+    const reasons = new Map<NetworkSymbol, Map<TokenAddress, HiddenTokenReason>>();
 
-                const { hiddenWithBalance, hiddenWithoutBalance, unverifiedWithBalance } =
-                    getTokens({
-                        tokens: [assetAccount.tokenInfo],
-                        symbol,
-                        tokenDefinitions: tokenDefinitions?.[symbol]?.coin,
-                    });
+    // One getTokens call per network rather than per contract: it builds its lookups on every call.
+    byNetwork.forEach((byContract, symbol) => {
+        const tokens = [...byContract.values()].flatMap(([assetAccount]) =>
+            assetAccount?.tokenInfo === undefined ? [] : [assetAccount.tokenInfo],
+        );
 
-                const isHiddenByUser = hiddenWithBalance.length + hiddenWithoutBalance.length > 0;
-
-                if (!isHiddenByUser && unverifiedWithBalance.length === 0) {
-                    return;
-                }
-
-                const hiddenOnNetwork =
-                    reasons.get(symbol) ?? new Map<TokenAddress, HiddenTokenReason>();
-
-                hiddenOnNetwork.set(
-                    contractAddress,
-                    isHiddenByUser ? 'hiddenByUser' : 'unrecognized',
-                );
-                reasons.set(symbol, hiddenOnNetwork);
-            });
+        const { hiddenWithBalance, hiddenWithoutBalance, unverifiedWithBalance } = getTokens({
+            tokens,
+            symbol,
+            tokenDefinitions: tokenDefinitions?.[symbol]?.[definitionType],
+            isNft: definitionType === DefinitionType.NFT,
         });
 
-        return reasons;
-    },
+        const hiddenOnNetwork = new Map<TokenAddress, HiddenTokenReason>();
+
+        unverifiedWithBalance.forEach(token =>
+            hiddenOnNetwork.set(token.contract as TokenAddress, 'unrecognized'),
+        );
+        [...hiddenWithBalance, ...hiddenWithoutBalance].forEach(token =>
+            hiddenOnNetwork.set(token.contract as TokenAddress, 'hiddenByUser'),
+        );
+
+        if (hiddenOnNetwork.size > 0) {
+            reasons.set(symbol, hiddenOnNetwork);
+        }
+    });
+
+    return reasons;
+};
+
+export const selectHiddenTokenReasons = createMemoizedSelector(
+    [selectAssetAccountsByToken, selectTokenDefinitions],
+    (byNetwork, tokenDefinitions) =>
+        getHiddenTokenReasons({
+            byNetwork,
+            tokenDefinitions,
+            definitionType: DefinitionType.COIN,
+        }),
 );
+
+/** Collections are hidden by the same rule as tokens, against the NFT definitions. */
+export const selectHiddenNftReasons = createMemoizedSelector(
+    [selectNftAssetAccountsByToken, selectTokenDefinitions],
+    (byNetwork, tokenDefinitions) =>
+        getHiddenTokenReasons({
+            byNetwork,
+            tokenDefinitions,
+            definitionType: DefinitionType.NFT,
+        }),
+);
+
+const getHiddenAssetAccountKeys = (
+    byNetwork: AssetAccountsByToken,
+    reasons: HiddenTokenReasons,
+): readonly AssetAccountKey[] => {
+    const keys: AssetAccountKey[] = [];
+
+    reasons.forEach((hiddenOnNetwork, symbol) => {
+        hiddenOnNetwork.forEach((_reason, contractAddress) => {
+            byNetwork
+                .get(symbol)
+                ?.get(contractAddress)
+                ?.forEach(assetAccount => keys.push(assetAccount.assetAccountKey));
+        });
+    });
+
+    return returnStableArrayIfEmpty(keys);
+};
 
 export const selectHiddenAssetAccountKeys = createMemoizedSelector(
     [selectAssetAccountsByToken, selectHiddenTokenReasons],
-    (byNetwork, reasons) => {
-        const keys: AssetAccountKey[] = [];
+    getHiddenAssetAccountKeys,
+);
 
-        reasons.forEach((hiddenOnNetwork, symbol) => {
-            hiddenOnNetwork.forEach((_reason, contractAddress) => {
-                byNetwork
-                    .get(symbol)
-                    ?.get(contractAddress)
-                    ?.forEach(assetAccount => keys.push(assetAccount.assetAccountKey));
-            });
-        });
-
-        return returnStableArrayIfEmpty(keys);
-    },
+export const selectHiddenNftAssetAccountKeys = createMemoizedSelector(
+    [selectNftAssetAccountsByToken, selectHiddenNftReasons],
+    getHiddenAssetAccountKeys,
 );
 
 export const selectHiddenAssetAccountKeySet = createMemoizedSelector(
     [selectHiddenAssetAccountKeys],
+    (keys): ReadonlySet<AssetAccountKey> => new Set(keys),
+);
+
+export const selectHiddenNftAssetAccountKeySet = createMemoizedSelector(
+    [selectHiddenNftAssetAccountKeys],
     (keys): ReadonlySet<AssetAccountKey> => new Set(keys),
 );
