@@ -124,3 +124,39 @@ test('preserves existing native import restrictions', async () => {
     });
     assert.equal(errors.length, 2);
 });
+
+for (const filename of [
+    `${repositoryRoot}suite-common/icons/src/cryptoIcons.ts`,
+    `${repositoryRoot}packages/example/src/icons.ts`,
+    `${repositoryRoot}networks/bitcoin/network-bitcoin/src/icons.ts`,
+    nativeFilename,
+]) {
+    test(`allows network asset package roots in ${filename}`, async () => {
+        assert.deepEqual(
+            await lintRestrictedImports({
+                code: "import { bitcoinCryptoIcons } from '@trezor/network-bitcoin-assets'; export { ethereumNetworkIcons } from '@trezor/network-ethereum-assets';",
+                filename,
+            }),
+            [],
+        );
+    });
+
+    test(`still requires sectioned implementation imports in ${filename}`, async () => {
+        const errors = await lintRestrictedImports({
+            code: "import { network } from '@trezor/network-ethereum';",
+            filename,
+        });
+        assert.equal(errors.length, 1);
+        assert.match(errors[0].message, /\/constants, \/runtime or \/types/);
+    });
+
+    test(`allows sectioned implementation imports in ${filename}`, async () => {
+        assert.deepEqual(
+            await lintRestrictedImports({
+                code: "import { network } from '@trezor/network-ethereum/runtime';",
+                filename,
+            }),
+            [],
+        );
+    });
+}

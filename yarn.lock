@@ -11771,7 +11771,16 @@ __metadata:
   dependencies:
     "@suite-common/http-client": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
+    "@trezor/network-bitcoin-assets": "workspace:*"
+    "@trezor/network-cardano-assets": "workspace:*"
+    "@trezor/network-ethereum-assets": "workspace:*"
     "@trezor/network-ethereum-suite-common": "workspace:*"
+    "@trezor/network-monero-assets": "workspace:*"
+    "@trezor/network-ripple-assets": "workspace:*"
+    "@trezor/network-solana-assets": "workspace:*"
+    "@trezor/network-stellar-assets": "workspace:*"
+    "@trezor/network-tezos-assets": "workspace:*"
+    "@trezor/network-tron-assets": "workspace:*"
     chalk: "npm:^6.0.0"
     fantasticon: "npm:4.1.0"
     prettier: "npm:^3.9.6"
@@ -18592,6 +18601,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/network-bitcoin-assets@workspace:*, @trezor/network-bitcoin-assets@workspace:networks/bitcoin/network-bitcoin-assets":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-bitcoin-assets@workspace:networks/bitcoin/network-bitcoin-assets"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/network-bitcoin-suite-common@workspace:*, @trezor/network-bitcoin-suite-common@workspace:networks/bitcoin/network-bitcoin-suite-common":
   version: 0.0.0-use.local
   resolution: "@trezor/network-bitcoin-suite-common@workspace:networks/bitcoin/network-bitcoin-suite-common"
@@ -18609,6 +18624,12 @@ __metadata:
   resolution: "@trezor/network-bitcoin-types@workspace:networks/bitcoin/network-bitcoin-types"
   dependencies:
     "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-cardano-assets@workspace:*, @trezor/network-cardano-assets@workspace:networks/cardano/network-cardano-assets":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-cardano-assets@workspace:networks/cardano/network-cardano-assets"
   languageName: unknown
   linkType: soft
 
@@ -18644,6 +18665,12 @@ __metadata:
     "@fivebinaries/coin-selection": "npm:3.0.0"
     binaryen: "npm:132.0.0"
     cbor: "npm:^10.0.12"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-ethereum-assets@workspace:*, @trezor/network-ethereum-assets@workspace:networks/ethereum/network-ethereum-assets":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-ethereum-assets@workspace:networks/ethereum/network-ethereum-assets"
   languageName: unknown
   linkType: soft
 
@@ -18702,6 +18729,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/network-monero-assets@workspace:*, @trezor/network-monero-assets@workspace:networks/monero/network-monero-assets":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-monero-assets@workspace:networks/monero/network-monero-assets"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-ripple-assets@workspace:*, @trezor/network-ripple-assets@workspace:networks/ripple/network-ripple-assets":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-ripple-assets@workspace:networks/ripple/network-ripple-assets"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/network-ripple-suite-common@workspace:*, @trezor/network-ripple-suite-common@workspace:networks/ripple/network-ripple-suite-common":
   version: 0.0.0-use.local
   resolution: "@trezor/network-ripple-suite-common@workspace:networks/ripple/network-ripple-suite-common"
@@ -18727,6 +18766,12 @@ __metadata:
   resolution: "@trezor/network-ripple@workspace:networks/ripple/network-ripple"
   dependencies:
     xrpl: "npm:4.6.0"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-solana-assets@workspace:*, @trezor/network-solana-assets@workspace:networks/solana/network-solana-assets":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-solana-assets@workspace:networks/solana/network-solana-assets"
   languageName: unknown
   linkType: soft
 
@@ -18768,6 +18813,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/network-stellar-assets@workspace:*, @trezor/network-stellar-assets@workspace:networks/stellar/network-stellar-assets":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-stellar-assets@workspace:networks/stellar/network-stellar-assets"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/network-stellar-suite-common@workspace:*, @trezor/network-stellar-suite-common@workspace:networks/stellar/network-stellar-suite-common":
   version: 0.0.0-use.local
   resolution: "@trezor/network-stellar-suite-common@workspace:networks/stellar/network-stellar-suite-common"
@@ -18795,6 +18846,18 @@ __metadata:
   dependencies:
     "@stellar/stellar-sdk": "npm:17.1.0"
     "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-tezos-assets@workspace:*, @trezor/network-tezos-assets@workspace:networks/tezos/network-tezos-assets":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-tezos-assets@workspace:networks/tezos/network-tezos-assets"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-tron-assets@workspace:*, @trezor/network-tron-assets@workspace:networks/tron/network-tron-assets":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-tron-assets@workspace:networks/tron/network-tron-assets"
   languageName: unknown
   linkType: soft
 

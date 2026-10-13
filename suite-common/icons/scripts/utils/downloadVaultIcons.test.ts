@@ -2,8 +2,10 @@ import fs from 'fs/promises';
 import { join } from 'path';
 import sharp from 'sharp';
 
+import { ethereumCryptoIcons } from '@trezor/network-ethereum-assets';
+
 import { COIN_IMAGE_SIZES, ICONS_URL_BASE, createCoinImageName } from '../../src/coinImages';
-import { CRYPTO_ICONS_SVG_PATH, FILES_CRYPTOICONS_PATH, YIELD_VAULTS_URL } from '../constants';
+import { FILES_CRYPTOICONS_PATH, YIELD_VAULTS_URL } from '../constants';
 import { rasterizeSvg } from './images';
 
 // `readFile` stays real so the bundled-icon path actually rasterizes the design-system SVG, while
@@ -102,11 +104,10 @@ const writtenIcon = (fileName: string): Buffer | undefined =>
 const requestedUrls = () => fetchMock.mock.calls.map(([input]) => urlOf(input));
 
 // What the app itself renders for a native coin, i.e. what the published vault icon has to equal.
-const bundledIcon = async (networkSymbol: string, size: (typeof COIN_IMAGE_SIZES)[number]) =>
-    await rasterizeSvg(
-        await fs.readFile(join(CRYPTO_ICONS_SVG_PATH, `${networkSymbol}.svg`)),
-        size,
-    );
+const bundledIcon = async (
+    networkSymbol: keyof typeof ethereumCryptoIcons,
+    size: (typeof COIN_IMAGE_SIZES)[number],
+) => await rasterizeSvg(await fs.readFile(ethereumCryptoIcons[networkSymbol].getIconPath()), size);
 
 describe('downloadVaultIcons', () => {
     let consoleErrorSpy: jest.SpyInstance;
