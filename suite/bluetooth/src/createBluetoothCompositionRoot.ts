@@ -17,6 +17,7 @@ import { createBackgroundScan } from './bluetoothBackgroundScan';
 import { type Bluetooth, type BluetoothDep, createBluetooth } from './createBluetooth';
 import { createBluetoothInit } from './createBluetoothInit';
 import { createBluetoothScan } from './createBluetoothScan';
+import { createBluetoothUnpair } from './createBluetoothUnpair';
 import { createSetupBluetoothAutoReconnect } from './createSetupBluetoothAutoReconnect';
 import { createSetupBluetoothListeners } from './createSetupBluetoothListeners';
 import { createSuspendHandler } from './createSuspendHandler';
@@ -79,10 +80,17 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         backgroundScan,
     });
 
+    const bluetoothUnpair = createBluetoothUnpair({
+        getState: deps.getState,
+        dispatch: deps.dispatch,
+        backgroundScan,
+    });
+
     return createBluetooth({
         bluetoothInit,
         backgroundScan,
         scan: bluetoothScan,
         suspendHandler,
+        unpair: bluetoothUnpair,
     });
 };
