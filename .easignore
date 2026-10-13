@@ -280,7 +280,9 @@
 !/networks/ethereum/network-ethereum-types
 /networks/monero/*
 !/networks/monero/network-monero-assets
+!/networks/monero/network-monero-types
 /networks/network-module/*
+!/networks/network-module/network-assets-types
 !/networks/network-module/network-module-suite-common-types
 !/networks/network-module/network-module-types
 /networks/ripple/*
@@ -300,6 +302,7 @@
 !/networks/stellar/network-stellar-types
 /networks/tezos/*
 !/networks/tezos/network-tezos-assets
+!/networks/tezos/network-tezos-types
 /networks/tron/*
 !/networks/tron/network-tron
 !/networks/tron/network-tron-assets

@@ -12,6 +12,9 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/icons": "workspace:*"
+        "@suite-common/icons": "workspace:*",
+        "@suite-common/networks": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/network-module-suite-common-types": "workspace:*"
     }
 }

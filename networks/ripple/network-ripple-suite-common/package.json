@@ -16,6 +16,7 @@
         "@scure/base": "^2.0.0",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-ripple": "workspace:*",
+        "@trezor/network-ripple-assets": "workspace:*",
         "@trezor/network-ripple-types": "workspace:*"
     }
 }

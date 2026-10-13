@@ -16,6 +16,7 @@
         "@suite-common/earn-stablecoin-defs": "workspace:*",
         "@suite-common/legacy-network-config": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
+        "@trezor/network-assets-types": "workspace:*",
         "@trezor/network-bitcoin-suite-common": "workspace:*",
         "@trezor/network-cardano-suite-common": "workspace:*",
         "@trezor/network-ethereum-suite-common": "workspace:*",

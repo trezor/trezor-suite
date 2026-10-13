@@ -1,7 +1,9 @@
+import type { NetworkAssetsModule } from '@trezor/network-assets-types';
 import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module-types';
 import { isArrayMember } from '@trezor/utils';
 
 import type { AddressValidator } from './AddressValidator';
+import type { IsWrappedNativeToken } from './IsWrappedNativeToken';
 import type { NamedAddressResolver } from './NamedAddressResolver';
 import type { SuiteCommonNetworkConfig } from './SuiteCommonNetworkConfig';
 import type { SuiteCommonNetworkModule } from './SuiteCommonNetworkModule';
@@ -9,11 +11,13 @@ import type { SuiteCommonNetworkModule } from './SuiteCommonNetworkModule';
 /**
  * A module's own capabilities, stated in terms of the symbols that module supports.
  *
- * Everything here takes the module's closed symbol type rather than the open `NetworkSymbol`:
- * `createNetworkModule` narrows once at the boundary, so a module never restates the check.
+ * Network behavior takes the module's closed symbol type rather than the open `NetworkSymbol`.
+ * `createNetworkModule` narrows behavior calls at the boundary; the repository routes icon calls.
  */
 export type NetworkModuleDefinition<TSymbol extends string> = {
+    icon: NetworkAssetsModule<TSymbol>;
     addressValidator: AddressValidator<TSymbol>;
+    isWrappedNativeToken?: IsWrappedNativeToken<TSymbol>;
 
     /** Only for networks with a name system; see `NamedAddressResolver`. */
     namedAddressResolver?: NamedAddressResolver<TSymbol>;
@@ -28,7 +32,7 @@ export type NetworkModuleDefinition<TSymbol extends string> = {
  *
  * The module's closed symbol type is inferred from the list of networks it supports, which is
  * also the only check it needs: the open `NetworkSymbol` that shared layers pass is narrowed
- * against that list before any capability is reached. A symbol the module does not support is
+ * against that list before network behavior is reached. A symbol the module does not support is
  * therefore rejected at its edge, and the capabilities themselves are written against the closed
  * symbol type with no per-call conversion.
  */
@@ -50,8 +54,13 @@ export const createNetworkModule = <TSymbol extends string>(
     };
 
     const resolver = definition.namedAddressResolver;
+    const { isWrappedNativeToken } = definition;
 
     return {
+        icon: definition.icon,
+        isWrappedNativeToken: isWrappedNativeToken
+            ? (symbol, contract) => isWrappedNativeToken(narrow(symbol), contract)
+            : undefined,
         addressValidator: {
             isAddressValid: (address, symbol) =>
                 definition.addressValidator.isAddressValid(address, narrow(symbol)),

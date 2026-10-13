@@ -1,6 +1,6 @@
-import type { DownloadCryptoIconsDep, DownloadVaultIconsDep } from '@suite-common/icons/scripts';
+import type { DownloadCryptoIconsDep } from '@suite-common/icons/scripts';
 
-export type CliAppDeps = DownloadCryptoIconsDep & DownloadVaultIconsDep;
+export type CliAppDeps = DownloadCryptoIconsDep;
 
 export type CliApp = (args: readonly string[]) => Promise<number>;
 
@@ -14,15 +14,11 @@ export const createCliApp =
                 await deps.downloadCryptoIcons();
 
                 return 0;
-            case 'download-vault-icons':
-                await deps.downloadVaultIcons();
-
-                return 0;
             case undefined:
             case '--help':
             case 'help':
                 // eslint-disable-next-line no-console -- CLI help output.
-                console.log('Usage: yarn suite:cli <download-crypto-icons | download-vault-icons>');
+                console.log('Usage: yarn suite:cli download-crypto-icons');
 
                 return 0;
             default:

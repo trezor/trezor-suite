@@ -17,6 +17,7 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-tron": "workspace:*",
+        "@trezor/network-tron-assets": "workspace:*",
         "@trezor/network-tron-types": "workspace:*"
     }
 }

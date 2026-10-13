@@ -11,13 +11,13 @@ export type LogWriter = {
 
 // Defines the minimal logger contract shared across the codebase.
 // Consumers can use an app-specific logger adapter instead of the concrete `Log` class.
-export interface Logger {
+export type Logger = {
     info(...args: unknown[]): void;
     debug(...args: unknown[]): void;
     log(...args: unknown[]): void;
     warn(...args: unknown[]): void;
     error(...args: unknown[]): void;
-}
+};
 
 export type CreateLogger = (prefix: string) => Logger;
 

@@ -1,32 +1,24 @@
-/* eslint-disable no-console */
-import { readFile } from 'fs/promises';
 import { join } from 'path';
-import { z } from 'zod';
 
-import { createHttpClient, isResponseError } from '@suite-common/http-client';
-import { type Network, getNetwork, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
-import { bitcoinCryptoIcons } from '@trezor/network-bitcoin-assets';
-import { cardanoCryptoIcons } from '@trezor/network-cardano-assets';
-import { ethereumCryptoIcons } from '@trezor/network-ethereum-assets';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
-import { moneroCryptoIcons } from '@trezor/network-monero-assets';
-import { rippleCryptoIcons } from '@trezor/network-ripple-assets';
-import { solanaCryptoIcons } from '@trezor/network-solana-assets';
-import { stellarCryptoIcons } from '@trezor/network-stellar-assets';
-import { tezosCryptoIcons } from '@trezor/network-tezos-assets';
-import { tronCryptoIcons } from '@trezor/network-tron-assets';
+import { isResponseError } from '@suite-common/http-client';
+import type {
+    GetIconPathsDep,
+    GetNetworkByCoingeckoIdDep,
+    IsSupportedNetworkDep,
+    IsWrappedNativeTokenDep,
+    NetworkMetadata,
+} from '@suite-common/networks';
+import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import { rasterizeSvg } from './images';
-import {
-    COIN_IMAGE_SIZES,
-    type CoinImageSize,
-    ICONS_URL_BASE,
-    createCoinImageName,
-} from '../../src/coinImages';
-import { type NetworkIconSymbol } from '../../src/iconSymbols';
-import { isCryptoIconSymbol } from '../../src/iconUtils';
-import { FILES_CRYPTOICONS_PATH, YIELD_VAULTS_URL } from '../constants';
-import { type YieldVault, yieldVaultsSchema } from '../schemas';
+import type {
+    FetchPublishedIconDep,
+    FetchYieldVaultsDep,
+    IconsLoggerDep,
+} from './createVaultIconsClient';
+import type { RasterizeSvgDep } from './images';
+import { COIN_IMAGE_SIZES, type CoinImageSize, createCoinImageName } from '../../src/coinImages';
+import { FILES_CRYPTOICONS_PATH } from '../constants';
+import type { YieldVault } from '../schemas';
 
 /**
  * Where the icon of the asset a vault is denominated in comes from: either an already published
@@ -34,48 +26,37 @@ import { type YieldVault, yieldVaultsSchema } from '../schemas';
  * themselves instead of the CoinGecko one.
  */
 type VaultIconSource =
-    | { kind: 'published'; coingeckoId: string }
-    | { kind: 'bundled'; networkSymbol: NetworkIconSymbol };
+    { kind: 'published'; coingeckoId: string } | { kind: 'bundled'; networkSymbol: NetworkSymbol };
 
-export type DownloadVaultIconsDeps = {
-    writeFile: (path: string, data: Buffer) => Promise<void>;
-    mkdir: (path: string, options: { recursive: true }) => Promise<string | undefined>;
-};
+export type WriteFile = (path: string, data: Buffer) => Promise<void>;
+
+export type WriteFileDep = { writeFile: WriteFile };
+
+export type ReadFile = (path: string) => Promise<Buffer>;
+
+export type ReadFileDep = { readFile: ReadFile };
+
+export type Mkdir = (path: string, options: { recursive: true }) => Promise<string | undefined>;
+
+export type MkdirDep = { mkdir: Mkdir };
+
+export type DownloadVaultIconsDeps = GetNetworkByCoingeckoIdDep &
+    GetIconPathsDep &
+    IsSupportedNetworkDep &
+    IsWrappedNativeTokenDep &
+    ReadFileDep &
+    RasterizeSvgDep &
+    WriteFileDep &
+    MkdirDep &
+    FetchYieldVaultsDep &
+    FetchPublishedIconDep &
+    IconsLoggerDep;
 
 export type DownloadVaultIcons = () => Promise<void>;
 
 export type DownloadVaultIconsDep = { downloadVaultIcons: DownloadVaultIcons };
 
 export const createDownloadVaultIcons = (deps: DownloadVaultIconsDeps): DownloadVaultIcons => {
-    const earnYieldApi = createHttpClient({
-        onError: error => {
-            console.error('Vault icons: error fetching yield vaults:', error);
-        },
-    });
-
-    const fetchYieldVaults = earnYieldApi(YIELD_VAULTS_URL, {
-        method: 'GET',
-        schema: yieldVaultsSchema,
-    });
-
-    // Errors are handled per icon by the caller (a missing rendition only skips that one file), so this
-    // client stays silent instead of logging every expected 404 twice.
-    const iconsCdnApi = createHttpClient({});
-
-    const fetchPublishedIcon = (fileName: string) =>
-        iconsCdnApi(`${ICONS_URL_BASE}/${fileName}`, {
-            method: 'GET',
-            parseResponse: response => response.arrayBuffer(),
-            schema: z.instanceof(ArrayBuffer),
-            // The CDN is the source of every vault icon, so ride out a transient 5xx rather than
-            // silently leaving the icon unpublished until the next nightly run.
-            retry: {
-                attempts: 2,
-                delay: 1000,
-                when: ({ response }) => (response?.status ?? 0) >= 500,
-            },
-        })();
-
     /**
      * A vault-position token renders as the asset the vault is denominated in — except that a
      * wrapped-native underlying reads as the native coin: a WETH vault is an ETH vault. On an L2 the
@@ -83,26 +64,20 @@ export const createDownloadVaultIcons = (deps: DownloadVaultIconsDeps): Download
      * from the L2 itself.
      */
     const resolveIconSource = (
-        network: Network,
+        network: NetworkMetadata,
         vault: YieldVault,
     ): VaultIconSource | undefined => {
-        if (!isWrappedNativeToken(network.symbol, vault.underlyingToken)) {
+        if (!deps.isWrappedNativeToken(network.symbol, vault.underlyingToken)) {
             return { kind: 'published', coingeckoId: vault.coingeckoId };
         }
 
         const nativeSymbol = network.settlementLayer ?? network.symbol;
+        if (!deps.isSupportedNetwork(nativeSymbol)) return undefined;
 
         // `TokenIcon` resolves a native coin the same way and renders it through `NativeTokenIcon`, so
         // deriving the vault icon from any other source would make it differ from the coin it stands
         // for everywhere else in the app.
-        if (isCryptoIconSymbol(nativeSymbol)) {
-            return { kind: 'bundled', networkSymbol: nativeSymbol };
-        }
-
-        const nativeNetwork: Network = getNetwork(nativeSymbol);
-        const coingeckoId = nativeNetwork.tradeCryptoId;
-
-        return coingeckoId ? { kind: 'published', coingeckoId } : undefined;
+        return { kind: 'bundled', networkSymbol: nativeSymbol };
     };
 
     const fetchPublishedSourceIcon = async (
@@ -112,40 +87,37 @@ export const createDownloadVaultIcons = (deps: DownloadVaultIconsDeps): Download
         const fileName = createCoinImageName({ coingeckoId, size });
 
         try {
-            return Buffer.from(await fetchPublishedIcon(fileName));
+            return Buffer.from(await deps.fetchPublishedIcon(fileName));
         } catch (error) {
             if (isResponseError(error)) {
-                console.error('Vault icons: source icon is not published:', fileName, error.status);
+                deps.logger.error(
+                    'Vault icons: source icon is not published:',
+                    fileName,
+                    error.status,
+                );
             } else {
-                console.error('Vault icons: failed to fetch source icon:', fileName, error);
+                deps.logger.error('Vault icons: failed to fetch source icon:', fileName, error);
             }
 
             return undefined;
         }
     };
 
-    const bundledCryptoIcons = {
-        ...bitcoinCryptoIcons,
-        ...cardanoCryptoIcons,
-        ...ethereumCryptoIcons,
-        ...moneroCryptoIcons,
-        ...rippleCryptoIcons,
-        ...solanaCryptoIcons,
-        ...stellarCryptoIcons,
-        ...tezosCryptoIcons,
-        ...tronCryptoIcons,
-    };
-
     const renderBundledSourceIcon = async (
-        networkSymbol: NetworkIconSymbol,
+        networkSymbol: NetworkSymbol,
         size: CoinImageSize,
     ): Promise<Buffer | undefined> => {
-        const svgPath = bundledCryptoIcons[networkSymbol].getIconPath();
-
         try {
-            return await rasterizeSvg(await readFile(svgPath), size);
+            const path = deps.getIconPaths(networkSymbol).coin;
+            const svg = await deps.readFile(path);
+
+            return await deps.rasterizeSvg(svg, size);
         } catch (error) {
-            console.error('Vault icons: failed to render the bundled icon:', svgPath, error);
+            deps.logger.error(
+                'Vault icons: failed to render the bundled icon:',
+                networkSymbol,
+                error,
+            );
 
             return undefined;
         }
@@ -168,9 +140,8 @@ export const createDownloadVaultIcons = (deps: DownloadVaultIconsDeps): Download
      * denominated in under each vault-address file name.
      */
     return async () => {
+        const vaults = await deps.fetchYieldVaults();
         await deps.mkdir(FILES_CRYPTOICONS_PATH, { recursive: true });
-
-        const vaults = await fetchYieldVaults();
 
         // The same underlying backs vaults on several platforms, so load each source rendition once.
         const sourceIconCache = new Map<string, Buffer | undefined>();
@@ -181,9 +152,9 @@ export const createDownloadVaultIcons = (deps: DownloadVaultIconsDeps): Download
                 continue;
             }
 
-            const network = getNetworkByCoingeckoId(assetPlatformId);
+            const network = deps.getNetworkByCoingeckoId(assetPlatformId);
             if (!network) {
-                console.error(
+                deps.logger.error(
                     `Vault icons: no network known for CoinGecko asset platform "${assetPlatformId}", skipping its vaults:`,
                     platformVaults.map(vault => vault.yieldId),
                 );
@@ -193,7 +164,7 @@ export const createDownloadVaultIcons = (deps: DownloadVaultIconsDeps): Download
             for (const vault of platformVaults) {
                 const source = resolveIconSource(network, vault);
                 if (!source) {
-                    console.error(
+                    deps.logger.error(
                         `Vault icons: no source coin resolved for "${vault.yieldId}", skipping it:`,
                         vault.address,
                     );
@@ -225,6 +196,6 @@ export const createDownloadVaultIcons = (deps: DownloadVaultIconsDeps): Download
             }
         }
 
-        console.log(`Vault icons: 🟢 Saved ${savedIcons.length} files:\n`, savedIcons);
+        deps.logger.log(`Vault icons: 🟢 Saved ${savedIcons.length} files:\n`, savedIcons);
     };
 };

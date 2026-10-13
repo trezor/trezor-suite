@@ -4,6 +4,9 @@
     "include": [".", "**/*.json"],
     "references": [
         { "path": "../http-client" },
+        { "path": "../networks" },
+        { "path": "../wallet-config" },
+        { "path": "../../packages/logger" },
         {
             "path": "../../networks/bitcoin/network-bitcoin-assets"
         },
@@ -12,6 +15,9 @@
         },
         {
             "path": "../../networks/ethereum/network-ethereum-assets"
+        },
+        {
+            "path": "../../networks/network-module/network-module-types"
         },
         {
             "path": "../../networks/monero/network-monero-assets"
@@ -31,12 +37,8 @@
         {
             "path": "../../networks/tron/network-tron-assets"
         },
-        { "path": "../wallet-config" },
         {
             "path": "../../packages/dependency-injection"
-        },
-        {
-            "path": "../../networks/ethereum/network-ethereum-suite-common"
         }
     ]
 }

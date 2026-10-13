@@ -1,3 +1,4 @@
+import { mock } from '@trezor/dependency-injection';
 import {
     DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type SuiteCommonNetworkModule,
@@ -15,5 +16,9 @@ export const mockNetworkModule = (
     getSupportedNetworks: () => [],
     getAccountSyncInterval: () => DEFAULT_ACCOUNT_SYNC_INTERVAL,
     getNetworkConfig: () => ({ ...mockNetworkMetadata.btc, color: '#000000', protocols: [] }),
+    icon: {
+        getIcons: mock(() => ({ coin: 'coin.svg', network: 'network.svg' })),
+        getIconPaths: mock(() => ({ coin: 'coin.svg', network: 'network.svg' })),
+    },
     ...overrides,
 });
