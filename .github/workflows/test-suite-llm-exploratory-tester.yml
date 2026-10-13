@@ -32,7 +32,10 @@ on:
         default: z-ai/glm-5.3-flash
         type: string
   pull_request:
-    types: [ready_for_review]
+    # opened covers PRs created already ready. ready_for_review covers
+    # draft -> ready. reopened covers a closed ready PR coming back.
+    # Drafts still emit opened/reopened; the gate job drops those.
+    types: [opened, ready_for_review, reopened]
 
 permissions:
   contents: read
@@ -45,10 +48,10 @@ concurrency:
 
 jobs:
   # Manual dispatch runs the tester when the human confirmed a trusted branch.
-  # A PR marked ready for review runs it only when Jev picks "run" and the
-  # PR's web preview is built. PRs from forks (external contributors) never run.
+  # A non-draft PR runs it on open, reopen, or draft -> ready, and only when
+  # Jev picks "run" and the PR's web preview is built. Drafts and forks never run.
   gate:
-    if: github.repository == 'trezor/trezor-suite' && !github.event.pull_request.head.repo.fork
+    if: github.repository == 'trezor/trezor-suite' && !github.event.pull_request.head.repo.fork && github.event.pull_request.draft != true
     runs-on: ubuntu-latest
     permissions:
       contents: read
