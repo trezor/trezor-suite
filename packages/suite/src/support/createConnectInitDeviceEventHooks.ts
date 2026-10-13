@@ -1,4 +1,4 @@
-import { type Bluetooth, bluetoothOnDeviceConnectedThunk } from '@suite/bluetooth';
+import { type Bluetooth } from '@suite/bluetooth';
 import { type Dispatch } from '@suite-common/redux-utils';
 import { type ConnectInitDeviceEventHooks } from '@suite-common/suite-types';
 import { DEVICE } from '@trezor/connect';
@@ -15,7 +15,7 @@ export const createConnectInitDeviceEventHooks = (
 ): ConnectInitDeviceEventHooks => ({
     [DEVICE.CONNECT]: device => {
         deps.dispatch(markDeviceAsRecentlyConnectedThunk(device));
-        deps.dispatch(bluetoothOnDeviceConnectedThunk(device));
+        deps.bluetooth.onConnect(device);
     },
     [DEVICE.CONNECT_UNACQUIRED]: device => {
         deps.dispatch(markDeviceAsRecentlyConnectedThunk(device));

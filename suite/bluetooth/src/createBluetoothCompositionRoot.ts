@@ -8,8 +8,10 @@ import { type WithServices } from '@suite-common/redux-utils';
 import { createBackgroundScan } from './bluetoothBackgroundScan';
 import { type Bluetooth, type BluetoothDep, createBluetooth } from './createBluetooth';
 import { createBluetoothAutoReconnect } from './createBluetoothAutoReconnect';
+import { createBluetoothConnectDevice } from './createBluetoothConnectDevice';
 import { createBluetoothInit } from './createBluetoothInit';
 import { createBluetoothListeners } from './createBluetoothListeners';
+import { createBluetoothOnConnectHandler } from './createBluetoothOnConnectHandler';
 import { createBluetoothScan } from './createBluetoothScan';
 import { createBluetoothUnpair } from './createBluetoothUnpair';
 import { createSuspendHandler } from './createSuspendHandler';
@@ -42,10 +44,17 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         backgroundScan,
     });
 
+    const connectDevice = createBluetoothConnectDevice({
+        getState: deps.getState,
+        dispatch: deps.dispatch,
+        backgroundScan,
+    });
+
     const setupAutoReconnect = createBluetoothAutoReconnect({
         dispatch: deps.dispatch,
         getState: deps.getState,
         backgroundScan,
+        connectDevice,
     });
 
     const bluetoothInit = createBluetoothInit({
@@ -67,11 +76,19 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         backgroundScan,
     });
 
+    const onConnectHandler = createBluetoothOnConnectHandler({
+        getState: deps.getState,
+        dispatch: deps.dispatch,
+        backgroundScan,
+    });
+
     return createBluetooth({
         bluetoothInit,
         backgroundScan,
         scan: bluetoothScan,
         suspendHandler,
         unpair: bluetoothUnpair,
+        onConnectHandler,
+        connectDevice,
     });
 };
