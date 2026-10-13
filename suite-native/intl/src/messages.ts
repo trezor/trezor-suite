@@ -2027,8 +2027,8 @@ export const messages = {
         },
         accountOverviewScreen: {
             tab: {
-                tokens: 'Tokens {count, plural, =0 {} other { #}}',
-                defi: 'DeFi {count, plural, =0 {} other { #}}',
+                tokens: 'Tokens {count, plural, one { #} =0 {} other { #}}',
+                defi: 'DeFi {count, plural, one { #} =0 {} other { #}}',
                 hidden: 'Hidden',
                 inactive: 'Inactive',
             },
@@ -2877,14 +2877,14 @@ export const messages = {
             staking: {
                 title: 'Get {displaySymbol} to start staking',
                 subtitle:
-                    'You need at least {minAmount} {displaySymbol} plus network fees in this account. Once it arrives, you can stake right away.',
+                    'You need at least {minAmount} {displaySymbol} plus network fees in your account. When it arrives, you can start staking immediately.',
                 subtitleWithoutMinimum:
-                    'Get {displaySymbol} in this account. Once it arrives, you can stake right away.',
+                    'Receive {displaySymbol} in this account. Once it arrives, you can stake right away.',
             },
             yield: {
                 title: 'Get {tokenSymbol} to start earning',
                 subtitle:
-                    "There's no {tokenSymbol} in this account yet. Buy some, swap another coin, or receive it from elsewhere — then deposit it here.",
+                    'No {tokenSymbol} in this account yet. Buy, swap, or receive to deposit here.',
             },
             earningApy: 'Earning ~{apy}% APY',
             buyButton: 'Buy {displaySymbol}',
@@ -3750,6 +3750,7 @@ export const messages = {
                 availableOfTotal: '{available} / {total}',
             },
             allVotesUsed: 'All {count} {count, plural, one {vote} other {votes}} used',
+            unstakingCardTitle: 'Unstaking (~{days} days)',
         },
         notAvailable: 'Not available',
         apyNotAvailable: 'APY not available',
@@ -3819,6 +3820,7 @@ export const messages = {
         stakingBottomSheet: {
             description:
                 'Staking accounts can be viewed but not managed in the Trezor Suite mobile app.',
+            title: 'Manage staking in the Trezor Suite desktop app',
         },
         claimSummaryOutputItem: {
             title: 'Total including fee',
@@ -3848,6 +3850,23 @@ export const messages = {
             title: "You don't have enough {displaySymbol}",
             subtitle: 'Minimum amount to stake is {minAmount} {displaySymbol}.',
             getButton: 'Get more {displaySymbol}',
+        },
+        rewardsPerEpoch: 'Next estimated reward',
+        apy: 'Annual Percentage Yield',
+        apr: 'Annual Percentage Rate',
+        stakingCanBeManaged: 'Manage your staking accounts in the',
+        trezorDesktop: 'Trezor Suite desktop app.',
+        stakePendingCard: {
+            totalStakePending: 'Pending stake',
+            addingToStakingPool: 'Staking activation',
+            activatingStake: 'Staking activation',
+            totalStakeActivating: 'Pending stake',
+            transactionPending: 'Transaction pending',
+        },
+        claimableCard: {
+            claimable: 'Claimable',
+            claimButton: 'Claim',
+            readyToClaim: '{amount} ready to be claimed',
         },
     },
     moduleTrading: {
@@ -4473,6 +4492,30 @@ export const messages = {
                 checkOrderStatus: 'Check your order status on the provider’s website.',
                 providerSupport: 'Go to provider support',
             },
+            status: {
+                badge: 'Trade status badge',
+                loginRequest: 'Pending',
+                requesting: 'Requesting',
+                submitted: 'Submitted',
+                approvalPending: 'Approval pending',
+                waitingForUser: 'Waiting for user',
+                success: 'Success',
+                error: 'Rejected',
+                blocked: 'Blocked',
+                siteActionRequest: 'Site action requested',
+                sendCrypto: 'Send {coinLabel}',
+                pending: 'Pending',
+                cancelled: 'Canceled',
+                refunded: 'Refunded',
+                loading: 'Loading...',
+                confirm: 'Confirm',
+                sending: 'Sending',
+                confirming: 'Confirming',
+                converting: 'Converting',
+                ApprovalRequired: 'Approval required',
+                signData: 'Sign data',
+                kyc: 'KYC',
+            },
         },
         error: {
             deviceOfflineDescription:
@@ -5019,9 +5062,8 @@ export const messages = {
         },
         manualInput: {
             title: 'Activate token manually',
-            subtitle:
-                'To activate a token, enter its contract ID, or its asset code and issuer address.',
-            assetCode: 'Asset code or contract ID',
+            subtitle: 'To activate a token, enter its asset code and issuer address.',
+            assetCode: 'Asset code',
             assetCodePlaceholder: 'e.g. SHX',
             assetCodeError: 'Invalid asset code. Enter 1-12 alphanumeric characters.',
             issuerAddressPlaceholder: 'e.g. GARDNV3Q...',
