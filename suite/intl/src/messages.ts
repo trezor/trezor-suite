@@ -13454,6 +13454,11 @@ export const messages = defineMessages({
         defaultMessage:
             'Only the accounts you select are shared. Verify an address on your Trezor to confirm it before connecting.',
     },
+    TR_CONNECT_SELECT_ACCOUNT_VERIFY_REQUIRED_DESCRIPTION: {
+        id: 'TR_CONNECT_SELECT_ACCOUNT_VERIFY_REQUIRED_DESCRIPTION',
+        defaultMessage:
+            'Only the accounts you select are shared. Verify each one on your Trezor to connect.',
+    },
     TR_CONNECT_SELECT_ACCOUNT_PICK_ACCOUNT_DESCRIPTION: {
         id: 'TR_CONNECT_SELECT_ACCOUNT_PICK_ACCOUNT_DESCRIPTION',
         defaultMessage: 'Choose an account to pick an address from.',

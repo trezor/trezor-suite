@@ -176,6 +176,10 @@ export const ConnectSelectAccount = () => {
         descriptionKey = 'TR_CONNECT_SELECT_ACCOUNT_EXPORTED_DESCRIPTION';
     } else if (isManualAccountPickPhase) {
         descriptionKey = 'TR_CONNECT_SELECT_ACCOUNT_PICK_ACCOUNT_DESCRIPTION';
+    } else if (requireOnDeviceVerification) {
+        // Verifying is a requirement here, not the optional extra step the default copy describes,
+        // and it applies to every selected row — otherwise confirm stays disabled with no hint why.
+        descriptionKey = 'TR_CONNECT_SELECT_ACCOUNT_VERIFY_REQUIRED_DESCRIPTION';
     }
 
     let rowInteractionMode: 'toggle' | 'drillIn' | 'readOnly' = 'toggle';
