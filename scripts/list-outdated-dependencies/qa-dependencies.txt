@@ -27,8 +27,10 @@ jest-environment-node
 jest-extended
 jest-junit
 jest-watch-typeahead
+lighthouse
 minimist
 opencode-ai
+puppeteer-core
 test-renderer
 ts-jest
 uri-scheme

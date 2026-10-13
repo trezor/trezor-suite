@@ -8,6 +8,8 @@ import { AnalyticsFixture, AnalyticsHelper } from './analytics';
 import { ClipboardFixture } from './clipboard';
 import { isDesktopProject } from './common';
 import { databaseTabFixture } from './databaseTabFixture';
+import { LighthouseMode } from '../performance/lighthouseConfig';
+import { startLighthouseFlow } from '../performance/lighthouseTimespan';
 import { measurePerformance } from '../performance/perfMeasure';
 import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
@@ -96,6 +98,7 @@ type Fixtures = {
         ) => Promise<PerfMetrics | null>;
     };
     promoBanner: PromoBanner;
+    lighthouseTestProfiler: void;
 };
 
 const test = suiteBaseTest.extend<Fixtures>({
@@ -233,15 +236,53 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(evoluClient);
         await evoluClient.dispose();
     },
-    perf: async ({ page }, use, testInfo) => {
-        await use({
-            measure: (scenario, interaction) =>
-                measurePerformance(page, testInfo, scenario, interaction),
+    // The timespan must wrap measurePerformance, or opening it lands inside the measured time.
+    perf: async ({ page, electronApp, electronConf }, use, testInfo) => {
+        if (!electronConf.measurePerf) {
+            throw new Error(
+                'perf.measure requires test.use({ electronConf: { measurePerf: true } }).',
+            );
+        }
+        const lighthouseFlow = await startLighthouseFlow({
+            page,
+            electronApp,
+            testInfo,
+            mode: LighthouseMode.Steps,
         });
+        // `finish` is what closes the CDP connection the flow opened, so a failing test has to
+        // reach it too — the worker runs every test in the shard, and a connection left behind
+        // outlives the test that opened it.
+        try {
+            await use({
+                measure: (scenario, interaction) =>
+                    lighthouseFlow.timespan(scenario, () =>
+                        measurePerformance(page, testInfo, scenario, interaction),
+                    ),
+            });
+        } finally {
+            await lighthouseFlow.finish();
+        }
     },
     promoBanner: async ({ page }, use) => {
         await use(new PromoBanner(page));
     },
+    lighthouseTestProfiler: [
+        async ({ page, electronApp }, use, testInfo) => {
+            const lighthouseFlow = await startLighthouseFlow({
+                page,
+                electronApp,
+                testInfo,
+                mode: LighthouseMode.Test,
+            });
+
+            try {
+                await lighthouseFlow.timespan(testInfo.title, () => use());
+            } finally {
+                await lighthouseFlow.finish();
+            }
+        },
+        { auto: true },
+    ],
 });
 
 export { test };

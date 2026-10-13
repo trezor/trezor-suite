@@ -14,6 +14,7 @@ import {
 } from '@trezor/perf-e2e';
 
 import { BASELINES, LIMITS } from './budgets';
+import { isLighthouseEnabled } from './lighthouseConfig';
 
 /**
  * The ceiling on the wait for the page to settle, not the wait itself: the metrics are read as soon
@@ -47,9 +48,7 @@ export const measurePerformance = async (
     );
     if (!installed) {
         // eslint-disable-next-line no-console
-        console.log(
-            `[perf] instrumentation not installed (web run, or PERF=0) — skipping "${scenario}"`,
-        );
+        console.log(`[perf] instrumentation not installed (web run) — skipping "${scenario}"`);
         await interaction();
 
         return null;
@@ -85,8 +84,13 @@ export const measurePerformance = async (
     // where a breach is meant to be noticed.
     if (comparison.overLimit) {
         console.warn(
-            `[perf] "${measurementKey(scenario, model)}" went over its limit — see the report above. Raising the limit in ` +
-                'performance/budgets.ts is a deliberate decision about what the app may cost.',
+            `[perf] "${measurementKey(scenario, model)}" went over its limit — see the report above. ` +
+                (isLighthouseEnabled()
+                    ? 'This run was recorded under Lighthouse tracing, which costs the app time the limits ' +
+                      'were never set for: compare it against another profiled run before reading it as a ' +
+                      'regression, and do not copy these numbers into performance/budgets.ts.'
+                    : 'Raising the limit in performance/budgets.ts is a deliberate decision about what the ' +
+                      'app may cost.'),
         );
     }
 
