@@ -19,6 +19,7 @@ import { createBluetoothInit } from './createBluetoothInit';
 import { createBluetoothScan } from './createBluetoothScan';
 import { createSetupBluetoothAutoReconnect } from './createSetupBluetoothAutoReconnect';
 import { createSetupBluetoothListeners } from './createSetupBluetoothListeners';
+import { createSuspendHandler } from './createSuspendHandler';
 import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 import { selectConnectingDevices } from './desktopBluetoothSelectors';
 
@@ -72,9 +73,16 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         setupBluetoothAutoReconnect,
     });
 
+    const suspendHandler = createSuspendHandler({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        backgroundScan,
+    });
+
     return createBluetooth({
         bluetoothInit,
         backgroundScan,
         scan: bluetoothScan,
+        suspendHandler,
     });
 };

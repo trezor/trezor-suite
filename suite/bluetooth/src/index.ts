@@ -5,7 +5,6 @@ export { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluet
 export * from './desktopBluetoothReducer';
 export * from './desktopBluetoothSelectors';
 
-export { bluetoothAdapterEventThunk } from './bluetoothAdapterEventThunk';
 export { forgetAllBluetoothDevicesThunk } from './forgetAllBluetoothDevicesThunk';
 export { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 export { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
