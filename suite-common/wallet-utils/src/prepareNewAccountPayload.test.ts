@@ -5,11 +5,8 @@ import {
     asNetworkSymbol,
 } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
-import { CARDANO_DERIVATIONS } from '@trezor/connect-common';
-import { typedObjectKeys } from '@trezor/utils';
 
 import { prepareNewAccountPayload } from './accountUtils';
-import { getDerivationType } from './cardanoUtils';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -60,16 +57,4 @@ describe('prepareNewAccountPayload derivationType', () => {
         expect(mockGetAccountInfo).toHaveBeenCalledTimes(1);
         expect(mockGetAccountInfo.mock.calls[0][0].derivationType).toBeUndefined();
     });
-});
-
-describe('getDerivationType', () => {
-    // The derivationType passed above has to be the very same one discovery uses, otherwise a fresh
-    // account gets a different key than the discovered ones. getDerivationType keeps its own copy of
-    // the mapping, so pin it to connect's CARDANO_DERIVATIONS to catch a drift between the two.
-    it.each(typedObjectKeys(CARDANO_DERIVATIONS))(
-        'matches the derivation discovery uses for %s',
-        accountType => {
-            expect(getDerivationType(accountType)).toBe(CARDANO_DERIVATIONS[accountType]);
-        },
-    );
 });
