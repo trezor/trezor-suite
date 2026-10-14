@@ -57,7 +57,6 @@ const TokenValues = () => {
 
             <TransactionReviewOutputItemValues
                 accountKey={review.account?.key}
-                tokenContract={review.tokenContract}
                 value={review.summary.fee}
                 translationKey="transactionManagement.review.outputs.summary.maxFee"
             />
