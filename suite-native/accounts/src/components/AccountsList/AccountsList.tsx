@@ -30,6 +30,11 @@ type AccountsListProps = {
     ListFooterComponent?: ReactElement;
 };
 
+const contentStyle = prepareNativeStyle(({ spacings }) => ({
+    flexGrow: 1,
+    marginHorizontal: spacings.sp16,
+}));
+
 const footerStyle = prepareNativeStyle<{
     insets: EdgeInsets;
     isBottomInsetApplicable: boolean;
@@ -71,6 +76,7 @@ export const AccountsList = ({
             {scrollDivider}
             <FlashList
                 testID="@accountList"
+                contentContainerStyle={applyStyle(contentStyle)}
                 data={accountListRows}
                 keyExtractor={item => item.accountKey}
                 renderItem={renderItem}
