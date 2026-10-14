@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@expo/ui": "57.0.10",
+        "@expo/ui": "57.0.21",
         "@suite-native/intl": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "expo-clipboard": "~57.0.1",
