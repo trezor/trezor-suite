@@ -10,6 +10,7 @@ import {
     selectRouterApp,
     selectRouterLoaded,
 } from '@suite/router';
+import { SuiteLifecycleMark, markSuiteLifecycle } from '@suite/suite-lifecycle';
 import { Onboarding } from '@suite-app/module-onboarding';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import {
@@ -74,6 +75,9 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
 
     const waitForTransport = useWaitForTransport();
+    // @trezor/connect was initialized, but didn't emit "TRANSPORT" event or initially connected
+    // devices yet (it could take a while): the full page Loader shows meanwhile.
+    const isInitialLoading = lifecycle.status !== 'ready' || !isRouterLoaded || waitForTransport;
 
     const { device } = useDevice();
     useReportDeviceCompromised({ device });
@@ -94,6 +98,13 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
             dispatch(initThunk());
         }
     }, [dispatch, isAnalyticsConsentConfirmed]);
+
+    useEffect(() => {
+        // The loading screen made way for the app: a User Timing mark readable without the store.
+        if (!isInitialLoading) {
+            markSuiteLifecycle(SuiteLifecycleMark.Interactive);
+        }
+    }, [isInitialLoading]);
 
     // Register keyboard handlers for opening/closing Guide using keyboard
     useGuideKeyboard();
@@ -132,9 +143,7 @@ export const Preloader = memo(({ children }: PropsWithChildren) => {
         return <KillswitchMessageScreen />;
     }
 
-    // @trezor/connect was initialized, but didn't emit "TRANSPORT" event or initially connected
-    // devices yet (it could take a while), display Loader as full page view
-    if (lifecycle.status !== 'ready' || !isRouterLoaded || waitForTransport) {
+    if (isInitialLoading) {
         // TODO: multiplied by 5, temporarily. Now initActions incorrectly awaits altcoin specific logic which can trigger this timeout easily for bigger accounts
         return <InitialLoading timeout={90 * 5} />;
     }
