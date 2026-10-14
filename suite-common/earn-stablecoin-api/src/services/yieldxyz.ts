@@ -12,7 +12,7 @@ import { getSuiteVersion } from '@trezor/env-utils';
 
 import { earnYieldWorkerBaseUrl } from '../context';
 
-const yieldXyzApi = createHttpClient({
+const yieldXyzApi = createHttpClient({ fetch: (input, init) => globalThis.fetch(input, init) })({
     async baseUrl() {
         const baseUrl = await earnYieldWorkerBaseUrl.get();
 

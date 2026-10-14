@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { createHttpClient } from '@suite-common/http-client';
 import type { Logger } from '@trezor/logger';
+import type { FetchDep } from '@trezor/type-utils';
 
 import { ICONS_URL_BASE } from '../../src/coinImages';
 import { YIELD_VAULTS_URL } from '../constants';
@@ -17,12 +18,13 @@ export type FetchPublishedIcon = (fileName: string) => Promise<ArrayBuffer>;
 
 export type FetchPublishedIconDep = { fetchPublishedIcon: FetchPublishedIcon };
 
-export type VaultIconsClientDeps = IconsLoggerDep;
+export type VaultIconsClientDeps = IconsLoggerDep & FetchDep;
 
 export type VaultIconsClient = FetchYieldVaultsDep & FetchPublishedIconDep;
 
 export const createVaultIconsClient = (deps: VaultIconsClientDeps): VaultIconsClient => {
-    const earnYieldApi = createHttpClient({
+    const httpClient = createHttpClient({ fetch: deps.fetch });
+    const earnYieldApi = httpClient({
         onError: error => {
             deps.logger.error('Vault icons: error fetching yield vaults:', error);
         },
@@ -33,7 +35,7 @@ export const createVaultIconsClient = (deps: VaultIconsClientDeps): VaultIconsCl
     });
 
     // The downloader reports missing renditions, so this client avoids logging them twice.
-    const iconsCdnApi = createHttpClient({});
+    const iconsCdnApi = httpClient({});
     const fetchPublishedIcon: FetchPublishedIcon = fileName =>
         iconsCdnApi(`${ICONS_URL_BASE}/${fileName}`, {
             method: 'GET',
