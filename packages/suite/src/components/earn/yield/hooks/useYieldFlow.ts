@@ -20,6 +20,7 @@ import {
     type YieldPositionFlowType,
     handleYieldApproveCancelThunk,
     handleYieldApproveSuccessTxidThunk,
+    hasYieldSessionTransactionActivity,
     initYieldAllowanceThunk,
     isYieldWithdrawFlow,
     selectYieldSession,
@@ -96,6 +97,7 @@ export type UseYieldFlowResult = {
     isApprovalInsufficient: boolean;
     isSubmittingApprove: boolean;
     isSubmittingAction: boolean;
+    hasTransactionActivity: boolean;
     setAmountInput: (amount: string) => void;
     submitWrap: () => void;
     skipWrap: () => void;
@@ -759,6 +761,7 @@ export const useYieldFlow = ({
             session.approval.allowanceStatus === 'loading' ||
             session.approval.modalState !== null,
         isSubmittingAction: session.action.isSubmitting,
+        hasTransactionActivity: hasYieldSessionTransactionActivity(session),
         setAmountInput,
         submitWrap,
         skipWrap,
