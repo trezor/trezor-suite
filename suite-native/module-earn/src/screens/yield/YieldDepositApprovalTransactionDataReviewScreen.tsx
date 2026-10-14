@@ -24,7 +24,7 @@ export const YieldDepositApprovalTransactionDataReviewScreen = () => {
     const device = useSelector(selectSelectedDevice);
 
     const yieldFlowData = useYieldFlowData(route.params);
-    const { flowData, flowKey, resolutionStatus, vaultTokenName } = yieldFlowData;
+    const { flowData, flowKey, resolutionStatus, vaultName } = yieldFlowData;
 
     const isRevokeReview = route.name === YieldStackRoutes.YieldDepositRevokeReview;
     const transactionType = isRevokeReview ? 'revoke' : 'approve';
@@ -42,7 +42,7 @@ export const YieldDepositApprovalTransactionDataReviewScreen = () => {
                 flowData={flowData}
                 flowKey={flowKey}
                 transactionType={transactionType}
-                vaultTokenName={vaultTokenName}
+                vaultName={vaultName}
             />
         </EarnDeviceConnectionGuard>
     );
