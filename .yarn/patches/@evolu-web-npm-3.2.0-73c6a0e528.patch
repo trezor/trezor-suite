@@ -1,8 +1,8 @@
 diff --git a/dist/src/local-first/Shared.worker.js b/dist/src/local-first/Shared.worker.js
-index 975775eb64c84ca234b8e584fb56376ed99be33e..a006b39ce043ac42e59d10e0fb78d6f0027a1150 100644
+index d60049fb2ae19250116630bd6c2d3183ed3e740d..782d6e28e82c0ec15b07f2defdc3b531e6fc1159 100644
 --- a/dist/src/local-first/Shared.worker.js
 +++ b/dist/src/local-first/Shared.worker.js
-@@ -57,9 +57,51 @@ import { createWebSocket, ok, waitForAbort } from "@evolu/common";
+@@ -57,9 +57,51 @@ import { createWebSocket, ok, tryAsync, waitForAbort } from "@evolu/common";
  import { initSharedWorker } from "@evolu/common/local-first";
  import { createRun } from "../Task.js";
  import { createOneTabSharedWorkerSelfPolyfill, createSharedWorkerSelf, createWorkerDeps, } from "../Worker.js";
@@ -53,21 +53,22 @@ index 975775eb64c84ca234b8e584fb56376ed99be33e..a006b39ce043ac42e59d10e0fb78d6f0
 -    createWebSocket,
 +    ...workerDeps,
 +    createWebSocket: createDebugWebSocket,
+     // Safari's Private Browsing offers no OPFS; see Storage in the Shared module.
+     isPersistentStorageAvailable: async () => (await tryAsync(() => navigator.storage.getDirectory())).ok,
      lockManager: navigator.locks,
- });
- void run(async (run) => {
 diff --git a/src/local-first/Shared.worker.ts b/src/local-first/Shared.worker.ts
-index 55819f8a63348d978e4e1c8cfe91028298743b2c..9d7d935c60ad6d0980175b4ef616e70c8a80f91b 100644
+index b8a15c3240ae4e2c4e1eb8cb799b99e9360cb09d..b6e7c951667bfe94a74caef4188ed132ac64f26f 100644
 --- a/src/local-first/Shared.worker.ts
 +++ b/src/local-first/Shared.worker.ts
-@@ -4,7 +4,13 @@ declare const self: DedicatedWorkerGlobalScope | SharedWorkerGlobalScope;
+@@ -4,7 +4,14 @@ declare const self: DedicatedWorkerGlobalScope | SharedWorkerGlobalScope;
  import { installPolyfills } from "@evolu/common/polyfills";
  installPolyfills();
  
--import { createWebSocket, ok, waitForAbort } from "@evolu/common";
+-import { createWebSocket, ok, tryAsync, waitForAbort } from "@evolu/common";
 +import {
 +  createWebSocket,
 +  ok,
++  tryAsync,
 +  waitForAbort,
 +  type CreateWebSocket,
 +  type WebSocketError,
@@ -75,7 +76,7 @@ index 55819f8a63348d978e4e1c8cfe91028298743b2c..9d7d935c60ad6d0980175b4ef616e70c
  import type {
    SharedWorkerInput,
    SharedWorkerOutput,
-@@ -18,9 +24,59 @@ import {
+@@ -18,9 +25,59 @@ import {
    createWorkerDeps,
  } from "../Worker.ts";
  
@@ -134,6 +135,6 @@ index 55819f8a63348d978e4e1c8cfe91028298743b2c..9d7d935c60ad6d0980175b4ef616e70c
 -  createWebSocket,
 +  ...workerDeps,
 +  createWebSocket: createDebugWebSocket,
-   lockManager: navigator.locks,
- });
- 
+   // Safari's Private Browsing offers no OPFS; see Storage in the Shared module.
+   isPersistentStorageAvailable: async () =>
+     (await tryAsync(() => navigator.storage.getDirectory())).ok,

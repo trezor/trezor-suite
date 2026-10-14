@@ -3483,27 +3483,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evolu/web@npm:3.1.2":
-  version: 3.1.2
-  resolution: "@evolu/web@npm:3.1.2"
+"@evolu/web@npm:3.2.0":
+  version: 3.2.0
+  resolution: "@evolu/web@npm:3.2.0"
   dependencies:
     "@evolu/sqlite-wasm": "npm:2.2.4"
-    idb-keyval: "npm:^6.2.2"
   peerDependencies:
-    "@evolu/common": ^8.10.0
-  checksum: 10/53d14697a235d287c929cd831a5dc958d7f2d6fc167aef1de16cbf135c1cb34355abb523ef7b97f183e9c57f7eb363a948f5d5c91663966037d987bd0a8221a9
+    "@evolu/common": ^8.11.0
+  checksum: 10/311fb72eddb207746c6cc028d76943345cf13892a5cf4707f35813c1cd4eff278028fd60a77bc8a41b42feb6838780f7a10cea94c71c47ee8948d04f66359dbf
   languageName: node
   linkType: hard
 
-"@evolu/web@patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch":
-  version: 3.1.2
-  resolution: "@evolu/web@patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch::version=3.1.2&hash=788d40"
+"@evolu/web@patch:@evolu/web@npm%3A3.2.0#~/.yarn/patches/@evolu-web-npm-3.2.0-73c6a0e528.patch":
+  version: 3.2.0
+  resolution: "@evolu/web@patch:@evolu/web@npm%3A3.2.0#~/.yarn/patches/@evolu-web-npm-3.2.0-73c6a0e528.patch::version=3.2.0&hash=045c6b"
   dependencies:
     "@evolu/sqlite-wasm": "npm:2.2.4"
-    idb-keyval: "npm:^6.2.2"
   peerDependencies:
-    "@evolu/common": ^8.10.0
-  checksum: 10/7f29fa4140425759e4cfb7dd815b6b70c01479f3a9088823be0ca7b1becaea38cc147a12af70c0c7c4cf83d6a1987b43ca618ff7f8017f9f383def8a750360f4
+    "@evolu/common": ^8.11.0
+  checksum: 10/d8b3452ebc527c83cc88680c76d4ef1cc069aabddee4fd206eb9dd13eb7bfba700d8e097ccae77a4f2f8ff83bbebb28df265b4f36624dee40cbb948777bbe616
   languageName: node
   linkType: hard
 
@@ -17040,7 +17038,7 @@ __metadata:
   resolution: "@suite/suite-sync@workspace:suite/suite-sync"
   dependencies:
     "@evolu/common": "npm:8.11.0"
-    "@evolu/web": "patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch"
+    "@evolu/web": "patch:@evolu/web@npm%3A3.2.0#~/.yarn/patches/@evolu-web-npm-3.2.0-73c6a0e528.patch"
     "@hookform/resolvers": "npm:^5.4.0"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/delegated-identity-key-types": "workspace:*"
@@ -32870,7 +32868,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"idb-keyval@npm:^6.2.1, idb-keyval@npm:^6.2.2":
+"idb-keyval@npm:^6.2.1":
   version: 6.2.2
   resolution: "idb-keyval@npm:6.2.2"
   checksum: 10/8c22342d94deba01066460fe6593f29c78027d0935a6ed7a1da68b28a7a68b89d0830dada4b30d51b779ed1dc1e362007a8939cda651b9ad0807176bd841e8cb
