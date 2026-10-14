@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
 
 import { type CryptoId } from 'invity-api';
 
@@ -309,10 +309,12 @@ export const useTradingReceiveAddress = ({
         }
     }, [receiveAddress, extraField, receiveAccount, type, dispatch]);
 
+    const form: UseFormReturn<TradingVerifyFormProps> = {
+        ...methods,
+    };
+
     return {
-        form: {
-            ...methods,
-        },
+        form,
         suiteReceiveAccounts,
         selectedAccount: receiveAccount,
         accountAddress,
