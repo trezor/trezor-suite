@@ -7,9 +7,9 @@ import {
     type AssetAccountsRootState,
     type WalletAssetKey,
     type WalletSettingsRootState,
+    selectDeviceHiddenNftAssetAccountKeySet,
     selectDeviceNftAssetAccounts,
     selectEnabledNetworks,
-    selectHiddenNftAssetAccountKeySet,
 } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
@@ -29,7 +29,7 @@ export type NftItem = {
     amount: string;
 };
 
-type NftCollection = {
+export type NftCollection = {
     assetKey: WalletAssetKey;
     symbol: NetworkSymbol;
     contractAddress: TokenAddress;
@@ -87,7 +87,7 @@ const groupNftCollections = (
 };
 
 const selectPartitionedNftAssetAccounts = createMemoizedSelector(
-    [selectDeviceNftAssetAccounts, selectHiddenNftAssetAccountKeySet],
+    [selectDeviceNftAssetAccounts, selectDeviceHiddenNftAssetAccountKeySet],
     partitionAssetAccounts,
 );
 
@@ -122,8 +122,7 @@ const selectHiddenNftCollections = createMemoizedSelector(
     ({ hidden }) => groupNftCollections(hidden),
 );
 
-// Spam-heavy wallets hold thousands of collections, and a shared collator sorts them several times
-// faster than localeCompare, which builds one per comparison.
+// Names are user-facing, so they sort in locale order; one collator serves every comparison.
 const collectionNameCollator = new Intl.Collator();
 
 const getSortedCollectionKeys = (
@@ -149,35 +148,13 @@ export const selectHiddenNftCollectionKeys = createMemoizedSelector(
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
-const selectNftCollection = (
+/** One collection, as a row reads it: the same object until that collection changes. */
+export const selectNftCollection = (
     state: HomeAssetNftState,
     assetKey: WalletAssetKey,
     isHidden = false,
-) => (isHidden ? selectHiddenNftCollections(state) : selectNftCollections(state)).get(assetKey);
-
-export const selectNftCollectionName = (
-    state: HomeAssetNftState,
-    assetKey: WalletAssetKey,
-    isHidden?: boolean,
-) => selectNftCollection(state, assetKey, isHidden)?.name;
-
-export const selectNftCollectionSymbol = (
-    state: HomeAssetNftState,
-    assetKey: WalletAssetKey,
-    isHidden?: boolean,
-) => selectNftCollection(state, assetKey, isHidden)?.symbol;
-
-export const selectNftCollectionItemCount = (
-    state: HomeAssetNftState,
-    assetKey: WalletAssetKey,
-    isHidden?: boolean,
-) => selectNftCollection(state, assetKey, isHidden)?.itemCount;
-
-export const selectNftCollectionHasListedItems = (
-    state: HomeAssetNftState,
-    assetKey: WalletAssetKey,
-    isHidden?: boolean,
-) => selectNftCollection(state, assetKey, isHidden)?.hasListedItems ?? false;
+): NftCollection | undefined =>
+    (isHidden ? selectHiddenNftCollections(state) : selectNftCollections(state)).get(assetKey);
 
 const selectNftCollectionTokens = (
     state: HomeAssetNftState,

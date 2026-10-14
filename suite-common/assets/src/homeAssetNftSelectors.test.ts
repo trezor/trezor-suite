@@ -8,10 +8,8 @@ import {
     type HomeAssetNftState,
     selectHiddenNftCollectionCount,
     selectHiddenNftCollectionKeys,
-    selectNftCollectionHasListedItems,
-    selectNftCollectionItemCount,
+    selectNftCollection,
     selectNftCollectionItems,
-    selectNftCollectionName,
     selectShownNftCollectionCount,
     selectShownNftCollectionKeys,
 } from './homeAssetNftSelectors';
@@ -55,7 +53,6 @@ const mockAccount = ({
     }) as unknown as Account;
 
 const erc721 = (contract: TokenAddress, name: string, ids: string[]): Partial<TokenInfo> => ({
-    type: 'ERC721',
     standard: 'ERC721',
     contract,
     name,
@@ -68,7 +65,6 @@ const erc1155 = (
     name: string,
     multiTokenValues: { id: string; value: string }[],
 ): Partial<TokenInfo> => ({
-    type: 'ERC1155',
     standard: 'ERC1155',
     contract,
     name,
@@ -116,7 +112,7 @@ describe('the collections the section lists', () => {
 
         expect(selectShownNftCollectionKeys(state)).toEqual([punksOnEth]);
         expect(selectHiddenNftCollectionKeys(state)).toEqual([]);
-        expect(selectNftCollectionName(state, punksOnEth)).toBe('CryptoPunks');
+        expect(selectNftCollection(state, punksOnEth)?.name).toBe('CryptoPunks');
         expect(selectNftCollectionItems(state, punksOnEth)).toEqual([
             { id: '1492', amount: '1' },
             { id: '4820', amount: '1' },
@@ -140,7 +136,7 @@ describe('the collections the section lists', () => {
         });
 
         expect(selectShownNftCollectionKeys(state)).toEqual([punksOnEth]);
-        expect(selectNftCollectionItemCount(state, punksOnEth)).toBe(2);
+        expect(selectNftCollection(state, punksOnEth)?.itemCount).toBe(2);
     });
 
     it('counts the balance of a collection the backend lists no items for', () => {
@@ -153,7 +149,7 @@ describe('the collections the section lists', () => {
         });
 
         expect(selectNftCollectionItems(state, punksOnEth)).toEqual([]);
-        expect(selectNftCollectionItemCount(state, punksOnEth)).toBe(3);
+        expect(selectNftCollection(state, punksOnEth)?.itemCount).toBe(3);
     });
 
     it('orders the collections by name', () => {
@@ -186,8 +182,8 @@ describe('the collections the section hides', () => {
 
         expect(selectShownNftCollectionKeys(state)).toEqual([punksOnEth]);
         expect(selectHiddenNftCollectionKeys(state)).toEqual([apesOnEth, scamOnEth]);
-        expect(selectNftCollectionName(state, scamOnEth, true)).toBe('Claim your reward');
-        expect(selectNftCollectionName(state, scamOnEth)).toBeUndefined();
+        expect(selectNftCollection(state, scamOnEth, true)?.name).toBe('Claim your reward');
+        expect(selectNftCollection(state, scamOnEth)?.name).toBeUndefined();
     });
 });
 
@@ -196,9 +192,7 @@ describe('what the section leaves out', () => {
         const state = createState({
             accounts: [
                 mockAccount({
-                    tokens: [
-                        { standard: 'ERC20', type: 'ERC20', contract: USDC_ON_ETH, balance: '5' },
-                    ],
+                    tokens: [{ standard: 'ERC20', contract: USDC_ON_ETH, balance: '5' }],
                 }),
                 mockAccount({ deviceState: BOB, tokens: [erc721(PUNKS, 'CryptoPunks', ['1'])] }),
                 mockAccount({ index: 1, isVisible: false, tokens: [erc721(APES, 'Apes', ['2'])] }),
@@ -281,7 +275,7 @@ describe('what a row can open', () => {
             ],
         });
 
-        expect(selectNftCollectionHasListedItems(state, punksOnEth)).toBe(true);
-        expect(selectNftCollectionHasListedItems(state, apesOnEth)).toBe(false);
+        expect(selectNftCollection(state, punksOnEth)?.hasListedItems).toBe(true);
+        expect(selectNftCollection(state, apesOnEth)?.hasListedItems).toBe(false);
     });
 });

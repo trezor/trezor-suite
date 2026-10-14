@@ -1,20 +1,43 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { selectHiddenNftCollectionKeys, selectShownNftCollectionKeys } from '@suite-common/assets';
-import { Table } from '@trezor/components';
+import {
+    type NftItem,
+    selectHiddenNftCollectionKeys,
+    selectNftCollectionItems,
+    selectShownNftCollectionKeys,
+} from '@suite-common/assets';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
+import { Divider, Table, VirtualizedList } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 
+import { HomeAssetNftItemRow, HomeAssetNftMoreItemsRow } from './HomeAssetNftItemRow';
 import { HomeAssetNftRow } from './HomeAssetNftRow';
-import { HomeAssetExpandRow } from '../HomeAssetsTable/HomeAssetExpandRow';
+import {
+    NFT_COLLECTION_ROW_HEIGHT,
+    NFT_COL_WIDTHS,
+    NFT_ITEM_ROW_HEIGHT,
+    NFT_LIST_MAX_HEIGHT,
+    NFT_MORE_ROW_HEIGHT,
+    NFT_SEPARATOR_HEIGHT,
+} from './homeAssetNftLayout';
 import { HOME_ASSET_CELL_PADDING } from '../HomeAssetsTable/homeAssetTableLayout';
 
-const NFT_COL_WIDTHS = [{ minWidth: '200px' }, { width: '25%' }];
+// Spam collections can list thousands of items; past this many, one line says how many more.
+const NFT_ITEMS_LIMIT = 50;
 
-// Airdropped spam can fill the hidden tab with thousands of collections; each row subscribes to
-// the store, so they mount a page at a time.
-const NFT_ROWS_PAGE = 50;
+/**
+ * The list is one flat run of rows, so the virtualizer sees fixed heights only: a collection, then
+ * — while it is open — its items and, past the limit, one line for the rest.
+ */
+type NftListItem = { height: number; assetKey: WalletAssetKey } & (
+    | { kind: 'collection' }
+    | { kind: 'item'; item: NftItem; index: number }
+    | { kind: 'more'; count: number }
+);
+
+const NO_ITEMS: readonly NftItem[] = [];
 
 type HomeAssetNftTableProps = {
     isHidden: boolean;
@@ -24,35 +47,147 @@ export const HomeAssetNftTable = ({ isHidden }: HomeAssetNftTableProps) => {
     const assetKeys = useSelector(
         isHidden ? selectHiddenNftCollectionKeys : selectShownNftCollectionKeys,
     );
-    const [rowLimit, setRowLimit] = useState(NFT_ROWS_PAGE);
+    const [openKeys, setOpenKeys] = useState<ReadonlySet<WalletAssetKey>>(() => new Set());
 
-    const isFullyShown = rowLimit >= assetKeys.length;
+    // Only an open collection has its items built. `useSelector` compares with `shallowEqual` by
+    // default, so this array stays the same while no open collection's items change.
+    const openItems = useSelector(state =>
+        assetKeys.map(assetKey =>
+            openKeys.has(assetKey)
+                ? (selectNftCollectionItems(state, assetKey, isHidden) ?? NO_ITEMS)
+                : NO_ITEMS,
+        ),
+    );
+
+    const { items, listHeight } = useMemo(() => {
+        const rows = assetKeys.flatMap((assetKey, collectionIndex): NftListItem[] => {
+            const collection: NftListItem = {
+                kind: 'collection',
+                assetKey,
+                height: NFT_COLLECTION_ROW_HEIGHT,
+            };
+            const nftItems = openItems[collectionIndex] ?? NO_ITEMS;
+
+            if (nftItems.length === 0) {
+                return [collection];
+            }
+
+            const collectionRows: NftListItem[] = [
+                collection,
+                ...nftItems.slice(0, NFT_ITEMS_LIMIT).map((item, index): NftListItem => ({
+                    kind: 'item',
+                    assetKey,
+                    item,
+                    index,
+                    height: NFT_ITEM_ROW_HEIGHT,
+                })),
+            ];
+            const notListedCount = nftItems.length - NFT_ITEMS_LIMIT;
+
+            if (notListedCount > 0) {
+                collectionRows.push({
+                    kind: 'more',
+                    assetKey,
+                    count: notListedCount,
+                    height: NFT_MORE_ROW_HEIGHT,
+                });
+            }
+
+            return collectionRows;
+        });
+
+        return {
+            items: rows,
+            listHeight: Math.min(
+                rows.reduce((height, row) => height + row.height, 0),
+                NFT_LIST_MAX_HEIGHT,
+            ),
+        };
+    }, [assetKeys, openItems]);
+
+    const toggleCollection = useCallback((assetKey: WalletAssetKey) => {
+        setOpenKeys(open => {
+            const next = new Set(open);
+
+            if (!next.delete(assetKey)) {
+                next.add(assetKey);
+            }
+
+            return next;
+        });
+    }, []);
+
+    // The same item can be held by two accounts of the wallet, so an item's id alone repeats.
+    const getItemKey = useCallback((row: NftListItem) => {
+        switch (row.kind) {
+            case 'collection':
+                return row.assetKey;
+            case 'item':
+                return `${row.assetKey}/${row.index}/${row.item.id}`;
+            case 'more':
+                return `${row.assetKey}/more`;
+        }
+    }, []);
+
+    const renderRow = useCallback(
+        (row: NftListItem) => {
+            switch (row.kind) {
+                case 'collection':
+                    return (
+                        <HomeAssetNftRow
+                            assetKey={row.assetKey}
+                            isHidden={isHidden}
+                            isOpen={openKeys.has(row.assetKey)}
+                            onToggle={toggleCollection}
+                        />
+                    );
+                case 'item':
+                    return <HomeAssetNftItemRow assetKey={row.assetKey} item={row.item} />;
+                case 'more':
+                    return <HomeAssetNftMoreItemsRow count={row.count} />;
+            }
+        },
+        [isHidden, openKeys, toggleCollection],
+    );
+
+    // A row cannot sit in the virtualizer's positioned boxes on its own, so each gets a one-row table;
+    // the percentage column widths keep them aligned with the header.
+    const renderItem = useCallback(
+        (row: NftListItem) => (
+            <>
+                {row.kind === 'collection' && (
+                    <Divider margin={0} strokeWidth={NFT_SEPARATOR_HEIGHT} />
+                )}
+                <Table isRowHighlightedOnHover colWidths={NFT_COL_WIDTHS}>
+                    <Table.Body>{renderRow(row)}</Table.Body>
+                </Table>
+            </>
+        ),
+        [renderRow],
+    );
 
     return (
-        <Table isRowHighlightedOnHover colWidths={NFT_COL_WIDTHS}>
-            <Table.Header>
-                <Table.Row>
-                    <Table.Cell padding={HOME_ASSET_CELL_PADDING.first}>
-                        <Translation id="TR_HOME_ASSET_NFT_COLLECTION" />
-                    </Table.Cell>
-                    <Table.Cell align="end" padding={HOME_ASSET_CELL_PADDING.last}>
-                        <Translation id="TR_NETWORK_TITLE" />
-                    </Table.Cell>
-                </Table.Row>
-            </Table.Header>
-            <Table.Body>
-                {assetKeys.slice(0, rowLimit).map(assetKey => (
-                    <HomeAssetNftRow key={assetKey} assetKey={assetKey} isHidden={isHidden} />
-                ))}
-                {assetKeys.length > NFT_ROWS_PAGE && (
-                    <HomeAssetExpandRow
-                        isExpanded={isFullyShown}
-                        onToggle={() =>
-                            setRowLimit(isFullyShown ? NFT_ROWS_PAGE : rowLimit + NFT_ROWS_PAGE)
-                        }
-                    />
-                )}
-            </Table.Body>
-        </Table>
+        <>
+            <Table colWidths={NFT_COL_WIDTHS}>
+                <Table.Header>
+                    <Table.Row>
+                        <Table.Cell padding={HOME_ASSET_CELL_PADDING.first}>
+                            <Translation id="TR_HOME_ASSET_NFT_COLLECTION" />
+                        </Table.Cell>
+                        <Table.Cell align="end" padding={HOME_ASSET_CELL_PADDING.last}>
+                            <Translation id="TR_NETWORK_TITLE" />
+                        </Table.Cell>
+                    </Table.Row>
+                </Table.Header>
+            </Table>
+            <VirtualizedList
+                items={items}
+                renderItem={renderItem}
+                getItemKey={getItemKey}
+                listHeight={listHeight}
+                listMinHeight={0}
+                resetScrollOnItemsChange={false}
+            />
+        </>
     );
 };

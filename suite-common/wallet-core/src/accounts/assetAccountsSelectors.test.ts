@@ -7,9 +7,9 @@ import {
     type WalletAssetKey,
     getWalletAssetKey,
     selectAssetAccounts,
+    selectDeviceHiddenNftReasons,
     selectDeviceNftAssetAccounts,
     selectHiddenAssetAccountKeys,
-    selectHiddenNftReasons,
 } from './assetAccountsSelectors';
 
 const accountsOfAsset = (state: AssetAccountsRootState, assetKey: WalletAssetKey) =>
@@ -430,7 +430,7 @@ describe('the collections the selectors keep apart', () => {
             knownCollections: [PUNKS],
         });
 
-        expect(selectHiddenNftReasons(state).get(ETH)).toEqual(
+        expect(selectDeviceHiddenNftReasons(state).get(ETH)).toEqual(
             new Map([[SCAM_DROP, 'unrecognized']]),
         );
     });
@@ -442,7 +442,7 @@ describe('the collections the selectors keep apart', () => {
             hiddenCollections: [PUNKS],
         });
 
-        expect(selectHiddenNftReasons(state).get(ETH)?.get(PUNKS)).toBe('hiddenByUser');
+        expect(selectDeviceHiddenNftReasons(state).get(ETH)?.get(PUNKS)).toBe('hiddenByUser');
     });
 
     it('keeps the collections a balance refresh leaves as they were', () => {
