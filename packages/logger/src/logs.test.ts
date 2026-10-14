@@ -12,8 +12,8 @@ describe('logger', () => {
             l.warn('entry');
             l2.debug('entry');
         }
-        expect(l.messages.length).toEqual(100);
-        expect(l2.messages.length).toEqual(100);
+        expect(l.getLog().length).toEqual(100);
+        expect(l2.getLog().length).toEqual(100);
         expect(logsManager.getLog().length).toEqual(200); // combined
     });
 
@@ -24,10 +24,10 @@ describe('logger', () => {
         const l2 = logsManager.initLog('test2');
         logsManager.enableLogByPrefix('foobar', false);
         logsManager.enableLogByPrefix('test2', true); // enable only one
-        expect(l.enabled).toEqual(true);
-        expect(l2.enabled).toEqual(true);
+        expect(l.isEnabled()).toEqual(true);
+        expect(l2.isEnabled()).toEqual(true);
         logsManager.enableLog(false); // disable all
-        expect(l.enabled).toEqual(false);
-        expect(l2.enabled).toEqual(false);
+        expect(l.isEnabled()).toEqual(false);
+        expect(l2.isEnabled()).toEqual(false);
     });
 });

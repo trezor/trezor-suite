@@ -1,4 +1,4 @@
-import { type Log, type LogMessage as UtilsLogMessage } from '@trezor/logger';
+import { Log, stringifyLogArgs } from '@trezor/logger';
 
 import type { ILogger } from '../libs/logger';
 
@@ -8,26 +8,20 @@ type ConvertILoggerToLogParams = { serviceName: string };
 export const convertILoggerToLog = (
     iLogger: ILogger,
     { serviceName }: ConvertILoggerToLogParams,
-): Log => ({
-    log: (msg: string) => iLogger.info(serviceName, msg),
-    info: (msg: string) => iLogger.info(serviceName, msg),
-    debug: (msg: string) => iLogger.debug(serviceName, msg),
-    warn: (msg: string) => iLogger.warn(serviceName, msg),
-    error: (msg: string) => iLogger.error(serviceName, msg),
-    prefix: '',
-    messages: [],
-    enabled: true,
-    css: '',
-    MAX_ENTRIES: 1000,
-    setColors: (_colors: any) => {},
-    setWriter: (_logWriter: any) => {},
-    addMessage: (_msg: UtilsLogMessage) => {},
-    logWriter: undefined,
-    getLog: (): UtilsLogMessage[] =>
-        iLogger.getLog().map(log => ({
-            message: [log.text],
+): Log => {
+    const log = new Log(serviceName, true);
+    log.info = (...args: unknown[]) => iLogger.info(serviceName, stringifyLogArgs(args));
+    log.debug = (...args: unknown[]) => iLogger.debug(serviceName, stringifyLogArgs(args));
+    log.log = (...args: unknown[]) => iLogger.log(serviceName, stringifyLogArgs(args));
+    log.warn = (...args: unknown[]) => iLogger.warn(serviceName, stringifyLogArgs(args));
+    log.error = (...args: unknown[]) => iLogger.error(serviceName, stringifyLogArgs(args));
+    log.getLog = () =>
+        iLogger.getLog().map(msg => ({
+            message: [msg.text],
             prefix: '',
-            level: log.level,
-            timestamp: log.date.getTime(),
-        })),
-});
+            level: msg.level,
+            timestamp: msg.date.getTime(),
+        }));
+
+    return log;
+};
