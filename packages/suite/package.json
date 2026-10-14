@@ -238,7 +238,7 @@
         "minimizer-webpack-plugin": "5.10.0",
         "postcss-styled-syntax": "^0.7.1",
         "raw-loader": "^4.0.2",
-        "react-refresh": "^0.18.0",
+        "react-refresh": "^0.19.0",
         "stream-browserify": "^3.0.0",
         "stylelint": "^17.1.1",
         "stylelint-config-standard": "^40.0.0",
