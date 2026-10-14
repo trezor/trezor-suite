@@ -4398,14 +4398,87 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:^5.4.0":
-  version: 5.4.0
-  resolution: "@hookform/resolvers@npm:5.4.0"
+"@hookform/resolvers@npm:^5.9.1":
+  version: 5.9.1
+  resolution: "@hookform/resolvers@npm:5.9.1"
   dependencies:
     "@standard-schema/utils": "npm:^0.3.0"
   peerDependencies:
+    "@sinclair/typebox": ">=0.25.24"
+    "@standard-schema/spec": ^1.0.0
+    "@typeschema/main": ">=0.13.7"
+    "@vinejs/vine": ^2.0.0 || ^3.0.0 || ^4.0.0
+    ajv: ^8.12.0
+    ajv-errors: ^3.0.0
+    ajv-formats: ^2.1.1
+    arktype: ^2.0.0
+    ata-validator: ^1.2.0
+    class-transformer: ">=0.4.0"
+    class-validator: ">=0.12.0"
+    computed-types: ^1.0.0
+    effect: ^3.10.3
+    fluentvalidation-ts: ^3.0.0
+    fp-ts: ^2.7.0
+    io-ts: ^2.0.0
+    joi: ^17.0.0 || ^18.0.0
+    nope-validator: ">=0.12.0"
     react-hook-form: ^7.55.0
-  checksum: 10/c56e03d3707999bf0bebdcf1a8c5fc1cbbca527425d893e2402ead09e3644681581b8d2ad76eec62f72270534f5dc38159e2d6ee4001a0152363b8eddfedfcab
+    superstruct: ">=0.12.0"
+    typanion: ^3.3.2
+    valibot: ">=0.31.0 || ^1.0.0-beta.4 || ^1.0.0-rc"
+    vest: ">=6.0.0"
+    yup: ^1.0.0
+    zod: ^3.25.0 || ^4.0.0
+  peerDependenciesMeta:
+    "@sinclair/typebox":
+      optional: true
+    "@standard-schema/spec":
+      optional: true
+    "@typeschema/main":
+      optional: true
+    "@vinejs/vine":
+      optional: true
+    ajv:
+      optional: true
+    ajv-errors:
+      optional: true
+    ajv-formats:
+      optional: true
+    arktype:
+      optional: true
+    ata-validator:
+      optional: true
+    class-transformer:
+      optional: true
+    class-validator:
+      optional: true
+    computed-types:
+      optional: true
+    effect:
+      optional: true
+    fluentvalidation-ts:
+      optional: true
+    fp-ts:
+      optional: true
+    io-ts:
+      optional: true
+    joi:
+      optional: true
+    nope-validator:
+      optional: true
+    superstruct:
+      optional: true
+    typanion:
+      optional: true
+    valibot:
+      optional: true
+    vest:
+      optional: true
+    yup:
+      optional: true
+    zod:
+      optional: true
+  checksum: 10/b334b50a9d6d915ae52e6a636aabe1f800d41889856f1978c34528d0871332a9a59a19ef666a60b59ffd4cd515aceac84155595ecda0ba79f4357a04c002e363
   languageName: node
   linkType: hard
 
@@ -13631,7 +13704,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
-    "@hookform/resolvers": "npm:^5.4.0"
+    "@hookform/resolvers": "npm:^5.9.1"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/clipboard": "workspace:*"
@@ -17000,7 +17073,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/sign-verify@workspace:suite/sign-verify"
   dependencies:
-    "@hookform/resolvers": "npm:^5.4.0"
+    "@hookform/resolvers": "npm:^5.9.1"
     "@suite-common/networks": "workspace:*"
     "@suite-common/receive": "workspace:*"
     "@suite-common/sign-verify": "workspace:*"
@@ -17039,7 +17112,7 @@ __metadata:
   dependencies:
     "@evolu/common": "npm:8.11.0"
     "@evolu/web": "patch:@evolu/web@npm%3A3.2.0#~/.yarn/patches/@evolu-web-npm-3.2.0-73c6a0e528.patch"
-    "@hookform/resolvers": "npm:^5.4.0"
+    "@hookform/resolvers": "npm:^5.9.1"
     "@reduxjs/toolkit": "npm:2.13.0"
     "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/device": "workspace:*"
@@ -19283,7 +19356,7 @@ __metadata:
   dependencies:
     "@floating-ui/react": "npm:^0.27.17"
     "@formatjs/intl": "npm:4.1.2"
-    "@hookform/resolvers": "npm:^5.4.0"
+    "@hookform/resolvers": "npm:^5.9.1"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.6.2"
     "@reduxjs/toolkit": "npm:2.13.0"

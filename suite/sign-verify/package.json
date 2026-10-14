@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@hookform/resolvers": "^5.4.0",
+        "@hookform/resolvers": "^5.9.1",
         "@suite-common/networks": "workspace:*",
         "@suite-common/receive": "workspace:*",
         "@suite-common/sign-verify": "workspace:*",

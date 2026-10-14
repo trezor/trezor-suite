@@ -28,7 +28,7 @@
     "dependencies": {
         "@floating-ui/react": "^0.27.17",
         "@formatjs/intl": "4.1.2",
-        "@hookform/resolvers": "^5.4.0",
+        "@hookform/resolvers": "^5.9.1",
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.13.0",
         "@sentry/core": "10.69.0",

@@ -32,15 +32,7 @@ const changeDeviceLabelSchema = (t: TranslationFunction) =>
     });
 
 export const useChangeDeviceLabel = (): {
-    form: UseFormReturn<
-        {
-            deviceLabel: string | undefined;
-        },
-        unknown,
-        {
-            deviceLabel?: string | undefined;
-        }
-    >;
+    form: UseFormReturn<yup.InferType<ReturnType<typeof changeDeviceLabelSchema>>, unknown>;
     handleSubmit: (onSuccess?: () => void) => void;
 } => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
