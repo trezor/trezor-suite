@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "devDependencies": {
-        "@eslint/compat": "^2.1.0",
+        "@eslint/compat": "^2.1.1",
         "@eslint/js": "^10.0.1",
         "@tanstack/eslint-plugin-query": "5.103.1",
         "eslint": "^10.8.1",
