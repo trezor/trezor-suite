@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.12.0",
+        "@reduxjs/toolkit": "2.13.0",
         "@suite-common/suite-types": "workspace:*",
         "@suite/desktop-app-api": "workspace:*",
         "@suite/intl": "workspace:*",
