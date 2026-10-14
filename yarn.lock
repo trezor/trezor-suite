@@ -16817,7 +16817,7 @@ __metadata:
     "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    dropbox: "npm:^10.45.0"
+    dropbox: "npm:^10.47.0"
     immer: "npm:11.1.16"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
@@ -27585,10 +27585,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dropbox@npm:^10.45.0":
-  version: 10.45.0
-  resolution: "dropbox@npm:10.45.0"
-  checksum: 10/a7a72a27c37685be935cf3eb28f4af9f51b7bf827b1bfcc9b2084b0e66c7c07249ff52c77676603b4508addc2a9efab6ed077f93fa4e1bfcf80703c12d4efb32
+"dropbox@npm:^10.47.0":
+  version: 10.47.0
+  resolution: "dropbox@npm:10.47.0"
+  checksum: 10/6d9a789f8d152c3350233c4288d5c650e71dce50ea7fd85c84ab069f0a941c0911a2edb96901ec6c136a47f7f531aebb44bfdbc97252646c6d9b3699d8eebf49
   languageName: node
   linkType: hard
 
