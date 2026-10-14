@@ -78,6 +78,7 @@ const validateIncomingMessage = (message: any): message is IncomingMessage => {
 
 type ExposeConnectWsParams = {
     mainThreadEmitter: Dependencies['mainThreadEmitter'];
+    messageSystem: Dependencies['messageSystem'];
     mainWindowProxy: Dependencies['mainWindowProxy'];
     httpReceiver: ReturnType<typeof createHttpReceiver>;
     store: Dependencies['store'];
@@ -89,6 +90,7 @@ export const exposeConnectWs = ({
     mainWindowProxy,
     httpReceiver,
     store,
+    messageSystem,
     logger,
 }: ExposeConnectWsParams) => {
     const connectionsByOrigin = new Map<string, number>();
@@ -393,6 +395,15 @@ export const exposeConnectWs = ({
 
     httpReceiver.server.on('upgrade', (request, socket, head) => {
         if (!request?.url) {
+            socket.destroy();
+
+            return;
+        }
+
+        // Checked on every upgrade and not only when the server starts, so a killswitch arriving
+        // from a later poll closes this surface as well.
+        if (messageSystem.getGate().isKillswitchActive) {
+            logger.info(LOG_PREFIX, 'Refusing a connection, disabled by the message system');
             socket.destroy();
 
             return;

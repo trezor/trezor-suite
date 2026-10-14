@@ -11,6 +11,7 @@ export * from './cachedEnvData';
 export * from './experimentUtils';
 export * from './ExperimentWrapper';
 export * from './featureFlagUtils';
+export * from './getMessageSystemPlatform';
 export * from './useConditionControls';
 export * from './useExperiment';
 export * from './useMessageSystemEarnDashboard';

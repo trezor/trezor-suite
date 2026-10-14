@@ -114,6 +114,7 @@
 !/suite-common/legacy-network-config
 !/suite-common/logger
 !/suite-common/message-system
+!/suite-common/message-system-core
 !/suite-common/metadata-types
 !/suite-common/mev
 !/suite-common/networks

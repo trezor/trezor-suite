@@ -118,16 +118,18 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
         return <DatabaseUpgradeModal variant={lifecycle.error} />;
     }
 
+    // A killswitched build must reach the user even on a profile that never confirmed the
+    // analytics consent, so this is checked before the consent screen.
+    if (killswitch) {
+        return <KillswitchMessageScreen />;
+    }
+
     if (!isAnalyticsConsentConfirmed) {
         return <AnalyticsConsentScreen />;
     }
 
     if (lifecycle.status === 'error') {
         throw new Error(lifecycle.error);
-    }
-
-    if (killswitch) {
-        return <KillswitchMessageScreen />;
     }
 
     // @trezor/connect was initialized, but didn't emit "TRANSPORT" event or initially connected

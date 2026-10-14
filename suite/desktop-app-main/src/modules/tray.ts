@@ -14,13 +14,19 @@ import { app } from '../typed-electron';
 
 export const SERVICE_NAME = 'tray';
 
-export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy, logger }) => {
+export const initBackground: ModuleInitBackground = ({
+    store,
+    mainWindowProxy,
+    messageSystem,
+    logger,
+}) => {
     const initialSettings = store.getTraySettings();
 
     const state = {
         visible: initialSettings.showOnTray,
         bridgeStatus: true,
         devices: 0,
+        isDisabledByMessageSystem: messageSystem.getGate().isKillswitchActive,
     };
     let tray: Tray | undefined;
 
@@ -54,12 +60,19 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy, l
             tray.setToolTip(APP_NAME_BARE);
         }
         const contextMenu = Menu.buildFromTemplate([
-            {
-                label: state.bridgeStatus
-                    ? '🟢  Trezor Bridge is running'
-                    : '🔴  Trezor Bridge not running',
-                click: () => mainThreadEmitter.emit('module/bridge/toggle'),
-            },
+            // While the message system disabled the app, nothing main serves is running and the
+            // bridge must not be toggled back on, so the state is shown without an action.
+            state.isDisabledByMessageSystem
+                ? {
+                      label: '🔴  Trezor Suite is disabled',
+                      enabled: false,
+                  }
+                : {
+                      label: state.bridgeStatus
+                          ? '🟢  Trezor Bridge is running'
+                          : '🔴  Trezor Bridge not running',
+                      click: () => mainThreadEmitter.emit('module/bridge/toggle'),
+                  },
             // TODO: we can add this back when connect is initialized independently of the Suite app window
             /*{
                 label:
@@ -122,6 +135,16 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy, l
                 content: `Device ${event.payload.name} disconnected`,
             });
         }
+        renderTray();
+    });
+    messageSystem.subscribe(gate => {
+        logger.debug(
+            SERVICE_NAME,
+            gate.isKillswitchActive
+                ? 'Disabled by the message system'
+                : 'Enabled by the message system',
+        );
+        state.isDisabledByMessageSystem = gate.isKillswitchActive;
         renderTray();
     });
     mainThreadEmitter.on('module/bridge/status', (status: Status) => {

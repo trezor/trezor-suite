@@ -6,6 +6,7 @@ import { type TrezordNode } from '@trezor/transport-bridge';
 import { scheduleAction } from '@trezor/utils';
 
 import { ipcMain } from '../ipcMain';
+import type { MessageSystemGate } from './message-system';
 import type { Dependencies } from './module';
 import { isMainWindowUsable } from '../libs/isMainWindowUsable';
 import { hasSwitch } from '../libs/process-switches';
@@ -133,19 +134,27 @@ export const initBackground = ({
     store,
     mainThreadEmitter,
     mainWindowProxy,
+    messageSystem,
     logger,
-}: Pick<Dependencies, 'store' | 'mainThreadEmitter' | 'mainWindowProxy' | 'logger'>) => {
+}: Pick<
+    Dependencies,
+    'store' | 'mainThreadEmitter' | 'mainWindowProxy' | 'messageSystem' | 'logger'
+>) => {
     let loaded = false;
 
     bridge = new TrezordNodeProcess(store);
 
-    const onLoad = async () => {
-        if (loaded) return;
-        loaded = true;
-
+    const startWatching = () => {
         // if user uninstalled external bridge, start internal one if applicable
         let isStartingLocalBridge = false;
         watchInterval = setInterval(async () => {
+            // The watcher exists to bring a bridge that stopped running back up, which is exactly
+            // what must not happen while the message system disabled it.
+            if (messageSystem.getGate().isKillswitchActive) {
+                clearInterval(watchInterval);
+
+                return;
+            }
             const isBridgeRunning = await bridge.status();
             if (isBridgeRunning.process) {
                 clearInterval(watchInterval);
@@ -170,7 +179,9 @@ export const initBackground = ({
                     });
             }
         }, 30_000);
+    };
 
+    const startBridge = async () => {
         const status = await bridge.status();
 
         if (status.service) {
@@ -183,6 +194,45 @@ export const initBackground = ({
             // Error ignored, user will see transport error afterwards
             logger.error(SERVICE_NAME, `Failed to load: ${err.message}`);
         });
+    };
+
+    // A killswitch arriving from a later poll tears the bridge down, and a config that drops it
+    // brings the bridge back without an app restart.
+    const applyGate = async (gate: MessageSystemGate) => {
+        if (gate.isKillswitchActive) {
+            logger.info(SERVICE_NAME, 'Stopping, disabled by the message system');
+            clearInterval(watchInterval);
+            watchInterval = undefined;
+            await bridge.stop();
+            await handleBridgeStatus({ mainThreadEmitter, mainWindowProxy, logger });
+
+            return;
+        }
+
+        logger.info(SERVICE_NAME, 'Starting, enabled by the message system');
+        startWatching();
+        await startBridge();
+    };
+
+    const onLoad = () => {
+        if (loaded) return;
+        loaded = true;
+
+        messageSystem.subscribe(gate => {
+            applyGate(gate).catch(err =>
+                logger.error(SERVICE_NAME, `Failed to apply the gate: ${err.message}`),
+            );
+        });
+
+        if (messageSystem.getGate().isKillswitchActive) {
+            logger.info(SERVICE_NAME, 'Not starting, disabled by the message system');
+
+            return;
+        }
+
+        startWatching();
+
+        return startBridge();
     };
 
     const onQuit = async () => {
