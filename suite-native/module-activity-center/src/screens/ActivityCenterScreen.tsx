@@ -14,7 +14,7 @@ import { useServices } from '@trezor/dependency-injection';
 
 import { ActivityCenterTabContent } from '../components/ActivityCenterTabContent';
 
-type ActivityCenterTab = 'notifications' | 'system' | 'releaseNotes';
+type ActivityCenterTab = 'notifications' | 'releaseNotes' | 'system';
 
 export const ActivityCenterScreen = () => {
     const { dispatch } = useServices(injectDispatch);
@@ -38,6 +38,10 @@ export const ActivityCenterScreen = () => {
         {
             value: 'releaseNotes',
             label: <Translation id="moduleActivityCenter.tabs.releaseNotes" />,
+        },
+        {
+            value: 'system',
+            label: <Translation id="moduleActivityCenter.tabs.system" />,
         },
     ];
 

@@ -61,16 +61,16 @@ const NotificationsView = () => {
             'data-testid': '@notifications/menu/transactions',
         },
         {
-            id: 'all',
-            title: <Translation id="NOTIFICATIONS_SYSTEM_TITLE" />,
-            callback: () => setSelectedTab('all'),
-            'data-testid': '@notifications/menu/all',
-        },
-        {
             id: 'release-notes',
             title: <Translation id="TR_RELEASE_NOTES" />,
             callback: () => setSelectedTab('release-notes'),
             'data-testid': '@notifications/menu/release-notes',
+        },
+        {
+            id: 'all',
+            title: <Translation id="NOTIFICATIONS_SYSTEM_TITLE" />,
+            callback: () => setSelectedTab('all'),
+            'data-testid': '@notifications/menu/all',
         },
     ];
 
@@ -93,6 +93,7 @@ const NotificationsView = () => {
                     <NotificationGroup notifications={transactionNotifications} />
                 </Card>
             )}
+            {selectedTab === 'release-notes' && <ReleaseNotes />}
             {selectedTab === 'all' && (
                 <Card>
                     <NotificationGroup
@@ -102,7 +103,6 @@ const NotificationsView = () => {
                     />
                 </Card>
             )}
-            {selectedTab === 'release-notes' && <ReleaseNotes />}
 
             {isDebugModeActive && (
                 <CollapsibleBox
