@@ -8,6 +8,8 @@ import {
     createAsyncThunk as createAsyncThunkReduxToolkit,
 } from '@reduxjs/toolkit';
 
+import { registerThunk } from './thunkRegistry';
+
 type CreateThunkDispatch = ThunkDispatch<any, any, UnknownAction>;
 
 /**
@@ -40,4 +42,23 @@ type CreateThunk = <
     options?: AsyncThunkOptions<TThunkArg, ResolveThunkAPI<TThunkAPI>>,
 ) => AsyncThunk<TReturned, TThunkArg, ResolveThunkAPI<TThunkAPI>>;
 
-export const createThunk: CreateThunk = createAsyncThunkReduxToolkit;
+const createTypedAsyncThunk: CreateThunk = createAsyncThunkReduxToolkit;
+
+export const createThunk: CreateThunk = <
+    TReturned,
+    TThunkArg,
+    TThunkAPI extends AsyncThunkConfig | void,
+>(
+    typePrefix: string,
+    thunk: AsyncThunkPayloadCreator<TReturned, TThunkArg, ResolveThunkAPI<TThunkAPI>>,
+    options?: AsyncThunkOptions<TThunkArg, ResolveThunkAPI<TThunkAPI>>,
+) => {
+    const asyncThunk = createTypedAsyncThunk<TReturned, TThunkArg, TThunkAPI>(
+        typePrefix,
+        thunk,
+        options,
+    );
+    registerThunk(asyncThunk);
+
+    return asyncThunk;
+};

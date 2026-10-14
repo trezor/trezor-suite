@@ -4,6 +4,7 @@ export * from './createSliceWithExtraDeps';
 export * from './createMiddleware';
 export * from './createReducerWithExtraDeps';
 export * from './createSingleInstanceThunk';
+export * from './thunkRegistry';
 export * from './hooks/useSelectorDeepComparison';
 export * from './selectorsUtils';
 export * from './storeInjectors';

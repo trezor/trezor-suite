@@ -55,6 +55,7 @@ export const createMainWindow = ({
                 // This will pass nonce to Renderer process, so it can be used
                 `--csp-nonce=${cspNonce}`,
                 ...(hasSwitch('expose-store') ? ['--expose-store'] : []),
+                ...(hasSwitch('automation-tools') ? ['--automation-tools'] : []),
             ],
         },
         icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),

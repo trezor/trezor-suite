@@ -16152,6 +16152,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/automation-tools@workspace:*, @suite/automation-tools@workspace:suite/automation-tools":
+  version: 0.0.0-use.local
+  resolution: "@suite/automation-tools@workspace:suite/automation-tools"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.13.0"
+    "@suite/locks": "workspace:*"
+    "@suite/modal": "workspace:*"
+    "@suite/router": "workspace:*"
+    "@suite/router-config": "workspace:*"
+    "@suite/suite-lifecycle": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
+    zod: "npm:4.6.5"
+  languageName: unknown
+  linkType: soft
+
 "@suite/backup@workspace:*, @suite/backup@workspace:suite/backup":
   version: 0.0.0-use.local
   resolution: "@suite/backup@workspace:suite/backup"
@@ -16368,6 +16385,7 @@ __metadata:
     "@suite-common/react-query": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@suite/automation-tools": "workspace:*"
     "@suite/bluetooth": "workspace:*"
     "@suite/debug": "workspace:*"
     "@suite/desktop-app-api": "workspace:*"
@@ -17271,6 +17289,7 @@ __metadata:
     "@suite-common/flags": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
+    "@suite/automation-tools": "workspace:*"
     "@suite/debug": "workspace:*"
     "@suite/desktop-app-api": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"
@@ -19376,6 +19395,7 @@ __metadata:
     "@suite/app-assets": "workspace:*"
     "@suite/apps-embedding-demo": "workspace:*"
     "@suite/authenticity-checks": "workspace:*"
+    "@suite/automation-tools": "workspace:*"
     "@suite/backup": "workspace:*"
     "@suite/bluetooth": "workspace:*"
     "@suite/coinjoin": "workspace:*"

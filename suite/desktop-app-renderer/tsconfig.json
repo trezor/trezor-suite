@@ -17,6 +17,7 @@
             "path": "../../suite-common/react-query"
         },
         { "path": "../analytics" },
+        { "path": "../automation-tools" },
         { "path": "../bluetooth" },
         { "path": "../debug" },
         { "path": "../desktop-app-api" },

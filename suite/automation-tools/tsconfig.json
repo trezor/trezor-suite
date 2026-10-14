@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../router" },
+        { "path": "../router-config" },
+        { "path": "../suite-lifecycle" },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../locks" },
+        { "path": "../modal" },
+        {
+            "path": "../../packages/dependency-injection"
+        }
+    ]
+}

@@ -99,6 +99,7 @@
         "@suite/app-assets": "workspace:*",
         "@suite/apps-embedding-demo": "workspace:*",
         "@suite/authenticity-checks": "workspace:*",
+        "@suite/automation-tools": "workspace:*",
         "@suite/backup": "workspace:*",
         "@suite/bluetooth": "workspace:*",
         "@suite/coinjoin": "workspace:*",
