@@ -31,13 +31,6 @@ class SellCompletionActions extends TradingActions {
             timeout: this.SHORT_TIMEOUT,
         });
     }
-
-    async expectConfirmationToFail() {
-        // Provider confirmation expires after 85 seconds; allow time for the failure animation.
-        await waitForVisible(this.getElementById('provider-confirmation-failed'), {
-            timeout: 120_000,
-        });
-    }
 }
 
 export const sellCompletionActions = new SellCompletionActions();

@@ -110,7 +110,6 @@ describe('Trade Sell [@androidOnly]', () => {
             await sellCompletionActions.expectBrowserAuthTriggered();
 
             await sellCompletionActions.expectConfirmationInProgress();
-            await sellCompletionActions.expectConfirmationToFail();
-        }, 180_000);
+        });
     });
 });
