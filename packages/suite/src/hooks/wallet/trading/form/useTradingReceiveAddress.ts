@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { type CryptoId } from 'invity-api';
@@ -324,15 +324,17 @@ export const useTradingReceiveAddress = ({
 
     const { formState } = methods;
 
+    const form: UseFormReturn<TradingVerifyFormProps> = {
+        ...methods,
+        // The spread copies react-hook-form's ref object, whose `formState` is replaced by a
+        // new proxy on every update. Naming it puts a moving dependency in the compiler's guard,
+        // so callers reading `form.formState.errors` see current validation state rather than
+        // whatever the first render held.
+        formState,
+    };
+
     return {
-        form: {
-            ...methods,
-            // The spread copies react-hook-form's ref object, whose `formState` is replaced by a
-            // new proxy on every update. Naming it puts a moving dependency in the compiler's guard,
-            // so callers reading `form.formState.errors` see current validation state rather than
-            // whatever the first render held.
-            formState,
-        },
+        form,
         suiteReceiveAccounts,
         selectedAccount: receiveAccount,
         accountAddress,
