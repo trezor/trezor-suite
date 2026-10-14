@@ -440,6 +440,13 @@ export class TradingPage {
     }
 
     @step()
+    async continueSellWithProvider() {
+        await this.confirmation.sellButton.click();
+        await this.waitForRedirectCompletion();
+        await expect(this.confirmation.confirmAndSendButton).toBeVisible({ timeout: 30_000 });
+    }
+
+    @step()
     async verifyBuyFormOpened(displaySymbol: RegExp) {
         await expect.soft(this.buyBestOfferButton).toBeVisible();
         await expect.soft(this.inputs.youGetAssetSymbol).toHaveText(displaySymbol);

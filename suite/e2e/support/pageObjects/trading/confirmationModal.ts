@@ -30,6 +30,7 @@ export class TradingConfirmationModal {
     readonly finishButton: Locator;
     readonly confirmAndSendButton: Locator;
     readonly buyButton: Locator;
+    readonly sellButton: Locator;
 
     readonly dexMaximumSlippage: Locator;
     readonly dexMinimumReceivedAmount: Locator;
@@ -76,6 +77,7 @@ export class TradingConfirmationModal {
             '@trading/offer/confirm-on-trezor-and-send',
         );
         this.buyButton = this.page.getByTestId('@trading/offer/buy-button');
+        this.sellButton = this.page.getByTestId('@trading/offer/sell-button');
 
         this.dexMaximumSlippage = this.page.getByTestId('@trading/offer/info/slippage');
         this.dexMinimumReceivedAmount = this.page.getByTestId(
