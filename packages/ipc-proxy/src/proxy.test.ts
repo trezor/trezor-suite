@@ -190,6 +190,68 @@ describe('proxy', () => {
         expect(ipcMain.eventNames().length).toEqual(0);
     });
 
+    describe('handler runtime errors', () => {
+        const setupFailingProxy = (
+            channelName: string,
+            allowedToReject?: Record<string, '*' | string[]>,
+        ) => {
+            exposeInMainWorld(
+                ...exposeIpcProxy(ipcRenderer, [channelName], {
+                    proxyName: 'errorsIpcProxy',
+                    allowedToReject,
+                }),
+            );
+            createIpcProxyHandler<any>(ipcMain, channelName, {
+                onCreateInstance: () => ({
+                    onRequest: () => {
+                        throw new Error('IpcProxyHandler runtime error');
+                    },
+                    onAddListener: () => {},
+                    onRemoveListener: () => ({}) as any,
+                }),
+            });
+
+            return createIpcProxy<any>(channelName, { proxyName: 'errorsIpcProxy' });
+        };
+
+        const failure = {
+            success: false,
+            error: { message: 'IpcProxyHandler runtime error', code: 'IPC_PROXY_ERROR' },
+        };
+
+        it('resolves with a failure object by default', async () => {
+            const proxy = await setupFailingProxy('Channel');
+
+            await expect(proxy.method()).resolves.toEqual(failure);
+        });
+
+        it('rejects every method of a channel allowed with "*"', async () => {
+            const proxy = await setupFailingProxy('Channel', { Channel: '*' });
+
+            await expect(proxy.method()).rejects.toThrow('IpcProxyHandler runtime error');
+            await expect(proxy.otherMethod()).rejects.toThrow('IpcProxyHandler runtime error');
+        });
+
+        it('rejects only listed methods of a channel allowed with a list', async () => {
+            const proxy = await setupFailingProxy('Channel', { Channel: ['listed'] });
+
+            await expect(proxy.listed()).rejects.toThrow('IpcProxyHandler runtime error');
+            await expect(proxy.notListed()).resolves.toEqual(failure);
+        });
+
+        it('does not reject methods of a channel which is not allowed', async () => {
+            const proxy = await setupFailingProxy('Channel', { OtherChannel: '*' });
+
+            await expect(proxy.method()).resolves.toEqual(failure);
+        });
+
+        it('does not reject a method listed only for a different channel', async () => {
+            const proxy = await setupFailingProxy('Channel', { OtherChannel: ['listed'] });
+
+            await expect(proxy.listed()).resolves.toEqual(failure);
+        });
+    });
+
     // CURRENTLY LEAKS — see PR #27978 for the fix.
     //
     // ipcMain.handle() registers invoke handlers under per-instance prefixes

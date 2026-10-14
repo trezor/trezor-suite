@@ -14,12 +14,17 @@ const cspNonce = process.argv
 contextBridge.exposeInMainWorld('cspNonce', cspNonce);
 
 contextBridge.exposeInMainWorld(
-    ...exposeIpcProxy(ipcRenderer, [
-        'Bluetooth',
-        'CoinjoinBackend',
-        'CoinjoinClient',
-        'TrezorConnect',
-    ]),
+    ...exposeIpcProxy(
+        ipcRenderer,
+        ['Bluetooth', 'CoinjoinBackend', 'CoinjoinClient', 'TrezorConnect'],
+        {
+            allowedToReject: {
+                CoinjoinClient: '*',
+                CoinjoinBackend: '*',
+                TrezorConnect: ['init'],
+            },
+        },
+    ),
 );
 
 const desktopApi = createDesktopApiBridge(ipcRenderer);
