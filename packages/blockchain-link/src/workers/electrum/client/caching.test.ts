@@ -45,6 +45,12 @@ const createTransaction = (confirmations: number): ElectrumTypes.TransactionVerb
     vout: [],
 });
 
+const createStatusNotification = (status: string | null) => ({
+    jsonrpc: '2.0',
+    method: 'blockchain.scripthash.subscribe',
+    params: [SCRIPTHASH, status],
+});
+
 class MockSocket implements ISocket {
     private listener?: SocketListener;
     readonly requests: JsonRpcRequest[] = [];
@@ -52,13 +58,15 @@ class MockSocket implements ISocket {
     // Blocks of the chain below the tip.
     chain: BlockHeader[] = [];
     transaction = createTransaction(1);
-    status = 'status-1';
+    status: string | null = 'status-1';
     // Called when a request arrives, before it is answered.
     onRequest?: (method: string) => void;
     // Answered with an error, like ElectrumX does e.g. for a height out of range.
     failingMethod?: string;
     // Closes the connection instead of answering.
     closingMethod?: string;
+    // Sent in the same chunk right after the next responses.
+    private nextNotifications: unknown[] = [];
 
     connect(listener: SocketListener) {
         this.listener = listener;
@@ -83,7 +91,8 @@ class MockSocket implements ISocket {
                 ? { jsonrpc: '2.0', id: request.id, error: { code: 1, message: 'server error' } }
                 : { jsonrpc: '2.0', id: request.id, result: this.getResult(request) },
         );
-        setImmediate(() => this.receive(responses));
+        const notifications = this.nextNotifications.splice(0);
+        setImmediate(() => this.receive(responses, ...notifications));
     }
 
     private getResult({ method, params }: JsonRpcRequest) {
@@ -105,8 +114,8 @@ class MockSocket implements ISocket {
         }
     }
 
-    private receive(message: unknown) {
-        this.listener?.onReceive(`${JSON.stringify(message)}\n`);
+    private receive(...messages: unknown[]) {
+        this.listener?.onReceive(messages.map(message => `${JSON.stringify(message)}\n`).join(''));
     }
 
     notifyBlock(block: BlockHeader) {
@@ -114,13 +123,13 @@ class MockSocket implements ISocket {
         this.receive({ jsonrpc: '2.0', method: 'blockchain.headers.subscribe', params: [block] });
     }
 
-    notifyStatus(status: string) {
+    notifyStatus(status: string | null) {
         this.status = status;
-        this.receive({
-            jsonrpc: '2.0',
-            method: 'blockchain.scripthash.subscribe',
-            params: [SCRIPTHASH, status],
-        });
+        this.receive(createStatusNotification(status));
+    }
+
+    notifyStatusWithNextResponses(status: string | null) {
+        this.nextNotifications.push(createStatusNotification(status));
     }
 
     getRequestCount(method: string) {
@@ -271,6 +280,40 @@ describe('CachingElectrumClient', () => {
         // The subscription belongs to the connection, the history of the same status doesn't.
         expect(socket.getRequestCount('blockchain.scripthash.subscribe')).toBe(1);
         expect(socket.getRequestCount('blockchain.scripthash.get_history')).toBe(0);
+    });
+
+    it('does not ask for the history, balance and unspent outputs of an unused address', async () => {
+        const { socket, client } = await connectClient();
+        socket.status = null;
+
+        const results = await Promise.all([
+            client.request('blockchain.scripthash.get_history', SCRIPTHASH),
+            client.request('blockchain.scripthash.get_balance', SCRIPTHASH),
+            client.request('blockchain.scripthash.listunspent', SCRIPTHASH),
+        ]);
+
+        expect(results).toEqual([[], { confirmed: 0, unconfirmed: 0 }, []]);
+        expect(socket.requests.map(({ method }) => method)).toEqual([
+            'server.version',
+            'blockchain.headers.subscribe',
+            'blockchain.scripthash.subscribe',
+        ]);
+    });
+
+    it('keeps the status of a notification which came together with the subscription', async () => {
+        const { socket, client } = await connectClient();
+        socket.status = null;
+        socket.onRequest = method => {
+            if (method === 'blockchain.scripthash.subscribe') {
+                socket.onRequest = undefined;
+                socket.notifyStatusWithNextResponses('status-2');
+            }
+        };
+
+        const history = await client.request('blockchain.scripthash.get_history', SCRIPTHASH);
+
+        expect(history).toEqual([{ tx_hash: TXID, height: 100 }]);
+        expect(socket.getRequestCount('blockchain.scripthash.get_history')).toBe(1);
     });
 
     it('keeps confirmed transactions when the chain only grew while disconnected', async () => {

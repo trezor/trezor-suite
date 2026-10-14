@@ -129,9 +129,12 @@ export class CachingElectrumClient extends ElectrumClient {
         // Subscribe to the new scripthash and store the status
         return this.requestOnce(`subscribe:${scripthash}`, async () => {
             const newStatus = await super.request('blockchain.scripthash.subscribe', scripthash);
-            this.statuses[scripthash] = newStatus;
+            // A notification which arrived together with the response is newer than the response.
+            const notifiedStatus = this.statuses[scripthash];
+            const currentStatus = notifiedStatus === undefined ? newStatus : notifiedStatus;
+            this.statuses[scripthash] = currentStatus;
 
-            return newStatus;
+            return currentStatus;
         });
     }
 
@@ -232,6 +235,14 @@ export class CachingElectrumClient extends ElectrumClient {
             case 'blockchain.scripthash.listunspent': {
                 const [scripthash] = params;
                 const status = await this.trySubscribe(scripthash);
+                // The status of a scripthash without any history is null.
+                if (status === null) {
+                    this.cached++;
+
+                    return method === 'blockchain.scripthash.get_balance'
+                        ? { confirmed: 0, unconfirmed: 0 }
+                        : [];
+                }
 
                 return this.cacheRequest(status, method, params);
             }
