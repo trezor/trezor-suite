@@ -115,6 +115,7 @@ export function Sidebar({
                 onClick={() => setMenu(false)}
             />
             <Container
+                data-testid="@explorer/sidebar/container"
                 className={cn(
                     'nextra-sidebar-container _flex _flex-col',
                     'md:_shrink-0 motion-reduce:_transform-none',
@@ -150,6 +151,7 @@ export function Sidebar({
                                 <Collapse isOpen={showSidebar} horizontal>
                                     <Menu
                                         className="nextra-menu-desktop max-md:_hidden"
+                                        data-testid="@explorer/sidebar/menu-desktop"
                                         // The sidebar menu, shows only the docs directories.
                                         directories={docsDirectories}
                                         // When the viewport size is larger than `md`, hide the anchors in
@@ -162,6 +164,7 @@ export function Sidebar({
                             {mounted && window.innerWidth < 768 && (
                                 <Menu
                                     className="nextra-menu-mobile md:_hidden"
+                                    data-testid="@explorer/sidebar/menu-mobile"
                                     // The mobile dropdown menu, shows all the directories.
                                     directories={fullDirectories}
                                     // Always show the anchor links on mobile (`md`).
@@ -198,6 +201,7 @@ export function Sidebar({
                         )}
                         {themeConfig.sidebar.toggleButton && (
                             <button
+                                data-testid="@explorer/sidebar/toggle-button"
                                 title={showSidebar ? 'Hide sidebar' : 'Show sidebar'}
                                 className="max-md:_hidden _h-7 _rounded-md _transition-colors _text-gray-600 dark:_text-gray-400 _px-2 hover:_bg-gray-100 hover:_text-gray-900 dark:hover:_bg-primary-100/5 dark:hover:_text-gray-50"
                                 onClick={() => {

@@ -60,6 +60,7 @@ export function TOC({ toc, filePath }: TOCProps): ReactElement {
     return (
         <Container
             ref={tocRef}
+            data-testid="@explorer/toc/container"
             className={cn(
                 'nextra-scrollbar _sticky _overflow-y-auto _pr-4 _pt-6 _text-sm [hyphens:auto]',
                 '_max-h-[calc(100vh-var(--nextra-navbar-height)-env(safe-area-inset-bottom))] ltr:_-mr-4 rtl:_-ml-4',
@@ -70,11 +71,12 @@ export function TOC({ toc, filePath }: TOCProps): ReactElement {
                     <p className="_mb-4 _font-semibold _tracking-tight">
                         {renderComponent(themeConfig.toc.title)}
                     </p>
-                    <ul>
+                    <ul data-testid="@explorer/toc/list">
                         {items.map(({ id, value, depth }) => (
                             <li className="_my-2 _scroll-my-6 _scroll-py-6" key={id}>
                                 <a
                                     href={`#${id}`}
+                                    data-testid={`@explorer/toc/entry/${id}`}
                                     className={cn(
                                         {
                                             2: '_font-semibold',

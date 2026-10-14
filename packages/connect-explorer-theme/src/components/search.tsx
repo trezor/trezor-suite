@@ -248,6 +248,7 @@ export function Search({
 
             <Input
                 ref={input}
+                data-testid="@explorer/search/input"
                 value={value}
                 onChange={e => {
                     const inputValue = e.target.value;
@@ -278,6 +279,7 @@ export function Search({
                 leaveTo="_opacity-0"
             >
                 <ul
+                    data-testid="@explorer/search/results"
                     className={cn(
                         'nextra-scrollbar',
                         // Using bg-white as background-color when the browser didn't support backdrop-filter
