@@ -1,43 +1,41 @@
 import type { NetworkAssetsModule, NetworkIconAsset } from '@trezor/network-assets-types';
-import {
-    type RippleNetworkSymbol,
-    supportedRippleNetworks,
-} from '@trezor/network-ripple-types';
-
-import { rippleCryptoIcons } from './cryptoIcons';
-import { rippleNetworkIcons } from './networkIcons';
+import type { RippleNetworkSymbol } from '@trezor/network-ripple-types';
 
 // Keep SVG loading lazy so registering assets does not load their files.
 const icons: Record<RippleNetworkSymbol, NetworkIconAsset> = {
     txrp: {
-        getIcons: () => ({
-            coin: rippleCryptoIcons.txrp.getIcon(),
-            network: rippleNetworkIcons.xrp.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/txrp.svg');
+            const network = require('../assets/networkIcons/xrp.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: rippleCryptoIcons.txrp.getIconPath(),
-            network: rippleNetworkIcons.xrp.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/txrp.svg'),
+            network: require.resolve('../assets/networkIcons/xrp.svg'),
         }),
     },
     xrp: {
-        getIcons: () => ({
-            coin: rippleCryptoIcons.xrp.getIcon(),
-            network: rippleNetworkIcons.xrp.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/xrp.svg');
+            const network = require('../assets/networkIcons/xrp.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: rippleCryptoIcons.xrp.getIconPath(),
-            network: rippleNetworkIcons.xrp.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/xrp.svg'),
+            network: require.resolve('../assets/networkIcons/xrp.svg'),
         }),
     },
 };
 
 export const rippleAssets: NetworkAssetsModule<RippleNetworkSymbol> = {
-    regenerateIcons: deps =>
-        deps.regenerateNetworkIcons({
-            family: 'ripple',
-            supportedNetworks: supportedRippleNetworks,
-            icons,
-        }),
     getIcons: symbol => icons[symbol].getIcons(),
     getIconPaths: symbol => icons[symbol].getIconPaths(),
 };
