@@ -623,7 +623,7 @@ describe(`${Preloader.name} component`, () => {
                 },
                 device: {
                     selectedDevice: mockSuiteDevice(
-                        { mode: 'bootloader' },
+                        { mode: 'bootloader', connected: true },
                         { firmware_present: false, bootloader_mode: true, initialized: false },
                     ),
                 },
@@ -646,7 +646,7 @@ describe(`${Preloader.name} component`, () => {
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
-                device: { selectedDevice: mockSuiteDevice() },
+                device: { selectedDevice: mockSuiteDevice({ connected: true }) },
                 persistentDeviceData: persistentDeviceDataInitialState,
             }),
             services: createServices,
@@ -668,7 +668,10 @@ describe(`${Preloader.name} component`, () => {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
                 device: {
-                    selectedDevice: mockSuiteDevice({ mode: 'initialize' }, { initialized: false }),
+                    selectedDevice: mockSuiteDevice(
+                        { mode: 'initialize', connected: true },
+                        { initialized: false },
+                    ),
                 },
                 persistentDeviceData: persistentDeviceDataInitialState,
             }),
