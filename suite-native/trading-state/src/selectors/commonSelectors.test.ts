@@ -24,7 +24,7 @@ import { type AccountsRootState } from '@suite-common/wallet-core';
 import {
     type Account,
     type AccountKey,
-    type RatesByKey,
+    type CurrentRatesByKey,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
@@ -606,8 +606,8 @@ describe('commonSelectors', () => {
         it('should return rate of token when stored rate key uses checksummed address', () => {
             const state = getStateWithRates();
             state.wallet.fiat.current = {
-                'eth-0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48-usd': { rate: 0.99 },
-            } as RatesByKey;
+                'eth-0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48-usd': { rate: 0.99, usdRate: 0.99 },
+            } as CurrentRatesByKey;
 
             expect(selectFiatRateByTradeableAsset(state, usdcAsset)).toBe(0.99);
         });

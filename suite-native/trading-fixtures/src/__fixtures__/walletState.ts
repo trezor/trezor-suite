@@ -2,7 +2,7 @@ import { type TradingType } from '@suite-common/trading';
 import { type FiatRatesState, type SendState } from '@suite-common/wallet-core';
 import {
     type Account,
-    type RatesByKey,
+    type CurrentRatesByKey,
     type WalletSettings,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
@@ -40,20 +40,24 @@ export const getWalletState = ({
                 // ETH - USD
                 'eth-usd': {
                     rate: 1000,
+                    usdRate: 1000,
                 },
                 // BTC - USD
                 'btc-usd': {
                     rate: 0.001,
+                    usdRate: 0.001,
                 },
                 // SOL - USD
                 'sol-usd': {
                     rate: 150,
+                    usdRate: 150,
                 },
                 // USDC - USD
                 'eth-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48-usd': {
                     rate: 0.99,
+                    usdRate: 0.99,
                 },
-            } as RatesByKey,
+            } as CurrentRatesByKey,
             historic: {},
             lastWeek: {},
         } as FiatRatesState,

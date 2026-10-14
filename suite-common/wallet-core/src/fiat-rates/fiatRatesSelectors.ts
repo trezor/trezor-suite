@@ -8,6 +8,7 @@ import {
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     type CryptoBaseCurrencyPair,
+    type CurrentRatesByKey,
     type Rate,
     type RateTypeWithoutHistoric,
     type RatesByKey,
@@ -53,7 +54,7 @@ const createStableRatesByKey = weakMapMemoize(
         }, {}),
 );
 
-export const selectCurrentFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>
+export const selectCurrentFiatRates = (state: FiatRatesRootState): CurrentRatesByKey | undefined =>
     state.wallet.fiat?.['current'];
 
 const getRatesByLowerCasedKey = weakMapMemoize(

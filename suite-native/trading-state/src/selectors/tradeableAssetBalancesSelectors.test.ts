@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import {
     type Account,
-    type Rate,
+    type CurrentRatesByKey,
     type TokenAddress,
     asAccountDescriptor,
     toTokenAddress,
@@ -43,7 +43,7 @@ const createUsdcToken = (contract: TokenAddress, balance: string) =>
         balance,
     });
 
-const createState = (accounts: Account[], rates: Record<string, Rate> = {}): TestState => ({
+const createState = (accounts: Account[], rates: CurrentRatesByKey = {}): TestState => ({
     wallet: {
         accounts,
         ...mockWalletFiatRatesAndSettings(rates),

@@ -7,8 +7,8 @@ import { fiatRatesInitialState, initialWalletSettingsState } from '@suite-common
 import {
     type Account,
     type CryptoBaseCurrencyPair,
-    type Rate,
-    type RatesByKey,
+    type CurrentRate,
+    type CurrentRatesByKey,
     type TickerId,
     asAccountDescriptor,
     asBaseCurrencyAmount,
@@ -114,7 +114,7 @@ const getRecomputations = (selector: unknown): number =>
 
 const createState = (
     accounts: Account[],
-    currentFiatRates: RatesByKey = {},
+    currentFiatRates: CurrentRatesByKey = {},
 ): EarnListRootState => ({
     networks: networksState,
     device: {
@@ -131,8 +131,10 @@ const createState = (
 
 type RateEntry = { ticker: TickerId; fiatRateKey: CryptoBaseCurrencyPair; rate: number };
 
-const createRate = ({ ticker, rate }: RateEntry): Rate => ({
+// In dollars, the dollar rate is the rate itself.
+const createRate = ({ ticker, rate }: RateEntry): CurrentRate => ({
     rate,
+    usdRate: rate,
     lastTickerTimestamp: asTimestamp(0),
     lastSuccessfulFetchTimestamp: asTimestamp(0),
     isLoading: false,
@@ -140,8 +142,8 @@ const createRate = ({ ticker, rate }: RateEntry): Rate => ({
     ticker,
 });
 
-const createRates = (entries: RateEntry[]): RatesByKey =>
-    entries.reduce<RatesByKey>((ratesByKey, entry) => {
+const createRates = (entries: RateEntry[]): CurrentRatesByKey =>
+    entries.reduce<CurrentRatesByKey>((ratesByKey, entry) => {
         ratesByKey[entry.fiatRateKey] = createRate(entry);
 
         return ratesByKey;

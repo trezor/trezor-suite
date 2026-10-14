@@ -3,8 +3,8 @@ import { type FiatRatesState } from '@suite-common/wallet-core';
 import {
     type Account,
     AddressDisplayOptions,
-    type Rate,
-    type RatesByKey,
+    type CurrentRate,
+    type CurrentRatesByKey,
     type TokenAddress,
     type WalletSettings,
     asAccountDescriptor,
@@ -100,8 +100,14 @@ export const BTC_ACCOUNT_KEY = mockBtcAccount().key;
 
 const LOCAL_CURRENCY = 'usd';
 
-const mockRate = (symbol: NetworkSymbol, rate: number, tokenAddress?: TokenAddress): Rate => ({
+// In dollars, the dollar rate is the rate itself.
+const mockRate = (
+    symbol: NetworkSymbol,
+    rate: number,
+    tokenAddress?: TokenAddress,
+): CurrentRate => ({
     rate,
+    usdRate: rate,
     lastTickerTimestamp: asTimestamp(1750315199039),
     lastSuccessfulFetchTimestamp: asTimestamp(1750315199039),
     isLoading: false,
@@ -109,7 +115,7 @@ const mockRate = (symbol: NetworkSymbol, rate: number, tokenAddress?: TokenAddre
     ticker: { symbol, tokenAddress },
 });
 
-const mockRatesByKey = (rates: Rate[]): RatesByKey =>
+const mockRatesByKey = (rates: CurrentRate[]): CurrentRatesByKey =>
     Object.fromEntries(
         rates.map(rate => {
             const { symbol, tokenAddress } = rate.ticker;

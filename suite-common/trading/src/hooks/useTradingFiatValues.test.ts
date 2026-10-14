@@ -2,7 +2,7 @@ import { type CryptoId } from 'invity-api';
 
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { type Rate, type Timestamp } from '@suite-common/wallet-types';
+import { type CurrentRate, type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 
 import {
@@ -22,8 +22,10 @@ const ETHEREUM_CRYPTO_ID = 'ethereum' as CryptoId;
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
 
-const createMockRate = (rate: number, symbol: NetworkSymbol = btcSymbol): Rate => ({
+// A current rate always carries its dollar rate; these tests only read `rate`.
+const createMockRate = (rate: number, symbol: NetworkSymbol = btcSymbol): CurrentRate => ({
     rate,
+    usdRate: rate,
     lastTickerTimestamp: 1000000 as Timestamp,
     lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
     isLoading: false,
