@@ -224,8 +224,11 @@ const transformProgressEventData = (
         path: path as Bip43Path,
         backendType: backendType as TrezorConnectBackendType | undefined,
         accountInfo,
-        // first normal account is always visible on web & desktop
-        visible: response.failed || !response.empty || (accountType === 'normal' && index === 0),
+        visible:
+            response.failed ||
+            !response.empty ||
+            !response.last || // empty account is visible if not the last one
+            (response.type === 'normal' && response.index === 0), // first normal account is always visible on web & desktop
         ...(!response.failed ? { failed: undefined } : { failed: true, error: response.error }),
     };
 
