@@ -35,11 +35,18 @@ export const selectDeviceNeedsManualCheck = createMemoizedSelector(
         (_state, device?: TrezorDevice) => device,
         (state, device?: TrezorDevice) => selectPersistentDeviceDataById(state, device?.id),
     ],
-    (device, persistentDeviceData): boolean =>
-        getIsFactoryResetDevice(device) ||
-        // deviceId condition just to make it explicit, but if falsy, then persistentDeviceData won't match.
-        (typeof device?.id === 'string' &&
-            persistentDeviceData?.manualCheckResult?.success !== true),
+    (device, persistentDeviceData): boolean => {
+        // User wouldn't be able to visually check model and color if the device is not connected.
+        if (device?.connected !== true) return false;
+
+        if (getIsFactoryResetDevice(device)) return true;
+
+        return (
+            // deviceId condition just to make it explicit, but if falsy, then persistentDeviceData won't match.
+            typeof device?.id === 'string' &&
+            persistentDeviceData?.manualCheckResult?.success !== true
+        );
+    },
 );
 
 export const selectDeviceAuthenticityByDeviceId = createMemoizedSelector(
