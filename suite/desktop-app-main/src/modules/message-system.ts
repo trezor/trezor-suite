@@ -36,7 +36,6 @@ export type MessageSystemGate = {
 
 type GateListener = (gate: MessageSystemGate) => void;
 
-/** @serviceContract */
 export type MessageSystemOwner = {
     /** Applies the persisted config, without touching the network. */
     loadPersistedConfig: () => void;
