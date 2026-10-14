@@ -129,12 +129,10 @@ jobs:
           node-version-file: ".nvmrc"
           cache: yarn
 
-      - name: Cache node_modules
-        id: node-modules-cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+      - name: Restore installed dependencies
+        uses: ./.github/actions/node-modules-cache
         with:
-          path: node_modules
-          key: node_modules-suite-e2e-${{ hashFiles('yarn.lock') }}
+          profile: suite-e2e
 
       - name: Cache Playwright Browsers
         id: playwright-cache
