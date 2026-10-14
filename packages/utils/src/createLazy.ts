@@ -6,12 +6,14 @@ export const createLazy = <T, TArgs extends Array<any>>(
 ) => {
     let value: T | undefined;
     let valuePromise: Deferred<T> | undefined;
+    let initSettled: Promise<void> | undefined;
 
     const get = () => value;
 
     const getPending = () => valuePromise?.promise;
 
     const dispose = () => {
+        const inFlight = valuePromise ? initSettled : undefined;
         if (valuePromise) {
             valuePromise.reject(new Error('Disposed during initialization'));
             valuePromise = undefined;
@@ -20,6 +22,9 @@ export const createLazy = <T, TArgs extends Array<any>>(
             disposeLazy?.(value);
             value = undefined;
         }
+
+        // resolves once any in-flight init has settled and its value been disposed
+        return inFlight ?? Promise.resolve();
     };
 
     const getOrInit = (...args: TArgs) => {
@@ -27,16 +32,23 @@ export const createLazy = <T, TArgs extends Array<any>>(
         if (!valuePromise) {
             const deferred = createDeferred<T>();
             valuePromise = deferred;
-            initLazy(...args)
+            initSettled = initLazy(...args)
                 .then(val => {
+                    // Disposal may have occurred while initializing, so nobody owns this value anymore.
+                    if (valuePromise !== deferred) {
+                        disposeLazy?.(val);
+
+                        return;
+                    }
                     value = val;
                     valuePromise = undefined;
                     deferred.resolve(val);
                 })
                 .catch(err => {
-                    valuePromise = undefined;
+                    if (valuePromise === deferred) valuePromise = undefined;
                     deferred.reject(err);
-                });
+                })
+                .then(() => {});
         }
 
         return valuePromise.promise;
