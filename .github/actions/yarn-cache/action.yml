@@ -1,0 +1,29 @@
+name: "Shared Yarn download cache"
+description: "Restores one Yarn store; only trusted develop runs save shared snapshots."
+inputs:
+  save:
+    description: "Allow the dedicated warmer to save a complete shared store."
+    default: "false"
+runs:
+  using: "composite"
+  steps:
+    - name: Get Yarn cache directory
+      id: directory
+      shell: bash
+      run: echo "path=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
+
+    - name: Restore Yarn downloads
+      if: inputs.save != 'true' || github.ref != 'refs/heads/develop' || !contains(fromJSON('["push", "schedule", "workflow_dispatch"]'), github.event_name)
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+      with:
+        path: ${{ steps.directory.outputs.path }}
+        key: yarn-download-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('yarn.lock', '.yarnrc.yml', '.yarn/releases/*.cjs') }}
+        restore-keys: yarn-download-v1-${{ runner.os }}-${{ runner.arch }}-
+
+    - name: Restore and save shared Yarn downloads
+      if: inputs.save == 'true' && github.ref == 'refs/heads/develop' && contains(fromJSON('["push", "schedule", "workflow_dispatch"]'), github.event_name)
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+      with:
+        path: ${{ steps.directory.outputs.path }}
+        key: yarn-download-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('yarn.lock', '.yarnrc.yml', '.yarn/releases/*.cjs') }}
+        restore-keys: yarn-download-v1-${{ runner.os }}-${{ runner.arch }}-

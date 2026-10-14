@@ -43,7 +43,11 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
-          cache: yarn
+          cache: ${{ hashFiles('.github/actions/yarn-cache/action.yml') == '' && 'yarn' || '' }}
+
+      - name: Restore shared Yarn downloads
+        if: hashFiles('.github/actions/yarn-cache/action.yml') != ''
+        uses: ./.github/actions/yarn-cache
       - name: Setup EAS
         uses: expo/expo-github-action@eab7a230208c952974db8c3245cfd78402c7b385 # v9
         with:
