@@ -3,13 +3,9 @@
 Icons for the native (mobile) app. General icon SVG sources live in `@trezor/icons` (`packages/icons/assets`).
 
 Coin and network SVGs live in `networks/<family>/network-<family>-assets/assets`.
-These packages export lazy icon loaders and filesystem-path readers through their indexes.
-`yarn generate-icons` updates the family loaders and the existing shared icon maps.
-
-Asset modules expose `regenerateIcons({ regenerateNetworkIcons })` for TypeScript generation.
-The injected Node service generates each package's `cryptoIcons.ts`, `networkIcons.ts`, and
-asset mapping without rewriting SVGs. The existing `generateIcons.mjs` script supplies its
-filesystem and formatting dependencies and calls the modules in a loop.
+Their typed asset maps contain literal, lazy SVG references and filesystem-path readers.
+Add or rename a network asset by updating its SVG file and the owning package's asset map.
+`yarn generate-icons` updates the shared icon maps using the asset modules.
 
 ## How to add or update an icon
 

@@ -1,185 +1,268 @@
 import type { NetworkAssetsModule, NetworkIconAsset } from '@trezor/network-assets-types';
-import {
-    type EthereumNetworkSymbol,
-    supportedEthereumNetworks,
-} from '@trezor/network-ethereum-types';
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
 
-import { ethereumCryptoIcons } from './cryptoIcons';
-import { ethereumNetworkIcons } from './networkIcons';
-
-export type EthereumAssetSymbol = EthereumNetworkSymbol | 'bnb' | 'teth';
+export type EthereumAssetSymbol = EthereumNetworkSymbol | 'bnb' | 'gnt' | 'teth';
 
 // Keep SVG loading lazy so registering assets does not load their files.
 const icons: Record<EthereumAssetSymbol, NetworkIconAsset> = {
     arb: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.arb.getIcon(),
-            network: ethereumNetworkIcons.arb.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/arb.svg');
+            const network = require('../assets/networkIcons/arb.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.arb.getIconPath(),
-            network: ethereumNetworkIcons.arb.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/arb.svg'),
+            network: require.resolve('../assets/networkIcons/arb.svg'),
         }),
     },
     arc: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.arc.getIcon(),
-            network: ethereumNetworkIcons.arc.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/arc.svg');
+            const network = require('../assets/networkIcons/arc.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.arc.getIconPath(),
-            network: ethereumNetworkIcons.arc.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/arc.svg'),
+            network: require.resolve('../assets/networkIcons/arc.svg'),
         }),
     },
     avax: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.avax.getIcon(),
-            network: ethereumNetworkIcons.avax.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/avax.svg');
+            const network = require('../assets/networkIcons/avax.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.avax.getIconPath(),
-            network: ethereumNetworkIcons.avax.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/avax.svg'),
+            network: require.resolve('../assets/networkIcons/avax.svg'),
         }),
     },
     base: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.base.getIcon(),
-            network: ethereumNetworkIcons.base.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/base.svg');
+            const network = require('../assets/networkIcons/base.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.base.getIconPath(),
-            network: ethereumNetworkIcons.base.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/base.svg'),
+            network: require.resolve('../assets/networkIcons/base.svg'),
         }),
     },
     bnb: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.bnb.getIcon(),
-            network: ethereumNetworkIcons.bsc.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/bnb.svg');
+            const network = require('../assets/networkIcons/bsc.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.bnb.getIconPath(),
-            network: ethereumNetworkIcons.bsc.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/bnb.svg'),
+            network: require.resolve('../assets/networkIcons/bsc.svg'),
         }),
     },
     bsc: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.bsc.getIcon(),
-            network: ethereumNetworkIcons.bsc.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/bsc.svg');
+            const network = require('../assets/networkIcons/bsc.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.bsc.getIconPath(),
-            network: ethereumNetworkIcons.bsc.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/bsc.svg'),
+            network: require.resolve('../assets/networkIcons/bsc.svg'),
         }),
     },
     etc: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.etc.getIcon(),
-            network: ethereumNetworkIcons.etc.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/etc.svg');
+            const network = require('../assets/networkIcons/etc.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.etc.getIconPath(),
-            network: ethereumNetworkIcons.etc.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/etc.svg'),
+            network: require.resolve('../assets/networkIcons/etc.svg'),
         }),
     },
     eth: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.eth.getIcon(),
-            network: ethereumNetworkIcons.eth.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/eth.svg');
+            const network = require('../assets/networkIcons/eth.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.eth.getIconPath(),
-            network: ethereumNetworkIcons.eth.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/eth.svg'),
+            network: require.resolve('../assets/networkIcons/eth.svg'),
+        }),
+    },
+    gnt: {
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/gnt.svg');
+            const network = require('../assets/networkIcons/eth.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
+        getIconPaths: () => ({
+            coin: require.resolve('../assets/cryptoIcons/gnt.svg'),
+            network: require.resolve('../assets/networkIcons/eth.svg'),
         }),
     },
     hype: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.hype.getIcon(),
-            network: ethereumNetworkIcons.hype.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/hype.svg');
+            const network = require('../assets/networkIcons/hype.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.hype.getIconPath(),
-            network: ethereumNetworkIcons.hype.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/hype.svg'),
+            network: require.resolve('../assets/networkIcons/hype.svg'),
         }),
     },
     op: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.op.getIcon(),
-            network: ethereumNetworkIcons.op.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/op.svg');
+            const network = require('../assets/networkIcons/op.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.op.getIconPath(),
-            network: ethereumNetworkIcons.op.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/op.svg'),
+            network: require.resolve('../assets/networkIcons/op.svg'),
         }),
     },
     pol: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.pol.getIcon(),
-            network: ethereumNetworkIcons.pol.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/pol.svg');
+            const network = require('../assets/networkIcons/pol.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.pol.getIconPath(),
-            network: ethereumNetworkIcons.pol.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/pol.svg'),
+            network: require.resolve('../assets/networkIcons/pol.svg'),
         }),
     },
     rhc: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.rhc.getIcon(),
-            network: ethereumNetworkIcons.rhc.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/rhc.svg');
+            const network = require('../assets/networkIcons/rhc.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.rhc.getIconPath(),
-            network: ethereumNetworkIcons.rhc.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/rhc.svg'),
+            network: require.resolve('../assets/networkIcons/rhc.svg'),
         }),
     },
     tarc: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.tarc.getIcon(),
-            network: ethereumNetworkIcons.arc.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/tarc.svg');
+            const network = require('../assets/networkIcons/arc.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.tarc.getIconPath(),
-            network: ethereumNetworkIcons.arc.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/tarc.svg'),
+            network: require.resolve('../assets/networkIcons/arc.svg'),
         }),
     },
     teth: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.teth.getIcon(),
-            network: ethereumNetworkIcons.eth.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/teth.svg');
+            const network = require('../assets/networkIcons/eth.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.teth.getIconPath(),
-            network: ethereumNetworkIcons.eth.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/teth.svg'),
+            network: require.resolve('../assets/networkIcons/eth.svg'),
         }),
     },
     thod: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.thod.getIcon(),
-            network: ethereumNetworkIcons.eth.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/thod.svg');
+            const network = require('../assets/networkIcons/eth.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.thod.getIconPath(),
-            network: ethereumNetworkIcons.eth.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/thod.svg'),
+            network: require.resolve('../assets/networkIcons/eth.svg'),
         }),
     },
     tsep: {
-        getIcons: () => ({
-            coin: ethereumCryptoIcons.tsep.getIcon(),
-            network: ethereumNetworkIcons.eth.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/tsep.svg');
+            const network = require('../assets/networkIcons/eth.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: ethereumCryptoIcons.tsep.getIconPath(),
-            network: ethereumNetworkIcons.eth.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/tsep.svg'),
+            network: require.resolve('../assets/networkIcons/eth.svg'),
         }),
     },
 };
 
 export const ethereumAssets: NetworkAssetsModule<EthereumAssetSymbol> = {
-    regenerateIcons: deps =>
-        deps.regenerateNetworkIcons({
-            family: 'ethereum',
-            supportedNetworks: supportedEthereumNetworks,
-            icons,
-        }),
     getIcons: symbol => icons[symbol].getIcons(),
     getIconPaths: symbol => icons[symbol].getIconPaths(),
 };

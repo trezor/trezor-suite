@@ -80,8 +80,6 @@ export const localRulesConfig = [
                         ...packagesWithSectionEntryPoints,
                     ],
                     allowedEntryPointPatterns: [
-                        // Node tooling for network asset regeneration.
-                        /^@trezor\/network-assets-types\/scripts$/,
                         // Packages expose reusable test mocks (`/mocks`) and platform-specific React
                         // bindings (`/react` for web and desktop, `/react-native` for native) through
                         // dedicated public entry points.

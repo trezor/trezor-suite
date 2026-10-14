@@ -153,7 +153,7 @@ for (const filename of [
     test(`allows network asset package roots in ${filename}`, async () => {
         assert.deepEqual(
             await lintRestrictedImports({
-                code: "import { bitcoinCryptoIcons } from '@trezor/network-bitcoin-assets'; export { ethereumNetworkIcons } from '@trezor/network-ethereum-assets';",
+                code: "import { bitcoinAssets } from '@trezor/network-bitcoin-assets'; export { ethereumAssets } from '@trezor/network-ethereum-assets';",
                 filename,
             }),
             [],

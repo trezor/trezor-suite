@@ -3,22 +3,10 @@
 
 import chalk from 'chalk';
 import fs from 'fs';
-import { readdir, writeFile } from 'fs/promises';
 import path from 'path';
 import prettier from 'prettier';
 import { optimize } from 'svgo';
 import { fileURLToPath } from 'url';
-
-import { createRegenerateNetworkIcons } from '@trezor/network-assets-types/scripts';
-import { bitcoinAssets } from '@trezor/network-bitcoin-assets';
-import { cardanoAssets } from '@trezor/network-cardano-assets';
-import { ethereumAssets } from '@trezor/network-ethereum-assets';
-import { moneroAssets } from '@trezor/network-monero-assets';
-import { rippleAssets } from '@trezor/network-ripple-assets';
-import { solanaAssets } from '@trezor/network-solana-assets';
-import { stellarAssets } from '@trezor/network-stellar-assets';
-import { tezosAssets } from '@trezor/network-tezos-assets';
-import { tronAssets } from '@trezor/network-tron-assets';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const generatorPath = path
@@ -41,51 +29,15 @@ const assetTypesConfig = [
 ];
 
 const networkAssetModules = [
-    {
-        family: 'bitcoin',
-        dirname: '../../networks/bitcoin/network-bitcoin-assets',
-        module: bitcoinAssets,
-    },
-    {
-        family: 'cardano',
-        dirname: '../../networks/cardano/network-cardano-assets',
-        module: cardanoAssets,
-    },
-    {
-        family: 'ethereum',
-        dirname: '../../networks/ethereum/network-ethereum-assets',
-        module: ethereumAssets,
-    },
-    {
-        family: 'monero',
-        dirname: '../../networks/monero/network-monero-assets',
-        module: moneroAssets,
-    },
-    {
-        family: 'ripple',
-        dirname: '../../networks/ripple/network-ripple-assets',
-        module: rippleAssets,
-    },
-    {
-        family: 'solana',
-        dirname: '../../networks/solana/network-solana-assets',
-        module: solanaAssets,
-    },
-    {
-        family: 'stellar',
-        dirname: '../../networks/stellar/network-stellar-assets',
-        module: stellarAssets,
-    },
-    {
-        family: 'tezos',
-        dirname: '../../networks/tezos/network-tezos-assets',
-        module: tezosAssets,
-    },
-    {
-        family: 'tron',
-        dirname: '../../networks/tron/network-tron-assets',
-        module: tronAssets,
-    },
+    { family: 'bitcoin', dirname: '../../networks/bitcoin/network-bitcoin-assets' },
+    { family: 'cardano', dirname: '../../networks/cardano/network-cardano-assets' },
+    { family: 'ethereum', dirname: '../../networks/ethereum/network-ethereum-assets' },
+    { family: 'monero', dirname: '../../networks/monero/network-monero-assets' },
+    { family: 'ripple', dirname: '../../networks/ripple/network-ripple-assets' },
+    { family: 'solana', dirname: '../../networks/solana/network-solana-assets' },
+    { family: 'stellar', dirname: '../../networks/stellar/network-stellar-assets' },
+    { family: 'tezos', dirname: '../../networks/tezos/network-tezos-assets' },
+    { family: 'tron', dirname: '../../networks/tron/network-tron-assets' },
 ];
 
 const cryptoAssetsTypesConfig = [
@@ -189,7 +141,7 @@ const generateIconsFileContent = assetTypesArray => {
     const assetGroups = new Map();
 
     assetTypesArray.forEach(({ name, assets, dirname, typeName, family }) => {
-        const moduleName = family ? `${family}${name[0].toUpperCase()}${name.slice(1)}` : undefined;
+        const moduleName = family ? `${family}Assets` : undefined;
         if (moduleName) {
             imports.add(`import { ${moduleName} } from '@trezor/network-${family}-assets';`);
         }
@@ -198,7 +150,7 @@ const generateIconsFileContent = assetTypesArray => {
         assets.forEach(({ fileName }) => {
             const symbol = fileName.replace(/\.(svg|webp)$/, '');
             const source = moduleName
-                ? `${moduleName}.${symbol}.getIcon()`
+                ? `${moduleName}.getIcons('${symbol}').${name === 'cryptoIcons' ? 'coin' : 'network'}`
                 : `require('../${dirname}/${fileName}')`;
             group.entries.push({ symbol, source });
         });
@@ -256,17 +208,6 @@ const generateFileForAssetTypes = async (assetTypesArray, outputFilePath) => {
 };
 
 (async () => {
-    const regenerateNetworkIcons = createRegenerateNetworkIcons({
-        repositoryRoot: path.resolve(__dirname, '../..'),
-        readDirectory: readdir,
-        writeFile,
-        resolvePrettierConfig: prettier.resolveConfig,
-        formatTypescript: prettier.format,
-    });
-    for (const { module } of networkAssetModules) {
-        await module.regenerateIcons({ regenerateNetworkIcons });
-    }
-
     console.log('Generating icons TS file...');
     await generateFileForAssetTypes(assetTypesConfig, iconsFilePath);
     console.log(chalk.green('Icons TS file generated successfully'));

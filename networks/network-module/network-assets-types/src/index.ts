@@ -6,11 +6,6 @@ export type {
     NetworkIconSource,
 } from './NetworkAssetsModule';
 export type {
-    NetworkAssetsModuleApi,
-    RegenerateNetworkIcons,
-    RegenerateNetworkIconsParams,
-} from './NetworkAssetsModuleApi';
-export type {
     NetworkIcon,
     GetCryptoIcon,
     GetNetworkIcon,

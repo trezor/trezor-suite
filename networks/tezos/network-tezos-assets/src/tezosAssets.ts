@@ -1,33 +1,26 @@
 import type { NetworkAssetsModule, NetworkIconAsset } from '@trezor/network-assets-types';
-import {
-    type TezosNetworkSymbol,
-    supportedTezosNetworks,
-} from '@trezor/network-tezos-types';
-
-import { tezosCryptoIcons } from './cryptoIcons';
-import { tezosNetworkIcons } from './networkIcons';
+import type { TezosNetworkSymbol } from '@trezor/network-tezos-types';
 
 // Keep SVG loading lazy so registering assets does not load their files.
 const icons: Record<TezosNetworkSymbol, NetworkIconAsset> = {
     xtz: {
-        getIcons: () => ({
-            coin: tezosCryptoIcons.xtz.getIcon(),
-            network: tezosNetworkIcons.xtz.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/xtz.svg');
+            const network = require('../assets/networkIcons/xtz.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: tezosCryptoIcons.xtz.getIconPath(),
-            network: tezosNetworkIcons.xtz.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/xtz.svg'),
+            network: require.resolve('../assets/networkIcons/xtz.svg'),
         }),
     },
 };
 
 export const tezosAssets: NetworkAssetsModule<TezosNetworkSymbol> = {
-    regenerateIcons: deps =>
-        deps.regenerateNetworkIcons({
-            family: 'tezos',
-            supportedNetworks: supportedTezosNetworks,
-            icons,
-        }),
     getIcons: symbol => icons[symbol].getIcons(),
     getIconPaths: symbol => icons[symbol].getIconPaths(),
 };

@@ -17,7 +17,6 @@ export const mockNetworkModule = (
     getAccountSyncInterval: () => DEFAULT_ACCOUNT_SYNC_INTERVAL,
     getNetworkConfig: () => ({ ...mockNetworkMetadata.btc, color: '#000000', protocols: [] }),
     icon: {
-        regenerateIcons: mock(() => Promise.resolve()),
         getIcons: mock(() => ({ coin: 'coin.svg', network: 'network.svg' })),
         getIconPaths: mock(() => ({ coin: 'coin.svg', network: 'network.svg' })),
     },

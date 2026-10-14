@@ -8,19 +8,12 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest"
+        "type-check": "yarn g:tsc --build"
     },
     "exports": {
-        ".": "./src/index.ts",
-        "./scripts": "./scripts/index.ts"
+        ".": "./src/index.ts"
     },
     "dependencies": {
         "@trezor/network-module-types": "workspace:*"
-    },
-    "devDependencies": {
-        "@trezor/dependency-injection": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
-        "prettier": "^3.9.6"
     }
 }
