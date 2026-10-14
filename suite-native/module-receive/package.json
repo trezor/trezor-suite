@@ -51,7 +51,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "expo-clipboard": "~57.0.1",
-        "expo-media-library": "~57.0.3",
+        "expo-media-library": "~57.0.5",
         "react": "19.2.3",
         "react-native": "0.86.3",
         "react-native-view-shot": "5.1.0",
