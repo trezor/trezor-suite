@@ -32,14 +32,11 @@ type HttpClientOptions = Omit<DefaultOptions<Fetch, any, any>, 'baseUrl'> & {
  * `UpFetch` so default `parseResponse` / `serializeBody` types flow to each request.
  */
 export function createHttpClient({ baseUrl, ...defaultFetcherOptions }: HttpClientOptions) {
-    const fetcher = up<Fetch, DefaultOptions<Fetch, any, any>>(
-        globalThis.fetch,
-        async () => ({
-            ...HTTP_CLIENT_DEFAULTS,
-            ...defaultFetcherOptions,
-            baseUrl: typeof baseUrl === 'function' ? await baseUrl() : baseUrl,
-        }),
-    );
+    const fetcher = up<Fetch, DefaultOptions<Fetch, any, any>>(globalThis.fetch, async () => ({
+        ...HTTP_CLIENT_DEFAULTS,
+        ...defaultFetcherOptions,
+        baseUrl: typeof baseUrl === 'function' ? await baseUrl() : baseUrl,
+    }));
 
     function createEndpointFetcher<
         T extends z.infer<Schema>,
