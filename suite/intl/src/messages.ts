@@ -1832,6 +1832,10 @@ export const messages = defineMessages({
         defaultMessage: '{count, plural, one {# asset} other {# assets}}',
         id: 'TR_HOME_ASSET_SMALL_BALANCES_SUMMARY',
     },
+    TR_HOME_ASSET_ONLY_SMALL_BALANCES: {
+        defaultMessage: 'All your assets are small balances, which are hidden.',
+        id: 'TR_HOME_ASSET_ONLY_SMALL_BALANCES',
+    },
     TR_HOME_ASSET_UNHIDE: {
         defaultMessage: 'Unhide',
         id: 'TR_HOME_ASSET_UNHIDE',
