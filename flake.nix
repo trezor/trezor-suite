@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    git-nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     playwright-web-flake.url = "github:pietdevries94/playwright-web-flake/1.62.1";
     old-gcc-nixpkgs.url = "github:NixOS/nixpkgs/a78ed5cbdd5427c30ca02a47ce6cccc9b7d17de4"; # For GCC 10.2.0
@@ -12,6 +13,7 @@
     {
       self,
       nixpkgs,
+      git-nixpkgs,
       flake-utils,
       playwright-web-flake,
       old-gcc-nixpkgs,
@@ -35,6 +37,8 @@
         };
 
         androidEnv = import ./.nix/android.nix { inherit pkgs; };
+        # Git 2.55 fixes concurrent background maintenance; keep other tools pinned.
+        gitPkgs = import git-nixpkgs { inherit system; };
 
         # Keep in sync with the electron version pinned in package.json
         electron = pkgs.electron_42;
@@ -42,7 +46,7 @@
         commonBuildInputs = [
           pkgs.bash
           pkgs.jq
-          pkgs.git
+          gitPkgs.git
           pkgs.git-lfs
           pkgs.gnupg
           pkgs.mdbook
