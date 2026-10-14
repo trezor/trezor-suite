@@ -103,17 +103,6 @@ export const getStatus = (device: TrezorDevice): DeviceStatus => {
     return 'unknown';
 };
 
-export const isDevicePerceivedAsNew = (device: TrezorDevice | null | undefined) => {
-    if (!device) {
-        return false;
-    }
-
-    const deviceStatus = getStatus(device);
-
-    // NOTE: when a new device is bought and connected = bootloader, when wiped = initialize
-    return deviceStatus === 'bootloader' || deviceStatus === 'initialize';
-};
-
 export const deviceNeedsAttention = (deviceStatus: DeviceStatus): boolean => {
     switch (deviceStatus) {
         case 'bootloader': // note: this is also state when the device is completely new
