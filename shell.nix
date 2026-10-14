@@ -1,10 +1,12 @@
-# pinned to nixos-unstable on commit https://github.com/NixOS/nixpkgs/commit/f614e907b485bf0ea684552d626f2cc569313fe2
-# we need to use nixos-unstable to be able to use nodejs_24, once there is a stable release with it we can change.
+# Share the flake's pinned development toolchain with legacy nix-shell users.
 let
+  flakeLock = builtins.fromJSON (builtins.readFile ./flake.lock);
+  rootInputs = flakeLock.nodes.${flakeLock.root}.inputs;
+  nixpkgsSource = flakeLock.nodes.${rootInputs.nixpkgs}.locked;
   pkgs = import
   (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/f614e907b485bf0ea684552d626f2cc569313fe2.tar.gz";
-    sha256 = "17m87ra13d3kwlrw8p4vv7w5yyq5pc2qlpl983r47cflw9mzgdz7";
+    url = "https://github.com/${nixpkgsSource.owner}/${nixpkgsSource.repo}/archive/${nixpkgsSource.rev}.tar.gz";
+    sha256 = nixpkgsSource.narHash;
    }) {
     system = builtins.currentSystem;
     config.allowUnfree = true;
@@ -25,12 +27,6 @@ let
   }) {};
 
   useAndroid = builtins.getEnv "USE_ANDROID" == "1";
-  # Share the flake's Git pin so both development shells have the maintenance fix.
-  gitSource = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.git-nixpkgs.locked;
-  gitPkgs = import (builtins.fetchTarball {
-    url = "https://github.com/${gitSource.owner}/${gitSource.repo}/archive/${gitSource.rev}.tar.gz";
-    sha256 = gitSource.narHash;
-  }) { system = builtins.currentSystem; };
   androidEnv = if useAndroid then import ./.nix/android.nix { inherit pkgs; } else {};
   extraBuildInputs = pkgs.lib.concatLists [
     (if useAndroid then [ androidEnv.jdk androidEnv.androidSdk ] ++ androidEnv.extraPackages else [jre])
@@ -41,7 +37,7 @@ in
     buildInputs = [
       bash
       jq
-      gitPkgs.git
+      git
       git-lfs
       gnupg
       mdbook
@@ -63,10 +59,7 @@ in
       ++ lib.optionals stdenv.isLinux [
       nsis openjpeg osslsigncode p7zip squashfsTools gccPkgs.gcc # binaries used by node_module: electron-builder
       udev  # used by node_module: usb
-    ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
-      Cocoa
-      CoreServices
-    ]);
+    ];
 
     # used by patchelf for WabiSabiClientLibrary in dev mode (see webpack nixos-interpreter-plugin)
     NIX_PATCHELF_LIBRARY_PATH = "${openssl.out}/lib:${zlib}/lib:${gcc.cc.lib}/lib";
