@@ -282,6 +282,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 if (protocol.name === 'v2') {
                     const prevNonce = thpState?.sendNonce;
+                    const prevSendBit = thpState?.sendBit;
                     const callResult = await callThpMessage({
                         thpState,
                         chunks,
@@ -296,8 +297,9 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         return callResult;
                     }
 
-                    // sync bit and nonce updated by Cancel
-                    if (prevNonce === thpState?.sendNonce) {
+                    // A Cancel sent during this call has already synced it. Until Cancel is encoded
+                    // only the sync bit has changed, after that the nonce has changed as well.
+                    if (prevNonce === thpState?.sendNonce && prevSendBit === thpState?.sendBit) {
                         thpState?.sync('send', name);
                     }
                     const message = parseThpMessage({
