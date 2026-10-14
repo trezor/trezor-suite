@@ -57,6 +57,12 @@ type MessageSystemOwnerDependencies = {
      * user's machine. The acquisition refuses to run until this reports the interceptor installed.
      */
     isInterceptorInstalled: () => boolean;
+    /**
+     * Reports `false` while Tor is wanted but not up yet. `interceptFetch` proxies a request only
+     * once Tor is running, so a fetch made in the meantime would leave over clearnet. The
+     * acquisition then keeps the config it has and tries again on the next poll.
+     */
+    isTorReady: () => boolean;
 };
 
 const INACTIVE_GATE: MessageSystemGate = {
@@ -110,6 +116,7 @@ export const createMessageSystemOwner = ({
     store,
     logger,
     isInterceptorInstalled,
+    isTorReady,
 }: MessageSystemOwnerDependencies): MessageSystemOwner => {
     const poller = createConfigPoller({ isMobile: false });
     const listeners = new Set<GateListener>();
@@ -159,6 +166,12 @@ export const createMessageSystemOwner = ({
                 SERVICE_NAME,
                 'Refusing to fetch the config before the request interceptor is installed',
             );
+
+            return;
+        }
+
+        if (!isTorReady()) {
+            logger.info(SERVICE_NAME, 'Postponing the config fetch until Tor is running');
 
             return;
         }

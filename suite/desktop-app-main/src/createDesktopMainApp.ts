@@ -1,6 +1,7 @@
 import { app } from 'electron';
 
 import type { HandshakeClient } from '@suite/desktop-app-api';
+import { TorStatus } from '@suite/tor-types';
 import { isMacOs } from '@trezor/env-utils';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
@@ -109,10 +110,21 @@ export const createDesktopMainApp =
 
         const interceptor = createElectronSessionInterceptor();
 
+        // Tor is bootstrapped only when the renderer asks for it, and `interceptFetch` proxies a
+        // request only once Tor is running, so main must not reach the network on its own between
+        // the launch and that point. A boot with `--tor` on a profile that never enabled Tor is
+        // the leaking case: `torSettings.running` is still false there, so the switch is read too.
+        let torStatus = TorStatus.Disabled;
+        mainThreadEmitter.on('module/tor-status-update', status => {
+            torStatus = status;
+        });
+        const shouldUseTor = () => hasSwitch('tor') || store.getTorSettings().running;
+
         const messageSystem = createMessageSystemOwner({
             store,
             logger: deps.logger,
             isInterceptorInstalled: getIsInterceptorInstalled,
+            isTorReady: () => !shouldUseTor() || torStatus === TorStatus.Enabled,
         });
 
         const moduleDependencies: Dependencies = {

@@ -357,8 +357,9 @@ and with `--bridge-daemon` or an auto-started launch no renderer is ever created
 An active killswitch in that result stops what main serves without a renderer: the bridge
 (including its 30 s watcher), `/connect-ws` upgrades and the http-receiver, with the disabled state
 shown in the tray. A config that drops the killswitch brings them back without an app restart. The
-acquisition runs after `createInterceptor()` so that it is Tor-aware and whitelist-checked, and it
-is skipped entirely with `--offline-mode` or under Playwright.
+acquisition runs after `createInterceptor()` so that it is Tor-aware and whitelist-checked, it is
+postponed while Tor is wanted but not running yet, because `interceptFetch` proxies a request only
+once Tor is up, and it is skipped entirely with `--offline-mode` or under Playwright.
 
 The renderer keeps its own acquisition and evaluation, so messages, feature flags and experiments
 reach the UI through Redux as described above.

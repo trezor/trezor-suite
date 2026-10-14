@@ -53,14 +53,17 @@ const logger = {
 const createOwner = ({
     store,
     isInterceptorInstalled = true,
+    isTorReady = true,
 }: {
     store: Store;
     isInterceptorInstalled?: boolean;
+    isTorReady?: boolean;
 }) =>
     createMessageSystemOwner({
         store,
         logger: logger as unknown as Parameters<typeof createMessageSystemOwner>[0]['logger'],
         isInterceptorInstalled: () => isInterceptorInstalled,
+        isTorReady: () => isTorReady,
     });
 
 describe('message system owner', () => {
@@ -81,6 +84,17 @@ describe('message system owner', () => {
             'message-system',
             expect.stringContaining('request interceptor'),
         );
+    });
+
+    it('does not fetch the config while Tor is wanted but not running yet', async () => {
+        const owner = createOwner({
+            store: createTestStore(),
+            isTorReady: false,
+        });
+
+        await owner.acquireRemoteConfig();
+
+        expect(fetchRemoteConfigJws).not.toHaveBeenCalled();
     });
 
     it('closes the gate on a killswitch in the persisted config', () => {
