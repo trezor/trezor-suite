@@ -51,19 +51,18 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
             })
             .addCase(transactionsActions.removeTransaction, (state, { payload }) => {
                 const { account, txs } = payload;
+                const removedTxids = new Set(txs.map(tx => tx.txid));
 
                 const transactions = state.transactions[account.key];
                 if (transactions) {
                     state.transactions[account.key] = transactions.filter(
-                        tx => !txs.some(t => t.txid === tx?.txid),
+                        tx => !tx || !removedTxids.has(tx.txid),
                     );
                 }
 
                 const phishing = state.phishing[account.key];
                 if (phishing) {
-                    state.phishing[account.key] = phishing.filter(
-                        tx => !txs.some(t => t.txid === tx),
-                    );
+                    state.phishing[account.key] = phishing.filter(txid => !removedTxids.has(txid));
                 }
             })
             .addCase(transactionsActions.addTransaction, (state, { payload }) => {
