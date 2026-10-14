@@ -1,8 +1,8 @@
+import { asGetter } from '@suite-common/dependency-injection';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { type DefinitionsChannel } from '@trezor/connect-common';
-import { asGetter } from '@trezor/dependency-injection';
 
 import {
     type EnhancePrecomposedTransactionThunkDeps,
