@@ -35,6 +35,7 @@
         "@suite-app/module-transactions": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite/analytics": "workspace:*",
+        "@suite/automation-tools": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/desktop-app-api": "workspace:*",
         "@suite/desktop-app-api-electron": "workspace:*",

@@ -73,7 +73,7 @@ export const routerInitThunk = createThunk<
     }
 });
 
-type GotoPayload = {
+export type GotoPayload = {
     routeName: Route['name'];
     params?: RouteParams;
     preserveParams?: boolean;
