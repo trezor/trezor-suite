@@ -2,6 +2,7 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { Calldata } from '@suite-common/calldata';
+import { type Getter } from '@suite-common/dependency-injection';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
 import { type OnModalCancelDep } from '@suite-common/suite-types';
@@ -49,7 +50,6 @@ import {
     getEthereumDefinitionsBaseUrl,
 } from '@trezor/connect-common';
 import { getSolanaTokenDefinition } from '@trezor/connect-core/src/api/solana/solanaDefinitions';
-import { type Getter } from '@trezor/dependency-injection';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
