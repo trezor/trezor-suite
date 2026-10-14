@@ -234,9 +234,10 @@ export abstract class TradingFormActions extends TradingActions {
             await networkOption.tap();
         }
 
-        const firstMatchingAsset = element(by.label(asset)).atIndex(0);
-        await waitForVisible(firstMatchingAsset);
-        await firstMatchingAsset.tap();
+        // This line should select asset from Ethereum #3 account, but this solution is fragile.
+        const matchingAsset = element(by.label(asset)).atIndex(1);
+        await waitForVisible(matchingAsset);
+        await matchingAsset.tap();
 
         await waitFor(this.getElementById('asset-send-button/symbol'))
             .toHaveText(asset)
