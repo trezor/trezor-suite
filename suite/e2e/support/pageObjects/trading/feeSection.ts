@@ -1,11 +1,15 @@
 import { Locator, Page } from '@playwright/test';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
 export type FeeTypes = 'low' | 'economy' | 'normal' | 'high';
+
+const FIAT_FEE_PATTERN = /[≈~]\s*\$\s*\d+\.\d+/;
 
 type CalculateEthereumMaxFeeParams = {
     gasLimit: string;
@@ -107,11 +111,38 @@ export class FeeSection {
     @step()
     async expectBitcoinFeeCalculated() {
         await this.openCollapsibleFees();
+        await this.expectBitcoinFeeCardsCalculated();
+    }
 
-        const feePattern = /[≈~]\s*\$\s*\d+\.\d+/;
-        await expect(this.valueOnCard('economy')).toHaveText(feePattern);
-        await expect(this.valueOnCard('normal')).toHaveText(feePattern);
-        await expect(this.valueOnCard('high')).toHaveText(feePattern);
+    @step()
+    async expectBitcoinFeeCalculatedInNetworkFeeModal() {
+        await this.openNetworkFeeModal();
+        await this.expectBitcoinFeeCardsCalculated();
+        await this.closeNetworkFeeModal();
+    }
+
+    @step()
+    async expectNetworkFeeCalculated() {
+        await expect(this.networkFeeRow).toHaveText(FIAT_FEE_PATTERN);
+    }
+
+    @step()
+    async getComposedNetworkFee(symbol: NetworkSymbol) {
+        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
+        const composedFee = await this.page.getReduxObject(
+            'wallet.trading.composedTransactionInfo.composed.fee',
+        );
+
+        return subunitsToUnits({
+            value: asAmountSubunit(new BigNumber(composedFee)),
+            symbol,
+        }).toFixed();
+    }
+
+    private async expectBitcoinFeeCardsCalculated() {
+        await expect(this.valueOnCard('economy')).toHaveText(FIAT_FEE_PATTERN);
+        await expect(this.valueOnCard('normal')).toHaveText(FIAT_FEE_PATTERN);
+        await expect(this.valueOnCard('high')).toHaveText(FIAT_FEE_PATTERN);
     }
 
     @step()

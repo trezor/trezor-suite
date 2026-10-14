@@ -75,19 +75,22 @@ test.describe('Trading - Sell ETH', { tag: ['@T3W1', '@T3T1'] }, () => {
                     cryptoAmount: sendAmount,
                     networkSymbolOrTokenId: 'eth',
                 });
-                await tradingPage.fees.setEthereumCustomFees({
+            });
+
+            await test.step('Review the offer and set custom fees', async () => {
+                await tradingPage.sellBestOfferButton.click();
+                await tradingPage.fees.expectNetworkFeeCalculated();
+                await tradingPage.fees.setEthereumCustomFeesInNetworkFeeModal({
                     gasLimit,
                     maxFeePerGas,
                     maxPriorityFeePerGas,
                 });
-                await tradingPage.fees.waitToBeCalculated();
             });
 
             let providerName: string;
 
-            await test.step('Confirm the sell trade and return from the provider', async () => {
-                await tradingPage.sellBestOfferButton.click();
-                await tradingPage.waitForRedirectCompletion();
+            await test.step('Continue with the provider and return', async () => {
+                await tradingPage.continueSellWithProvider();
             });
 
             await test.step('Verify all confirmation values', async () => {
@@ -99,8 +102,7 @@ test.describe('Trading - Sell ETH', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(tradingPage.confirmation.paymentMethod).toHaveTranslation(
                     'TR_PAYMENT_METHOD_CREDITCARD',
                 );
-                await expect(tradingPage.confirmation.account).toContainText(accountLabel);
-                await expect(tradingPage.confirmation.address).toHaveText(depositAddress);
+                await expect(tradingPage.confirmation.sendAccount).toContainText(accountLabel);
                 // Providers pad differently ("0.02000000"), so both amounts are normalised the way
                 // the panel formats them rather than compared to the raw strings. The panel always
                 // renders the fiat amount with two decimals, including a trailing zero.

@@ -67,21 +67,20 @@ test.describe('Trading - Sell Solana', { tag: ['@T3W1', '@T3T1'] }, () => {
                     cryptoAmount: sendAmount,
                     networkSymbolOrTokenId: 'sol',
                 });
-                await tradingPage.fees.waitToBeCalculated();
-                await expect(tradingPage.fees.maxFee).toBeVisible();
-                await expect(tradingPage.fees.maxFeeFiat).toBeVisible();
-                // The form is the only place the fee is readable before signing; the review modal
-                // and the device are then held against it.
-                solanaFee = (await tradingPage.fees.getSolanaFee()).toString();
+            });
+
+            await test.step('Review the offer and read the network fee', async () => {
+                await tradingPage.sellBestOfferButton.click();
+                await tradingPage.fees.expectNetworkFeeCalculated();
+                // Solana fees are not adjustable, so the composed fee is the only readable source
+                // before signing; the review modal and the device are then held against it.
+                solanaFee = await tradingPage.fees.getComposedNetworkFee(solSymbol);
             });
 
             let providerName: string;
 
-            await test.step('Confirm the sell trade and return from the provider', async () => {
-                // Solana fees resolve after the form settles; sending before that fails to compose.
-                await expect(tradingPage.fees.maximumFeeAmountToBeCalculated).toBeHidden();
-                await tradingPage.sellBestOfferButton.click();
-                await tradingPage.waitForRedirectCompletion();
+            await test.step('Continue with the provider and return', async () => {
+                await tradingPage.continueSellWithProvider();
             });
 
             await test.step('Verify all confirmation values', async () => {
@@ -93,8 +92,7 @@ test.describe('Trading - Sell Solana', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(tradingPage.confirmation.paymentMethod).toHaveTranslation(
                     'TR_PAYMENT_METHOD_CREDITCARD',
                 );
-                await expect(tradingPage.confirmation.account).toContainText(accountLabel);
-                await expect(tradingPage.confirmation.address).toHaveText(depositAddress);
+                await expect(tradingPage.confirmation.sendAccount).toContainText(accountLabel);
                 // Providers pad differently ("1.50000000"), so both amounts are normalised the way
                 // the panel formats them rather than compared to the raw strings. The panel always
                 // renders the fiat amount with two decimals, including a trailing zero.
@@ -220,7 +218,6 @@ test.describe('Trading - Sell Solana', { tag: ['@T3W1', '@T3T1'] }, () => {
                     cryptoAmount: sendAmount,
                     networkSymbolOrTokenId: 'sol',
                 });
-                await tradingPage.fees.waitToBeCalculated();
             });
 
             let comparedProviderName: string;
@@ -234,7 +231,7 @@ test.describe('Trading - Sell Solana', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify the trade is created with the picked provider', async () => {
                 await tradingPage.sellBestOfferButton.click();
-                await tradingPage.waitForRedirectCompletion();
+                await tradingPage.continueSellWithProvider();
 
                 const { exchange } = await tradingResponses.sell.trade();
                 expect(await tradingResponses.sell.companyName(exchange)).toBe(

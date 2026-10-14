@@ -2,7 +2,6 @@ import type { SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { messages } from '@suite/intl';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 
@@ -14,7 +13,6 @@ const btcSymbol = asNetworkSymbol('btc');
 const solSymbol = asNetworkSymbol('sol');
 
 const solanaBalanceAddress = '73SMAcuFzcuZAfDWU1RMVnNLks1UKLru8gRsg2NJYcgm';
-const customFeeRate = 1;
 const cryptoAmount = '0.001';
 const fiatAmount = '100';
 const baseCurrencyAmount = '10';
@@ -158,8 +156,6 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
                 }
                 await fractionEvent;
                 await tradingPage.quotes.waitForSync();
-                await tradingPage.fees.switchToCustom();
-                await tradingPage.fees.customInput.fill(customFeeRate.toString());
 
                 await test.step('Max of BTC balance', async () => {
                     await tradingPage.inputs.fractionButtons
@@ -167,7 +163,8 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
                         .click();
                     await expect
                         .soft(async () => {
-                            const resultingFee = await tradingPage.fees.maxFee.innerText();
+                            const resultingFee =
+                                await tradingPage.fees.getComposedNetworkFee(btcSymbol);
                             const maxValue = new BigNumber(bitcoinBalance).minus(resultingFee);
                             await expect(tradingPage.inputs.cryptoAmount).toHaveValue(
                                 localizeNumber(maxValue, 'en-US', 0, 8),
@@ -199,13 +196,8 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
                     const networkReserve = await tradingPage.fees.getNetworkReserveAmount();
                     await expect
                         .soft(async () => {
-                            const composedFee = await page.getReduxObject(
-                                'wallet.trading.composedTransactionInfo.composed.fee',
-                            );
-                            const resultingFee = subunitsToUnits({
-                                value: asAmountSubunit(new BigNumber(composedFee)),
-                                symbol: solSymbol,
-                            });
+                            const resultingFee =
+                                await tradingPage.fees.getComposedNetworkFee(solSymbol);
                             const maxValue = new BigNumber(solanaBalance)
                                 .minus(resultingFee)
                                 .minus(networkReserve);

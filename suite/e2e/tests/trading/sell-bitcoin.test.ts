@@ -68,14 +68,17 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
         }) => {
             await test.step('Fill in a sell request', async () => {
                 await tradingPage.fillSellForm({ cryptoAmount: sendAmount });
-                await tradingPage.fees.expectBitcoinFeeCalculated();
+            });
+
+            await test.step('Review the offer and its network fee', async () => {
+                await tradingPage.sellBestOfferButton.click();
+                await tradingPage.fees.expectBitcoinFeeCalculatedInNetworkFeeModal();
             });
 
             let providerName: string;
 
-            await test.step('Confirm the sell trade and return from the provider', async () => {
-                await tradingPage.sellBestOfferButton.click();
-                await tradingPage.waitForRedirectCompletion();
+            await test.step('Continue with the provider and return', async () => {
+                await tradingPage.continueSellWithProvider();
             });
 
             await test.step('Verify all confirmation values', async () => {
@@ -87,9 +90,7 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(tradingPage.confirmation.paymentMethod).toHaveTranslation(
                     'TR_PAYMENT_METHOD_CREDITCARD',
                 );
-                await expect(tradingPage.confirmation.account).toContainText(accountLabel);
-                await expect(tradingPage.confirmation.address).toHaveText(depositAddress);
-                await expect(tradingPage.confirmation.paymentId).toHaveText(depositPaymentExtraId);
+                await expect(tradingPage.confirmation.sendAccount).toContainText(accountLabel);
                 // Providers pad differently ("0.00150000"), so both amounts are normalised the way
                 // the panel formats them rather than compared to the raw strings.
                 await expect(tradingPage.confirmation.cryptoAmount).toHaveText(
