@@ -6,10 +6,6 @@ import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
-    type TokenDefinitionsMiddlewareDeps,
-    prepareTokenDefinitionsMiddleware,
-} from '@suite-common/token-definitions';
-import {
     prepareAccountsMiddleware,
     prepareBlockchainMiddleware,
     prepareBlockchainSubscriptionMiddleware,
@@ -27,6 +23,10 @@ import { type DbDep } from 'src/storage/createDb';
 import graphMiddleware from './graphMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
 import { prepareStorageMiddleware } from './storageMiddleware';
+import {
+    type TokenDefinitionsMiddlewareDeps,
+    prepareTokenDefinitionsMiddleware,
+} from './tokenDefinitionsMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
 import walletMiddleware from './walletMiddleware';
 
