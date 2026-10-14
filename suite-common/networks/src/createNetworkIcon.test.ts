@@ -20,6 +20,7 @@ it.each([
 ])('delegates icon and logo lookup without changing source $coin / $network', icons => {
     const symbol = asNetworkSymbol('eth');
     const icon = createMockDeps<NetworkAssetsModule>({
+        regenerateIcons: null,
         getIcons: () => icons,
         getIconPaths: null,
         getTokenLogoIdentifiers: () => ['token-logo'],

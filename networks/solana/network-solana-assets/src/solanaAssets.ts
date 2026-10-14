@@ -1,5 +1,8 @@
 import type { NetworkAssetsModule, NetworkIconAsset } from '@trezor/network-assets-types';
-import type { SolanaNetworkSymbol } from '@trezor/network-solana-types';
+import {
+    type SolanaNetworkSymbol,
+    supportedSolanaNetworks,
+} from '@trezor/network-solana-types';
 
 import { solanaCryptoIcons } from './cryptoIcons';
 import { solanaNetworkIcons } from './networkIcons';
@@ -29,6 +32,12 @@ const icons: Record<SolanaNetworkSymbol, NetworkIconAsset> = {
 };
 
 export const solanaAssets: NetworkAssetsModule<SolanaNetworkSymbol> = {
+    regenerateIcons: deps =>
+        deps.regenerateNetworkIcons({
+            family: 'solana',
+            supportedNetworks: supportedSolanaNetworks,
+            icons,
+        }),
     getIcons: symbol => icons[symbol].getIcons(),
     getIconPaths: symbol => icons[symbol].getIconPaths(),
 };

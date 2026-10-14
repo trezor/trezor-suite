@@ -26,6 +26,7 @@
         "@suite-common/networks": "workspace:*",
         "@suite-common/wallet-config": "workspace:^",
         "@trezor/logger": "workspace:*",
+        "@trezor/network-assets-types": "workspace:*",
         "@trezor/network-bitcoin-assets": "workspace:*",
         "@trezor/network-cardano-assets": "workspace:*",
         "@trezor/network-ethereum-assets": "workspace:*",

@@ -11787,6 +11787,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:^"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/logger": "workspace:*"
+    "@trezor/network-assets-types": "workspace:*"
     "@trezor/network-bitcoin-assets": "workspace:*"
     "@trezor/network-cardano-assets": "workspace:*"
     "@trezor/network-ethereum-assets": "workspace:*"
@@ -18612,7 +18613,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-assets-types@workspace:networks/network-module/network-assets-types"
   dependencies:
+    "@trezor/dependency-injection": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    prettier: "npm:^3.9.6"
   languageName: unknown
   linkType: soft
 

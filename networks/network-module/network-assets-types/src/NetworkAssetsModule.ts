@@ -1,3 +1,5 @@
+import type { NetworkAssetsModuleApi } from './NetworkAssetsModuleApi';
+
 /** URL emitted by web bundlers or an asset reference registered by Metro. */
 export type NetworkIconSource = string | number;
 
@@ -23,6 +25,8 @@ export type NetworkIconAsset = {
 
 /** @serviceContract */
 export type NetworkAssetsModule<TSymbol extends string = string> = {
+    /** Regenerate TypeScript loaders and mappings using the supplied tooling dependency. */
+    regenerateIcons(deps: NetworkAssetsModuleApi): Promise<void>;
     /** Bundled icon sources for rendering, loaded only when requested. */
     getIcons(symbol: TSymbol): NetworkIcons;
     /** Original SVG file paths for Node tools, without loading the SVG modules. */

@@ -1,5 +1,8 @@
 import type { NetworkAssetsModule, NetworkIconAsset } from '@trezor/network-assets-types';
-import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
+import {
+    type EthereumNetworkSymbol,
+    supportedEthereumNetworks,
+} from '@trezor/network-ethereum-types';
 
 import { ethereumCryptoIcons } from './cryptoIcons';
 import { ethereumNetworkIcons } from './networkIcons';
@@ -171,6 +174,12 @@ const icons: Record<EthereumAssetSymbol, NetworkIconAsset> = {
 };
 
 export const ethereumAssets: NetworkAssetsModule<EthereumAssetSymbol> = {
+    regenerateIcons: deps =>
+        deps.regenerateNetworkIcons({
+            family: 'ethereum',
+            supportedNetworks: supportedEthereumNetworks,
+            icons,
+        }),
     getIcons: symbol => icons[symbol].getIcons(),
     getIconPaths: symbol => icons[symbol].getIconPaths(),
 };
