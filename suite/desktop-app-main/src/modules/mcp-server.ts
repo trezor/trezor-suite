@@ -9,7 +9,7 @@
 import * as crypto from 'crypto';
 import * as http from 'http';
 
-import { CALL_SOURCE_MCP, type ConnectProcessInfo } from '@suite-common/connect-popup';
+import { type CALL_SOURCE_MCP, type ConnectProcessInfo } from '@suite-common/connect-popup';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { convertAmountUnitsToSubunits, substituteBip43Path } from '@suite-common/wallet-utils';
 import { findProcessFromIncomingPort } from '@trezor/node-utils';
@@ -18,6 +18,10 @@ import { ipcMain } from '../ipcMain';
 import { type ModuleInit } from './module';
 import { addMessage } from '../libs/connect-popup-messages';
 import { getProcessIcon } from '../libs/process-icon';
+
+// Only types come from connect-popup, so the main process does not bundle its Redux code and the
+// message-system components that it imports.
+const MCP_SOURCE_TYPE: typeof CALL_SOURCE_MCP = 'mcp';
 
 export const SERVICE_NAME = 'mcp-server';
 
@@ -1140,7 +1144,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                 method: call.method,
                 payload: call.payload,
                 silent: call.silent,
-                sourceType: CALL_SOURCE_MCP,
+                sourceType: MCP_SOURCE_TYPE,
                 origin: call.origin,
                 process: call.process ?? sessionProcessInfo,
                 manifest: sessionManifest,

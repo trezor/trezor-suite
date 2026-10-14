@@ -240,7 +240,7 @@ import IconWeb from '../components/icons/IconWeb';
             #### About
 
             `@trezor/connect-web` ships a thin API layer that routes requests to one of two runtime modes:
-            **Suite Desktop WebSocket** (preferred when Suite Desktop is running) or **Suite Web popup** hosted on connect.trezor.io.
+            **Suite Desktop WebSocket** (preferred when Suite Desktop is running) or **Suite Web popup** served from `https://suite.trezor.io/web/connect-popup`.
             User input (PIN, passphrase, confirmations) is handled inside Suite Desktop or the popup, isolated from your application.
         </SdkDescription>
         <ExamplesAside>
@@ -331,7 +331,7 @@ import IconWeb from '../components/icons/IconWeb';
         <SdkDescription>
             #### About
             In case of `@trezor/connect-webextension`, TrezorConnect object is created in a service worker.
-            In this env we can't inject iframe so we use a mode similar to popup mode in `@trezor/connect-web`, where we load SDK logic in the popup.
+            It talks to Suite Desktop over a local WebSocket when Suite Desktop is running, and otherwise opens Suite Web in a new tab or window.
             This however does not build persistent connection between SDK and 3rd party application meaning that events cannot be used.
 
             #### Learn step-by-step
@@ -365,18 +365,20 @@ import IconWeb from '../components/icons/IconWeb';
                 yarn add @trezor/connect-webextension
                 ```
 
-                We support two methods for integrating the library into your extension - automatic content script injection and manual content script injection.
-
                 The popup flow no longer uses `connect-script` or inline iframe injection. Instead, the service worker opens
                 the Suite Web popup and the popup communicates back using the `externally_connectable` API. Make sure your
-                extension allows the Suite Web origin you use to send messages back:
+                extension allows the Suite Web origin you use to send messages back, and declares `host_permissions` for
+                the same origin:
 
                 ```json
                 "externally_connectable": {
                     "matches": [
                         "https://suite.trezor.io/*"
                     ]
-                }
+                },
+                "host_permissions": [
+                    "https://suite.trezor.io/*"
+                ]
                 ```
 
                 {<h3>Import in the service worker</h3>}

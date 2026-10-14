@@ -2,6 +2,7 @@ import { type AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { type LockDeviceDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -49,6 +50,9 @@ import {
     type SelectAccountCandidate,
     isUtxoNetwork,
 } from './connectPopupTypes';
+import { getConnectAnalyticsNpmVersion, isConnectV9Deeplink, isConnectV9Source } from './connectV9';
+import { toConnectV9ErrorPayload } from './connectV9ErrorPayload';
+import { ConnectV9RefusalError, selectConnectV9RefusalMessage } from './connectV9Refusal';
 import { compatibilityHooks, postCallHooks, preCallHooks, validateCallHooks } from './methodHooks';
 import type { DistributiveOmit } from './methodHooks/types';
 import {
@@ -72,7 +76,10 @@ type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     source: ConnectCallSource;
 };
 
-export type ConnectPopupCallInnerThunkState = DeviceRootState & ConnectPopupStateRootState;
+// The message system is optional: without it, no call is declined by selectConnectV9RefusalMessage.
+export type ConnectPopupCallInnerThunkState = DeviceRootState &
+    ConnectPopupStateRootState &
+    Partial<MessageSystemRootState>;
 
 export type ConnectPopupCallInnerThunkDeps = {
     services: AnalyticsDep & LockDeviceDep;
@@ -90,6 +97,11 @@ export const connectPopupCallInnerThunk = createThunk<
     `${CONNECT_POPUP_MODULE}/callThunk`,
     async ({ source, ...params }, { dispatch, getState, extra }) => {
         try {
+            // Before anything else, so that neither the method check nor a remembered permission
+            // answers the call differently.
+            const connectV9RefusalMessage = selectConnectV9RefusalMessage(getState(), source);
+            if (connectV9RefusalMessage) throw new ConnectV9RefusalError(connectV9RefusalMessage);
+
             const { method, payload } = compatibilityHooks({ ...params, source });
 
             if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
@@ -245,7 +257,7 @@ export const connectPopupCallInnerThunk = createThunk<
                     appName: source.manifest.appName,
                     appUrl: source.manifest.appUrl,
                     appEmail: source.manifest.email,
-                    npmVersion: source.manifest.npmVersion,
+                    npmVersion: getConnectAnalyticsNpmVersion(source),
                     connectionType: source.type,
                     origin: source.origin,
                     paramNames: getCallParamNames(params.payload),
@@ -258,6 +270,16 @@ export const connectPopupCallInnerThunk = createThunk<
             if (error?.error === 'switching-device') {
                 // Do nothing, call will be restarted after device switch
                 return;
+            } else if (error instanceof ConnectV9RefusalError) {
+                // Instead of setError, which would show the modal for every call.
+                dispatch(
+                    connectPopupActions.refuseConnectV9Call({
+                        method: params.method,
+                        payload: params.payload,
+                        source,
+                        error: serializeError(error),
+                    }),
+                );
             } else if (
                 error?.code === 'Method_Cancel' ||
                 error?.code === 'Method_Unsupported' // handled by fallback mechanism in connect-web
@@ -285,7 +307,7 @@ export const connectPopupCallInnerThunk = createThunk<
                     appName: source.manifest.appName,
                     appUrl: source.manifest.appUrl,
                     appEmail: source.manifest.email,
-                    npmVersion: source.manifest.npmVersion,
+                    npmVersion: getConnectAnalyticsNpmVersion(source),
                     connectionType: source.type,
                     paramNames: getCallParamNames(params.payload),
                 },
@@ -294,6 +316,12 @@ export const connectPopupCallInnerThunk = createThunk<
             getPopupCallDeferred().resolve({
                 success: false,
                 error: serializeError(error),
+                // Connect 9 apps read the error of a failed call from the payload. Suite desktop
+                // builds the payload of its response itself (see useConnectPopupDesktop), so this
+                // one is what Connect 9 deeplink calls get.
+                ...(isConnectV9Source(source) && {
+                    payload: toConnectV9ErrorPayload(serializeError(error)),
+                }),
             });
         } finally {
             extra.services.lockDevice(false);
@@ -373,6 +401,9 @@ export const connectPopupDeeplinkThunk = createThunk<
         return;
     }
 
+    // Before the call starts, because a call that ends before its first await, such as a declined
+    // call, is answered right away.
+    const callDeferred = getPopupCallDeferred(true);
     dispatch(
         connectPopupCallThunk({
             source: {
@@ -382,12 +413,13 @@ export const connectPopupDeeplinkThunk = createThunk<
                     appName: queryParams.appName ?? '',
                     appIcon: queryParams.appIcon ?? '',
                 },
+                isConnectV9: isConnectV9Deeplink({ deeplinkUrl: parsedUrl, callbackUrl }),
             },
             method: method as CallMethodKeys,
             payload,
         }),
     );
-    const response = await getPopupCallDeferred(true).promise;
+    const response = await callDeferred.promise;
     callbackUrl.searchParams.set('response', JSON.stringify(response));
     dispatch(
         connectPopupActions.deeplinkCallback({

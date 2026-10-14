@@ -8,6 +8,9 @@
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/icons" },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
         {
@@ -33,6 +36,7 @@
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../toasts" },
