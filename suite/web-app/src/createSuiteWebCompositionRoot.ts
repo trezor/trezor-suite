@@ -1,5 +1,6 @@
 import { createBrowserHistory } from 'history';
 
+import { isAutomationToolsEnabled } from '@suite/automation-tools';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import TrezorConnect from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
@@ -12,6 +13,7 @@ import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
 import { createReduxStore } from 'src/reducers/createReduxStore';
 import { rootReducer } from 'src/reducers/store';
 import { createDb } from 'src/storage/createDb';
+import { registerSuiteAutomationTools } from 'src/support/automation/registerSuiteAutomationTools';
 import { createConnectLoggerFactory } from 'src/support/createConnectLoggerFactory';
 import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -78,6 +80,15 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
     // Inject them after construction to break the cycle, before the app can dispatch any actions.
     injectServicesIntoReduxExtra(services);
+
+    if (isAutomationToolsEnabled()) {
+        registerSuiteAutomationTools({
+            store,
+            history,
+            desktopApi: suiteServices.desktopApi,
+            connect: TrezorConnect,
+        });
+    }
 
     return { app: createWebApp({ services }) };
 };

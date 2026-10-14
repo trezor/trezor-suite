@@ -13,6 +13,7 @@
         {
             "path": "../../suite-common/suite-utils"
         },
+        { "path": "../automation-tools" },
         { "path": "../debug" },
         { "path": "../desktop-app-api" },
         {
