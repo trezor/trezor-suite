@@ -54,6 +54,7 @@ const useReportRevisionCheck = ({ device }: DeviceProps) => {
     const isError = revisionCheck && !revisionCheck.success;
     const errorType = isError ? revisionCheck.error : null;
     const errorPayload = isError ? revisionCheck.errorPayload : null;
+    const bootloaderHash = device?.features?.bootloader_hash;
 
     const shouldReport =
         isProductionFirmwareChannel &&
@@ -67,12 +68,12 @@ const useReportRevisionCheck = ({ device }: DeviceProps) => {
                 reportSecurityCheckThunk({
                     level: 'error',
                     checkType: 'Firmware revision',
-                    contextData: { ...commonData, errorType },
+                    contextData: { ...commonData, errorType, bootloaderHash },
                     payload: errorPayload,
                 }),
             );
         }
-    }, [dispatch, commonData, errorType, errorPayload, shouldReport]);
+    }, [dispatch, commonData, errorType, errorPayload, shouldReport, bootloaderHash]);
 };
 
 const useReportHashCheck = ({ device }: DeviceProps) => {
