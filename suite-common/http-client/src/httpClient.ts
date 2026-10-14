@@ -1,7 +1,13 @@
-import { type DefaultOptions, type FetcherOptions, type StandardSchemaV1, up } from 'up-fetch';
+import {
+    type DefaultOptions,
+    type FetcherOptions,
+    type StandardSchemaV1,
+    type UpFetch,
+    up,
+} from 'up-fetch';
 import type z from 'zod';
 
-import type { Fetch } from '@trezor/type-utils';
+import type { Fetch, FetchDep } from '@trezor/type-utils';
 
 import { type GenerateRouteParams, composePathnameFromRoute } from './routeParams';
 
@@ -25,19 +31,13 @@ type HttpClientOptions = Omit<DefaultOptions<Fetch, any, any>, 'baseUrl'> & {
     baseUrl?: string | (() => string | Promise<string>);
 };
 
-/**
- * @url https://github.com/L-Blondy/up-fetch
- *
- * Wraps `up` with shared defaults. `TOptions` is inferred from the argument and forwarded into
- * `UpFetch` so default `parseResponse` / `serializeBody` types flow to each request.
- */
-export function createHttpClient({ baseUrl, ...defaultFetcherOptions }: HttpClientOptions) {
-    const fetcher = up<Fetch, DefaultOptions<Fetch, any, any>>(globalThis.fetch, async () => ({
-        ...HTTP_CLIENT_DEFAULTS,
-        ...defaultFetcherOptions,
-        baseUrl: typeof baseUrl === 'function' ? await baseUrl() : baseUrl,
-    }));
+export type HttpClientDeps = FetchDep;
 
+export type HttpClient = (options: HttpClientOptions) => ReturnType<typeof withRouteParams>;
+
+export type HttpClientDep = { httpClient: HttpClient };
+
+function withRouteParams(fetcher: UpFetch<Fetch, DefaultOptions<Fetch, any, any>>) {
     function createEndpointFetcher<
         T extends z.infer<Schema>,
         EndpointFetcherOptions extends FetcherOptions<
@@ -76,6 +76,24 @@ export function createHttpClient({ baseUrl, ...defaultFetcherOptions }: HttpClie
 
     return createEndpointFetcher;
 }
+
+/**
+ * @url https://github.com/L-Blondy/up-fetch
+ *
+ * Binds the injected fetch transport. The returned service configures clients with shared defaults.
+ */
+export const createHttpClient =
+    (deps: HttpClientDeps): HttpClient =>
+    options => {
+        const { baseUrl, ...defaultFetcherOptions } = options;
+        const fetcher = up<Fetch, DefaultOptions<Fetch, any, any>>(deps.fetch, async () => ({
+            ...HTTP_CLIENT_DEFAULTS,
+            ...defaultFetcherOptions,
+            baseUrl: typeof baseUrl === 'function' ? await baseUrl() : baseUrl,
+        }));
+
+        return withRouteParams(fetcher);
+    };
 
 export {
     type DefaultOptions,

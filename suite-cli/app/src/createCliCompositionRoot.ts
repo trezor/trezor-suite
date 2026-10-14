@@ -33,7 +33,7 @@ export const createCliCompositionRoot = (deps: CliCompositionRootDeps): CliCompo
     const isWrappedNativeToken = createIsWrappedNativeToken({ networkModuleRepository });
     const getIconPaths = createGetIconPaths({ networkModuleRepository });
     const logger = console;
-    const vaultIconsClient = createVaultIconsClient({ logger });
+    const vaultIconsClient = createVaultIconsClient({ logger, fetch });
     const downloadVaultIcons = createDownloadVaultIcons({
         fetchYieldVaults: vaultIconsClient.fetchYieldVaults,
         fetchPublishedIcon: vaultIconsClient.fetchPublishedIcon,
