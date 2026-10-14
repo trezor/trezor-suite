@@ -50,6 +50,16 @@ const DismissButton = ({ onClick }: DismissButtonProps) => (
         <Translation id="TR_DISMISS" />
     </SecurityCheckButton>
 );
+export const RetryButton = ({ onClick }: DismissButtonProps) => (
+    <SecurityCheckButton
+        intent="neutral"
+        priority="secondary"
+        onClick={onClick}
+        data-testid="@device-compromised/retry-button"
+    >
+        <Translation id="TR_RETRY" />
+    </SecurityCheckButton>
+);
 
 export const DismissFwAuthenticityCheckButton = () => {
     const { device } = useDevice();
