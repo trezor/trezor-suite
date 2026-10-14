@@ -192,7 +192,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
         this._protocol = protocolV1;
         this.createLogger = createLogger;
-        this.logger = createLogger('Device');
+        this.logger = createLogger('@trezor/connect/Device');
 
         // === immutable properties
         this.uniquePath = id;
@@ -281,7 +281,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                         this,
                         this.transport,
                         this.sessionAcquired,
-                        this.createLogger('DeviceCommands'),
+                        this.createLogger('@trezor/connect/DeviceCommands'),
                     );
 
                     return result;
