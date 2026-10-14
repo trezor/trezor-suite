@@ -18,13 +18,13 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../suite-common/suite-types"
         },
         {
             "path": "../../suite-common/test-utils"
         },
-        { "path": "../analytics" },
-        { "path": "../../packages/redux-utils" }
+        { "path": "../analytics" }
     ]
 }
