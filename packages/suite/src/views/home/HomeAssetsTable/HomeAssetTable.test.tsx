@@ -6,7 +6,7 @@ import { initialState as selectedAccountInitialState } from '@suite/account';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Rate, type TokenAddress } from '@suite-common/wallet-types';
+import { type CurrentRate, type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/device-utils';
@@ -30,7 +30,8 @@ const ETH = asNetworkSymbol('eth');
 
 const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 
-const mockRate = (rate: number) => ({ rate }) as Rate;
+// In dollars, the dollar rate is the rate itself.
+const mockRate = (rate: number) => ({ rate, usdRate: rate }) as CurrentRate;
 
 const ethereumAccount = mockWalletAccount({
     symbol: ETH,
