@@ -82,3 +82,21 @@ export const selectDelegatedIdentityKeyByDeviceId = createMemoizedSelector(
     [selectPersistentDeviceDataById],
     persistentDeviceData => persistentDeviceData?.delegatedIdentityKey ?? null,
 );
+
+/**
+ * For a given deviceId, find its model if it was verified by Device Authenticity Check (DAC).
+ * Return `null` if the model isn't verified (no record of a successful DAC for this deviceId).
+ *
+ * While `device.internal_model` is only reported by the device, during the DAC flow it is cross-checked with the model
+ * on each authenticity proof. The `deviceInvariabilityCheck` then makes sure that the model never changes.
+ */
+export const selectVerifiedModelByDeviceId = createMemoizedSelector(
+    [selectPersistentDeviceDataById],
+    persistentDeviceData => {
+        if (!persistentDeviceData) return null;
+        const { authenticityResult } = persistentDeviceData;
+        if (authenticityResult?.valid !== true) return null;
+
+        return persistentDeviceData.internal_model;
+    },
+);
