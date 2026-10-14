@@ -18,7 +18,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { useLayoutSize } from 'src/hooks/suite';
 
 import { SecurityCheckFail } from './components/SecurityCheckFail';
-import { AuthenticateDeviceSupportButton } from './components/ctas';
+import { AuthenticateDeviceSupportButton, RetryButton } from './components/ctas';
 
 const items: { id: string; icon: IconComponent; text: TranslationKey }[] = [
     { id: 'security', icon: ShieldCheckIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
@@ -49,6 +49,19 @@ const ExplanationBeforeCheck = () => {
     );
 };
 
+type DeviceAuthenticityCheckFailureCtasProps = {
+    onRetryClick: () => void;
+};
+
+const DeviceAuthenticityCheckFailureCtas = ({
+    onRetryClick,
+}: DeviceAuthenticityCheckFailureCtasProps) => (
+    <>
+        <RetryButton onClick={onRetryClick} />
+        <AuthenticateDeviceSupportButton />
+    </>
+);
+
 type DeviceAuthenticityCheckProps = {
     onSuccess: () => void;
 };
@@ -64,6 +77,9 @@ export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckPr
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { dispatch } = useServices(injectDispatch);
     const [isLoading, setIsLoading] = useState(false);
+    // Persisted result in redux drives rendering of initial screen / success screen / failure screen.
+    // But in case of failure, the user gets an opportunity to retry → display initial screen even with persisted failure.
+    const [isRetryStep, setIsRetryStep] = useState(false);
 
     if (!device) return null;
 
@@ -110,6 +126,7 @@ export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckPr
                 }),
             );
             setIsLoading(false);
+            setIsRetryStep(false);
         };
 
         return isCheckSuccessful ? (
@@ -133,11 +150,15 @@ export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckPr
         );
     };
 
-    if (isCheckFailed) {
+    if (isCheckFailed && !isRetryStep) {
         return (
             <Card paddingType="large">
                 <SecurityCheckFail
-                    ctaSection={<AuthenticateDeviceSupportButton />}
+                    ctaSection={
+                        <DeviceAuthenticityCheckFailureCtas
+                            onRetryClick={() => setIsRetryStep(true)}
+                        />
+                    }
                     text="TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT"
                 />
             </Card>
