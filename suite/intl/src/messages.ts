@@ -5060,7 +5060,7 @@ export const messages = defineMessages({
     TR_STELLAR_CONTRACT_TOKEN_DETECTED: {
         id: 'TR_STELLAR_CONTRACT_TOKEN_DETECTED',
         defaultMessage:
-            'Soroban contract token. It has no issuer and needs no trustline — its balance is read from the contract.',
+            'Soroban contract token. It has no issuer and needs no trustline. Its balance is read from the contract.',
     },
     TR_STELLAR_CONTRACT_TOKEN_MEMO_UNAVAILABLE: {
         id: 'TR_STELLAR_CONTRACT_TOKEN_MEMO_UNAVAILABLE',
@@ -5074,7 +5074,7 @@ export const messages = defineMessages({
     TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE: {
         id: 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
         defaultMessage:
-            'The recipient has not added {symbol}. The receiving account has to add this asset before it can receive it.',
+            'The recipient has not added {symbol}. The receiving account must add this asset before it can receive it.',
     },
     TR_INACTIVE_TOKENS_EMPTY: {
         id: 'TR_INACTIVE_TOKENS_EMPTY',
@@ -10139,7 +10139,7 @@ export const messages = defineMessages({
     TR_PHISHING_BANNER_UNSOLICITED_ASSET_OFFER: {
         id: 'TR_PHISHING_BANNER_UNSOLICITED_ASSET_OFFER',
         defaultMessage:
-            'Proceed with caution. Someone offered this balance to your account without being asked. Nothing has been received unless you claim it, and claiming locks up a reserve. <a>Learn more</a>',
+            'Proceed with caution. Someone offered this balance to your account without being asked. Nothing is received unless you claim it, which locks up a reserve. <a>Learn more</a>',
     },
     TR_HIDE_TRANSACTION: {
         id: 'TR_HIDE_TRANSACTION',
@@ -12557,7 +12557,7 @@ export const messages = defineMessages({
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION',
         defaultMessage:
-            'Write your passphrase on paper & keep it away from anything digital—no clouds, USB, internet, or phones.',
+            'Write your passphrase on paper & keep it away from anything digital—no cloud storage, USB, internet, or phones.',
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION',
