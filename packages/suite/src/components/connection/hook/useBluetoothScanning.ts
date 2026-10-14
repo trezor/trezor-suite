@@ -1,13 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import {
-    type DesktopBluetoothDevice,
-    bluetoothStartScanningThunk,
-    bluetoothStopScanningThunk,
-    removeNonResponsiveNearbyDevicesThunk,
-} from '@suite/bluetooth';
-import { bluetoothActions } from '@suite-common/bluetooth';
-import { injectDispatch } from '@suite-common/redux-utils';
+import { type DesktopBluetoothDevice, injectBluetooth } from '@suite/bluetooth';
 import { useServices } from '@trezor/dependency-injection';
 import { type TimerId } from '@trezor/type-utils';
 
@@ -28,7 +21,7 @@ export const useBluetoothScanning = ({
     devices,
     setShowHints,
 }: UseBluetoothScanningProps): UseBluetoothScanningReturn => {
-    const { dispatch } = useServices(injectDispatch);
+    const { bluetooth } = useServices(injectBluetooth);
     const scannerTimerId = useRef<TimerId | null>(null);
 
     const clearScanTimer = useCallback(() => {
@@ -41,43 +34,43 @@ export const useBluetoothScanning = ({
     const onReScanClick = useCallback(() => {
         clearScanTimer();
 
-        dispatch(bluetoothStartScanningThunk());
+        bluetooth.startScan();
         scannerTimerId.current = setTimeout(() => {
             setShowHints(true);
-            dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
+            bluetooth.setScanStatus('idle');
         }, SCAN_TIMEOUT);
-    }, [dispatch, clearScanTimer, setShowHints]);
+    }, [bluetooth, clearScanTimer, setShowHints]);
 
     // starts to scan for devices when connection mode is bluetooth
     useEffect(() => {
         if (bluetoothMode) {
-            dispatch(bluetoothStartScanningThunk());
+            bluetooth.startScan();
 
             return () => {
-                dispatch(bluetoothStopScanningThunk());
+                bluetooth.stopScan();
             };
         }
-    }, [dispatch, bluetoothMode]);
+    }, [bluetooth, bluetoothMode]);
 
     // stop scanning (visually) after 30s
     useEffect(() => {
         if (bluetoothMode) {
             scannerTimerId.current = setTimeout(() => {
                 setShowHints(true);
-                dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
+                bluetooth.setScanStatus('idle');
             }, SCAN_TIMEOUT);
         }
 
         return clearScanTimer;
-    }, [dispatch, clearScanTimer, bluetoothMode, setShowHints]);
+    }, [bluetooth, clearScanTimer, bluetoothMode, setShowHints]);
 
     // stop scanning when devices are found
     useEffect(() => {
         if (devices.length > 0) {
             clearScanTimer();
-            dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
+            bluetooth.setScanStatus('idle');
         }
-    }, [devices, dispatch, clearScanTimer]);
+    }, [bluetooth, devices, clearScanTimer]);
 
     // Cleanup timer on unmount
     useEffect(
@@ -91,7 +84,7 @@ export const useBluetoothScanning = ({
     // we do not get update from bluetooth adapter when device is non responsive
     useEffect(() => {
         function updateNonResponsiveDevices() {
-            dispatch(removeNonResponsiveNearbyDevicesThunk());
+            bluetooth.removeStaleDevices();
         }
 
         if (bluetoothMode) {
@@ -99,7 +92,7 @@ export const useBluetoothScanning = ({
 
             return () => clearInterval(interval);
         }
-    }, [dispatch, bluetoothMode]);
+    }, [bluetooth, bluetoothMode]);
 
     return {
         onReScanClick,

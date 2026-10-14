@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
-import { unpairCurrentBondThunk } from '@suite/bluetooth';
+import { injectBluetooth } from '@suite/bluetooth';
 import { gotoThunk } from '@suite/router';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ConfirmationModal } from './ConfirmationModal';
 import { OsAndTrezorCleanupModal } from './OsAndTrezorCleanupModal';
@@ -83,10 +84,11 @@ export const ThpBtConnectedForgetFlow = ({ onCancel }: ForgetFlowProps) => {
     type Step = 'confirmation' | 'bt-removal';
     const [step, setStep] = useState<Step>('confirmation');
     const { dispatch, forgetDevice } = useForgetDevice();
+    const { bluetooth } = useServices(injectBluetooth);
 
     const handleConfirm = async () => {
         try {
-            const result = await dispatch(unpairCurrentBondThunk({})).unwrap();
+            const result = await bluetooth.unpairCurrentBond();
 
             if (!result) {
                 return;

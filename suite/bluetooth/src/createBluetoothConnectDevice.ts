@@ -1,37 +1,51 @@
-import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
-import { createThunk } from '@suite-common/redux-utils';
+import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+
+import { type DesktopApiDep } from '@suite/desktop-app-api';
+import { bluetoothActions } from '@suite-common/bluetooth';
+import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { type BluetoothDeviceId, type Device } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import {
+    type WithBluetoothRootState,
     setBluetoothDeviceNeedsManualPairing,
     startConnectingBluetoothDevice,
     stopConnectingBluetoothDevice,
 } from './desktopBluetoothReducer';
 
-type BluetoothConnectDeviceThunkResult = {
-    success: boolean;
+type BluetoothConnectDeviceRootState = WithBluetoothRootState;
+
+type BluetoothConnectDeviceThunkDispatch = ThunkDispatch<
+    BluetoothConnectDeviceRootState,
+    WithServices<DesktopApiDep<'openSystemSettings'>>,
+    UnknownAction
+>;
+
+type BluetoothConnectDeviceDeps = {
+    dispatch: BluetoothConnectDeviceThunkDispatch;
 };
 
-export const bluetoothConnectDeviceThunk = createThunk<
-    BluetoothConnectDeviceThunkResult,
-    { deviceId: BluetoothDeviceId },
-    void
->(
-    `${BLUETOOTH_PREFIX}/bluetoothConnectDeviceThunk`,
-    async ({ deviceId }, { fulfillWithValue, dispatch }) => {
-        dispatch(startConnectingBluetoothDevice({ deviceId }));
+export type BluetoothConnectDevice = (params: {
+    deviceId: BluetoothDeviceId;
+}) => Promise<{ success: boolean }>;
 
+export const createBluetoothConnectDevice =
+    (deps: BluetoothConnectDeviceDeps): BluetoothConnectDevice =>
+    async ({ deviceId }) => {
+        deps.dispatch(startConnectingBluetoothDevice({ deviceId }));
         const result = await bluetoothIpc.connectDevice(deviceId);
+
+        // Restore focus after OS Bluetooth settings opened above the app (Linux/macOS).
+        // TODO!!!! deps.desktopApi.appFocus();
 
         if (!result.success) {
             // handling for this error: https://github.com/trezor/trezor-suite/blob/837cdf89c70cca80fd5dabb910e9a8509de7c3b1/packages/transport-bluetooth/src/server/platform/linux.rs#L253
             if (result.error === 'BluetoothSettingsMissing') {
-                dispatch(stopConnectingBluetoothDevice({ deviceId }));
-                dispatch(setBluetoothDeviceNeedsManualPairing(true));
+                deps.dispatch(stopConnectingBluetoothDevice({ deviceId }));
+                deps.dispatch(setBluetoothDeviceNeedsManualPairing(true));
 
-                return fulfillWithValue({ success: result.success });
+                return { success: result.success };
             }
 
             // This can fail, but we are silent about this as the device may not be there anymore
@@ -43,10 +57,10 @@ export const bluetoothConnectDeviceThunk = createThunk<
                 result.error.includes('Operation already in progress') ||
                 result.error.includes('Peer removed pairing information');
             if (isUnpaired) {
-                dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(true));
-                dispatch(bluetoothActions.removeKnownDeviceAction({ id: deviceId }));
+                deps.dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(true));
+                deps.dispatch(bluetoothActions.removeKnownDeviceAction({ id: deviceId }));
             } else {
-                dispatch(
+                deps.dispatch(
                     notificationsActions.addToast({
                         type: 'error',
                         error: result.error,
@@ -54,9 +68,9 @@ export const bluetoothConnectDeviceThunk = createThunk<
                 );
             }
 
-            dispatch(stopConnectingBluetoothDevice({ deviceId }));
+            deps.dispatch(stopConnectingBluetoothDevice({ deviceId }));
 
-            return fulfillWithValue({ success: result.success });
+            return { success: result.success };
         }
 
         // wait for device handshake in @trezor/connect
@@ -81,8 +95,7 @@ export const bluetoothConnectDeviceThunk = createThunk<
             TrezorConnect.on('device-disconnect', closeViewAfterConnection);
         });
 
-        dispatch(stopConnectingBluetoothDevice({ deviceId }));
+        deps.dispatch(stopConnectingBluetoothDevice({ deviceId }));
 
-        return fulfillWithValue({ success: result.success });
-    },
-);
+        return { success: result.success };
+    };
