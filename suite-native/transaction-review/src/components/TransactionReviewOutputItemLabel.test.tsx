@@ -1,3 +1,4 @@
+import { type NetworkType } from '@suite-common/wallet-config';
 import { type TransactionReviewOutputType } from '@suite-common/wallet-types';
 import { Text } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
@@ -6,10 +7,10 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { TransactionReviewOutputItemLabel } from './TransactionReviewOutputItemLabel';
 
 describe('TransactionReviewOutputItemLabel', () => {
-    const renderLabel = async (type: TransactionReviewOutputType) =>
+    const renderLabel = async (type: TransactionReviewOutputType, networkType?: NetworkType) =>
         await renderWithBasicProvider(
             <Text testID="label">
-                <TransactionReviewOutputItemLabel type={type} />
+                <TransactionReviewOutputItemLabel type={type} networkType={networkType} />
             </Text>,
         );
 
@@ -45,7 +46,19 @@ describe('TransactionReviewOutputItemLabel', () => {
         expect(getByTestId('label')).toHaveTextContent(expectedLabel);
     });
 
-    it.each<TransactionReviewOutputType>(['locktime', 'fee', 'txid', 'gas'])(
+    it.each<[NetworkType | undefined, string]>([
+        ['ethereum', getTranslation('transactionManagement.review.outputs.summary.maxFee')],
+        ['stellar', getTranslation('transactionManagement.review.outputs.summary.maxFee')],
+        ['solana', getTranslation('transactionManagement.review.outputs.expectedFeeLabel')],
+        ['bitcoin', getTranslation('transactionManagement.review.outputs.feeLabel')],
+        [undefined, getTranslation('transactionManagement.review.outputs.feeLabel')],
+    ])('should render the fee label for network type "%s"', async (networkType, expectedLabel) => {
+        const { getByTestId } = await renderLabel('fee', networkType);
+
+        expect(getByTestId('label')).toHaveTextContent(expectedLabel);
+    });
+
+    it.each<TransactionReviewOutputType>(['locktime', 'txid', 'gas'])(
         'should fall back to the raw type for unsupported type "%s"',
         async type => {
             const { getByTestId } = await renderLabel(type);

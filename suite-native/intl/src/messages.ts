@@ -4886,6 +4886,8 @@ export const messages = {
                 tokenLabel: 'Token',
                 feeLimitLabel: 'Fee Limit',
                 feeLimitSummaryLabel: 'Summary',
+                feeLabel: 'Fee',
+                expectedFeeLabel: 'Expected fee',
                 noteLabel: 'Note',
                 transactionDataLabel: 'Data',
                 opReturnLabel: 'Hexadecimal message (OP_RETURN)',

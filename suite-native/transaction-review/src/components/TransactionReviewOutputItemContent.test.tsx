@@ -88,6 +88,16 @@ describe('TransactionReviewOutputItemContent', () => {
         );
     });
 
+    it('should render the fee as a native amount row', async () => {
+        const { getByTestId } = await renderContent(output('fee', '21000000000000'), {
+            tokenContract: USDC_CONTRACT,
+        });
+
+        expect(getByTestId(CONTENT_TEST_ID)).toHaveTextContent(
+            `Values: [${ETH_ACCOUNT_KEY}]-[no-token]-[transactionManagement.review.outputs.amountLabel]-[21000000000000]`,
+        );
+    });
+
     it('should render the fingerprint and Trezor amount for a Cardano token', async () => {
         const { getByTestId } = await renderContent(output('amount', '150000'), {
             accountKey: ADA_ACCOUNT_KEY,
@@ -253,7 +263,6 @@ describe('TransactionReviewOutputItemContent', () => {
 
     it.each<TransactionReviewOutputType>([
         'locktime',
-        'fee',
         'txid',
         'gas',
         'approve_data',
