@@ -16,7 +16,7 @@
         "@suite/intl": "workspace:*",
         "@testing-library/dom": "^10.4.2",
         "@testing-library/react": "^16.3.3",
-        "@testing-library/user-event": "^14.6.4",
+        "@testing-library/user-event": "^14.6.7",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/suite": "workspace:*",
         "react": "19.2.3"
