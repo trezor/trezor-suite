@@ -67,6 +67,7 @@ import {
     selectHistoricFiatRates,
     selectIsDeviceAutoEjectEnabled,
     setAddressDisplayType,
+    setAreHomeAssetSmallBalancesShown,
     setAutoEjectEnabled,
     setBaseCurrency,
     setBitcoinAmountUnits,
@@ -566,6 +567,7 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             setAutoEjectEnabled,
             setAddressDisplayType,
             setHomeAssetsTableGrouping,
+            setAreHomeAssetSmallBalancesShown,
             setSuspiciousTransactionsFilter,
         )(action)
     ) {
