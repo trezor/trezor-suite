@@ -21,16 +21,19 @@ export const bannerContentPresets = {
         title: 'generic.banners.deviceDanger.compromised.title',
         subtitle: 'generic.banners.deviceDanger.compromised.subtitle',
         cta: 'generic.banners.deviceDanger.compromised.cta',
+        intent: 'critical',
     },
     'backup-failed': {
         title: 'generic.banners.deviceDanger.backupFailed.title',
         subtitle: 'generic.banners.deviceDanger.backupFailed.subtitle',
         cta: 'generic.banners.deviceDanger.backupFailed.cta',
+        intent: 'critical',
     },
     'backup-needed': {
         title: 'generic.banners.deviceDanger.backupNeeded.title',
         subtitle: 'generic.banners.deviceDanger.backupNeeded.subtitle',
         cta: 'generic.banners.deviceDanger.backupNeeded.cta',
+        intent: 'warning',
     },
 } as const satisfies Record<
     DeviceDangerBannerCause,
@@ -38,6 +41,7 @@ export const bannerContentPresets = {
         title: TxKeyPath;
         subtitle: TxKeyPath;
         cta: TxKeyPath;
+        intent: 'warning' | 'critical';
     }
 >;
 
@@ -69,14 +73,14 @@ export const DeviceDangerBannerExtension = () => {
 
     if (!cause) return null;
 
-    const { subtitle, cta } = bannerContentPresets[cause];
+    const { subtitle, cta, intent } = bannerContentPresets[cause];
 
     return (
         <VStack spacing="sp16">
             <Text textAlign="center">
                 <Translation id={subtitle} />
             </Text>
-            <Button intent="critical" priority="primary" onPress={handleCtaPress}>
+            <Button intent={intent} priority="primary" onPress={handleCtaPress}>
                 <Translation id={cta} />
             </Button>
         </VStack>
