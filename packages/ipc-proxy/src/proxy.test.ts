@@ -190,6 +190,31 @@ describe('proxy', () => {
         expect(ipcMain.eventNames().length).toEqual(0);
     });
 
+    it('proxy with rejectIpcErrors = true', async () => {
+        // renderer
+        exposeInMainWorld(
+            ...exposeIpcProxy(ipcRenderer, ['TestApiWithRejection'], { rejectIpcErrors: true }),
+        );
+        // main
+        createIpcProxyHandler<TestApi>(ipcMain, 'TestApiWithRejection', {
+            onCreateInstance: () => ({
+                onRequest: () => {
+                    throw new Error(`IpcProxyHandler runtime error`);
+                },
+                onAddListener: () => {},
+                onRemoveListener: () => ({}) as any,
+            }),
+        });
+
+        // renderer
+        const proxy = await createIpcProxy<TestApi>('TestApiWithRejection');
+        try {
+            await proxy.oneArgMethod(1);
+        } catch (error) {
+            expect(error.message).toMatch('IpcProxyHandler runtime error');
+        }
+    });
+
     // CURRENTLY LEAKS — see PR #27978 for the fix.
     //
     // ipcMain.handle() registers invoke handlers under per-instance prefixes

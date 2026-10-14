@@ -14,7 +14,11 @@ interface IpcRenderer {
     invoke: (channel: string, ...args: any[]) => Promise<any>;
 }
 
-const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): IpcProxyApi => {
+const createIpcProxyApi = (
+    ipcRenderer: IpcRenderer,
+    validChannels: string[],
+    options: IpcProxyGeneratorOptions,
+): IpcProxyApi => {
     let requestId = 0;
 
     const validateChannel = (channelName: string): true => {
@@ -40,8 +44,10 @@ const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): I
                 // success/failure is wrapped in object. see ipcProxyHandler
                 if (response.success) {
                     resolve(response.payload);
-                } else {
+                } else if (options.rejectIpcErrors) {
                     reject(response.error);
+                } else {
+                    resolve({ success: false, error: response.error });
                 }
             });
             ipcRenderer.send(`${channelName}/${instanceId}/request`, [responseEvent, method, args]);
@@ -83,10 +89,15 @@ const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): I
 
 interface IpcProxyGeneratorOptions {
     proxyName?: string; // needs to be also set in `createIpcProxy` if changed here (see ./proxy)
+    rejectIpcErrors?: boolean; // if true, unexpected IPC errors will be rejected instead of resolved with an error object
 }
 
 export const exposeIpcProxy = (
     ipcRenderer: IpcRenderer,
     validChannels: string[] = [],
     options: IpcProxyGeneratorOptions = {},
-) => [options.proxyName || 'ipcProxy', createIpcProxyApi(ipcRenderer, validChannels)] as const;
+) =>
+    [
+        options.proxyName || 'ipcProxy',
+        createIpcProxyApi(ipcRenderer, validChannels, options),
+    ] as const;
