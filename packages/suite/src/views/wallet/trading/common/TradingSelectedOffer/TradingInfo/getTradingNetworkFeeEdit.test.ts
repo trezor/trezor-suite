@@ -1,6 +1,8 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { type FeeInfo, type FormState } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mock } from '@trezor/dependency-injection';
 
 import { getTradingNetworkFeeEdit } from './getTradingNetworkFeeEdit';
 
@@ -16,8 +18,14 @@ const feeInfo: FeeInfo = {
     dustLimit: 546,
     levels: [{ label: 'normal', feePerUnit: '2', blocks: 2 }],
 };
-const composeFormState = { selectedFee: 'normal' } as FormState;
-const onConfirm = () => undefined;
+const composeFormState: FormState = {
+    ...DEFAULT_VALUES,
+    outputs: [],
+    options: ['broadcast'],
+    selectedUtxos: [],
+    selectedFee: 'normal',
+};
+const onConfirm = mock<Parameters<typeof getTradingNetworkFeeEdit>[0]['onConfirm']>();
 
 describe('getTradingNetworkFeeEdit', () => {
     it('offers the edit with the compose inputs on an adjustable network', () => {

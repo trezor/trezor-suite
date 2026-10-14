@@ -907,10 +907,6 @@ export const messages = defineMessages({
         defaultMessage: 'Confirm on Trezor & send',
         id: 'TR_SELL_CONFIRM_ON_TREZOR_SEND',
     },
-    TR_SELL_BANK_ACCOUNT: {
-        defaultMessage: 'Your bank accounts',
-        id: 'TR_SELL_BANK_ACCOUNT',
-    },
     TR_SELL_BANK_ACCOUNT_TOOLTIP: {
         defaultMessage: 'Bank accounts that you registered with your provider',
         id: 'TR_SELL_BANK_ACCOUNT_TOOLTIP',
@@ -926,10 +922,6 @@ export const messages = defineMessages({
     TR_SELL_ADD_BANK_ACCOUNT: {
         defaultMessage: 'Add bank account',
         id: 'TR_SELL_ADD_BANK_ACCOUNT',
-    },
-    TR_SELL_GO_TO_TRANSACTION: {
-        defaultMessage: 'Proceed',
-        id: 'TR_SELL_GO_TO_TRANSACTION',
     },
     TR_SELL_DETAIL_COMPLETE_TITLE: {
         defaultMessage: 'Sell complete',

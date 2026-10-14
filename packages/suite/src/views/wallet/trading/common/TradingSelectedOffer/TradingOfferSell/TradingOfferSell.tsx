@@ -13,15 +13,17 @@ import {
     selectTradingSellIsLoading,
     selectTradingSellQuotesRequest,
     selectTradingSellSelectedQuote,
+    sellUtils,
     useTradingUtils,
 } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Button, Card, Column, H2, Spinner, Text } from '@trezor/components';
+import { Card, Column, H2, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
+import { useTradingSellBankAccountSelection } from 'src/hooks/wallet/trading/useTradingSellBankAccountSelection';
 import { useTradingSellConfirmFees } from 'src/hooks/wallet/trading/useTradingSellConfirmFees';
 import { useTradingSellTradeActions } from 'src/hooks/wallet/trading/useTradingSellTradeActions';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
@@ -31,6 +33,9 @@ import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/T
 import { TradingKYCWarning } from 'src/views/wallet/trading/common/TradingKYCWarning';
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 
+import { TradingOfferSellSendButton } from './TradingOfferSellSendButton';
+import { TradingOfferSellWaitingForProvider } from './TradingOfferSellWaitingForProvider';
+import { TradingSellBankAccountInfoItem } from './TradingSellBankAccountInfoItem';
 import { TradingComposedNetworkFeeInfoItem } from '../TradingInfo/TradingComposedNetworkFeeInfoItem';
 import { getTradingNetworkFeeEdit } from '../TradingInfo/getTradingNetworkFeeEdit';
 
@@ -42,7 +47,7 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
     const { handleClick: handleSendClick, disabled: isSending } = useAsyncClickHandler();
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const { device } = useDevice();
-    const { account, sendTransaction } = useTradingSellTradeActions();
+    const { account, confirmTrade, addBankAccount, sendTransaction } = useTradingSellTradeActions();
     const formStep = useSelector(selectTradingSellFormStep);
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
     const trade = useSelector(selectTradingSellActiveTrade);
@@ -64,14 +69,19 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
     const providerName = useSelector((state: TradingRootState) =>
         selectTradingProviderCompanyName(state, selectedTrade?.exchange, 'sell'),
     );
+    const { selectedBankAccount, selectBankAccount } = useTradingSellBankAccountSelection(
+        selectedTrade?.bankAccounts,
+    );
 
     if (!selectedTrade || !account) {
         return null;
     }
 
+    const isPreviewStep = formStep === 'PREVIEW';
+    const isBankAccountStep = formStep === 'BANK_ACCOUNT';
     const isSendStep = formStep === 'SEND_TRANSACTION';
-    const isPartnerReadyToReceive =
-        selectedTrade.status === 'SEND_CRYPTO' && !!selectedTrade.destinationAddress;
+    const isPartnerReadyToReceive = sellUtils.isReadyToSendCrypto(selectedTrade);
+    const isSendDisabled = isLoading || !device?.connected || isDiscoveryRunning || isSending;
 
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(
         selectedTrade.cryptoCurrency,
@@ -110,39 +120,16 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
         });
     };
 
-    const renderSendStepAction = () => {
-        if (!isPartnerReadyToReceive) {
-            return (
-                <Column alignItems="center" gap={8} padding={{ vertical: 16 }}>
-                    <Spinner size={40} isDisabled margin={{ bottom: 8 }} />
-                    <Text>
-                        <Translation
-                            id="TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO"
-                            values={translationValues}
-                        />
-                    </Text>
-                    <Text intent="neutral" priority="secondary">
-                        <Translation
-                            id="TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO_INFO"
-                            values={translationValues}
-                        />
-                    </Text>
-                </Column>
-            );
+    const onConfirmBankAccountClick = async () => {
+        if (!selectedBankAccount) {
+            return;
         }
 
-        return (
-            <Button
-                data-testid="@trading/offer/confirm-on-trezor-and-send"
-                isLoading={isLoading || isSending}
-                isDisabled={isLoading || !device?.connected || isDiscoveryRunning || isSending}
-                onClick={() => handleSendClick(onConfirmAndSendClick)}
-                size="large"
-                width="100%"
-            >
-                <Translation id="TR_SELL_CONFIRM_ON_TREZOR_SEND" />
-            </Button>
-        );
+        const confirmedTrade = await confirmTrade(selectedBankAccount);
+
+        if (confirmedTrade && sellUtils.isReadyToSendCrypto(confirmedTrade)) {
+            await onConfirmAndSendClick();
+        }
     };
 
     return (
@@ -153,9 +140,9 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
                         <H2 typographyStyle="headline-sm">
                             <Translation
                                 id={
-                                    isSendStep
-                                        ? 'TR_TRADING_SELL_SEND_TITLE'
-                                        : 'TR_TRADING_SELL_CONFIRM_TITLE'
+                                    isPreviewStep
+                                        ? 'TR_TRADING_SELL_CONFIRM_TITLE'
+                                        : 'TR_TRADING_SELL_SEND_TITLE'
                                 }
                                 values={translationValues}
                             />
@@ -163,9 +150,9 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             <Translation
                                 id={
-                                    isSendStep
-                                        ? 'TR_TRADING_SELL_SEND_DESCRIPTION'
-                                        : 'TR_TRADING_SELL_CONFIRM_DESCRIPTION'
+                                    isPreviewStep
+                                        ? 'TR_TRADING_SELL_CONFIRM_DESCRIPTION'
+                                        : 'TR_TRADING_SELL_SEND_DESCRIPTION'
                                 }
                                 values={translationValues}
                             />
@@ -187,11 +174,25 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
                                 edit={networkFeeEdit}
                             />
                         }
+                        bankAccount={
+                            selectedBankAccount && !isPreviewStep ? (
+                                <TradingSellBankAccountInfoItem
+                                    bankAccount={selectedBankAccount}
+                                    edit={
+                                        isBankAccountStep
+                                            ? {
+                                                  bankAccounts: selectedTrade.bankAccounts ?? [],
+                                                  onSelect: selectBankAccount,
+                                                  onAdd: addBankAccount,
+                                              }
+                                            : undefined
+                                    }
+                                />
+                            ) : undefined
+                        }
                     />
 
-                    {isSendStep ? (
-                        renderSendStepAction()
-                    ) : (
+                    {isPreviewStep && (
                         <Column gap={12}>
                             <TradingFormOfferConfirmButton
                                 translationId="TR_TRADING_SELL_VIA"
@@ -205,6 +206,29 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
 
                             <TradingKYCWarning />
                         </Column>
+                    )}
+
+                    {isBankAccountStep && (
+                        <TradingOfferSellSendButton
+                            isLoading={isLoading || isSending}
+                            isDisabled={isSendDisabled || !selectedBankAccount}
+                            onClick={() => handleSendClick(onConfirmBankAccountClick)}
+                        />
+                    )}
+
+                    {isSendStep && !isPartnerReadyToReceive && (
+                        <TradingOfferSellWaitingForProvider
+                            providerName={translationValues.providerName}
+                            displaySymbol={translationValues.displaySymbol}
+                        />
+                    )}
+
+                    {isSendStep && isPartnerReadyToReceive && (
+                        <TradingOfferSellSendButton
+                            isLoading={isLoading || isSending}
+                            isDisabled={isSendDisabled}
+                            onClick={() => handleSendClick(onConfirmAndSendClick)}
+                        />
                     )}
                 </Column>
             </Card>

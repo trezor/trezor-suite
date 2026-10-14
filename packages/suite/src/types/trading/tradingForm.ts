@@ -285,4 +285,5 @@ export interface TradingSelectedOfferInfoProps extends TradingOfferCommonProps {
     selectedAccount?: Account;
     receiveAddress?: string;
     networkFee?: ReactNode;
+    bankAccount?: ReactNode;
 }

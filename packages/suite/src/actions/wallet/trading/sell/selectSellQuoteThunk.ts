@@ -9,6 +9,8 @@ import {
     selectTradingSellQuotesRequest,
     selectTradingSymbolAndContractAddressByCryptoId,
     sellThunks,
+    sellUtils,
+    tradingSellActions,
 } from '@suite-common/trading';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
@@ -30,9 +32,11 @@ export const selectSellQuoteThunk = createThunk<
 
         const provider = sellInfo && quote.exchange ? sellInfo.providerInfos[quote.exchange] : null;
 
-        if (!quotesRequest || !provider) {
+        if (!quotesRequest || !sellInfo || !provider) {
             return;
         }
+
+        dispatch(tradingSellActions.setFormStep(sellUtils.getStepForQuote({ sellInfo, quote })));
 
         const { coinSymbol: cryptoLabel, contractAddress: cryptoContractAddress } =
             selectTradingSymbolAndContractAddressByCryptoId(

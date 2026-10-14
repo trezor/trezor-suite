@@ -94,7 +94,7 @@ export const useTradingSellTradeActions = () => {
             });
         };
 
-        await dispatch(
+        return dispatch(
             sellThunks.confirmTradeThunk({
                 account,
                 bankAccount,
@@ -104,7 +104,7 @@ export const useTradingSellTradeActions = () => {
                     dispatch(submitRequestFormThunk(response.tradeForm?.form));
                 },
             }),
-        );
+        ).unwrap();
     };
 
     const addBankAccount = async () => {
