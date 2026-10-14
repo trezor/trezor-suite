@@ -1,0 +1,45 @@
+name: "[Chore] Warm shared Chromium"
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "suite/e2e/package.json"
+      - ".github/actions/playwright-cache/**"
+      - ".github/workflows/chore-warm-playwright-cache.yml"
+  schedule:
+    - cron: "43 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: warm-playwright-cache-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  warm:
+    if: github.repository == 'trezor/trezor-suite' && github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: ${{ hashFiles('.github/actions/yarn-cache/action.yml') == '' && 'yarn' || '' }}
+      - name: Restore shared Yarn downloads
+        if: hashFiles('.github/actions/yarn-cache/action.yml') != ''
+        uses: ./.github/actions/yarn-cache
+      - uses: ./.github/actions/playwright-cache
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
+      - name: Install Playwright dependencies
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+        run: yarn workspaces focus @trezor/suite-e2e
+      - name: Install Chromium
+        run: yarn workspace @trezor/suite-e2e exec playwright install chromium

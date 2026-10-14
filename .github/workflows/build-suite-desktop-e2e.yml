@@ -32,6 +32,8 @@ jobs:
         with:
           version: v0.19.1
       - name: Install dependencies
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
         shell: bash
         run: yarn workspaces focus @suite/desktop-app @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system @suite/desktop-app-renderer
 

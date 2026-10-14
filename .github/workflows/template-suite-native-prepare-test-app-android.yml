@@ -58,6 +58,8 @@ jobs:
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
 
       - name: Install Yarn dependencies
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
         run: yarn install --immutable
 
       - name: Setup Java

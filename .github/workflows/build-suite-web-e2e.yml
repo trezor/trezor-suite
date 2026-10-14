@@ -58,6 +58,8 @@ jobs:
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
 
       - name: Install dependencies
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
         shell: bash
         run: yarn workspaces focus @suite/web-app @trezor/suite @suite/app-assets @suite-common/message-system
 

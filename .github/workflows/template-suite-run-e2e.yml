@@ -136,13 +136,10 @@ jobs:
           path: node_modules
           key: node_modules-suite-e2e-${{ hashFiles('yarn.lock') }}
 
-      - name: Cache Playwright Browsers
+      - name: Restore Chromium
         id: playwright-cache
-        if: inputs.target == 'web'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+        if: inputs.target == 'web' && hashFiles('.github/actions/playwright-cache/action.yml') != ''
+        uses: ./.github/actions/playwright-cache
 
       - name: Download build artifact
         id: download-build
@@ -173,6 +170,8 @@ jobs:
         with:
           version: v0.19.1
       - name: Install PW Dependencies
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
         shell: bash
         run: |
           yarn workspaces focus @trezor/suite-e2e
@@ -181,13 +180,13 @@ jobs:
         if: inputs.target == 'web' && steps.playwright-cache.outputs.cache-hit != 'true'
         shell: bash
         run: |
-          yarn workspace @trezor/suite-e2e exec playwright install --with-deps
+          yarn workspace @trezor/suite-e2e exec playwright install --with-deps chromium
 
       - name: Install Playwright system dependencies
         if: inputs.target == 'web' && steps.playwright-cache.outputs.cache-hit == 'true'
         shell: bash
         run: |
-          yarn workspace @trezor/suite-e2e exec playwright install-deps
+          yarn workspace @trezor/suite-e2e exec playwright install-deps chromium
 
       - name: Build Message System Config
         shell: bash

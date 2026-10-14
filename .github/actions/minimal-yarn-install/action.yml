@@ -36,5 +36,7 @@ runs:
         version: v0.19.1
 
     - name: Install dependencies using Yarn
+      env:
+        PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
       shell: bash
       run: yarn --immutable
