@@ -1,12 +1,27 @@
+import { type NetworkType } from '@suite-common/wallet-config';
 import { type TransactionReviewOutputType } from '@suite-common/wallet-types';
-import { Translation } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 
 type TransactionReviewOutputItemLabelProps = {
     type: TransactionReviewOutputType;
+    networkType?: NetworkType;
+};
+
+const getFeeLabelTranslationId = (networkType?: NetworkType): TxKeyPath => {
+    switch (networkType) {
+        case 'ethereum':
+        case 'stellar':
+            return 'transactionManagement.review.outputs.summary.maxFee';
+        case 'solana':
+            return 'transactionManagement.review.outputs.expectedFeeLabel';
+        default:
+            return 'transactionManagement.review.outputs.feeLabel';
+    }
 };
 
 export const TransactionReviewOutputItemLabel = ({
     type,
+    networkType,
 }: TransactionReviewOutputItemLabelProps) => {
     switch (type) {
         case 'address':
@@ -38,6 +53,8 @@ export const TransactionReviewOutputItemLabel = ({
             return <Translation id="transactionManagement.review.outputs.networkLabel" />;
         case 'approve_data':
             return <Translation id="transactionManagement.review.outputs.approveLabel" />;
+        case 'fee':
+            return <Translation id={getFeeLabelTranslationId(networkType)} />;
         case 'fee-limit':
             return <Translation id="transactionManagement.review.outputs.feeLimitSummaryLabel" />;
         case 'note':

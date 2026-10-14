@@ -21,7 +21,12 @@ export const TransactionReviewOutputItem = ({
     const outputTitleOverride = review.outputTitleOverride?.(output);
     const outputValueOverride = review.outputOverride?.(output);
 
-    const title = outputTitleOverride ?? <TransactionReviewOutputItemLabel type={output.type} />;
+    const title = outputTitleOverride ?? (
+        <TransactionReviewOutputItemLabel
+            type={output.type}
+            networkType={review.account?.networkType}
+        />
+    );
     const value = outputValueOverride ?? <TransactionReviewOutputItemContent output={output} />;
 
     return (

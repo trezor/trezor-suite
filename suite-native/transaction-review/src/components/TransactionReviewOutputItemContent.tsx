@@ -35,6 +35,14 @@ export const TransactionReviewOutputItemContent = ({
                     )}
                 </VStack>
             );
+        case 'fee':
+            return (
+                <TransactionReviewOutputItemValues
+                    accountKey={review.account.key}
+                    value={output.value}
+                    translationKey="transactionManagement.review.outputs.amountLabel"
+                />
+            );
         case 'destination-tag':
             return (
                 <Text variant="body-sm">
