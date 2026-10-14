@@ -176,7 +176,7 @@ describe('BaseProcess.stop', () => {
             expect(child.kill).toHaveBeenCalledTimes(1);
         });
 
-        it.skip('resolves after several checks when the process exits later', async () => {
+        it('resolves after several checks when the process exits later', async () => {
             const testProcess = new TestProcess({ stopKillWait: 10 });
             const child = new FakeChildProcess();
             testProcess.attach(child);
@@ -193,7 +193,7 @@ describe('BaseProcess.stop', () => {
             expect(child.kill).toHaveBeenCalledTimes(1);
         });
 
-        it.skip('resolves when the process reference is cleared in the meantime (e.g. on close event)', async () => {
+        it('resolves when the process reference is cleared in the meantime (e.g. on close event)', async () => {
             const logger = createLogger();
             const testProcess = new TestProcess({ stopKillWait: 10 }, logger);
             const child = new FakeChildProcess();
@@ -212,7 +212,7 @@ describe('BaseProcess.stop', () => {
         });
     });
 
-    describe.skip('when the process is slow to exit', () => {
+    describe('when the process is slow to exit', () => {
         it('does not treat `killed` flag alone as exited', async () => {
             const testProcess = new TestProcess({ stopKillWait: 10 });
             const child = new FakeChildProcess();
@@ -276,15 +276,18 @@ describe('BaseProcess.stop', () => {
         });
 
         it('sends SIGKILL on every check until the process exits', async () => {
-            const testProcess = new TestProcess({ stopKillWait: 1 });
+            const testProcess = new TestProcess({
+                stopKillWait: 1,
+                maxKillAttempts: MAX_SIGKILL_ATTEMPTS,
+            });
             const child = new FakeChildProcess();
             testProcess.attach(child);
 
             testProcess.stop();
-            await fastForward(1 + 3); // 1 wait tick, then 3 SIGKILL attempts
+            await fastForward(1 + MAX_SIGKILL_ATTEMPTS); // 1 wait tick, then the SIGKILL attempts
 
             const sigkillCalls = child.kill.mock.calls.filter(([signal]) => signal === 'SIGKILL');
-            expect(sigkillCalls).toHaveLength(3);
+            expect(sigkillCalls).toHaveLength(MAX_SIGKILL_ATTEMPTS);
         });
 
         it('skips the polling wait and goes straight to SIGKILL when `stopKillWait` is 0', async () => {
@@ -301,9 +304,12 @@ describe('BaseProcess.stop', () => {
     });
 
     describe('when the process never exits', () => {
-        it.skip('gives up after the maximum number of SIGKILL attempts, logs an error with pid and resolves', async () => {
+        it('gives up after the maximum number of SIGKILL attempts, logs an error with pid and resolves', async () => {
             const logger = createLogger();
-            const testProcess = new TestProcess({ stopKillWait: 2 }, logger);
+            const testProcess = new TestProcess(
+                { stopKillWait: 2, maxKillAttempts: MAX_SIGKILL_ATTEMPTS },
+                logger,
+            );
             const child = new FakeChildProcess();
             testProcess.attach(child);
 
@@ -322,8 +328,11 @@ describe('BaseProcess.stop', () => {
             expect(testProcess.hasProcess()).toBe(true);
         });
 
-        it.skip('sends exactly one SIGTERM and the maximum number of SIGKILLs', async () => {
-            const testProcess = new TestProcess({ stopKillWait: 2 });
+        it('sends exactly one SIGTERM and the maximum number of SIGKILLs', async () => {
+            const testProcess = new TestProcess({
+                stopKillWait: 2,
+                maxKillAttempts: MAX_SIGKILL_ATTEMPTS,
+            });
             const child = new FakeChildProcess();
             testProcess.attach(child);
 
@@ -338,7 +347,10 @@ describe('BaseProcess.stop', () => {
         });
 
         it('stops polling after giving up', async () => {
-            const testProcess = new TestProcess({ stopKillWait: 1 });
+            const testProcess = new TestProcess({
+                stopKillWait: 1,
+                maxKillAttempts: MAX_SIGKILL_ATTEMPTS,
+            });
             const child = new FakeChildProcess();
             testProcess.attach(child);
 
@@ -410,7 +422,7 @@ describe('BaseProcess.stop', () => {
     });
 
     describe('concurrent calls', () => {
-        it.skip('resolves every pending stop() once the process exits', async () => {
+        it('resolves every pending stop() once the process exits', async () => {
             const testProcess = new TestProcess({ stopKillWait: 10 });
             const child = new FakeChildProcess();
             testProcess.attach(child);
