@@ -361,8 +361,27 @@ acquisition runs after `createInterceptor()` so that it is Tor-aware and whiteli
 postponed while Tor is wanted but not running yet, because `interceptFetch` proxies a request only
 once Tor is up, and it is skipped entirely with `--offline-mode` or under Playwright.
 
-The renderer keeps its own acquisition and evaluation, so messages, feature flags and experiments
-reach the UI through Redux as described above.
+#### Scope of the main process gate
+
+Main owns the gate only for the surfaces it serves on its own. It is not (yet) the single
+evaluation point on desktop: the renderer keeps its own acquisition and evaluation, so messages,
+feature flags and experiments reach the UI through Redux as described above. Nothing is pushed
+across the process boundary in either direction, which has consequences worth knowing before
+relying on either side:
+
+- A desktop build runs two independent acquisition loops against `data.trezor.io`, each with its
+  own fetch clock and its own sequence, so the config is downloaded twice per fetch interval.
+- The two can disagree for up to a fetch interval. Main's gate can already be closed - the bridge,
+  `/connect-ws` and the http-receiver stopped - while the renderer still renders a normal UI, in
+  which case the user sees a transport error rather than the killswitch screen.
+- The Message Manager debug tooling (config source Local, manually added messages, experiment
+  inclusion overrides) acts on renderer Redux only. It cannot exercise or reproduce main's gate,
+  and with the Local source selected the renderer keeps showing no killswitch while main's gate
+  may stay closed.
+
+Making main the single evaluation point - renderer facts reported to main, the verified config and
+the evaluation result pushed back, the renderer's own acquisition dropped on desktop, and the debug
+tooling commanding main - is follow-up work.
 
 ### Message Manager (UI)
 
