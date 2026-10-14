@@ -1,4 +1,4 @@
-import { isAnyOf } from '@reduxjs/toolkit';
+import { freeze, isAnyOf, isDraft, original } from '@reduxjs/toolkit';
 
 import {
     type ActionTypesDep,
@@ -6,8 +6,8 @@ import {
     createReducerWithExtraDeps,
 } from '@suite-common/redux-utils';
 import type { AccountKey } from '@suite-common/wallet-types';
-import { findTransaction } from '@suite-common/wallet-utils';
 
+import { mergeTransactions } from './mergeTransactions';
 import { transactionsActions } from './transactionsActions';
 import type { TransactionsState } from './transactionsReducerTypes';
 import {
@@ -69,47 +69,18 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
             .addCase(transactionsActions.addTransaction, (state, { payload }) => {
                 const { transactions, account, page, perPage } = payload;
                 if (transactions.length < 1) return;
-                initializeAccount(state, account.key);
-                const accountTxs = state.transactions[account.key];
+                const accountTxs = initializeAccount(state, account.key);
 
                 if (!accountTxs) return;
-                transactions.forEach((transaction, i) => {
-                    // first we need to make sure that transaction is not undefined, then check if transactionid matches
-                    const existingTx = findTransaction(transaction.txid, accountTxs);
-                    if (!existingTx) {
-                        // add a new transaction
-                        if (page && perPage) {
-                            // insert a tx object at correct index
-                            const txIndex = (page - 1) * perPage + i; // Needs to be same as TX_PER_PAGE
-                            accountTxs[txIndex] = transaction;
-                        } else {
-                            // no page arg, insert the tx at the beginning of the array
-                            accountTxs.unshift(transaction);
-                        }
-                    } else {
-                        // update the transaction if conditions are met
-                        const existingTxIndex = accountTxs.findIndex(
-                            t => t?.txid === existingTx.txid,
-                        );
-                        const existingBlockHeight = existingTx.blockHeight ?? 0;
-                        const incomingBlockHeight = transaction.blockHeight ?? 0;
-                        const existingIsPending = existingBlockHeight <= 0;
-                        const incomingIsPending = incomingBlockHeight <= 0;
-
-                        if (
-                            (existingIsPending && !incomingIsPending) ||
-                            (existingIsPending === incomingIsPending &&
-                                existingBlockHeight < incomingBlockHeight) ||
-                            (existingIsPending === incomingIsPending &&
-                                (existingTx.blockTime ?? 0) < (transaction.blockTime ?? 0)) ||
-                            (existingIsPending && !existingTx.rbfParams && transaction.rbfParams) ||
-                            (existingTx.deadline && !transaction.deadline)
-                        ) {
-                            // pending tx got confirmed (blockHeight changed from undefined/0 to a number > 0)
-                            accountTxs[existingTxIndex] = { ...transaction };
-                        }
-                    }
+                const nextTxs = mergeTransactions({
+                    storedTxs: isDraft(accountTxs) ? original(accountTxs) : accountTxs,
+                    transactions,
+                    page,
+                    perPage,
                 });
+                if (nextTxs) {
+                    state.transactions[account.key] = freeze(nextTxs);
+                }
             })
             .addCase(transactionsActions.markTransactionAsNotScam, (state, { payload }) => {
                 const { key, txid, isMarkedAsNotScam } = payload;
