@@ -32,6 +32,7 @@ import {
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TransportInfo } from '@trezor/connect';
+import { mock } from '@trezor/dependency-injection';
 import { isLinux } from '@trezor/env-utils';
 import { type WithServices } from '@trezor/redux-utils';
 import { type DeepPartial } from '@trezor/type-utils';
@@ -318,6 +319,40 @@ describe(`${Preloader.name} component`, () => {
         expect(findByTestId('TR_NO_TRANSPORT')).not.toBeNull();
 
         unmount();
+    });
+
+    it('marks suite:interactive once the loading screen made way for the app', () => {
+        const performanceMark = mock<Performance['mark']>();
+        performance.mark = performanceMark;
+
+        const loading = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+            preloadedState: getInitialState({ suite: { lifecycle: { status: 'loading' } } }),
+            services: createServices,
+        });
+        const { unmount: unmountLoading } = renderWithProviders(
+            { ...loading.services, networks: { networkIcon } },
+            <Index app={loading.services.store.getState().router.app} />,
+        );
+
+        expect(findByTestId('@suite/loading')).not.toBeNull();
+        expect(performanceMark).not.toHaveBeenCalled();
+
+        unmountLoading();
+
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+            preloadedState: getInitialState(),
+            services: createServices,
+        });
+        const { unmount } = renderWithProviders(
+            { ...services, networks: { networkIcon } },
+            <Index app={services.store.getState().router.app} />,
+        );
+
+        expect(screen.queryByTestId('@suite/loading')).toBeNull();
+        expect(performanceMark).toHaveBeenCalledWith('suite:interactive');
+
+        unmount();
+        delete (performance as { mark?: Performance['mark'] }).mark;
     });
 
     it('Bridge transport, no device', () => {

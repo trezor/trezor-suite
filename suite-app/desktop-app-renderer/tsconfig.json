@@ -17,6 +17,9 @@
             "path": "../../suite-common/react-query"
         },
         { "path": "../../suite/analytics" },
+        {
+            "path": "../../suite/automation-tools"
+        },
         { "path": "../../suite/debug" },
         { "path": "../../suite/desktop-app-api" },
         {

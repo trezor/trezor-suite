@@ -180,6 +180,9 @@
         {
             "path": "../../suite/authenticity-checks"
         },
+        {
+            "path": "../../suite/automation-tools"
+        },
         { "path": "../../suite/backup" },
         { "path": "../../suite/bluetooth" },
         { "path": "../../suite/coinjoin" },
