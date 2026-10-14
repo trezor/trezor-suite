@@ -24,7 +24,11 @@ const DEV_PORT = 8000;
 const webConfig: webpack.Configuration = {
     target: `browserslist:${browserslistConfigPath}`,
     entry: {
-        main: [path.join(baseDir, 'src', 'index.ts')],
+        main: [
+            // Must run before react-dom; a no-op unless the automation tools' gate is on.
+            path.join(repoRoot, 'suite/automation-tools/src/earlyPerfHook.ts'),
+            path.join(baseDir, 'src', 'index.ts'),
+        ],
         'sessions-background-sharedworker': {
             filename: 'js/workers/[name].js',
             import: path.join(

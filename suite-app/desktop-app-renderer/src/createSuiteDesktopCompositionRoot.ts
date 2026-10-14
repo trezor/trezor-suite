@@ -11,7 +11,7 @@ import {
 } from '@suite-app/app';
 import TrezorConnect from '@trezor/connect-electron';
 import { toGetter } from '@trezor/dependency-injection';
-import { createDb, createPreloadStore } from '@trezor/suite';
+import { createDb, createPreloadStore, loadSuiteAutomationTools } from '@trezor/suite';
 
 import { type DesktopApp, createDesktopApp } from './createDesktopApp';
 
@@ -67,6 +67,14 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
     // Inject them after construction to break the cycle, before the app can dispatch any actions.
     injectServicesIntoReduxExtra(services);
+
+    // A no-op unless the automation tools' gate is on.
+    loadSuiteAutomationTools({
+        store,
+        history,
+        desktopApi: suiteServices.desktopApi,
+        connect: TrezorConnect,
+    });
 
     return { app: createDesktopApp({ desktopApi, services }) };
 };

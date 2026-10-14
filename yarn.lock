@@ -11444,6 +11444,7 @@ __metadata:
     "@suite/regions": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/settings": "workspace:*"
+    "@suite/suite-lifecycle": "workspace:*"
     "@suite/suite-sync": "workspace:*"
     "@suite/tor": "workspace:*"
     "@suite/trading": "workspace:*"
@@ -17706,6 +17707,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/automation-tools@workspace:*, @suite/automation-tools@workspace:suite/automation-tools":
+  version: 0.0.0-use.local
+  resolution: "@suite/automation-tools@workspace:suite/automation-tools"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.13.0"
+    "@suite/locks": "workspace:*"
+    "@suite/modal": "workspace:*"
+    "@suite/router": "workspace:*"
+    "@suite/router-config": "workspace:*"
+    "@suite/suite-lifecycle": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
+    "@trezor/zod": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite/backup@workspace:*, @suite/backup@workspace:suite/backup":
   version: 0.0.0-use.local
   resolution: "@suite/backup@workspace:suite/backup"
@@ -21100,6 +21118,7 @@ __metadata:
     "@suite/app-assets": "workspace:*"
     "@suite/assets": "workspace:*"
     "@suite/authenticity-checks": "workspace:*"
+    "@suite/automation-tools": "workspace:*"
     "@suite/backup": "workspace:*"
     "@suite/bluetooth": "workspace:*"
     "@suite/coinjoin": "workspace:*"
