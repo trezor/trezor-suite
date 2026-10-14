@@ -37,7 +37,6 @@ export class JsonRpcClient {
 
     close() {
         this.socket?.close();
-        this.socket = undefined;
         this.onClose();
     }
 
@@ -120,8 +119,12 @@ export class JsonRpcClient {
 
     onClose() {
         this.log('onClose');
+        // The server may close the connection as well, nothing may be written into it since then.
+        const wasConnected = !!this.socket;
+        this.socket = undefined;
         Object.values(this.callbacks).forEach(cb => cb(new Error('Connection closed')));
         this.callbacks = {};
+        if (wasConnected) this.emitter.emit('disconnected');
         this.emitter.removeAllListeners();
     }
 

@@ -187,6 +187,11 @@ class ElectrumWorker extends BaseWorker<ElectrumClient> {
 
         this.addressCache = createAddressCache(api.getInfo()?.network);
 
+        api.on('disconnected', () => {
+            this.post({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
+            this.cleanup();
+        });
+
         this.post({
             id: -1,
             type: RESPONSES.CONNECTED,
