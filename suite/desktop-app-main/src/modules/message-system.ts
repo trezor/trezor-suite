@@ -121,6 +121,10 @@ export const createMessageSystemOwner = ({
     const poller = createConfigPoller({ isMobile: false });
     const listeners = new Set<GateListener>();
     let gate = INACTIVE_GATE;
+    // The rollback floor, taken only from a config that verified. The persisted sequence must not
+    // be used for it: the store file is user-writable, so a sequence no verified config backs
+    // would make every future config look like a rollback and reject it forever.
+    let appliedSequence = 0;
 
     const applyConfig = (config: MessageSystem) => {
         const nextGate = evaluateGate(config);
@@ -143,16 +147,21 @@ export const createMessageSystemOwner = ({
 
     const loadPersistedConfig = () => {
         const cache = store.getMessageSystemCache();
-        if (!cache) {
+        if (typeof cache?.configJws !== 'string') {
             return;
         }
 
         try {
             // The persisted JWS is verified again on every launch: the store file is user-writable,
             // so its content is trusted no more than a freshly downloaded one.
-            applyConfig(verifyConfigJws(cache.configJws));
+            const config = verifyConfigJws(cache.configJws);
+            appliedSequence = config.sequence;
+            applyConfig(config);
         } catch (error) {
+            // A cache that does not verify is worth nothing, including its sequence, so it is
+            // dropped rather than kept as the rollback floor of every future config.
             logger.error(SERVICE_NAME, `Persisted config is not usable: ${error.message}`);
+            store.clearMessageSystemCache();
         }
     };
 
@@ -190,11 +199,10 @@ export const createMessageSystemOwner = ({
         try {
             const configJws = await fetchRemoteConfigJws(getRemoteConfigUrl(isCodesignBuild()));
             const config = verifyConfigJws(configJws);
-            const currentSequence = cache?.sequence ?? 0;
 
-            if (compareConfigSequence(currentSequence, config.sequence) === 'older') {
+            if (compareConfigSequence(appliedSequence, config.sequence) === 'older') {
                 throw Error(
-                    `Sequence of config (${config.sequence}) is older than the current one (${currentSequence}).`,
+                    `Sequence of config (${config.sequence}) is older than the current one (${appliedSequence}).`,
                 );
             }
 
@@ -203,6 +211,7 @@ export const createMessageSystemOwner = ({
                 sequence: config.sequence,
                 timestamp: Date.now(),
             });
+            appliedSequence = config.sequence;
             applyConfig(config);
         } catch (error) {
             logger.error(SERVICE_NAME, `Acquiring of the remote config failed: ${error.message}`);

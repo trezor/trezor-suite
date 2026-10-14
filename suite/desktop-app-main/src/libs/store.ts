@@ -172,6 +172,10 @@ export class Store {
         this.store.set('messageSystemCache', messageSystemCache);
     }
 
+    public clearMessageSystemCache() {
+        this.store.delete('messageSystemCache');
+    }
+
     public getIsDebugModeActive() {
         return this.store.get('isDebugModeActive', false);
     }

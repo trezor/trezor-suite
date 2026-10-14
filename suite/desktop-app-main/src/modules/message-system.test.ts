@@ -40,7 +40,13 @@ const createTestStore = (cache?: MessageSystemCache) => {
         setMessageSystemCache: jest.fn((nextCache: MessageSystemCache) => {
             messageSystemCache = nextCache;
         }),
-    } as unknown as Store & { setMessageSystemCache: jest.Mock };
+        clearMessageSystemCache: jest.fn(() => {
+            messageSystemCache = undefined;
+        }),
+    } as unknown as Store & {
+        setMessageSystemCache: jest.Mock;
+        clearMessageSystemCache: jest.Mock;
+    };
 };
 
 const logger = {
@@ -116,17 +122,39 @@ describe('message system owner', () => {
         jest.mocked(verifyConfigJws).mockImplementation(() => {
             throw Error('Config authenticity is invalid');
         });
-        const owner = createOwner({
-            store: createTestStore({ configJws: 'tampered-jws', sequence: 10, timestamp: 1 }),
-        });
+        const store = createTestStore({ configJws: 'tampered-jws', sequence: 10, timestamp: 1 });
+        const owner = createOwner({ store });
 
         owner.loadPersistedConfig();
 
         expect(owner.getGate().isKillswitchActive).toBe(false);
+        expect(store.clearMessageSystemCache).toHaveBeenCalled();
         expect(logger.error).toHaveBeenCalledWith(
             'message-system',
             expect.stringContaining('Config authenticity is invalid'),
         );
+    });
+
+    it('does not let an unverifiable cache block a config with a lower sequence', async () => {
+        jest.mocked(verifyConfigJws).mockImplementation(() => {
+            throw Error('Config authenticity is invalid');
+        });
+        // A profile carried from a dev build to a codesign one verifies against another key, so
+        // its sequence may well be above the one the other channel's config is at.
+        const store = createTestStore({ configJws: 'other-key-jws', sequence: 120, timestamp: 1 });
+        const owner = createOwner({ store });
+        owner.loadPersistedConfig();
+
+        jest.mocked(fetchRemoteConfigJws).mockResolvedValue('stable-jws');
+        jest.mocked(verifyConfigJws).mockReturnValue(getConfig(40, [getKillswitchAction()]));
+        await owner.acquireRemoteConfig();
+
+        expect(store.setMessageSystemCache).toHaveBeenCalledWith({
+            configJws: 'stable-jws',
+            sequence: 40,
+            timestamp: expect.any(Number),
+        });
+        expect(owner.getGate().isKillswitchActive).toBe(true);
     });
 
     it('refuses an acquired config that rolls the sequence back', async () => {
