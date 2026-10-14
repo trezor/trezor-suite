@@ -19,7 +19,7 @@
     },
     "devDependencies": {
         "@evolu/common": "8.11.0",
-        "@evolu/nodejs": "4.0.0",
+        "@evolu/nodejs": "4.1.0",
         "@suite-common/suite-sync-evolu": "workspace:*",
         "@suite-common/wallet-config": "workspace:*"
     }

@@ -3403,14 +3403,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evolu/nodejs@npm:4.0.0":
-  version: 4.0.0
-  resolution: "@evolu/nodejs@npm:4.0.0"
+"@evolu/nodejs@npm:4.1.0":
+  version: 4.1.0
+  resolution: "@evolu/nodejs@npm:4.1.0"
   dependencies:
     better-sqlite3: "npm:^12.11.1"
     ws: "npm:^8.21.3"
   peerDependencies:
-    "@evolu/common": ^8.10.0
+    "@evolu/common": ^8.11.0
     "@evolu/oxlint-config": ^0.2.0
     "@evolu/typescript-config": ^0.1.1
     oxlint: ^1.79.0
@@ -3433,7 +3433,7 @@ __metadata:
       optional: true
     webpack:
       optional: true
-  checksum: 10/eafa06ed1ccbbadc61875918456bf3c4443fe1e8f0186fdfe4715591d751ca843cae30e482cfe16ca9620e906318d36265e29f1af7026f38af6111c9044d61b9
+  checksum: 10/4ad2912bde9d84f112421a850bc507cacc422246a63e8c153c4743bf41a60046d59a1af2101ba6a2ffc58b75e34eec22c5afd916d599f2c2e875749edbba5c38
   languageName: node
   linkType: hard
 
@@ -11537,7 +11537,7 @@ __metadata:
   resolution: "@suite-common/e2e-evolu-client@workspace:suite-common/e2e-evolu-client"
   dependencies:
     "@evolu/common": "npm:8.11.0"
-    "@evolu/nodejs": "npm:4.0.0"
+    "@evolu/nodejs": "npm:4.1.0"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -12090,7 +12090,7 @@ __metadata:
   resolution: "@suite-common/suite-sync-evolu@workspace:suite-common/suite-sync-evolu"
   dependencies:
     "@evolu/common": "npm:8.11.0"
-    "@evolu/nodejs": "npm:4.0.0"
+    "@evolu/nodejs": "npm:4.1.0"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -39568,11 +39568,11 @@ __metadata:
   linkType: hard
 
 "node-abi@npm:^3.3.0":
-  version: 3.77.0
-  resolution: "node-abi@npm:3.77.0"
+  version: 3.96.0
+  resolution: "node-abi@npm:3.96.0"
   dependencies:
     semver: "npm:^7.3.5"
-  checksum: 10/98d5594355d50e3687117e0c6593650d8ed92e6908b3d8b288a2f44b2df95571426ba05ce6d10986e7cc1aa7fddfd467e5ca402d98e7c69a2e31f4a0acb86633
+  checksum: 10/d4d5895d46d270621e81d3174d980969e8686e57d1e8e971895c905e3c14e3e6396533cdf279267cc5d29814044f9d301c54f4c945b16920ee0ce7c40048566e
   languageName: node
   linkType: hard
 
@@ -47061,14 +47061,14 @@ __metadata:
   linkType: hard
 
 "tar-fs@npm:^2.0.0":
-  version: 2.1.4
-  resolution: "tar-fs@npm:2.1.4"
+  version: 2.1.5
+  resolution: "tar-fs@npm:2.1.5"
   dependencies:
     chownr: "npm:^1.1.1"
     mkdirp-classic: "npm:^0.5.2"
     pump: "npm:^3.0.0"
     tar-stream: "npm:^2.1.4"
-  checksum: 10/bdf7e3cb039522e39c6dae3084b1bca8d7bcc1de1906eae4a1caea6a2250d22d26dcc234118bf879b345d91ebf250a744b196e379334a4abcbb109a78db7d3be
+  checksum: 10/9dfbde66d223e3164a8018521c7c1eb205696917cbfb116d15cde286ccc7f2445964bb3d4772f369eb003aad67c2573e4f1390c74266fee32fa16cb846b6d144
   languageName: node
   linkType: hard
 
@@ -50413,7 +50413,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^8.11.0, ws@npm:^8.12.1, ws@npm:^8.13.0, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0, ws@npm:^8.20.0, ws@npm:^8.21.0, ws@npm:^8.21.3":
+"ws@npm:^8.11.0, ws@npm:^8.12.1, ws@npm:^8.13.0, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0, ws@npm:^8.20.0, ws@npm:^8.21.0":
   version: 8.21.3
   resolution: "ws@npm:8.21.3"
   peerDependencies:
@@ -50425,6 +50425,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10/8856922c26fd2d106931c16310d9a0bc2d6d37ed8771352bfa0d2a36df0ab5cb1f6528c6db8213f3333cf4ce93925e56f13604df0454cb0d4289fef922bebcdd
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.21.3":
+  version: 8.22.0
+  resolution: "ws@npm:8.22.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10/ed771c2766bdb5724a66872f60ffc1a39f06e1a5bc8849f453c273e97c91a40ed5a224f06dc0e22f44b4a9e03938bf746fc5938d6887433cc0f4c416237d3b10
   languageName: node
   linkType: hard
 
