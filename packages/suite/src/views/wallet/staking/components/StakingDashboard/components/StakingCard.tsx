@@ -143,7 +143,10 @@ export const StakingCard = ({
     const stakeTxs = useSelector(state =>
         selectAccountStakeTypeTransactions(state, account.key || ''),
     );
-    const isStakeConfirming = stakeTxs.some(tx => isPending(tx));
+    // A pending Solana stake-type tx is only the stand-in kept until the backend reports it; it
+    // does not lock unstaking or reward claims the way an unconfirmed Ethereum stake does.
+    const isStakeConfirming =
+        account.networkType !== 'solana' && stakeTxs.some(tx => isPending(tx));
 
     const canUnstake = new BigNumber(autocompoundBalance).gt(0) && !isStakeConfirming;
     const canClaimRewards = new BigNumber(restakedReward).gt(0) && !isStakeConfirming;

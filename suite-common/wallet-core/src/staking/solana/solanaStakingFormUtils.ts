@@ -4,6 +4,7 @@ import {
     type ExternalOutput,
     type PrecomposedLevels,
     type PrecomposedTransaction,
+    type PrecomposedTransactionError,
     type StakeFormState,
     type StakeType,
 } from '@suite-common/wallet-types';
@@ -191,6 +192,15 @@ export const prepareSolanaStakeTxData = async ({
     return undefined;
 };
 
+const PREPARATION_FAILED_LEVEL: PrecomposedTransactionError = {
+    type: 'error',
+    error: 'TR_STAKE_TX_PREPARATION_FAILED',
+    errorMessage: { id: 'TR_STAKE_TX_PREPARATION_FAILED' },
+};
+
+const buildPreparationFailedLevels = (predefinedLevels: FeeLevel[]): PrecomposedLevels =>
+    Object.fromEntries(predefinedLevels.map(level => [level.label, PREPARATION_FAILED_LEVEL]));
+
 type ComposeSolanaStakingTransactionParams = {
     formValues: StakeFormState;
     composeContext: ComposeActionContext;
@@ -217,6 +227,8 @@ export const composeSolanaStakingTransaction = async ({
         return undefined;
     }
 
+    const predefinedLevels = feeInfo.levels.filter(level => level.label !== 'custom');
+
     const txData = await prepareSolanaStakeTxData({
         from: account.descriptor,
         symbol: account.symbol,
@@ -227,9 +239,11 @@ export const composeSolanaStakingTransaction = async ({
         source,
     });
 
-    const estimatedFee = await estimateSolanaStakeFee(account.symbol, txData);
+    if (!txData?.success) {
+        return buildPreparationFailedLevels(predefinedLevels);
+    }
 
-    const predefinedLevels = feeInfo.levels.filter(level => level.label !== 'custom');
+    const estimatedFee = await estimateSolanaStakeFee(account.symbol, txData);
 
     const composed = composeStakingTransaction(
         formValues,
@@ -259,8 +273,5 @@ export const composeSolanaStakingTransaction = async ({
     }
 
     // Fee estimation or the fee-aware preparation failed, keep the review-only flag of the first tx.
-    return applyDeviceReviewOnly(
-        composed,
-        !!txData?.success && txData.solanaTxMeta.hasSplitInstruction,
-    );
+    return applyDeviceReviewOnly(composed, txData.solanaTxMeta.hasSplitInstruction);
 };

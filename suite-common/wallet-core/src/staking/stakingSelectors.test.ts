@@ -1,6 +1,11 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { DEFAULT_VOTING_OPTION } from './cardano/cardanoStakingConstants';
@@ -11,6 +16,7 @@ import {
     selectApy,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
+    selectIsStakeConfirmingByAccountKey,
     selectStakeVotingDelegation,
     selectStakedBalanceByAccountKey,
     selectTotalStakePendingByAccountKey,
@@ -99,12 +105,15 @@ const etcAccount = {
     networkType: 'ethereum',
 } as unknown as Account;
 
-const getTestState = (accounts: Account[]) =>
+const getTestState = (
+    accounts: Account[],
+    transactions: Record<AccountKey, WalletAccountTransaction[]> = {},
+) =>
     ({
         wallet: {
             accounts,
             transactions: {
-                transactions: {},
+                transactions,
                 phishing: {},
                 fetchStatusDetail: {},
             },
@@ -438,5 +447,34 @@ describe('selectStakeVotingDelegation', () => {
         };
 
         expect(selectStakeVotingDelegation(state)).toBeUndefined();
+    });
+});
+
+describe('selectIsStakeConfirmingByAccountKey', () => {
+    const solanaStakeTransaction = (blockHeight?: number) =>
+        testMocks.getWalletTransaction({
+            txid: 'sol-stake',
+            symbol: solSymbol,
+            blockHeight,
+            solanaSpecific: {
+                status: blockHeight ? 'confirmed' : 'pending',
+                stakeOperation: { type: 'stake', amount: '1' },
+            },
+        });
+
+    it('should return true for a SOL account whose stake is broadcast but not yet confirmed', () => {
+        const testState = getTestState([solAccountWithStaking], {
+            [sol1Key]: [solanaStakeTransaction()],
+        });
+
+        expect(selectIsStakeConfirmingByAccountKey(testState, sol1Key)).toBe(true);
+    });
+
+    it('should return false for a SOL account once the stake is confirmed', () => {
+        const testState = getTestState([solAccountWithStaking], {
+            [sol1Key]: [solanaStakeTransaction(100)],
+        });
+
+        expect(selectIsStakeConfirmingByAccountKey(testState, sol1Key)).toBe(false);
     });
 });

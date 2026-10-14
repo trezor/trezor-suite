@@ -4925,6 +4925,8 @@ export const messages = {
                 amountIsTooLow: 'Amount is too low.',
                 amountIsLessThanReserve: 'Recipient account requires minimum reserve to activate.',
                 stakeNotEnoughFunds: 'Insufficient funds for staking.',
+                stakeTxPreparationFailed:
+                    'The transaction could not be prepared. Make sure the account is up to date and try again.',
                 remainingBalanceLessThanRent:
                     'After sending this amount, your account will have SOL remaining lower than the rent.',
                 amountNotEnoughCurrencyFeeWithEthAmount:

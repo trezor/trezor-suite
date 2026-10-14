@@ -29,6 +29,7 @@ import {
     getEvmTransactionTextSignature,
     getMevProtectedTxData,
     getPendingAccount,
+    getStakeType,
     hasNetworkFeatures,
     isAllowanceUnlimited,
     isCardanoTx,
@@ -116,6 +117,7 @@ import {
     addFakePendingCardanoTxThunk,
     addFakePendingEvmTxThunk,
     addFakePendingSolanaSendTxThunk,
+    addFakePendingSolanaStakeTxThunk,
     addFakePendingStellarTxThunk,
     addFakePendingTronSendTxThunk,
     addFakePendingTxThunk,
@@ -421,19 +423,33 @@ export const synchronizeSentTransactionThunk = createThunk<
 
                 dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
                 break;
-            case 'solana':
+            case 'solana': {
                 // Solana backends only report a tx once it is confirmed and indexed, so without a
-                // fake pending tx a just-broadcast send or swap is missing from the store until then.
-                dispatch(
-                    addFakePendingSolanaSendTxThunk({
-                        precomposedTransaction,
-                        txid,
-                        account: selectedAccount,
-                    }),
-                );
+                // fake pending tx a just-broadcast transaction is missing from the store until then.
+                const stakeType = precomposedForm ? getStakeType(precomposedForm) : null;
+
+                if (stakeType) {
+                    dispatch(
+                        addFakePendingSolanaStakeTxThunk({
+                            precomposedTransaction,
+                            stakeType,
+                            txid,
+                            account: selectedAccount,
+                        }),
+                    );
+                } else {
+                    dispatch(
+                        addFakePendingSolanaSendTxThunk({
+                            precomposedTransaction,
+                            txid,
+                            account: selectedAccount,
+                        }),
+                    );
+                }
 
                 dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
                 break;
+            }
             case 'cardano':
             case 'ripple':
                 // there is no point in fetching account data right after tx submit
