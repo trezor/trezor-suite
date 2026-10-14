@@ -35,11 +35,15 @@ export const YieldWithdraw = ({ account, vault }: YieldWithdrawProps) => {
         return null;
     }
 
+    // A flow that is already signing or has broadcast keeps its form, so the pending transaction
+    // and the completion stay visible after the feature is disabled remotely.
+    const isFormHidden = isDisabled && !yieldWithdrawContextValues.hasTransactionActivity;
+
     return (
         <AllowanceContext.Provider value={allowanceContextValue}>
             <Column gap={24}>
                 <ContextMessage context={Context.getEarnYield('withdraw')} />
-                {isDisabled ? (
+                {isFormHidden ? (
                     <YieldDisabledBanner type="withdraw" content={content} variant={variant} />
                 ) : (
                     <YieldWithdrawContext.Provider value={yieldWithdrawContextValues}>
