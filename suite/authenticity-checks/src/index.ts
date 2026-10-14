@@ -11,6 +11,7 @@ export {
     selectShouldRetryFirmwareRevisionCheckError,
 } from './authenticityChecksSelectors';
 export {
+    selectIsDeviceAuthenticityCheckSupportedAndEnabled,
     selectShouldCheckDeviceAuthenticity,
     selectShouldRouterAppSkipInteractiveDeviceChecks,
     selectDeviceNeedsInteractiveDeviceChecks,
