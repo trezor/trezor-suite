@@ -28,9 +28,6 @@
         {
             "path": "../../suite-common/react-query"
         },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../../suite-common/schemas" },
         {
             "path": "../../suite-common/suite-types"
@@ -107,6 +104,7 @@
             "path": "../../networks/solana/network-solana"
         },
         { "path": "../../packages/react-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

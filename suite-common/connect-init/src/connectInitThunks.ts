@@ -14,7 +14,6 @@ import {
     parseTimeoutThresholdsPerModel,
     selectFeatureConfig,
 } from '@suite-common/message-system';
-import { createThunk } from '@suite-common/redux-utils';
 import {
     type ConnectInitDeviceEventHooksDep,
     type GetAllowPrereleaseDep,
@@ -41,6 +40,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import type { CreateLoggerDep } from '@trezor/logger';
+import { createThunk } from '@trezor/redux-utils';
 import { getSynchronize, isArrayMember } from '@trezor/utils';
 
 import { blacklist } from './blacklist';

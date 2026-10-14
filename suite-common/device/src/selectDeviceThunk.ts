@@ -1,8 +1,8 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getSelectedDevice, sortByTimestamp } from '@suite-common/suite-utils';
 import { type Device } from '@trezor/connect';
 import { isNative } from '@trezor/env-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 import { deviceActions } from './deviceActions';
 import { DEVICE_MODULE_PREFIX } from './deviceConstants';

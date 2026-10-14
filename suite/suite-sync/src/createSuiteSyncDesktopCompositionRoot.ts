@@ -9,10 +9,10 @@ import {
     createUpdateRelayConnectionStatus,
 } from '@suite-common/suite-sync';
 import { evoluCreateSuiteSyncOwner } from '@suite-common/suite-sync-evolu';
-import { type FetchDep } from '@suite-common/suite-sync-quota-manager';
 import { type OnStorageEnsured, type SuiteSync } from '@suite-common/suite-sync-types';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
+import { type FetchDep } from '@trezor/type-utils';
 
 import { createEvoluDeps } from './evolu/createEvoluDeps';
 import { suiteSyncErrorHandler } from './suiteSyncErrorHandler';

@@ -1,7 +1,6 @@
 import { type Store, combineReducers } from '@reduxjs/toolkit';
 import type { CryptoId } from 'invity-api';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { tradingActions } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
@@ -13,6 +12,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
 import { type TradingRootState, tradingSlice } from '@suite-native/trading-state';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { useTradeableAssetValidityEffect } from './useTradeableAssetValidityEffect';
 

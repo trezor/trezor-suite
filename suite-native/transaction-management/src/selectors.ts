@@ -1,7 +1,6 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type FormDraftRootState,
@@ -31,6 +30,7 @@ import {
     getTransactionReviewOutputState,
     isClearSignedEvmTradingSwapTransaction,
 } from '@suite-common/wallet-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 import { type NativeSendRootState } from './sendFormSlice';

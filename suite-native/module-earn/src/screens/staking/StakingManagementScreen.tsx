@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     fetchAllTransactionsForAccountThunk,
@@ -15,6 +14,7 @@ import { parseAccountKey } from '@suite-common/wallet-utils';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 import { TransactionList } from '@suite-native/transactions';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { EarnPortfolioTrackerGuard } from '../../components/earn/EarnPortfolioTrackerGuard';
 import { SolanaStakingRewardsList } from '../../components/staking/SolanaStakingRewardsList';

@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type ResolvedYieldFlowData,
     type YieldAllowanceStatus,
     initYieldAllowanceThunk,
 } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 interface UseRefreshYieldDepositAllowanceOnIdleParams {
     allowanceStatus: YieldAllowanceStatus | undefined;

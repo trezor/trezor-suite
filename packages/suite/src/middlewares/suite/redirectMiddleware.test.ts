@@ -18,11 +18,11 @@ import {
     type MessageSystemRootState,
     messageSystemInitialState,
 } from '@suite-common/message-system';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';

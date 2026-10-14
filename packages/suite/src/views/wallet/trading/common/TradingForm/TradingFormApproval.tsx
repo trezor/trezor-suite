@@ -4,7 +4,6 @@ import { Address } from '@suite/address';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingExchangeType,
     requiresTokenApproval,
@@ -21,6 +20,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 import { PendingTransactionInfo } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
 import { useSelector } from 'src/hooks/suite';

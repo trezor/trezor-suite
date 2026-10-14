@@ -1,6 +1,6 @@
 import { openModal } from '@suite/modal';
-import { createThunk } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 import { MODULE_PREFIX } from './sendThunksConsts';
 

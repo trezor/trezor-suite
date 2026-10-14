@@ -4,7 +4,6 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
-import { createThunk } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type PushSendFormTransactionThunkDeps,
@@ -22,6 +21,7 @@ import {
     type FormState,
     type PrecomposedTransactionFinalCancelRbf,
 } from '@suite-common/wallet-types';
+import { createThunk } from '@trezor/redux-utils';
 import { type Ok } from '@trezor/type-utils';
 
 import { SEND_MODULE_PREFIX } from './constants';

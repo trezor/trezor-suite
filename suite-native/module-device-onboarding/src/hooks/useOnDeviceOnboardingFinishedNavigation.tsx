@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { setIsOnboardingFeedbackBannerEnabled } from '@suite-native/banners';
 import {
     type DeviceOnboardingStackParamList,
@@ -10,6 +9,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProps = StackNavigationProps<
     DeviceOnboardingStackParamList,

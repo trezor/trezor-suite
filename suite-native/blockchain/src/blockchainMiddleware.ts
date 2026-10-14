@@ -1,4 +1,3 @@
-import { createMiddleware } from '@suite-common/redux-utils';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     accountsActions,
@@ -11,6 +10,7 @@ import {
     BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,
     isBlockchainEventOfType,
 } from '@trezor/connect';
+import { createMiddleware } from '@trezor/redux-utils';
 
 import {
     onBlockchainConnectThunk,

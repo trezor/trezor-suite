@@ -3,7 +3,6 @@ import { type Store, combineReducers } from '@reduxjs/toolkit';
 import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
 import { type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type AccountsRootState,
@@ -25,6 +24,7 @@ import {
     tradingSlice,
 } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { useFocusedValueWatch } from './useFocusedValueWatch';
 import { useBuyForm } from '../buy/useBuyForm';

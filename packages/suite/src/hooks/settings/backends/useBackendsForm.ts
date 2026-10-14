@@ -4,7 +4,6 @@ import { useForm, useWatch } from 'react-hook-form';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { isOnionUrl } from '@suite/tor';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
     type ServerType,
@@ -16,6 +15,7 @@ import { blockchainActions, selectNetworkBlockchainInfo } from '@suite-common/wa
 import { type BackendSettings } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

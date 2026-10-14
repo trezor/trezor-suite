@@ -25,7 +25,6 @@ import {
     mockNetworkModule,
     mockNetworkModuleRepository,
 } from '@suite-common/networks/mocks';
-import { type WithServices } from '@suite-common/redux-utils';
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { mockMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations-types/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
@@ -47,6 +46,7 @@ import {
 import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
 import { type PROTO } from '@trezor/connect';
 import { asProtocol } from '@trezor/network-module-suite-common-types';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/reducers/store';
 import { type ProtocolState } from 'src/reducers/suite/protocolReducer';

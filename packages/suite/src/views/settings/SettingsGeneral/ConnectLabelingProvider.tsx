@@ -2,9 +2,9 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { metadataLabelingActions } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const ConnectLabelingProvider = () => {
     const { dispatch } = useServices(injectDispatch);

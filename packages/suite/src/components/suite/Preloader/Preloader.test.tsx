@@ -13,7 +13,6 @@ import {
     type PersistentDeviceDataState,
     persistentDeviceDataInitialState,
 } from '@suite-common/persistent-device-data';
-import { type WithServices } from '@suite-common/redux-utils';
 import {
     type AcquiredDevice,
     type GetAllowPrereleaseDep,
@@ -33,6 +32,7 @@ import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TransportInfo } from '@trezor/connect';
 import { isLinux } from '@trezor/env-utils';
+import { type WithServices } from '@trezor/redux-utils';
 import { type DeepPartial } from '@trezor/type-utils';
 
 import { type AppState } from 'src/reducers/store';
@@ -623,7 +623,7 @@ describe(`${Preloader.name} component`, () => {
                 },
                 device: {
                     selectedDevice: mockSuiteDevice(
-                        { mode: 'bootloader' },
+                        { mode: 'bootloader', connected: true },
                         { firmware_present: false, bootloader_mode: true, initialized: false },
                     ),
                 },
@@ -646,7 +646,7 @@ describe(`${Preloader.name} component`, () => {
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
-                device: { selectedDevice: mockSuiteDevice() },
+                device: { selectedDevice: mockSuiteDevice({ connected: true }) },
                 persistentDeviceData: persistentDeviceDataInitialState,
             }),
             services: createServices,
@@ -668,7 +668,10 @@ describe(`${Preloader.name} component`, () => {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
                 device: {
-                    selectedDevice: mockSuiteDevice({ mode: 'initialize' }, { initialized: false }),
+                    selectedDevice: mockSuiteDevice(
+                        { mode: 'initialize', connected: true },
+                        { initialized: false },
+                    ),
                 },
                 persistentDeviceData: persistentDeviceDataInitialState,
             }),

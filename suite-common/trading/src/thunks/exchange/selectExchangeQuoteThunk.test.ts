@@ -1,8 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTradeQuoteRequest } from 'invity-api';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { type SelectExchangeQuoteThunkState } from './selectExchangeQuoteThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';

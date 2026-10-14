@@ -4,7 +4,6 @@ import {
     type FirmwareUpdateThunkState,
     prepareFirmwareReducer,
 } from '@suite-common/firmware';
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import {
     mockGetBinFilesBaseUrl,
     mockGetLanguage,
@@ -17,6 +16,7 @@ import {
     testMocks,
 } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { actions, reducerActions } from './__fixtures__/firmwareActions';
 

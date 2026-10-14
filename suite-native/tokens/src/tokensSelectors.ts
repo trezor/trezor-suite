@@ -1,7 +1,6 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
@@ -26,6 +25,7 @@ import {
 } from '@suite-common/wallet-types';
 import { isNftToken, shouldUppercaseTokenSymbol } from '@suite-common/wallet-utils';
 import { type TokenInfo, type TokenTransfer } from '@trezor/blockchain-link';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type TypedTokenTransfer, type WalletAccountTransaction } from './types';
 import { isNetworkWithTokens } from './utils';

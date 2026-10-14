@@ -1,10 +1,10 @@
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type SuiteSyncAccount,
     type SuiteSyncAddress,
     type SuiteSyncOutput,
 } from '@suite-common/suite-sync-storage';
 import { type WalletDescriptor } from '@trezor/device-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { typedObjectValues } from '@trezor/utils';
 
 import { type SuiteSyncDataRootState, type WalletData } from '../suiteSyncDataReducer';

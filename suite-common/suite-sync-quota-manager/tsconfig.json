@@ -8,7 +8,6 @@
             "path": "../delegated-identity-key-types"
         },
         { "path": "../device" },
-        { "path": "../redux-utils" },
         { "path": "../suite-sync-storage" },
         { "path": "../suite-sync-types" },
         { "path": "../suite-types" },
@@ -21,6 +20,7 @@
         },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },

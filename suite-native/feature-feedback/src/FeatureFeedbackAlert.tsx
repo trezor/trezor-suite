@@ -2,12 +2,12 @@ import { useCallback } from 'react';
 
 import { type NavigationProp, useNavigation } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { AnimatedBannerFull } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import { type ExperimentalFeature } from '@suite-native/settings';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { feedbackDismissed } from './featureFeedbackSlice';
 

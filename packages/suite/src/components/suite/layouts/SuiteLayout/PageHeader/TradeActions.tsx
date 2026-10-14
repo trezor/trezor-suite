@@ -1,12 +1,12 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectIsAccountTabPage, selectRouteName } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { ButtonGroup, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { MinusIcon, PlusIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';

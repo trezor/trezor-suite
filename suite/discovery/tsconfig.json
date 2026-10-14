@@ -10,9 +10,6 @@
             "path": "../../suite-common/persistent-device-data"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-types"
         },
         {
@@ -26,6 +23,7 @@
         { "path": "../locks" },
         { "path": "../router" },
         { "path": "../router-config" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../suite-common/message-system"
         },

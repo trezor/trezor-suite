@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type PhishingDetectorId,
     type TokenDefinitionsRootState,
@@ -25,6 +24,7 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 

@@ -1,4 +1,3 @@
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     selectNetworkTokenDefinitions,
@@ -17,6 +16,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type ExportFileType } from '@suite-common/wallet-types';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import {
     type SelectAccountLabelsForSearchState,

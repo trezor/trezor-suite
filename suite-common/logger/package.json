@@ -19,7 +19,6 @@
         "@suite-common/discreet-mode": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/react-query": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -28,6 +27,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0"

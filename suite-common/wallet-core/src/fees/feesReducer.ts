@@ -1,7 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
@@ -12,6 +11,7 @@ import {
 } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo, isEip1559 } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { feesActions } from './feesActions';
 import { type FeesRootState, selectFees, selectRawNetworkFeeInfo } from './feesSelectors';

@@ -1,6 +1,6 @@
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
 import { type StaticSessionId } from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 import * as metadataLabelingActions from './metadataLabelingActions';
 import * as METADATA_LABELING from './metadataLabelingConstants';

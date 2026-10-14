@@ -1,5 +1,4 @@
 import { type AccountItem } from '@suite-common/graph';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -17,6 +16,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { type AccountOverviewTab } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 import { deepEqual } from '@trezor/utils';
 
 const createAccountsMemoizedSelector = createWeakMapSelector.withTypes<AccountsRootState>();

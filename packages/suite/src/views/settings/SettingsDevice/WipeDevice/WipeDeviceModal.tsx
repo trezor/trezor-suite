@@ -6,13 +6,13 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { Button, Column, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { NewspaperIcon, TrashIcon } from '@trezor/icons';
 import { StepCard } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type WipeDeviceModalProps = {
     onCancel: () => void;

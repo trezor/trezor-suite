@@ -1,6 +1,6 @@
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { accountsActions } from './accountsActions';
 import {

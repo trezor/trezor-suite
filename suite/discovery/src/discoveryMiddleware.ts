@@ -10,7 +10,6 @@ import { type RouterRootState, routerAppChanged } from '@suite/router';
 import { connectPopupCallInnerThunk } from '@suite-common/connect-popup';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type ThpRootState, selectThpAutoconnectStep, thpActions } from '@suite-common/thp';
 import {
     type WalletCoreCompoundRootState,
@@ -20,6 +19,7 @@ import {
     selectShouldRediscover,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
+import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import {
     selectIsDeviceReadyToStartDiscovery,

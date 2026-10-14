@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { type EvmPendingTxStatus } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useEvmPendingTxStatus } from '../../transactions/hooks/useEvmPendingTxStatus';
 import { yieldActions } from '../yieldReducer';

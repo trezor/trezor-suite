@@ -2,6 +2,8 @@ export type * from './array';
 export * from './branded';
 export * from './createTypeGuardByType';
 export * from './exhaustive';
+export type { Fetch, FetchDep } from './Fetch';
+export type * from './filesystem';
 export type * from './object';
 export type * from './overloads';
 export * from './result';

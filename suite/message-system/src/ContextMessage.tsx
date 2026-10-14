@@ -11,10 +11,10 @@ import {
     messageSystemActions,
     selectContextMessageContent,
 } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import type { MessageSystemSuiteWithTorRootState } from './messageSystemRootState';
 

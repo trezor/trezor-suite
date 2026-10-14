@@ -1,7 +1,6 @@
 import { useStore } from 'react-redux';
 
 import { type TranslationFunction, useTranslation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -11,6 +10,7 @@ import {
     selectDeviceTradingTradesOrderedByDate,
 } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { getExportedFileName } from 'src/utils/wallet/exportTransactionsUtils';
 

@@ -14,13 +14,13 @@
     "dependencies": {
         "@suite-common/device": "workspace:*",
         "@suite-common/networks": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react-redux": "9.3.0"
     }

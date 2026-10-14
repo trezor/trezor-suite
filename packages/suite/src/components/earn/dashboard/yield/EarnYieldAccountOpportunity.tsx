@@ -6,7 +6,6 @@ import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
     getTradingPrefilledFromAccountData,
@@ -19,6 +18,7 @@ import { Card, Column, Icon, Row, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

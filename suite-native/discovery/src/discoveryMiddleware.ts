@@ -1,7 +1,6 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -27,6 +26,7 @@ import {
 import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
 import { DEVICE } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import {
     type PendingCoinVisibilityRootState,

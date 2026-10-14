@@ -3,9 +3,9 @@ import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsDeviceProtectedByWipeCode } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 
 import { changeWipeCodeThunk } from 'src/actions/settings/deviceSettingsActions';

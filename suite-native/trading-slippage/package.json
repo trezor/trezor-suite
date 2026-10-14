@@ -33,11 +33,11 @@
         "react-redux": "9.3.0"
     },
     "devDependencies": {
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@types/invity-api": "^1.1.22"
     }
 }

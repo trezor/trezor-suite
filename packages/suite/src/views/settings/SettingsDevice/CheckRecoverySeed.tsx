@@ -2,10 +2,10 @@ import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 interface CheckRecoverySeedProps {
     isDeviceLocked: boolean;

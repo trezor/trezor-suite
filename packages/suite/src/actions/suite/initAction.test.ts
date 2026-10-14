@@ -43,8 +43,6 @@ import {
 } from '@suite-common/message-system';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
 import { mockNetworksState } from '@suite-common/networks/mocks';
-import { type WithServices } from '@suite-common/redux-utils';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -77,6 +75,8 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { asGetter, mock } from '@trezor/dependency-injection';
 import { noopCreateLogger } from '@trezor/logger';
+import { type WithServices } from '@trezor/redux-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { SUITE } from 'src/actions/suite/constants';
 import {

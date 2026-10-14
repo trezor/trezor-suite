@@ -6,7 +6,6 @@ import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { AccountTransactionBaseAnchor, useAnchor } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountType, type Network } from '@suite-common/wallet-config';
 import {
     createTargets,
@@ -28,6 +27,7 @@ import { Button, Icon, Row, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { GaugeIcon, WarningIcon, XIcon } from '@trezor/icons';
 import { OutlineHighlight } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';

@@ -12,10 +12,10 @@ import { Translation } from '@suite/intl';
 import { type RouterRootState, selectRouterApp } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { type DeviceRootState, selectPhysicalDeviceWallets } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Image } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SidebarBanner } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { palette } from '@trezor/theme';
 import { ESHOP_STORE_URL, withGetTrezorCtaUtm } from '@trezor/urls';
 

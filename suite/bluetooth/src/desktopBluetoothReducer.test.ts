@@ -1,10 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { type BluetoothManufacturerData } from '@suite-common/bluetooth';
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import {

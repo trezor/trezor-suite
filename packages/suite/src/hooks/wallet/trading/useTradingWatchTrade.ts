@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTimeoutFn, useUnmount } from 'react-use';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADE_API_RELOAD_QUOTES_AFTER_SECONDS,
     type TradingTransaction,
@@ -10,6 +9,7 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { type TradingUseWatchTradeProps } from 'src/types/trading/trading';
 

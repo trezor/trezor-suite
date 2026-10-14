@@ -12,9 +12,6 @@
             "path": "../../suite-common/metadata-types"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-types"
         },
         { "path": "../../suite-common/trading" },
@@ -23,6 +20,7 @@
         {
             "path": "../../packages/connect-common"
         },
-        { "path": "../../packages/env-utils" }
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" }
     ]
 }

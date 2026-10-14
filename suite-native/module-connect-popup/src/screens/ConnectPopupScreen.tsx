@@ -11,13 +11,13 @@ import {
     selectIsDeviceConnectedAndAuthorized,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Loader } from '@suite-native/atoms';
 import { DeviceManager } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { AddressConfirmation } from '../components/AddressConfirmation';
 import { ButtonRequestsOverlay } from '../components/ButtonRequestsOverlay';

@@ -1,6 +1,5 @@
 import type { FiatCurrencyCode } from 'invity-api';
 
-import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TradingPaymentMethodProps,
     bestSellQuotePerPaymentMethodProjection,
@@ -17,6 +16,7 @@ import {
     selectBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type FiatCurrencyItem, type SellFormValues } from '@suite-native/trading-types';
+import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { unique } from '@trezor/utils';
 
 import { getDefaultFiatCurrency } from '../utils';

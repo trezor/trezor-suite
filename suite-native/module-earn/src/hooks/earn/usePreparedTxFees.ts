@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FeesRootState,
@@ -26,6 +25,7 @@ import {
 } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 import { deepEqual } from '@trezor/utils';
 
 import {

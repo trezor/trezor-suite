@@ -2,7 +2,6 @@ import { type AnalyticsDep } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type GetAccountSyncIntervalDep, type NetworksRootState } from '@suite-common/networks';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -31,6 +30,7 @@ import TrezorConnect, {
     type BlockchainNotification,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import type { TimerId } from '@trezor/type-utils';
 import { BigNumber, arrayDistinct, arrayToDictionary } from '@trezor/utils';
 

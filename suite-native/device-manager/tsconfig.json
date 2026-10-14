@@ -7,9 +7,6 @@
             "path": "../../suite-common/message-system"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-sync"
         },
         {
@@ -38,6 +35,7 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/device-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

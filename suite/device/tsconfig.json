@@ -4,12 +4,10 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-types"
         },
         { "path": "../locks" },
-        { "path": "../../packages/connect" }
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/redux-utils" }
     ]
 }

@@ -8,8 +8,8 @@ import {
     type FiatCurrencyCode,
 } from 'invity-api';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { type SelectBuyQuoteThunkState } from './selectBuyQuoteThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/buyUtils';

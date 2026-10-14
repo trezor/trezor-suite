@@ -13,7 +13,6 @@ import {
     prepareCachedEnvData,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
-import { createThunk } from '@suite-common/redux-utils';
 import {
     type InitTokenDefinitionsThunkDeps,
     type InitTokenDefinitionsThunkState,
@@ -49,6 +48,7 @@ import {
     selectIsOnboardingFinished,
 } from '@suite-native/settings';
 import { setIsAppReady } from '@suite-native/state';
+import { createThunk } from '@trezor/redux-utils';
 
 const ACTION_PREFIX = '@suite-native/app';
 

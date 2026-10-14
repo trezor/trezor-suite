@@ -3,7 +3,6 @@ import { useForm, useWatch } from 'react-hook-form';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     pushSendFormRawTransactionThunk,
     selectIsMevProtectionEnabled,
@@ -13,6 +12,7 @@ import { isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { useSelector } from 'src/hooks/suite';

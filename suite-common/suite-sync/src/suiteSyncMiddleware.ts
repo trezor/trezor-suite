@@ -2,8 +2,8 @@ import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { deviceActions, isTrezorDeviceWithState, selectDeviceThunk } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { type WithServices, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import {
     type WithSuiteSyncAndDeviceState,

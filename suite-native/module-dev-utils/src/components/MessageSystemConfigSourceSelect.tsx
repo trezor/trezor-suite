@@ -7,9 +7,9 @@ import {
     messageSystemActions,
     selectMessageSystemConfigSource,
 } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Select, type SelectItemType } from '@suite-native/atoms';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 const options: SelectItemType<MessageSystemConfigSource>[] = [
     { label: 'Remote', value: 'remote' },

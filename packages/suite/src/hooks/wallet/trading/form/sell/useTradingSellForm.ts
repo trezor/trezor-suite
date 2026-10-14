@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -19,6 +18,7 @@ import {
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';

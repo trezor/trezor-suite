@@ -11,9 +11,6 @@
             "path": "../legacy-network-config"
         },
         {
-            "path": "../redux-utils"
-        },
-        {
             "path": "../../networks/network-module/network-assets-types"
         },
         {
@@ -42,6 +39,9 @@
         },
         {
             "path": "../../networks/tron/network-tron-suite-common"
+        },
+        {
+            "path": "../../packages/redux-utils"
         },
         {
             "path": "../../packages/utils"

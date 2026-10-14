@@ -4,7 +4,6 @@ import { type DesktopAnalyticsDep, events, injectDesktopAnalytics } from '@suite
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
-import { type Dispatch, injectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
 import { type IconComponent, Tooltip } from '@trezor/components';
@@ -18,6 +17,7 @@ import {
     SnowflakeIcon,
     WalletIcon,
 } from '@trezor/icons';
+import { type Dispatch, injectDispatch } from '@trezor/redux-utils';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 

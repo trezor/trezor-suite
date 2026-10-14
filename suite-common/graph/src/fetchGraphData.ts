@@ -1,7 +1,7 @@
 import { A } from '@mobily/ts-belt';
 
-import { type Dispatch } from '@suite-common/redux-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { type Dispatch } from '@trezor/redux-utils';
 
 import { getAccountMovementEvents } from './graphBalanceEvents';
 import { getMultipleAccountBalanceHistoryWithFiat } from './graphDataFetching';

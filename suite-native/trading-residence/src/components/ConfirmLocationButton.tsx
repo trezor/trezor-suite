@@ -1,10 +1,10 @@
-import { injectDispatch } from '@suite-common/redux-utils';
 import { isCountrySubdivisionRequired } from '@suite-common/trading';
 import { Button } from '@suite-native/atoms';
 import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { residenceActions } from '@suite-native/trading-state';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useCountrySubdivisionPickerControls } from './CountrySheet/CountrySubdivisionPickerControlsContext';
 import { useCountrySelectionAnalyticsReport } from '../hooks/useCountrySelectionAnalyticsReport';

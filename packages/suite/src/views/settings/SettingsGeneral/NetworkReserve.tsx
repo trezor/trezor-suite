@@ -2,13 +2,13 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetworksWithNativeTokenReserve } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
 import { Banner, Column, Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { NETWORK_RESERVE_URL } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';

@@ -17,16 +17,10 @@
             "path": "../../suite-common/platform-encryption"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/suite-sync-evolu"
-        },
-        {
-            "path": "../../suite-common/suite-sync-quota-manager"
         },
         {
             "path": "../../suite-common/suite-sync-storage"
@@ -56,6 +50,7 @@
         {
             "path": "../../packages/product-components"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/theme" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },

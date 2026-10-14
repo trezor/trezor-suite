@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
@@ -14,6 +13,7 @@ import {
 } from '@suite-native/navigation';
 import { cleanupSendFormThunk } from '@suite-native/send';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { navigateOutOfSendFlowAction } from '../utils';
 

@@ -4,7 +4,6 @@ import {
     selectWalletAssetDisplaySymbol,
     selectWalletAssetSymbol,
 } from '@suite-common/assets';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
     TokenManagementAction,
@@ -13,6 +12,7 @@ import {
 import { type HiddenTokenReason, type WalletAssetKey } from '@suite-common/wallet-core';
 import { H3, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

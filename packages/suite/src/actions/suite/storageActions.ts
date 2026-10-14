@@ -31,7 +31,6 @@ import {
 } from '@suite-common/persistent-device-data';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
 import { type ReceiveRootState, selectReceiveAccountState } from '@suite-common/receive';
-import { type WithServices, createThunk } from '@suite-common/redux-utils/';
 import {
     type WithSuiteSyncQuotaManagerState,
     selectSuiteSyncQuotaManager,
@@ -88,6 +87,7 @@ import {
 import { type WalletConnectStateRootState, selectSessions } from '@suite-common/walletconnect';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils/';
 import { cloneObject, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { type SuiteState } from 'src/reducers/suite/suiteReducer';

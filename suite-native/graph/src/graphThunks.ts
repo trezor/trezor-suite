@@ -9,9 +9,9 @@ import {
     fetchGraphData,
     getTimeFrameForHistoryHours,
 } from '@suite-common/graph';
-import { type Dispatch } from '@suite-common/redux-utils';
-import { createThunk } from '@suite-common/redux-utils';
 import { type FetchTransactionsFromNowUntilTimestampThunkState } from '@suite-common/wallet-core';
+import { type Dispatch } from '@trezor/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 import { accountDetailGraphAtoms } from './accountDetailGraphAtoms';
 import { type GraphInstanceId, isPortfolioGraphInstanceId } from './graphInstances';

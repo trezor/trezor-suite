@@ -1,5 +1,5 @@
 import { selectDeviceModel, selectIsPortfolioTrackerDevice } from '@suite-common/device';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from './deviceAuthenticityConstants';
 

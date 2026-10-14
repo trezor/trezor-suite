@@ -1,9 +1,9 @@
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, type DiscoveryStatus } from '@suite-common/wallet-types';
 import { type DeviceUniquePath, type StaticSessionId } from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';

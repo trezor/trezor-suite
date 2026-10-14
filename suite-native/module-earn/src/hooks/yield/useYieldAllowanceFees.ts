@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type FeesRootState,
     type FormDraftRootState,
@@ -28,6 +27,7 @@ import {
 } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import {
     getYieldAllowanceFormDraftKey,

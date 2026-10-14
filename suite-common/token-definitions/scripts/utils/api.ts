@@ -96,7 +96,7 @@ type CreateApiClientParams = {
  * A client for one API, paced and retried the same way everywhere.
  */
 const createApiClient = ({ baseUrl, headers }: CreateApiClientParams) =>
-    createHttpClient({
+    createHttpClient({ fetch })({
         baseUrl,
         headers,
         timeout: REQUEST_TIMEOUT_MS,

@@ -1,5 +1,5 @@
 import { getSuiteVersion } from '@trezor/env-utils';
-import { type Result, err, ok } from '@trezor/type-utils';
+import { type FetchDep, type Result, err, ok } from '@trezor/type-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
 import { type GetQuotaManagerUrlDep } from './quotaManagerUrl';
@@ -29,10 +29,6 @@ export type QuotaManagerFetchParams = {
     method: SupportedMethod;
     body?: unknown;
     queryParams?: Record<string, string | number | boolean>;
-};
-
-export type FetchDep = {
-    fetch: typeof fetch;
 };
 
 export type QuotaManagerFetchDeps = GetQuotaManagerUrlDep & FetchDep;

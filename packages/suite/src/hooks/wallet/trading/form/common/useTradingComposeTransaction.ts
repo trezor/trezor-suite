@@ -3,7 +3,6 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FROM_ADDRESS,
     TRADING_FORM_FEE_PER_UNIT,
@@ -31,6 +30,7 @@ import {
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

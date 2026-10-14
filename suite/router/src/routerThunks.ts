@@ -1,6 +1,6 @@
 import { type LocksRootState, lockRouter, selectIsRouterLocked } from '@suite/locks';
 import { type ModalRootState } from '@suite/modal';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { type AnchorType } from './anchors';
 import { type Route } from './route';

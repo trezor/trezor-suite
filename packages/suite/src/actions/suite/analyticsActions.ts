@@ -17,9 +17,9 @@ import {
     selectIsAnalyticsEnabled,
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
-import { type WithServices } from '@suite-common/redux-utils';
 import { type InitOptions, getTrackingRandomId } from '@trezor/analytics-uploader';
 import { getCommitHash, getEnvironment, isCodesignBuild } from '@trezor/env-utils';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { allowSentryReport, setSentryUser } from 'src/utils/suite/sentry';
 

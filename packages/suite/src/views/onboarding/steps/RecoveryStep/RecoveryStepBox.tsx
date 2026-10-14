@@ -2,10 +2,10 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { OnboardingCard, type OnboardingCardProps } from '@suite/onboarding-components';
 import { recoveryActions, selectRecoveryError, selectRecoveryStatus } from '@suite/recovery';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { TrezorBackupIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { goToPreviousStepThunk } from 'src/actions/onboarding/onboardingActions';
 import { useSelector } from 'src/hooks/suite';

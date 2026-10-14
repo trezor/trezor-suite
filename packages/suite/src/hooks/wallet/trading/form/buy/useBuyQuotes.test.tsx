@@ -5,7 +5,6 @@ import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type TradingAssetOption,
@@ -15,6 +14,7 @@ import {
     initialState as tradingInitialState,
 } from '@suite-common/trading';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/reducers/store';
 

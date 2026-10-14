@@ -1,7 +1,7 @@
 import { ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { Error } from 'src/components/suite/Error';
 import { reportToSentryThunk } from 'src/utils/suite/sentry';

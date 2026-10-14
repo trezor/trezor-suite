@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.11.0
+
+- backfill `manualCheckResult` to all `persistentDeviceData` entries (all previously known devices assumed confirmed)
+
 ## 26.10.0.3
 
 - recreate the `tokenManagement` store when an earlier failed upgrade left it missing
@@ -34,7 +38,7 @@
 ## 26.5.0
 
 - reset Ethereum account nonces to `-1` in order to force account refresh for DeFi tokens
-- backfill `manualCheckResult` to all `persistentDeviceData` entries (all previously known devices assumed confirmed)
+- ~~backfill manualCheckResult to all persistentDeviceData entries (all previously known devices assumed confirmed)~~ (moved to 26.11.0)
 
 ## 26.4.0.2
 

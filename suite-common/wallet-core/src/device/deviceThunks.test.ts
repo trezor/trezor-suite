@@ -6,10 +6,10 @@ import {
 } from '@suite-common/bluetooth';
 import { type DeviceReducerState, deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-device-data';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot, filterThunkActionTypes } from '@suite-common/test-utils';
 import { type ThpRootState, prepareThpReducer } from '@suite-common/thp';
 import { DEVICE } from '@trezor/connect';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { forgetPersistentDataPreloadedStateFixture } from './__fixtures__/forgetPersistentDataPreloadedState';
 import { handleDeviceDisconnectFixture } from './__fixtures__/handleDeviceDisconnect';

@@ -2,7 +2,6 @@ import { A, pipe } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { type NetworksRootState } from '@suite-common/networks';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type Network,
@@ -31,6 +30,7 @@ import {
     selectNetworkSymbolsOfAccountsWithTokensAllowed,
 } from '@suite-native/tokens';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { arrayPartition, versionUtils } from '@trezor/utils';
 
 export type DiscoveryRootState = DeviceRootState &

@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type HandleSellRequestThunkProps,
@@ -15,6 +14,7 @@ import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { sellActions } from '@suite-native/trading-state';
 import { type SellFormType } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { noop } from '@trezor/utils';
 
 import { tradingSellFormToTradingSellFormProps } from '../../utils/sell/quotesUtils';

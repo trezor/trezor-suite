@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner, Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { QuestionFilledIcon, ShieldWarningIcon, WarningFilledIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';
 import { CheckItem } from 'src/components/suite/CheckItem';

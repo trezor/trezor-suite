@@ -4,11 +4,11 @@ import { injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, H3, H4, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { Metadata } from 'src/components/suite';
 import { useLayout, useSelector } from 'src/hooks/suite';

@@ -102,9 +102,7 @@ describe('TransactionReviewOutputSummaryItem', () => {
             ),
         ).toBeOnTheScreen();
         expect(
-            getByText(
-                `Values: [transactionManagement.review.outputs.summary.maxFee]-[10]-[${USDC_CONTRACT}]`,
-            ),
+            getByText('Values: [transactionManagement.review.outputs.summary.maxFee]-[10]'),
         ).toBeOnTheScreen();
     });
 

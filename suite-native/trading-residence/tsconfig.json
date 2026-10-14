@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/flags" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../../suite-common/trading" },
         { "path": "../analytics" },
         { "path": "../atoms" },
@@ -22,6 +19,7 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../suite-common/message-system"
         },

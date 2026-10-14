@@ -1,7 +1,6 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type SuiteSyncInteraction,
     type SuiteSyncState,
@@ -13,6 +12,7 @@ import {
     suiteSyncReducer,
 } from '@suite-common/suite-sync';
 import { type StaticSessionId } from '@trezor/connect';
+import { createSliceWithExtraDeps } from '@trezor/redux-utils';
 import { typedObjectFromEntries } from '@trezor/utils';
 
 export type DesktopSuiteSyncState = SuiteSyncState & {

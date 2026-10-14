@@ -2,7 +2,6 @@ import { type SelectedAccountState, selectedAccountReducer } from '@suite/accoun
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type RouterState } from '@suite/router';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -19,6 +18,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type WalletSettings, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';

@@ -10,9 +10,9 @@ import {
     buildUserFeedbackData,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { FeedbackCard } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type EarnFlowFeedbackCardProps = {
     featureTitleId: TranslationKey;

@@ -16,9 +16,6 @@
         {
             "path": "../../suite-common/react-query"
         },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../analytics" },
         { "path": "../bluetooth" },
         { "path": "../debug" },
@@ -42,6 +39,7 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/icons" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/suite" },
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" },

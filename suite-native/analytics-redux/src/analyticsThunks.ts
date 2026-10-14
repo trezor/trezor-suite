@@ -8,12 +8,12 @@ import {
     selectIsAnalyticsEnabled,
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { isProduction } from '@suite-native/config';
 import { allowSentryReport, setSentryUser } from '@suite-native/sentry';
 import { type InitOptions, getTrackingRandomId } from '@trezor/analytics-uploader';
 import { getCommitHash } from '@trezor/env-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 const ACTION_PREFIX = '@suite-native/analytics';
 

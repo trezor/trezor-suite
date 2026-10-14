@@ -5,9 +5,6 @@
         { "path": "../../suite-common/networks" },
         { "path": "../../suite-common/receive" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/sign-verify"
         },
         {
@@ -31,6 +28,7 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/dom-utils" },
-        { "path": "../../packages/icons" }
+        { "path": "../../packages/icons" },
+        { "path": "../../packages/redux-utils" }
     ]
 }

@@ -34,7 +34,7 @@ A bare `.find` / `.filter` / `.sort` over `accounts`, `account.tokens`, `transac
 `availableVaults` in a component body re-runs on every render, and moving it is the preferred fix: an
 existing memoized selector, a named hook (`useEnabledNetworkOptions`), or a child component. Build new
 selectors with `createWeakMapSelector`
-([selectorsUtils.ts](../../suite-common/redux-utils/src/selectorsUtils.ts)). What stays in the component earns a `useMemo`
+([selectorsUtils.ts](../../packages/redux-utils/src/selectorsUtils.ts)). What stays in the component earns a `useMemo`
 only if the work is genuinely expensive over a real list, or a downstream component or hook needs the
 result's identity to be stable — O(1) arithmetic and formatting belong in a plain util. Redundant memos
 get flagged about as often as missing ones:
@@ -49,7 +49,7 @@ the dependency _is_ listed, and two shapes are provably invisible to it: one der
 expression (`const filtered = items.filter(...)`), and one that crosses the hook boundary
 (`useThing({ list: maybe ?? [] })` feeding a `useMemo` inside `useThing`). Fix with a module-level
 constant, or `returnStableArrayIfEmpty`
-([selectorsUtils.ts](../../suite-common/redux-utils/src/selectorsUtils.ts), 115 call sites) in a selector.
+([selectorsUtils.ts](../../packages/redux-utils/src/selectorsUtils.ts), 115 call sites) in a selector.
 
 ```tsx
 // bad - useAccounts.ts:9 - ethereum, solana, ripple, stellar and tron have no `addresses`, so both
@@ -137,7 +137,7 @@ at its declaration first: a `useCallback(…, [])` handler is already stable and
 - [Components](../components/SKILL.md) — hook order, pass the narrow prop, and don’t optimise until you
   can point at the cost.
 - [Redux](../redux/SKILL.md) — one `useSelector` per value. The `useSelector` exported by
-  `@suite-common/redux-utils`
+  `@trezor/redux-utils`
 
 - [Asymptotic complexity](../performance-complexity/SKILL.md) — indexing, sorting and reducing over
   collections that grow.

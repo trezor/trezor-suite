@@ -1,6 +1,5 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     type NotificationsRootState,
@@ -36,6 +35,7 @@ import TrezorConnect, {
     type TokenInfo,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { reportWalletBalanceDebounced } from './accountBalanceAnalytics';

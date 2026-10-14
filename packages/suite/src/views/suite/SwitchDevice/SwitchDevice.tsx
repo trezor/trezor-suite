@@ -3,11 +3,11 @@ import { setConnectionMode, toggleConnectionModal } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { bluetoothActions, selectAdapterStatus } from '@suite-common/bluetooth';
 import { selectDevices } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { Button, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { TrezorDevicesIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { type ForegroundAppProps } from 'src/types/suite';

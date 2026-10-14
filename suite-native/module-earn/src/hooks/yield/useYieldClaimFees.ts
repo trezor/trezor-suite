@@ -6,7 +6,6 @@ import {
     buildClaimCalldata,
     buildUnsignedClaimTransaction,
 } from '@suite-common/earn-stablecoin';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type EvmHexString } from '@suite-common/schemas/src/evm';
 import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -32,6 +31,7 @@ import {
 } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce, useFreshRef } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
 import {

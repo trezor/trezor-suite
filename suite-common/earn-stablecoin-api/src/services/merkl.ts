@@ -3,7 +3,7 @@ import { createHttpClient } from '@suite-common/http-client';
 
 import { earnYieldWorkerBaseUrl } from '../context';
 
-const merklApi = createHttpClient({
+const merklApi = createHttpClient({ fetch: (input, init) => globalThis.fetch(input, init) })({
     async baseUrl() {
         const baseUrl = await earnYieldWorkerBaseUrl.get();
 

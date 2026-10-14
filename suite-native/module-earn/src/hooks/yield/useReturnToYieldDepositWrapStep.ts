@@ -3,7 +3,6 @@ import { useStore } from 'react-redux';
 
 import { StackActions, useNavigation } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldRootState,
     selectYieldSessionByFlowKey,
@@ -16,6 +15,7 @@ import {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProps = StackNavigationProps<
     YieldStackParamList,

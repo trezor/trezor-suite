@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { useMutation } from '@suite-common/react-query';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -40,6 +39,7 @@ import {
 } from '@suite-native/send';
 import { useToast } from '@suite-native/toasts';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useDeviceGuardedSign } from './useDeviceGuardedSign';
 

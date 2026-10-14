@@ -20,7 +20,7 @@ import {
     updatedIconsListSchema,
 } from '../schemas';
 
-const coinGeckoApi = createHttpClient({
+const coinGeckoApi = createHttpClient({ fetch })({
     baseUrl: COINGECKO_API_BASE_URL,
     headers: { [COINGECKO_API_KEY_HEADER]: COINGECKO_API_KEY_VALUE },
     onError: error => {
@@ -30,7 +30,7 @@ const coinGeckoApi = createHttpClient({
 
 // The updated-icons checkpoint lives on the trezor CDN, not CoinGecko, so it must NOT carry the
 // CoinGecko API key — hence a separate headerless client.
-const trezorDataApi = createHttpClient({
+const trezorDataApi = createHttpClient({ fetch })({
     onError: error => {
         console.error('Error fetching updated icons list:', error);
     },

@@ -1,8 +1,8 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountAddresses } from '@suite-common/wallet-utils';
+import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import { subscribeBlockchainThunk, unsubscribeBlockchainThunk } from './blockchainThunks';
 import { accountsActions } from '../accounts/accountsActions';

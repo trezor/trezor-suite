@@ -1,10 +1,10 @@
 import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { tradingThunks } from '@suite-common/trading';
 import { selectTradesToWatchByAccount } from '@suite-native/trading-state';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useReloadTimer } from './useReloadTimer';
 

@@ -6,13 +6,13 @@ import {
     selectDeviceLabelOrNameById,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Box, HStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { WalletLabel } from '@suite-native/wallet';
+import { useSelectorDeepComparison } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeTypographyStyle } from '@trezor/theme';
 

@@ -1,7 +1,7 @@
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Translation } from '@suite-native/intl';
 import { setDeviceAuthenticityCheckEnabled } from '@suite-native/settings';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { TurnOffCheckScreenContent } from '../components/TurnOffCheckScreenContent';
 

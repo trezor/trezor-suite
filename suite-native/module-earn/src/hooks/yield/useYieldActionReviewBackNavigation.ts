@@ -2,10 +2,10 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { injectDispatch } from '@suite-common/redux-utils';
 import { yieldActions } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useShowYieldReviewCancellationAlert } from './useShowYieldReviewCancellationAlert';
 import { type YieldReviewStatus } from '../../types';

@@ -267,7 +267,7 @@ Unit-test a thunk as a function. Redux thunk middleware ultimately calls a thunk
 arguments: `dispatch`, `getState`, and `extra`, so a unit test can provide those arguments directly.
 Do not create a store or an application root merely to obtain them.
 
-Use `createMockDispatch` from `@suite-common/redux-utils/mocks`. It stores every plain dispatched
+Use `createMockDispatch` from `@trezor/redux-utils/mocks`. It stores every plain dispatched
 action in an array and recursively executes function actions with the same test dependencies. Build
 `getState` and `extra` from the thunk's exported contracts, and keep the fixture local to the test:
 

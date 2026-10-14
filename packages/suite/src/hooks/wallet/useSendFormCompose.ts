@@ -11,7 +11,6 @@ import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { type TranslationKey, isTranslationKey, useTranslation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
@@ -27,6 +26,7 @@ import { findComposeErrors } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 import { isChanged } from '@trezor/utils';
 
 import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';

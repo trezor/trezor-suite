@@ -2,9 +2,9 @@ import { useCallback } from 'react';
 
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { useTranslation } from '@suite/intl';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { ensureDeviceSession } from '../hooks/ensureDeviceSession';
 

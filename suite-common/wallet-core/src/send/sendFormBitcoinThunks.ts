@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { BTC_LOCKTIME_SEQUENCE, BTC_RBF_SEQUENCE } from '@suite-common/wallet-constants';
@@ -28,6 +27,7 @@ import TrezorConnect, {
     type SignedTransaction,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
