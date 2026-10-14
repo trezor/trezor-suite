@@ -62,6 +62,9 @@ export const thpCall = async <T extends MessageKey>(
     device: IDevice,
     name: T,
     data: ThpMessagePayload<T>,
+    // ButtonAck is sent via recursive call and has no entry in ALLOWED_RESPONSE_TYPES,
+    // the original request name is carried over so the runtime gate stays effective.
+    expectedFor: MessageKey = name,
 ): Promise<ThpCallResponse[T]> => {
     const thpState = device.getThpState();
     if (!thpState) {
@@ -84,7 +87,7 @@ export const thpCall = async <T extends MessageKey>(
             device.emit(DEVICE.BUTTON, { device, payload: result.payload.message });
         }
 
-        return thpCall(device, 'ButtonAck' as T, {} as ThpMessagePayload<T>);
+        return thpCall(device, 'ButtonAck' as T, {} as ThpMessagePayload<T>, expectedFor);
     }
 
     if (result.payload.type === 'Failure') {
@@ -98,10 +101,7 @@ export const thpCall = async <T extends MessageKey>(
     }
 
     // Runtime gate: reject any response type not in the allowed set for this call.
-    // ButtonAck is passed via recursive call and has no entry in ALLOWED_RESPONSE_TYPES.
-    if (name in ALLOWED_RESPONSE_TYPES) {
-        assertResponse(result.payload.type, ALLOWED_RESPONSE_TYPES[name]);
-    }
+    assertResponse(result.payload.type, ALLOWED_RESPONSE_TYPES[expectedFor]);
 
     return result.payload as ThpCallResponse[T];
 };

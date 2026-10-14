@@ -14,7 +14,7 @@ const getDevice = (payloads: Record<string, any>[]) => {
 };
 
 describe('thpCall', () => {
-    it('accepts an unexpected response received after a ButtonRequest', async () => {
+    it('rejects an unexpected response received after a ButtonRequest', async () => {
         const { device } = getDevice([
             { type: 'ButtonRequest', message: { code: 'ButtonRequest_Other' } },
             { type: 'ThpCredentialResponse', message: {} },
@@ -22,7 +22,7 @@ describe('thpCall', () => {
 
         await expect(
             thpCall(device, 'ThpPairingRequest', { host_name: 'host', app_name: 'app' }),
-        ).resolves.toMatchObject({ type: 'ThpCredentialResponse' });
+        ).rejects.toThrow('Unexpected response type: ThpCredentialResponse');
     });
 
     it('accepts an allowed response received after a ButtonRequest', async () => {
