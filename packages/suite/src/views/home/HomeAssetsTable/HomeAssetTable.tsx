@@ -21,12 +21,14 @@ import { Card, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from 'src/hooks/suite';
 
+import { AssetRowsSkeleton } from './AssetRowsSkeleton';
 import { HomeAssetExpandRow } from './HomeAssetExpandRow';
 import { HomeAssetNetworkSection } from './HomeAssetNetworkSection';
 import { HomeAssetNewBanner } from './HomeAssetNewBanner';
 import { HomeAssetRow } from './HomeAssetRow';
+import { HomeAssetSmallBalancesHiddenRow } from './HomeAssetSmallBalancesHiddenRow';
 import { HomeAssetTableFilterHeader } from './HomeAssetTableFilter';
 import { HOME_ASSET_CELL_PADDING, HOME_ASSET_COL_WIDTHS } from './homeAssetTableLayout';
 
@@ -38,6 +40,7 @@ export const HomeAssetTable = () => {
     const grouping = useSelector(selectHomeAssetsTableGrouping);
     const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesShown);
     const hasAssets = useSelector(selectHasShownWalletAssets);
+    const { isDiscoveryRunning } = useDiscovery();
     const isFoldable = useSelector(state =>
         selectIsHomeAssetTableFoldable(state, HOME_ASSET_ROW_LIMIT),
     );
@@ -68,7 +71,9 @@ export const HomeAssetTable = () => {
     );
 
     if (!hasAssets) {
-        return null;
+        return isDiscoveryRunning ? (
+            <AssetRowsSkeleton data-testid="@dashboard/home-asset-table/loading" />
+        ) : null;
     }
 
     return (
@@ -94,6 +99,11 @@ export const HomeAssetTable = () => {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
+                    {assetKeys.length === 0 && (
+                        <HomeAssetSmallBalancesHiddenRow
+                            onShowSmallBalances={() => changeSmallBalances(true)}
+                        />
+                    )}
                     {grouping === 'networks'
                         ? networkSymbols.map(symbol => (
                               <HomeAssetNetworkSection
